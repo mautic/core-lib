@@ -1,0 +1,38 @@
+/* UserBundle */
+
+.login-container {
+    background-color: #513B49;
+    color: #fff;
+    width: 320px;
+    height: 320px;
+    background-color: #513B49;
+    margin-left: auto;
+    margin-right: auto;
+    margin: 50px auto 50px;
+    text-align: center;
+}
+
+.profile-details {
+    margin-bottom: 20px;
+}
+
+.gs-user-profile {
+    float: left;
+}
+
+.gs-user-avatar {
+    float: right;
+    margin: 0 8px;
+}
+
+.col-user-id, .col-role-id {
+    width: 75px;
+}
+
+.col-user-actions, .col-role-actions {
+    width: 25px;
+}
+
+.col-user-avatar {
+    width: 75px;
+}
