@@ -7,17 +7,17 @@
  * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace Mautic\SocialBundle\Entity;
+namespace Mautic\IntegrationBundle\Entity;
 
 use Mautic\CoreBundle\Entity\CommonRepository;
 
 /**
- * SocialNetworkRepository
+ * ConnectorRepository
  */
-class SocialNetworkRepository extends CommonRepository
+class ConnectorRepository extends CommonRepository
 {
 
-    public function getNetworkSettings()
+    public function getConnectors()
     {
         $services = $this->createQueryBuilder('s')
             ->getQuery()

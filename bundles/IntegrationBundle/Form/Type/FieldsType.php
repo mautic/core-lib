@@ -7,7 +7,7 @@
  * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace Mautic\SocialBundle\Form\Type;
+namespace Mautic\IntegrationBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,7 +27,7 @@ class FieldsType extends AbstractType
      */
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
-        foreach ($options['sm_fields'] as $field => $label) {
+        foreach ($options['connector_fields'] as $field => $label) {
             $builder->add($field, 'choice', array(
                 'choices'    => $options['lead_fields'],
                 'label'      => $label,
@@ -43,13 +43,13 @@ class FieldsType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setRequired(array('sm_fields', 'lead_fields'));
+        $resolver->setRequired(array('connector_fields', 'lead_fields'));
     }
 
     /**
      * @return string
      */
     public function getName() {
-        return "socialmedia_fields";
+        return "connector_fields";
     }
 }
