@@ -7,22 +7,35 @@
  * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace Mautic\SocialBundle\Entity;
+namespace Mautic\IntegrationBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
- * Class SocialNetwork
- * @ORM\Table(name="socialnetwork_settings")
- * @ORM\Entity(repositoryClass="Mautic\SocialBundle\Entity\SocialNetworkRepository")
+ * Class Connector
+ * @ORM\Table(name="integration_connector_settings")
+ * @ORM\Entity(repositoryClass="Mautic\IntegrationBundle\Entity\ConnectorRepository")
  * @Serializer\ExclusionPolicy("all")
  */
-class SocialNetwork
+class Connector
 {
+
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id()
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Integration", inversedBy="connectors")
+     * @ORM\JoinColumn(name="integration_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     */
+    private $integration;
+
     /**
      * @ORM\Column(type="string")
-     * @ORM\Id()
      */
     private $name;
 
@@ -45,6 +58,14 @@ class SocialNetwork
      * @ORM\Column(type="array", name="feature_settings", nullable=true)
      */
     private $featureSettings = array();
+
+    /**
+     * @return mixed
+     */
+    public function getId ()
+    {
+        return $this->id;
+    }
 
     /**
      * @return mixed
@@ -132,5 +153,21 @@ class SocialNetwork
     public function setSupportedFeatures ($supportedFeatures)
     {
         $this->supportedFeatures = $supportedFeatures;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIntegration ()
+    {
+        return $this->integration;
+    }
+
+    /**
+     * @param mixed $integration
+     */
+    public function setIntegration (Integration $integration)
+    {
+        $this->integration = $integration;
     }
 }

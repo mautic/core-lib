@@ -7,7 +7,7 @@
  * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-namespace Mautic\SocialBundle\Form\Type;
+namespace Mautic\IntegrationBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,7 +27,7 @@ class KeysType extends AbstractType
      */
     public function buildForm (FormBuilderInterface $builder, array $options)
     {
-        foreach ($options['sm_keys'] as $key => $label) {
+        foreach ($options['connector_keys'] as $key => $label) {
             $builder->add($key, 'text', array(
                 'label'        => $label,
                 'label_attr'   => array('class' => 'control-label'),
@@ -43,13 +43,13 @@ class KeysType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setRequired(array('sm_keys'));
+        $resolver->setRequired(array('connector_keys'));
     }
 
     /**
      * @return string
      */
     public function getName() {
-        return "socialmedia_keys";
+        return "connector_keys";
     }
 }
