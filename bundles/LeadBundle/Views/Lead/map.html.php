@@ -8,9 +8,4 @@
  */
 ?>
 
-<div class="panel-body">
-    <?php echo $view->render('MauticLeadBundle:Social/Facebook:profile.html.php', array(
-        'lead'      => $lead,
-        'profile'   => $details['profile']
-    )); ?>
-</div>
+<div class="vector-map" style="height:400px; width: 100%"><?php echo json_encode($places); ?></div>
