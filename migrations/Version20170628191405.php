@@ -1,10 +1,10 @@
 <?php
-/**
- * @copyright   2016 Mautic Contributors. All rights reserved
+
+/*
+ * @package     Mautic
+ * @copyright   2017 Mautic Contributors. All rights reserved.
  * @author      Mautic
- *
  * @link        http://mautic.org
- *
  * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -15,9 +15,9 @@ use Doctrine\DBAL\Schema\Schema;
 use Mautic\CoreBundle\Doctrine\AbstractMauticMigration;
 
 /**
- * Auto-generated Migration.
+ * Auto-generated Migration: Please modify to your needs!
  */
-class Version20170303000000 extends AbstractMauticMigration
+class Version20170628191405 extends AbstractMauticMigration
 {
     /**
      * @param Schema $schema
@@ -27,7 +27,7 @@ class Version20170303000000 extends AbstractMauticMigration
      */
     public function preUp(Schema $schema)
     {
-        if ($schema->getTable("{$this->prefix}audit_log")->hasIndex("{$this->prefix}date_added_index")) {
+        if ($schema->hasTable($this->prefix.'plugin_crm_pipedrive_owners')) {
             throw new SkipMigrationException('Schema includes this migration');
         }
     }
@@ -37,6 +37,16 @@ class Version20170303000000 extends AbstractMauticMigration
      */
     public function up(Schema $schema)
     {
-        $this->addSql("CREATE INDEX {$this->prefix}date_added_index ON {$this->prefix}audit_log (date_added)");
+        $sql = <<<SQL
+CREATE TABLE {$this->prefix}plugin_crm_pipedrive_owners (
+  id INT AUTO_INCREMENT NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  owner_id INT DEFAULT NULL,
+  INDEX mtc_email (email),
+  INDEX mtc_owner_id (owner_id),
+  PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+SQL;
+        $this->addSql($sql);
     }
 }
