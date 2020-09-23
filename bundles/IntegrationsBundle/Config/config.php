@@ -224,6 +224,7 @@ return [
                     'mautic.integrations.helper.sync_judge',
                     'mautic.integrations.sync.sync_process.value_helper',
                     'mautic.integrations.sync.data_exchange.mautic.field_helper',
+                    'mautic.integrations.sync.notification.bulk_notification',
                 ],
             ],
             'mautic.integrations.sync.internal_process' => [
@@ -231,6 +232,7 @@ return [
                 'arguments' => [
                     'mautic.integrations.helper.sync_date',
                     'mautic.integrations.sync.internal_process.object_change_generator',
+                    'mautic.integrations.sync.dao.sync.order.order_sync_factory',
                 ],
             ],
             'mautic.integrations.sync.service' => [
@@ -353,6 +355,9 @@ return [
                     'mautic.integrations.sync.notification.helper_route',
                     'translator',
                 ],
+            ],
+            'mautic.integrations.sync.dao.sync.order.order_sync_factory' => [
+                'class'     => \Mautic\IntegrationsBundle\Sync\DAO\Sync\Order\OrderDAOFactory::class,
             ],
         ],
     ],

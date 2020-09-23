@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Helper;
 
 use Mautic\IntegrationsBundle\Exception\InvalidValueException;
+use Mautic\IntegrationsBundle\Exception\RequiredValueException;
 use Mautic\IntegrationsBundle\Sync\DAO\Mapping\ObjectMappingDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Report\FieldDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Value\NormalizedValueDAO;
