@@ -6,6 +6,7 @@ use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Mautic\CoreBundle\Cache\ResultCacheOptions;
+use Doctrine\DBAL\Schema\SchemaException;
 use Mautic\CoreBundle\Doctrine\Helper\ColumnSchemaHelper;
 use Mautic\CoreBundle\Doctrine\Paginator\SimplePaginator;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
@@ -26,6 +27,8 @@ use Mautic\LeadBundle\Field\Exception\AbortColumnCreateException;
 use Mautic\LeadBundle\Field\Exception\AbortColumnUpdateException;
 use Mautic\LeadBundle\Field\Exception\CustomFieldLimitException;
 use Mautic\LeadBundle\Field\FieldList;
+use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
+use Mautic\LeadBundle\Field\LeadFieldDeleter;
 use Mautic\LeadBundle\Field\LeadFieldSaver;
 use Mautic\LeadBundle\Field\SchemaDefinition;
 use Mautic\LeadBundle\Form\Type\FieldType;
@@ -481,8 +484,10 @@ class FieldModel extends FormModel
         private CustomFieldColumn $customFieldColumn,
         private FieldSaveDispatcher $fieldSaveDispatcher,
         private LeadFieldRepository $leadFieldRepository,
+        private FieldsWithUniqueIdentifier $fieldsWithUniqueIdentifier,
         private FieldList $fieldList,
         private LeadFieldSaver $leadFieldSaver,
+        private LeadFieldDeleter $leadFieldDeleter,
         EntityManagerInterface $em,
         CorePermissions $security,
         EventDispatcherInterface $dispatcher,
@@ -667,22 +672,20 @@ class FieldModel extends FormModel
     }
 
     /**
-     * @param object $entity
+     * @param LeadField $entity
      *
-     * @throws \Mautic\CoreBundle\Exception\SchemaException
+     * @throws AbortColumnUpdateException
+     * @throws DBALException
+     * @throws DriverException
+     * @throws SchemaException
      */
     public function deleteEntity($entity): void
     {
-        parent::deleteEntity($entity);
-
-        switch ($entity->getObject()) {
-            case 'lead':
-                $this->columnSchemaHelper->setName('leads')->dropColumn($entity->getAlias())->executeChanges();
-                break;
-            case 'company':
-                $this->columnSchemaHelper->setName('companies')->dropColumn($entity->getAlias())->executeChanges();
-                break;
+        if (!$entity instanceof LeadField) {
+            throw new MethodNotAllowedHttpException(['LeadEntity']);
         }
+        $this->customFieldColumn->deleteLeadColumn($entity);
+        $this->leadFieldDeleter->deleteLeadFieldEntity($entity);
     }
 
     /**

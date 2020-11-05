@@ -6,6 +6,7 @@ namespace Mautic\LeadBundle\Field\Dispatcher;
 
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Field\Event\AddColumnEvent;
+use Mautic\LeadBundle\Field\Event\DeleteColumnEvent;
 use Mautic\LeadBundle\Field\Event\UpdateColumnEvent;
 use Mautic\LeadBundle\Field\Exception\AbortColumnCreateException;
 use Mautic\LeadBundle\Field\Exception\AbortColumnUpdateException;
@@ -48,6 +49,29 @@ class FieldColumnDispatcher
 
         if ($event->shouldProcessInBackground()) {
             throw new AbortColumnUpdateException('Column change will be processed in background job');
+        }
+    }
+
+    /**
+     * @throws AbortColumnUpdateException
+     * @throws NoListenerException
+     */
+    public function dispatchPreDeleteColumnEvent(LeadField $leadField)
+    {
+        $action = LeadEvents::LEAD_FIELD_PRE_DELETE_COLUMN;
+
+        if (!$this->dispatcher->hasListeners($action)) {
+            throw new NoListenerException('There is no Listener for this event');
+        }
+
+        $shouldProcessInBackground = $this->backgroundSettings->shouldProcessColumnChangeInBackground();
+
+        $event = new DeleteColumnEvent($leadField, $shouldProcessInBackground);
+
+        $this->dispatcher->dispatch($action, $event);
+
+        if ($event->shouldProcessInBackground()) {
+            throw new AbortColumnUpdateException('Column delete will be processed in background job');
         }
     }
 }

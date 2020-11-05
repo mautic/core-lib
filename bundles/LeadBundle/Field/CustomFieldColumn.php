@@ -139,4 +139,46 @@ class CustomFieldColumn
 
         $this->customFieldIndex->updateUniqueIdentifierIndex($leadField);
     }
+
+    /**
+     * Register a lead field to be deleted.
+     *
+     * @throws AbortColumnUpdateException
+     * @throws DBALException
+     * @throws DriverException
+     * @throws \Doctrine\DBAL\Schema\SchemaException
+     */
+    public function deleteLeadColumn(LeadField $leadField)
+    {
+        try {
+            $this->fieldColumnDispatcher->dispatchPreDeleteColumnEvent($leadField);
+        } catch (NoListenerException $e) {
+        } catch (AbortColumnUpdateException $e) { //if processing in background
+            return;
+        }
+
+        $this->processDeleteLeadColumn($leadField);
+    }
+
+    /**
+     * Deletes the field column in the leads table.
+     *
+     * @throws DriverException
+     * @throws \Doctrine\DBAL\Schema\SchemaException
+     * @throws \Mautic\CoreBundle\Exception\SchemaException
+     */
+    public function processDeleteLeadColumn(LeadField $leadField)
+    {
+        $leadField->deletedId = $leadField->getId();
+        switch ($leadField->getObject()) {
+            case 'lead':
+                $this->columnSchemaHelper->setName('leads')->dropColumn($leadField->getAlias())->executeChanges();
+                break;
+            case 'company':
+                $this->columnSchemaHelper->setName('companies')->dropColumn($leadField->getAlias())->executeChanges();
+                break;
+        }
+
+        $this->columnSchemaHelper->dropColumn($leadField->getCustomFieldObject());
+    }
 }

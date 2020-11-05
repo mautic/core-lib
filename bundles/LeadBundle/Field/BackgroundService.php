@@ -22,6 +22,7 @@ class BackgroundService
         private FieldModel $fieldModel,
         private CustomFieldColumn $customFieldColumn,
         private LeadFieldSaver $leadFieldSaver,
+        private LeadFieldDeleter $leadFieldDeleter,
         private FieldColumnBackgroundJobDispatcher $fieldColumnBackgroundJobDispatcher,
         private CustomFieldNotification $customFieldNotification,
     ) {
@@ -91,5 +92,32 @@ class BackgroundService
 
         $this->customFieldColumn->processUpdateLeadColumn($leadField);
         $this->customFieldNotification->customFieldWasUpdated($leadField, $userId);
+    }
+
+    /**
+     * @param $leadFieldId
+     * @param $userId
+     *
+     * @throws AbortColumnUpdateException
+     * @throws DriverException
+     * @throws LeadFieldWasNotFoundException
+     * @throws SchemaException
+     * @throws \Mautic\CoreBundle\Exception\SchemaException
+     */
+    public function deleteColumn($leadFieldId, $userId)
+    {
+        $leadField = $this->fieldModel->getEntity($leadFieldId);
+        if (null === $leadField) {
+            throw new LeadFieldWasNotFoundException('LeadField entity was not found');
+        }
+
+        try {
+            $this->fieldColumnBackgroundJobDispatcher->dispatchPreDeleteColumnEvent($leadField);
+        } catch (NoListenerException $e) {
+        }
+
+        $this->customFieldColumn->processDeleteLeadColumn($leadField);
+        $this->leadFieldDeleter->deleteLeadFieldEntity($leadField, true);
+        $this->customFieldNotification->customFieldWasDeleted($leadField, $userId);
     }
 }

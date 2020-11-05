@@ -818,6 +818,27 @@ final class LeadEvents
     public const POST_CONTACT_EXPORT_SEND_EMAIL = 'mautic.post_contact_export_send_email';
 
     /**
+     * The mautic.lead_field_pre_delete_column event is dispatched before deleting a column in the lead_fields table.
+     *
+     * The event listener receives a
+     * Mautic\LeadBundle\Field\Event\DeleteColumnEvent instance.
+     *
+     * @var string
+     */
+    const LEAD_FIELD_PRE_DELETE_COLUMN = 'mautic.lead_field_pre_delete_column';
+
+    /**
+     * The mautic.lead_field_pre_delete_column_background_job event is dispatched before deleting a column in the
+     * lead_fields table in background job.
+     *
+     * The event listener receives a
+     * Mautic\LeadBundle\Field\Event\DeleteColumnBackgroundEvent instance.
+     *
+     * @var string
+     */
+    const LEAD_FIELD_PRE_DELETE_COLUMN_BACKGROUND_JOB = 'mautic.lead_field_pre_delete_column_background_job';
+
+    /**
      * The mautic.lead_on_segments_change event is thrown to change lead's segments.
      *
      * The event listener receives a Mautic\FormBundle\Event\SubmissionEvent instance.
