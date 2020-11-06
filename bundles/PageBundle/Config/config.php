@@ -1,5 +1,10 @@
 <?php
 
+use Doctrine\ORM\EntityRepository;
+use Mautic\PageBundle\Entity\PageDraft;
+use Mautic\PageBundle\Helper\PageConfig;
+use Mautic\PageBundle\Model\PageDraftModel;
+
 return [
     'routes' => [
         'main' => [
@@ -45,8 +50,9 @@ return [
                 'controller' => 'Mautic\PageBundle\Controller\PublicController::redirectAction',
             ],
             'mautic_page_preview' => [
-                'path'       => '/page/preview/{id}',
+                'path'       => '/page/preview/{id}/{objectType}',
                 'controller' => 'Mautic\PageBundle\Controller\PublicController::previewAction',
+                'defaults'   => ['objectType' => null],
             ],
         ],
         'api' => [
@@ -117,6 +123,12 @@ return [
                     'mautic.cache.provider',
                     'mautic.helper.core_parameters',
                     'request_stack',
+                ],
+            ],
+            'mautic.helper.page_config' => [
+                'class'     => PageConfig::class,
+                'arguments' => [
+                    'mautic.helper.core_parameters',
                 ],
             ],
         ],

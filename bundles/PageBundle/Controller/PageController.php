@@ -15,7 +15,9 @@ use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\CoreBundle\Twig\Helper\AssetsHelper;
 use Mautic\PageBundle\Entity\Page;
+use Mautic\PageBundle\Event\PageEditSubmitEvent;
 use Mautic\PageBundle\Model\PageModel;
+use Mautic\PageBundle\PageEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -154,6 +156,7 @@ class PageController extends FormController
                 'model'       => $model,
                 'tmpl'        => $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index',
                 'security'    => $this->security,
+                'pageConfig'  => $this->get('mautic.helper.page_config'),
             ],
             'contentTemplate' => '@MauticPage/Page/list.html.twig',
             'passthroughVars' => [
@@ -177,6 +180,7 @@ class PageController extends FormController
         $model = $this->getModel('page.page');
         // set some permissions
         $security   = $this->security;
+        $pageConfig = $this->get('mautic.helper.page_config');
         $activePage = $model->getEntity($objectId);
         // set the page we came from
         $page = $request->getSession()->get('mautic.page.page', 1);
@@ -289,6 +293,17 @@ class PageController extends FormController
 
         // get related translations
         [$translationParent, $translationChildren] = $activePage->getTranslations();
+        $draftPreviewUrl                           = null;
+        if ($pageConfig->isDraftEnabled() && $activePage->hasDraft()) {
+            $draftPreviewUrl = $this->generateUrl(
+                'mautic_page_preview',
+                [
+                    'id'         => $activePage->getId(),
+                    'objectType' => 'draft',
+                ],
+                true
+            );
+        }
 
         $variants = [
             'parent'             => $parent,
@@ -331,11 +346,12 @@ class PageController extends FormController
                         'unique' => $activePage->getUniqueHits(),
                     ],
                 ],
-                'abTestResults' => $abTestResults,
-                'security'      => $security,
-                'pageUrl'       => $model->generateUrl($activePage, true),
-                'previewUrl'    => $this->generateUrl('mautic_page_preview', ['id' => $objectId], UrlGeneratorInterface::ABSOLUTE_URL),
-                'logs'          => $logs,
+                'abTestResults'   => $abTestResults,
+                'security'        => $security,
+                'pageUrl'         => $model->generateUrl($activePage, true),
+                'draftPreviewUrl' => $draftPreviewUrl,
+                'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId], true),
+                'logs'            => $logs,
                 'dateRangeForm' => $dateRangeForm->createView(), 'previewSettingsForm' => $this->createForm(
                     ContentPreviewSettingsType::class,
                     null,
@@ -488,11 +504,12 @@ class PageController extends FormController
         $ignorePost = false,
     ) {
         /** @var PageModel $model */
-        $model    = $this->getModel('page.page');
-        $security = $this->security;
-        $entity   = $model->getEntity($objectId);
-        $session  = $request->getSession();
-        $page     = $request->getSession()->get('mautic.page.page', 1);
+        $model      = $this->getModel('page.page');
+        $security   = $this->security;
+        $pageConfig = $this->get('mautic.helper.page_config');
+        $entity     = $model->getEntity($objectId);
+        $session    = $request->getSession();
+        $page       = $request->getSession()->get('mautic.page.page', 1);
 
         // set the return URL
         $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $page]);
@@ -533,9 +550,10 @@ class PageController extends FormController
         }
 
         // Create the form
-        $action = $this->generateUrl('mautic_page_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
-        $form   = $model->createForm($entity, $this->formFactory, $action);
-
+        $action       = $this->generateUrl('mautic_page_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
+        $form         = $model->createForm($entity, $this->formFactory, $action);
+        $existingPage = clone $entity;
+        $this->restoreNullifiedFieldsDuringClone($existingPage, $entity);
         // /Check for a submitted form and process it
         if (!$ignorePost && 'POST' == $request->getMethod()) {
             $valid = false;
@@ -546,6 +564,18 @@ class PageController extends FormController
 
                     // form is valid so process the data
                     $model->saveEntity($entity, $this->getFormButton($form, ['buttons', 'save'])->isClicked());
+
+                    if ($pageConfig->isDraftEnabled() && !empty($entity->getId())) {
+                        $this->dispatcher->dispatch(PageEvents::ON_PAGE_EDIT_SUBMIT, new PageEditSubmitEvent(
+                            $existingPage,
+                            $entity,
+                            $form->get('buttons')->get('save')->isClicked(),
+                            $form->get('buttons')->get('apply')->isClicked(),
+                            $form->get('buttons')->has('save_draft') && $form->get('buttons')->get('save_draft')->isClicked(),
+                            $form->get('buttons')->has('apply_draft') && $form->get('buttons')->get('apply_draft')->isClicked(),
+                            $form->get('buttons')->has('discard_draft') && $form->get('buttons')->get('discard_draft')->isClicked()
+                        ));
+                    }
 
                     $this->addFlashMessage('mautic.core.notice.updated', [
                         '%name%'      => $entity->getTitle(),
@@ -563,7 +593,12 @@ class PageController extends FormController
                 $model->unlockEntity($entity);
             }
 
-            if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
+            if ($cancelled
+                || ($valid && ($this->getFormButton($form, ['buttons', 'save'])->isClicked()
+                    || ($form->get('buttons')->has('save_draft') && $form->get('buttons')->get('save_draft')->isClicked())
+                    || ($form->get('buttons')->has('apply_draft') && $form->get('buttons')->get('apply_draft')->isClicked())
+                    || ($form->get('buttons')->has('discard_draft') && $form->get('buttons')->get('discard_draft')->isClicked())))
+            ) {
                 $viewParameters = [
                     'objectAction' => 'view',
                     'objectId'     => $entity->getId(),
@@ -576,6 +611,9 @@ class PageController extends FormController
                         'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::viewAction',
                     ])
                 );
+            } elseif ($valid && $form->get('buttons')->get('apply')->isClicked()) {
+                // Rebuild the form in the case apply is clicked so that DEC content is properly populated if all were removed
+                $form = $model->createForm($entity, $this->get('form.factory'), $action);
             }
         } else {
             // lock the entity
@@ -598,15 +636,35 @@ class PageController extends FormController
             }
         }
 
+        $slotTypes       = $model->getBuilderComponents($entity, 'slotTypes');
+        $sections        = $model->getBuilderComponents($entity, 'sections');
+        $sectionForm     = $this->formFactory->create(BuilderSectionType::class);
+        $draftEnabled    = $pageConfig->isDraftEnabled() && !empty($entity->getId());
+        $draftPreviewUrl = null;
+        if ($draftEnabled && $entity->hasDraft()) {
+            $draftPreviewUrl = $this->generateUrl(
+                'mautic_page_preview',
+                ['id'             => $entity->getId(),
+                    'objectType'  => 'draft',
+                ],
+                true
+            );
+        }
+
         return $this->delegateView([
             'viewParameters' => [
-                'form'          => $form->createView(),
-                'isVariant'     => $entity->isVariant(true),
-                'tokens'        => $model->getBuilderComponents($entity, 'tokens'),
-                'activePage'    => $entity,
+                'form'            => $form->createView(),
+                'isVariant'       => $entity->isVariant(true),
+                'tokens'          => $model->getBuilderComponents($entity, 'tokens'),
+                'activePage'      => $entity,
                 'themes'        => $themeHelper->getInstalledThemes('page', true),
-                'previewUrl'    => $this->generateUrl('mautic_page_preview', ['id' => $objectId], UrlGeneratorInterface::ABSOLUTE_URL),
-                'permissions'   => $security->isGranted(
+                'slots'           => $this->buildSlotForms($slotTypes),
+                'sections'        => $this->buildSlotForms($sections),
+                'builderAssets'   => trim(preg_replace('/\s+/', ' ', $this->getAssetsForBuilder($assetsHelper, $translator, $request, $routerHelper, $coreParametersHelper))), // strip new lines
+                'sectionForm'     => $sectionForm->createView(),
+                'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId], UrlGeneratorInterface::ABSOLUTE_URL),
+                'draftPreviewUrl' => $draftPreviewUrl,
+                'permissions'     => $security->isGranted(
                     [
                         'page:preference_center:editown',
                         'page:preference_center:editother',
@@ -1165,5 +1223,18 @@ class PageController extends FormController
     protected function getDefaultOrderDirection(): string
     {
         return 'DESC';
+    }
+
+    private function restoreNullifiedFieldsDuringClone(Page $clonedPage, Page $cloningPage): void
+    {
+        $clonedPage->setTranslationParent($cloningPage->getTranslationParent());
+        foreach ($cloningPage->getTranslationChildren() as $translationChild) {
+            $clonedPage->addTranslationChild($translationChild);
+        }
+        $clonedPage->setVariantParent($cloningPage->getVariantParent());
+        foreach ($cloningPage->getVariantChildren() as $variantChild) {
+            $clonedPage->addVariantChild($variantChild);
+        }
+        $clonedPage->setDraft($cloningPage->getDraft());
     }
 }

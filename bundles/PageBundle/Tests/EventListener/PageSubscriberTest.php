@@ -2,6 +2,7 @@
 
 namespace Mautic\PageBundle\Tests\EventListener;
 
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\LanguageHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
@@ -15,6 +16,8 @@ use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Event\PageBuilderEvent;
 use Mautic\PageBundle\Event\PageDisplayEvent;
 use Mautic\PageBundle\EventListener\PageSubscriber;
+use Mautic\PageBundle\Model\PageDraftModel;
+use Mautic\PageBundle\Model\PageModel;
 use Mautic\PageBundle\PageEvents;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -80,14 +83,19 @@ EOF
         /** @var Packages&MockObject $packagesMock */
         $packagesMock = $this->createMock(Packages::class);
 
-        $assetsHelperMock     = new AssetsHelper($packagesMock);
-        $ipLookupHelperMock   = $this->createMock(IpLookupHelper::class);
-        $auditLogModelMock    = $this->createMock(AuditLogModel::class);
-        $hitRepository        = $this->createMock(HitRepository::class);
-        $contactRepository    = $this->createMock(LeadRepository::class);
-        $hitMock              = $this->createMock(Hit::class);
-        $leadMock             = $this->createMock(Lead::class);
-        $languageHelper       = $this->createMock(LanguageHelper::class);
+        /** @var CoreParametersHelper&MockObject $coreParametersHelper */
+        $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+
+        $assetsHelperMock   = new AssetsHelper($packagesMock, $coreParametersHelper);
+        $ipLookupHelperMock = $this->createMock(IpLookupHelper::class);
+        $auditLogModelMock  = $this->createMock(AuditLogModel::class);
+        $pageModel          = $this->createMock(PageModel::class);
+        $hitRepository      = $this->createMock(HitRepository::class);
+        $contactRepository  = $this->createMock(LeadRepository::class);
+        $hitMock            = $this->createMock(Hit::class);
+        $leadMock           = $this->createMock(Lead::class);
+        $languageHelper     = $this->createMock(LanguageHelper::class);
+        $pageDraftModel     = $this->createMock(PageDraftModel::class);
 
         $assetsHelperMock->addScriptDeclaration("const foo='bar';", 'onPageDisplay_bodyOpen');
 
@@ -103,7 +111,13 @@ EOF
             $assetsHelperMock,
             $ipLookupHelperMock,
             $auditLogModelMock,
-            $languageHelper
+            $languageHelper,
+            $pageModel,
+            $hitRepository,
+            $pageRepository,
+            $redirectRepository,
+            $contactRepository,
+            $pageDraftModel
         );
     }
 
