@@ -534,7 +534,7 @@ return [
                 'tagArguments' => [
                     'event'    => 'kernel.exception',
                     'method'   => 'onKernelException',
-                    'priority' => 255,
+                    'priority' => 253,
                 ],
             ],
             // Helpers

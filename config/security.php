@@ -48,6 +48,14 @@ $firewalls = [
         ],
         'lazy' => true,
     ],
+    'v2api' => [
+        'pattern'            => '^/api/v2',
+        'fos_oauth'          => true,
+        'bazinga_oauth'      => true,
+        'mautic_plugin_auth' => true,
+        'http_basic'         => true,
+        'context'            => 'mautic',
+    ],
     'api' => [
         'pattern'            => '^/api',
         'fos_oauth'          => true,
