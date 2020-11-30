@@ -52,6 +52,7 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @var int
+     * @Groups({"form:read", "download:read", "campaign:read", "email:read"})
      */
     #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
     private $id;
@@ -61,6 +62,7 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @var string
+     * @Groups({"form:read", "form:write", "download:read", "campaign:read", "email:read"})
      */
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $name;
@@ -79,6 +81,7 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @var string
+     * @Groups({"form:read", "form:write", "download:read", "campaign:read", "email:read"})
      */
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $alias;
@@ -97,6 +100,7 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @var string
+     * @Groups({"form:read", "form:write", "download:read", "campaign:read", "email:read"})
      */
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $postAction = 'message';
@@ -180,6 +184,7 @@ class Form extends FormEntity implements UuidInterface
      * This var is used to cache the result once gained from the loop.
      *
      * @var bool
+     * @Groups({"form:read", "form:write", "download:read", "campaign:read"})
      */
     private $usesProgressiveProfiling;
 

@@ -22,9 +22,8 @@ trait TranslationEntityTrait
     public $languageSlug;
 
     /**
-     * @var mixed
-     *
-     * @Groups({"page:read", "download:read", "email:read"})
+     * @var ArrayCollection
+     * @Groups({"page:read", "page:write", "download:read", "download:write", "email:read", "email:write", "dynamicContent:read", "dynamicContent:write"})
      **/
     private $translationChildren;
 
@@ -38,7 +37,8 @@ trait TranslationEntityTrait
     private $translationParent;
 
     /**
-     * @Groups({"page:read", "download:read", "email:read"})
+     * @var string
+     * @Groups({"page:read", "page:write", "download:read", "download:write", "email:read", "email:write", "dynamicContent:read", "dynamicContent:write"})
      */
     private string $language = 'en';
 

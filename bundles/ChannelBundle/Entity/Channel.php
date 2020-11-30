@@ -43,12 +43,14 @@ class Channel extends CommonEntity implements UuidInterface
 
     /**
      * @var int
+     * @Groups({"channel:read", "message:read"})
      */
     #[Groups(['channel:read'])]
     private $id;
 
     /**
      * @var string
+     * @Groups({"channel:read", "channel:write", "message:read"})
      */
     #[Groups(['channel:read', 'channel:write', 'message:read'])]
     private $channel;
@@ -67,18 +69,21 @@ class Channel extends CommonEntity implements UuidInterface
 
     /**
      * @var Message
+     * @Groups({"channel:read", "channel:write"})
      */
     #[Groups(['channel:read', 'channel:write'])]
     private $message;
 
     /**
      * @var array
+     * @Groups({"channel:read", "channel:write", "message:read"})
      */
     #[Groups(['channel:read', 'channel:write'])]
     private $properties = [];
 
     /**
      * @var bool
+     * @Groups({"channel:read", "channel:write", "message:read"})
      */
     #[Groups(['channel:read', 'channel:write', 'message:read'])]
     private $isEnabled = false;
@@ -259,5 +264,13 @@ class Channel extends CommonEntity implements UuidInterface
         $this->isEnabled = $isEnabled;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEnabled()
+    {
+        return $this->isEnabled;
     }
 }

@@ -47,12 +47,14 @@ class Field implements UuidInterface
 
     /**
      * @var int
+     * @Groups({"field:read", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'form:read', 'campaign:read', 'email:read'])]
     private $id;
 
     /**
      * @var string
+     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $label;
@@ -65,24 +67,28 @@ class Field implements UuidInterface
 
     /**
      * @var string
+     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $alias;
 
     /**
      * @var string
+     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $type;
 
     /**
      * @var bool
+     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isCustom = false;
 
     /**
      * @var array
+     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $customParameters = [];
@@ -95,6 +101,7 @@ class Field implements UuidInterface
 
     /**
      * @var bool
+     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isRequired = false;
@@ -119,12 +126,14 @@ class Field implements UuidInterface
 
     /**
      * @var array
+     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $properties = [];
 
     /**
      * @var array
+     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $validation = [];

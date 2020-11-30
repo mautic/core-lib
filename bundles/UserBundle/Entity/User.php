@@ -2,6 +2,7 @@
 
 namespace Mautic\UserBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -13,18 +14,30 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
+/**
+ * @ApiResource(
+ *   attributes={
+ *     "security"="false",
+ *   }
+ * )
+ */
 class User extends FormEntity implements UserInterface, EquatableInterface, PasswordAuthenticatedUserInterface, CacheInvalidateInterface
 {
     public const CACHE_NAMESPACE = 'User';
 
     /**
      * @var ?int
+     * @Groups("company:read")
      */
     protected $id;
 
+    /**
+     * @Groups("company:read")
+     */
     protected ?string $username = null;
 
     /**
@@ -58,6 +71,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
 
     /**
      * @var string
+     * @Groups("company:read")
      */
     private $email;
 

@@ -2,24 +2,29 @@
 
 namespace Mautic\CampaignBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 class FailedLeadEventLog
 {
     /**
      * @var LeadEventLog
+     * @Groups({"failedleadeventlog:read", "failedleadeventlog:write"})
      */
     private $log;
 
     /**
      * @var \DateTimeInterface
+     * @Groups({"failedleadeventlog:read", "failedleadeventlog:write"})
      */
     private $dateAdded;
 
     /**
      * @var string|null
+     * @Groups({"failedleadeventlog:read", "failedleadeventlog:write"})
      */
     private $reason;
 
@@ -48,13 +53,13 @@ class FailedLeadEventLog
     public static function loadApiMetadata(ApiMetadataDriver $metadata): void
     {
         $metadata->setGroupPrefix('campaignEventFailedLog')
-                 ->addProperties(
-                     [
-                         'dateAdded',
-                         'reason',
-                     ]
-                 )
-                 ->build();
+            ->addProperties(
+                [
+                    'dateAdded',
+                    'reason',
+                ]
+            )
+            ->build();
     }
 
     /**

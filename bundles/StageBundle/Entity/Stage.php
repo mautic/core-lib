@@ -47,12 +47,14 @@ class Stage extends FormEntity implements UuidInterface
 
     /**
      * @var int
+     * @Groups("stage:read")
      */
     #[Groups(['stage:read'])]
     private $id;
 
     /**
      * @var string
+     * @Groups({"stage:read", "stage:write"})
      */
     #[Groups(['stage:read', 'stage:write'])]
     private $name;
@@ -65,6 +67,7 @@ class Stage extends FormEntity implements UuidInterface
 
     /**
      * @var int
+     * @Groups({"stage:read", "stage:write"})
      */
     #[Groups(['stage:read', 'stage:write'])]
     private $weight = 0;
@@ -99,9 +102,6 @@ class Stage extends FormEntity implements UuidInterface
         parent::__clone();
     }
 
-    /**
-     * Construct.
-     */
     public function __construct()
     {
         $this->log = new ArrayCollection();

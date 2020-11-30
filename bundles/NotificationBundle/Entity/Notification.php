@@ -52,12 +52,14 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
 
     /**
      * @var int
+     * @Groups("notification:read")
      */
     #[Groups(['notification:read'])]
     private $id;
 
     /**
      * @var string
+     * @Groups({"notification:read", "notification:write"})
      */
     #[Groups(['notification:read', 'notification:write'])]
     private $name;
@@ -69,6 +71,12 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
     private $description;
 
     /**
+     * @var string
+     */
+    #[Groups(['notification:read', 'notification:write'])]
+    private $language = 'en';
+
+    /**
      * @var string|null
      */
     #[Groups(['notification:read', 'notification:write'])]
@@ -76,12 +84,14 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
 
     /**
      * @var string
+     * @Groups({"notification:read", "notification:write"})
      */
     #[Groups(['notification:read', 'notification:write'])]
     private $heading;
 
     /**
      * @var string
+     * @Groups({"notification:read", "notification:write"})
      */
     #[Groups(['notification:read', 'notification:write'])]
     private $message;
@@ -94,6 +104,7 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
 
     /**
      * @var array
+     * @Groups({"notification:read", "notification:write"})
      */
     #[Groups(['notification:read', 'notification:write'])]
     private $utmTags = [];
@@ -112,12 +123,14 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
 
     /**
      * @var int
+     * @Groups({"notification:read", "notification:write"})
      */
     #[Groups(['notification:read'])]
     private $readCount = 0;
 
     /**
      * @var int
+     * @Groups({"notification:read", "notification:write"})
      */
     #[Groups(['notification:read'])]
     private $sentCount = 0;
@@ -147,6 +160,7 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
 
     /**
      * @var bool
+     * @Groups({"notification:read", "notification:write"})
      */
     #[Groups(['notification:read', 'notification:write'])]
     private $mobile = false;

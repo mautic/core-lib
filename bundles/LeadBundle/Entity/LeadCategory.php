@@ -2,39 +2,67 @@
 
 namespace Mautic\LeadBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @ApiResource(
+ *   attributes={
+ *     "security"="false",
+ *     "normalization_context"={
+ *       "groups"={
+ *         "leadcategory:read"
+ *        },
+ *       "swagger_definition_name"="Read",
+ *       "api_included"={"category"}
+ *     },
+ *     "denormalization_context"={
+ *       "groups"={
+ *         "leadcategory:write"
+ *       },
+ *       "swagger_definition_name"="Write"
+ *     }
+ *   }
+ * )
+ */
 class LeadCategory
 {
     /**
      * @var int
+     * @Groups("leadcategory:read")
      */
     private $id;
 
     /**
      * @var Category
+     * @Groups({"leadcategory:read", "leadcategory:write"})
      **/
     private $category;
 
     /**
      * @var Lead
+     * @Groups({"leadcategory:read", "leadcategory:write"})
      */
     private $lead;
 
     /**
      * @var \DateTimeInterface
+     * @Groups({"leadcategory:read", "leadcategory:write"})
      */
     private $dateAdded;
 
     /**
      * @var bool
+     * @Groups({"leadcategory:read", "leadcategory:write"})
      */
     private $manuallyRemoved = false;
 
     /**
      * @var bool
+     * @Groups({"leadcategory:read", "leadcategory:write"})
      */
     private $manuallyAdded = false;
 

@@ -70,12 +70,14 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
 
     /**
      * @var int
+     * @Groups("dynamicContent:read")
      */
     #[Groups(['dynamicContent:read'])]
     private $id;
 
     /**
      * @var string
+     * @Groups({"dynamicContent:read", "dynamicContent:write"})
      */
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $name;
@@ -124,6 +126,7 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
 
     /**
      * @var int
+     * @Groups({"dynamicContent:read", "dynamicContent:write"})
      */
     #[Groups(['dynamicContent:read'])]
     private $sentCount = 0;
@@ -136,6 +139,7 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
 
     /**
      * @var bool
+     * @Groups({"dynamicContent:read", "dynamicContent:write"})
      */
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $isCampaignBased = true;

@@ -54,6 +54,7 @@ class Message extends FormEntity implements UuidInterface
 
     /**
      * @var string
+     * @Groups({"message:read", "message:write"})
      */
     #[Groups(['message:read', 'message:write', 'channel:read'])]
     private $name;

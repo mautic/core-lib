@@ -16,6 +16,7 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
@@ -41,11 +42,13 @@ class Tag implements UuidInterface
 
     /**
      * @var int
+     * @Groups("leadfield:read")
      */
     private $id;
 
     /**
      * @var string
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     private $tag;
 

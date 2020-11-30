@@ -2,6 +2,7 @@
 
 namespace Mautic\WebhookBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -13,31 +14,56 @@ use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\SkipModifiedInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
+/**
+ * @ApiResource(
+ *   attributes={
+ *     "security"="false",
+ *     "normalization_context"={
+ *       "groups"={
+ *         "webhook:read"
+ *        },
+ *       "swagger_definition_name"="Read",
+ *       "api_included"={"category"}
+ *     },
+ *     "denormalization_context"={
+ *       "groups"={
+ *         "webhook:write"
+ *       },
+ *       "swagger_definition_name"="Write"
+ *     }
+ *   }
+ * )
+ */
 class Webhook extends FormEntity implements SkipModifiedInterface
 {
     public const LOGS_DISPLAY_LIMIT = 100;
 
     /**
      * @var ?int
+     * @Groups("webhook:read")
      */
     private $id;
 
     /**
      * @var ?string
+     * @Groups({"webhook:read", "webhook:write"})
      */
     private $name;
 
     /**
      * @var string|null
+     * @Groups({"webhook:read", "webhook:write"})
      */
     private $description;
 
     /**
      * @var ?string
+     * @Groups({"webhook:read", "webhook:write"})
      */
     private $webhookUrl;
 
@@ -48,11 +74,13 @@ class Webhook extends FormEntity implements SkipModifiedInterface
 
     /**
      * @var Category|null
+     * @Groups({"webhook:read", "webhook:write"})
      **/
     private $category;
 
     /**
      * @var Collection<int, Event>
+     * @Groups({"webhook:read", "webhook:write"})
      */
     private $events;
 
@@ -67,7 +95,8 @@ class Webhook extends FormEntity implements SkipModifiedInterface
     private $removedEvents = [];
 
     /**
-     * @var array
+     * @var mixed[]
+     * @Groups({"webhook:read", "webhook:write"})
      */
     private $payload;
 
@@ -76,6 +105,7 @@ class Webhook extends FormEntity implements SkipModifiedInterface
      * It's used for API serializaiton.
      *
      * @var array
+     * @Groups({"webhook:read", "webhook:write"})
      */
     private $triggers = [];
 
@@ -84,6 +114,7 @@ class Webhook extends FormEntity implements SkipModifiedInterface
      * Null means use the global default.
      *
      * @var string|null
+     * @Groups({"webhook:read", "webhook:write"})
      */
     private $eventsOrderbyDir;
 
@@ -109,7 +140,7 @@ class Webhook extends FormEntity implements SkipModifiedInterface
 
         $builder->createOneToMany('events', 'Event')
             ->orphanRemoval()
-            ->setIndexBy('event_type')
+            ->setIndexBy('eventType')
             ->mappedBy('webhook')
             ->cascadePersist()
             ->cascadeMerge()

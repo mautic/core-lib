@@ -71,11 +71,13 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @var int
+     * @Groups({"event:read", "campaign:read"})
      */
     private $id;
 
     /**
      * @var string
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $name;
 
@@ -86,21 +88,25 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @var string
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $type;
 
     /**
      * @var string
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $eventType;
 
     /**
      * @var int
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $order = 0;
 
     /**
      * @var array
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $properties = [];
 
@@ -136,6 +142,7 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @var array|null
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $triggerRestrictedDaysOfWeek = [];
 
@@ -148,6 +155,7 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @var Campaign
+     * @Groups({"event:write"})
      */
     private $campaign;
 
@@ -180,11 +188,13 @@ class Event implements ChannelInterface, UuidInterface
      * Used by API to house contact specific logs.
      *
      * @var array
+     * @Groups({"event:read", "event:write"})
      */
     private $contactLog = [];
 
     /**
      * @var string|null
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $channel;
 

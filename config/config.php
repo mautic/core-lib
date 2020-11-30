@@ -47,6 +47,9 @@ $container->loadFromExtension('framework', [
     'assets' => [
         'base_path' => './',
     ],
+    'serializer' => [
+        'enable_annotations' => true,
+    ],
     'secret' => '%mautic.secret_key%',
     'router' => [
         'resource'            => '%mautic.application_dir%/app/config/routing.php',
@@ -396,10 +399,37 @@ $container->loadFromExtension('api_platform', [
         'json'    => ['application/merge-patch+json'],
         'jsonapi' => ['application/vnd.api+json'],
     ],
+    'formats' => [
+        'jsonld'  => [
+            'mime_types' => [
+                'application/ld+json',
+            ],
+        ],
+        'json'    => [
+            'mime_types' => [
+                'application/json',
+            ],
+        ],
+        'jsonapi' => [
+            'mime_types' => [
+                'application/vnd.api+json',
+            ],
+        ],
+        'html' => [
+            'mime_types' => [
+                'text/html',
+            ],
+        ],
+    ],
     'error_formats' => [
         'jsonproblem' => [
             'mime_types' => [
                 'application/problem+json',
+            ],
+        ],
+        'jsonapi' => [
+            'mime_types' => [
+                'application/vnd.api+json',
             ],
         ],
         'jsonld' => [
@@ -414,16 +444,5 @@ $container->loadFromExtension('api_platform', [
         'ApiPlatform\Validator\Exception\ValidationException'             => 400,
         'Doctrine\ORM\OptimisticLockException'                            => 409,
         'Symfony\Component\Security\Core\Exception\AccessDeniedException' => 403,
-    ],
-    'formats' => [
-        'jsonld' => [
-            'mime_types' => ['application/ld+json'],
-        ],
-        'json' => [
-            'mime_types' => ['application/json'],
-        ],
-        'html' => [
-            'mime_types' => ['text/html'],
-        ],
     ],
 ]);

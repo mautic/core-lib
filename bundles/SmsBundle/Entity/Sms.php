@@ -62,12 +62,14 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
     /**
      * @var int
+     * @Groups("sms:read")
      */
     #[Groups(['sms:read'])]
     private $id;
 
     /**
      * @var string
+     * @Groups({"sms:read", "sms:write"})
      */
     #[Groups(['sms:read', 'sms:write'])]
     private $name;
@@ -80,6 +82,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
     /**
      * @var string
+     * @Groups({"sms:read", "sms:write"})
      */
     #[Groups(['sms:read', 'sms:write'])]
     private $message;
@@ -98,6 +101,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
     /**
      * @var int
+     * @Groups({"sms:read", "sms:write"})
      */
     #[Groups(['sms:read'])]
     private $sentCount = 0;

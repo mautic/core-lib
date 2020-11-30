@@ -10,6 +10,7 @@ trait DynamicContentEntityTrait
      * Keep the default content set outside of $dynamicContent so that it can be used if $dynamicContent is emptied.
      *
      * @var array
+     * @Groups({"email:read", "email:write", "download:read"})
      */
     public static $defaultDynamicContent = [
         [

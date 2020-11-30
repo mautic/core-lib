@@ -2,6 +2,7 @@
 
 namespace Mautic\LeadBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -13,6 +14,27 @@ use Mautic\UserBundle\Entity\User;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
+/**
+ * @ApiResource(
+ *   attributes={
+ *     "security"="false",
+ *     "normalization_context"={
+ *       "groups"={
+ *         "company:read"
+ *        },
+ *       "swagger_definition_name"="Read"
+ *     },
+ *     "denormalization_context"={
+ *       "groups"={
+ *         "company:write"
+ *       },
+ *       "swagger_definition_name"="Write"
+ *     }
+ *   }
+ * )
+ */
 class Company extends FormEntity implements CustomFieldEntityInterface, IdentifierFieldEntityInterface
 {
     use CustomFieldEntityTrait;
@@ -23,43 +45,97 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @var int
+     * @Groups("company:read")
      */
     private $id;
 
     /**
      * @var int|null
+     * @Groups({"company:read", "company:write"})
      */
     private $score = 0;
 
+    /**
+     * @Groups({"company:read", "company:write"})
+     */
     private ?User $owner = null;
 
     /**
      * @var mixed[]
+     * @Groups({"company:read", "company:write"})
      */
     private $socialCache = [];
 
+    /**
+     * @var ?string
+     * @Groups({"company:read", "company:write"})
+     */
     private $email;
 
+    /**
+     * @var ?string
+     * @Groups({"company:read", "company:write"})
+     */
     private $address1;
 
+    /**
+     * @var ?string
+     * @Groups({"company:read", "company:write"})
+     */
     private $address2;
 
+    /**
+     * @var string|null
+     * @Groups({"company:read", "company:write"})
+     */
     private $phone;
 
+    /**
+     * @var string|null
+     * @Groups({"company:read", "company:write"})
+     */
     private $city;
 
+    /**
+     * @var ?string
+     * @Groups({"company:read", "company:write"})
+     */
     private $state;
 
+    /**
+     * @var string|null
+     * @Groups({"company:read", "company:write"})
+     */
     private $zipcode;
 
+    /**
+     * @var string|null
+     * @Groups({"company:read", "company:write"})
+     */
     private $country;
 
+    /**
+     * @var string|null
+     * @Groups({"company:read", "company:write"})
+     */
     private $name;
 
+    /**
+     * @var string|null
+     * @Groups({"company:read", "company:write"})
+     */
     private $website;
 
+    /**
+     * @var string|null
+     * @Groups({"company:read", "company:write"})
+     */
     private $industry;
 
+    /**
+     * @var string|null
+     * @Groups({"company:read", "company:write"})
+     */
     private $description;
 
     public function __construct()

@@ -61,6 +61,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
 
     /**
      * @var int
+     * @Groups("leadfield:read")
      */
     #[Groups(['leadfield:read'])]
     private $id;
@@ -69,18 +70,21 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
 
     /**
      * @var string
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $label;
 
     /**
      * @var string
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $alias;
 
     /**
      * @var string
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $type = 'text';
@@ -99,36 +103,42 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
 
     /**
      * @var bool
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $isRequired = false;
 
     /**
      * @var bool
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $isFixed = false;
 
     /**
      * @var bool
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $isVisible = true;
 
     /**
      * @var bool
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $isShortVisible = false;
 
     /**
      * @var bool
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $isListable = true;
 
     /**
      * @var bool
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $isPubliclyUpdatable = false;
@@ -143,6 +153,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Workaround for incorrectly spelled $isUniqueIdentifer.
      *
      * @var bool
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $isUniqueIdentifier = false;
@@ -164,6 +175,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
 
     /**
      * @var array
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     #[Groups(['leadfield:read', 'leadfield:write'])]
     private $properties = [];
@@ -193,6 +205,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
 
     /**
      * @var CustomFieldObject
+     * @Groups({"leadfield:read", "leadfield:write"})
      */
     private $customFieldObject;
 

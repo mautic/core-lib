@@ -11,6 +11,7 @@ trait FiltersEntityTrait
 {
     /**
      * @var array
+     * @Groups({"dynamicContent:read", "dynamicContent:write"})
      */
     private $filters = [];
 
