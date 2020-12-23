@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
+use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\FileHelper;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
@@ -18,6 +19,8 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class Asset extends FormEntity
 {
+    use UuidTrait;
+
     /**
      * @var int
      */
@@ -216,6 +219,8 @@ class Asset extends FormEntity
         $builder->createField('disallow', 'boolean')
             ->nullable()
             ->build();
+
+        self::addUuidMetadata($builder, self::class);
     }
 
     /**
