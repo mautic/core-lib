@@ -9,4 +9,6 @@ interface UuidInterface
     public function getUuid(): ?string;
 
     public function setUuid(string $uuid): void;
+
+    public static function addUuidField(ClassMetadataBuilder $builder);
 }
