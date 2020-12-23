@@ -94,6 +94,8 @@ class Channel extends CommonEntity implements UuidInterface
                 ->addJoinColumn('message_id', 'id', false, false, 'CASCADE')
                 ->inversedBy('channels')
                 ->build();
+
+        static::addUuidField($builder);
     }
 
     /**
