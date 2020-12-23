@@ -9,6 +9,8 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\TranslationEntityInterface;
 use Mautic\CoreBundle\Entity\TranslationEntityTrait;
+use Mautic\CoreBundle\Entity\UuidInterface;
+use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Entity\VariantEntityInterface;
 use Mautic\CoreBundle\Entity\VariantEntityTrait;
 use Mautic\CoreBundle\Validator\EntityEvent;
@@ -18,10 +20,33 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-class Page extends FormEntity implements TranslationEntityInterface, VariantEntityInterface
+/**
+ * Class Page.
+ *
+ * @ApiResource(
+ *   attributes={
+ *     "security"="false",
+ *     "normalization_context"={
+ *       "groups"={
+ *         "page:read"
+ *        },
+ *       "swagger_definition_name"="Read",
+ *       "api_included"={"category", "translationChildren"}
+ *     },
+ *     "denormalization_context"={
+ *       "groups"={
+ *         "page:write"
+ *       },
+ *       "swagger_definition_name"="Write"
+ *     }
+ *   }
+ * )
+ */
+class Page extends FormEntity implements TranslationEntityInterface, VariantEntityInterface, UuidInterface
 {
     use TranslationEntityTrait;
     use VariantEntityTrait;
+    use UuidTrait;
 
     /**
      * @var int
@@ -223,6 +248,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
 
         self::addTranslationMetadata($builder, self::class);
         self::addVariantMetadata($builder, self::class);
+        static::addUuidField($builder);
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
