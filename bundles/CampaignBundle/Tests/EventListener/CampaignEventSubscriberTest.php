@@ -256,4 +256,44 @@ class CampaignEventSubscriberTest extends TestCase
 
         $this->fixture->onEventExecuted($executedEvent);
     }
+
+    public function testOnEventExecutedForDeletedContacts(): void
+    {
+        $mockEventLog = $this->createMock(LeadEventLog::class);
+
+        $lead = new Lead();
+        $lead->setId(null);
+        $lead->deletedId = 10;
+
+        $eventMock = $this->createMock(Event::class);
+        $eventMock->expects($this->any())
+            ->method('getId')
+            ->willReturn(1);
+
+        $mockEventLog->expects($this->at(0))
+            ->method('getEvent')
+            ->willReturn($eventMock);
+
+        $mockEventLog->expects($this->at(1))
+            ->method('getLead')
+            ->willReturn($lead);
+
+        $this->leadEventLogRepositoryMock->expects($this->once())
+            ->method('isLastFailed')
+            ->with($lead->deletedId, $eventMock->getId())
+            ->willReturn(true);
+
+        $executedEvent = new ExecutedEvent($this->createMock(AbstractEventAccessor::class), $mockEventLog);
+
+        $this->eventRepo->expects($this->once())
+            ->method('getFailedCountLeadEvent')
+            ->with($lead->deletedId, $eventMock->getId())
+            ->willReturn(101);
+
+        $this->eventRepo->expects($this->once())
+            ->method('decreaseFailedCount')
+            ->with($eventMock);
+
+        $this->fixture->onEventExecuted($executedEvent);
+    }
 }
