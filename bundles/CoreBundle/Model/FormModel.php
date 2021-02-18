@@ -161,6 +161,7 @@ class FormModel extends AbstractCommonModel
         }
 
         // Dispatch after flush
+        $entitiesPostSaveParams = [];
         foreach ($entitiesPreSaveParams as &$entityParams) {
             // Post save single dispatcher after flush
             $postEvent                = $this->dispatchEventFromBatch('post_save', $entityParams['entity'], $entityParams['isNew'], $entityParams['event']);
