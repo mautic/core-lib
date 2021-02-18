@@ -23,8 +23,11 @@ use Mautic\LeadBundle\Entity\LeadEventLog;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\Entity\StagesChangeLog;
 use Mautic\LeadBundle\Entity\StagesChangeLogRepository;
+use Mautic\LeadBundle\Event\LeadEvent;
+use Mautic\LeadBundle\Event\SaveBatchLeadsEvent;
 use Mautic\LeadBundle\Exception\ImportFailedException;
 use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
+use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\IpAddressModel;
@@ -40,6 +43,7 @@ use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Security\Provider\UserProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -769,5 +773,41 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
                 ]);
             }
         };
+    }
+
+    public function testDispatchBatchEvent(): void
+    {
+        $leadsParams = [];
+        for ($x = 0; $x < 2; ++$x) {
+            $lead = new Lead();
+            $lead->setEmail(sprintf('test%s@test.cz', $x));
+            $leadsParams[] = ['entity' => $lead, 'isNew'=> true, 'event'=> null];
+        }
+        $action = 'post_batch_save';
+
+        // Lead Model that provides access to dispatchBatchEvent
+        $leadModel = new class($this->requestStackMock, $this->cookieHelperMock, $this->ipLookupHelperMock, $this->pathsHelperMock, $this->integrationHelperkMock, $this->fieldModelMock, $this->listModelMock, $this->formFactoryMock, $this->companyModelMock, $this->categoryModelMock, $this->channelListHelperMock, $this->coreParametersHelperMock, $this->emailValidatorMock, $this->userProviderMock, $this->contactTrackerMock, $this->deviceTrackerMock, $this->legacyLeadModelMock, $this->ipAddressModelMock) extends LeadModel {
+            public function dispatchBatchEventForTest(string $action, array $leads): ?Event
+            {
+                return $this->dispatchBatchEvent($action, $leads);
+            }
+        };
+
+        $event = new SaveBatchLeadsEvent([
+            new LeadEvent($leadsParams[0]['entity'], $leadsParams[0]['isNew']),
+            new LeadEvent($leadsParams[1]['entity'], $leadsParams[1]['isNew']),
+        ]);
+
+        $dispatcherMock = $this->createMock(EventDispatcherInterface::class);
+        $dispatcherMock->expects($this->once())
+            ->method('hasListeners')
+            ->with(LeadEvents::LEAD_POST_BATCH_SAVE)
+            ->willReturn(true);
+        $dispatcherMock->expects($this->once())
+            ->method('dispatch')
+            ->with(LeadEvents::LEAD_POST_BATCH_SAVE, $event);
+
+        $leadModel->setDispatcher($dispatcherMock);
+        $leadModel->dispatchBatchEventForTest($action, $leadsParams);
     }
 }
