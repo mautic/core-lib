@@ -416,7 +416,8 @@ class LeadModel extends FormModel
             $this->dispatcher->dispatch($name, $event);
 
             return $event;
-        } 
+        }
+
         return null;
     }
 
