@@ -165,9 +165,6 @@
   },
   "extra": {
     "mautic-scaffold": {
-      "locations": {
-        "web-root": "public/"
-      },
       "file-mapping": {
         "[project-root]/.env.dist": "public/.env.dist",
         "[project-root]/.php_cs": "public/.php_cs",
