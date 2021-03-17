@@ -184,7 +184,6 @@
         "[web-root]/translations/.htaccess": "assets/scaffold/files/translations.htaccess",
         "[web-root]/app/config/config_override.php": "assets/scaffold/files/config_override.php",
         "[web-root]/app/autoload.php": "assets/scaffold/files/autoload.php"
-
       }
     }
   }
