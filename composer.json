@@ -186,11 +186,11 @@
         "[web-root]/robots.txt": "assets/scaffold/files/robots.txt",
         "[web-root]/upgrade.php": "assets/scaffold/files/upgrade.php",
         "[web-root]/translations/.htaccess": "assets/scaffold/files/translations.htaccess",
-        "[web-root]/favicon.ico": "assets/scaffold/files/favicon.yml",
+        "[web-root]/favicon.ico": "assets/scaffold/files/favicon.yml"
       }
     }
   },
   "scripts": {
-        "pre-autoload-dump": "Mautic\\ComposerBundle\\ComposerBundle::preAutoloadDump"
-    }
+    "pre-autoload-dump": "Mautic\\ComposerBundle\\ComposerBundle::preAutoloadDump"
+  }
 }
