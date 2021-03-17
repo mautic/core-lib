@@ -166,16 +166,25 @@
   "extra": {
     "mautic-scaffold": {
       "file-mapping": {
-        "[project-root]/.env.dist": "public/.env.dist",
-        "[project-root]/.php_cs": "public/.php_cs",
-        "[project-root]/.travis.yml": "public/.travis.yml",
-        "[project-root]/codeception.yml": "public/codeception.yml",
-        "[project-root]/LICENSE.txt": "public/LICENSE.txt",
-        "[project-root]/rector.yaml": "public/rector.yaml",
-        "[project-root]/phpstan.neon": "public/phpstan.neon",
-        "[web-root]/app/config/config_override.php": "scaffold-assets/config_override.php",
-        "[web-root]/app/autoload.php": "scaffold-assets/autoload.php",
-        "[web-root]/index_dev.php": "scaffold-assets/index_dev.php"
+        "[project-root]/.env.dist": "assets/scaffold/files/.env.dist",
+        "[project-root]/.php_cs": "assets/scaffold/files/.php_cs",
+        "[project-root]/codeception.yml": "assets/scaffold/files/codeception.yml",
+        "[project-root]/LICENSE.txt": "assets/scaffold/files/LICENSE.txt",
+        "[project-root]/rector.yaml": "assets/scaffold/files/rector.yaml",
+        "[project-root]/phpstan.neon": "assets/scaffold/files/phpstan.neon",
+        "[project-root]/bin/console": "assets/scaffold/files/console",
+        "[project-root]/bin/.htaccess": "assets/scaffold/files/console.htaccess",
+        "[web-root]/.htaccess": "assets/scaffold/files/htaccess",
+        "[web-root]/example.gitignore": "assets/scaffold/files/example.gitignore",
+        "[web-root]/index.php": "assets/scaffold/files/index.php",
+        "[web-root]/index_dev.php": "assets/scaffold/files/index_dev.php",
+        "[web-root]/README.txt": "assets/scaffold/files/mautic.README.txt",
+        "[web-root]/robots.txt": "assets/scaffold/files/robots.txt",
+        "[web-root]/upgrade.php": "assets/scaffold/files/upgrade.php",
+        "[web-root]/translations/.htaccess": "assets/scaffold/files/translations.htaccess",
+        "[web-root]/app/config/config_override.php": "assets/scaffold/files/config_override.php",
+        "[web-root]/app/autoload.php": "assets/scaffold/files/autoload.php",
+
       }
     }
   }
