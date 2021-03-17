@@ -178,7 +178,7 @@
         "[web-root]/example.gitignore": "assets/scaffold/files/example.gitignore",
         "[web-root]/index.php": "assets/scaffold/files/index.php",
         "[web-root]/index_dev.php": "assets/scaffold/files/index_dev.php",
-        "[web-root]/README.txt": "assets/scaffold/files/mautic.README.txt",
+        "[web-root]/README.md": "assets/scaffold/files/mautic.README.md",
         "[web-root]/robots.txt": "assets/scaffold/files/robots.txt",
         "[web-root]/upgrade.php": "assets/scaffold/files/upgrade.php",
         "[web-root]/translations/.htaccess": "assets/scaffold/files/translations.htaccess",
