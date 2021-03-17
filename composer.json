@@ -108,7 +108,7 @@
     "gaufrette/aws-s3-adapter": "^0.4.0",
     "phpoffice/phpspreadsheet": "^1.15",
     "predis/predis": "^1.1",
-    "composer/installers": "^1.10",
+    "composer/installers": "dev-master",
     "mautic/grapejs-builder": "1.0-RC4"
   },
   "require-dev": {
