@@ -175,7 +175,7 @@ class AppKernel extends Kernel
         $finder     = new \Symfony\Component\Finder\Finder();
         $finder->files()
             ->followLinks()
-            ->depth('1')
+            ->depth('2')
             ->in($searchPath)
             ->name('*Bundle.php');
 
