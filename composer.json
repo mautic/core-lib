@@ -5,14 +5,14 @@
   "description": "Mautic Open Source Distribution",
   "autoload": {
     "psr-4": {
-      "Mautic\\": "app/bundles/",
+      "Mautic\\": "bundles/",
       "MauticPlugin\\": "plugins/",
-      "Mautic\\Middleware\\": "app/middlewares/",
-      "Mautic\\Migrations\\": "app/migrations/"
+      "Mautic\\Middleware\\": "middlewares/",
+      "Mautic\\Migrations\\": "migrations/"
     },
     "files": [
-      "app/AppKernel.php",
-      "app/AppCache.php"
+      "AppKernel.php",
+      "AppCache.php"
     ]
   },
   "require": {
@@ -186,5 +186,8 @@
         "[web-root]/app/autoload.php": "assets/scaffold/files/autoload.php"
       }
     }
-  }
+  },
+  "scripts": {
+        "pre-autoload-dump": "Mautic\\ComposerBundle\\ComposerBundle::preAutoloadDump"
+    }
 }
