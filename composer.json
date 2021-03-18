@@ -6,7 +6,7 @@
   "autoload": {
     "psr-4": {
       "Mautic\\": "bundles/",
-      "MauticPlugin\\": ["plugins/", "../plugins", "../plugins/contrib", "../plugins/custom"],
+      "MauticPlugin\\": "plugins/",
       "Mautic\\Middleware\\": "middlewares/",
       "Mautic\\Migrations\\": "migrations/"
     },
@@ -109,7 +109,18 @@
     "phpoffice/phpspreadsheet": "^1.15",
     "predis/predis": "^1.1",
     "composer/installers": "dev-master",
-    "mautic/grapes-js-builder-bundle": "dev-master"
+    "mautic/grapes-js-builder-bundle": "dev-master",
+    "mautic/citrix": "dev-master",
+    "mautic/clearbit": "dev-master",
+    "mautic/cloudstorage": "dev-master",
+    "mautic/crm": "dev-master",
+    "mautic/emailmarketing": "dev-master",
+    "mautic/focus": "dev-master",
+    "mautic/fulcontact": "dev-master",
+    "mautic/gmail": "dev-master",
+    "mautic/outlook": "dev-master",
+    "mautic/social": "dev-master",
+    "mautic/zapier": "dev-master"
   },
   "require-dev": {
     "symfony/web-profiler-bundle": "~3.4.0",
