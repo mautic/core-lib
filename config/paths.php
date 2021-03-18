@@ -10,12 +10,12 @@
  */
 $paths = [
     //customizable
-    'themes'       => 'themes',
+    'themes'       => 'app/themes',
     'assets'       => 'media',
     'asset_prefix' => '',
-    'plugins'      => 'plugins',
+    'plugins'      => 'app/plugins',
     'translations' => 'translations',
-    'local_config' => '%kernel.root_dir%/config/local.php',
+    'local_config' => '%kernel.root_dir%/app/config/local.php',
 ];
 
 //allow easy overrides of the above

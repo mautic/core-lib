@@ -6,7 +6,7 @@
   "autoload": {
     "psr-4": {
       "Mautic\\": "bundles/",
-      "MauticPlugin\\": "plugins/",
+      "MauticPlugin\\": ["plugins/", "../plugins", "../plugins/contrib", "../plugins/custom"],
       "Mautic\\Middleware\\": "middlewares/",
       "Mautic\\Migrations\\": "migrations/"
     },
