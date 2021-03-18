@@ -116,7 +116,7 @@
     "mautic/crm": "dev-master",
     "mautic/emailmarketing": "dev-master",
     "mautic/focus": "dev-master",
-    "mautic/fulcontact": "dev-master",
+    "mautic/fullcontact": "dev-master",
     "mautic/gmail": "dev-master",
     "mautic/outlook": "dev-master",
     "mautic/social": "dev-master",
