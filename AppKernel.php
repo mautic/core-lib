@@ -176,7 +176,10 @@ class AppKernel extends Kernel
         $finder->files()
             ->followLinks()
             ->depth('2')
-            ->in($searchPath)
+            ->in(dirname(__DIR__).'/plugins')
+            ->in(dirname(__DIR__).'/plugins/contrib')
+            ->in(dirname(__DIR__).'/plugins/custom')
+            ->in(dirname(__DIR__).'/app/plugins')
             ->name('*Bundle.php');
 
         foreach ($finder as $file) {
