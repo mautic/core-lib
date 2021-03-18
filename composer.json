@@ -109,7 +109,7 @@
     "phpoffice/phpspreadsheet": "^1.15",
     "predis/predis": "^1.1",
     "composer/installers": "dev-master",
-    "mautic/grapejs-builder": "1.0-RC4"
+    "mautic/grapes-js-builder-bundle": "dev-master"
   },
   "require-dev": {
     "symfony/web-profiler-bundle": "~3.4.0",
@@ -136,22 +136,6 @@
     {
       "type": "git",
       "url": "https://github.com/mautic/intl.git"
-    },
-    {
-      "type": "package",
-      "package": {
-        "name": "mautic/grapejs-builder",
-        "version": "1.0-RC4",
-        "type": "mautic-plugin",
-        "source": {
-          "url": "https://github.com/mautic/plugin-grapesjs-builder.git",
-          "type": "git",
-          "reference": "1.0-RC4"
-        },
-        "extra": {
-          "installer-name": "GrapesJsBuilderBundle"
-        }
-      }
     }
   ],
   "minimum-stability": "dev",
@@ -180,8 +164,7 @@
         "[project-root]/bin/.htaccess": "assets/scaffold/files/console.htaccess",
         "[web-root]/.htaccess": "assets/scaffold/files/htaccess",
         "[web-root]/example.gitignore": "assets/scaffold/files/example.gitignore",
-        "[web-root]/plugins/custom/.gitkeep": "assets/scaffold/files/gitkeep",
-        "[web-root]/plugins/contrib/.gitkeep": "assets/scaffold/files/gitkeep",
+        "[web-root]/plugins/.gitkeep": "assets/scaffold/files/gitkeep",
         "[web-root]/index.php": "assets/scaffold/files/index.php",
         "[web-root]/index_dev.php": "assets/scaffold/files/index_dev.php",
         "[web-root]/offline.php": "assets/scaffold/files/offline.php",

@@ -13,7 +13,7 @@ $paths = [
     'themes'       => 'app/themes',
     'assets'       => 'media',
     'asset_prefix' => '',
-    'plugins'      => 'app/plugins',
+    'plugins'      => 'plugins',
     'translations' => 'translations',
     'local_config' => '%kernel.root_dir%/app/config/local.php',
 ];
