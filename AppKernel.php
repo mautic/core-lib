@@ -179,11 +179,8 @@ class AppKernel extends Kernel
             ->in($searchPath)
             ->name('*Bundle.php');
 
-        var_dump($searchPath);
-
         foreach ($finder as $file) {
             $dirname  = basename($file->getRelativePath());
-            var_dump($dirname);
             $filename = substr($file->getFilename(), 0, -4);
 
             $class = '\\MauticPlugin'.'\\'.$dirname.'\\'.$filename;
@@ -203,7 +200,6 @@ class AppKernel extends Kernel
                 unset($plugin);
             }
         }
-        exit;
 
         if (in_array($this->getEnvironment(), ['dev', 'test'])) {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
