@@ -182,7 +182,9 @@
         "[web-root]/robots.txt": "assets/scaffold/files/robots.txt",
         "[web-root]/upgrade.php": "assets/scaffold/files/upgrade.php",
         "[web-root]/translations/.htaccess": "assets/scaffold/files/translations.htaccess",
-        "[web-root]/favicon.ico": "assets/scaffold/files/favicon.ico"
+        "[web-root]/favicon.ico": "assets/scaffold/files/favicon.ico",
+        "[web-root]/media": "assets/scaffold/media",
+        "[web-root]/build": "assets/scaffold/build"
       }
     }
   },
