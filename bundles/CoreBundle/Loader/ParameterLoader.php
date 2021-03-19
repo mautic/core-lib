@@ -118,10 +118,11 @@ class ParameterLoader
         $finder = (new Finder())
             ->files()
             ->followLinks()
-            ->depth('3')
-            ->in(__DIR__.'/../../../bundles')
-            ->in(__DIR__.'/../../../../plugins')
+            ->depth('== 0')
+            ->in(__DIR__.'/../../../bundles/*/Config')
+            ->in(__DIR__.'/../../../../plugins/*/Config')
             ->name('config.php');
+
 
         /** @var \SplFileInfo $file */
         foreach ($finder as $file) {

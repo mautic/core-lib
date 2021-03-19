@@ -252,6 +252,7 @@ class AppKernel extends Kernel
             $bundle->boot();
         }
 
+
         $this->booted = true;
     }
 
