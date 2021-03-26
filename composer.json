@@ -147,6 +147,25 @@
     {
       "type": "git",
       "url": "https://github.com/mautic/intl.git"
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mautic/plugin-grapesjs-builder",
+        "version": "1.0-RC4",
+        "type": "mautic-plugin",
+        "source": {
+          "url": "https://github.com/mautic/plugin-grapesjs-builder.git",
+          "type": "git",
+          "reference": "1.0-RC4"
+        },
+        "require": {
+          "composer/installers": "~1.0"
+        },
+        "extra": {
+          "installer-name": "GrapesJsBuilderBundle"
+        }
+      }
     }
   ],
   "minimum-stability": "dev",
