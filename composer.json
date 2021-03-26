@@ -108,7 +108,7 @@
     "gaufrette/aws-s3-adapter": "^0.4.0",
     "phpoffice/phpspreadsheet": "^1.15",
     "predis/predis": "^1.1",
-    "composer/installers": "dev-master",
+    "composer/installers": "^1.10",
     "mautic/plugin-grapesjs-builder": "1.0-RC4",
     "mautic/plugin-citrix": "dev-3.x",
     "mautic/plugin-clearbit": "dev-3.x",
