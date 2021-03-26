@@ -166,6 +166,19 @@
           "installer-name": "GrapesJsBuilderBundle"
         }
       }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "composer/installers",
+        "version": "1.10",
+        "type": "composer-plugin",
+        "source": {
+          "url": "https://github.com/nickveenhof/installers.git",
+          "type": "git",
+          "reference": "patch-2"
+        }
+      }
     }
   ],
   "minimum-stability": "dev",
