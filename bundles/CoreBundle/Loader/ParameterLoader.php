@@ -123,7 +123,6 @@ class ParameterLoader
             ->in(__DIR__.'/../../../../plugins/*/Config')
             ->name('config.php');
 
-
         /** @var \SplFileInfo $file */
         foreach ($finder as $file) {
             /** @var array $config */
