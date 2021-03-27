@@ -204,7 +204,6 @@
         "[project-root]/bin/.htaccess": "assets/scaffold/files/console.htaccess",
         "[web-root]/.htaccess": "assets/scaffold/files/htaccess",
         "[web-root]/example.gitignore": "assets/scaffold/files/example.gitignore",
-        "[web-root]/plugins/.gitkeep": "assets/scaffold/files/gitkeep",
         "[web-root]/index.php": "assets/scaffold/files/index.php",
         "[web-root]/index_dev.php": "assets/scaffold/files/index_dev.php",
         "[web-root]/offline.php": "assets/scaffold/files/offline.php",
