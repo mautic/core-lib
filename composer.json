@@ -202,7 +202,7 @@
         "[project-root]/bin/console": "assets/scaffold/files/console",
         "[project-root]/bin/.htaccess": "assets/scaffold/files/console.htaccess",
         "[web-root]/.htaccess": "assets/scaffold/files/htaccess",
-        "[web-root]/example.gitignore": "assets/scaffold/files/example.gitignore",
+        "[web-root]/.gitignore": "assets/scaffold/files/example.gitignore",
         "[web-root]/index.php": "assets/scaffold/files/index.php",
         "[web-root]/index_dev.php": "assets/scaffold/files/index_dev.php",
         "[web-root]/offline.php": "assets/scaffold/files/offline.php",
