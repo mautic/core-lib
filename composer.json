@@ -215,7 +215,9 @@
         "[web-root]/media/dashboards/email-overview.json": "assets/scaffold/media/dashboards/email-overview.json",
         "[web-root]/media/dashboards/stats-overview.json": "assets/scaffold/media/dashboards/stats-overview.json",
         "[web-root]/media/files/.htaccess": "assets/scaffold/media/files/.htaccess",
-        "[web-root]/media/images/.htaccess": "assets/scaffold/media/images/.htaccess"
+        "[web-root]/media/images/.htaccess": "assets/scaffold/media/images/.htaccess",
+        "[web-root]/themes/blank.png": "assets/scaffold/files/blank.png",
+        "[web-root]/themes/blank-big.png": "assets/scaffold/files/blank-big.png"
       }
     }
   },
