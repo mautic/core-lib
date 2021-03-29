@@ -108,7 +108,7 @@
     "phpoffice/phpspreadsheet": "^1.15",
     "predis/predis": "^1.1",
     "composer/installers": "^1.10",
-    "mautic/plugin-grapejs-builder": "1.0-RC4",
+    "mautic/plugin-grapesjs-builder": "1.0-RC4",
     "mautic/plugin-citrix": "main-dev",
     "mautic/plugin-clearbit": "main-dev",
     "mautic/plugin-cloudstorage": "main-dev",
