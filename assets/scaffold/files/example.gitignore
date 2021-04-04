@@ -69,14 +69,14 @@
 /media/files/*
 !/media/files/.htaccess
 /media/assets/*
-/media/images/*
-!/media/images/flags
-!/media/images/mejs
-!/media/images/apple-touch-icon.png
-!/media/images/avatar.png
-!/media/images/favicon.ico
-!/media/images/mautic_logo*
-!/media/images/.htaccess
+/app/assets/images/*
+!/app/assets/images/flags
+!/app/assets/images/mejs
+!/app/assets/images/apple-touch-icon.png
+!/app/assets/images/avatar.png
+!/app/assets/images/favicon.ico
+!/app/assets/images/mautic_logo*
+!/app/assets/images/.htaccess
 
 /plugins/*
 !/plugins/index.html
