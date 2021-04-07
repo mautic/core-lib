@@ -171,6 +171,7 @@ return [
                     'mautic.campaign.repository.lead_event_log',
                     'mautic.campaign.repository.lead',
                     'mautic.campaign.model.summary',
+                    'mautic.helper.core_parameters',
                 ],
             ],
             'mautic.campaign.event_collector' => [
@@ -247,6 +248,7 @@ return [
                     'translator',
                     'mautic.campaign.event_executioner',
                     'mautic.campaign.scheduler',
+                    'mautic.helper.core_parameters',
                 ],
             ],
             'mautic.campaign.executioner.realtime'     => [
