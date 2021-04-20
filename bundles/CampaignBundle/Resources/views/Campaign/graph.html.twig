@@ -1,0 +1,9 @@
+{% set dateFrom = dateRangeForm.children['date_from'].vars['data'] %}
+{% set dateTo = dateRangeForm.children['date_to'].vars['data'] %}
+<div id="emailGraphStats">
+    {{- include('@MauticCore/Helper/chart.html.twig', {
+        'chartData': stats,
+        'chartType': 'line',
+        'chartHeight': 300
+    }) -}}
+</div>

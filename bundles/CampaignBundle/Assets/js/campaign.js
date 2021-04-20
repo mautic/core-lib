@@ -5,8 +5,9 @@
  * @param container
  */
 Mautic.campaignOnLoad = function (container, response) {
+    Mautic.lazyLoadGraphStatsOnCampaignDetail();
     Mautic.lazyLoadContactListOnCampaignDetail();
-
+    Mautic.lazyLoadEventStatsOnCampaignDetail();
     const $flashes = mQuery('#flashes');
     const $builder = mQuery('#campaign-builder');
     const isCampaignPreview = $builder.hasClass('preview');
@@ -198,6 +199,84 @@ Mautic.lazyLoadContactListOnCampaignDetail = function() {
         Mautic.processPageContent(response);
     });
 };
+
+Mautic.lazyLoadGraphStatsOnCampaignDetail = function() {
+    const containerId = '#campaign-graph-div';
+    const container = mQuery(containerId);
+
+    // Load the contacts only if the container exists.
+    if (!container.length) {
+        return;
+    }
+
+    const campaignGraphUrl = container.data('target-url');
+    mQuery.get(campaignGraphUrl, function(response) {
+        response.target = containerId;
+        Mautic.processPageContent(response);
+    });
+};
+
+Mautic.lazyLoadEventStatsOnCampaignDetail = function()  {
+    const containerId = '#campaign-tab-content';
+    const container = mQuery(containerId);
+
+    const campaignEventStatUrl = container.data('event-target-url');
+    mQuery.get(campaignEventStatUrl, function(response) {
+        if (response.errors && 'dev' == mauticEnv) {
+            alert(response.errors[0].message);
+            console.log(response.errors);
+        }
+
+        if (typeof response.preview !== 'undefined')
+        {
+            mQuery('#preview-container').html(response.preview);
+            Mautic.prepareCampaignCanvas();
+        }
+        else
+        {
+            mQuery('#decisions_li').remove();
+            mQuery('#decisions-container').remove();
+        }
+
+        if (typeof response.decisions !== 'undefined')
+        {
+            mQuery('#decisions-container').html(response.decisions);
+        }
+        else
+        {
+            mQuery('#decisions_li').remove();
+            mQuery('#decisions-container').remove();
+        }
+
+        if (typeof response.actions !== 'undefined')
+        {
+            mQuery('#actions-container').html(response.actions);
+        }
+        else
+        {
+            mQuery('#actions_li').remove();
+            mQuery('#actions-container').remove();
+        }
+
+        if (typeof response.conditions !== 'undefined')
+        {
+            mQuery('#conditions-container').html(response.conditions);
+        }
+        else
+        {
+            mQuery('#conditions_li').remove();
+            mQuery('#conditions-container').remove();
+        }
+
+        mQuery('ul#campaign_nav_header_ul li').removeClass('active');
+        mQuery('ul#campaign_nav_header_ul li').eq(0).addClass('active');
+
+        mQuery('div#campaign-tab-content .tab-pane').removeClass('active in');
+        mQuery('div#campaign-tab-content .tab-pane').eq(0).addClass('active in');
+
+    });
+}
+
 
 /**
  * Update chosen tooltips

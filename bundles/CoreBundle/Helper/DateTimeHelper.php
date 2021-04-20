@@ -10,6 +10,8 @@ class DateTimeHelper
 
     private static ?string $defaultLocalTimezone = null;
 
+    const FORMAT_DB_DATE_ONLY = 'Y-m-d';
+
     /**
      * @var string
      */
