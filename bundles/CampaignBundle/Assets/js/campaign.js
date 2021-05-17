@@ -220,6 +220,10 @@ Mautic.lazyLoadEventStatsOnCampaignDetail = function()  {
     const containerId = '#campaign-tab-content';
     const container = mQuery(containerId);
 
+    if (!container.length) {
+        return;
+    }
+
     const campaignEventStatUrl = container.data('event-target-url');
     mQuery.get(campaignEventStatUrl, function(response) {
         if (response.errors && 'dev' == mauticEnv) {
