@@ -35,70 +35,74 @@ class LeadDeviceRepository extends CommonRepository
      */
     public function getDevice($lead, $deviceNames = null, $deviceBrands = null, $deviceModels = null, $deviceOss = null, $deviceId = null)
     {
-        $sq = $this->_em->getConnection()->createQueryBuilder();
-        $sq->select('es.id as id, es.device as device')
+        $selectQuery = $this->_em->getConnection()->createQueryBuilder();
+        $selectQuery->select('es.id as id, es.device as device')
             ->from(MAUTIC_TABLE_PREFIX.'lead_devices', 'es');
 
         if (null !== $deviceNames) {
             if (!is_array($deviceNames)) {
                 $deviceNames = [$deviceNames];
             }
+
+            $orX = $selectQuery->expr()->orX();
             foreach ($deviceNames as $key => $deviceName) {
-                $sq->andWhere(
-                    $sq->expr()->eq('es.device', ':device'.$key)
-                )
-                    ->setParameter('device'.$key, $deviceName);
+                $orX->add($selectQuery->expr()->eq('es.device', ':device'.$key));
+                $selectQuery->setParameter('device'.$key, $deviceName);
             }
+            $selectQuery->andWhere($orX);
         }
 
         if (null !== $deviceBrands) {
             if (!is_array($deviceBrands)) {
                 $deviceBrands = [$deviceBrands];
             }
+
+            $orX = $selectQuery->expr()->orX();
             foreach ($deviceBrands as $key => $deviceBrand) {
-                $sq->andWhere(
-                    $sq->expr()->eq('es.device_brand', ':deviceBrand'.$key)
-                )
-                    ->setParameter('deviceBrand'.$key, $deviceBrand);
+                $orX->add($selectQuery->expr()->eq('es.device_brand', ':deviceBrand'.$key));
+                $selectQuery->setParameter('deviceBrand'.$key, $deviceBrand);
             }
+            $selectQuery->andWhere($orX);
         }
 
         if (null !== $deviceModels) {
             if (!is_array($deviceModels)) {
                 $deviceModels = [$deviceModels];
             }
+
+            $orX = $selectQuery->expr()->orX();
             foreach ($deviceModels as $key => $deviceModel) {
-                $sq->andWhere(
-                    $sq->expr()->eq('es.device_model', ':deviceModel'.$key)
-                )
-                    ->setParameter('deviceModel'.$key, $deviceModel);
+                $orX->add($selectQuery->expr()->eq('es.device_model', ':deviceModel'.$key));
+                $selectQuery->setParameter('deviceModel'.$key, $deviceModel);
             }
+            $selectQuery->andWhere($orX);
         }
 
         if (null !== $deviceOss) {
             if (!is_array($deviceOss)) {
                 $deviceOss = [$deviceOss];
             }
+
+            $orX = $selectQuery->expr()->orX();
             foreach ($deviceOss as $key => $deviceOs) {
-                $sq->andWhere(
-                    $sq->expr()->eq('es.device_os_name', ':deviceOs'.$key)
-                )
-                    ->setParameter('deviceOs'.$key, $deviceOs);
+                $orX->add($selectQuery->expr()->eq('es.device_os_name', ':deviceOs'.$key));
+                $selectQuery->setParameter('deviceOs'.$key, $deviceOs);
             }
+            $selectQuery->andWhere($orX);
         }
 
         if (null !== $deviceId) {
-            $sq->andWhere(
-                $sq->expr()->eq('es.id', $deviceId)
+            $selectQuery->andWhere(
+                $selectQuery->expr()->eq('es.id', $deviceId)
             );
         } elseif (null !== $lead) {
-            $sq->andWhere(
-                $sq->expr()->eq('es.lead_id', $lead->getId())
+            $selectQuery->andWhere(
+                $selectQuery->expr()->eq('es.lead_id', $lead->getId())
             );
         }
 
         // get totals
-        $device = $sq->executeQuery()->fetchAllAssociative();
+        $device = $selectQuery->executeQuery()->fetchAllAssociative();
 
         return (!empty($device)) ? $device[0] : [];
     }
@@ -163,3 +167,4 @@ class LeadDeviceRepository extends CommonRepository
             ->executeStatement();
     }
 }
+
