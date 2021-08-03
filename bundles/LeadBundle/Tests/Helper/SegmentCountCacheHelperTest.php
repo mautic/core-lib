@@ -25,11 +25,104 @@ class SegmentCountCacheHelperTest extends TestCase
         $this->segmentCountCacheHelper = new SegmentCountCacheHelper($this->cacheStorageHelperMock);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testGetSegmentContactCount(): void
+    {
+        $segmentId = 1;
+        $this->cacheStorageHelperMock
+            ->method('get')
+            ->with('segment.'.$segmentId.'.lead')
+            ->willReturn(1);
+        $count = $this->segmentCountCacheHelper->getSegmentContactCount($segmentId);
+        Assert::assertSame(1, $count);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testSetSegmentContactCount(): void
+    {
+        $segmentId = 1;
+        $count     = 2;
+        $this->cacheStorageHelperMock
+            ->method('set')
+            ->with('segment.'.$segmentId.'.lead')
+            ->willReturn($count);
+
+        $this->cacheStorageHelperMock
+            ->method('has')
+            ->with('segment.'.$segmentId.'.lead.recount')
+            ->willReturn(false);
+
+        $this->cacheStorageHelperMock
+            ->expects(self::never())
+            ->method('delete')
+            ->with('segment.'.$segmentId.'.lead.recount');
+
+        $this->segmentCountCacheHelper->SetSegmentContactCount($segmentId, $count);
+        Assert::isNull();
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testSetSegmentContactCountIfRecountExist(): void
+    {
+        $segmentId = 1;
+        $count     = 2;
+        $this->cacheStorageHelperMock
+            ->expects(self::exactly(1))
+            ->method('set')
+            ->with('segment.'.$segmentId.'.lead')
+            ->willReturn($count);
+
+        $this->cacheStorageHelperMock
+            ->expects(self::exactly(1))
+            ->method('has')
+            ->with('segment.'.$segmentId.'.lead.recount')
+            ->willReturn(true);
+
+        $this->cacheStorageHelperMock
+            ->expects(self::exactly(1))
+            ->method('delete')
+            ->with('segment.'.$segmentId.'.lead.recount')
+            ->willReturn(true);
+
+        $this->segmentCountCacheHelper->SetSegmentContactCount($segmentId, $count);
+        Assert::isNull();
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testSetSegmentContactCountWithInvalidatedSegment(): void
+    {
+        $segmentId = 1;
+        $this->cacheStorageHelperMock
+            ->expects(self::exactly(1))
+            ->method('set')
+            ->with('segment.'.$segmentId.'.lead.recount');
+        $this->segmentCountCacheHelper->invalidateSegmentContactCount($segmentId);
+        Assert::isNull();
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
     public function testDecrementSegmentContactCountHasNoCache(): void
     {
         $segmentId = 1;
         $this->cacheStorageHelperMock
+<<<<<<< HEAD
             ->expects(self::once())
+=======
+            ->expects(self::exactly(1))
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('has')
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn(false);
@@ -41,20 +134,33 @@ class SegmentCountCacheHelperTest extends TestCase
     {
         $segmentId = 1;
         $this->cacheStorageHelperMock
+<<<<<<< HEAD
             ->expects(self::once())
+=======
+            ->expects(self::exactly(2))
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('has')
-            ->with('segment.'.$segmentId.'.lead')
-            ->willReturn(true);
+            ->withConsecutive(['segment.'.$segmentId.'.lead'], ['segment.'.$segmentId.'.lead.recount'])
+            ->willReturnOnConsecutiveCalls(true, false);
         $this->cacheStorageHelperMock
+<<<<<<< HEAD
             ->expects(self::once())
+=======
+            ->expects(self::exactly(1))
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('get')
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn('10');
         // Decrement count.
         $this->cacheStorageHelperMock
+<<<<<<< HEAD
             ->expects(self::once())
+=======
+            ->expects(self::exactly(1))
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('set')
             ->with('segment.'.$segmentId.'.lead', 9);
+
         $this->segmentCountCacheHelper->decrementSegmentContactCount($segmentId);
         Assert::isNull();
     }
@@ -63,20 +169,33 @@ class SegmentCountCacheHelperTest extends TestCase
     {
         $segmentId = 1;
         $this->cacheStorageHelperMock
+<<<<<<< HEAD
             ->expects(self::once())
+=======
+            ->expects(self::exactly(2))
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('has')
-            ->with('segment.'.$segmentId.'.lead')
-            ->willReturn(true);
+            ->withConsecutive(['segment.'.$segmentId.'.lead'], ['segment.'.$segmentId.'.lead.recount'])
+            ->willReturnOnConsecutiveCalls(true, false);
         $this->cacheStorageHelperMock
+<<<<<<< HEAD
             ->expects(self::once())
+=======
+            ->expects(self::exactly(1))
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('get')
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn('0');
         // Edge case. Should not decrement below 0.
         $this->cacheStorageHelperMock
+<<<<<<< HEAD
             ->expects(self::once())
+=======
+            ->expects(self::exactly(1))
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('set')
             ->with('segment.'.$segmentId.'.lead', 0);
+
         $this->segmentCountCacheHelper->decrementSegmentContactCount($segmentId);
         Assert::isNull();
     }

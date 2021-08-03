@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Tests\Controller;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\LeadBundle\Command\SegmentCountCacheCommand;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\LeadListRepository;
@@ -26,6 +27,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
+        $this->configParams['update_segment_contact_count_in_background'] = 'testSegmentCountInBackground' === $this->getName();
         parent::setUp();
         $this->listModel = static::getContainer()->get('mautic.lead.model.list');
         \assert($this->listModel instanceof ListModel);
@@ -36,6 +38,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->leadRepo = $leadModel->getRepository();
     }
 
+<<<<<<< HEAD
     public function testUnpublishUsedSegment(): void
     {
         $filter = [[
@@ -140,6 +143,8 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @throws \Exception
      */
+=======
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
     public function testSegmentCount(): void
     {
         // Save segment.
@@ -181,6 +186,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $contact1Id = $contacts[0]->getId();
 
         // Rebuild segment - set current count to the cache.
+<<<<<<< HEAD
         $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId, '--env' => 'test']);
 
         // Verify last built date is set.
@@ -193,6 +199,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $segment->setLastBuiltDate(new \DateTime('+5 seconds'));
         $this->listModel->saveEntity($segment);
 
+=======
+        $this->runCommand('mautic:segments:update', ['-i' => $segmentId, '--env' => 'test']);
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
         // Check segment count UI for 4 contacts.
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
         $html    = $this->getSegmentCountHtml($crawler, $segmentId);
@@ -223,7 +232,76 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $html    = $this->getSegmentCountHtml($crawler, $segmentId);
         $spClass = $this->getSegmentCountClass($crawler, $segmentId);
         self::assertSame('View 4 Contacts', $html);
+<<<<<<< HEAD
         self::assertSame('label label-gray col-count', $spClass);
+=======
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSegmentCountInBackground(): void
+    {
+        // Save segment.
+        $filters   = [
+            [
+                'glue'     => 'and',
+                'field'    => 'email',
+                'object'   => 'lead',
+                'type'     => 'email',
+                'filter'   => null,
+                'display'  => null,
+                'operator' => '!empty',
+            ],
+        ];
+
+        $segment   = $this->saveSegment('Lead List 1', 'lead-list-1', $filters);
+        $segmentId = $segment->getId();
+
+        // Check segment count UI for no contacts.
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
+        $html    = $this->getSegmentCountHtml($crawler, $segmentId);
+        self::assertSame('No Contacts', $html);
+
+        // Add 4 contacts.
+        $contacts   = $this->saveContacts();
+        $contact1Id = $contacts[0]->getId();
+
+        // Rebuild segment - set current count to the cache.
+        $this->runCommand('mautic:segments:update', ['-i' => $segmentId, '--env' => 'test']);
+
+        $this->runCommand(SegmentCountCacheCommand::COMMAND_NAME);
+
+        // Check segment count UI for 4 contacts.
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
+        $html    = $this->getSegmentCountHtml($crawler, $segmentId);
+        self::assertSame('View 4 Contacts', $html);
+
+        // Remove 1 contact from segment.
+        $this->client->request(Request::METHOD_POST, '/api/segments/'.$segmentId.'/contact/'.$contact1Id.'/remove');
+        self::assertSame('{"success":1}', $this->client->getResponse()->getContent());
+        self::assertSame(200, $this->client->getResponse()->getStatusCode());
+
+        $this->runCommand(SegmentCountCacheCommand::COMMAND_NAME);
+
+        // Check segment count UI for 3 contacts.
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
+        $html    = $this->getSegmentCountHtml($crawler, $segmentId);
+        self::assertSame('View 3 Contacts', $html);
+
+        // Add 1 contact back to segment.
+        $parameters = ['ids' => [$contact1Id]];
+        $this->client->request(Request::METHOD_POST, '/api/segments/'.$segmentId.'/contacts/add', $parameters);
+        self::assertSame('{"success":1,"details":{"'.$contact1Id.'":{"success":true}}}', $this->client->getResponse()->getContent());
+        self::assertSame(200, $this->client->getResponse()->getStatusCode());
+
+        $this->runCommand(SegmentCountCacheCommand::COMMAND_NAME);
+
+        // Check segment count UI for 4 contacts.
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
+        $html    = $this->getSegmentCountHtml($crawler, $segmentId);
+        self::assertSame('View 4 Contacts', $html);
+>>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
 
         // Check segment count AJAX for 4 contacts.
         $parameter = ['id' => $segmentId];
@@ -238,6 +316,8 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame('{"success":1}', $this->client->getResponse()->getContent());
         $this->assertResponseIsSuccessful();
 
+        $this->runCommand(SegmentCountCacheCommand::COMMAND_NAME);
+
         // Check segment count AJAX for 3 contacts.
         $parameter = ['id' => $segmentId];
         $response  = $this->callGetLeadCountAjaxRequest($parameter);
@@ -251,6 +331,8 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request(Request::METHOD_POST, '/api/segments/'.$segmentId.'/contacts/add', $parameters);
         self::assertSame('{"success":1,"details":{"'.$contact1Id.'":{"success":true}}}', $this->client->getResponse()->getContent());
         $this->assertResponseIsSuccessful();
+
+        $this->runCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
         // Check segment count AJAX for 4 contacts.
         $parameter = ['id' => $segmentId];
