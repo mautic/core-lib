@@ -105,6 +105,7 @@ class EventType extends AbstractType
                     'widget' => 'single_text',
                     'html5'  => false,
                     'format' => 'yyyy-MM-dd HH:mm',
+                    'data'   => $this->getTimeValue($options['data'], 'triggerDate'),
                 ]
             );
 
@@ -288,6 +289,7 @@ class EventType extends AbstractType
                 'save_text'       => $btnValue,
                 'save_icon'       => $btnIcon,
                 'save_onclick'    => 'Mautic.submitCampaignEvent(event)',
+                'cancel_onclick'  => 'Mautic.cancelCampaignEvent(event)',
                 'apply_text'      => false,
                 'container_class' => 'bottom-form-buttons',
             ]
@@ -326,7 +328,11 @@ class EventType extends AbstractType
             return $data[$name];
         }
 
-        return new \DateTime($data[$name]);
+        if (is_array($data[$name]) && array_key_exists('date', $data[$name])) {
+            return new \DateTime($data[$name]['date']);
+        } elseif (is_string($data[$name])) {
+            return new \DateTime($data[$name]);
+        }
     }
 
     public function getBlockPrefix(): string

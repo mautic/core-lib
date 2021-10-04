@@ -44,57 +44,58 @@ Mautic.renameFormElements = function(container, oldIdPrefix, oldNamePrefix, newI
  * @param form
  */
 Mautic.ajaxifyForm = function (formName) {
-    Mautic.initializeFormFieldStateSwitcher(formName);
+    Mautic.initializeFormFieldVisibilitySwitcher(formName);
 
-    // Prevent enter from submitting form and instead jump to next line
+    //prevent enter submitting form and instead jump to next line
     var form = 'form[name="' + formName + '"]';
-
-    // Handle Command+Enter (Mac) or Control+Enter (Windows/Linux) for form submission
-    Mautic.addKeyboardShortcut(['meta+enter', 'ctrl+enter'], 'Submit form', function(e) {
-        if (MauticVars.formSubmitInProgress) {
-            return false;
-        }
-
-        // Find save button first then apply
-        var saveButton = mQuery(form).find('button.btn-save');
-        var applyButton = mQuery(form).find('button.btn-apply');
-
-        var modalParent = mQuery(form).closest('.modal');
-        var inMain = mQuery(modalParent).length > 0 ? false : true;
-
-        if (mQuery(saveButton).length) {
-            if (inMain) {
-                if (mQuery(form).find('button.btn-save.btn-copy').length) {
-                    mQuery(mQuery(form).find('button.btn-save.btn-copy')).trigger('click');
-                    return;
-                }
-            } else {
-                if (mQuery(modalParent).find('button.btn-save.btn-copy').length) {
-                    mQuery(mQuery(modalParent).find('button.btn-save.btn-copy')).trigger('click');
-                    return;
-                }
-            }
-            mQuery(saveButton).trigger('click');
-        } else if (mQuery(applyButton).length) {
-            if (inMain) {
-                if (mQuery(form).find('button.btn-apply.btn-copy').length) {
-                    mQuery(mQuery(form).find('button.btn-apply.btn-copy')).trigger('click');
-                    return;
-                }
-            } else {
-                if (mQuery(modalParent).find('button.btn-apply.btn-copy').length) {
-                    mQuery(mQuery(modalParent).find('button.btn-apply.btn-copy')).trigger('click');
-                    return;
-                }
-            }
-            mQuery(applyButton).trigger('click');
-        }
-    });
-
-    // Handle Enter key for jumping to the next input
     mQuery(form + ' input, ' + form + ' select').off('keydown.ajaxform');
     mQuery(form + ' input, ' + form + ' select').on('keydown.ajaxform', function (e) {
-        if (e.keyCode == 13 && mQuery(e.target).is(':input')) {
+        if(e.keyCode == 13 && (e.metaKey || e.ctrlKey)) {
+            if (MauticVars.formSubmitInProgress) {
+                return false;
+            }
+
+            // Find save button first then apply
+            var saveButton = mQuery(form).find('button.btn-save');
+            var applyButton = mQuery(form).find('button.btn-apply');
+
+            var modalParent = mQuery(form).closest('.modal');
+            var inMain      = mQuery(modalParent).length > 0 ? false : true;
+
+            if (mQuery(saveButton).length) {
+                if (inMain) {
+                    if (mQuery(form).find('button.btn-save.btn-copy').length) {
+                        mQuery(mQuery(form).find('button.btn-save.btn-copy')).trigger('click');
+
+                        return;
+                    }
+                } else {
+                    if (mQuery(modalParent).find('button.btn-save.btn-copy').length) {
+                        mQuery(mQuery(modalParent).find('button.btn-save.btn-copy')).trigger('click');
+
+                        return;
+                    }
+                }
+
+                mQuery(saveButton).trigger('click');
+            } else if (mQuery(applyButton).length) {
+                if (inMain) {
+                    if (mQuery(form).find('button.btn-apply.btn-copy').length) {
+                        mQuery(mQuery(form).find('button.btn-apply.btn-copy')).trigger('click');
+
+                        return;
+                    }
+                } else {
+                    if (mQuery(modalParent).find('button.btn-apply.btn-copy').length) {
+                        mQuery(mQuery(modalParent).find('button.btn-apply.btn-copy')).trigger('click');
+
+                        return;
+                    }
+                }
+
+                mQuery(applyButton).trigger('click');
+            }
+        } else if (e.keyCode == 13 && mQuery(e.target).is(':input')) {
             var inputs = mQuery(this).parents('form').eq(0).find(':input');
             if (inputs[inputs.index(this) + 1] != null) {
                 inputs[inputs.index(this) + 1].focus();
@@ -196,11 +197,11 @@ Mautic.resetForm = function(form) {
  * @param form
  * @param callback
  */
-Mautic.postForm = function (form, callback) {
-    form = mQuery(form);
+Mautic.postForm = function (form, callback, extraData = {}) {
+    var form = mQuery(form);
 
     var modalParent = form.closest('.modal');
-    var inMain = mQuery(modalParent).length === 0;
+    var inMain = mQuery(modalParent).length > 0 ? false : true;
 
     var action = form.attr('action');
 
@@ -211,9 +212,9 @@ Mautic.postForm = function (form, callback) {
     var showLoading = (!inMain || form.attr('data-hide-loadingbar')) ? false : true;
 
     form.ajaxSubmit({
+        data: extraData,
         showLoadingBar: showLoading,
         success: function (data) {
-            form.trigger('submit:success', [action, data, inMain]);
             if (!inMain) {
                 Mautic.stopModalLoadingBar(modalTarget);
             }
@@ -257,28 +258,25 @@ Mautic.postForm = function (form, callback) {
 
 
 /**
- * Initialize form field state switcher
+ * Initialize form field visibility switcher
  *
  * @param formName
  */
-Mautic.initializeFormFieldStateSwitcher = function (formName)
+Mautic.initializeFormFieldVisibilitySwitcher = function (formName)
 {
-    Mautic.switchFormFieldState(formName);
+    Mautic.switchFormFieldVisibilty(formName);
 
     mQuery('form[name="'+formName+'"]').on('change', function() {
-        Mautic.switchFormFieldState(formName);
+        Mautic.switchFormFieldVisibilty(formName);
     });
 };
 
 /**
- * Switch form field state based on selected values
- *
- * Possible state: visible, disabled
+ * Switch form field visibility based on selected values
  */
-Mautic.switchFormFieldState = function (formName) {
+Mautic.switchFormFieldVisibilty = function (formName) {
     var form   = mQuery('form[name="'+formName+'"]');
-    var visibleFields = {};
-    var disabledFields = {};
+    var fields = {};
     var fieldsPriority = {};
 
     var getFieldParts = function(fieldName) {
@@ -293,21 +291,21 @@ Mautic.switchFormFieldState = function (formName) {
     };
 
     var checkValueCondition = function (sourceFieldVal, condition) {
-        var state = true;
+        var visible = true;
         if (typeof condition == 'object') {
-            state = mQuery.inArray(sourceFieldVal, condition) !== -1;
+            visible = mQuery.inArray(sourceFieldVal, condition) !== -1;
         } else if (condition == 'empty' || (condition == 'notEmpty')) {
             var isEmpty = (sourceFieldVal == '' || sourceFieldVal == null || sourceFieldVal == 'undefined');
-            state = (condition == 'empty') ? isEmpty : !isEmpty;
+            visible = (condition == 'empty') ? isEmpty : !isEmpty;
         } else if (condition !== sourceFieldVal) {
-            state = false;
+            visible = false;
         }
 
-        return state;
+        return visible;
     };
 
     var checkFieldCondition = function (fieldId, attribute, condition) {
-        var state = true;
+        var visible = true;
 
         if (attribute) {
             // Compare the attribute value
@@ -317,7 +315,7 @@ Mautic.switchFormFieldState = function (formName) {
                 // Check the value option
                 var field = mQuery('#' + fieldId +' option[value="' + mQuery('#' + fieldId).val() + '"]');
             } else {
-                return state;
+                return visible;
             }
 
             var attributeValue = (typeof mQuery(field).attr(attribute) !== 'undefined') ? mQuery(field).attr(attribute) : null;
@@ -330,44 +328,20 @@ Mautic.switchFormFieldState = function (formName) {
         return checkValueCondition(mQuery('#' + fieldId).val(), condition);
     }
 
-    var processConditions = function (attribute, checkState, shouldInvert) {
-        form.find('[' + attribute + ']').each(function(_, el) {
-            var field = mQuery(el);
-            var conditions = JSON.parse(field.attr(attribute));
-
-            mQuery.each(conditions, function(fieldId, condition) {
-                var fieldParts = getFieldParts(fieldId);
-                var stateId = field.attr('id');
-
-                // Evaluate the condition and apply inversion if needed
-                var conditionResult = checkFieldCondition(fieldParts.name, fieldParts.attribute, condition);
-                if (shouldInvert) {
-                    conditionResult = !conditionResult;
-                }
-
-                // Set the state only if it's undefined or follows OR logic
-                if (typeof checkState[stateId] === 'undefined' || !checkState[stateId]) {
-                    checkState[stateId] = conditionResult;
-                }
-            });
-        });
-    };
-
-    var toggleFieldOff = function (field) {
-        // Set Yes/No toggle to No.
-        if (field.attr('onchange')?.includes('Mautic.toggleYesNo(this)')
-            && field.val() === "1"
-            && field.is(':checked')
-        ) {
-            label = field.siblings('.toggle__label')
-            if (label.attr('aria-checked') === "true") {
-                label.trigger('click');
-            }
-        }
-    }
-
     // find all fields to show
-    processConditions('data-show-on', visibleFields, false);
+    form.find('[data-show-on]').each(function(index, el) {
+        var field = mQuery(el);
+        var showOn = JSON.parse(field.attr('data-show-on'));
+
+        mQuery.each(showOn, function(fieldId, condition) {
+            var fieldParts = getFieldParts(fieldId);
+
+            // Treat multiple fields as OR statements
+            if (typeof fields[field.attr('id')] === 'undefined' || !fields[field.attr('id')]) {
+                fields[field.attr('id')] = checkFieldCondition(fieldParts.name, fieldParts.attribute, condition);
+            }
+        });
+    });
 
     // find all fields to hide
     form.find('[data-hide-on]').each(function(index, el) {
@@ -383,41 +357,20 @@ Mautic.switchFormFieldState = function (formName) {
             var fieldParts = getFieldParts(fieldId);
 
             // Treat multiple fields as OR statements
-            if (typeof visibleFields[field.attr('id')] === 'undefined' || visibleFields[field.attr('id')]) {
-                visibleFields[field.attr('id')] = !checkFieldCondition(fieldParts.name, fieldParts.attribute, condition);
+            if (typeof fields[field.attr('id')] === 'undefined' || fields[field.attr('id')]) {
+                fields[field.attr('id')] = !checkFieldCondition(fieldParts.name, fieldParts.attribute, condition);
             }
         });
     });
 
     // show/hide according to conditions
-    mQuery.each(visibleFields, function(fieldId, show) {
-        var field = mQuery('#' + fieldId);
-        var fieldContainer = field.closest('[class*="col-"]');
+    mQuery.each(fields, function(fieldId, show) {
+        var fieldContainer = mQuery('#' + fieldId).closest('[class*="col-"]');;
         if (show) {
             fieldContainer.fadeIn();
         } else {
-            toggleFieldOff(field);
             fieldContainer.fadeOut();
         }
-    });
-
-    // find all fields to enable
-    processConditions('data-enable-on', disabledFields, true);
-    // find all fields to disable
-    processConditions('data-disable-on', disabledFields, false);
-
-    // disable according to conditions
-    mQuery.each(disabledFields, function(fieldId, disable) {
-        var field = mQuery('#' + fieldId)
-        if (disable) {
-            toggleFieldOff(field);
-            field.addClass('disabled', disable);
-            field.attr('disabled', 'disabled');
-        } else {
-            field.removeClass('disabled', disable);
-            field.removeAttr('disabled');
-        }
-
     });
 };
 
@@ -516,7 +469,7 @@ Mautic.updateEntitySelect = function (response) {
         }
 
         newOption.prop('selected', true);
-        mQueryParent(el).trigger("chosen:updated");
+        mQueryParent(el).val(response.id).trigger("chosen:updated");
     }
 
     if (window.opener) {
@@ -528,102 +481,47 @@ Mautic.updateEntitySelect = function (response) {
 
 /**
  * Toggles the class for yes/no button groups
- * @param {HTMLElement} element - The toggle label element
+ * @param changedId
  */
-Mautic.toggleYesNo = function(element) {
-    let $label = mQuery(element),
-        $toggle = $label.closest('.toggle'),
-        yesId = $label.data('yes-id'),
-        noId = $label.data('no-id'),
-        $yesInput = mQuery('#' + yesId),
-        $noInput = mQuery('#' + noId),
-        $switchEl = $toggle.find('.toggle__switch'),
-        $toggleLabel = $toggle.find('.toggle__label'),
-        $textEl = $toggle.find('.toggle__text'),
-        isYes = $yesInput.is(':checked');
+Mautic.toggleYesNoButtonClass = function (changedId) {
+    changedId = '#' + changedId;
 
-    $noInput.prop('checked', isYes);
-    $yesInput.prop('checked', !isYes).trigger('change');
-    $switchEl.toggleClass('toggle__switch--checked', !isYes);
-    $textEl.text($toggle.data(isYes ? 'no' : 'yes'));
-    $toggleLabel.attr('aria-checked', !isYes);
+    var isYesButton   = mQuery(changedId).parent().hasClass('btn-yes');
+    var isExtraButton = mQuery(changedId).parent().hasClass('btn-extra');
 
-    Mautic.updatePublishingToggle(element);
-};
-
-Mautic.updatePublishingToggle = function(element) {
-    let $label = mQuery(element),
-        $toggle = $label.closest('.toggle'),
-        $form = $toggle.closest('form'),
-        yesId = $label.data('yes-id'),
-        noId = $label.data('no-id'),
-        $yesInput = mQuery('#' + yesId),
-        $noInput = mQuery('#' + noId),
-        $textEl = $toggle.find('.toggle__text'),
-        isYes = $yesInput.is(':checked'),
-        yesText = $toggle.data('yes'),
-        noText = $toggle.data('no'),
-        noneText = $toggle.data('none'),
-        startText = $toggle.data('start'),
-        bothText = $toggle.data('both'),
-        endText = $toggle.data('end'),
-        $publishUp = $form.find('input[name$="[publishUp]"]'),
-        $publishDown = $form.find('input[name$="[publishDown]"]'),
-        hasPublishUp = $publishUp.length && $publishUp.val().trim() !== '',
-        hasPublishDown = $publishDown.length && $publishDown.val().trim() !== '';
-
-    // Inner function to toggle publish fields and datepicker buttons
-    function togglePublishFields(enable) {
-        [$publishUp, $publishDown].forEach($input => {
-            $input.prop('disabled', !enable);
-            $input.closest('.form-group').find(`label.btn-datepicker[for="${$input.attr('id')}"]`)
-                .toggleClass('disabled', !enable)
-                .attr('aria-disabled', !enable);
-        });
-    }
-
-    if (typeof noneText !== 'undefined') {
-        if (isYes) {
-            $textEl.text(hasPublishUp && hasPublishDown ? bothText : hasPublishUp ? startText : hasPublishDown ? endText : yesText);
-            togglePublishFields(true);
-        } else {
-            $textEl.text(hasPublishUp || hasPublishDown ? noneText : noText);
-            togglePublishFields(false);
-        }
+    if (isExtraButton) {
+        mQuery(changedId).parents('.btn-group').find('.btn').removeClass('btn-success btn-danger').addClass('btn-default');
     } else {
-        $textEl.text(isYes ? yesText : noText);
+        //change the other
+        var otherButton = isYesButton ? '.btn-no' : '.btn-yes';
+        var otherLabel = mQuery(changedId).parent().parent().find(otherButton);
+
+        if (mQuery(changedId).prop('checked')) {
+            var thisRemove = 'btn-default',
+                otherAdd = 'btn-default';
+            if (isYesButton) {
+                var thisAdd = 'btn-success',
+                    otherRemove = 'btn-danger';
+            } else {
+                var thisAdd = 'btn-danger',
+                    otherRemove = 'btn-success';
+            }
+        } else {
+            var thisAdd = 'btn-default';
+            if (isYesButton) {
+                var thisAdd = 'btn-success',
+                    otherRemove = 'btn-danger';
+            } else {
+                var thisAdd = 'btn-danger',
+                    otherRemove = 'btn-success';
+            }
+        }
+
+        mQuery(changedId).parent().removeClass(thisRemove).addClass(thisAdd);
+        mQuery(otherLabel).removeClass(otherRemove).addClass(otherAdd);
     }
-};
 
-// Initialize publishing toggles on page load and re-initialize after AJAX content is loaded
-Mautic.initializePublishingToggles = function() {
-    mQuery('.toggle[data-none]').each(function() {
-        const $label = mQuery(this).find('.toggle__label');
-        Mautic.updatePublishingToggle($label);
-    });
-
-    mQuery('input[name$="[publishUp]"], input[name$="[publishDown]"]').off('change').on('change', function() {
-        const $form = mQuery(this).closest('form');
-        $form.find('.toggle[data-none]').each(function() {
-            const $label = mQuery(this).find('.toggle__label');
-            Mautic.updatePublishingToggle($label);
-        });
-    });
-};
-
-mQuery(document).ready(Mautic.initializePublishingToggles);
-mQuery(document).ajaxComplete(Mautic.initializePublishingToggles);
-
-/**
- * Handles keydown events for accessibility
- * @param {KeyboardEvent} event - The keydown event
- * @param {HTMLElement} element - The toggle label element
- */
-Mautic.handleKeyDown = function(event, element) {
-    if (event.key === ' ' || event.key === 'Enter') {
-        event.preventDefault();
-        Mautic.toggleYesNo(element);
-    }
+    return true;
 };
 
 /**
@@ -632,6 +530,10 @@ Mautic.handleKeyDown = function(event, element) {
  */
 Mautic.removeFormListOption = function (el) {
     var sortableDiv = mQuery(el).parents('div.sortable');
+    var inputCount = mQuery(sortableDiv).parents('div.form-group').find('input.sortable-itemcount');
+    var count = mQuery(inputCount).val();
+    count--;
+    mQuery(inputCount).val(count);
     mQuery(sortableDiv).remove();
 };
 
@@ -671,11 +573,12 @@ Mautic.updateFieldOperatorValue = function(field, action, valueOnChange, valueOn
 
     Mautic.ajaxActionRequest(action, {'alias': fieldAlias, 'operator': fieldOperator, 'changed': fieldType}, function(response) {
         if (typeof response.options != 'undefined') {
+
             var valueField = mQuery('#'+fieldPrefix+'value');
             var valueFieldAttrs = {
                 'class': valueField.attr('class'),
                 'id': valueField.attr('id'),
-                'name': valueField.attr('name').replace(/\[\]$/, ''),
+                'name': valueField.attr('name'),
                 'autocomplete': valueField.attr('autocomplete'),
                 'value': valueField.val()
             };
@@ -691,17 +594,15 @@ Mautic.updateFieldOperatorValue = function(field, action, valueOnChange, valueOn
                     .attr('id', valueFieldAttrs['id'])
                     .attr('name', valueFieldAttrs['name'])
                     .attr('autocomplete', valueFieldAttrs['autocomplete'])
-                    .attr('value', valueFieldAttrs['value'])
-                    .removeAttr('multiple');
+                    .attr('value', valueFieldAttrs['value']);
 
-                var multiple = (fieldOperator === 'in' || fieldOperator === '!in');
-                if (multiple) {
-                    newValueField.attr('multiple', 'multiple');
-
-                    // Update the name
-                    var newName =  newValueField.attr('name') + '[]';
-                    newValueField.attr('name', newName);
-                    newValueField.attr('data-placeholder', mauticLang['chosenChooseMore']);
+                // If the operator is selected as include or exclude then
+                // add multiple attribute to the field and adjust the field
+                // name to accept the array.
+                if (fieldOperator === 'in' || fieldOperator === '!in') {
+                    const attrName = valueFieldAttrs['name'] + '[]';
+                    newValueField.attr('multiple', 'multiple')
+                        .attr('name', attrName);
                 }
 
                 mQuery.each(response.options, function(value, optgroup) {
@@ -796,5 +697,5 @@ Mautic.updateFieldOperatorValue = function(field, action, valueOnChange, valueOn
             }
         }
         Mautic.removeLabelLoadingIndicator();
-    }, false, false, "POST");
+    });
 };
