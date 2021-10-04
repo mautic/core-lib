@@ -362,5 +362,110 @@ final class LeadFieldRepositoryTest extends TestCase
         $query->method('setMaxResults')->willReturnSelf();
 
         return $query;
+    public function dataGetEmptyOperators(): iterable
+    {
+        yield ['empty', ['id' => 123],  true];
+        yield ['!empty', ['id' => 123],  true];
+        yield ['empty', [], false];
+        yield ['!empty', [], false];
+    }
+
+    /**
+     * @dataProvider dataGetEmptyOperators
+     */
+    public function testCompareEmptyDateValueForContactField(string $operator, array $returnValue, bool $expected): void
+    {
+        $contactId        = 12;
+        $fieldAlias       = 'date_field';
+        $value            = '';
+        $builderAlias     = $this->createMock(QueryBuilder::class);
+        $builderCompare   = $this->createMock(QueryBuilder::class);
+        $statementAlias   = $this->createMock(Statement::class);
+        $statementCompare = $this->createMock(Statement::class);
+        $exprCompare      = $this->createMock(ExpressionBuilder::class);
+
+        $this->entityManager->method('getConnection')->willReturn($this->connection);
+        $builderAlias->method('expr')->willReturn(new ExpressionBuilder($this->connection));
+        $builderCompare->method('expr')->willReturn($exprCompare);
+
+        $this->connection->expects($this->exactly(2))
+            ->method('createQueryBuilder')
+            ->will($this->onConsecutiveCalls($builderCompare, $builderAlias));
+
+        $builderAlias->expects($this->once())
+            ->method('select')
+            ->with('f.alias, f.is_unique_identifer as is_unique, f.type, f.object')
+            ->willReturnSelf();
+
+        $builderAlias->expects($this->once())
+            ->method('from')
+            ->with(MAUTIC_TABLE_PREFIX.'lead_fields', 'f')
+            ->willReturnSelf();
+
+        $builderAlias->expects($this->once())
+            ->method('where')
+            ->willReturnSelf();
+
+        $builderAlias->expects($this->once())
+            ->method('setParameter')
+            ->with('object', 'company')
+            ->willReturnSelf();
+
+        $builderAlias->expects($this->once())
+            ->method('orderBy')
+            ->with('f.field_order', 'ASC')
+            ->willReturnSelf();
+
+        $builderAlias->expects($this->once())
+            ->method('execute')
+            ->willReturn($statementAlias);
+
+        // No company column found. Therefore it's a contact field.
+        $statementAlias->expects($this->once())
+            ->method('fetchAll')
+            ->willReturn([]);
+
+        $exprCompare->expects($this->once())
+            ->method('eq')
+            ->with('l.id', ':lead');
+
+        $operators = [
+            'empty'     => 'isNull',
+            '!empty'    => 'isNotNull',
+        ];
+
+        $exprCompare->expects($this->once())
+            ->method($operators[$operator])
+            ->with('l.date_field');
+
+        $builderCompare->expects($this->once())
+            ->method('select')
+            ->with('l.id')
+            ->willReturnSelf();
+
+        $builderCompare->expects($this->once())
+            ->method('from')
+            ->with(MAUTIC_TABLE_PREFIX.'leads', 'l')
+            ->willReturnSelf();
+
+        $builderCompare->expects($this->once())
+            ->method('where')
+            ->willReturnSelf();
+
+        $builderCompare->expects($this->once())
+            ->method('setParameter')
+            ->with('lead', $contactId)
+            ->willReturnSelf();
+
+        $builderCompare->expects($this->once())
+            ->method('execute')
+            ->willReturn($statementCompare);
+
+        // No contact ID was found by the value so the result should be false.
+        $statementCompare->expects($this->once())
+            ->method('fetch')
+            ->willReturn($returnValue);
+
+        $this->assertSame($expected, $this->repository->compareEmptyDateValue($contactId, $fieldAlias, $operator));
     }
 }

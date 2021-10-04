@@ -527,16 +527,32 @@ class CampaignSubscriber implements EventSubscriberInterface
                 $operators = OperatorOptions::getFilterExpressionFunctions();
                 $field     = $event->getConfig()['field'];
                 $value     = $event->getConfig()['value'];
-                $fields    = $this->getFields($lead);
+                $operator  = $event->getConfig()['operator'];
+                $fields    = $lead->getFields(true);
 
-                $fieldValue = isset($fields[$field]) ? CustomFieldHelper::fieldValueTransfomer($fields[$field], $value) : $value;
-                $result     = $this->leadFieldModel->getRepository()->compareValue(
-                    $lead->getId(),
-                    $field,
-                    $fieldValue,
-                    $operators[$event->getConfig()['operator']]['expr'],
-                    $fields[$field]['type'] ?? null
-                );
+                $fieldType  = '';
+                $fieldValue = $value;
+                if (isset($fields[$field])) {
+                    $fieldValue = CustomFieldHelper::fieldValueTransfomer($fields[$field], $value);
+                    $fieldType  = $fields[$field]['type'];
+                }
+
+                // Preventing date/datetime fields to fail on empty/notEmpty
+                // check.
+                if (in_array($fieldType, ['date', 'datetime']) && in_array($operator, ['empty', '!empty'])) {
+                    $result     = $this->leadFieldModel->getRepository()->compareEmptyDateValue(
+                        $lead->getId(),
+                        $field,
+                        $operators[$operator]['expr']
+                    );
+                } else {
+                    $result     = $this->leadFieldModel->getRepository()->compareValue(
+                        $lead->getId(),
+                        $field,
+                        $fieldValue,
+                        $operators[$operator]['expr']
+                    );
+                }
             }
         } elseif ($event->checkContext('lead.dnc')) {
             $channels  = $event->getConfig()['channels'];
