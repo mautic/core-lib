@@ -1026,6 +1026,8 @@ class Event implements ChannelInterface, UuidInterface
     {
         if (empty($triggerRestrictedStartHour)) {
             $triggerRestrictedStartHour = null;
+        } elseif (is_array($triggerRestrictedStartHour) && array_key_exists('date', $triggerRestrictedStartHour)) {
+            $triggerRestrictedStartHour = new \DateTime($triggerRestrictedStartHour['date']);
         } elseif (!$triggerRestrictedStartHour instanceof \DateTime) {
             $triggerRestrictedStartHour = new \DateTime($triggerRestrictedStartHour);
         }
@@ -1058,6 +1060,8 @@ class Event implements ChannelInterface, UuidInterface
     {
         if (empty($triggerRestrictedStopHour)) {
             $triggerRestrictedStopHour = null;
+        } elseif (is_array($triggerRestrictedStopHour) && array_key_exists('date', $triggerRestrictedStopHour)) {
+            $triggerRestrictedStopHour = new \DateTime($triggerRestrictedStopHour['date']);
         } elseif (!$triggerRestrictedStopHour instanceof \DateTime) {
             $triggerRestrictedStopHour = new \DateTime($triggerRestrictedStopHour);
         }
