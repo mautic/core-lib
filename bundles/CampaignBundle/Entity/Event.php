@@ -807,7 +807,7 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @param string $triggerHour
+     * @param string|array $triggerHour
      *
      * @return Event
      */
