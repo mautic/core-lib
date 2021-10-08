@@ -815,6 +815,8 @@ class Event implements ChannelInterface, UuidInterface
     {
         if (empty($triggerHour)) {
             $triggerHour = null;
+        } elseif (is_array($triggerHour) && array_key_exists('date', $triggerHour)) {
+            $triggerHour = new \DateTime($triggerHour['date']);
         } elseif (!$triggerHour instanceof \DateTime) {
             $triggerHour = new \DateTime($triggerHour);
         }
