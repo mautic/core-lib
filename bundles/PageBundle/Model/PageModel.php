@@ -2,6 +2,7 @@
 
 namespace Mautic\PageBundle\Model;
 
+use DateTime;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManager;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
@@ -446,7 +447,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         }
 
         $hit = new Hit();
-        $hit->setDateHit($dateTime);
+        $hit->setDateHit($dateTime ?: new Datetime());
         $hit->setIpAddress($ipAddress);
 
         // Set info from request
