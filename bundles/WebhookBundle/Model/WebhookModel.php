@@ -119,6 +119,11 @@ class WebhookModel extends FormModel
      */
     private ?float $startTime = null;
 
+    /**
+     * @var bool
+     */
+    private $disableAutoUnpublish;
+
     public function __construct(
         CoreParametersHelper $coreParametersHelper,
         protected SerializerInterface $serializer,
@@ -295,6 +300,7 @@ class WebhookModel extends FormModel
         }
 
         $start            = microtime(true);
+        $logged = false;
         $webhookQueueRepo = $this->getQueueRepository();
 
         try {
@@ -316,6 +322,7 @@ class WebhookModel extends FormModel
             $responseStatusCode = $response->getStatusCode();
 
             $this->addLog($webhook, $responseStatusCode, microtime(true) - $start, $responseBody);
+            $logged = true;
 
             // throw an error exception if we don't get a 200 back
             if ($responseStatusCode >= 300 || $responseStatusCode < 200) {
@@ -329,7 +336,7 @@ class WebhookModel extends FormModel
         } catch (\Exception $e) {
             $message = $e->getMessage();
 
-            if ($this->isSick($webhook)) {
+            if (!$this->disableAutoUnpublish && $this->isSick($webhook)) {
                 $this->killWebhook($webhook);
                 $message .= ' '.$this->translator->trans('mautic.webhook.killed', ['%limit%' => $this->disableLimit]);
             }
@@ -337,8 +344,10 @@ class WebhookModel extends FormModel
             // log any errors but allow the script to keep running
             $this->logger->error($message);
 
-            // log that the request failed to display it to the user
-            $this->addLog($webhook, 'N/A', microtime(true) - $start, $message);
+            if (!$logged) {
+                // log that the request failed to display it to the user
+                $this->addLog($webhook, 'N/A', (microtime(true) - $start), $message);
+            }
 
             return false;
         }
@@ -672,5 +681,6 @@ class WebhookModel extends FormModel
         $this->logMax           = (int) $coreParametersHelper->get('webhook_log_max', self::WEBHOOK_LOG_MAX);
         $this->queueMode        = $coreParametersHelper->get('queue_mode');
         $this->eventsOrderByDir = $coreParametersHelper->get('events_orderby_dir', Order::Ascending->value);
+        $this->disableAutoUnpublish = (bool) $coreParametersHelper->get('disable_auto_unpublish');
     }
 }

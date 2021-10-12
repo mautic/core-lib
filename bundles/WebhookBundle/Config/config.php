@@ -75,5 +75,6 @@ return [
         'events_orderby_dir'                   => Doctrine\Common\Collections\Order::Ascending->value, // Order the queued events chronologically or the other way around
         'webhook_email_details'                => true, // If enabled, email related webhooks send detailed data
         'webhook_allowed_private_addresses'    => [],
+        'disable_auto_unpublish'               => false, // If enabled, webhooks will not be automatically unpublished on errors
     ],
 ];

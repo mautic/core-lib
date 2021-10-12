@@ -157,3 +157,8 @@ $container->register('test.service_container', Mautic\CoreBundle\Test\Container\
     ->setArgument('$kernel', new Reference('kernel'))
     ->setArgument('$privateServicesLocatorId', 'test.private_services_locator')
     ->setPublic(true);
+
+// Stub Guzzle client factory to prevent accidental request to third parties
+$container->register('mautic.guzzle.client.factory', \Mautic\EmailBundle\Swiftmailer\Guzzle\ClientFactoryInterface::class)
+    ->setFactory('\Mautic\CoreBundle\Test\Guzzle\ClientFactory::stubFactory')
+    ->addArgument(new Reference('mautic.http.client.mock_handler'));
