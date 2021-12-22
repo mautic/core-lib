@@ -22,21 +22,15 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
      */
     public function testSegmentCountCacheCommand(): void
     {
-        $application = new Application(self::$kernel);
-        $application->setAutoExit(false);
-        $applicationTester = new ApplicationTester($application);
-
         $contacts  = $this->saveContacts();
         $segment   = $this->saveSegment();
         $segmentId = $segment->getId();
 
         // Run segments update command.
-        $exitCode = $applicationTester->run(['command' => 'mautic:segments:update', '-i' => $segmentId]);
-        self::assertSame(0, $exitCode, $applicationTester->getDisplay());
+        $this->runCommand('mautic:segments:update', ['-i' => $segmentId]);
 
         // Run segment count cache command.
-        $exitCode = $applicationTester->run([SegmentCountCacheCommand::COMMAND_NAME]);
-        self::assertSame(0, $exitCode, $applicationTester->getDisplay());
+        $this->runCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
         // Check segment cached contact count using the SegmentCountCacheHelper directly
         $segmentCountCacheHelper = static::getContainer()->get('mautic.helper.segment.count.cache');
@@ -50,8 +44,7 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
         self::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
 
         // Run segment count cache command again.
-        $exitCode = $applicationTester->run([SegmentCountCacheCommand::COMMAND_NAME]);
-        self::assertSame(0, $exitCode, $applicationTester->getDisplay());
+        $this->runCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
         // Check segment cached contact count using the SegmentCountCacheHelper directly
         $segmentCountCacheHelper = static::getContainer()->get('mautic.helper.segment.count.cache');
