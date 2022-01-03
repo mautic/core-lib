@@ -887,6 +887,13 @@ return [
                 'class'     => Mautic\LeadBundle\Helper\SegmentCountCacheHelper::class,
                 'arguments' => ['mautic.helper.cache_storage'],
             ],
+            'mautic.lead.command.stat' => [
+                'class'     => Mautic\LeadBundle\Command\SegmentStatCommand::class,
+                'arguments' => [
+                    'event_dispatcher',
+                ],
+                'tag' => 'console.command',
+            ],
         ],
         'fixtures' => [
             'mautic.lead.fixture.company' => [
