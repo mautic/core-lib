@@ -358,6 +358,12 @@ return [
                     'mautic.lead.model.export_scheduler',
                 ],
             ],
+            'mautic.lead.subscribers.stats.segment' => [
+                'class'     => Mautic\LeadBundle\EventListener\SegmentStatsSubscriber::class,
+                'arguments' => [
+                    'doctrine.orm.entity_manager',
+                ],
+            ],
         ],
         'other' => [
             'mautic.lead.doctrine.subscriber' => [
