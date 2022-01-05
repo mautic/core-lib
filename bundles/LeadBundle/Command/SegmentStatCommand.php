@@ -36,6 +36,7 @@ class SegmentStatCommand extends ModeratedCommand
         $event = new GetStatDataEvent();
         $this->dispatcher->dispatch(LeadEvents::LEAD_STAT, $event);
 
+        //todo formatting of output
         dd($event->getResults());
     }
 }
