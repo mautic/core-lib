@@ -32,7 +32,8 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $result = array_merge(
             $this->getCampaignEntryPoints(),
             $this->getEmailIncludeExcludeList(),
-            $this->getCampaignChangeSegmentAction()
+            $this->getCampaignChangeSegmentAction(),
+            $this->getFilterSegmentsAction()
         );
 
         $allSegments = $this->getAllSegments();
@@ -155,7 +156,49 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
             1 used
             FROM '.MAUTIC_TABLE_PREFIX.'lead_lists ll
             WHERE ll.id IN (?)', $rsm);
-        $query->setParameter(1, implode(',', $segmentIds));
+        $query->setParameter(1, $segmentIds);
+
+        return $query->getResult();
+    }
+
+    public function getFilterSegmentsAction()
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('filters', 'filters');
+
+        $query = $this->entityManager->createNativeQuery('SELECT 
+            filters 
+        FROM '.MAUTIC_TABLE_PREFIX.'lead_lists ls', $rsm);
+
+        $result          = $query->getResult();
+        $childSegmentIds = [];
+
+        foreach ($result as $rowFilters) {
+            $segmentMembershipFilters = array_filter(
+                unserialize($rowFilters['filters']),
+                function (array $filter) {
+                    return 'leadlist' === $filter['type'];
+                }
+            );
+
+            foreach ($segmentMembershipFilters as $filter) {
+                foreach ($filter['properties']['filter'] as $childSegmentId) {
+                    $childSegmentIds[] = (int) $childSegmentId;
+                }
+            }
+        }
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('title', 'title');
+        $rsm->addScalarResult('item_id', 'item_id');
+        $rsm->addScalarResult('used', 'used');
+        $query = $this->entityManager->createNativeQuery('SELECT 
+            ll.name as title, 
+            ll.id as item_id,
+            1 used
+            FROM '.MAUTIC_TABLE_PREFIX.'lead_lists ll
+            WHERE ll.id IN (?)', $rsm);
+        $query->setParameter(1, $childSegmentIds);
 
         return $query->getResult();
     }
