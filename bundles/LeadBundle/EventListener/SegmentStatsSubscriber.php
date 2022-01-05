@@ -1,0 +1,162 @@
+<?php
+
+namespace Mautic\LeadBundle\EventListener;
+
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Mautic\LeadBundle\Event\GetStatDataEvent;
+use Mautic\LeadBundle\LeadEvents;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+class SegmentStatsSubscriber implements EventSubscriberInterface
+{
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            LeadEvents::LEAD_STAT   => ['getStatsLeadEvents', 0],
+        ];
+    }
+
+    public function getStatsLeadEvents(GetStatDataEvent $event): void
+    {
+        $result = array_merge(
+            $this->getCampaignEntryPoints(),
+            $this->getEmailIncludeExcludeList(),
+            $this->getCampaignChangeSegmentAction()
+        );
+
+        $allSegments = $this->getAllSegments();
+
+        $stats = array_map(function ($data) use ($result) {
+            if ($hasData = array_filter($result, function ($res) use ($data) {
+                return $res['item_id'] === $data['item_id'];
+            })) {
+                $hasTotalData = reset($hasData);
+                $data['used'] = $hasTotalData['used'] ?? 0;
+            }
+
+            return $data;
+        }, $allSegments);
+
+        $event->addResult('segments', $stats);
+    }
+
+    public function getAllSegments()
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('title', 'title');
+        $rsm->addScalarResult('item_id', 'item_id');
+        $rsm->addScalarResult('published', 'published');
+        $query = $this->entityManager->createNativeQuery('SELECT 
+            ll.name as title, 
+            ll.id as item_id,
+            ll.is_published as published
+            FROM '.MAUTIC_TABLE_PREFIX.'lead_lists ll', $rsm);
+
+        return $query->getResult();
+    }
+
+    public function getCampaignEntryPoints()
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('title', 'title');
+        $rsm->addScalarResult('item_id', 'item_id');
+        $rsm->addScalarResult('used', 'used');
+
+        $query = $this->entityManager->createNativeQuery('SELECT 
+            ll.name as title, 
+            ll.id as item_id,
+            1 used
+        FROM '.MAUTIC_TABLE_PREFIX.'campaign_leadlist_xref cl
+            LEFT JOIN '.MAUTIC_TABLE_PREFIX.'lead_lists ll on ll.id=cl.leadlist_id
+            GROUP BY ll.id', $rsm);
+
+        return $query->getResult();
+    }
+
+    public function getEmailIncludeExcludeList()
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('title', 'title');
+        $rsm->addScalarResult('item_id', 'item_id');
+        $rsm->addScalarResult('used', 'used');
+
+        $query = $this->entityManager->createNativeQuery('SELECT 
+            ll.name as title, 
+            ll.id as item_id,
+            1 used
+        FROM '.MAUTIC_TABLE_PREFIX.'email_list_xref eli
+            LEFT JOIN '.MAUTIC_TABLE_PREFIX.'lead_lists ll on ll.id=eli.leadlist_id
+            GROUP BY ll.id', $rsm);
+
+        $included = $query->getResult();
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('title', 'title');
+        $rsm->addScalarResult('item_id', 'item_id');
+
+        $query = $this->entityManager->createNativeQuery('SELECT 
+            ll.name as title, 
+            ll.id as item_id
+        FROM '.MAUTIC_TABLE_PREFIX.'email_list_excluded ele
+            LEFT JOIN '.MAUTIC_TABLE_PREFIX.'lead_lists ll on ll.id=ele.leadlist_id
+            GROUP BY ll.id', $rsm);
+
+        $excluded = $query->getResult();
+
+        return array_merge($included, $excluded);
+    }
+
+    public function getCampaignChangeSegmentAction()
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('properties', 'properties');
+
+        $query = $this->entityManager->createNativeQuery('SELECT 
+            properties 
+        FROM '.MAUTIC_TABLE_PREFIX.'campaign_events ce 
+        WHERE ce.type = \'lead.changelist\'', $rsm);
+
+        $result = $query->getResult();
+
+        /*foreach ($query->getResult() as $property) {
+            $property       = unserialize($property['properties']);
+            $segments     = array_map(function ($data) {
+                return [
+                    'item_id' => (string) $data,
+                    'used'    => 1,
+                ];
+            }, array_merge($property['addToLists'], $property['removeFromLists']));
+        }*/
+
+        $segmentIds = [];
+        foreach ($query->getResult() as $property) {
+            $property       = unserialize($property['properties']);
+            $segmentIds     = array_merge($property['addToLists'], $property['removeFromLists'], $segmentIds);
+        }
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('title', 'title');
+        $rsm->addScalarResult('item_id', 'item_id');
+        $rsm->addScalarResult('used', 'used');
+        $query = $this->entityManager->createNativeQuery('SELECT 
+            ll.name as title, 
+            ll.id as item_id,
+            1 used
+            FROM '.MAUTIC_TABLE_PREFIX.'lead_lists ll
+            WHERE ll.id IN (?)', $rsm);
+        $query->setParameter(1, implode(',', $segmentIds));
+
+        return $query->getResult();
+    }
+}
