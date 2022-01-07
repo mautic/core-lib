@@ -126,7 +126,7 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['sendSms', 'getEntity'])
             ->getMock();
 
-        $smsModel->expects(self::once())->method('sendSms')->willReturn([]);
+        $smsModel->method('sendSms')->willReturn([456 => ['status' => true]]);
         $smsModel->method('getEntity')->willReturn($sms);
 
         $event     = new Event();
@@ -146,6 +146,9 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $leadLog->setLead($contact);
         $contact->setId(789);
+
+        $this->translator->method('trans')
+            ->willReturn('random string');
 
         $subscriber = new CampaignSendSubscriber(
             $smsModel,

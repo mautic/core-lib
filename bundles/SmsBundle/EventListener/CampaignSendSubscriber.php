@@ -72,7 +72,23 @@ class CampaignSendSubscriber implements EventSubscriberInterface
 
     private function sendSmsInBatches(Sms $sms, PendingEvent $event): void
     {
-        $contacts = $event->getContacts();
-        $this->smsModel->sendSMS($sms, $contacts, ['channel' => ['campaign.event', $event->getEvent()->getId()]]);
+        $contacts = $event->getContacts()->toArray();
+        $result   = $this->smsModel->sendSMS($sms, $contacts, ['channel' => ['campaign.event', $event->getEvent()->getId()]]);
+        $this->processResponse($event, $result);
+    }
+
+    /**
+     * @param mixed[] $result
+     */
+    private function processResponse(PendingEvent $event, array $result): void
+    {
+        foreach ($event->getPending() as $log) {
+            if (isset($result[$log->getLead()->getId()])) {
+                $log->appendToMetadata($result);
+                $event->pass($log);
+            }
+        }
+
+        $event->failRemaining($this->translator->trans('mautic.sms.campaign.failed.missing_entity'));
     }
 }
