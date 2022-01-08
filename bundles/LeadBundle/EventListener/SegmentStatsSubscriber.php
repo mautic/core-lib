@@ -3,6 +3,7 @@
 namespace Mautic\LeadBundle\EventListener;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Mautic\LeadBundle\LeadEvents;
@@ -15,7 +16,7 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
      */
     private $entityManager;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
@@ -39,11 +40,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $allSegments = $this->getAllSegments();
 
         $stats = array_map(function ($data) use ($result) {
-            if ($hasData = array_filter($result, function ($res) use ($data) {
+            if (array_filter($result, function ($res) use ($data) {
                 return $res['item_id'] === $data['item_id'];
             })) {
-                $hasTotalData = reset($hasData);
-                $data['used'] = $hasTotalData['used'] ?? 0;
+                $data['is_used'] = 1;
             }
 
             return $data;
@@ -57,11 +57,11 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('item_id', 'item_id');
-        $rsm->addScalarResult('published', 'published');
+        $rsm->addScalarResult('is_published', 'is_published');
         $query = $this->entityManager->createNativeQuery('SELECT 
             ll.name as title, 
             ll.id as item_id,
-            ll.is_published as published
+            ll.is_published as is_published
             FROM '.MAUTIC_TABLE_PREFIX.'lead_lists ll', $rsm);
 
         return $query->getResult();
@@ -72,12 +72,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('item_id', 'item_id');
-        $rsm->addScalarResult('used', 'used');
 
         $query = $this->entityManager->createNativeQuery('SELECT 
             ll.name as title, 
-            ll.id as item_id,
-            1 used
+            ll.id as item_id
         FROM '.MAUTIC_TABLE_PREFIX.'campaign_leadlist_xref cl
             LEFT JOIN '.MAUTIC_TABLE_PREFIX.'lead_lists ll on ll.id=cl.leadlist_id
             GROUP BY ll.id', $rsm);
@@ -90,12 +88,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('item_id', 'item_id');
-        $rsm->addScalarResult('used', 'used');
 
         $query = $this->entityManager->createNativeQuery('SELECT 
             ll.name as title, 
-            ll.id as item_id,
-            1 used
+            ll.id as item_id
         FROM '.MAUTIC_TABLE_PREFIX.'email_list_xref eli
             LEFT JOIN '.MAUTIC_TABLE_PREFIX.'lead_lists ll on ll.id=eli.leadlist_id
             GROUP BY ll.id', $rsm);
@@ -130,16 +126,6 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
 
         $result = $query->getResult();
 
-        /*foreach ($query->getResult() as $property) {
-            $property       = unserialize($property['properties']);
-            $segments     = array_map(function ($data) {
-                return [
-                    'item_id' => (string) $data,
-                    'used'    => 1,
-                ];
-            }, array_merge($property['addToLists'], $property['removeFromLists']));
-        }*/
-
         $segmentIds = [];
         foreach ($query->getResult() as $property) {
             $property       = unserialize($property['properties']);
@@ -149,11 +135,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('item_id', 'item_id');
-        $rsm->addScalarResult('used', 'used');
+
         $query = $this->entityManager->createNativeQuery('SELECT 
             ll.name as title, 
-            ll.id as item_id,
-            1 used
+            ll.id as item_id
             FROM '.MAUTIC_TABLE_PREFIX.'lead_lists ll
             WHERE ll.id IN (?)', $rsm);
         $query->setParameter(1, $segmentIds);
@@ -168,9 +153,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
 
         $query = $this->entityManager->createNativeQuery('SELECT 
             filters 
-        FROM '.MAUTIC_TABLE_PREFIX.'lead_lists ls', $rsm);
+        FROM '.MAUTIC_TABLE_PREFIX.'lead_lists', $rsm);
 
         $result          = $query->getResult();
+
         $childSegmentIds = [];
 
         foreach ($result as $rowFilters) {
@@ -191,11 +177,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('title', 'title');
         $rsm->addScalarResult('item_id', 'item_id');
-        $rsm->addScalarResult('used', 'used');
+
         $query = $this->entityManager->createNativeQuery('SELECT 
             ll.name as title, 
-            ll.id as item_id,
-            1 used
+            ll.id as item_id
             FROM '.MAUTIC_TABLE_PREFIX.'lead_lists ll
             WHERE ll.id IN (?)', $rsm);
         $query->setParameter(1, $childSegmentIds);
