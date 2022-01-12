@@ -7,6 +7,7 @@ use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Mautic\LeadBundle\LeadEvents;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class SegmentStatCommand extends ModeratedCommand
@@ -22,7 +23,7 @@ class SegmentStatCommand extends ModeratedCommand
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('mautic:segments:stat')
@@ -31,12 +32,24 @@ class SegmentStatCommand extends ModeratedCommand
         parent::configure();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $event = new GetStatDataEvent();
+        $io         = new SymfonyStyle($input, $output);
+        $event      = new GetStatDataEvent();
         $this->dispatcher->dispatch(LeadEvents::LEAD_STAT, $event);
 
-        //todo formatting of output
-        dd($event->getResults());
+        $io->table([
+                'Title',
+                'Id',
+                'IsPublished',
+                'IsUsed',
+            ],
+            $event->getResults()['segments']
+        );
+
+        return 0;
     }
 }
