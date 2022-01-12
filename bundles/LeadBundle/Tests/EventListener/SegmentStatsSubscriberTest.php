@@ -2,8 +2,6 @@
 
 namespace Mautic\LeadBundle\Tests\EventListener;
 
-use function Clue\StreamFilter\fun;
-use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
@@ -12,17 +10,11 @@ use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Mautic\LeadBundle\EventListener\SegmentStatsSubscriber;
 use Mautic\LeadBundle\LeadEvents;
-use MauticPlugin\MauticNetworkBundle\Serializer\EventListener\GlobalTokenSubscriber;
-use MauticPlugin\MauticNetworkBundle\Serializer\SerializerEvents;
 use PHPUnit\Framework\Assert;
 use Ramsey\Uuid\Uuid;
 
 class SegmentStatsSubscriberTest extends MauticMysqlTestCase
 {
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $entityManager;
     /**
      * @var SegmentStatsSubscriber
      */
