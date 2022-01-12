@@ -12,7 +12,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class SegmentStatsSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
@@ -21,6 +21,9 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @return mixed[]
+     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -52,7 +55,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $event->addResult('segments', $stats);
     }
 
-    public function getAllSegments()
+    /**
+     * @return mixed
+     */
+    private function getAllSegments()
     {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('title', 'title');
@@ -67,7 +73,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         return $query->getResult();
     }
 
-    public function getCampaignEntryPoints()
+    /**
+     * @return mixed
+     */
+    private function getCampaignEntryPoints()
     {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('title', 'title');
@@ -83,7 +92,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         return $query->getResult();
     }
 
-    public function getEmailIncludeExcludeList()
+    /**
+     * @return mixed
+     */
+    private function getEmailIncludeExcludeList()
     {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('title', 'title');
@@ -114,7 +126,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         return array_merge($included, $excluded);
     }
 
-    public function getCampaignChangeSegmentAction()
+    /**
+     * @return mixed
+     */
+    private function getCampaignChangeSegmentAction()
     {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('properties', 'properties');
@@ -123,8 +138,6 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
             properties 
         FROM '.MAUTIC_TABLE_PREFIX.'campaign_events ce 
         WHERE ce.type = \'lead.changelist\'', $rsm);
-
-        $result = $query->getResult();
 
         $segmentIds = [];
         foreach ($query->getResult() as $property) {
@@ -146,7 +159,10 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         return $query->getResult();
     }
 
-    public function getFilterSegmentsAction()
+    /**
+     * @return mixed
+     */
+    private function getFilterSegmentsAction()
     {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('filters', 'filters');
@@ -155,11 +171,9 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
             filters 
         FROM '.MAUTIC_TABLE_PREFIX.'lead_lists', $rsm);
 
-        $result          = $query->getResult();
-
         $childSegmentIds = [];
 
-        foreach ($result as $rowFilters) {
+        foreach ($query->getResult() as $rowFilters) {
             $segmentMembershipFilters = array_filter(
                 unserialize($rowFilters['filters']),
                 function (array $filter) {
