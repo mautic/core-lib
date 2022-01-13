@@ -35,7 +35,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
      */
     public function testGetSubscribedEvents(): void
     {
-        Assert::assertArrayHasKey(LeadEvents::LEAD_STAT, SegmentStatsSubscriber::getSubscribedEvents());
+        Assert::assertArrayHasKey(LeadEvents::LEAD_LIST_STAT, SegmentStatsSubscriber::getSubscribedEvents());
     }
 
     public function testGetCampaignEntryPoints(): void
