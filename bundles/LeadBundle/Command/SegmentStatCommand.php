@@ -39,7 +39,7 @@ class SegmentStatCommand extends ModeratedCommand
     {
         $io         = new SymfonyStyle($input, $output);
         $event      = new GetStatDataEvent();
-        $this->dispatcher->dispatch(LeadEvents::LEAD_STAT, $event);
+        $this->dispatcher->dispatch(LeadEvents::LEAD_LIST_STAT, $event);
 
         $io->table([
                 'Title',
