@@ -2,7 +2,6 @@
 
 namespace Mautic\LeadBundle\EventListener;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
@@ -27,7 +26,7 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            LeadEvents::LEAD_STAT   => ['getStatsLeadEvents', 0],
+            LeadEvents::LEAD_LIST_STAT   => ['getStatsLeadEvents', 0],
         ];
     }
 
