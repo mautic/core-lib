@@ -825,4 +825,13 @@ final class LeadEvents
      * @var string
      */
     public const LEAD_ON_SEGMENTS_CHANGE = 'mautic.lead_on_segments_change';
+
+    /**
+     * The mautic.lead_list_stat event is dispatched to gather the usage of segment.
+     *
+     * The event listener receives a Mautic\LeadBundle\Event\GetStatDataEvent instance.
+     *
+     * @var string
+     */
+    public const LEAD_LIST_STAT = 'mautic.lead_list_stat';
 }
