@@ -9,6 +9,7 @@ use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\LeadList;
+use Mautic\LeadBundle\Entity\LeadListRepository;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Mautic\LeadBundle\EventListener\SegmentStatsSubscriber;
 use Mautic\LeadBundle\LeadEvents;
@@ -29,7 +30,9 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
     {
         parent::setUp();
 
-        $this->subscriber       = new SegmentStatsSubscriber($this->em);
+        $this->subscriber = new SegmentStatsSubscriber(
+            $this->getContainer()->get('mautic.lead.repository.lead_list')
+        );
     }
 
     /**
