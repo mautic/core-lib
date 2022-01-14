@@ -50,6 +50,6 @@ class SegmentStatCommand extends ModeratedCommand
             $event->getResults()['segments']
         );
 
-        return 0;
+        return ExitCode::SUCCESS;
     }
 }
