@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\Event;
 
-use MauticPlugin\MauticNetworkBundle\Exception\KeyAlreadyExistsException;
+use Mautic\LeadBundle\Exception\KeyAlreadyExistsException;
 use Symfony\Component\EventDispatcher\Event;
 
 class GetStatDataEvent extends Event
 {
     /**
-     * @var mixed[]
+     * @var array<string,mixed[]>
      */
     private $results = [];
 
