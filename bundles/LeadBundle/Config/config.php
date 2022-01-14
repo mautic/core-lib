@@ -361,7 +361,7 @@ return [
             'mautic.lead.subscribers.stats.segment' => [
                 'class'     => Mautic\LeadBundle\EventListener\SegmentStatsSubscriber::class,
                 'arguments' => [
-                    'doctrine.orm.entity_manager',
+                    'mautic.lead.repository.lead_list',
                 ],
             ],
         ],

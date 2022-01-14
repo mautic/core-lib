@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Command;
 
 use Mautic\CoreBundle\Command\ModeratedCommand;
+use Mautic\CoreBundle\Helper\ExitCode;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Mautic\LeadBundle\LeadEvents;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,6 +44,7 @@ class SegmentStatCommand extends ModeratedCommand
         $event      = new GetStatDataEvent();
         $this->dispatcher->dispatch(LeadEvents::LEAD_LIST_STAT, $event);
 
+        dd($event->getResults());
         $io->table([
                 'Title',
                 'Id',
