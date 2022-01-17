@@ -626,7 +626,7 @@ SQL;
     }
 
     /**
-     * @return mixed
+     * @return mixed[]
      */
     public function getAllSegments(): array
     {
@@ -644,7 +644,7 @@ SQL;
     }
 
     /**
-     * @return mixed
+     * @return mixed[]
      */
     public function getCampaignEntryPoints(): array
     {
@@ -660,7 +660,7 @@ SQL;
     }
 
     /**
-     * @return mixed
+     * @return mixed[]
      */
     public function getEmailIncludeExcludeList(): array
     {
@@ -688,7 +688,7 @@ SQL;
     }
 
     /**
-     * @return mixed
+     * @return mixed[]
      */
     public function getCampaignChangeSegmentAction(): array
     {
@@ -712,7 +712,7 @@ SQL;
     }
 
     /**
-     * @return mixed
+     * @return mixed[]
      */
     public function getFilterSegmentsAction(): array
     {
