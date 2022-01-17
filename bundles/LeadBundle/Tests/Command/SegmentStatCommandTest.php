@@ -43,10 +43,9 @@ class SegmentStatCommandTest extends MauticMysqlTestCase
 
         $output = $this->runCommand('mautic:segments:stat');
 
-        //testing segment name
-        $this->assertStringContainsString('Segment For Campaign', $output);
-
-        //testing segment is used
-        $this->assertStringContainsString('1', $output);
+        // test table header
+        $this->assertRegExp('/Title\s+Id\s+IsPublished\s+IsUsed/i', $output);
+        // test table content
+        $this->assertRegExp("/Segment For Campaign\s+{$segment->getId()}\s+{$segment->getIsPublished()}\s+1/i", $output);
     }
 }
