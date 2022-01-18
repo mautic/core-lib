@@ -52,6 +52,6 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
             return $data;
         }, $allSegments);
 
-        $event->addResult('segments', $stats);
+        $event->addResult($stats);
     }
 }

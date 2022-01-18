@@ -52,15 +52,15 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
 
         $this->assertTrue(
             in_array(
-                $event->getResults()['segments'][0]['item_id'],
+                $event->getResults()[0]['item_id'],
                 array_map(function ($list) {
                     return $list->getId();
                 }, $campaign->getLists()->toArray())
             )
         );
 
-        $this->assertSame(1, (int) $event->getResults()['segments'][0]['is_used']);
-        $this->assertSame(1, (int) $event->getResults()['segments'][0]['is_published']);
+        $this->assertSame(1, (int) $event->getResults()[0]['is_used']);
+        $this->assertSame(1, (int) $event->getResults()[0]['is_published']);
     }
 
     public function testGetCampaignChangeSegmentAction(): void
@@ -71,7 +71,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
 
         $this->subscriber->getStatsLeadEvents($event);
 
-        foreach ($event->getResults()['segments'] as $segment) {
+        foreach ($event->getResults() as $segment) {
             $this->assertTrue(
                 in_array(
                     $segment['item_id'],
@@ -94,7 +94,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
 
         $this->subscriber->getStatsLeadEvents($event);
 
-        foreach ($event->getResults()['segments'] as $segment) {
+        foreach ($event->getResults() as $segment) {
             $this->assertTrue(
                 in_array(
                     $segment['item_id'],
@@ -119,14 +119,14 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
 
         $this->assertSame(
             $segment->getFilters()[0]['properties']['filter'][0],
-            (int) $event->getResults()['segments'][0]['item_id']
+            (int) $event->getResults()[0]['item_id']
         );
-        $this->assertSame(1, (int) $event->getResults()['segments'][0]['is_used']);
-        $this->assertSame(1, (int) $event->getResults()['segments'][0]['is_published']);
+        $this->assertSame(1, (int) $event->getResults()[0]['is_used']);
+        $this->assertSame(1, (int) $event->getResults()[0]['is_published']);
 
-        $this->assertSame($segment->getId(), (int) $event->getResults()['segments'][1]['item_id']);
-        $this->assertNull($event->getResults()['segments'][1]['is_used']);
-        $this->assertSame(1, (int) $event->getResults()['segments'][1]['is_published']);
+        $this->assertSame($segment->getId(), (int) $event->getResults()[1]['item_id']);
+        $this->assertNull($event->getResults()[1]['is_used']);
+        $this->assertSame(1, (int) $event->getResults()[1]['is_published']);
     }
 
     private function createCampaignWithLeadList(): Campaign

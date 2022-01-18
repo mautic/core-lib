@@ -44,7 +44,7 @@ class SegmentStatCommand extends ModeratedCommand
         $event      = new GetStatDataEvent();
         $this->dispatcher->dispatch(LeadEvents::LEAD_LIST_STAT, $event);
 
-        if (empty($event->getResults()['segments'])) {
+        if (empty($event->getResults())) {
             $io->write('There is no segment to show!!');
         } else {
             $io->table([
@@ -53,7 +53,7 @@ class SegmentStatCommand extends ModeratedCommand
                 'IsPublished',
                 'IsUsed',
             ],
-                $event->getResults()['segments']
+                $event->getResults()
             );
         }
 
