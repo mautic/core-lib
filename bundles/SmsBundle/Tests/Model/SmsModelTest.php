@@ -14,9 +14,11 @@ use Mautic\LeadBundle\Entity\DoNotContactRepository;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\PageBundle\Model\TrackableModel;
+use Mautic\SmsBundle\Collection\RecipientCollection;
 use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Entity\SmsRepository;
 use Mautic\SmsBundle\Form\Type\SmsType;
+use Mautic\SmsBundle\Helper\DTO\SmsRecipientDTO;
 use Mautic\SmsBundle\Model\SmsModel;
 use Mautic\SmsBundle\Sms\TransportChain;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -176,6 +178,15 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
 
         $smsModel->method('getDoNotContactRepository')
             ->willReturn($dncMock);
+
+        $transport->expects($this->once())
+            ->method('sendBatchSms')
+            ->willReturnCallback(function (RecipientCollection $recipientCollection, string $message) {
+                /** @var SmsRecipientDTO $recipient */
+                foreach ($recipientCollection as $recipient) {
+                    $recipient->setResult(true);
+                }
+            });
 
         $results = $smsModel->sendSms($sms, [$lead1, $lead2], ['channel' => ['campaign.event', 1]]);
         $this->assertCount(2, $results);
