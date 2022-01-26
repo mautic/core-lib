@@ -40,7 +40,7 @@ class SendSmsSubscriber implements EventSubscriberInterface
         return [
             SmsEvents::DNC_FILTER_CONTACTS_ON_SEND   => ['dncFilter', 0],
             SmsEvents::QUEUE_FILTER_CONTACTS_ON_SEND => ['queueFilter', 0],
-            SmsEvents::FILTER_CONTACTS_ON_SEND       => ['genericFilter' => 0],
+            SmsEvents::FILTER_CONTACTS_ON_SEND       => ['genericFilter', 0],
         ];
     }
 
