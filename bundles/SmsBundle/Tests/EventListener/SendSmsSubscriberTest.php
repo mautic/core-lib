@@ -60,7 +60,7 @@ class SendSmsSubscriberTest extends TestCase
 
         $this->subscriber->dncFilter($event);
 
-        $this->assertSame($contacts, $event->getContacts());
-        $this->assertSame($contactToRemove, $event->getRemovedContacts());
+        $this->assertCount(1, $event->getContacts());
+        $this->assertCount(1, $event->getRemovedContacts());
     }
 }
