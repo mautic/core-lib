@@ -15,7 +15,7 @@ class DncEvent extends Event
     private $contacts;
 
     /**
-     * @var array<int, string>
+     * @var array<int>
      */
     private $removed  = [];
 

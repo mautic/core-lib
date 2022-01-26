@@ -20,7 +20,7 @@ class QueueEvent extends Event
     private $options;
 
     /**
-     * @var array<int, string>
+     * @var array<int>
      */
     private $queued  = [];
 
