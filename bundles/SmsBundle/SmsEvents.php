@@ -105,7 +105,6 @@ final class SmsEvents
      *
      * @var string
      */
-    public const ON_CAMPAIGN_REPLY = 'mautic.sms.on_campaign_reply';
 
     /**
      * The mautic.sms.on_tokens_build event is dispatched when a contact generate tokens are build.
@@ -114,4 +113,12 @@ final class SmsEvents
      * Mautic\SmsBundle\Event\TokensBuildEvent
      */
     public const ON_SMS_TOKENS_BUILD = 'mautic.sms.on_tokens_build';
+
+    const ON_CAMPAIGN_REPLY = 'mautic.sms.on_campaign_reply';
+
+    const DNC_FILTER_CONTACTS_ON_SEND = 'mautic.sms.dnc_filter_contacts_on_send';
+
+    const QUEUE_FILTER_CONTACTS_ON_SEND = 'mautic.sms.queue_filter_contacts_on_send';
+
+    const FILTER_CONTACTS_ON_SEND = 'mautic.sms.filter_contacts_on_send';
 }

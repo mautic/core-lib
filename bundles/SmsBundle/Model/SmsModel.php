@@ -25,8 +25,12 @@ use Mautic\PageBundle\Model\TrackableModel;
 use Mautic\SmsBundle\Collection\RecipientCollection;
 use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Entity\Stat;
+use Mautic\SmsBundle\Event\DncEvent;
+use Mautic\SmsBundle\Event\FilterEvent;
+use Mautic\SmsBundle\Event\QueueEvent;
 use Mautic\SmsBundle\Event\SmsEvent;
 use Mautic\SmsBundle\Event\SmsSendEvent;
+use Mautic\SmsBundle\Exception\PrimaryTransportNotEnabledException;
 use Mautic\SmsBundle\Form\Type\SmsType;
 use Mautic\SmsBundle\Helper\DTO\SmsRecipientDTO;
 use Mautic\SmsBundle\Sms\TransportChain;
@@ -242,8 +246,8 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
         $contactIds = array_keys($contacts);
 
-        $dncRepo = $this->getDoNotContactRepository();
-        $dnc     = $dncRepo->getChannelList('sms', $contactIds);
+        $dncEvent = new DncEvent($contacts);
+        $this->dispatcher->dispatch(SmsEvents::DNC_FILTER_CONTACTS_ON_SEND, $dncEvent);
 
         foreach ($dnc as $removeMeId => $removeMeReason) {
             $results[$removeMeId] = [
@@ -258,15 +262,66 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
             $messageQueue    = $options['resend_message_queue'] ?? null;
             $campaignEventId = (is_array($channel) && 'campaign.event' === $channel[0] && !empty($channel[1])) ? $channel[1] : null;
 
-            $queued = $this->messageQueueModel->processFrequencyRules(
-                $contacts,
-                'sms',
-                $sms->getId(),
-                $campaignEventId,
-                3,
-                MessageQueue::PRIORITY_NORMAL,
-                $messageQueue,
-                'sms_message_stats'
+        // Check if any contacts remain. If not, return early.
+        if (empty($contacts)) {
+            return $results;
+        }
+
+        $queueEvent = new QueueEvent($contacts, array_merge($options, ['sms_id' => $sms->getId()]));
+        $this->dispatcher->dispatch(SmsEvents::QUEUE_FILTER_CONTACTS_ON_SEND, $queueEvent);
+
+        foreach ($queueEvent->getQueuedContacts() as $contactId) {
+            $results[$contactId] = [
+                'sent'   => false,
+                'status' => 'mautic.sms.timeline.status.scheduled',
+            ];
+        }
+
+        $contacts = $queueEvent->getContacts();
+
+        // Check if any contacts remain. If not, return early.
+        if (empty($contacts)) {
+            return $results;
+        }
+
+        $filterEvent = new FilterEvent($contacts);
+        $this->dispatcher->dispatch(SmsEvents::FILTER_CONTACTS_ON_SEND, $filterEvent);
+
+        foreach ($filterEvent->getRemovedContacts() as $contactId) {
+            $results[$contactId] = [
+                'sent'   => false,
+                'status' => 'mautic.sms.campaign.failed.missing_number',
+            ];
+        }
+
+        if (empty($contacts)) {
+            return $results;
+        }
+
+        $recipientCollection = new RecipientCollection();
+        $message             = $sms->getMessage();
+        /** @var array<int, Stat> $stats */
+        $stats               = [];
+
+        /** @var Lead $contact */
+        foreach ($contacts as $contact) {
+            $stats[$contact->getId()] = $stat = $this->createStatEntry($sms, $contact, $channel, false);
+            $smsEvent                 = new SmsSendEvent($sms->getMessage(), $contact);
+
+            $smsEvent->setSmsId($sms->getId());
+            $this->dispatcher->dispatch(SmsEvents::SMS_ON_SEND, $smsEvent);
+
+            $tokenEvent = new TokenReplacementEvent(
+                $smsEvent->getContent(),
+                $contact,
+                [
+                    'channel' => [
+                        'sms',          // Keep BC pre 2.14.1
+                        $sms->getId(),  // Keep BC pre 2.14.1
+                        'sms' => $sms->getId(),
+                    ],
+                    'stat'    => $stat->getTrackingHash(),
+                ]
             );
 
             foreach ($queued as $queue) {

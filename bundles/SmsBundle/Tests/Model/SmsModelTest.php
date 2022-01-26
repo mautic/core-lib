@@ -137,7 +137,7 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
             ->willReturn('test');
 
         $lead1 = new Lead();
-        $lead1->setMobile('+123456789');
+        $lead1->setMobile('+1234567890');
         $lead1->setId(1);
 
         $lead2 = new Lead();
@@ -167,11 +167,24 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
             ])
             ->onlyMethods(['getDoNotContactRepository'])
             ->getMock();
+        $smsModel->method('getRepository')
+            ->willReturn($smsRepo = $this->createMock(SmsRepository::class));
+
+        $smsRepo->expects($this->once())
+            ->method('upCount')
+            ->with($sms->getId(), 'sent', 2);
 
         $smsModel->method('getDoNotContactRepository')
             ->willReturn($dncMock);
 
         $results = $smsModel->sendSms($sms, [$lead1, $lead2], ['channel' => ['campaign.event', 1]]);
         $this->assertCount(2, $results);
+    }
+
+    private function setProperty(object $object, string $property, $value): void
+    {
+        \Closure::bind(function (object $object) use ($property, $value) {
+            $object->$property = $value;
+        }, null, $object)($object);
     }
 }
