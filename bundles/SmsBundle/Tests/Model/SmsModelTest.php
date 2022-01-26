@@ -192,6 +192,9 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $results);
     }
 
+    /**
+     * @param mixed $value
+     */
     private function setProperty(object $object, string $property, $value): void
     {
         \Closure::bind(function (object $object) use ($property, $value) {

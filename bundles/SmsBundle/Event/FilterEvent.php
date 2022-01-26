@@ -19,16 +19,25 @@ class FilterEvent extends Event
      */
     private $removed  = [];
 
+    /**
+     * @param array<int, Lead> $contacts
+     */
     public function __construct(array $contacts)
     {
         $this->contacts = $contacts;
     }
 
+    /**
+     * @return array<int, Lead>
+     */
     public function getContacts(): array
     {
         return $this->contacts;
     }
 
+    /**
+     * @return array<int>
+     */
     public function getRemovedContacts(): array
     {
         return $this->removed;
@@ -40,6 +49,9 @@ class FilterEvent extends Event
         unset($this->contacts[$id]);
     }
 
+    /**
+     * @param array<int> $contacts
+     */
     public function removeContacts(array $contacts): void
     {
         foreach ($contacts as $contact) {

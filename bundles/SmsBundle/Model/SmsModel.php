@@ -280,7 +280,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         $contacts = $queueEvent->getContacts();
 
         // Check if any contacts remain. If not, return early.
-        if (empty($contacts)) {
+        if (count($contacts)) {
             return $results;
         }
 
@@ -294,7 +294,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
             ];
         }
 
-        if (empty($contacts)) {
+        if (count($contacts)) {
             return $results;
         }
 

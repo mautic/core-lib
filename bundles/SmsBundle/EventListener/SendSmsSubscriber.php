@@ -32,6 +32,9 @@ class SendSmsSubscriber implements EventSubscriberInterface
         $this->messageQueueModel = $messageQueueModel;
     }
 
+    /**
+     * @return array<string, array<mixed>>
+     */
     public static function getSubscribedEvents()
     {
         return [

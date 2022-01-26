@@ -24,16 +24,11 @@ class SendSmsSubscriberTest extends TestCase
      */
     private $dncRepoMock;
 
-    /**
-     * @var MessageQueueModel|MockObject
-     */
-    private $mqmMock;
-
     public function setUp(): void
     {
         $this->subscriber = new SendSmsSubscriber(
             $this->dncRepoMock = $this->createMock(DoNotContactRepository::class),
-            $this->mqmMock     = $this->createMock(MessageQueueModel::class)
+            $this->createMock(MessageQueueModel::class)
         );
     }
 

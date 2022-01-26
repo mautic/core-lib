@@ -15,7 +15,7 @@ class QueueEvent extends Event
     private $contacts;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $options;
 
@@ -24,22 +24,35 @@ class QueueEvent extends Event
      */
     private $queued  = [];
 
+    /**
+     * @param array<int, Lead>     $contacts
+     * @param array<string, mixed> $options
+     */
     public function __construct(array $contacts, array $options)
     {
         $this->contacts = $contacts;
         $this->options  = $options;
     }
 
+    /**
+     * @return array<int, Lead>
+     */
     public function getContacts(): array
     {
         return $this->contacts;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return $this->options;
     }
 
+    /**
+     * @return array<int>
+     */
     public function getQueuedContacts(): array
     {
         return $this->queued;
@@ -51,6 +64,9 @@ class QueueEvent extends Event
         unset($this->contacts[$id]);
     }
 
+    /**
+     * @param array<int> $contacts
+     */
     public function queueContacts(array $contacts): void
     {
         foreach ($contacts as $contact) {
