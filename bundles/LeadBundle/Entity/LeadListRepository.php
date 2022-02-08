@@ -742,4 +742,108 @@ SQL;
 
         return $childSegmentIds;
     }
+
+    /**
+     * @return mixed[]
+     */
+    public function getLeadListLeads(): array
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('item_id', 'item_id');
+
+        $query = $this->getEntityManager()->createNativeQuery('SELECT 
+            leadlist_id as item_id
+        FROM '.MAUTIC_TABLE_PREFIX.'lead_lists_leads
+            GROUP BY leadlist_id', $rsm);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getNotificationIncludedList(): array
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('item_id', 'item_id');
+
+        $query = $this->getEntityManager()->createNativeQuery('SELECT 
+            leadlist_id as item_id
+        FROM '.MAUTIC_TABLE_PREFIX.'push_notification_list_xref
+            GROUP BY leadlist_id', $rsm);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getRandomSegment(): array
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('item_id', 'item_id');
+
+        $query = $this->getEntityManager()->createNativeQuery('SELECT 
+            segment_id as item_id
+        FROM '.MAUTIC_TABLE_PREFIX.'random_segments
+            GROUP BY segment_id', $rsm);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getRandomSegmentContacts(): array
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('item_id', 'item_id');
+
+        $query = $this->getEntityManager()->createNativeQuery('SELECT 
+            segment_id as item_id
+        FROM '.MAUTIC_TABLE_PREFIX.'random_segments_contacts
+            GROUP BY segment_id', $rsm);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getSMSIncludedList(): array
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('item_id', 'item_id');
+
+        $query = $this->getEntityManager()->createNativeQuery('SELECT 
+            leadlist_id as item_id
+        FROM '.MAUTIC_TABLE_PREFIX.'sms_message_list_xref
+            GROUP BY leadlist_id', $rsm);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getFormAction(): array
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('properties', 'properties');
+
+        $query = $this->getEntityManager()->createNativeQuery('SELECT 
+            properties 
+        FROM '.MAUTIC_TABLE_PREFIX.'form_actions fa 
+        WHERE fa.type = \'lead.changelist\'', $rsm);
+
+        $segmentIds = [];
+        foreach ($query->getResult() as $property) {
+            $property       = unserialize($property);
+            $segmentIds     = array_merge($property['addToLists'], $property['removeFromLists'], $segmentIds);
+        }
+
+        return array_map(function ($segment) {
+            return ['item_id' => (string) $segment];
+        }, $segmentIds);
+    }
 }
