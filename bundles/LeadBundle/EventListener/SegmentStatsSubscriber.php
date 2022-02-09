@@ -37,7 +37,16 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
             $this->leadListRepository->getCampaignEntryPoints(),
             $this->leadListRepository->getEmailIncludeExcludeList(),
             $this->leadListRepository->getCampaignChangeSegmentAction(),
-            $this->leadListRepository->getFilterSegmentsAction()
+            $this->leadListRepository->getFilterSegmentsAction(),
+            $this->leadListRepository->getLeadListLeads(),
+            $this->leadListRepository->getNotificationIncludedList(),
+            $this->leadListRepository->getRandomSegment(),
+            $this->leadListRepository->getRandomSegmentContacts(),
+            $this->leadListRepository->getSMSIncludedList(),
+            $this->leadListRepository->getFormAction(),
+            $this->leadListRepository->getEmailStat(),
+            $this->leadListRepository->getNotificationStat(),
+            $this->leadListRepository->getSMSStat()
         );
 
         $allSegments = $this->leadListRepository->getAllSegments();
