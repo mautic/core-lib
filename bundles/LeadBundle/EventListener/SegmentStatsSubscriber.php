@@ -43,10 +43,7 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
             $this->leadListRepository->getRandomSegment(),
             $this->leadListRepository->getRandomSegmentContacts(),
             $this->leadListRepository->getSMSIncludedList(),
-            $this->leadListRepository->getFormAction(),
-            $this->leadListRepository->getEmailStat(),
-            $this->leadListRepository->getNotificationStat(),
-            $this->leadListRepository->getSMSStat()
+            $this->leadListRepository->getFormAction()
         );
 
         $allSegments = $this->leadListRepository->getAllSegments();
