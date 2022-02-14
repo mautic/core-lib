@@ -838,7 +838,7 @@ SQL;
 
         $segmentIds = [];
         foreach ($query->getResult() as $property) {
-            $property       = unserialize($property);
+            $property       = unserialize($property['properties']);
             $segmentIds     = array_merge($property['addToLists'], $property['removeFromLists'], $segmentIds);
         }
 
