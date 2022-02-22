@@ -160,6 +160,50 @@ class ListModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
+     * Delete an array of segments.
+     *
+     * @param array<int> $ids
+     *
+     * @return array<object>
+     */
+    public function deleteEntities($ids): array
+    {
+        $entities = [];
+        foreach ($ids as $listId) {
+            $leadList = $this->getEntity($listId);
+            if ($leadList) {
+                $entities[$listId] = $leadList;
+                $this->deleteEntity($leadList);
+            }
+        }
+
+        return $entities;
+    }
+
+    /**
+     * Delete an entity.
+     *
+     * @param LeadList $entity
+     */
+    public function deleteEntity($entity): void
+    {
+        $id    = $entity->getId();
+        $event = $this->dispatchEvent('pre_delete', $entity);
+        $this->getRepository()->setSegmentAsDeleted($id);
+
+        $entity->deletedId = $id;
+        $this->dispatcher->dispatch(LeadEvents::ON_LIST_DELETE, new LeadListEvent($entity));
+        $entity->setId(null);
+    }
+
+    public function hardDeleteEntity(LeadList $leadList): void
+    {
+        $leadList->deletedId = $leadList->getId();
+        $this->getRepository()->deleteEntity($leadList);
+        $this->dispatchEvent('post_delete', $leadList);
+    }
+
+    /**
      * @param string|null $action
      * @param array       $options
      *
@@ -188,6 +232,11 @@ class ListModel extends FormModel implements GlobalSearchInterface
         }
 
         return parent::getEntity($id);
+    }
+
+    public function getSoftDeletedEntity(int $id): ?LeadList
+    {
+        return $this->getRepository()->getSoftDeletedEntity($id);
     }
 
     /**
@@ -793,6 +842,11 @@ class ListModel extends FormModel implements GlobalSearchInterface
         }
 
         unset($lead, $deleteLists, $persistLists, $lists);
+    }
+
+    public function removeLeadsByListId(int $listId): void
+    {
+        $this->getListLeadRepository()->removeLeadsByListId($listId);
     }
 
     /**

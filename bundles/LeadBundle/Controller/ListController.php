@@ -87,9 +87,9 @@ class ListController extends FormController
         ];
 
         $tmpl = $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index';
+        $tableAlias = $model->getRepository()->getTableAlias();
 
         if (!$permissions[LeadPermissions::LISTS_VIEW_OTHER]) {
-            $tableAlias        = $model->getRepository()->getTableAlias();
             $filter['where'][] = [
                 'expr' => 'orX',
                 'val'  => [
@@ -99,6 +99,7 @@ class ListController extends FormController
             ];
         }
 
+        $filter['force'][]   = ['column' => $tableAlias.'.deleted', 'expr' => 'isNull'];
         [$count, $items] = $this->getIndexItems($start, $limit, $filter, $orderBy, $orderByDir);
 
         if ($count && $count < ($start + 1)) {

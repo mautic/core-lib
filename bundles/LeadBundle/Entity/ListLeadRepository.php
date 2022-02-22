@@ -2,6 +2,7 @@
 
 namespace Mautic\LeadBundle\Entity;
 
+use Doctrine\DBAL\ParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
 /**
@@ -83,5 +84,14 @@ class ListLeadRepository extends CommonRepository
         }
 
         return $deletedRecordCount;
+    }
+
+    public function removeLeadsByListId(int $listId): void
+    {
+        $table_name    = MAUTIC_TABLE_PREFIX.'lead_lists_leads';
+        $sql           = "DELETE FROM {$table_name} WHERE leadlist_id = {$listId} LIMIT ".self::DELETE_BATCH_SIZE;
+        $conn          = $this->getEntityManager()->getConnection();
+        while ($conn->query($sql)->rowCount()) {
+        }
     }
 }

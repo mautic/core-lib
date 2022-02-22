@@ -7,6 +7,8 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
+use Mautic\CoreBundle\Helper\DateTimeHelper;
+use Mautic\CoreBundle\Helper\RandomHelper\RandomHelper;
 use Mautic\UserBundle\Entity\User;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -48,21 +50,42 @@ class LeadListRepository extends CommonRepository
      */
     protected $companyTableSchema;
 
-    /**
-     * @param int $id
-     */
-    public function getEntity($id = 0): ?LeadList
+    private function getSingleEntity(int $id, bool $ignoreDeleted = true): ?LeadList
     {
         try {
-            return $this
-                ->createQueryBuilder('l')
-                ->where('l.id = :listId')
-                ->setParameter('listId', $id)
+            $q = $this
+                ->createQueryBuilder('l');
+            $q->where('l.id = :listId');
+            if ($ignoreDeleted) {
+                $q->andWhere($q->expr()->isNull($this->getTableAlias().'.deleted'));
+            }
+
+            $entity = $q->setParameter('listId', $id)
                 ->getQuery()
                 ->getSingleResult();
         } catch (\Exception) {
             return null;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param int $id
+     *
+     * @return mixed|null
+     */
+    public function getEntity($id = 0)
+    {
+        return $this->getSingleEntity($id);
+    }
+
+    /**
+     * Get soft deleted entity.
+     */
+    public function getSoftDeletedEntity(int $id): ?LeadList
+    {
+        return $this->getSingleEntity($id, false);
     }
 
     /**
@@ -102,6 +125,8 @@ class LeadListRepository extends CommonRepository
                 $q->expr()->neq('l.id', $id)
             );
         }
+
+        $q->andWhere($q->expr()->isNull($this->getTableAlias().'.deleted'));
 
         $q->orderBy('l.name');
 
@@ -659,6 +684,17 @@ SQL;
                 ]
             )
             ->fetchFirstColumn();
+    }
+
+    public function setSegmentAsDeleted(int $leadListId): void
+    {
+        $dateTime = (new \DateTimeImmutable())->format(DateTimeHelper::FORMAT_DB);
+
+        $this->getEntityManager()->getConnection()->update(
+            MAUTIC_TABLE_PREFIX.LeadList::TABLE_NAME,
+            ['deleted'   => $dateTime, 'is_published' => 0],
+            ['id'        => $leadListId]
+        );
     }
 
     /**
