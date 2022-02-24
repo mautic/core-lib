@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Mautic\FormBundle\Event;
 
+use Mautic\CoreBundle\Event\CommonEvent;
 use Mautic\FormBundle\Entity\Field;
 use Symfony\Contracts\EventDispatcher\Event;
 
-final class FormFieldEvent extends Event
+final class FormFieldEvent extends CommonEvent
 {
     public function __construct(
         private Field $entity,
