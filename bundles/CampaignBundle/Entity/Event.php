@@ -5,6 +5,7 @@ namespace Mautic\CampaignBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -179,7 +180,9 @@ class Event implements ChannelInterface, UuidInterface
     private $channel;
 
     /**
-     * @var int|null
+     * @var string|null
+     *
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $channelId;
 
@@ -322,8 +325,9 @@ class Event implements ChannelInterface, UuidInterface
             ->nullable()
             ->build();
 
-        $builder->createField('channelId', 'integer')
+        $builder->createField('channelId', Types::STRING)
             ->columnName('channel_id')
+            ->length(64)
             ->nullable()
             ->build();
 
@@ -942,7 +946,7 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getChannelId()
     {
@@ -950,12 +954,12 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @param int $channelId
+     * @param string $channelId
      */
     public function setChannelId($channelId): void
     {
         $this->isChanged('channelId', $channelId);
-        $this->channelId = (int) $channelId;
+        $this->channelId = (string) $channelId;
     }
 
     /**
