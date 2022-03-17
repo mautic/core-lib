@@ -19,6 +19,7 @@ use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Tracker\ContactTracker;
 use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContactRequestHelper
@@ -51,7 +52,8 @@ class ContactRequestHelper
      */
     public function getContactFromQuery(array $queryFields = [])
     {
-        if ($this->request->cookies->get('Blocked-Tracking')) {
+        $request = $this->getCurrentRequest();
+        if ($request && $request->cookies->get('Blocked-Tracking')) {
             return null;
         }
 
@@ -61,7 +63,7 @@ class ContactRequestHelper
         }
 
         $dateTime  = new \DateTime();
-        $userAgent = $this->request->server->get('HTTP_USER_AGENT');
+        $userAgent = $request ? $request->server->get('HTTP_USER_AGENT') : '';
         if (!empty($queryFields['ct'])) {
             $queryFields['ct'] = (is_array($queryFields['ct'])) ? $queryFields['ct'] : ClickthroughHelper::decodeArrayFromUrl($queryFields['ct']);
         }
@@ -106,14 +108,16 @@ class ContactRequestHelper
      */
     private function getContactFromUrl()
     {
-        if ($this->request->cookies->get('Blocked-Tracking')) {
+        $request = $this->getCurrentRequest();
+
+        if ($request && $request->cookies->get('Blocked-Tracking')) {
             throw new ContactNotFoundException();
         }
 
         // Check for a lead requested through clickthrough query parameter
         if (isset($this->queryFields['ct'])) {
             $clickthrough = (is_array($this->queryFields['ct'])) ? $this->queryFields['ct'] : ClickthroughHelper::decodeArrayFromUrl($this->queryFields['ct']);
-        } elseif ($clickthrough = $this->requestStack->getCurrentRequest()->get('ct', [])) {
+        } elseif ($request && $clickthrough = $request->get('ct', [])) {
             $clickthrough = ClickthroughHelper::decodeArrayFromUrl($clickthrough);
         }
 
@@ -242,5 +246,10 @@ class ContactRequestHelper
         }
 
         return $foundContact;
+    }
+
+    private function getCurrentRequest(): ?Request
+    {
+        return $this->requestStack->getCurrentRequest();
     }
 }
