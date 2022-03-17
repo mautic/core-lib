@@ -30,10 +30,20 @@ final class BotRatioHelperTest extends TestCase
     ): void {
         // Threshold
         $coreParametersHelperMock = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelperMock->expects($this->at(0))
+        $coreParametersHelperMock->expects($this->exactly(4))
             ->method('get')
-            ->with('bot_helper_bot_ratio_threshold', 0.6)
-            ->willReturn($botHelperBotRatioThreshold);
+            ->withConsecutive(
+                ['bot_helper_bot_ratio_threshold', 0.6],
+                ['bot_helper_time_email_threshold', 2],
+                ['bot_helper_blocked_user_agents', []],
+                ['bot_helper_blocked_ip_addresses', []]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $botHelperBotRatioThreshold,
+                $botHelperTimeEmailThreshold,
+                $blockedUserAgents,
+                $ipDoNotTrackList
+            );
         // Time
         $emailHitDateTime = new \DateTime();
         $emailSent        = clone $emailHitDateTime;
@@ -42,23 +52,8 @@ final class BotRatioHelperTest extends TestCase
         $emailStatMock->expects($this->once())
             ->method('getDateSent')
             ->willReturn($emailSent);
-        $coreParametersHelperMock->expects($this->at(1))
-            ->method('get')
-            ->with('bot_helper_time_email_threshold', 2)
-            ->willReturn($botHelperTimeEmailThreshold);
         // IP
-        $ipAddress = new IpAddress($ipAddressString);
-        // User Agent
-        $coreParametersHelperMock->expects($this->at(2))
-            ->method('get')
-            ->with('bot_helper_blocked_user_agents', [])
-            ->willReturn($blockedUserAgents);
-
-        $coreParametersHelperMock->expects($this->at(3))
-            ->method('get')
-            ->with('bot_helper_blocked_ip_addresses', [])
-            ->willReturn($ipDoNotTrackList);
-
+        $ipAddress        = new IpAddress($ipAddressString);
         $botRatioHelper   = new BotRatioHelper($coreParametersHelperMock);
         $isEvaluatedAsBot = $botRatioHelper->isHitByBot($emailStatMock, $emailHitDateTime, $ipAddress, $userAgent);
         $this->assertSame($isBot, $isEvaluatedAsBot);
