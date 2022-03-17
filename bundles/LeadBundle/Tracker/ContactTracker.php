@@ -54,7 +54,9 @@ class ContactTracker
      */
     public function getContact()
     {
-        $request = $this->requestStack->getCurrentRequest();
+        if (null !== $this->getRequest() && $this->getRequest()->cookies->get('Blocked-Tracking')) {
+            return null;
+        }
 
         if ($systemContact = $this->getSystemContact()) {
             return $systemContact;

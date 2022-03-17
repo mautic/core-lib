@@ -5,6 +5,9 @@ namespace Mautic\LeadBundle\Helper;
 use Mautic\CoreBundle\Helper\ClickthroughHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
+use Mautic\EmailBundle\Entity\Stat;
+use Mautic\EmailBundle\Entity\StatRepository;
+use Mautic\EmailBundle\Helper\BotRatioHelper;
 use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Deduplicate\ContactMerger;
 use Mautic\LeadBundle\Deduplicate\Exception\SameContactException;
@@ -38,6 +41,8 @@ class ContactRequestHelper
         private Logger $logger,
         private EventDispatcherInterface $eventDispatcher,
         private ContactMerger $contactMerger,
+        private StatRepository $statRepository,
+        private BotRatioHelper $botRatioHelper,
     ) {
     }
 
@@ -46,6 +51,31 @@ class ContactRequestHelper
      */
     public function getContactFromQuery(array $queryFields = [])
     {
+        if ($this->request->cookies->get('Blocked-Tracking')) {
+            return null;
+        }
+
+        $ipAddress = $this->ipLookupHelper->getIpAddress();
+        if (!$ipAddress->isTrackable()) {
+            return null;
+        }
+
+        $dateTime  = new \DateTime();
+        $userAgent = $this->request->server->get('HTTP_USER_AGENT');
+        if (!empty($queryFields['ct'])) {
+            $queryFields['ct'] = (is_array($queryFields['ct'])) ? $queryFields['ct'] : ClickthroughHelper::decodeArrayFromUrl($queryFields['ct']);
+        }
+
+        if (array_key_exists('ct', $queryFields) && array_key_exists('email', $queryFields['ct']) && array_key_exists('stat', $queryFields['ct'])) {
+            /** @var Stat $stat */
+            $stat = $this->statRepository->findOneBy(['trackingHash' => $queryFields['ct']['stat']]);
+            if (null !== $stat && $this->botRatioHelper->isHitByBot($stat, $dateTime, $ipAddress, (string) $userAgent)) {
+                return null;
+            }
+        }
+
+        $this->trackedContact = $this->contactTracker->getContact();
+
         unset($queryFields['page_url']); // This is set now automatically by PageModel
         $this->queryFields    = $queryFields;
 
@@ -76,6 +106,10 @@ class ContactRequestHelper
      */
     private function getContactFromUrl()
     {
+        if ($this->request->cookies->get('Blocked-Tracking')) {
+            throw new ContactNotFoundException();
+        }
+
         // Check for a lead requested through clickthrough query parameter
         if (isset($this->queryFields['ct'])) {
             $clickthrough = (is_array($this->queryFields['ct'])) ? $this->queryFields['ct'] : ClickthroughHelper::decodeArrayFromUrl($this->queryFields['ct']);

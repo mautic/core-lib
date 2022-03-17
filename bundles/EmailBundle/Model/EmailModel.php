@@ -41,6 +41,7 @@ use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\EmailBundle\Exception\EmailCouldNotBeSentException;
 use Mautic\EmailBundle\Exception\FailedToSendToContactException;
 use Mautic\EmailBundle\Form\Type\EmailType;
+use Mautic\EmailBundle\Helper\BotRatioHelper;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\EmailBundle\Helper\StatsCollectionHelper;
 use Mautic\EmailBundle\MonitoredEmail\Mailbox;
@@ -118,6 +119,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         LoggerInterface $mauticLogger,
         CoreParametersHelper $coreParametersHelper,
         private EmailStatModel $emailStatModel,
+        private BotRatioHelper $botRatioHelper,
     ) {
         $this->connection = $em->getConnection(); // Necessary for FilterTrait
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
@@ -385,6 +387,15 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             return;
         }
 
+        $ipAddress = $this->ipLookupHelper->getIpAddress();
+        if (!$ipAddress->isTrackable()) {
+            return;
+        }
+        $readDateTime = new DateTimeHelper($dateTime);
+        $userAgent    = $request->server->get('HTTP_USER_AGENT');
+        if ($this->botRatioHelper->isHitByBot($stat, $readDateTime->getDateTime(), $ipAddress, (string) $userAgent)) {
+            return;
+        }
         $email = $stat->getEmail();
 
         if ((int) $stat->isRead()) {
@@ -421,7 +432,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $stat->addOpenDetails(
             [
                 'datetime'  => $readDateTime->toUtcString(),
-                'useragent' => $request->server->get('HTTP_USER_AGENT'),
+                'useragent' => $userAgent,
                 'inBrowser' => $viaBrowser,
             ]
         );

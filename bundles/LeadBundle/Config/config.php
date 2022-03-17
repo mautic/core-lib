@@ -530,6 +530,8 @@ return [
                     'mautic.helper.core_parameters',
                     'event_dispatcher',
                     'mautic.lead.model.field',
+                    'mautic.email.repository.stat',
+                    'mautic.helper.bot_ratio',
                 ],
             ],
             'mautic.tracker.device' => [

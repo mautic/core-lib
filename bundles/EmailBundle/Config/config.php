@@ -230,6 +230,12 @@ return [
                 ],
                 'tag' => 'mautic.email_stat_helper',
             ],
+            'mautic.helper.bot_ratio' => [
+                'class'     => Mautic\EmailBundle\Helper\BotRatioHelper::class,
+                'arguments' => [
+                    'mautic.helper.core_parameters',
+                ],
+            ],
         ],
         'validator' => [
             'mautic.email.validator.multiple_emails_valid_validator' => [
@@ -325,5 +331,7 @@ return [
         'theme_email_default'                                               => 'blank',
         'mailer_memory_msg_limit'                                           => 100,
         Mautic\EmailBundle\Form\Type\ConfigType::MINIFY_EMAIL_HTML          => false,
+        'bot_helper_bot_ratio_threshold'                                    => 0.6,
+        'bot_helper_time_email_threshold'                                   => 2, // seconds
     ],
 ];

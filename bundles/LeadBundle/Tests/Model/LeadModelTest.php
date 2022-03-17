@@ -15,6 +15,8 @@ use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
+use Mautic\EmailBundle\Entity\StatRepository;
+use Mautic\EmailBundle\Helper\BotRatioHelper;
 use Mautic\EmailBundle\Helper\EmailValidator;
 use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Entity\CompanyLeadRepository;
@@ -40,6 +42,7 @@ use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Security\Provider\UserProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -161,6 +164,16 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $translator;
 
+    /**
+     * @var MockObject|StatRepository
+     */
+    private $statRepository;
+
+    /**
+     * @var MockObject|BotRatioHelper
+     */
+    private $botRatioHelper;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -188,6 +201,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $this->dispatcherMock                   = $this->createMock(EventDispatcherInterface::class);
         $this->entityManagerMock                = $this->createMock(EntityManager::class);
         $this->translator                       = $this->createMock(Translator::class);
+        $this->statRepository                   = $this->createMock(StatRepository::class);
+        $this->botRatioHelper                   = $this->createMock(BotRatioHelper::class);
+
         $this->leadModel                        = new LeadModel(
             $this->requestStackMock,
             $this->ipLookupHelperMock,
@@ -212,7 +228,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             $this->createMock(UrlGeneratorInterface::class),
             $this->translator,
             $this->userHelperMock,
-            $this->createMock(LoggerInterface::class)
+            $this->createMock(LoggerInterface::class),
+            $this->statRepository,
+            $this->botRatioHelper
         );
 
         $this->companyModelMock->method('getCompanyLeadRepository')->willReturn($this->companyLeadRepositoryMock);
@@ -709,6 +727,17 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         for ($i = 1; $i <= 4; ++$i) {
             $companies[] = $i;
         }
+
+        // Lead Model that provides access to dispatchBatchEvent
+        $leadModel = new class($this->requestStack, $this->cookieHelperMock, $this->ipLookupHelperMock, $this->pathsHelperMock, $this->integrationHelperkMock, $this->fieldModelMock, $this->listModelMock, $this->formFactoryMock, $this->companyModelMock, $this->categoryModelMock, $this->channelListHelperMock, $this->coreParametersHelperMock, $this->emailValidatorMock, $this->userProviderMock, $this->contactTrackerMock, $this->deviceTrackerMock, $this->legacyLeadModelMock, $this->ipAddressModelMock, $this->statRepository, $this->botRatioHelper) extends LeadModel {
+            /**
+             * @param mixed[] $leads
+             */
+            public function dispatchBatchEventForTest(string $action, array $leads): ?Event
+            {
+                return $this->dispatchBatchEvent($action, $leads);
+            }
+        };
 
         // Imitate that companies with id 3 and 4 are already added to the lead
         for ($i = 3; $i <= 4; ++$i) {
