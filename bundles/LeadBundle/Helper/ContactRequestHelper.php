@@ -76,8 +76,6 @@ class ContactRequestHelper
             }
         }
 
-        $this->trackedContact = $this->contactTracker->getContact();
-
         unset($queryFields['page_url']); // This is set now automatically by PageModel
         $this->queryFields    = $queryFields;
 
