@@ -451,7 +451,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
             $this->em->persist($hit);
             $this->em->flush();
         } catch (\Exception $exception) {
-            if (MAUTIC_ENV === 'dev') {
+            if (MAUTIC_ENV !== 'prod') {
                 throw $exception;
             } else {
                 $this->logger->error(
@@ -609,24 +609,25 @@ class PageModel extends FormModel implements GlobalSearchInterface
             try {
                 $this->pageRedirectModel->getRepository()->upHitCount($page->getId(), 1, $isUnique);
 
-                // If this is a trackable, up the trackable counts as well
-                if ($hit->getSource() && $hit->getSourceId()) {
-                    $this->pageTrackableModel->getRepository()->upHitCount(
-                        $page->getId(),
-                        $hit->getSource(),
-                        $hit->getSourceId(),
-                        1,
-                        $isUnique
-                    );
-                }
-            } catch (\Exception $exception) {
-                if (MAUTIC_ENV === 'dev') {
-                    throw $exception;
-                } else {
-                    $this->logger->error(
-                        $exception->getMessage(),
-                        ['exception' => $exception]
-                    );
+                    // If this is a trackable, up the trackable counts as well
+                    if ($hit->getSource() && $hit->getSourceId()) {
+                        $this->pageTrackableModel->getRepository()->upHitCount(
+                            $page->getId(),
+                            $hit->getSource(),
+                            $hit->getSourceId(),
+                            1,
+                            $isUnique
+                        );
+                    }
+                } catch (\Exception $exception) {
+                    if (MAUTIC_ENV !== 'prod') {
+                        throw $exception;
+                    } else {
+                        $this->logger->addError(
+                            $exception->getMessage(),
+                            ['exception' => $exception]
+                        );
+                    }
                 }
             }
         }
