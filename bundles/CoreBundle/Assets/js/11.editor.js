@@ -284,6 +284,8 @@ Mautic.GetCkEditorConfigOptions  = function(ckEditorToolbarOptions, tokenCallbac
         { color: '#4c4ce6', label: 'Blue' },
         { color: '#994ce6', label: 'Purple' }
     ];
+    const allowFullHtmlAttr = textarea.attr('allow-full-html');
+    const allowFullHtml = typeof allowFullHtmlAttr !== 'undefined' ?  allowFullHtmlAttr : false;
     const ckEditorOption = {
         toolbar: {
             items: ckEditorToolbar,
@@ -328,6 +330,7 @@ Mautic.GetCkEditorConfigOptions  = function(ckEditorToolbarOptions, tokenCallbac
             allowedProtocols: [ 'https?', 'tel', 'sms', 'sftp', 'smb', 'slack' ]
         },
         htmlSupport: {
+            fullPage: allowFullHtml,
             allow: [
                 {
                     name: /^(a|span)$/,
