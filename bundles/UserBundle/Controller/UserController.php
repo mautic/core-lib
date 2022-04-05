@@ -271,6 +271,12 @@ class UserController extends FormController
         $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
         $form   = $model->createForm($user, $this->formFactory, $action);
 
+        $isSamlUser    = $this->get('mautic.security.saml.helper')->isSamlSession();
+        // check if this user is logged in via SAML
+        if ($isSamlUser) {
+            $form->remove('plainPassword');
+        }
+
         // /Check for a submitted form and process it
         if (!$ignorePost && 'POST' === $request->getMethod()) {
             $valid = false;
@@ -348,6 +354,7 @@ class UserController extends FormController
                 'users'         => $users,
                 'roles'         => $roles,
                 'editAction'    => true,
+                'isSamlUser'             => $isSamlUser,
             ],
             'contentTemplate' => '@MauticUser/User/form.html.twig',
             'passthroughVars' => [

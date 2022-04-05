@@ -148,6 +148,13 @@ return [
                     'router',
                 ],
             ],
+            'mautic.security.saml.helper' => [
+                'class'     => \Mautic\UserBundle\Security\SAML\Helper::class,
+                'arguments' => [
+                    'mautic.helper.core_parameters',
+                    'session',
+                ],
+            ],
             'mautic.security.logout_handler' => [
                 'class'        => Mautic\UserBundle\EventListener\LogoutListener::class,
                 'tagArguments' => [

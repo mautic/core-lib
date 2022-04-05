@@ -219,10 +219,17 @@ class ProfileController extends FormController
         }
         $request->getSession()->set('formProcessed', 0);
 
+        $isSamlUser    = $this->get('mautic.security.saml.helper')->isSamlSession();
+        // check if this user is logged in via SAML
+        if ($isSamlUser) {
+            $form->remove('plainPassword');
+        }
+
         $parameters = [
             'permissions'       => $permissions,
             'me'                => $me,
             'userForm'          => $form->createView(),
+            'isSamlUser'        => $isSamlUser,
             'authorizedClients' => $this->forward('Mautic\ApiBundle\Controller\ClientController::authorizedClientsAction')->getContent(),
         ];
 
