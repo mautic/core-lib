@@ -398,7 +398,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $form['emailform[emailType]']->setValue('list');
         $form['emailform[subject]']->setValue('Email B Subject clone');
         $form['emailform[name]']->setValue('Email B clone');
-        $form['emailform[isPublished]']->setValue('1');
+        $form['emailform[isPublished]']->setValue(true);
 
         $this->client->submit($form);
         Assert::assertTrue($this->client->getResponse()->isOk());
@@ -419,6 +419,106 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertEquals('Test html', $secondEmail->getCustomHtml());
     }
 
+    public function testEmailWithWrongHtmlContent(): void
+    {
+        $crawler        = $this->client->request(Request::METHOD_GET, '/s/emails/new');
+        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $form           = $buttonCrawler->form();
+        $form['emailform[emailType]']->setValue('template');
+        $form['emailform[subject]']->setValue('Email B Subject clone');
+        $form['emailform[name]']->setValue('Email B clone');
+        $form['emailform[template]']->setValue('beefree-empty');
+        $someArr        = ['content' => 'json'];
+        $beefreeContent = [
+            'css'      => 'the css',
+            'html'     => 'the html',
+            'rendered' => json_encode($someArr),
+        ];
+
+        $form['emailform[customHtml]']->setValue(json_encode($beefreeContent));
+        $form['emailform[isPublished]']->setValue(1);
+
+        $this->client->submit($form);
+        Assert::assertTrue($this->client->getResponse()->isOk());
+        $this->assertStringContainsString('Something went wrong with html content, Please refresh the page and try again.', $this->client->getResponse()->getContent());
+    }
+
+    public function testWrongContentInCloneAction(): void
+    {
+        $email   = $this->createEmail('Email B', 'Email B Subject', 'template', 'beefree-empty', 'Test html');
+        $this->em->flush();
+
+        // request for email clone
+        $crawler        = $this->client->request(Request::METHOD_GET, "/s/emails/clone/{$email->getId()}");
+        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $form           = $buttonCrawler->form();
+        $someArr        = ['content' => 'json'];
+        $beefreeContent = [
+            'css'      => 'the css',
+            'html'     => 'the html',
+            'rendered' => json_encode($someArr),
+        ];
+
+        $form['emailform[customHtml]']->setValue(json_encode($beefreeContent));
+        $this->client->submit($form);
+        $this->client->submit($form);
+        Assert::assertTrue($this->client->getResponse()->isOk());
+        $this->assertStringContainsString('Something went wrong with html content, Please refresh the page and try again.', $this->client->getResponse()->getContent());
+    }
+
+    public function testWrongContentInEditAction(): void
+    {
+        $email   = $this->createEmail('Email B', 'Email B Subject', 'template', 'beefree-empty', 'Test html');
+        $this->em->flush();
+
+        // request for email clone
+        $crawler        = $this->client->request(Request::METHOD_GET, "/s/emails/edit/{$email->getId()}");
+        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $form           = $buttonCrawler->form();
+        $someArr        = ['content' => 'json'];
+        $beefreeContent = [
+            'css'      => 'the css',
+            'html'     => 'the html',
+            'rendered' => json_encode($someArr),
+        ];
+
+        $form['emailform[customHtml]']->setValue(json_encode($beefreeContent));
+        $this->client->submit($form);
+        $this->client->submit($form);
+        Assert::assertTrue($this->client->getResponse()->isOk());
+        $this->assertStringContainsString('Something went wrong with html content, Please refresh the page and try again.', $this->client->getResponse()->getContent());
+    }
+
+    public function testEmailDetailsPageShouldNotHavePendingCount(): void
+    {
+        $segment = $this->createSegment('Test Segment A', 'test-segment-a');
+        $email   = $this->createEmail('Test Email C', 'Test Email C Subject', 'list', 'beefree-empty', 'Test html', $segment);
+        $this->em->flush();
+
+        $this->client->enableProfiler();
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}");
+
+        // checking if pending count is removed from details page ui
+        $emailDetailsContainer = trim($crawler->filter('#email-details')->filter('tbody')->text());
+        $this->assertStringNotContainsString('Pending', $emailDetailsContainer);
+
+        $profile = $this->client->getProfile();
+
+        /** @var DoctrineDataCollector $dbCollector */
+        $dbCollector = $profile->getCollector('db');
+        $queries     = $dbCollector->getQueries();
+        $prefix      = self::$container->getParameter('mautic.db_table_prefix');
+
+        $pendingCountQuery = array_filter(
+            $queries['default'],
+            function (array $query) use ($prefix, $segment, $email) {
+                return $query['sql'] === "SELECT count(*) as count FROM {$prefix}leads l WHERE (EXISTS (SELECT null FROM {$prefix}lead_lists_leads ll WHERE (ll.lead_id = l.id) AND (ll.leadlist_id IN ({$segment->getId()})) AND (ll.manually_removed = :false))) AND (NOT EXISTS (SELECT null FROM {$prefix}lead_donotcontact dnc WHERE (dnc.lead_id = l.id) AND (dnc.channel = 'email'))) AND (NOT EXISTS (SELECT null FROM {$prefix}email_stats stat WHERE (stat.lead_id = l.id) AND (stat.email_id IN ({$email->getId()})))) AND (NOT EXISTS (SELECT null FROM {$prefix}message_queue mq WHERE (mq.lead_id = l.id) AND (mq.status <> 'sent') AND (mq.channel = 'email') AND (mq.channel_id IN ({$email->getId()})))) AND ((l.email IS NOT NULL) AND (l.email <> ''))";
+            }
+        );
+
+        $this->assertCount(0, $pendingCountQuery);
+    }
+
     public function testAbTestAction(): void
     {
         $segment        = $this->createSegment('Segment B', 'segment-B');
@@ -434,7 +534,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $form['emailform[name]']->setValue('Email B var 2');
         $form['emailform[variantSettings][weight]']->setValue((string) $varientSetting['totalWeight']);
         $form['emailform[variantSettings][winnerCriteria]']->setValue($varientSetting['winnerCriteria']);
-        $form['emailform[isPublished]']->setValue('1');
+        $form['emailform[isPublished]']->setValue(true);
 
         $this->client->submit($form);
         Assert::assertTrue($this->client->getResponse()->isOk());
@@ -543,48 +643,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($email);
 
         return $email;
-    }
-
-    public function testEmailDetailsPageShouldNotHavePendingCount(): void
-    {
-        // Create a segment
-        $segment = new LeadList();
-        $segment->setName('Test Segment A');
-        $segment->setPublicName('Test Segment A');
-        $segment->setAlias('test-segment-a');
-
-        // Create email template of type "list" and attach the segment to it
-        $email = new Email();
-        $email->setName('Test Email C');
-        $email->setSubject('Test Email C Subject');
-        $email->setEmailType('list');
-        $email->setCustomHtml('This is Email C custom HTML.');
-        $email->addList($segment);
-
-        $this->em->persist($segment);
-        $this->em->persist($email);
-        $this->em->flush();
-
-        $this->client->enableProfiler();
-        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}");
-
-        // checking if pending count is removed from details page ui
-        $emailDetailsContainer = trim($crawler->filter('#email-details')->filter('tbody')->text(null, false));
-        $this->assertStringNotContainsString('Pending', $emailDetailsContainer);
-
-        $profile = $this->client->getProfile();
-
-        /** @var DoctrineDataCollector $dbCollector */
-        $dbCollector = $profile->getCollector('db');
-        $queries     = $dbCollector->getQueries();
-        $prefix      = static::getContainer()->getParameter('mautic.db_table_prefix');
-
-        $pendingCountQuery = array_filter(
-            $queries['default'],
-            fn (array $query) => $query['sql'] === "SELECT count(*) as count FROM {$prefix}leads l WHERE (EXISTS (SELECT null FROM {$prefix}lead_lists_leads ll WHERE (ll.lead_id = l.id) AND (ll.leadlist_id IN ({$segment->getId()})) AND (ll.manually_removed = :false))) AND (NOT EXISTS (SELECT null FROM {$prefix}lead_donotcontact dnc WHERE (dnc.lead_id = l.id) AND (dnc.channel = 'email'))) AND (NOT EXISTS (SELECT null FROM {$prefix}email_stats stat WHERE (stat.lead_id = l.id) AND (stat.email_id IN ({$email->getId()})))) AND (NOT EXISTS (SELECT null FROM {$prefix}message_queue mq WHERE (mq.lead_id = l.id) AND (mq.status <> 'sent') AND (mq.channel = 'email') AND (mq.channel_id IN ({$email->getId()})))) AND ((l.email IS NOT NULL) AND (l.email <> ''))"
-        );
-
-        $this->assertCount(0, $pendingCountQuery);
     }
 
     public function testSendEmailForImportCustomEmailTemplate(): void
