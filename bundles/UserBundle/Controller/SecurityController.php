@@ -12,11 +12,13 @@ use Mautic\CoreBundle\Service\FlashBag;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\PluginBundle\Helper\IntegrationHelper;
 use Mautic\UserBundle\Exception\WeakPasswordException;
+use Mautic\UserBundle\Security\SAML\Helper as SAMLHepler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -62,7 +64,7 @@ class SecurityController extends CommonController implements EventSubscriberInte
     /**
      * Generates login form and processes login.
      */
-    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, IntegrationHelper $integrationHelper, TranslatorInterface $translator): \Symfony\Component\HttpFoundation\Response
+    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils, IntegrationHelper $integrationHelper, TranslatorInterface $translator): Response
     {
         $error = $authenticationUtils->getLastAuthenticationError();
 
@@ -123,6 +125,28 @@ class SecurityController extends CommonController implements EventSubscriberInte
         // The plugin should be handling this in it's listener
 
         return new RedirectResponse($this->generateUrl('login'));
+    }
+
+    public function samlLoginRetryAction(Request $request, SAMLHepler $samlHelper): Response
+    {
+        $isSamlUser = $samlHelper->isSamlEnabled();
+        if (!$isSamlUser) {
+            return new RedirectResponse($this->generateUrl('login'));
+        }
+
+        $this->addFlashMessage('mautic.user.security.saml.clearsession', [], FlashBag::LEVEL_ERROR);
+
+        return $this->delegateView([
+            'viewParameters' => [
+                'loginRoute' => $this->generateUrl('lightsaml_sp.discovery'),
+            ],
+            'contentTemplate' => '@MauticUser/Security/saml_login_retry.html.twig',
+            'passthroughVars' => [
+                'route'          => $this->generateUrl('mautic_base_index'),
+                'mauticContent'  => 'user',
+                'sessionExpired' => true,
+            ],
+        ]);
     }
 
     /**

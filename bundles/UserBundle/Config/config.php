@@ -117,6 +117,10 @@ return [
                 'path'       => '/saml/discovery',
                 'controller' => 'LightSaml\SpBundle\Controller\DefaultController::discoveryAction',
             ],
+            'mautic_saml_login_retry' => [
+                'path'       => '/saml/login_retry',
+                'controller' => 'Mautic\UserBundle\Controller\SecurityController::samlLoginRetryAction',
+            ],
         ],
     ],
 

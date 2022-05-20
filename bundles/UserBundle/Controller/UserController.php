@@ -184,7 +184,7 @@ class UserController extends FormController
             if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
                 return $this->postActionRedirect([
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $page],
+                    'viewParameters'  => ['page' => $page, 'isSamlUser'      => false],
                     'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_user_index',
@@ -197,7 +197,7 @@ class UserController extends FormController
         }
 
         return $this->delegateView([
-            'viewParameters'  => ['form' => $form->createView()],
+            'viewParameters'  => ['form' => $form->createView(), 'isSamlUser'      => false],
             'contentTemplate' => '@MauticUser/User/form.html.twig',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_user_new',

@@ -9,14 +9,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class Helper
 {
-    private RequestStack $request;
-
-    private CoreParametersHelper $coreParametersHelper;
-
-    public function __construct(CoreParametersHelper $coreParametersHelper, RequestStack $request)
+    public function __construct(private CoreParametersHelper $coreParametersHelper, private RequestStack $request)
     {
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->request              = $request;
     }
 
     public function isSamlSession(): bool
