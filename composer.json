@@ -53,7 +53,6 @@
     "symfony/twig-bundle": "~4.4.0",
     "symfony/doctrine-bridge": "~4.4.0",
     "symfony/monolog-bridge": "~4.4.0",
-    "symfony/swiftmailer-bundle": "~3.3",
     "symfony/polyfill-mbstring": "~1.0",
     "symfony/security-acl": "~3.0.0",
     "symfony/polyfill-php73": "^1.13",
@@ -107,7 +106,10 @@
     "phpoffice/phpspreadsheet": "^1.15",
     "predis/predis": "^1.1",
     "composer/composer": "^2.2",
-    "beberlei/doctrineextensions": "^1.3"
+    "beberlei/doctrineextensions": "^1.3",
+    "symfony/mailer": "^5.4",
+    "symfony/mime": "^5.4",
+    "symfony/messenger": "^5.4"
   },
   "repositories": [
     {
@@ -119,7 +121,10 @@
   "prefer-stable": true,
   "config": {
     "preferred-install": "dist",
-    "autoloader-suffix": "Mautic4"
+    "autoloader-suffix": "Mautic4",
+    "allow-plugins": {
+      "symfony/flex": false
+    }
   },
   "extra": {
     "mautic-scaffold": {
