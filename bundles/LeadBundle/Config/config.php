@@ -121,6 +121,10 @@ return [
                     'objectId' => '\d+',
                 ],
             ],
+            'mautic_company_graph'     => [
+                'path'       => '/company/graph/{objectId}',
+                'controller' => 'MauticLeadBundle:Company:graph',
+            ],
             'mautic_company_action' => [
                 'path'       => '/companies/{objectAction}/{objectId}',
                 'controller' => 'Mautic\LeadBundle\Controller\CompanyController::executeAction',
