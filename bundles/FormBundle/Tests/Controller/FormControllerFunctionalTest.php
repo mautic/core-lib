@@ -17,6 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use PHPUnit\Framework\Assert;
 
 class FormControllerFunctionalTest extends MauticMysqlTestCase
 {
@@ -566,12 +567,78 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         return $action;
     }
 
+    public function testCloneActionWithCondition(): void
+    {
+        $form = $this->createForm('Conditional Form', 'Conditional Form');
+        $this->em->flush();
+
+        $field1 = $this->createFormField([
+            'label'        => 'Country',
+            'type'         => 'country',
+            'mappedObject' => 'contact',
+            'mappedField'  => 'country',
+        ])->setForm($form);
+        $this->em->persist($field1);
+
+        $field2 = $this->createFormField([
+            'label'        => 'State',
+            'mappedObject' => 'contact',
+            'mappedField'  => 'state',
+            'conditions'   => [
+                'any'    => 0,
+                'expr'   => 'in',
+                'values' => ['United States'],
+            ],
+            'parent' => $field1->getId(),
+        ])->setForm($form);
+
+        $fieldSubmit = $this->createFormField([
+            'label'        => 'Submit',
+            'type'         => 'button',
+        ])->setForm($form);
+
+        $this->em->persist($field2);
+        $this->em->flush();
+
+        $form->addField($field1->getId(), $field1);
+        $form->addField($field2->getId(), $field2);
+        $form->addField($fieldSubmit->getId(), $fieldSubmit);
+
+        $field2->setParent((string) $field1->getId());
+
+        $this->em->persist($form);
+        $this->em->flush();
+
+        // request for form clone
+        $crawler        = $this->client->request(Request::METHOD_GET, "/s/forms/clone/{$form->getId()}");
+        $mauticform     = $crawler->filterXPath('//form[@name="mauticform"]')->form();
+        $mauticform['mauticform[name]']->setValue('Clone Conditional Form');
+        $mauticform['mauticform[isPublished]']->setValue(true);
+
+        $this->client->submit($mauticform);
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $forms = $this->em->getRepository(Form::class)->findBy([], ['id' => 'ASC']);
+        Assert::assertCount(2, $forms);
+
+        $originalForm = $forms[0];
+        $clonedForm   = $forms[1];
+        Assert::assertSame($form->getId(), $originalForm->getId());
+        Assert::assertNotSame($form->getId(), $clonedForm->getId());
+
+        $fields = $clonedForm->getFields()->getValues();
+        Assert::assertCount(3, $fields);
+
+        list($clonedField1, $clonedField2, $clonedSubmit) = $fields;
+        Assert::assertSame((int) $clonedField2->getParent(), $clonedField1->getId());
+    }
+
     private function createForm(string $name, string $alias): Form
     {
         $form = new Form();
         $form->setName($name);
         $form->setAlias($alias);
-        $form->setPostActionProperty('Success');
         $this->em->persist($form);
 
         return $form;
@@ -587,9 +654,9 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $field->setLabel($data['label'] ?? 'Field 1');
         $field->setAlias('field_'.$aliasSlug);
         $field->setType($data['type'] ?? 'text');
-        $field->setMappedObject($data['mappedObject'] ?? '');
-        $field->setMappedField($data['mappedField'] ?? '');
-        $field->setConditions($data['conditions'] ?? []);
+        $field->setMappedObject($data['mappedObject']);
+        $field->setMappedField($data['mappedField']);
+        $field->setConditions($data['conditions']);
         $this->em->persist($field);
 
         return $field;
