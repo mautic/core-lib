@@ -975,7 +975,7 @@ class FieldModel extends FormModel
             ];
         }
 
-        return array_merge($fields, $this->getSystemLeadFields());
+        return 'lead' === $object ? array_merge($fields, $this->getSystemLeadFields()) : $fields;
     }
 
     /**
