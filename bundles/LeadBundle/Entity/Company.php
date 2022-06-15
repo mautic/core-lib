@@ -10,6 +10,7 @@ use Mautic\LeadBundle\Form\Validator\Constraints\UniqueCustomField;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\ProjectBundle\Entity\ProjectTrait;
 use Mautic\UserBundle\Entity\User;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class Company extends FormEntity implements CustomFieldEntityInterface, IdentifierFieldEntityInterface
@@ -136,6 +137,15 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
         self::addProjectsField($builder, 'company_projects_xref', 'company_id');
     }
 
+    public static function loadValidatorMetadata(ClassMetadata $metadata): void
+    {
+        $metadata->addConstraint(new UniqueCustomField(['object' => 'company']));
+        $metadata->addPropertyConstraint('score', new Assert\Range([
+            'min' => 0,
+            'max' => 2147483647,
+        ]));
+    }
+
     /**
      * Prepares the metadata for API usage.
      */
@@ -171,11 +181,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
             ->build();
 
         self::addProjectsInLoadApiMetadata($metadata, 'company');
-    }
-
-    public static function loadValidatorMetadata(ClassMetadata $metadata): void
-    {
-        $metadata->addConstraint(new UniqueCustomField(['object' => 'company']));
     }
 
     public static function getDefaultIdentifierFields(): array
