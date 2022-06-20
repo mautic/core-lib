@@ -975,7 +975,7 @@ class FieldModel extends FormModel
             ];
         }
 
-        return 'lead' === $object ? array_merge($fields, $this->getSystemLeadFields()) : $fields;
+        return 'company' === $object ? $fields : array_merge($fields, $this->getSpecialLeadFields());
     }
 
     /**
@@ -983,7 +983,7 @@ class FieldModel extends FormModel
      *
      * @return array<string, mixed>
      */
-    public function getSystemLeadFields(): array
+    public function getSpecialLeadFields(): array
     {
         return [
             'owner' => [
