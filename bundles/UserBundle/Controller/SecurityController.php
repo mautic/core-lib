@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -127,12 +128,15 @@ class SecurityController extends CommonController implements EventSubscriberInte
         return new RedirectResponse($this->generateUrl('login'));
     }
 
-    public function samlLoginRetryAction(Request $request, SAMLHepler $samlHelper): Response
+    public function samlLoginRetryAction(Request $request, SAMLHepler $samlHelper, SessionInterface $session): Response
     {
         $isSamlUser = $samlHelper->isSamlEnabled();
         if (!$isSamlUser) {
             return new RedirectResponse($this->generateUrl('login'));
         }
+
+        // invalidating the session
+        $session->invalidate();
 
         $this->addFlashMessage('mautic.user.security.saml.clearsession', [], FlashBag::LEVEL_ERROR);
 
