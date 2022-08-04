@@ -52,6 +52,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -104,8 +106,9 @@ class PageModel extends FormModel implements GlobalSearchInterface
         LoggerInterface $mauticLogger,
         private StatRepository $statRepository,
         private BotRatioHelper $botRatioHelper,
+        private ValidatorInterface $validator,
     ) {
-        $this->dateTimeHelper       = new DateTimeHelper();
+        $this->dateTimeHelper = new DateTimeHelper();
 
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
@@ -460,19 +463,8 @@ class PageModel extends FormModel implements GlobalSearchInterface
         $hit->setTrackingId($this->limitString($trackedDevice->getTrackingId()));
         $hit->setDeviceStat($trackedDevice);
 
-        // Wrap in a try/catch to prevent deadlock errors on busy servers
-        try {
-            $this->em->persist($hit);
-            $this->em->flush();
-        } catch (\Exception $exception) {
-            if (MAUTIC_ENV !== 'prod') {
-                throw $exception;
-            }
-            $this->logger->error(
-                $exception->getMessage(),
-                ['exception' => $exception]
-            );
-        }
+        $this->em->persist($hit);
+        $this->em->flush();
 
         // save hit to the cookie to use to update the exit time
         if ($hit) {
@@ -504,8 +496,6 @@ class PageModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
-     * Process page hit.
-     *
      * @throws \Exception
      */
     public function processPageHit(
@@ -582,6 +572,14 @@ class PageModel extends FormModel implements GlobalSearchInterface
 
         $hit->setQuery($query);
         $hit->setUrl($query['page_url'] ?? $request->getRequestUri());
+
+        /** @var ConstraintViolationList $errors */
+        $errors = $this->validator->validate($hit);
+        if ($errors->count() > 0) {
+            $this->logger->error((string) $errors);
+
+            return;
+        }
 
         // Add entry to contact log table
         $this->setLeadManipulator($page, $hit, $lead);

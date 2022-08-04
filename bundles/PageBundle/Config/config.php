@@ -115,6 +115,15 @@ return [
                 'arguments' => ['mautic.page.model.page'],
             ],
         ],
+        'validator' => [
+            'mautic.page.validator.page_hit'         => [
+                'class'     => Mautic\PageBundle\Validator\PageHitValidator::class,
+                'arguments' => [
+                    'mautic.helper.core_parameters',
+                ],
+                'tag' => 'validator.constraint_validator',
+            ],
+        ],
         'other' => [
             'mautic.page.helper.token' => [
                 'class'     => Mautic\PageBundle\Helper\TokenHelper::class,
@@ -146,5 +155,6 @@ return [
         'facebook_pixel_landingpage_enabled'    => false,
         'do_not_track_404_anonymous'            => false,
         'append_segment_id_tracking_url'        => false,
+        'validate_page_hit_required_data'       => false,
     ],
 ];
