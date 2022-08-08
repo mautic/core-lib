@@ -114,7 +114,16 @@ final class SegmentOperatorQuerySubscriber implements EventSubscriberInterface
             )];
         }
 
-        $event->addExpression($event->getQueryBuilder()->expr()->and(...$expressions));
+        // add OR between include / AND between exclude
+        if ('multiselect' === $event->getFilter()->getOperator()) {
+            $event->addExpression($event->getQueryBuilder()->expr()->OrX($expressions));
+        } else {
+            // adding is null to account for empty entries, can be over-ridden with another filter
+            $event->addExpression($event->getQueryBuilder()->expr()->OrX(
+                $event->getQueryBuilder()->expr()->AndX($expressions),
+                $event->getQueryBuilder()->expr()->isNull($leadsTableAlias.'.'.$event->getFilter()->getField())
+            ));
+        }
         $event->stopPropagation();
     }
 
