@@ -29,7 +29,6 @@ class DateOptionParameters
         $this->timeframe               = $this->parseTimeFrame($leadSegmentFilterCrate, $relativeDateStrings);
         $this->requiresBetween         = in_array($leadSegmentFilterCrate->getOperator(), ['=', '!='], true);
         $this->shouldUseLastDayOfRange = in_array($leadSegmentFilterCrate->getOperator(), ['gt', 'lte'], true);
-
         $this->setDateTimeHelper($timezoneResolver);
     }
 
