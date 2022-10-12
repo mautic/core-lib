@@ -419,80 +419,10 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertEquals('Test html', $secondEmail->getCustomHtml());
     }
 
-    public function testEmailWithWrongHtmlContent(): void
-    {
-        $crawler        = $this->client->request(Request::METHOD_GET, '/s/emails/new');
-        $buttonCrawler  =  $crawler->selectButton('Save & Close');
-        $form           = $buttonCrawler->form();
-        $form['emailform[emailType]']->setValue('template');
-        $form['emailform[subject]']->setValue('Email B Subject clone');
-        $form['emailform[name]']->setValue('Email B clone');
-        $form['emailform[template]']->setValue('beefree-empty');
-        $someArr        = ['content' => 'json'];
-        $beefreeContent = [
-            'css'      => 'the css',
-            'html'     => 'the html',
-            'rendered' => json_encode($someArr),
-        ];
-
-        $form['emailform[customHtml]']->setValue(json_encode($beefreeContent));
-        $form['emailform[isPublished]']->setValue(1);
-
-        $this->client->submit($form);
-        Assert::assertTrue($this->client->getResponse()->isOk());
-        $this->assertStringContainsString('Something went wrong with html content, Please refresh the page and try again.', $this->client->getResponse()->getContent());
-    }
-
-    public function testWrongContentInCloneAction(): void
-    {
-        $email   = $this->createEmail('Email B', 'Email B Subject', 'template', 'beefree-empty', 'Test html');
-        $this->em->flush();
-
-        // request for email clone
-        $crawler        = $this->client->request(Request::METHOD_GET, "/s/emails/clone/{$email->getId()}");
-        $buttonCrawler  =  $crawler->selectButton('Save & Close');
-        $form           = $buttonCrawler->form();
-        $someArr        = ['content' => 'json'];
-        $beefreeContent = [
-            'css'      => 'the css',
-            'html'     => 'the html',
-            'rendered' => json_encode($someArr),
-        ];
-
-        $form['emailform[customHtml]']->setValue(json_encode($beefreeContent));
-        $this->client->submit($form);
-        $this->client->submit($form);
-        Assert::assertTrue($this->client->getResponse()->isOk());
-        $this->assertStringContainsString('Something went wrong with html content, Please refresh the page and try again.', $this->client->getResponse()->getContent());
-    }
-
-    public function testWrongContentInEditAction(): void
-    {
-        $email   = $this->createEmail('Email B', 'Email B Subject', 'template', 'beefree-empty', 'Test html');
-        $this->em->flush();
-
-        // request for email clone
-        $crawler        = $this->client->request(Request::METHOD_GET, "/s/emails/edit/{$email->getId()}");
-        $buttonCrawler  =  $crawler->selectButton('Save & Close');
-        $form           = $buttonCrawler->form();
-        $someArr        = ['content' => 'json'];
-        $beefreeContent = [
-            'css'      => 'the css',
-            'html'     => 'the html',
-            'rendered' => json_encode($someArr),
-        ];
-
-        $form['emailform[customHtml]']->setValue(json_encode($beefreeContent));
-        $this->client->submit($form);
-        $this->client->submit($form);
-        Assert::assertTrue($this->client->getResponse()->isOk());
-        $this->assertStringContainsString('Something went wrong with html content, Please refresh the page and try again.', $this->client->getResponse()->getContent());
-    }
-
     public function testEmailDetailsPageShouldNotHavePendingCount(): void
     {
         $segment = $this->createSegment('Test Segment A', 'test-segment-a');
-        $email   = $this->createEmail('Test Email C', 'Test Email C Subject', 'list', 'beefree-empty', 'Test html', $segment);
+        $email   = $this->createEmail('Test Email C', 'Test Email C Subject', 'list', 'blank', 'Test html', $segment);
         $this->em->flush();
 
         $this->client->enableProfiler();
