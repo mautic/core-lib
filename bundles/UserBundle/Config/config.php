@@ -191,6 +191,17 @@ return [
                 'tag'       => 'lightsaml.trust_options_store',
             ],
 
+            'mautic.security.saml.entity_descriptor_provider' => [
+                'class'     => \LightSaml\Builder\EntityDescriptor\SimpleEntityDescriptorBuilder::class,
+                'factory'   => [\Mautic\UserBundle\Security\SAML\EntityDescriptorProviderFactory::class, 'build'],
+                'arguments' => [
+                    '%lightsaml.own.entity_id%',
+                    'router',
+                    '%lightsaml.route.login_check%',
+                    'lightsaml.own.credential_store',
+                ],
+            ],
+
             'mautic.security.saml.entity_descriptor_store' => [
                 'class'     => Mautic\UserBundle\Security\SAML\Store\EntityDescriptorStore::class,
                 'arguments' => [
