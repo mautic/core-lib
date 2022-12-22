@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Entity;
 
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
 use Mautic\CategoryBundle\Entity\Category;
+use Doctrine\DBAL\ArrayParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
 /**
