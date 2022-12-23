@@ -1957,7 +1957,7 @@ class LeadModel extends FormModel
     {
         $columns = [];
         foreach ($aliases as $alias) {
-            $columns[] = sprintf('max(CHAR_LENGTH(%s)) %s', $alias, $alias);
+            $columns[] = sprintf('max(CHAR_LENGTH(`%s`)) `%s`', $alias, $alias);
         }
 
         $query = $this->em->getConnection()->createQueryBuilder();
