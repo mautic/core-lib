@@ -531,4 +531,68 @@ class SubmissionRepository extends CommonRepository
     {
         return 'fs';
     }
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function deleteFormResultsTableRecord(Submission $submission): void
+    {
+        $formId     = $submission->getForm()->getId();
+        $formAlias  = $submission->getForm()->getAlias();
+
+        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder()
+            ->delete($this->getResultsTableName($formId, $formAlias), 't')
+            ->where('t.submission_id = :submissionId')
+            ->setParameter('submissionId', $submission->getId());
+
+        $qb->execute();
+    }
+
+    /**
+     * @param array<int,string> $submissionIds
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function batchDeleteFormResultsTableRecord(array $submissionIds): void
+    {
+        if (!empty($submissionIds)) {
+            $entity = $this->getEntity((int) $submissionIds[0]);
+            $form   = $entity->getForm();
+
+            $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
+            $qb->delete($this->getResultsTableName($form->getId(), $form->getAlias()), 't')
+               ->where($qb->expr()->in('t.submission_id', $submissionIds));
+
+            $qb->execute();
+        }
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    public function getOrphanSubmissionRecords(string $tableName, int $maxResults)
+    {
+        $submissionTable =  MAUTIC_TABLE_PREFIX.'form_submissions';
+
+        return $this->getEntityManager()->getConnection()->createQueryBuilder()
+            ->select('fr.submission_id')
+            ->from($tableName, 'fr')
+            ->leftJoin('fr', $submissionTable, 'fs', 'fs.id = fr.submission_id')
+            ->where('fs.id is null')
+            ->setMaxResults($maxResults);
+    }
+
+    /**
+     * @param array<int,string> $inValidSubmissionIds
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function deleteOrphanSubmissionRecords(string $tableName, array $inValidSubmissionIds): void
+    {
+        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
+
+        $qb->delete($tableName, 'fro')
+            ->where($qb->expr()->in('fro.submission_id', $inValidSubmissionIds))
+            ->execute();
+    }
 }

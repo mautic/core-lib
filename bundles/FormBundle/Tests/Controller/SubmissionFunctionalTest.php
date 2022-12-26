@@ -12,6 +12,7 @@ use Mautic\FormBundle\Entity\Field;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Entity\Submission;
 use Mautic\FormBundle\Entity\SubmissionRepository;
+use Mautic\FormBundle\Tests\FormTestHelperTrait;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\PageBundle\Entity\Page;
 use Mautic\UserBundle\Entity\Role;
@@ -25,6 +26,8 @@ use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 final class SubmissionFunctionalTest extends MauticMysqlTestCase
 {
+    use FormTestHelperTrait;
+
     protected $useCleanupRollback   = false;
     protected bool $authenticateApi = true;
 
@@ -510,15 +513,6 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
             'standalone form type' => ['formType' => 'standalone'],
             'no form type'         => ['formType' => null],
         ];
-    }
-
-    protected function beforeTearDown(): void
-    {
-        $tablePrefix = static::getContainer()->getParameter('mautic.db_table_prefix');
-
-        if ($this->connection->createSchemaManager()->tablesExist("{$tablePrefix}form_results_1_submission")) {
-            $this->connection->executeStatement("DROP TABLE {$tablePrefix}form_results_1_submission");
-        }
     }
 
     public function testFetchFormSubmissionsApiIfPermissionNotGrantedForUser(): void
@@ -1403,5 +1397,100 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $submissions = $submissionRepository->findBy(['form' => $formId]);
 
         Assert::assertCount(0, $submissions);
+    }
+
+    public function testResultRecordsAreRemovedIfSubmissionRecordsAreRemovedForForm(): void
+    {
+        $payload = $this->getPayLoad();
+
+        $form = $this->createFormViaApi($payload);
+
+        $this->submitForm($form);
+
+        /** @var SubmissionRepository $submissionRepository */
+        $submissionRepository = $this->em->getRepository(Submission::class);
+
+        // Ensure the submission was created properly.
+        $submissions = $submissionRepository->findBy(['form' => $form['id']]);
+
+        Assert::assertCount(1, $submissions);
+
+        $submissionId = $submissions[0]->getId();
+
+        $this->client->request(Request::METHOD_POST, "/s/forms/results/{$form['id']}/delete/{$submissionId}");
+        $clientResponse = $this->client->getResponse();
+        $response       = json_decode($clientResponse->getContent(), true);
+
+        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
+
+        $conn        = $this->em->getConnection();
+        $tablePrefix = self::$container->getParameter('mautic.db_table_prefix');
+        $sql         = "select * from {$tablePrefix}form_results_{$form['id']}_{$form['alias']} where submission_id = {$submissionId}";
+        $stmt        = $conn->prepare($sql);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll();
+
+        Assert::assertCount(0, $results);
+    }
+
+    public function testResultRecordsAreRemovedIfSubmissionRecordsAreRemovedInBatchForForm(): void
+    {
+        $payload = $this->getPayLoad();
+
+        $form = $this->createFormViaApi($payload);
+
+        $totalSubmissions = 10;
+
+        for ($i = 0; $i < $totalSubmissions; ++$i) {
+            $this->submitForm($form);
+        }
+
+        /** @var SubmissionRepository $submissionRepository */
+        $submissionRepository = $this->em->getRepository(Submission::class);
+
+        // Ensure the submission was created properly.
+        $submissions = $submissionRepository->findBy(['form' => $form['id']]);
+
+        Assert::assertCount($totalSubmissions, $submissions);
+
+        $submissionIds = [];
+
+        foreach ($submissions as $submission) {
+            $submissionIds[] = $submission->getId();
+        }
+
+        $submissionIdsEncoded = json_encode($submissionIds);
+
+        $this->client->restart();
+
+        $this->client->request(Request::METHOD_POST, "s/forms/results/{$form['id']}/batchDelete?ids={$submissionIdsEncoded}");
+        $clientResponse = $this->client->getResponse();
+        $response       = json_decode($clientResponse->getContent(), true);
+
+        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
+
+        $tablePrefix = self::$container->getParameter('mautic.db_table_prefix');
+
+        $qb       = $this->em->getConnection()->createQueryBuilder();
+
+        $qb->select('count(*) as count')
+            ->from("{$tablePrefix}form_results_{$form['id']}_{$form['alias']}", 't')
+            ->where($qb->expr()->in('t.submission_id', $submissionIds));
+
+        $result = $qb->execute()->fetchAll();
+
+        Assert::assertEquals(0, (int) $result['count']);
+    }
+
+    protected function beforeTearDown(): void
+    {
+        $tablePrefix = self::$container->getParameter('mautic.db_table_prefix');
+
+        parent::beforeTearDown();
+
+        if ($this->connection->getSchemaManager()->tablesExist("{$tablePrefix}form_results_1_submission")) {
+            $this->connection->executeQuery("DROP TABLE {$tablePrefix}form_results_1_submission");
+        }
     }
 }
