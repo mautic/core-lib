@@ -8,6 +8,7 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
 use Mautic\EmailBundle\Entity\Email;
 use PHPUnit\Framework\Assert;
+use Mautic\LeadBundle\Entity\Lead;
 use Symfony\Component\HttpFoundation\Request;
 
 final class EmailExampleFunctionalTest extends MauticMysqlTestCase

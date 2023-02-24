@@ -18,6 +18,7 @@ use Mautic\EmailBundle\Helper\DTO\AddressDTO;
 use Mautic\EmailBundle\Helper\FromEmailHelper;
 use Mautic\EmailBundle\Helper\MailHashHelper;
 use Mautic\EmailBundle\Helper\MailHelper;
+use Mautic\EmailBundle\Helper\SMimeHelper;
 use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\EmailBundle\Model\EmailStatModel;
 use Mautic\EmailBundle\Model\SendEmailToContact;

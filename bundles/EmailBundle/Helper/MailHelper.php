@@ -252,10 +252,11 @@ class MailHelper
         private AssetModel $assetModel,
         private TrackableModel $trackableModel,
         private RedirectModel $redirectModel,
+        private SMimeHelper $sMimeHelper,
     ) {
         $this->transport  = $this->getTransport();
         $this->returnPath = $coreParametersHelper->get('mailer_return_path');
-
+        
         $systemFromEmail    = (string) $coreParametersHelper->get('mailer_from_email');
         $systemReplyToEmail = $coreParametersHelper->get('mailer_reply_to_email');
         $systemFromName     = $this->cleanName(
@@ -271,6 +272,21 @@ class MailHelper
         }
 
         $this->message = $this->getMessageInstance();
+
+        $this->tokenizationEnabled = $this->isTokenizationSupported();
+    }
+
+    private function isTokenizationSupported(): bool
+    {
+        $isMemorySpoolType = 'memory' === $this->coreParametersHelper->get('mailer_spool_type');
+        $tokensSupported   = $this->transport instanceof TokenTransportInterface;
+        $spoolSupported    = $this->transport instanceof SpoolTransport && $this->transport->supportsTokenization();
+
+        if ($this->sMimeHelper->sMimeSigningEnabled()) {
+            return false;
+        }
+
+        return ($isMemorySpoolType && $tokensSupported) || $spoolSupported;
     }
 
     /**
@@ -387,12 +403,18 @@ class MailHelper
                 }
             }
 
+            $signer = $this->sMimeHelper->signContent($this->message);
+
             try {
                 if (!$this->skip) {
                     $this->mailer->send($this->message);
                     $this->message->clearMetadata();
                 }
                 $this->skip = false;
+
+                if ($signer) {
+                    $this->message->detachSigner($signer);
+                }
             } catch (TransportExceptionInterface $exception) {
                 /*
                     The nature of symfony/mailer is working with transactional emails only

@@ -31,6 +31,11 @@ abstract class AbstractMauticTestCase extends WebTestCase
 
     protected Router $router;
 
+    /**
+     * Warning, each email is logged twice in the messageLogger.
+     * Because Mautic calls the send method twice.
+     */
+    protected \Swift_Plugins_MessageLogger $messageLogger;
     protected array $clientOptions = [];
 
     /**
@@ -113,6 +118,12 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $scheme           = $this->router->getContext()->getScheme();
         $secure           = 0 === strcasecmp($scheme, 'https');
 
+        $mailer = static::$container->get('mailer');
+        \assert($mailer instanceof \Swift_Mailer);
+
+        $this->messageLogger = new \Swift_Plugins_MessageLogger();
+        $mailer->registerPlugin($this->messageLogger);
+        
         $this->client->setServerParameter('HTTPS', (string) $secure);
     }
 
