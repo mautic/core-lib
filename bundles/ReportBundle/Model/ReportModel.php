@@ -2,6 +2,7 @@
 
 namespace Mautic\ReportBundle\Model;
 
+use DateTime;
 use Doctrine\DBAL\Connections\PrimaryReadReplicaConnection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
@@ -446,21 +447,21 @@ class ReportModel extends FormModel implements GlobalSearchInterface
     public function getReportData(Report $entity, ?FormFactoryInterface $formFactory = null, array $options = []): array
     {
         // Clone dateFrom/dateTo because they handled separately in charts
-        $chartDateFrom = isset($options['dateFrom']) ? clone $options['dateFrom'] : (new \DateTime('-30 days'));
-        $chartDateTo   = isset($options['dateTo']) ? clone $options['dateTo'] : (new \DateTime());
+        $chartDateFrom = isset($options['dateFrom']) ? clone $options['dateFrom'] : (new DateTime('-30 days'));
+        $chartDateTo   = isset($options['dateTo']) ? clone $options['dateTo'] : (new DateTime());
 
         $debugData = [];
 
         if (isset($options['dateFrom'])) {
-            // Fix date ranges if applicable
+            $now = new DateTime();
+
             if (!isset($options['dateTo'])) {
-                $options['dateTo'] = new \DateTime();
+                $options['dateTo'] = $now;
             }
 
-            // Adjust dateTo to be end of day or to current hour if today
-            $now = new \DateTime();
-            if ($now->format('Y-m-d') == $options['dateTo']->format('Y-m-d')) {
-                $options['dateTo'] = $now;
+            // Set time to the last second of the "to date" date
+            if ($now->format('Y-m-d') === $options['dateTo']->format('Y-m-d')) {
+                $options['dateTo'] = $now->setTime(23, 59, 59);
             } else {
                 $options['dateTo']->setTime(23, 59, 59);
             }

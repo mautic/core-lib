@@ -2,6 +2,7 @@
 
 namespace Mautic\ReportBundle\Controller\Api;
 
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Mautic\ApiBundle\Controller\CommonApiController;
 use Mautic\ApiBundle\Helper\EntityResultHelper;
