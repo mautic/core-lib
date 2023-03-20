@@ -281,6 +281,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
         $recipientCollection = new RecipientCollection();
         $message             = $sms->getMessage();
+        $media               = $sms->getMedia();
         /** @var array<int, Stat> $stats */
         $stats               = [];
 
@@ -323,7 +324,11 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
         try {
             // assumption made that the Sms message is same for all contacts
-            $this->transport->sendBatchSms($recipientCollection, $message);
+            if (!empty($media)) {
+                $this->transport->sendMMS($recipientCollection, $message, $media);
+            } else {
+                $this->transport->sendBatchSms($recipientCollection, $message);
+            }
         } catch (PrimaryTransportNotEnabledException $e) {
             $this->logger->warning($e->getMessage());
 
@@ -550,7 +555,8 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
                 );
 
                 foreach ($entities as $entity) {
-                    $results[$entity['language']][$entity['id']] = $entity['name'];
+                    $mms                                         = !empty($entity['media']) ? '['.$this->translator->trans('mautic.sms.form.mms').'] ' : '';
+                    $results[$entity['language']][$entity['id']] = $mms.$entity['name'];
                 }
 
                 // sort by language

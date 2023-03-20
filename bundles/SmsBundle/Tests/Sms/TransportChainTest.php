@@ -10,6 +10,7 @@ use Mautic\SmsBundle\Collection\RecipientCollection;
 use Mautic\SmsBundle\Helper\DTO\SmsRecipientDTO;
 use Mautic\SmsBundle\Integration\Twilio\TwilioTransport;
 use Mautic\SmsBundle\Sms\BulkTransportInterface;
+use Mautic\SmsBundle\Sms\MMSTransportInterface;
 use Mautic\SmsBundle\Sms\TransportChain;
 use Mautic\SmsBundle\Sms\TransportInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -98,8 +99,28 @@ final class TransportChainTest extends MauticMysqlTestCase
                 return true;
             }
         };
+        $this->createDataAndAssertSendMessage($bulkSmsTransport);
+    }
 
-        $transportChain = new class('mautic.test.bulktwilio.mock', $this->getContainer()->get('mautic.helper.integration')) extends TransportChain {
+    public function testSendMessage(): void
+    {
+        $mmsTransport = new class() implements TransportInterface, MMSTransportInterface {
+            public function sendMms(Lead $lead, string $content, array $media)
+            {
+                return true;
+            }
+
+            public function sendSms(Lead $lead, $content): bool
+            {
+                return true;
+            }
+        };
+        $this->createDataAndAssertSendMessage($mmsTransport);
+    }
+
+    private function createDataAndAssertSendMessage(TransportInterface $transport): void
+    {
+        $transportChain = new class('mautic.test.bulktwilio.mock', self::getContainer()->get('mautic.helper.integration')) extends TransportChain {
             public function getEnabledTransports(): array
             {
                 $transports = $this->getTransports();
@@ -110,7 +131,7 @@ final class TransportChainTest extends MauticMysqlTestCase
             }
         };
 
-        $transportChain->addTransport('mautic.test.bulktwilio.mock', $bulkSmsTransport, 'mautic.test.bulktwilio.mock', 'BulkTwilio');
+        $transportChain->addTransport('mautic.test.bulktwilio.mock', $transport, 'mautic.test.bulktwilio.mock', 'BulkTwilio');
 
         $lead1 = new Lead();
         $lead1->setMobile('+123456789');
@@ -124,7 +145,11 @@ final class TransportChainTest extends MauticMysqlTestCase
         $recipientCollection->append(new SmsRecipientDTO($lead1, []));
         $recipientCollection->append(new SmsRecipientDTO($lead2, []));
 
-        $recipientCollection = $transportChain->sendBatchSms($recipientCollection, 'Yeah');
+        if ($transport instanceof MMSTransportInterface) {
+            $recipientCollection = $transportChain->sendMMS($recipientCollection, 'Yeah', ['test.png']);
+        } elseif ($transport instanceof BulkTransportInterface) {
+            $recipientCollection = $transportChain->sendBatchSms($recipientCollection, 'Yeah');
+        }
 
         $sentCount = 0;
         foreach ($recipientCollection as $recipient) {

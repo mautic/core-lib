@@ -30,6 +30,48 @@
 
     </div>
 </div>
+
+<div class="row {% if not form.vars.value.isMms() %}hide{% endif %}" id="media_div">
+    <div class="col-md-12">
+        {{ form_label(form.media) }}
+    </div>
+    <div class="col-md-2">
+        <button type="button" id="upload_mms_media" class="btn btn-primary" onclick="javascript:Mautic.loadNewWindow({windowUrl:'{{ path('mautic_base_index') }}elfinder?editor=media_form'})">
+            <i class="fa fa-upload "></i> {{ 'mautic.lead.import.upload'|trans }}
+        </button>
+    </div>
+    <div class="col-md-2">
+        {{ 'mautic.core.config.contact_unique_identifiers_operator.or'|trans }}
+    </div>
+    <div class="col-md-5">
+        <div class="input-group">
+            <input type="text" id="media_url" class="form-control" placeholder="{{ 'mautic.sms.type_media_url'|trans }}" />
+            <span class="input-group-addon" onclick="Mautic.addMediaFromUrl()">
+                <i class="fa fa-upload"></i>
+            </span>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <ul id="media_row">
+        {% for field in form.media %}
+            {% set url = field.vars.value %}
+            {% set id = field.vars.id %}
+            <li id="li_{{ id }}">
+                {{ form_widget(field) }}
+                <label for="{{ id }}"><img src="{{ url }}" /></label>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-12">
+        <div class="has-error">{{ form_errors(form.media) }}</div>
+    </div>
+    <div class="col-md-12">
+        <div class="alert alert-info mt-10">
+            {{ 'mautic.sms.form.mms.media.infobox'|trans }}
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block rightFormContent %}

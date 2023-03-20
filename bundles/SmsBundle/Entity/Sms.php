@@ -10,9 +10,9 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
-use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\TranslationEntityInterface;
@@ -25,8 +25,10 @@ use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Form\Validator\Constraints\LeadListAccess;
 use Mautic\ProjectBundle\Entity\ProjectTrait;
-use Symfony\Component\Serializer\Attribute\Groups;
+use Mautic\SmsBundle\Form\Validator\Constraints\MediaMaxAllowedSize;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -60,6 +62,8 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     use ProjectTrait;
     use TranslationEntityTrait;
     use VariantEntityTrait;
+
+    public const TABLE_NAME = 'sms_messages';
 
     /**
      * @var int
@@ -127,6 +131,13 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     private $smsType = 'template';
 
     /**
+     * @var array<mixed>
+     */
+    private array $media = [];
+
+    private bool $isMms = false;
+
+    /**
      * @var int
      */
     #[Groups(['sms:read'])]
@@ -181,6 +192,17 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
         $builder->addCategory();
 
+        $builder->createField('media', Types::JSON)
+            ->columnName('media')
+            ->nullable()
+            ->build();
+
+        $builder->createField('isMms', Types::BOOLEAN)
+            ->columnName('is_mms')
+            ->option('default', 0)
+            ->nullable(false)
+            ->build();   
+     
         $builder->createManyToMany('lists', LeadList::class)
             ->setJoinTable('sms_message_list_xref')
             ->setIndexBy('id')
@@ -216,8 +238,8 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         $metadata->addConstraint(new Callback(
             function (Sms $sms, ExecutionContextInterface $context): void {
                 $type = $sms->getSmsType();
+                $validator = $context->getValidator();
                 if ('list' == $type) {
-                    $validator  = $context->getValidator();
                     $violations = $validator->validate(
                         $sms->getLists(),
                         [
@@ -236,10 +258,30 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
                             ->addViolation();
                     }
                 }
+
+                $mediaViolations = $validator->validate(
+                    $sms->getMedia(),
+                    [
+                        new Count(
+                            [
+                                'maxMessage' => 'mautic.sms.form.max.media.error',
+                                'max'        => 10,
+                            ]
+                        ),
+                    ]
+                );
+                if (count($mediaViolations) > 0) {
+                    foreach ($mediaViolations as $violation) {
+                        $context->buildViolation($violation->getMessage())
+                            ->atPath('media')
+                            ->addViolation();
+                    }
+                }
             },
         ));
 
         $metadata->addConstraint(new EntityEvent());
+        $metadata->addConstraint(new MediaMaxAllowedSize());
     }
 
     /**
@@ -486,5 +528,35 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     public function getPendingCount()
     {
         return $this->pendingCount;
+    }
+
+    /**
+     * @param array<mixed> $media
+     */
+    public function setMedia(array $media): self
+    {
+        $this->media = $media;
+
+        return $this;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getMedia(): array
+    {
+        return $this->media;
+    }
+
+    public function setIsMms(bool $isMms): self
+    {
+        $this->isMms = $isMms;
+
+        return $this;
+    }
+
+    public function isMms(): bool
+    {
+        return (bool) $this->isMms;
     }
 }

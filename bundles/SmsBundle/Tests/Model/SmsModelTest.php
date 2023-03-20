@@ -26,6 +26,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 final class SmsModelTest extends \PHPUnit\Framework\TestCase
 {
@@ -47,7 +48,7 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
 
     private MockObject&UrlGeneratorInterface $urlGenerator;
 
-    private MockObject&TranslatorInterface $translatorInterface;
+    private MockObject&TranslatorInterface $translator;
 
     private MockObject&UserHelper $userHelper;
 
@@ -68,7 +69,7 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
         $this->security             = $this->createMock(CorePermissions::class);
         $this->dispatcher           = $this->createMock(EventDispatcherInterface::class);
         $this->urlGenerator         = $this->createMock(UrlGeneratorInterface::class);
-        $this->translatorInterface  = $this->createMock(TranslatorInterface::class);
+        $this->translator           = $this->createMock(TranslatorInterface::class);
         $this->userHelper           = $this->createMock(UserHelper::class);
         $this->logger               = $this->createMock(LoggerInterface::class);
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
@@ -81,7 +82,7 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
             $this->security,
             $this->dispatcher,
             $this->urlGenerator,
-            $this->translatorInterface,
+            $this->translator,
             $this->userHelper,
             $this->logger,
             $this->coreParametersHelper
@@ -93,7 +94,7 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetLookupResultsWhenTypeIsClass(): void
     {
-        $entities = [['name' => 'Mautic', 'id' => 1, 'language' => 'cs']];
+        $entities = [['name' => 'Mautic', 'id' => 1, 'language' => 'cs'], ['name' => 'Mautic MMS', 'id' => 2, 'media' => ['test.jpg'], 'language' => 'cs']];
 
         /** @var MockObject|SmsRepository $repositoryMock */
         $repositoryMock = $this->createMock(SmsRepository::class);
@@ -109,8 +110,14 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
             ->with('sms:smses:viewother')
             ->willReturn(true);
 
+        $this->translator
+            ->method('trans')
+            ->with('mautic.sms.form.mms')
+            ->willReturn('MMS');
+
         $textMessages = $this->smsModel->getLookupResults(SmsType::class);
         $this->assertSame('Mautic', $textMessages['cs'][1], 'Mautic is the right text message name');
+        $this->assertSame('[MMS] Mautic MMS', $textMessages['cs'][2], 'Mautic is the right text message name');
     }
 
     public function testSendSmsNotPublished(): void
@@ -126,9 +133,26 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
 
     public function testSendSMSTest(): void
     {
+        $this->sendMessage();
+    }
+
+    public function testSendMMSTest(): void
+    {
+        $this->sendMessage(true);
+    }
+
+    private function sendMessage(bool $isMMS = false): void
+    {
+        $transport          = $this->createMock(TransportChain::class);
+        $repositoryMock     = $this->createMock(SmsRepository::class);
+        $statRepositoryMock = $this->createMock(StatRepository::class);
+
         $sms = new Sms();
         $this->setProperty($sms, 'id', 1);
         $sms->setMessage('test');
+        if ($isMMS) {
+            $sms->setMedia(['test,png']);
+        }
 
         $lead1 = new Lead();
         $lead1->setMobile('+1234567890');
@@ -149,7 +173,7 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
                 $this->security,
                 $this->dispatcher,
                 $this->urlGenerator,
-                $this->translatorInterface,
+                $this->translator,
                 $this->userHelper,
                 $this->logger,
                 $this->coreParametersHelper,
@@ -166,19 +190,43 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
             ->method('upCount')
             ->with($sms->getId(), 'sent', 2);
 
-        $this->transport->expects($this->once())
-            ->method('sendBatchSms')
-            ->willReturnCallback(function (RecipientCollection $recipientCollection, string $message) {
-                /** @var SmsRecipientDTO $recipient */
-                foreach ($recipientCollection as $recipient) {
-                    $recipient->setResult(true);
-                }
+        $smsModel->method('getRepository')
+            ->willReturn($repositoryMock);
 
-                return $recipientCollection;
-            });
+        $smsModel->method('getStatRepository')
+            ->willReturn($statRepositoryMock);
+
+        if ($isMMS) {
+            $transport->expects($this->once())
+                ->method('sendMMS')
+                ->willReturnCallback(function (RecipientCollection $recipientCollection, string $message, array $media) {
+                    return $this->setRecipientResult($recipientCollection);
+                });
+        } else {
+            $transport->expects($this->once())
+                ->method('sendBatchSms')
+                ->willReturnCallback(function (RecipientCollection $recipientCollection, string $message) {
+                    return $this->setRecipientResult($recipientCollection);
+                });
+        }
 
         $results = $smsModel->sendSms($sms, [$lead1, $lead2], ['channel' => ['campaign.event', 1]]);
         $this->assertCount(2, $results);
+    }
+
+    /**
+     * @param RecipientCollection<SmsRecipientDTO> $recipientCollection
+     *
+     * @return RecipientCollection<SmsRecipientDTO>
+     */
+    private function setRecipientResult(RecipientCollection $recipientCollection): RecipientCollection
+    {
+        /** @var SmsRecipientDTO $recipient */
+        foreach ($recipientCollection as $recipient) {
+            $recipient->setResult(true);
+        }
+
+        return $recipientCollection;
     }
 
     /**

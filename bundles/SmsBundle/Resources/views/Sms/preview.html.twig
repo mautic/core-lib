@@ -86,3 +86,12 @@
         </div>
     </div>
 </div>
+{% if sms.getMedia() is not empty %}
+    <ul id="media_row">
+        {% for image in sms.getMedia() %}
+        <li>
+            <label><img src="{{ image }}"></label>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

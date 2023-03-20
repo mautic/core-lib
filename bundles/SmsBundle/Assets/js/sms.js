@@ -8,10 +8,27 @@ Mautic.smsOnLoad = function (container, response) {
             Mautic.setSmsCharactersCount(smsMessage);
         });
     }
+    mQuery('#media_url').on("keydown", (event) => {
+        // add media from url id enter key (keycode = 13) is pressed.
+        if (event.keyCode == 13) {
+            Mautic.addMediaFromUrl();
+        }
+    });
+
+    mQuery('#sms_message').on("input", () => {
+        mQuery('#sms_nb_char').text((mQuery('#sms_message').val().length))
+    });
 
     if (mQuery(container + ' #list-search').length) {
         Mautic.activateSearchAutocomplete('list-search', 'sms');
     }
+
+    mQuery('ul#media_row').on('change', 'input[type="checkbox"]', function() {
+        const id = mQuery(this).attr('id');
+        if(!mQuery(this).is(":checked")) {
+            mQuery('#li_'+id).remove();
+        }
+    });
 
     if (mQuery('table.sms-list').length) {
         var ids = [];
@@ -112,4 +129,31 @@ Mautic.disabledSmsAction = function(opener) {
     var disabled = sms === '' || sms === null;
 
     opener.mQuery('#campaignevent_properties_editSmsButton').prop('disabled', disabled);
+};
+
+window.document.mediaManagerInsertImageCallback = function(url) {
+    Mautic.addMediaList(url);
+};
+
+Mautic.addMediaList = function(url){
+    const elemIdNumber = mQuery('#media_row input[type="checkbox"]:last').length > 0 ? parseInt(mQuery('#media_row input[type="checkbox"]:last').attr('id').split('_')[2],10) + 1 : 0;
+    const mediaHtml = '<li id="li_sms_media_'+elemIdNumber+'"><input type="checkbox" id="sms_media_'+elemIdNumber+'" name="sms[media][]" autocomplete="false" value="'+url+'" checked="checked">' +
+        '<label for="sms_media_'+elemIdNumber+'"><img src="'+url+'"></label></li>';
+    mQuery('#media_row').append(mediaHtml);
+};
+
+Mautic.addMediaFromUrl = function (){
+    const url = mQuery('#media_url').val();
+    const regex = /^https?:\/\/.*\/.*\.(png|gif|jpeg|jpg)\??.*$/gmi;
+    if (regex.test(url)) {
+        mQuery('#media_url').parent('.input-group').removeClass('has-error');
+        Mautic.addMediaList(url);
+        mQuery('#media_url').val('')
+    } else {
+        mQuery('#media_url').parent('.input-group').addClass('has-error');
+    }
+}
+
+Mautic.toggleIsMms = function () {
+    mQuery("#media_div").toggleClass("hide");
 };

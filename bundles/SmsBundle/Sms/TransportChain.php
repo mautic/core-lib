@@ -82,13 +82,41 @@ class TransportChain
         if ($this->getPrimaryTransport() instanceof BulkTransportInterface) {
             return $this->getPrimaryTransport()->sendBatchSms($collection, $template);
         }
+        $this->sendMessage($collection, $template);
 
+        return $collection;
+    }
+
+    /**
+     * @param RecipientCollection<SmsRecipientDTO> $collection
+     * @param array<mixed>                         $media
+     *
+     * @return RecipientCollection<SmsRecipientDTO>
+     */
+    public function sendMMS(RecipientCollection $collection, string $template, array $media = []): RecipientCollection
+    {
+        return $this->sendMessage($collection, $template, $media);
+    }
+
+    /**
+     * @param RecipientCollection<SmsRecipientDTO> $collection
+     * @param array<mixed>                         $media
+     *
+     * @return RecipientCollection<SmsRecipientDTO>
+     */
+    private function sendMessage(RecipientCollection $collection, string $template, array $media = []): RecipientCollection
+    {
         // loops through contacts
         foreach ($collection as &$recipient) {
             $substitutionData = $recipient->getSubstitutionData();
             // replace all tokens
             $content = str_replace(array_keys($substitutionData), array_values($substitutionData), $template);
-            $status  = $this->sendSms($recipient->getLead(), $content);
+            // As of now media is only supported by twilio
+            if (!empty($media) && ($primaryTransport = $this->getPrimaryTransport()) instanceof MMSTransportInterface) {
+                $status = $primaryTransport->sendMms($recipient->getLead(), $content, $media);
+            } else {
+                $status  = $this->sendSms($recipient->getLead(), $content);
+            }
             $recipient->setResult($status);
         }
 
