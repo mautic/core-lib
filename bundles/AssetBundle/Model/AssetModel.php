@@ -435,7 +435,8 @@ class AssetModel extends FormModel implements GlobalSearchInterface
      */
     public function generateUrl($entity, $absolute = true, $clickthrough = [])
     {
-        $assetSlug = $entity->getId().':'.$entity->getAlias();
+        $entityId  = $entity->getId();
+        $assetSlug = isset($entityId) ? $entityId.':'.$entity->getAlias() : '';
 
         $slugs = [
             'slug' => $assetSlug,
