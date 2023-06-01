@@ -25,7 +25,7 @@ class CategoryTypeEntityEvent extends CommonEvent
     /**
      * Adds the category type and class.
      */
-    public function addCategoryTypeEntity(string $type, $class): void
+    public function addCategoryTypeEntity(string $type, ?string $class): void
     {
         if (!is_null($class)) {
             $this->types[$type] = $class;
