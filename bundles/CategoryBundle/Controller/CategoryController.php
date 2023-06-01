@@ -7,6 +7,7 @@ use Mautic\CategoryBundle\CategoryEvents;
 use Mautic\CategoryBundle\Event\CategoryTypesEvent;
 use Mautic\CategoryBundle\Model\CategoryModel;
 use Mautic\CoreBundle\Controller\AbstractFormController;
+use Mautic\CoreBundle\Exception\RecordCanNotBeDeletedException;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
@@ -491,16 +492,24 @@ class CategoryController extends AbstractFormController
                 return $this->isLocked($postActionVars, $entity, 'category.category');
             }
 
-            $model->deleteEntity($entity);
+            try {
+                $model->deleteEntity($entity);
 
-            $flashes[] = [
-                'type'    => 'notice',
-                'msg'     => 'mautic.core.notice.deleted',
-                'msgVars' => [
-                    '%name%' => $entity->getTitle(),
-                    '%id%'   => $objectId,
-                ],
-            ];
+                $flashes[] = [
+                    'type'    => 'notice',
+                    'msg'     => 'mautic.core.notice.deleted',
+                    'msgVars' => [
+                        '%name%' => $entity->getTitle(),
+                        '%id%'   => $objectId,
+                    ],
+                ];
+            } catch (RecordCanNotBeDeletedException $exception) {
+                $postActionVars['responseCode'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+                $flashes[]                      = [
+                    'type' => 'notice',
+                    'msg'  => $exception->getMessage(),
+                ];
+            }
         } // else don't do anything
 
         return $this->postActionRedirect(

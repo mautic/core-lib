@@ -7,6 +7,7 @@ use Mautic\CategoryBundle\CategoryEvents;
 use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CategoryBundle\Entity\CategoryRepository;
 use Mautic\CategoryBundle\Event\CategoryEvent;
+use Mautic\CategoryBundle\Event\CategoryTypeEntityEvent;
 use Mautic\CategoryBundle\Form\Type\CategoryType;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
@@ -58,7 +59,7 @@ class CategoryModel extends FormModel
         return 'getTitle';
     }
 
-    public function getPermissionBase($bundle = null): string
+    public function getPermissionBase(string $bundle = null): string
     {
         if (null === $bundle) {
             $bundle = $this->requestStack->getCurrentRequest()->get('bundle');
@@ -185,5 +186,30 @@ class CategoryModel extends FormModel
         }
 
         return $this->categoriesByBundleCache[$key] = $this->getRepository()->getCategoryList($bundle, $filter, $limit, 0);
+    }
+
+    /**
+     * @return array|false
+     */
+    public function getUsage(Category $category)
+    {
+        $bundle = $category->getBundle();
+
+        $types = [];
+        if ($this->dispatcher->hasListeners(CategoryEvents::CATEGORY_TYPE_ENTITY)) {
+            $event = $this->dispatcher->dispatch(CategoryEvents::CATEGORY_TYPE_ENTITY, new CategoryTypeEntityEvent());
+            $types = $event->getCategoryTypeEntity($bundle);
+        }
+
+        $data = [];
+        foreach ($types as $type => $class) {
+            $data = array_merge($this->em->getRepository($class)->findBy(['category' => $category->getId()]), $data);
+        }
+
+        if (0 === count($data)) {
+            return false;
+        } else {
+            return $data;
+        }
     }
 }

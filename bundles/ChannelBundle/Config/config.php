@@ -54,7 +54,9 @@ return [
     ],
 
     'categories' => [
-        'messages' => null,
+        'messages' => [
+            Mautic\ChannelBundle\Entity\Message::class,
+        ],
     ],
 
     'services' => [
