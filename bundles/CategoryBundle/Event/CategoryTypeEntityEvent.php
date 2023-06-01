@@ -13,7 +13,7 @@ class CategoryTypeEntityEvent extends CommonEvent
      *
      * @return array[mixed]
      */
-    public function getCategoryTypeEntity(string $type)
+    public function getCategoryTypeEntity(string $type): array
     {
         if ('global' === $type) {
             return $this->types;
