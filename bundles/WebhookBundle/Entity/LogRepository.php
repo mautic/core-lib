@@ -2,6 +2,7 @@
 
 namespace Mautic\WebhookBundle\Entity;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
@@ -28,6 +29,48 @@ class LogRepository extends CommonRepository
             static fn ($row): int => (int) $row['webhook_id'],
             $qb->executeQuery()->fetchAllAssociative()
         );
+    }
+
+    /**
+     * Retains a rolling number of log records for a webhook id.
+     *
+     * @depreacated use removeLimitExceedLogs() instead
+     *
+     * @param int $webhookId
+     * @param int $logMax    how many recent logs should remain, the rest will be deleted
+     *
+     * @return int
+     */
+    public function removeOldLogs($webhookId, $logMax)
+    {
+        // if the hook was deleted then return a count of 0
+        if (!$webhookId) {
+            return false;
+        }
+
+        $qb = $this->_em->getConnection()->createQueryBuilder();
+
+        $count = $qb->select('count(id) as log_count')
+            ->from(MAUTIC_TABLE_PREFIX.'webhook_logs', $this->getTableAlias())
+            ->where('webhook_id = '.$webhookId)
+            ->execute()->fetch();
+
+        if ((int) $count['log_count'] >= (int) $logMax) {
+            $qb = $this->_em->getConnection()->createQueryBuilder();
+
+            $id = $qb->select('id')
+                ->from(MAUTIC_TABLE_PREFIX.'webhook_logs', $this->getTableAlias())
+                ->where('webhook_id = '.$webhookId)
+                ->orderBy('date_added', 'ASC')->setMaxResults(1)
+                ->execute()->fetch();
+
+            $qb = $this->_em->getConnection()->createQueryBuilder();
+
+            $qb->delete(MAUTIC_TABLE_PREFIX.'webhook_logs')
+                ->where($qb->expr()->in('id', ':id'))
+                ->setParameter('id', $id, Connection::PARAM_INT_ARRAY)
+                ->execute();
+        }
     }
 
     /**

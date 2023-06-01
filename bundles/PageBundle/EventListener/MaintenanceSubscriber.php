@@ -82,10 +82,10 @@ class MaintenanceSubscriber implements EventSubscriberInterface
                 $rows += $qb->delete(MAUTIC_TABLE_PREFIX.$table)
                   ->where(
                       $qb->expr()->in(
-                          'lead_id', $leadsIds
+                          'lead_id', ':leadsIds')
                       )
-                  )
-                  ->executeStatement();
+                  ->setParameter('leadsIds', array_map('intval', $leadsIds), Connection::PARAM_INT_ARRAY)
+                    ->executeStatement();
                 ++$loop;
             }
         }

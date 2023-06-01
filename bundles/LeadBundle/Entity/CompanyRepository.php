@@ -3,6 +3,7 @@
 namespace Mautic\LeadBundle\Entity;
 
 use Doctrine\Common\Collections\Order;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\ORM\QueryBuilder;
 use Mautic\CoreBundle\Entity\CommonRepository;
@@ -286,8 +287,9 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
         }
 
         $q->where(
-            $q->expr()->in('cl.company_id', $companyIds)
+            $q->expr()->in('cl.company_id', ':companyIds')
         )
+            ->setParameter('companyIds', $companyIds, Connection::PARAM_INT_ARRAY)
             ->groupBy('cl.company_id');
 
         $result = $q->executeQuery()->fetchAllAssociative();
@@ -358,10 +360,12 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
             ->join('c', MAUTIC_TABLE_PREFIX.'companies_leads', 'l', 'l.company_id = c.id')
             ->where(
                 $qb->expr()->and(
-                    $qb->expr()->in('l.lead_id', $contacts)
+                    $qb->expr()->in('l.lead_id', ':leadIds')
                 )
             )
-            ->orderBy('l.date_added, l.company_id', 'DESC'); // primary should be [0]
+            ->setParameter('leadIds', $contacts, Connection::PARAM_INT_ARRAY)
+            ->addOrderBy('l.date_added', 'DESC') // primary should be [0]
+            ->addOrderBy('l.company_id', 'DESC');
 
         $companies = $qb->executeQuery()->fetchAllAssociative();
 

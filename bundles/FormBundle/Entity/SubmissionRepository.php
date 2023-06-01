@@ -5,6 +5,7 @@ namespace Mautic\FormBundle\Entity;
 use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Query\QueryBuilder as DbalQueryBuilder;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\LeadBundle\Entity\TimelineTrait;
@@ -46,8 +47,9 @@ class SubmissionRepository extends CommonRepository
         $form = $args['form'];
 
         // DBAL
-        if (!isset($args['viewOnlyFields'])) {
-            $args['viewOnlyFields'] = ['button', 'freetext', 'freehtml', 'pagebreak', 'captcha'];
+        $viewOnlyFields = $args['viewOnlyFields'] ?: [];
+        if (empty($viewOnlyFields)) {
+            $viewOnlyFields = ['button', 'freetext', 'freehtml', 'pagebreak', 'captcha'];
         }
         $viewOnlyFields = array_map(
             fn ($value): string => '"'.$value.'"',
@@ -60,11 +62,13 @@ class SubmissionRepository extends CommonRepository
             ->from(MAUTIC_TABLE_PREFIX.'form_fields', 'f')
             ->where('f.form_id = '.$form->getId())
             ->andWhere(
-                $fq->expr()->notIn('f.type', $viewOnlyFields),
+                $fq->expr()->notIn('f.type', ':types'),
                 $fq->expr()->eq('f.save_result', ':saveResult')
             )
             ->orderBy('f.field_order, f.id', 'ASC')
-            ->setParameter('saveResult', true);
+            ->setParameter('saveResult', true)
+            ->setParameter('types', $viewOnlyFields, Connection::PARAM_STR_ARRAY);
+
         $results = $fq->executeQuery()->fetchAllAssociative();
 
         $fields = [];
@@ -359,7 +363,8 @@ class SubmissionRepository extends CommonRepository
             ->join('s', MAUTIC_TABLE_PREFIX.'pages', 'p', 's.page_id = p.id');
 
         if (is_array($pageId)) {
-            $q->where($q->expr()->in('s.page_id', $pageId))
+            $q->where($q->expr()->in('s.page_id', ':pageIds'))
+                ->setParameter('pageIds', array_map('intval', $pageId), Connection::PARAM_INT_ARRAY)
                 ->groupBy('s.page_id, p.title, p.variant_hits');
         } else {
             $q->where($q->expr()->eq('s.page_id', ':page'))
@@ -391,7 +396,8 @@ class SubmissionRepository extends CommonRepository
             ->join('h', MAUTIC_TABLE_PREFIX.'emails', 'e', 'h.email_id = e.id');
 
         if (is_array($emailId)) {
-            $q->where($q->expr()->in('e.id', $emailId))
+            $q->where($q->expr()->in('e.id', ':ids'))
+                ->setParameter('ids', array_map('intval', $emailId), Connection::PARAM_INT_ARRAY)
                 ->groupBy('e.id, e.subject, e.variant_sent_count');
         } else {
             $q->where($q->expr()->eq('e.id', ':id'))
@@ -430,9 +436,10 @@ class SubmissionRepository extends CommonRepository
             ->where(
                 $q->expr()->and(
                     $q->expr()->eq('s.form_id', (int) $formId),
-                    $q->expr()->in('s.id', $ids)
+                    $q->expr()->in('s.id', ':ids')
                 )
-            );
+            )
+            ->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
 
         $validIds = [];
         $results  = $q->executeQuery()->fetchAllAssociative();

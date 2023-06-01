@@ -2,6 +2,7 @@
 
 namespace Mautic\LeadBundle\Entity;
 
+use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
 /**
@@ -80,7 +81,8 @@ class ImportRepository extends CommonRepository
     {
         $q = $this->createQueryBuilder($this->getTableAlias());
 
-        return $q->where($q->expr()->in($this->getTableAlias().'.status', $statuses));
+        return $q->where($q->expr()->in($this->getTableAlias().'.status', ':statuses'))
+            ->setParameter('statuses', $statuses, Connection::PARAM_INT_ARRAY);
     }
 
     public function getTableAlias(): string

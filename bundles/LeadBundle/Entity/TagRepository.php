@@ -3,7 +3,9 @@
 namespace Mautic\LeadBundle\Entity;
 
 use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
+use PDO;
 
 /**
  * @extends CommonRepository<Tag>
@@ -31,8 +33,9 @@ class TagRepository extends CommonRepository
             $qb->resetQueryParts();
             $qb->delete(MAUTIC_TABLE_PREFIX.'lead_tags')
                 ->where(
-                    $qb->expr()->in('id', $delete)
+                    $qb->expr()->in('id', ':deleteIds')
                 )
+                ->setParameter('deleteIds', $delete, Connection::PARAM_STR_ARRAY)
                 ->executeStatement();
         }
     }

@@ -3,6 +3,7 @@
 namespace Mautic\CoreBundle\Test\EventListener;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Portability\Statement;
 use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Mautic\CoreBundle\CoreEvents;
@@ -33,9 +34,10 @@ class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testOnDataCleanup(): void
     {
+        defined('MAUTIC_TABLE_PREFIX') || define('MAUTIC_TABLE_PREFIX', getenv('MAUTIC_DB_PREFIX') ?: '');
+
         $dateTime         = new \DateTimeImmutable();
         $format           = 'Y-m-d H:i:s';
-        $rowCount         = 2;
         $translatedString = 'nonsense';
 
         $dateTimeMock = $this->createMock(\DateTime::class);
@@ -62,11 +64,19 @@ class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
         $expressionBuilder
             ->expects($this->exactly(2))
             ->method('lte')
-            ->with('date_added', ':date');
+            ->with('log.date_added', ':date');
 
         $qb = $this->createMock(QueryBuilder::class);
         $qb
-            ->expects($this->exactly(2))
+            ->method('select')
+            ->willReturn($qb);
+
+        $qb
+            ->method('from')
+            ->willReturn($qb);
+
+        $qb
+            ->expects($this->exactly(4))
             ->method('setParameter')
             ->willReturn($qb);
         $qb
@@ -74,21 +84,42 @@ class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('delete')
             ->willReturn($qb);
         $qb
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(4))
             ->method('expr')
             ->willReturn($expressionBuilder);
         $qb
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(4))
             ->method('where')
             ->willReturn($qb);
+        $statementAlias   = $this->createMock(Statement::class);
         $qb
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(6))
             ->method('execute')
-            ->willReturn($rowCount);
+            ->willReturn($statementAlias);
+
+        $qb->method('setMaxResults')->with(10000)->willReturn($qb);
+        $qb->method('setFirstResult')->with(0)->willReturn($qb);
+
+        $statementAlias
+            ->method('fetchAll')
+            ->willReturnOnConsecutiveCalls(
+                [
+                    [
+                        'id'      => 765,
+                    ],
+                ],
+                [],
+                [
+                    [
+                        'id'      => 764,
+                    ],
+                ],
+                [],
+            );
 
         $connection = $this->createMock(Connection::class);
         $connection
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(4))
             ->method('createQueryBuilder')
             ->willReturn($qb);
 

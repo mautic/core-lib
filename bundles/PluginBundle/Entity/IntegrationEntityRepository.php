@@ -3,6 +3,7 @@
 namespace Mautic\PluginBundle\Entity;
 
 use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
@@ -220,12 +221,13 @@ class IntegrationEntityRepository extends CommonRepository
             $q->andWhere(
                 $q->expr()->notIn(
                     'i.integration_entity_id',
-                    array_map(
-                        fn ($x): string => "'".$x."'",
-                        $excludeIntegrationIds
-                    )
+                    ':excludeIntegrationIds'
                 )
-            );
+            )->setParameter('excludeIntegrationIds', array_map(
+                fn ($x): string => "'".$x."'",
+                $excludeIntegrationIds
+            ), Connection::PARAM_STR_ARRAY);
+            ;
         }
 
         $q->andWhere(
@@ -446,7 +448,8 @@ class IntegrationEntityRepository extends CommonRepository
             $rows    = $pq->executeQuery()->fetchAllAssociative();
             $plugins = array_map(static fn ($i): string => "'{$i['name']}'", $rows);
             if (count($plugins) > 0) {
-                $q->andWhere($q->expr()->in('i.integration', $plugins));
+                $q->andWhere($q->expr()->in('i.integration', ':plugins'))
+                ->setParameter('plugins', $plugins, Connection::PARAM_STR_ARRAY);
             } else {
                 return [];
             }
@@ -491,11 +494,12 @@ class IntegrationEntityRepository extends CommonRepository
             ->where(
                 $q->expr()->and(
                     $q->expr()->eq('integration', ':integration'),
-                    $q->expr()->in('integration_entity_id', array_map([$q->expr(), 'literal'], $integrationIds))
+                    $q->expr()->in('integration_entity_id', ':integrationIds')
                 )
             )
             ->setParameter('integration', $integration)
             ->setParameter('entity', $internalEntityType.'-deleted')
+            ->setParameter('integrationIds', $integrationIds, Connection::PARAM_STR_ARRAY)
             ->executeStatement();
     }
 

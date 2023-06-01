@@ -2,6 +2,7 @@
 
 namespace Mautic\DynamicContentBundle\Entity;
 
+use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\LeadBundle\Entity\TimelineTrait;
@@ -52,8 +53,9 @@ class StatRepository extends CommonRepository
                 $dynamicContentIds = [(int) $dynamicContentIds];
             }
             $q->where(
-                $q->expr()->in('s.dynamic_content_id', $dynamicContentIds)
-            );
+                $q->expr()->in('s.dynamic_content_id', ':dynamicContentIds')
+            )
+            ->setParameter('dynamicContentIds', $dynamicContentIds, Connection::PARAM_INT_ARRAY);
         }
 
         $results = $q->executeQuery()->fetchAllAssociative();
@@ -72,8 +74,9 @@ class StatRepository extends CommonRepository
         $q->select('s.dynamic_content_id, count(s.id) as sent_count')
             ->from(MAUTIC_TABLE_PREFIX.'dynamic_content_stats', 's')
             ->andWhere(
-                $q->expr()->in('e.dynamic_content_id', $dynamicContentIds)
-            );
+                $q->expr()->in('e.dynamic_content_id', ':dynamicContentIds')
+            )
+            ->setParameter('dynamicContentIds', $dynamicContentIds, Connection::PARAM_INT_ARRAY);
 
         if (null !== $fromDate) {
             // make sure the date is UTC

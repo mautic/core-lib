@@ -184,8 +184,9 @@ class CompanyObjectHelper implements ObjectHelperInterface
         $qb->select('*')
             ->from(MAUTIC_TABLE_PREFIX.'companies', 'c')
             ->where(
-                $qb->expr()->in('id', $ids)
-            );
+                $qb->expr()->in('id', ':ids')
+            )
+            ->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
 
         return $qb->executeQuery()->fetchAllAssociative();
     }

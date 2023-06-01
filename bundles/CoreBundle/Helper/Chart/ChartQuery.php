@@ -106,7 +106,8 @@ class ChartQuery extends AbstractChart
                     $column = str_replace('t.', '', $column);
                     $valId  = str_replace('t.', '', $valId);
                     if (is_array($value)) {
-                        $query->andWhere($query->expr()->in('t.'.$column, $value));
+                        $query->andWhere($query->expr()->in('t.'.$column, ":{$valId}"));
+                        $query->setParameter($valId, array_map('strval', $value), Connection::PARAM_STR_ARRAY);
                     } else {
                         $query->andWhere('t.'.$column.' = :'.$valId);
                         $query->setParameter($valId, $value);

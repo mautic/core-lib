@@ -2,6 +2,7 @@
 
 namespace Mautic\LeadBundle\Entity;
 
+use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
 /**
@@ -67,8 +68,9 @@ class FrequencyRuleRepository extends CommonRepository
         if ($leadIds) {
             if ($groupByLeads) {
                 $q->andWhere(
-                    $q->expr()->in('fr.lead_id', $leadIds)
-                );
+                    $q->expr()->in('fr.lead_id', ':leadIds')
+                )
+                ->setParameter('leadIds', $leadIds, Connection::PARAM_INT_ARRAY);
             } else {
                 $q->andWhere('fr.lead_id = :leadId')
                     ->setParameter('leadId', (int) $leadIds);
@@ -142,8 +144,9 @@ class FrequencyRuleRepository extends CommonRepository
         );
 
         $q->andWhere(
-            $q->expr()->in("ch.$statContactColumn", $leadIds)
-        );
+            $q->expr()->in("ch.$statContactColumn", ':ids')
+        )
+        ->setParameter('ids', $leadIds, Connection::PARAM_INT_ARRAY);
 
         $q->groupBy("ch.$statContactColumn, fr.frequency_time, fr.frequency_number");
 
@@ -192,8 +195,9 @@ class FrequencyRuleRepository extends CommonRepository
             ->setParameter('frequencyTime', $since->format('Y-m-d H:i:s'));
 
         $query->andWhere(
-            $query->expr()->in("ch.$statContactColumn", $leadIds)
-        );
+            $query->expr()->in("ch.$statContactColumn", ':ids')
+        )
+            ->setParameter('ids', $leadIds, Connection::PARAM_INT_ARRAY);
 
         $hasCustomRules = $this->tableHasRows(MAUTIC_TABLE_PREFIX.'lead_frequencyrules');
         // We don't need to check if users have custom rules if there are no records inside that table

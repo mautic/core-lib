@@ -11,6 +11,7 @@ use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\ProjectBundle\Entity\Project;
+use Mautic\LeadBundle\Entity\LeadRepository;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -240,13 +241,64 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $this->assertSame($project->getId(), $savedCompany->getProjects()->first()->getId());
     }
 
-    protected function createLead(): Lead
+    public function testEditActionForChangeInNameReflectsOnLeads(): void
+    {
+        $leadA = $this->createLead();
+        $leadB = $this->createLead('F1', 'L1', 'f@l.com', '123');
+
+        $crawler = $this->client->request('GET', '/s/companies/edit/'.$this->company1Id);
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $buttonCrawler = $crawler->selectButton('Save & Close');
+        $form          = $buttonCrawler->form();
+
+        $company     =  $this->em->find(Company::class, $this->company1Id);;
+        $updatedName = $company->getName().' - Updated';
+        $form->setValues(
+            [
+                'company[companyname]'    => $updatedName,
+                'company[companyemail]'   => $company->getEmail(),
+                'company[companystate]'   => $company->getState(),
+                'company[companycity]'    => $company->getCity(),
+                'company[companycountry]' => $company->getCountry(),
+            ]
+        );
+
+        $this->client->submit($form);
+        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertMatchesRegularExpression('/\/s\/companies\/view\/'.$this->company1Id.'/', $this->client->getRequest()->getUri());
+
+        /** @var LeadRepository $leadRepo */
+        $leadRepo = $this->em->getRepository(Lead::class);
+        $this->assertSame($updatedName, $leadRepo->getValue($leadA->getId(), 'company'));
+        $this->assertSame($updatedName, $leadRepo->getValue($leadB->getId(), 'company'));
+    }
+
+    public function testIndexAction(): void
+    {
+        $this->client->request('GET', '/s/companies');
+        $clientResponse = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $clientResponse->getStatusCode());
+
+        $content = $clientResponse->getContent();
+
+        $this->assertStringContainsString($this->company->getName(), $content);
+
+        $translator  = self::$container->get('translator');
+        $itemMessage = $translator->trans('mautic.core.pagination.items', ['%count%' => 1]);
+        $this->assertStringContainsString($itemMessage, $content);
+
+        $pageMessage = $translator->trans('mautic.core.pagination.pages', ['%count%' => 1]);
+        $this->assertStringContainsString($pageMessage, $content);
+    }
+
+    protected function createLead(string $firstName = 'Firstname', string $lastName = 'Lastname', string $email = 'test@test.com', string $phoneNumber = '555-666-777'): Lead
     {
         $lead = new Lead();
-        $lead->setFirstname('Firstname');
-        $lead->setLastname('Lastname');
-        $lead->setEmail('test@test.com');
-        $lead->setPhone('555-666-777');
+        $lead->setFirstname($firstName);
+        $lead->setLastname($lastName);
+        $lead->setEmail($email);
+        $lead->setPhone($phoneNumber);
         $this->em->persist($lead);
         $this->em->flush();
 

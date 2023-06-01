@@ -2,6 +2,7 @@
 
 namespace Mautic\SmsBundle\Entity;
 
+use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\LeadBundle\Entity\TimelineTrait;
@@ -79,8 +80,9 @@ class StatRepository extends CommonRepository
                 $smsIds = [(int) $smsIds];
             }
             $q->where(
-                $q->expr()->in('s.sms_id', $smsIds)
-            );
+                $q->expr()->in('s.sms_id', ':smsIds')
+            )
+                ->setParameter('smsIds', $smsIds, Connection::PARAM_INT_ARRAY);
         }
 
         if ($listId) {

@@ -8,12 +8,12 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
 use PHPUnit\Framework\Assert;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 final class SubmissionModelFunctionalTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback = false;
+
+    use FormSubmissionTrait;
 
     public function testSaveSubmissionChangeCompanyField(): void
     {

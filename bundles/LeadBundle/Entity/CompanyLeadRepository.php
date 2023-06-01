@@ -39,8 +39,9 @@ class CompanyLeadRepository extends CommonRepository
                     ->set('is_primary', 0);
 
                 $qb->where(
-                    $qb->expr()->in('lead_id', $contacts)
-                )->executeStatement();
+                    $qb->expr()->in('lead_id', ':leadIds')
+                )->setParameter('leadIds', $contacts, Connection::PARAM_INT_ARRAY)
+                    ->executeStatement();
             }
         }
 
@@ -222,8 +223,10 @@ class CompanyLeadRepository extends CommonRepository
             ->set('company', ':company')
             ->setParameter('company', $company->getName())
             ->where(
-                $q->expr()->in('id', $leadIds)
-            )->executeStatement();
+                $q->expr()->in('id', ':leadIds')
+            )
+            ->setParameter('leadIds', array_keys($leadIds), Connection::PARAM_INT_ARRAY)
+            ->executeStatement();
         }
     }
 

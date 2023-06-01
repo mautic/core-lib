@@ -3,6 +3,7 @@
 namespace Mautic\NotificationBundle\Entity;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 
@@ -80,8 +81,9 @@ class StatRepository extends CommonRepository
                 $notificationIds = [(int) $notificationIds];
             }
             $q->where(
-                $q->expr()->in('s.notification_id', $notificationIds)
-            );
+                $q->expr()->in('s.notification_id', ':ids')
+            )
+            ->setParameter('ids', $notificationIds, Connection::PARAM_INT_ARRAY);
         }
 
         if ($listId) {
@@ -114,8 +116,9 @@ class StatRepository extends CommonRepository
                 $notificationIds = [(int) $notificationIds];
             }
             $q->where(
-                $q->expr()->in('s.notification_id', $notificationIds)
-            );
+                $q->expr()->in('s.notification_id', ':ids')
+            )
+            ->setParameter('ids', $notificationIds, Connection::PARAM_INT_ARRAY);
         }
 
         if ($listId) {
@@ -157,8 +160,9 @@ class StatRepository extends CommonRepository
         $q->select('s.notification_id, count(n.id) as sentcount')
             ->from(MAUTIC_TABLE_PREFIX.'push_notification_stats', 's')
             ->where(
-                $q->expr()->in('s.notification_id', $notificationIds)
-            );
+                $q->expr()->in('s.notification_id', ':ids')
+            )
+            ->setParameter('ids', $notificationIds, Connection::PARAM_INT_ARRAY);
 
         if (null !== $fromDate) {
             // make sure the date is UTC
