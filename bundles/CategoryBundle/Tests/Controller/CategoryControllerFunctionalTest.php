@@ -5,12 +5,17 @@ namespace Mautic\CategoryBundle\Tests\Controller;
 use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CategoryBundle\Model\CategoryModel;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\StageBundle\Entity\Stage;
 use Mautic\UserBundle\Model\UserModel;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class CategoryControllerFunctionalTest extends MauticMysqlTestCase
 {
+    private TranslatorInterface $translator;
+
     /**
      * Create two new categories.
      *
@@ -40,6 +45,8 @@ class CategoryControllerFunctionalTest extends MauticMysqlTestCase
                 ->setBundle($categoryData['bundle']);
             $model->saveEntity($category);
         }
+
+        $this->translator = self::$container->get('translator');
     }
 
     /**
@@ -109,5 +116,45 @@ class CategoryControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->request(Request::METHOD_GET, 's/categories/category/edit/'.$category->getId());
         $this->assertStringContainsString('is currently checked out by', $this->client->getResponse()->getContent());
+    }
+
+    public function testDeleteUsedInStage(): void
+    {
+        $category = new Category();
+        $category->setIsPublished(true);
+        $category->setTitle('Category for stage');
+        $category->setDescription('Category for stage');
+        $category->setBundle('global');
+        $category->setAlias('category-for-stage');
+        $this->em->persist($category);
+
+        $stage = new Stage();
+        $stage->setName('test for category');
+        $stage->setCategory($category);
+        $stage->setDescription('Random Stage Description');
+        $stage->setWeight(10);
+        $this->em->persist($stage);
+        $this->em->flush();
+
+        $expectedErrorMessage = $this->translator->trans(
+            'mautic.category.is_in_use.delete',
+            [
+                '%entities%'      => 'Stage Id: '.$stage->getId(),
+                '%categoryName%'  => $category->getTitle(),
+            ],
+            'validators'
+        );
+
+        $this->client->request('POST', 's/categories/category/delete/'.$category->getId(), [], [], $this->createAjaxHeaders());
+
+        $clientResponse = $this->client->getResponse();
+        $this->assertSame(
+            Response::HTTP_UNPROCESSABLE_ENTITY,
+            $clientResponse->getStatusCode(),
+            $clientResponse->getContent()
+        );
+        $clientResponseBody = json_decode($clientResponse->getContent(), true);
+
+        $this->assertStringContainsString($expectedErrorMessage, $clientResponseBody['flashes']);
     }
 }
