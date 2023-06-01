@@ -88,21 +88,21 @@ class CategorySubscriber implements EventSubscriberInterface
         $this->auditLogModel->writeToLog($log);
     }
 
-    public function onCategoryPreDelete(Events\CategoryEvent $event)
+    public function onCategoryPreDelete(Events\CategoryEvent $event): void
     {
         if ($usage = $this->categoryModel->getUsage($event->getCategory())) {
             $message = $this->translator->trans(
                 'mautic.category.is_in_use.delete',
                 [
                     '%entities%'     => implode(', ', array_map(fn ($entity): string => substr(strrchr(ClassUtils::getRealClass($entity), '\\'), 1).' Id: '.$entity->getId(), $usage)),
-                    '%categoryName%' => $event->getCategory()->getName(),
+                    '%categoryName%' => $event->getCategory()->getTitle(),
                 ],
                 'validators');
             throw new RecordCanNotBeDeletedException($message);
         }
     }
 
-    public function onCategoryTypeEntity(Events\CategoryTypeEntityEvent $event)
+    public function onCategoryTypeEntity(Events\CategoryTypeEntityEvent $event): void
     {
         $bundles = $this->bundleHelper->getMauticBundles(true);
 
