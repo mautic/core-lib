@@ -193,7 +193,7 @@ class CategoryModel extends FormModel
      *
      * @template T of object
      */
-    public function getUsage(Category $category)
+    public function getUsage(Category $category): array
     {
         $bundle = $category->getBundle();
 
