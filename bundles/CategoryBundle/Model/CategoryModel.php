@@ -208,10 +208,6 @@ class CategoryModel extends FormModel
             $data = array_merge($this->em->getRepository($class)->findBy(['category' => $category->getId()]), $data);
         }
 
-        if (0 === count($data)) {
-            return false;
-        } else {
-            return $data;
-        }
+        return $data;
     }
 }
