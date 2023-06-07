@@ -108,7 +108,7 @@ class CategorySubscriber implements EventSubscriberInterface
         foreach ($bundles as $bundle) {
             if (!empty($bundle['config']['categories'])) {
                 foreach ($bundle['config']['categories'] as $type => $data) {
-                    $event->addCategoryTypeEntity($type, $data ?? null);
+                    $event->addCategoryTypeEntity($type, $data);
                 }
             }
         }

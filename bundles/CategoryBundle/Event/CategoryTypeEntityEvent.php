@@ -25,12 +25,12 @@ class CategoryTypeEntityEvent extends CommonEvent
     }
 
     /**
-     * Adds the category type and class.
+     * @param array<mixed> $data
      */
-    public function addCategoryTypeEntity(string $type, ?array $data): void
+    public function addCategoryTypeEntity(string $type, array $data): void
     {
-        if (!is_null($data)) {
-            if (!isset($data['label']) || null === $data['label']) {
+        if (count($data)) {
+            if (!isset($data['label'])) {
                 $data['label'] = 'mautic.'.$type.'.'.$type;
             }
             $this->types[$type] = $data;
