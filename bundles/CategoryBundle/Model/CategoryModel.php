@@ -204,9 +204,19 @@ class CategoryModel extends FormModel
         }
 
         $data = [];
-        /** @phpstan-var class-string $class */
-        foreach ($types as $class) {
-            $data = array_merge($this->em->getRepository($class)->findBy(['category' => $category->getId()]), $data);
+        foreach ($types as $type) {
+            /** @phpstan-var class-string $class */
+            $class     = $type['class'];
+            $resources = $this->em->getRepository($class)->findBy(['category' => $category->getId()]);
+
+            if (!$resources) {
+                continue;
+            }
+
+            $data = array_merge(array_map(fn ($resource): array => [
+                'label' => $type['label'],
+                'id'    => $resource->getId(),
+            ], $resources), $data);
         }
 
         return $data;
