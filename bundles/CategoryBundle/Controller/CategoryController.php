@@ -551,7 +551,8 @@ class CategoryController extends AbstractFormController
             $ids       = json_decode($request->query->get('ids', '{}'));
             $deleteIds = [];
 
-            // Loop over the IDs to perform access checks pre-delete
+            // Loop over the IDs to perform access checks and delete
+            $deletedExceptions = [];
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
 
@@ -566,21 +567,33 @@ class CategoryController extends AbstractFormController
                 } elseif ($model->isLocked($entity)) {
                     $flashes[] = $this->isLocked($postActionVars, $entity, 'category', true);
                 } else {
-                    $deleteIds[] = $objectId;
+                    try {
+                        // Delete everything we are able to
+                        $model->deleteEntity($entity);
+                        $deleteIds[] = $objectId;
+                    } catch (RecordCanNotBeDeletedException $exception) {
+                        $deletedExceptions[] = $exception;
+                    }
                 }
             }
 
-            // Delete everything we are able to
             if (!empty($deleteIds)) {
-                $entities = $model->deleteEntities($deleteIds);
-
                 $flashes[] = [
                     'type'    => 'notice',
                     'msg'     => 'mautic.category.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => count($deleteIds),
                     ],
                 ];
+            }
+
+            if (!empty($deletedExceptions)) {
+                foreach ($deletedExceptions as $deletedException) {
+                    $flashes[] = [
+                        'type' => 'notice',
+                        'msg'  => $deletedException->getMessage(),
+                    ];
+                }
             }
         } // else don't do anything
 

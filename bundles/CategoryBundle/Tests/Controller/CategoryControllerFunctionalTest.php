@@ -157,4 +157,41 @@ class CategoryControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->assertStringContainsString($expectedErrorMessage, $clientResponseBody['flashes']);
     }
+
+    public function testBatchDeleteUsedInStage(): void
+    {
+        $category = new Category();
+        $category->setIsPublished(true);
+        $category->setTitle('Category for stage');
+        $category->setDescription('Category for stage');
+        $category->setBundle('global');
+        $category->setAlias('category-for-stage');
+        $this->em->persist($category);
+
+        $stage = new Stage();
+        $stage->setName('test for category');
+        $stage->setCategory($category);
+        $stage->setDescription('Random Stage Description');
+        $stage->setWeight(10);
+        $this->em->persist($stage);
+        $this->em->flush();
+
+        $expectedErrorMessage = $this->translator->trans(
+            'mautic.category.is_in_use.delete',
+            [
+                '%entities%'      => 'Stage Id: '.$stage->getId(),
+                '%categoryName%'  => $category->getTitle(),
+            ],
+            'validators'
+        );
+
+        $parameters = 'ids=["'.$category->getId().'"]';
+        $this->client->request('POST', 's/categories/category/batchDelete?'.$parameters, [], [], $this->createAjaxHeaders());
+
+        $clientResponse = $this->client->getResponse();
+
+        $clientResponseBody = json_decode($clientResponse->getContent(), true);
+
+        $this->assertStringContainsString($expectedErrorMessage, $clientResponseBody['flashes']);
+    }
 }
