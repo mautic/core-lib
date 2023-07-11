@@ -1047,12 +1047,12 @@ class SubmissionModel extends CommonFormModel
             }
         }
 
-        if ($companyEntity) {
-            unset($data['company']);
+        try {
+            // set the mapped fields
+            $this->leadModel->setFieldValues($lead, $data, false, true, true);
+        } catch (\Exception $e) {
+            $this->logger->debug('FORM: Assigning field value error: '.$e->getMessage());
         }
-
-        // set the mapped fields
-        $this->leadModel->setFieldValues($lead, $data, false, true, true);
 
         // last active time
         $lead->setLastActive(new \DateTime());
