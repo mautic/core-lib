@@ -567,7 +567,7 @@ class LeadModel extends FormModel
                         $this->translator->trans('mautic.stage.event.changed')
                     );
                 } else {
-                    $this->logger->debug('STAGE:'.$this->translator->trans('mautic.lead.import.stage.not.exists', ['id' => $newLeadStageIdOrName]));
+                    $this->logger->debug('Stage with ID or name '.$newLeadStageIdOrName.' was not found.');
                 }
             }
         }
@@ -575,7 +575,7 @@ class LeadModel extends FormModel
         if (isset($data['owner'])) {
             $userRepo = $this->em->getRepository(User::class);
             $user     = $userRepo->findOneBy(['email' => $data['owner']]);
-            if (null !== $user) {
+            if (isset($user)) {
                 $lead->setOwner($user);
             }
         }

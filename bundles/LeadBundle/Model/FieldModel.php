@@ -928,7 +928,7 @@ class FieldModel extends FormModel
     /**
      * @param string $object
      */
-    public function getFieldListWithProperties($object = 'lead'): array
+    public function getFieldListWithProperties($object = 'lead', bool $withSpecialFields = false)
     {
         return $this->getFieldsProperties(['object' => $object]);
     }
@@ -975,38 +975,11 @@ class FieldModel extends FormModel
             ];
         }
 
-        return 'company' === $object ? $fields : array_merge($fields, $this->getSpecialLeadFields());
-    }
+        if (true === $withSpecialFields && 'company' !== $object) {
+            $fields = array_merge($fields, $this->getSpecialLeadFields());
+        }
 
-    /**
-     * Get the owner and stage fields.
-     *
-     * @return array<string, mixed>
-     */
-    public function getSpecialLeadFields(): array
-    {
-        return [
-            'owner' => [
-                'label'        => 'Owner by email',
-                'alias'        => 'owner',
-                'type'         => 'email',
-                'group'        => 'core',
-                'group_label'  => $this->translator->trans('mautic.lead.field.group.core'),
-                'defaultValue' => null,
-                'properties'   => [],
-                'isPublished'  => true,
-            ],
-            'stage' => [
-                'label'        => 'Stage',
-                'alias'        => 'stage',
-                'type'         => 'text',
-                'group'        => 'core',
-                'group_label'  => $this->translator->trans('mautic.lead.field.group.core'),
-                'defaultValue' => null,
-                'properties'   => [],
-                'isPublished'  => true,
-            ],
-        ];
+        return $fields;
     }
 
     /**
@@ -1065,5 +1038,36 @@ class FieldModel extends FormModel
     public function getEntityByAlias($alias, $categoryAlias = null, $lang = null)
     {
         return $this->getRepository()->findOneByAlias($alias);
+    }
+
+    /**
+     * Get the owner and stage fields.
+     *
+     * @return array<string, mixed>
+     */
+    private function getSpecialLeadFields(): array
+    {
+        return [
+            'owner' => [
+                'label'        => 'Owner\'s email',
+                'alias'        => 'owner',
+                'type'         => 'email',
+                'group'        => 'core',
+                'group_label'  => $this->translator->trans('mautic.lead.field.group.core'),
+                'defaultValue' => null,
+                'properties'   => [],
+                'isPublished'  => true,
+            ],
+            'stage' => [
+                'label'        => 'Stage',
+                'alias'        => 'stage',
+                'type'         => 'text',
+                'group'        => 'core',
+                'group_label'  => $this->translator->trans('mautic.lead.field.group.core'),
+                'defaultValue' => null,
+                'properties'   => [],
+                'isPublished'  => true,
+            ],
+        ];
     }
 }
