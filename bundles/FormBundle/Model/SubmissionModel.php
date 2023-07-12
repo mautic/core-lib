@@ -1053,7 +1053,7 @@ class SubmissionModel extends CommonFormModel
             }
         }
 
-            // set the mapped fields
+        // set the mapped fields
         $this->leadModel->setFieldValues($lead, $data, false, true, true);
 
         // last active time
@@ -1085,9 +1085,10 @@ class SubmissionModel extends CommonFormModel
         }
 
         // set owner
-        if (isset($data['owner'])) {
-            $userRepo = $this->em->getRepository(User::class);
-            $user     = $userRepo->findOneBy(['email' => $data['owner']]);
+        if (isset($data['owner']) || isset($data['ownerbyid'])) {
+            $userRepo  = $this->em->getRepository(User::class);
+            $condition = isset($data['owner']) ? ['email' => $data['owner']] : ['id' => $data['ownerbyid']];
+            $user      = $userRepo->findOneBy($condition);
             if (isset($user)) {
                 $lead->setOwner($user);
             }
