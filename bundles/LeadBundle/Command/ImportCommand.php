@@ -3,11 +3,13 @@
 namespace Mautic\LeadBundle\Command;
 
 use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
+use Mautic\LeadBundle\Entity\Import;
 use Mautic\LeadBundle\Exception\ImportDelayedException;
 use Mautic\LeadBundle\Exception\ImportFailedException;
 use Mautic\LeadBundle\Helper\Progress;
 use Mautic\LeadBundle\Model\ImportModel;
 use Mautic\UserBundle\Security\UserTokenSetter;
+use Monolog\Logger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -83,7 +85,7 @@ EOT
 
         try {
             $this->importModel->beginImport($import, $progress, $limit);
-        } catch (ImportFailedException) {
+        } catch (ImportFailedException $e) {
             $output->writeln('<error>'.$this->translator->trans(
                 'mautic.lead.import.failed',
                 [
@@ -91,14 +93,18 @@ EOT
                 ]
             ).'</error>');
 
+            $this->logError($import, $e);
+
             return Command::FAILURE;
-        } catch (ImportDelayedException) {
+        } catch (ImportDelayedException $e) {
             $output->writeln('<info>'.$this->translator->trans(
                 'mautic.lead.import.delayed',
                 [
                     '%reason%' => $import->getStatusInfo(),
                 ]
             ).'</info>');
+
+            $this->logError($import, $e);
 
             return Command::FAILURE;
         }
@@ -119,4 +125,17 @@ EOT
     }
 
     protected static $defaultDescription = 'Imports data to Mautic';
+
+    private function logError(Import $import, \Exception $exception): void
+    {
+        /** @var Logger $logger */
+        $logger = $this->getContainer()->get('monolog.logger.mautic');
+
+        $message = ' Import id: '.$import->getId();
+        $message .= ' Import Status: '.$import->getStatus();
+        $message .= ' Reason: '.$import->getStatusInfo();
+        $message .= ' Exception: '.$exception;
+
+        $logger->warning($message);
+    }
 }
