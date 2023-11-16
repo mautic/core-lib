@@ -526,7 +526,7 @@ class CampaignRepository extends CommonRepository
     /**
      * Returns true if the campaign has at least one lead.
      */
-    public function hasCampaignLeads(int $campaignId): bool
+    public function hasCampaignLeads(int $campaignId, int $cacheTTL = 0): bool
     {
         $q = $this->getReplicaConnection()->createQueryBuilder();
 
@@ -546,7 +546,7 @@ class CampaignRepository extends CommonRepository
                 $q->getSQL(),
                 $q->getParameters(),
                 $q->getParameterTypes(),
-                new QueryCacheProfile(600)
+                new QueryCacheProfile($cacheTTL, __METHOD__)
             )->fetchAllAssociative();
         } else {
             $results = $q->executeQuery()->fetchAllAssociative();
