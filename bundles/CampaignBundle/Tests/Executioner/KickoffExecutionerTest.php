@@ -14,7 +14,6 @@ use Mautic\CampaignBundle\Executioner\KickoffExecutioner;
 use Mautic\CampaignBundle\Executioner\Result\Counter;
 use Mautic\CampaignBundle\Executioner\Scheduler\EventScheduler;
 use Mautic\CampaignBundle\Executioner\Scheduler\Exception\NotSchedulableException;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\LeadBundle\Entity\Lead;
@@ -44,18 +43,12 @@ class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $scheduler;
 
-    /**
-     * @var CoreParametersHelper|MockObject
-     */
-    private $coreParametersHelper;
-
     protected function setUp(): void
     {
         $this->kickoffContactFinder = $this->createMock(KickoffContactFinder::class);
         $this->translator           = $this->createMock(Translator::class);
         $this->executioner          = $this->createMock(EventExecutioner::class);
         $this->scheduler            = $this->createMock(EventScheduler::class);
-        $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
     }
 
     public function testNoContactsResultInEmptyResults(): void
@@ -154,7 +147,6 @@ class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
             $this->translator,
             $this->executioner,
             $this->scheduler,
-            $this->coreParametersHelper,
             $this->createMock(ProcessSignalService::class)
         );
     }

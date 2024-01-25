@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Command;
 
+use Mautic\CoreBundle\Helper\ExitCode;
+use Mautic\CoreBundle\ProcessSignal\Exception\SignalCaughtException;
+use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
 use Mautic\CoreBundle\Twig\Helper\FormatterHelper;
 use Mautic\LeadBundle\Event\ContactExportSchedulerEvent;
 use Mautic\LeadBundle\LeadEvents;
@@ -24,6 +27,7 @@ class ContactScheduledExportCommand extends Command
         private ContactExportSchedulerModel $contactExportSchedulerModel,
         private EventDispatcherInterface $eventDispatcher,
         private FormatterHelper $formatterHelper,
+        private ProcessSignalService $processSignalService
     ) {
         parent::__construct();
     }
@@ -55,17 +59,27 @@ class ContactScheduledExportCommand extends Command
 
         $count = 0;
 
-        foreach ($contactExportSchedulers as $contactExportScheduler) {
-            $contactExportSchedulerEvent = new ContactExportSchedulerEvent($contactExportScheduler);
-            $this->eventDispatcher->dispatch($contactExportSchedulerEvent, LeadEvents::CONTACT_EXPORT_PREPARE_FILE);
-            $this->eventDispatcher->dispatch($contactExportSchedulerEvent, LeadEvents::CONTACT_EXPORT_SEND_EMAIL);
-            $this->eventDispatcher->dispatch($contactExportSchedulerEvent, LeadEvents::POST_CONTACT_EXPORT_SEND_EMAIL);
-            ++$count;
+        $this->processSignalService->registerSignalHandler(
+            fn (int $signal) => $output->writeln(sprintf('Signal %d caught.', $signal))
+        );
+
+        try {
+            foreach ($contactExportSchedulers as $contactExportScheduler) {
+                $contactExportSchedulerEvent = new ContactExportSchedulerEvent($contactExportScheduler);
+                $this->eventDispatcher->dispatch($contactExportSchedulerEvent, LeadEvents::CONTACT_EXPORT_PREPARE_FILE);
+                $this->eventDispatcher->dispatch($contactExportSchedulerEvent, LeadEvents::CONTACT_EXPORT_SEND_EMAIL);
+                $this->eventDispatcher->dispatch($contactExportSchedulerEvent, LeadEvents::POST_CONTACT_EXPORT_SEND_EMAIL);
+                ++$count;
+            }
+
+            $output->writeln('Contact export email(s) sent: '.$count);
+
+            return ExitCode::SUCCESS;
+        } catch (SignalCaughtException $e) {
+            $output->writeln('touch job');
+
+            return ExitCode::TERMINATED;
         }
-
-        $output->writeln('Contact export email(s) sent: '.$count);
-
-        return Command::SUCCESS;
     }
 
     protected static $defaultDescription = 'Export contacts which are scheduled in `contact_export_scheduler` table.';
