@@ -12,6 +12,7 @@ use Mautic\CampaignBundle\Executioner\Result\Counter;
 use Mautic\CampaignBundle\Executioner\Scheduler\EventScheduler;
 use Mautic\CampaignBundle\Executioner\Scheduler\Exception\NotSchedulableException;
 use Mautic\CoreBundle\Helper\ProgressBarHelper;
+use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,6 +38,7 @@ class KickoffExecutioner implements ExecutionerInterface
         private TranslatorInterface $translator,
         private EventExecutioner $executioner,
         private EventScheduler $scheduler,
+        private ProcessSignalService $processSignalService
     ) {
     }
 
@@ -166,9 +168,10 @@ class KickoffExecutioner implements ExecutionerInterface
                 break;
             }
 
+            $this->processSignalService->throwExceptionIfSignalIsCaught();
+
             $this->logger->debug('CAMPAIGN: Fetching the next batch of kickoff contacts starting with contact ID '.$batchMinContactId);
             $this->limiter->setBatchMinContactId($batchMinContactId);
-
             // Get the next batch
             $contacts = $this->kickoffContactFinder->getContacts($this->campaign->getId(), $this->limiter);
         }
