@@ -100,11 +100,7 @@ class ContactSegmentFilterCrate
      */
     public function getFilter()
     {
-        return match ($this->getType()) {
-            'number'  => (float) $this->filter,
-            'boolean' => (bool) $this->filter,
-            default   => $this->filter,
-        };
+        return $this->filter;
     }
 
     /**
