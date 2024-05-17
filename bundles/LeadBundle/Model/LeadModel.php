@@ -53,6 +53,7 @@ use Mautic\LeadBundle\Event\SaveBatchLeadsEvent;
 use Mautic\LeadBundle\Exception\ImportFailedException;
 use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
 use Mautic\LeadBundle\Form\Type\LeadType;
+use Mautic\LeadBundle\Helper\CustomFieldValueHelper;
 use Mautic\LeadBundle\Helper\IdentifyCompanyHelper;
 use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Tracker\ContactTracker;
@@ -1435,9 +1436,13 @@ class LeadModel extends FormModel
 
         foreach ($this->leadFields as $leadField) {
             // Skip If value already exists
-            if ($skipIfExists && !$lead->isNew() && !empty($lead->getFieldValue($leadField['alias']))) {
+            if ($skipIfExists && !$lead->isNew() && !$this->isValueAlreadyExists($lead, $leadField)) {
                 unset($fieldData[$leadField['alias']]);
                 continue;
+            }
+
+            if ('company' === $leadField['alias'] && !empty($companyData)) {
+                $company = $this->companyModel->importCompany(array_flip($companyFields), $companyData);
             }
 
             if (isset($fieldData[$leadField['alias']])) {
@@ -2439,5 +2444,19 @@ class LeadModel extends FormModel
         }
 
         return $fieldData;
+    }
+
+    /**
+     * @param array<mixed> $leadField
+     */
+    private function isValueAlreadyExists(?Lead $lead, array $leadField): bool
+    {
+        $leadFieldValue = $lead->getFieldValue($leadField['alias']);
+
+        if (CustomFieldValueHelper::TYPE_BOOLEAN === $leadField['type']) {
+            return is_null($leadFieldValue);
+        }
+
+        return empty($leadFieldValue);
     }
 }
