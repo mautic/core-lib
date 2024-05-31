@@ -37,7 +37,7 @@ class UploadSubscriber implements EventSubscriberInterface
     {
         $request   = $event->getRequest()->request;
         $response  = $event->getResponse();
-        $tempId    = $request->get('tempId');
+        $tempId    = basename($request->get('tempId'));
         $file      = $event->getFile();
         $config    = $event->getConfig();
         $uploadDir = $config['storage']['directory'];
