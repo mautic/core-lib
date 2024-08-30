@@ -13,7 +13,7 @@
   {% if isBehavior %}
       {% set object = 'behaviors' %}
   {% else %}
-      {% set object = form.vars.data.object|default('lead') %}
+      {% set object = form.vars.data.object|default('') %}
   {% endif %}
 
   {% if isPrototype or fields[object][filterType].label is defined %}

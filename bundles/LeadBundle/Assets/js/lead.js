@@ -641,6 +641,8 @@ Mautic.addLeadListFilter = function (elId, elObj) {
     var label = filterOption.text();
 
     // Create a new filter
+    var filterNum = parseInt(mQuery('.available-filters').data('index'));
+    mQuery('.available-filters').data('index', filterNum + 1);
 
     var filterNum = Mautic.segmentFilter().getFilterCount();
     var prototypeStr = mQuery('.available-filters').data('prototype');
