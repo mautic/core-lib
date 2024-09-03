@@ -22,14 +22,14 @@ class PluginFactory implements AuthenticatorFactoryInterface, SecurityFactoryInt
      */
     public function create(ContainerBuilder $container, string $id, array $config, string $userProviderId, ?string $defaultEntryPointId): array
     {
-        $providerId = 'security.authentication.provider.mautic.'.$id;
+        $providerId = 'security.authentication.provider.mautic.'.$firewallName;
         $container->setDefinition($providerId, new ChildDefinition('mautic.user.preauth_authenticator'))
             ->replaceArgument(3, new Reference($userProviderId))
             ->replaceArgument(4, $id);
 
-        $listenerId = 'security.authentication.listener.mautic.'.$id;
+        $listenerId = 'security.authentication.listener.mautic.'.$firewallName;
         $container->setDefinition($listenerId, new ChildDefinition('mautic.security.authentication_listener'))
-            ->replaceArgument(5, $id);
+            ->replaceArgument(5, $firewallName);
 
         return [$providerId, $listenerId, $defaultEntryPointId];
     }
@@ -60,7 +60,7 @@ class PluginFactory implements AuthenticatorFactoryInterface, SecurityFactoryInt
      */
     public function getPosition()
     {
-        return 'pre_auth';
+        return 0;
     }
 
     public function getKey(): string
