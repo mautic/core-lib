@@ -63,10 +63,7 @@ class PluginFactory implements AuthenticatorFactoryInterface, SecurityFactoryInt
         return 'pre_auth';
     }
 
-    /**
-     * @return string
-     */
-    public function getKey()
+    public function getKey(): string
     {
         return 'mautic_plugin_auth';
     }
