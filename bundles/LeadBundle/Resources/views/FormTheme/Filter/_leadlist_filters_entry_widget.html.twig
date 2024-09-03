@@ -15,6 +15,8 @@
   {% else %}
       {% set object = form.vars.data.object|default('') %}
   {% endif %}
+  {% set objectIconClass = 'company' == object ? 'ri-building-2-line' : 'ri-user-6-fill' %}
+  {% set filterTypeIconClass = fields[object][filterType]['iconClass']|default('') %}
 
   {% if isPrototype or fields[object][filterType].label is defined %}
 
@@ -28,8 +30,8 @@
             <div class="filter--panel panel fg-0">
                 <div class="d-flex ai-center fw-nowrap">
                     <div class="filter--field-name d-flex ai-center pr-lg pl-lg" size="lg">
-                        <i class="object-icon {{ getSegmentFilterIcon(filterType, object) }}" aria-hidden="true"></i>
-                        <span> {% if isPrototype %}__label__{% else %}{{ fields[object][filterType]['label'] }}{% endif %}</span>
+                        <i class="filter-type-icon {{ filterTypeIconClass }}" aria-hidden="true"></i>
+                        <span> {% if isPrototype %}__label__{% else %}{{ fields[object][filterType]['label'] }} ({{  object|capitalize }}){% endif %}</span>
                     </div>
 
                     <div class="filter--field-operator">
