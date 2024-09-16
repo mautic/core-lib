@@ -9,6 +9,8 @@ use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\AppVersion;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\UserHelper;
+use Mautic\CoreBundle\Security\Exception\PermissionException;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\ReportBundle\Entity\Report;
@@ -30,7 +32,12 @@ class ReportApiController extends CommonApiController
      */
     protected $model;
 
-    public function __construct(CorePermissions $security, Translator $translator, EntityResultHelper $entityResultHelper, RouterInterface $router, FormFactoryInterface $formFactory, AppVersion $appVersion, RequestStack $requestStack, ManagerRegistry $doctrine, ModelFactory $modelFactory, EventDispatcherInterface $dispatcher, CoreParametersHelper $coreParametersHelper, MauticFactory $factory)
+    /**
+     * @var UserHelper
+     */
+    protected $userHelper;
+
+    public function __construct(CorePermissions $security, Translator $translator, EntityResultHelper $entityResultHelper, RouterInterface $router, FormFactoryInterface $formFactory, AppVersion $appVersion, RequestStack $requestStack, ManagerRegistry $doctrine, ModelFactory $modelFactory, EventDispatcherInterface $dispatcher, CoreParametersHelper $coreParametersHelper, MauticFactory $factory, UserHelper $userHelper)
     {
         $reportModel = $modelFactory->getModel('report');
         \assert($reportModel instanceof ReportModel);
@@ -40,6 +47,7 @@ class ReportApiController extends CommonApiController
         $this->entityNameOne    = 'report';
         $this->entityNameMulti  = 'reports';
         $this->serializerGroups = ['reportList', 'reportDetails'];
+        $this->userHelper       = $userHelper;
 
         parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
     }
@@ -48,15 +56,33 @@ class ReportApiController extends CommonApiController
      * Obtains a compiled report.
      *
      * @param int $id Report ID
-     *
-     * @return Response
      */
-    public function getEntityAction(Request $request, $id)
+    public function getEntityAction(Request $request, $id): Response
     {
-        $entity = $this->model->getEntity($id);
+        $entity        = $this->model->getEntity($id);
+        $tableAlias    = $this->model->getRepository()->getTableAlias();
 
         if (!$entity instanceof $this->entityClass) {
             return $this->notFound();
+        }
+
+        try {
+            if (!$this->security->isGranted($this->permissionBase.':view')) {
+                return $this->accessDenied();
+            }
+        } catch (PermissionException $e) {
+            return $this->accessDenied($e->getMessage());
+        }
+
+        if ($this->security->checkPermissionExists($this->permissionBase.':viewother')
+            && !$this->security->isGranted($this->permissionBase.':viewother')
+            && null !== $user = $this->userHelper->getUser()
+        ) {
+            $this->listFilters[] = [
+                'column' => $tableAlias.'.createdBy',
+                'expr'   => 'eq',
+                'value'  => $user->getId(),
+            ];
         }
 
         $reportData = $this->model->getReportData($entity, $this->formFactory, $this->getOptionsFromRequest($request));
