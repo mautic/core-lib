@@ -32,10 +32,7 @@ class ReportApiController extends CommonApiController
      */
     protected $model;
 
-    /**
-     * @var UserHelper
-     */
-    protected $userHelper;
+    protected UserHelper $userHelper;
 
     public function __construct(CorePermissions $security, Translator $translator, EntityResultHelper $entityResultHelper, RouterInterface $router, FormFactoryInterface $formFactory, AppVersion $appVersion, RequestStack $requestStack, ManagerRegistry $doctrine, ModelFactory $modelFactory, EventDispatcherInterface $dispatcher, CoreParametersHelper $coreParametersHelper, MauticFactory $factory, UserHelper $userHelper)
     {
