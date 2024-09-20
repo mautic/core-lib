@@ -3,8 +3,10 @@
 namespace Mautic\ReportBundle\Tests\Controller\Api;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\UserBundle\Entity\Permission;
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Model\RoleModel;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ReportApiControllerTest extends MauticMysqlTestCase
@@ -93,6 +95,26 @@ final class ReportApiControllerTest extends MauticMysqlTestCase
         $this->assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testGetReportFailByNoCorrectAccessToViewOther(): void
+    {
+        $password   = 'Maut1cR0cks!!!!!';
+        $idReport   = $this->createReportData();
+        $permission = ['report:reports'=>['viewother']];
+        $role       = $this->createRole(false);
+        $user       = $this->createUser($role, $password);
+        $this->em->flush();
+        $this->em->detach($role);
+        $this->setPermission($user, $permission);
+        // Disable the default logging in via username and password.
+        $this->clientServer = [];
+        $this->setUpSymfony($this->configParams);
+        $user = $this->loginUser($user->getUserIdentifier());
+        $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
+        $this->client->setServerParameter('PHP_AUTH_PW', $password);
+        $this->client->request('GET', '/api/reports/'.$idReport);
+        $this->assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+    }
+
     private function createUser(Role $role, string $password='mautic'): User
     {
         $user = new User();
@@ -118,6 +140,31 @@ final class ReportApiControllerTest extends MauticMysqlTestCase
         $this->em->persist($role);
 
         return $role;
+    }
+
+    /**
+     * @param array<array<string>> $permissions
+     */
+    private function setPermission(User $user, array $permissions): void
+    {
+        $role = $user->getRole();
+
+        // Delete previous permissions
+        $this->em->createQueryBuilder()
+            ->delete(Permission::class, 'p')
+            ->where('p.bundle = :bundle')
+            ->andWhere('p.role = :role_id')
+            ->setParameters(['bundle' => 'report', 'role_id' => $role->getId()])
+            ->getQuery()
+            ->execute();
+
+        // Set new permissions
+        $role->setIsAdmin(false);
+        $roleModel = static::getContainer()->get('mautic.user.model.role');
+        \assert($roleModel instanceof RoleModel);
+        $roleModel->setRolePermissions($role, $permissions);
+        $this->em->persist($role);
+        $this->em->flush();
     }
 
     private function createReportData(): int

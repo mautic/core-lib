@@ -53,13 +53,6 @@ class ReportApiController extends CommonApiController
      */
     public function getEntityAction(Request $request, $id): Response
     {
-        $entity        = $this->model->getEntity($id);
-        $tableAlias    = $this->model->getRepository()->getTableAlias();
-
-        if (!$entity instanceof $this->entityClass) {
-            return $this->notFound();
-        }
-
         try {
             if (!$this->security->isGranted($this->permissionBase.':view')) {
                 return $this->accessDenied();
@@ -68,15 +61,18 @@ class ReportApiController extends CommonApiController
             return $this->accessDenied($e->getMessage());
         }
 
-        if ($this->security->checkPermissionExists($this->permissionBase.':viewother')
+        $entity        = $this->model->getEntity($id);
+
+        if (!$entity instanceof $this->entityClass) {
+            return $this->notFound();
+        }
+
+        if (
+            $this->security->checkPermissionExists($this->permissionBase.':viewother')
             && !$this->security->isGranted($this->permissionBase.':viewother')
-            && null !== $user = $this->userHelper->getUser()
+            && $entity->getCreatedBy() !== $this->userHelper->getUser()->getId()
         ) {
-            $this->listFilters[] = [
-                'column' => $tableAlias.'.createdBy',
-                'expr'   => 'eq',
-                'value'  => $user->getId(),
-            ];
+            return $this->accessDenied();
         }
 
         $reportData = $this->model->getReportData($entity, $this->formFactory, $this->getOptionsFromRequest($request));
