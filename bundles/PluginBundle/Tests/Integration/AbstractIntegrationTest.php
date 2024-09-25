@@ -37,6 +37,7 @@ class AbstractIntegrationTest extends AbstractIntegrationTestCase
                 $this->fieldModel,
                 $this->integrationEntityModel,
                 $this->doNotContact,
+                $this->fieldsWithUniqueIdentifier,
             ])
             ->onlyMethods(['getName', 'getAuthenticationType', 'getAvailableLeadFields'])
             ->getMock();
@@ -94,6 +95,7 @@ class AbstractIntegrationTest extends AbstractIntegrationTestCase
                 $this->fieldModel,
                 $this->integrationEntityModel,
                 $this->doNotContact,
+                $this->fieldsWithUniqueIdentifier,
             ])
             ->onlyMethods(['getName', 'getAuthenticationType', 'makeHttpClient'])
             ->getMock();

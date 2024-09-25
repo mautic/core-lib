@@ -121,6 +121,7 @@ return [
                     'mautic.lead.model.field',
                     'mautic.plugin.model.integration_entity',
                     'mautic.lead.model.dnc',
+                    'mautic.lead.field.fields_with_unique_identifier',
                 ],
             ],
         ],
