@@ -1218,7 +1218,6 @@ class LeadModel extends FormModel
     public function import(array $fields, array $data, $owner = null, $list = null, $tags = null, bool $persist = true, ?LeadEventLog $eventLog = null, $importId = null, bool $skipIfExists = false): bool
     {
         $fields    = array_flip($fields);
-        $fieldData = [];
 
         // Extract company data and import separately
         // Modifies the data array
@@ -1229,12 +1228,7 @@ class LeadModel extends FormModel
             $company       = $this->companyModel->importCompany(array_flip($companyFields), $companyData);
         }
 
-        foreach ($fields as $leadField => $importField) {
-            // Prevent overwriting existing data with empty data
-            if (array_key_exists($importField, $data) && !is_null($data[$importField]) && '' != $data[$importField]) {
-                $fieldData[$leadField] = InputHelper::_($data[$importField], 'string');
-            }
-        }
+        $fieldData = $this->getCleanedFieldData($fields, $data);
 
         if (array_key_exists('id', $fieldData)) {
             $lead = $this->getEntity($fieldData['id']);
@@ -2420,5 +2414,30 @@ class LeadModel extends FormModel
                 }
             }
         }
+    }
+
+    /**
+     * @param array<mixed> $fields
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
+    private function getCleanedFieldData(array $fields, array $data): array
+    {
+        $fieldData = [];
+        foreach ($fields as $leadField => $importField) {
+            // Prevent overwriting existing data with empty data
+            if (array_key_exists($importField, $data) && !is_null($data[$importField]) && '' != $data[$importField]) {
+                $fieldEntity = $this->leadFieldModel->getEntityByAlias($leadField);
+
+                if ($fieldEntity instanceof LeadField && 'html' == $fieldEntity->getType()) {
+                    $fieldData[$leadField] = htmlspecialchars($data[$importField], ENT_QUOTES, 'UTF-8');
+                    continue;
+                }
+                $fieldData[$leadField] = InputHelper::_($data[$importField], 'string');
+            }
+        }
+
+        return $fieldData;
     }
 }

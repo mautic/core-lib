@@ -9,7 +9,9 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Mautic\CategoryBundle\Model\CategoryModel;
 use Mautic\ChannelBundle\Helper\ChannelListHelper;
 use Mautic\CoreBundle\Entity\IpAddress;
+use Mautic\CoreBundle\Helper\CookieHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
@@ -20,6 +22,7 @@ use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Entity\CompanyLeadRepository;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadEventLog;
+use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\Entity\StagesChangeLog;
 use Mautic\LeadBundle\Entity\StagesChangeLogRepository;
@@ -41,6 +44,7 @@ use Mautic\StageBundle\Entity\Stage;
 use Mautic\StageBundle\Entity\StageRepository;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Security\Provider\UserProvider;
+use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -51,7 +55,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LeadModelTest extends \PHPUnit\Framework\TestCase
 {
+    use PHPMock;
     private MockObject|RequestStack $requestStack;
+
+    private MockObject|CookieHelper $cookieHelperMock;
 
     /**
      * @var MockObject|IpLookupHelper
@@ -540,6 +547,11 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['saveEntity', 'getEntity'])
             ->getMock();
 
+        $reflection         = new \ReflectionClass($mockLeadModel);
+        $reflectionProperty = $reflection->getProperty('leadFieldModel');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($mockLeadModel, $this->fieldModelMock);
+
         $mockLeadModel->setUserHelper($mockUserModel);
         $this->setSecurity($mockLeadModel);
 
@@ -692,6 +704,44 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->leadModel->saveEntity($contact);
         $this->leadModel->saveEntity($contact);
+    }
+
+    public function testImportHtmlFields(): void
+    {
+        $this->mockGetLeadRepository();
+
+        $fieldEntity = new LeadField();
+        $fieldEntity->setAlias('custom_html_field');
+        $fieldEntity->setLabel('Custom HTML Field');
+        $fieldEntity->setType('html');
+        $fieldEntity->setGroup('core');
+        $fieldEntity->setObject('lead');
+
+        $fields = ['custom_html_field' => 'custom_html_field'];
+        $data   = ['custom_html_field' => '<html><head></head><body>Test</body></html>'];
+
+        $this->fieldModelMock->method('getUniqueIdentifierFields')
+            ->willReturn(['email' => 'Email']);
+
+        $this->userHelperMock->method('getUser')
+            ->willReturn(new User());
+
+        $this->fieldModelMock->method('getFieldList')
+            ->willReturn([$fields]);
+
+        $this->fieldModelMock->expects($this->atLeastOnce())
+            ->method('getEntities')
+            ->willReturn($this->getFieldPaginatorFake());
+
+        $this->fieldModelMock->expects($this->once())
+            ->method('getEntityByAlias')
+            ->with('custom_html_field')
+            ->willReturn($fieldEntity);
+
+        $inputHelperMock = $this->getFunctionMock(InputHelper::class, '_');
+        $inputHelperMock->expects($this->never());
+
+        $this->leadModel->import($fields, $data);
     }
 
     /**
