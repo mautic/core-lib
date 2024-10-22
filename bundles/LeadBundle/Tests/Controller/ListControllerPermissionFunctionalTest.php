@@ -209,7 +209,7 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
         // For no entity found it will redirect to index page.
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertStringContainsString('/s/segments/1', $this->client->getRequest()->getRequestUri());
-        $this->assertStringContainsString('No list with an id of 2000 was found!', $crawler->text());
+        $this->assertStringContainsString('No segment with an id of 2000 was found!', $crawler->text());
     }
 
     public function testEditSegmentAndClickOnButtons(): void
@@ -239,7 +239,7 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
         // For no entity found it will redirect to index page.
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertStringContainsString('/s/segments/1', $this->client->getRequest()->getRequestUri());
-        $this->assertStringContainsString('No list with an id of 2000 was found!', $crawler->text());
+        $this->assertStringContainsString('No segment with an id of 2000 was found!', $crawler->text());
     }
 
     public function testEditOwnSegment(): void
@@ -358,7 +358,7 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
     {
         $listId     = 99999;
         $crawler    = $this->client->request(Request::METHOD_POST, '/s/segments/delete/'.$listId);
-        $this->assertStringContainsString("No list with an id of {$listId} was found!", $crawler->html());
+        $this->assertStringContainsString("No segment with an id of {$listId} was found!", $crawler->html());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
@@ -586,7 +586,7 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
         $listId     = 9999;
         $lead       = $this->createLead($this->userOne);
         $crawler    = $this->client->request(Request::METHOD_POST, '/s/segments/addLead/'.$listId.'?leadId='.$lead->getId());
-        $this->assertStringContainsString("No list with an id of {$listId} was found!", $crawler->html());
+        $this->assertStringContainsString("No segment with an id of {$listId} was found!", $crawler->html());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $lead->setCheckedOut(new \DateTime());

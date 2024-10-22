@@ -361,6 +361,45 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals(0, $secondColumnOfLine);
     }
 
+    public function testBatchDeleteWithEmptyMembership(): void
+    {
+        $segment = $this->saveSegment(
+            'Empty Members',
+            'empty-members',
+            [
+                [
+                    'glue'     => 'and',
+                    'field'    => 'leadlist',
+                    'object'   => 'lead',
+                    'type'     => 'leadlist',
+                    'filter'   => null,
+                    'display'  => null,
+                    'operator' => 'empty',
+                ],
+            ]
+        );
+
+        $segmentId = $segment->getId();
+
+        $this->client->request('POST', "s/segments/batchDelete?ids=[\"{$segmentId}\"]", [], [], $this->createAjaxHeaders());
+
+        $clientResponse = $this->client->getResponse();
+
+        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
+        $this->assertStringContainsString('1 segments have been deleted!', $clientResponse->getContent());
+
+        $this->em->clear();
+
+        $commandTester = $this->testSymfonyCommand('mautic:segment:delete');
+
+        Assert::assertSame(0, $commandTester->getStatusCode());
+
+        $this->em->clear();
+
+        $segmentExistCheck = $this->listRepo->find($segmentId);
+        Assert::assertNull($segmentExistCheck);
+    }
+
     /**
      * @dataProvider dateFieldProvider
      */
