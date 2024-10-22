@@ -57,6 +57,11 @@ final class Oauth2Test extends MauticMysqlTestCase
         yield 'POST' => [Request::METHOD_POST];
     }
 
+    protected function beforeTearDown(): void
+    {
+        $this->client->enableReboot();
+    }
+
     public function testAuthWithInvalidCredentials(): void
     {
         $this->client->enableReboot();
