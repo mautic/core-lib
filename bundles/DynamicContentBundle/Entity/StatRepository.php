@@ -124,7 +124,7 @@ class StatRepository extends CommonRepository
             );
         }
 
-        return $this->getTimelineResults($query, $options, 'dc.name', 's.date_sent', ['sentDetails'], ['dateSent']);
+        return $this->getTimelineResults($query, $options, 'dc.name', 's.date_sent', ['sentDetails'], ['dateSent'], null, 's.id');
     }
 
     /**
@@ -147,9 +147,6 @@ class StatRepository extends CommonRepository
         $this->_em->getConnection()->delete(MAUTIC_TABLE_PREFIX.'dynamic_content_stats', ['id' => (int) $id]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTableAlias(): string
     {
         return 's';

@@ -38,7 +38,7 @@ class SegmentReferenceFilterQueryBuilder extends BaseFilterQueryBuilder
      * @throws \Doctrine\DBAL\Exception
      * @throws QueryException
      */
-    public function applyQuery(QueryBuilder $queryBuilder, ContactSegmentFilter $filter)
+    public function applyQuery(QueryBuilder $queryBuilder, ContactSegmentFilter $filter): QueryBuilder
     {
         $leadsTableAlias = $queryBuilder->getTableAlias(MAUTIC_TABLE_PREFIX.'leads');
         $segmentIds      = $filter->getParameterValue();
@@ -53,7 +53,7 @@ class SegmentReferenceFilterQueryBuilder extends BaseFilterQueryBuilder
             $exclusion = in_array($filter->getOperator(), ['notExists', 'notIn']);
 
             /** @var LeadList $contactSegment */
-            $contactSegment = $this->entityManager->getRepository(\Mautic\LeadBundle\Entity\LeadList::class)->find($segmentId);
+            $contactSegment = $this->entityManager->getRepository(LeadList::class)->find($segmentId);
             if (!$contactSegment) {
                 throw new SegmentNotFoundException(sprintf('Segment %d used in the filter does not exist anymore.', $segmentId));
             }

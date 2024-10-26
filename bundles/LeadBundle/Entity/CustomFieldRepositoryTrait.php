@@ -5,6 +5,8 @@ namespace Mautic\LeadBundle\Entity;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Mautic\CoreBundle\Cache\ResultCacheHelper;
+use Mautic\CoreBundle\Cache\ResultCacheOptions;
 use Mautic\LeadBundle\Controller\ListController;
 use Mautic\LeadBundle\Helper\CustomFieldHelper;
 
@@ -53,7 +55,13 @@ trait CustomFieldRepositoryTrait
             }
 
             // get a total count
-            $result = $dq->executeQuery()->fetchAllAssociative();
+            if (!empty($args['totalCountTtl'])) {
+                $statement = ResultCacheHelper::executeCachedDbalQuery($this->getEntityManager()->getConnection(), $dq, new ResultCacheOptions($object.'-total-count', $args['totalCountTtl']));
+            } else {
+                $statement = $dq->executeQuery();
+            }
+
+            $result = $statement->fetchAllAssociative();
             $total  = ($result) ? $result[0]['count'] : 0;
         } else {
             $total = $args['count'];
@@ -112,7 +120,7 @@ trait CustomFieldRepositoryTrait
                     $alias = $this->getTableAlias();
                     $q     = $this->getEntityManager()->createQueryBuilder();
                     $q->select($alias)
-                        ->from(\Mautic\LeadBundle\Entity\Lead::class, $alias, $alias.'.id')
+                        ->from(Lead::class, $alias, $alias.'.id')
                         ->indexBy($alias, $alias.'.id');
                 } else {
                     // ORM
@@ -214,7 +222,7 @@ trait CustomFieldRepositoryTrait
             ->from($table, 'l');
 
         $q->where(
-            $q->expr()->andX(
+            $q->expr()->and(
                 $q->expr()->neq($col, $q->expr()->literal('')),
                 $q->expr()->isNotNull($col)
             )
@@ -372,8 +380,6 @@ trait CustomFieldRepositoryTrait
                     $fixedFields[$r['alias']] = $r['alias'];
                 }
             }
-
-            unset($results);
 
             $this->customFieldList = [$fields, $fixedFields];
         }

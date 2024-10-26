@@ -2,20 +2,29 @@
 
 namespace Mautic\PageBundle\Helper;
 
+use Mautic\CacheBundle\Cache\CacheProvider;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\Serializer;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Tracker\ContactTracker;
+use Psr\Cache\CacheItemInterface;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class TrackingHelper
 {
-    public function __construct(protected Session $session, protected CoreParametersHelper $coreParametersHelper, protected RequestStack $requestStack, protected ContactTracker $contactTracker)
-    {
+    public function __construct(
+        protected ContactTracker $contactTracker,
+        protected CacheProvider $cache,
+        protected CoreParametersHelper $coreParametersHelper,
+        protected RequestStack $requestStack,
+    ) {
     }
 
-    public function getEnabledServices()
+    /**
+     * @return array<string, 'facebook_pixel'|'google_analytics'>
+     */
+    public function getEnabledServices(): array
     {
         $keys = [
             'google_analytics' => 'Google Analytics',
@@ -31,39 +40,56 @@ class TrackingHelper
         return $result;
     }
 
-    public function getSessionName()
+    /**
+     * @return string|null
+     */
+    private function getCacheKey()
     {
         $lead = $this->contactTracker->getContact();
-        if ($lead instanceof Lead) {
-            return 'mtc-tracking-pixel-events-'.$lead->getId();
-        }
+
+        return $lead instanceof Lead ? 'mtc-tracking-pixel-events-'.$lead->getId() : null;
     }
 
     /**
-     * @param array $values
+     * @param mixed[] $values
      *
-     * @return array
+     * @throws InvalidArgumentException
      */
-    public function updateSession($values)
+    public function updateCacheItem(array $values): void
     {
-        $sessionName = $this->getSessionName();
-        $this->session->set($sessionName, serialize(array_merge($values, $this->getSession())));
+        $cacheKey = $this->getCacheKey();
+        if (null !== $cacheKey) {
+            /** @var CacheItemInterface $item */
+            $item = $this->cache->getItem($cacheKey);
+            $item->set(serialize(array_merge($values, $this->getCacheItem())));
+            $item->expiresAfter(86400); // one day in seconds
 
-        return (array) $values;
+            $this->cache->save($item);
+        }
     }
 
     /**
-     * @return array
+     * @return mixed[]
+     *
+     * @throws InvalidArgumentException
      */
-    public function getSession($remove = false)
+    public function getCacheItem(bool $remove = false): array
     {
-        $sessionName = $this->getSessionName();
-        $sesionValue = Serializer::decode($this->session->get($sessionName));
-        if ($remove) {
-            $this->session->remove($sessionName);
+        $cacheKey   = $this->getCacheKey();
+        $cacheValue = [];
+
+        /* @var CacheItemInterface $item */
+        if (null !== $cacheKey) {
+            $item = $this->cache->getItem($cacheKey);
+            if ($item->isHit()) {
+                $cacheValue = Serializer::decode($item->get(), ['allowed_classes' => false]);
+                if ($remove) {
+                    $this->cache->deleteItem($cacheKey);
+                }
+            }
         }
 
-        return (array) $sesionValue;
+        return (array) $cacheValue;
     }
 
     /**
@@ -84,7 +110,7 @@ class TrackingHelper
     }
 
     /**
-     * @return array|Lead|null
+     * @return Lead|null
      */
     public function getLead()
     {
@@ -104,5 +130,35 @@ class TrackingHelper
         }
 
         return true;
+    }
+
+    /**
+     * @deprecated No session for anonymous users. Use getCacheKey.
+     */
+    public function getSessionName(): ?string
+    {
+        return $this->getCacheKey();
+    }
+
+    /**
+     * @deprecated No session for anonymous users. Use updateCacheItem.
+     *
+     * @param mixed[] $values
+     *
+     * @return mixed[]
+     */
+    public function updateSession(array $values): array
+    {
+        $this->updateCacheItem($values);
+
+        return (array) $values;
+    }
+
+    /**
+     * @deprecated No session for anonymous users. Use getCacheItem.
+     */
+    public function getSession(bool $remove = false): array
+    {
+        return $this->getCacheItem($remove);
     }
 }

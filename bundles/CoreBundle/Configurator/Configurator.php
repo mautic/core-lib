@@ -111,7 +111,7 @@ class Configurator
      *
      * @return StepInterface[]
      */
-    private function getSortedSteps()
+    private function getSortedSteps(): array
     {
         $sortedSteps = [];
         krsort($this->steps);
@@ -247,7 +247,7 @@ class Configurator
     /**
      * Writes parameters to file.
      *
-     * @throws \Symfony\Component\Process\Exception\RuntimeException
+     * @throws RuntimeException
      */
     public function write(): int
     {

@@ -9,15 +9,19 @@ class ReportQueryEvent extends AbstractReportEvent
 {
     private int $totalResults;
 
-    public function __construct(Report $report, private QueryBuilder $query, $totalResults, private array $options)
-    {
+    public function __construct(
+        Report $report,
+        private QueryBuilder $query,
+        $totalResults,
+        private array $options
+    ) {
         $this->context      = $report->getSource();
         $this->report       = $report;
         $this->totalResults = (int) $totalResults;
     }
 
     /**
-     * @return array
+     * @return QueryBuilder
      */
     public function getQuery()
     {

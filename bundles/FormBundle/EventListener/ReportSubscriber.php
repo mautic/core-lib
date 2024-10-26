@@ -19,17 +19,22 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class ReportSubscriber implements EventSubscriberInterface
 {
     public const CONTEXT_FORMS           = 'forms';
+
     public const CONTEXT_FORM_SUBMISSION = 'form.submissions';
+
     public const CONTEXT_FORM_RESULT     = 'form.results';
 
-    public function __construct(private CompanyReportData $companyReportData, private SubmissionRepository $submissionRepository, private FormModel $formModel, private ReportHelper $reportHelper, private CoreParametersHelper $coreParametersHelper, private TranslatorInterface $translator)
-    {
+    public function __construct(
+        private CompanyReportData $companyReportData,
+        private SubmissionRepository $submissionRepository,
+        private FormModel $formModel,
+        private ReportHelper $reportHelper,
+        private CoreParametersHelper $coreParametersHelper,
+        private TranslatorInterface $translator
+    ) {
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             ReportEvents::REPORT_ON_BUILD          => ['onReportBuilder', 0],
@@ -246,7 +251,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $graphData              = [];
                     $graphData['data']      = $items;
                     $graphData['name']      = $g;
-                    $graphData['iconClass'] = 'fa-sign-in';
+                    $graphData['iconClass'] = 'ri-login-box-line';
                     $graphData['link']      = 'mautic_form_action';
                     $event->setGraph($g, $graphData);
                     break;
@@ -258,7 +263,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $graphData              = [];
                     $graphData['data']      = $items;
                     $graphData['name']      = $g;
-                    $graphData['iconClass'] = 'fa-check-square-o';
+                    $graphData['iconClass'] = 'ri-check-line';
                     $graphData['link']      = 'mautic_form_action';
                     $event->setGraph($g, $graphData);
                     break;

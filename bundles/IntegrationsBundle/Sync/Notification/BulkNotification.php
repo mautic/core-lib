@@ -11,8 +11,11 @@ use Mautic\UserBundle\Entity\User;
 
 class BulkNotification
 {
-    public function __construct(private BulkNotificationInterface $bulkNotification, private UserNotificationBuilder $userNotificationBuilder, private EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private BulkNotificationInterface $bulkNotification,
+        private UserNotificationBuilder $userNotificationBuilder,
+        private EntityManagerInterface $entityManager
+    ) {
     }
 
     public function addNotification(
@@ -35,7 +38,7 @@ class BulkNotification
                 $this->userNotificationBuilder->formatMessage($message, $link),
                 null,
                 $this->userNotificationBuilder->formatHeader($integrationDisplayName, $objectDisplayName),
-                'fa-refresh',
+                'ri-refresh-line',
                 null,
                 $user
             );

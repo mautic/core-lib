@@ -4,38 +4,43 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Field;
 
+use Mautic\CoreBundle\Cache\ResultCacheOptions;
+use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FieldList
 {
-    public function __construct(private LeadFieldRepository $leadFieldRepository, private TranslatorInterface $translator)
-    {
+    public function __construct(
+        private LeadFieldRepository $leadFieldRepository,
+        private TranslatorInterface $translator
+    ) {
     }
 
-        /**
-         * @param mixed[] $filters
-         *
-         * @return array<mixed>
-         */
-        public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = ['isPublished' => true, 'object' => 'lead']): array
-        {
-            $forceFilters = [];
-            foreach ($filters as $col => $val) {
-                $forceFilters[] = [
-                    'column' => "f.{$col}",
-                    'expr'   => 'eq',
-                    'value'  => $val,
-                ];
-            }
-            // Get a list of custom form fields
-            $fields = $this->leadFieldRepository->getEntities([
-                 'filter' => [
-                     'force' => $forceFilters,
-                 ],
-                 'orderBy'    => 'f.order',
-                 'orderByDir' => 'asc',
-            ]);
+    /**
+     * @param mixed[] $filters
+     *
+     * @return mixed[]
+     */
+    public function getFieldList(bool $byGroup = true, bool $alphabetical = true, array $filters = ['isPublished' => true, 'object' => 'lead']): array
+    {
+        $forceFilters = [];
+        foreach ($filters as $col => $val) {
+            $forceFilters[] = [
+                'column' => "f.{$col}",
+                'expr'   => 'eq',
+                'value'  => $val,
+            ];
+        }
+        // Get a list of custom form fields
+        $fields = $this->leadFieldRepository->getEntities([
+            'filter' => [
+                'force' => $forceFilters,
+            ],
+            'orderBy'      => 'f.order',
+            'orderByDir'   => 'asc',
+            'result_cache' => new ResultCacheOptions(LeadField::CACHE_NAMESPACE),
+        ]);
 
             $leadFields = [];
 

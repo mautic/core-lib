@@ -10,6 +10,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class CampaignLeadSourceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -78,10 +81,10 @@ class CampaignLeadSourceType extends AbstractType
         $update = !empty($options['data'][$sourceType]);
         if (!empty($update)) {
             $btnValue = 'mautic.core.form.update';
-            $btnIcon  = 'fa fa-pencil';
+            $btnIcon  = 'ri-edit-line';
         } else {
             $btnValue = 'mautic.core.form.add';
-            $btnIcon  = 'fa fa-plus';
+            $btnIcon  = 'ri-add-line';
         }
 
         $builder->add('buttons', FormButtonsType::class, [

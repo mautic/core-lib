@@ -9,10 +9,15 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class DateRangeType extends AbstractType
 {
-    public function __construct(private SessionInterface $session, private CoreParametersHelper $coreParametersHelper)
-    {
+    public function __construct(
+        private SessionInterface $session,
+        private CoreParametersHelper $coreParametersHelper
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -70,7 +75,7 @@ class DateRangeType extends AbstractType
             SubmitType::class,
             [
                 'label' => 'mautic.core.form.apply',
-                'attr'  => ['class' => 'btn btn-default'],
+                'attr'  => ['class' => 'btn btn-ghost btn-sm'],
             ]
         );
 

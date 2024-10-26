@@ -17,14 +17,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LeadSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private EventCollector $eventCollector, private TranslatorInterface $translator, private EntityManagerInterface $entityManager, private RouterInterface $router)
-    {
+    public function __construct(
+        private EventCollector $eventCollector,
+        private TranslatorInterface $translator,
+        private EntityManagerInterface $entityManager,
+        private RouterInterface $router
+    ) {
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             LeadEvents::TIMELINE_ON_GENERATE => ['onTimelineGenerate', 0],
@@ -91,12 +92,12 @@ class LeadSubscriber implements EventSubscriberInterface
                 if (empty($log['isScheduled']) && empty($log['dateTriggered'])) {
                     // Note as cancelled
                     $label .= ' <i data-toggle="tooltip" title="'.$this->translator->trans('mautic.campaign.event.cancelled')
-                        .'" class="fa fa-calendar-times-o text-warning timeline-campaign-event-cancelled-'.$log['event_id'].'"></i>';
+                        .'" class="ri-calendar-close-fill text-warning timeline-campaign-event-cancelled-'.$log['event_id'].'"></i>';
                 }
 
                 if ((!empty($log['metadata']['errors']) && empty($log['dateTriggered'])) || !empty($log['metadata']['failed']) || !empty($log['fail_reason'])) {
                     $label .= ' <i data-toggle="tooltip" title="'.$this->translator->trans('mautic.campaign.event.has_last_attempt_error')
-                        .'" class="fa fa-warning text-danger"></i>';
+                        .'" class="ri-alert-line text-danger"></i>';
                 }
 
                 $extra = [
@@ -122,7 +123,7 @@ class LeadSubscriber implements EventSubscriberInterface
                         'timestamp'       => $log['dateTriggered'],
                         'extra'           => $extra,
                         'contentTemplate' => $template,
-                        'icon'            => 'fa-clock-o',
+                        'icon'            => 'ri-time-line',
                         'contactId'       => $log['lead_id'],
                     ]
                 );

@@ -8,10 +8,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class AddToCompanyActionType extends AbstractType
 {
-    public function __construct(protected RouterInterface $router)
-    {
+    public function __construct(
+        protected RouterInterface $router
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -47,7 +51,7 @@ class AddToCompanyActionType extends AbstractType
                 'attr' => [
                     'class'   => 'btn btn-primary btn-nospin',
                     'onclick' => 'Mautic.loadNewWindow({"windowUrl": "'.$windowUrl.'"})',
-                    'icon'    => 'fa fa-plus',
+                    'icon'    => 'ri-add-line',
                 ],
                 'label' => 'mautic.company.new.company',
             ]

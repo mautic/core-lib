@@ -15,25 +15,16 @@ class DateTimeHelper
      */
     private $string;
 
-    /**
-     * @var string
-     */
-    private $format;
+    private string $format;
 
     /**
      * @var string
      */
     private $timezone;
 
-    /**
-     * @var \DateTimeZone
-     */
-    private $utc;
+    private \DateTimeZone $utc;
 
-    /**
-     * @var \DateTimeZone
-     */
-    private $local;
+    private \DateTimeZone $local;
 
     /**
      * @var \DateTimeInterface
@@ -204,16 +195,15 @@ class DateTimeHelper
     /**
      * Gets a difference.
      *
-     * @param string     $compare
-     * @param null       $format
-     * @param bool|false $resetTime
+     * @param string|\DateTime $compare
+     * @param bool|false       $resetTime
      *
      * @return bool|\DateInterval|string
      */
     public function getDiff($compare = 'now', $format = null, $resetTime = false)
     {
         if ('now' == $compare) {
-            $compare = new \DateTime();
+            $compare = new \DateTime('now', $this->datetime->getTimezone());
         }
 
         $with = clone $this->datetime;
@@ -369,7 +359,7 @@ class DateTimeHelper
      *
      * @throws \InvalidArgumentException
      */
-    public static function validateMysqlDateTimeUnit($unit)
+    public static function validateMysqlDateTimeUnit($unit): void
     {
         $possibleUnits   = ['s', 'i', 'H', 'd', 'W', 'm', 'Y'];
 

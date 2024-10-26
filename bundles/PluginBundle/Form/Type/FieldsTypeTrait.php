@@ -164,8 +164,8 @@ trait FieldsTypeTrait
                             ButtonGroupType::class,
                             [
                                 'choices' => [
-                                    '<btn class="btn-nospin fa fa-arrow-circle-left"></btn>'  => 0,
-                                    '<btn class="btn-nospin fa fa-arrow-circle-right"></btn>' => 1,
+                                    '<btn class="btn-nospin ri-arrow-left-circle-line"></btn>'    => 0,
+                                    '<btn class="btn-nospin ri-arrow-right-circle-line"></btn>'   => 1,
                                 ],
                                 'label'             => false,
                                 'data'              => $data,
@@ -248,16 +248,10 @@ trait FieldsTypeTrait
                 },
                 'allow_extra_fields'   => true,
                 'enable_data_priority' => false,
-                'totalFields'          => function (Options $options): int {
-                    return count($options['integration_fields']);
-                },
-                'fixedPageNum' => function (Options $options): float {
-                    return ceil($options['totalFields'] / $options['limit']);
-                },
-                'limit' => 10,
-                'start' => function (Options $options): int {
-                    return (1 === (int) $options['page']) ? 0 : ((int) $options['page'] - 1) * (int) $options['limit'];
-                },
+                'totalFields'          => fn (Options $options): int => count($options['integration_fields']),
+                'fixedPageNum'         => fn (Options $options): float => ceil($options['totalFields'] / $options['limit']),
+                'limit'                => 10,
+                'start'                => fn (Options $options): int => (1 === (int) $options['page']) ? 0 : ((int) $options['page'] - 1) * (int) $options['limit'],
             ]
         );
     }

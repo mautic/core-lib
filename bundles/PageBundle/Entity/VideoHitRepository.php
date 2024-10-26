@@ -37,7 +37,7 @@ class VideoHitRepository extends CommonRepository
             );
         }
 
-        return $this->getTimelineResults($query, $options, 'h.url', 'h.date_hit', [], ['date_hit']);
+        return $this->getTimelineResults($query, $options, 'h.url', 'h.date_hit', [], ['date_hit'], null, 'h.id');
     }
 
     /**
@@ -99,12 +99,10 @@ class VideoHitRepository extends CommonRepository
      * @param int                               $limit
      * @param int                               $offset
      *
-     * @return array
-     *
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getReferers($query, $limit = 10, $offset = 0)
+    public function getReferers($query, $limit = 10, $offset = 0): array
     {
         $query->select('h.referer, count(h.referer) as sessions')
             ->groupBy('h.referer')

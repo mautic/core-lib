@@ -20,10 +20,7 @@ class TimelineEventLogSubscriber implements EventSubscriberInterface
         $this->eventLogRepository = $leadEventLogRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             LeadEvents::TIMELINE_ON_GENERATE => ['onTimelineGenerate', 0],
@@ -36,7 +33,7 @@ class TimelineEventLogSubscriber implements EventSubscriberInterface
             $event,
             'lead.source.created',
             'mautic.lead.timeline.created_source',
-            'fa-user-secret',
+            'ri-spy-line',
             null,
             null,
             'created_contact'
@@ -46,7 +43,7 @@ class TimelineEventLogSubscriber implements EventSubscriberInterface
             $event,
             'lead.source.identified',
             'mautic.lead.timeline.identified_source',
-            'fa-user',
+            'ri-user-6-fill',
             null,
             null,
             'identified_contact'

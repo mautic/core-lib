@@ -10,11 +10,15 @@ use Mautic\LeadBundle\Entity\Lead;
 class MessageQueue
 {
     public const STATUS_RESCHEDULED = 'rescheduled';
+
     public const STATUS_PENDING     = 'pending';
+
     public const STATUS_SENT        = 'sent';
+
     public const STATUS_CANCELLED   = 'cancelled';
 
     public const PRIORITY_NORMAL = 2;
+
     public const PRIORITY_HIGH   = 1;
 
     /**
@@ -35,7 +39,7 @@ class MessageQueue
     private $event;
 
     /**
-     * @var \Mautic\LeadBundle\Entity\Lead
+     * @var Lead
      */
     private $lead;
 
@@ -110,20 +114,21 @@ class MessageQueue
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('message_queue')
-            ->setCustomRepositoryClass(\Mautic\ChannelBundle\Entity\MessageQueueRepository::class)
+            ->setCustomRepositoryClass(MessageQueueRepository::class)
             ->addIndex(['status'], 'message_status_search')
             ->addIndex(['date_sent'], 'message_date_sent')
             ->addIndex(['scheduled_date'], 'message_scheduled_date')
             ->addIndex(['priority'], 'message_priority')
             ->addIndex(['success'], 'message_success')
-            ->addIndex(['channel', 'channel_id'], 'message_channel_search');
+            ->addIndex(['channel', 'channel_id'], 'message_channel_search')
+            ->addIndex(['date_published'], 'message_queue_date_published');
 
         $builder->addBigIntIdField();
 
         $builder->addField('channel', 'string');
         $builder->addNamedField('channelId', 'integer', 'channel_id');
 
-        $builder->createManyToOne('event', \Mautic\CampaignBundle\Entity\Event::class)
+        $builder->createManyToOne('event', Event::class)
             ->addJoinColumn('event_id', 'id', true, false, 'CASCADE')
             ->build();
 
@@ -248,7 +253,7 @@ class MessageQueue
     }
 
     /**
-     * @return Event
+     * @return Event|null
      */
     public function getEvent()
     {

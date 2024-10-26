@@ -26,7 +26,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
     {
         $reflectionProperty = new \ReflectionProperty(TokenHelper::class, 'parameters');
         $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue([
+        $reflectionProperty->setValue(null, [
             'date_format_dateonly' => 'F j, Y',
             'date_format_timeonly' => 'g:i a',
         ]);
@@ -53,7 +53,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
     }
 
-    public function testContactTokensAreReplaced()
+    public function testContactTokensAreReplaced(): void
     {
         $lead = [
             'firstname' => 'Bob',
@@ -71,7 +71,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([$token => 'USA'], $tokenList);
     }
 
-    public function testCompanyTokensAreReplaced()
+    public function testCompanyTokensAreReplaced(): void
     {
         $leads = [
             [
@@ -111,7 +111,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([$token => ''], $tokenList);
     }
 
-    public function testDefaultValueIsUsed()
+    public function testDefaultValueIsUsed(): void
     {
         $lead = [
             'firstname' => 'Bob',
@@ -130,7 +130,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([$token => 'USA'], $tokenList);
     }
 
-    public function testValueIsUrlEncoded()
+    public function testValueIsUrlEncoded(): void
     {
         $lead = [
             'firstname' => 'Bob',
@@ -149,7 +149,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals([$token => 'Somewhere%26Else'], $tokenList);
     }
 
-    public function testGetValueFromTokensWhenSomeValue()
+    public function testGetValueFromTokensWhenSomeValue(): void
     {
         $token  = '{contactfield=website}';
         $tokens = [
@@ -161,7 +161,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGetValueFromTokensWhenSomeValueWithDefaultValue()
+    public function testGetValueFromTokensWhenSomeValueWithDefaultValue(): void
     {
         $token  = '{contactfield=website|ftp://default.url}';
         $tokens = [
@@ -173,7 +173,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGetValueFromTokensWhenNoValueWithDefaultValue()
+    public function testGetValueFromTokensWhenNoValueWithDefaultValue(): void
     {
         $token  = '{contactfield=website|ftp://default.url}';
         $tokens = [
@@ -185,7 +185,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGetValueFromTokensWhenNoValueWithoutDefaultValue()
+    public function testGetValueFromTokensWhenNoValueWithoutDefaultValue(): void
     {
         $token  = '{contactfield=website}';
         $tokens = [
@@ -197,28 +197,28 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testDateTimeFormatValue()
+    public function testDateTimeFormatValue(): void
     {
         $token     = '{contactfield=date|datetime}';
         $tokenList = TokenHelper::findLeadTokens($token, $this->lead);
         $this->assertNotSame($this->lead['date'], $tokenList[$token]);
     }
 
-    public function testDateFormatValue()
+    public function testDateFormatValue(): void
     {
         $token     = '{contactfield=date|date}';
         $tokenList = TokenHelper::findLeadTokens($token, $this->lead);
         $this->assertNotSame($this->lead['date'], $tokenList[$token]);
     }
 
-    public function testTimeFormatValue()
+    public function testTimeFormatValue(): void
     {
         $token     = '{contactfield=date|time}';
         $tokenList = TokenHelper::findLeadTokens($token, $this->lead);
         $this->assertNotSame($this->lead['date'], $tokenList[$token]);
     }
 
-    public function testDateFormatForEmptyValue()
+    public function testDateFormatForEmptyValue(): void
     {
         $lead         = $this->lead;
         $lead['date'] = '';

@@ -22,8 +22,7 @@ class ReportNormalizeSubscriberTest extends MauticMysqlTestCase
      */
     public function testOnReportDisplay(string $value, string $type, array $properties, string $expected): void
     {
-        /** @var FieldModel $fieldModel */
-        $fieldModel = self::$container->get('mautic.lead.model.field');
+        $fieldModel = static::getContainer()->get('mautic.lead.model.field');
         \assert($fieldModel instanceof FieldModel);
         $field = new LeadField();
         $field->setType($type);

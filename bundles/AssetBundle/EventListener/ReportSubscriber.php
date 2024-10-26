@@ -14,16 +14,16 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class ReportSubscriber implements EventSubscriberInterface
 {
     public const CONTEXT_ASSET          = 'assets';
+
     public const CONTEXT_ASSET_DOWNLOAD = 'asset.downloads';
 
-    public function __construct(private CompanyReportData $companyReportData, private DownloadRepository $downloadRepository)
-    {
+    public function __construct(
+        private CompanyReportData $companyReportData,
+        private DownloadRepository $downloadRepository
+    ) {
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             ReportEvents::REPORT_ON_BUILD          => ['onReportBuilder', 0],
@@ -233,7 +233,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $graphData              = [];
                     $graphData['data']      = $items;
                     $graphData['name']      = $g;
-                    $graphData['iconClass'] = 'fa-download';
+                    $graphData['iconClass'] = 'ri-download-line';
                     $graphData['link']      = 'mautic_asset_action';
                     $event->setGraph($g, $graphData);
                     break;
@@ -244,7 +244,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $graphData              = [];
                     $graphData['data']      = $items;
                     $graphData['name']      = $g;
-                    $graphData['iconClass'] = 'fa-download';
+                    $graphData['iconClass'] = 'ri-download-line';
                     $graphData['link']      = 'mautic_asset_action';
                     $event->setGraph($g, $graphData);
                     break;
@@ -253,7 +253,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $graphData              = [];
                     $graphData['data']      = $items;
                     $graphData['name']      = $g;
-                    $graphData['iconClass'] = 'fa-globe';
+                    $graphData['iconClass'] = 'ri-earth-line';
                     $event->setGraph($g, $graphData);
                     break;
             }

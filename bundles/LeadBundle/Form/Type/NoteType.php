@@ -14,9 +14,12 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @extends AbstractType<LeadNote>
+ */
 class NoteType extends AbstractType
 {
-    private \Mautic\CoreBundle\Helper\DateTimeHelper $dateHelper;
+    private DateTimeHelper $dateHelper;
 
     public function __construct()
     {
@@ -67,7 +70,7 @@ class NoteType extends AbstractType
                 'attr'       => [
                     'class'       => 'form-control',
                     'data-toggle' => 'datetime',
-                    'preaddon'    => 'fa fa-calendar',
+                    'preaddon'    => 'ri-calendar-line',
                 ],
                 'format' => 'yyyy-MM-dd HH:mm',
                 'html5'  => false,

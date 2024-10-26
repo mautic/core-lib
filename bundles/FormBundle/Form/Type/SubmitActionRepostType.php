@@ -11,13 +11,13 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Url;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class SubmitActionRepostType extends AbstractType
 {
     use FormFieldTrait;
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add(
@@ -28,7 +28,7 @@ class SubmitActionRepostType extends AbstractType
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
                     'class'    => 'form-control',
-                    'preaddon' => 'fa fa-globe',
+                    'preaddon' => 'ri-earth-line',
                 ],
                 'constraints' => [
                     new NotBlank(
@@ -54,7 +54,7 @@ class SubmitActionRepostType extends AbstractType
                 'attr'       => [
                     'class'    => 'form-control',
                     'tooltip'  => 'mautic.form.action.repost.authorization_header.tooltip',
-                    'preaddon' => 'fa fa-lock',
+                    'preaddon' => 'ri-lock-fill',
                 ],
                 'required' => false,
             ]
@@ -69,7 +69,7 @@ class SubmitActionRepostType extends AbstractType
                 'attr'       => [
                     'class'    => 'form-control',
                     'tooltip'  => 'mautic.form.action.repost.failure_email.tooltip',
-                    'preaddon' => 'fa fa-envelope',
+                    'preaddon' => 'ri-mail-line',
                 ],
                 'required'    => false,
                 'constraints' => new Email(

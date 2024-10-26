@@ -13,13 +13,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContactExportSchedulerNotificationSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private NotificationModel $notificationModel, private TranslatorInterface $translator)
-    {
+    public function __construct(
+        private NotificationModel $notificationModel,
+        private TranslatorInterface $translator
+    ) {
     }
 
-    /**
-     * @return array<string, string>
-     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -35,9 +34,9 @@ class ContactExportSchedulerNotificationSubscriber implements EventSubscriberInt
 
         $this->notificationModel->addNotification(
             $message,
-            null,
+            'info',
             false,
-            null,
+            'mautic.lead.export.being.prepared.header',
             null,
             null,
             $user

@@ -19,6 +19,7 @@ use Mautic\CoreBundle\Translation\Translator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -54,8 +55,20 @@ class CommonApiController extends FetchCommonApiController
      */
     protected $entityRequestParameters = [];
 
-    public function __construct(CorePermissions $security, Translator $translator, EntityResultHelper $entityResultHelper, protected RouterInterface $router, protected FormFactoryInterface $formFactory, AppVersion $appVersion, RequestStack $requestStack, ManagerRegistry $doctrine, ModelFactory $modelFactory, EventDispatcherInterface $dispatcher, CoreParametersHelper $coreParametersHelper, MauticFactory $factory)
-    {
+    public function __construct(
+        CorePermissions $security,
+        Translator $translator,
+        EntityResultHelper $entityResultHelper,
+        protected RouterInterface $router,
+        protected FormFactoryInterface $formFactory,
+        AppVersion $appVersion,
+        RequestStack $requestStack,
+        ManagerRegistry $doctrine,
+        ModelFactory $modelFactory,
+        EventDispatcherInterface $dispatcher,
+        CoreParametersHelper $coreParametersHelper,
+        MauticFactory $factory
+    ) {
         parent::__construct($security, $translator, $entityResultHelper, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
     }
 
@@ -321,9 +334,9 @@ class CommonApiController extends FetchCommonApiController
     }
 
     /**
-     * Creates the form instance.
+     * @return FormInterface<mixed>
      */
-    protected function createEntityForm($entity): Form
+    protected function createEntityForm($entity): FormInterface
     {
         return $this->model->createForm(
             $entity,
@@ -389,7 +402,7 @@ class CommonApiController extends FetchCommonApiController
                     $entity
                 );
             }
-        } elseif (is_object($formResponse) && get_class($formResponse) === get_class($entity)) {
+        } elseif (is_object($formResponse) && $formResponse::class === $entity::class) {
             // Success
             $entities[$key] = $formResponse;
         } elseif (is_array($formResponse) && isset($formResponse['code'], $formResponse['message'])) {
@@ -444,11 +457,11 @@ class CommonApiController extends FetchCommonApiController
         // Check if user has access to publish
         if (
             (
-                array_key_exists('isPublished', $parameters) ||
-                array_key_exists('publishUp', $parameters) ||
-                array_key_exists('publishDown', $parameters)
-            ) &&
-            $this->security->checkPermissionExists($this->permissionBase.':publish')) {
+                array_key_exists('isPublished', $parameters)
+                || array_key_exists('publishUp', $parameters)
+                || array_key_exists('publishDown', $parameters)
+            )
+            && $this->security->checkPermissionExists($this->permissionBase.':publish')) {
             if ($this->security->checkPermissionExists($this->permissionBase.':publishown')) {
                 if (!$this->checkEntityAccess($entity, 'publish')) {
                     if ('new' === $action) {

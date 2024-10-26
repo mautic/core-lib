@@ -11,8 +11,11 @@ use Mautic\UserBundle\Entity\User;
 
 class Writer
 {
-    public function __construct(private NotificationModel $notificationModel, private AuditLogModel $auditLogModel, private EntityManagerInterface $em)
-    {
+    public function __construct(
+        private NotificationModel $notificationModel,
+        private AuditLogModel $auditLogModel,
+        private EntityManagerInterface $em
+    ) {
     }
 
     /**
@@ -25,7 +28,7 @@ class Writer
             null,
             false,
             $header,
-            'fa-refresh',
+            'ri-refresh-line',
             null,
             $this->em->getReference(User::class, $userId),
             $deduplicateValue,

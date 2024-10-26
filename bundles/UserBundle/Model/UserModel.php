@@ -52,18 +52,13 @@ class UserModel extends FormModel
         return $this->em->getRepository(User::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPermissionBase()
+    public function getPermissionBase(): string
     {
         return 'user:users';
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+     * @throws MethodNotAllowedHttpException
      */
     public function saveEntity($entity, $unlock = true): void
     {
@@ -94,10 +89,8 @@ class UserModel extends FormModel
      *
      * @param string     $submittedPassword
      * @param bool|false $validate
-     *
-     * @return string
      */
-    public function checkNewPassword(User $entity, UserPasswordHasherInterface $hasher, $submittedPassword, $validate = false)
+    public function checkNewPassword(User $entity, UserPasswordHasherInterface $hasher, $submittedPassword, $validate = false): ?string
     {
         if ($validate) {
             if (strlen($submittedPassword) < 6) {
@@ -114,11 +107,9 @@ class UserModel extends FormModel
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function createForm($entity, FormFactoryInterface $formFactory, $action = null, $options = [])
+    public function createForm($entity, FormFactoryInterface $formFactory, $action = null, $options = []): \Symfony\Component\Form\FormInterface
     {
         if (!$entity instanceof User) {
             throw new MethodNotAllowedHttpException(['User'], 'Entity must be of class User()');
@@ -130,10 +121,7 @@ class UserModel extends FormModel
         return $formFactory->create(UserType::class, $entity, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntity($id = null)
+    public function getEntity($id = null): ?User
     {
         if (null === $id) {
             return new User();
@@ -156,7 +144,7 @@ class UserModel extends FormModel
      */
     public function getSystemAdministrator()
     {
-        $adminRole = $this->em->getRepository(\Mautic\UserBundle\Entity\Role::class)->findOneBy(['isAdmin' => true]);
+        $adminRole = $this->em->getRepository(Role::class)->findOneBy(['isAdmin' => true]);
 
         return $this->getRepository()->findOneBy(
             [
@@ -167,9 +155,7 @@ class UserModel extends FormModel
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+     * @throws MethodNotAllowedHttpException
      */
     protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
     {
@@ -273,7 +259,7 @@ class UserModel extends FormModel
     /**
      * @throws \RuntimeException
      */
-    public function sendResetEmail(User $user)
+    public function sendResetEmail(User $user): void
     {
         $mailer = $this->mailHelper->getMailer();
 
@@ -301,6 +287,44 @@ class UserModel extends FormModel
             $this->translator->trans('mautic.user.user.passwordreset.subject'),
             $html
         );
+    }
+
+    /**
+     * @throws \RuntimeException
+     */
+    public function sendChangePasswordInfo(User $user): void
+    {
+        $text = $this->translator->trans(
+            'mautic.user.user.passwordchange.email.body',
+            ['%name%' => $user->getFirstName()]
+        );
+        $text = str_replace('\\n', "\n", $text);
+        $html = nl2br($text);
+
+        $this->emailUser(
+            $user,
+            $this->translator->trans('mautic.user.user.passwordchange.subject'),
+            $html
+        );
+    }
+
+    /**
+     * @throws \RuntimeException
+     */
+    public function sendChangeEmailInfo(string $oldEmail, User $user): void
+    {
+        $mailer = $this->mailHelper->getMailer();
+        $text   = $this->translator->trans(
+            'mautic.user.user.emailchange.email.body',
+            ['%name%' => $user->getFirstName()]
+        );
+        $text = str_replace('\\n', "\n", $text);
+        $html = nl2br($text);
+
+        $mailer->setTo([$oldEmail => $user->getName()]);
+        $mailer->setBody($html);
+        $mailer->setSubject($this->translator->trans('mautic.user.user.emailchange.subject'));
+        $mailer->send();
     }
 
     public function emailUser(User $user, string $subject, string $content): void
@@ -334,8 +358,6 @@ class UserModel extends FormModel
 
     /**
      * Set user preference.
-     *
-     * @param null $value
      */
     public function setPreference($key, $value = null, User $user = null): void
     {
@@ -353,8 +375,6 @@ class UserModel extends FormModel
 
     /**
      * Get user preference.
-     *
-     * @param null $default
      */
     public function getPreference($key, $default = null, User $user = null)
     {
@@ -368,10 +388,8 @@ class UserModel extends FormModel
 
     /**
      * Return list of Users for formType Choice.
-     *
-     * @return array
      */
-    public function getOwnerListChoices()
+    public function getOwnerListChoices(): array
     {
         return $this->getRepository()->getOwnerListChoices();
     }

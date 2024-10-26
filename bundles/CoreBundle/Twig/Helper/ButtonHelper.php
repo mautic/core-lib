@@ -68,10 +68,7 @@ final class ButtonHelper
      */
     private $wrapClosingTag;
 
-    /**
-     * @var string
-     */
-    private $groupType = self::TYPE_GROUP;
+    private string $groupType = self::TYPE_GROUP;
 
     /**
      * @var string|null
@@ -88,15 +85,9 @@ final class ButtonHelper
      */
     private $buttonCount = 0;
 
-    /**
-     * @var bool
-     */
-    private $buttonsFetched = false;
+    private bool $buttonsFetched = false;
 
-    /**
-     * @var Request
-     */
-    private $request;
+    private ?Request $request = null;
 
     /**
      * @var mixed
@@ -108,8 +99,11 @@ final class ButtonHelper
      */
     private $listMarker = 3;
 
-    public function __construct(private Environment $twig, private TranslatorInterface $translator, private EventDispatcherInterface $dispatcher)
-    {
+    public function __construct(
+        private Environment $twig,
+        private TranslatorInterface $translator,
+        private EventDispatcherInterface $dispatcher
+    ) {
     }
 
     /**
@@ -243,7 +237,6 @@ final class ButtonHelper
      *
      * @param string $buttonCount
      * @param string $groupType
-     * @param null   $item
      *
      * @return $this
      */
@@ -487,9 +480,9 @@ final class ButtonHelper
         if (!empty($addTo['btnClass'])) {
             $addTo['attr']['class'] = $addTo['btnClass'];
         } elseif (!isset($button['attr']['class'])) {
-            $addTo['attr']['class'] = 'btn btn-default';
+            $addTo['attr']['class'] = 'btn btn-tertiary';
         } elseif (!strstr($addTo['attr']['class'], 'btn-')) {
-            $addTo['attr']['class'] .= ' btn btn-default';
+            $addTo['attr']['class'] .= ' btn btn-ghost';
         }
 
         if (self::LOCATION_PAGE_ACTIONS == $this->location) {
@@ -516,7 +509,7 @@ final class ButtonHelper
         }
 
         $search = [
-            'btn-default',
+            'btn-ghost',
             'btn-primary',
             'btn-success',
             'btn-info',

@@ -18,14 +18,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CampaignSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private LeadModel $leadModel, private TrackingHelper $trackingHelper, private RealTimeExecutioner $realTimeExecutioner)
-    {
+    public function __construct(
+        private LeadModel $leadModel,
+        private TrackingHelper $trackingHelper,
+        private RealTimeExecutioner $realTimeExecutioner
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             CampaignEvents::CAMPAIGN_ON_BUILD        => ['onCampaignBuild', 0],
@@ -229,7 +229,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         foreach ($config['services'] as $service) {
             $values[$service][] = ['category' => $config['category'], 'action' => $config['action'], 'label' => $config['label']];
         }
-        $this->trackingHelper->updateSession($values);
+        $this->trackingHelper->updateCacheItem($values);
 
         return $event->setResult(true);
     }

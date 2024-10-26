@@ -10,8 +10,12 @@ use Mautic\UserBundle\Model\UserModel;
 
 class FieldsBuilder
 {
-    public function __construct(private FieldModel $fieldModel, private ListModel $listModel, private UserModel $userModel, private LeadModel $leadModel)
-    {
+    public function __construct(
+        private FieldModel $fieldModel,
+        private ListModel $listModel,
+        private UserModel $userModel,
+        private LeadModel $leadModel
+    ) {
     }
 
     /**
@@ -29,10 +33,8 @@ class FieldsBuilder
     /**
      * @param string $prefix
      * @param string $segmentPrefix
-     *
-     * @return array
      */
-    public function getLeadFilter($prefix, $segmentPrefix)
+    public function getLeadFilter($prefix, $segmentPrefix): array
     {
         $filters = $this->getLeadFieldsColumns($prefix);
 
@@ -119,6 +121,11 @@ class FieldsBuilder
                 'label'          => 'mautic.lead.report.date_identified',
                 'type'           => 'datetime',
                 'groupByFormula' => 'DATE(l.date_identified)',
+            ],
+            'l.date_added' => [
+                'label'          => 'mautic.core.date.added',
+                'type'           => 'datetime',
+                'groupByFormula' => 'DATE(l.date_added)',
             ],
             'l.points' => [
                 'label' => 'mautic.lead.points',

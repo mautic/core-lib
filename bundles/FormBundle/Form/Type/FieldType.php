@@ -19,12 +19,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class FieldType extends AbstractType
 {
     use FormFieldTrait;
 
-    public function __construct(private TranslatorInterface $translator, private ObjectCollectorInterface $objectCollector, private FieldCollectorInterface $fieldCollector, private AlreadyMappedFieldCollectorInterface $mappedFieldCollector)
-    {
+    public function __construct(
+        private TranslatorInterface $translator,
+        private ObjectCollectorInterface $objectCollector,
+        private FieldCollectorInterface $fieldCollector,
+        private AlreadyMappedFieldCollectorInterface $mappedFieldCollector
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -83,7 +90,7 @@ class FieldType extends AbstractType
 
             foreach ($addFields as $f) {
                 if (isset($customParams['builderOptions'][$f])) {
-                    $$f = (bool) $customParams['builderOptions'][$f];
+                    ${$f} = (bool) $customParams['builderOptions'][$f];
                 }
             }
         } else {
@@ -412,7 +419,7 @@ class FieldType extends AbstractType
                 ChoiceType::class,
                 [
                     'choices'     => $fields->toChoices(),
-                    'choice_attr' => function ($val) use ($fields) {
+                    'choice_attr' => function ($val) use ($fields): array {
                         try {
                             $field = $fields->getFieldByKey($val);
                             if ($field->isListType()) {
@@ -430,7 +437,7 @@ class FieldType extends AbstractType
                         'tooltip' => 'mautic.form.field.help.mapped.field',
                     ],
                     'required' => false,
-                    'data'     => $mappedField ?? $this->getDefaultMappedField((string) $type),
+                    'data'     => $mappedField ?? (empty($options['data']['id']) ? $this->getDefaultMappedField((string) $type) : ''),
                 ]
             );
 
@@ -450,10 +457,10 @@ class FieldType extends AbstractType
         $update = (!empty($options['data']['id'])) ? true : false;
         if (!empty($update)) {
             $btnValue = 'mautic.core.form.update';
-            $btnIcon  = 'fa fa-pencil';
+            $btnIcon  = 'ri-edit-line';
         } else {
             $btnValue = 'mautic.core.form.add';
-            $btnIcon  = 'fa fa-plus';
+            $btnIcon  = 'ri-add-line';
         }
 
         $builder->add(
@@ -530,9 +537,18 @@ class FieldType extends AbstractType
                         ]
                     );
                     break;
+                case 'number':
+                    $builder->add(
+                        'properties',
+                        FormFieldNumberType::class,
+                        [
+                            'label' => false,
+                            'data'  => $propertiesData,
+                        ]
+                    );
+                    break;
                 case 'date':
                 case 'email':
-                case 'number':
                 case 'text':
                 case 'url':
                 case 'tel':
@@ -607,10 +623,11 @@ class FieldType extends AbstractType
     private function getDefaultMappedField(string $type): string
     {
         return match ($type) {
-            'email'   => 'email',
-            'country' => 'country',
-            'tel'     => 'phone',
-            default   => '',
+            'email'         => 'email',
+            'country'       => 'country',
+            'tel'           => 'phone',
+            'companyLookup' => 'company',
+            default         => '',
         };
     }
 }

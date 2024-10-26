@@ -12,8 +12,9 @@ class BaseDecorator implements FilterDecoratorInterface
 {
     use RegexTrait;
 
-    public function __construct(protected ContactSegmentFilterOperator $contactSegmentFilterOperator)
-    {
+    public function __construct(
+        protected ContactSegmentFilterOperator $contactSegmentFilterOperator
+    ) {
     }
 
     /**
@@ -30,7 +31,11 @@ class BaseDecorator implements FilterDecoratorInterface
             return MAUTIC_TABLE_PREFIX.'leads';
         }
 
-        return MAUTIC_TABLE_PREFIX.'companies';
+        if ($contactSegmentFilterCrate->isCompanyType()) {
+            return MAUTIC_TABLE_PREFIX.'companies';
+        }
+
+        return '';
     }
 
     /**
@@ -46,10 +51,7 @@ class BaseDecorator implements FilterDecoratorInterface
         };
     }
 
-    /**
-     * @return string
-     */
-    public function getQueryType(ContactSegmentFilterCrate $contactSegmentFilterCrate)
+    public function getQueryType(ContactSegmentFilterCrate $contactSegmentFilterCrate): string
     {
         return BaseFilterQueryBuilder::getServiceId();
     }
@@ -76,7 +78,7 @@ class BaseDecorator implements FilterDecoratorInterface
     /**
      * @return array|bool|float|string|null
      */
-    public function getParameterValue(ContactSegmentFilterCrate $contactSegmentFilterCrate)
+    public function getParameterValue(ContactSegmentFilterCrate $contactSegmentFilterCrate): mixed
     {
         $filter = $contactSegmentFilterCrate->getFilter();
 

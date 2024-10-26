@@ -30,9 +30,11 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -79,8 +81,6 @@ class ReportModel extends FormModel
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @return \Mautic\ReportBundle\Entity\ReportRepository
      */
     public function getRepository()
@@ -88,28 +88,24 @@ class ReportModel extends FormModel
         return $this->em->getRepository(Report::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPermissionBase(): string
     {
         return 'report:reports';
     }
 
-    protected function getSession(): Session
+    protected function getSession(): SessionInterface
     {
-        $session = $this->requestStack->getSession();
-        \assert($session instanceof Session);
-
-        return $session;
+        try {
+            return $this->requestStack->getSession();
+        } catch (SessionNotFoundException) {
+            return new Session(); // in case of CLI
+        }
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function createForm($entity, FormFactoryInterface $formFactory, $action = null, $options = [])
+    public function createForm($entity, FormFactoryInterface $formFactory, $action = null, $options = []): \Symfony\Component\Form\FormInterface
     {
         if (!$entity instanceof Report) {
             throw new MethodNotAllowedHttpException(['Report']);
@@ -133,12 +129,7 @@ class ReportModel extends FormModel
         return $reportGenerator->getForm($entity, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @return Report|null
-     */
-    public function getEntity($id = null)
+    public function getEntity($id = null): ?Report
     {
         if (null === $id) {
             return new Report();
@@ -148,9 +139,7 @@ class ReportModel extends FormModel
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+     * @throws MethodNotAllowedHttpException
      */
     protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
     {
@@ -325,7 +314,7 @@ class ReportModel extends FormModel
      *
      * @param string $context
      *
-     * @return \stdClass [filterList => [], definitions => [], operatorChoices =>  [], operatorHtml => [], filterListHtml => '']
+     * @return \stdClass[filterList => [], definitions => [], operatorChoices =>  [], operatorHtml => [], filterListHtml => '']
      */
     public function getFilterList($context = 'all'): \stdClass
     {
@@ -386,7 +375,6 @@ class ReportModel extends FormModel
      * Export report.
      *
      * @param string $format
-     * @param null   $handle
      * @param int    $page
      *
      * @return StreamedResponse|Response
@@ -570,7 +558,11 @@ class ReportModel extends FormModel
             }
         }
 
-        $query->add('orderBy', $order);
+        $columnsAllowed = $this->getColumnList($entity->getSource());
+        $order          = $this->getOrderBySanitized($order, $columnsAllowed);
+        if ($order['hasOrderBy']) {
+            $query->add('orderBy', $order['orderBy']);
+        }
 
         // Allow plugin to manipulate the query
         $event = new ReportQueryEvent($entity, $query, $totalResults, $dataOptions);
@@ -603,7 +595,7 @@ class ReportModel extends FormModel
             }
 
             $queryTime = microtime(true);
-            $data      = $query->execute()->fetchAllAssociative();
+            $data      = $query->executeQuery()->fetchAllAssociative();
             $queryTime = round((microtime(true) - $queryTime) * 1000);
 
             if ($queryTime >= 1000) {
@@ -661,9 +653,60 @@ class ReportModel extends FormModel
     }
 
     /**
-     * @return mixed
+     * Sanitize order by array comparing it to the allowed columns.
+     *
+     * @param iterable<mixed> $orderBys
+     *
+     * @return iterable<mixed>
      */
-    public function getReportsWithGraphs()
+    private function getOrderBySanitized(iterable $orderBys, \stdClass $allowedColumns): iterable
+    {
+        $hasOrderBy = false;
+        foreach ($orderBys as $key => $orderBy) {
+            if ($this->orderByIsValid($orderBy, $allowedColumns->choices)) {
+                $hasOrderBy = true;
+                continue;
+            }
+            $orderBys[$key] = '';
+        }
+
+        return [
+            'orderBy'    => $orderBys,
+            'hasOrderBy' => $hasOrderBy,
+        ];
+    }
+
+    /**
+     * Check if order by is valid.
+     *
+     * @param array<string, string> $allowedColumns
+     */
+    private function orderByIsValid(string $order, array $allowedColumns): bool
+    {
+        if (empty($order)) {
+            return false;
+        }
+
+        $orderBy         = $order;
+        $oderByDirection = '';
+
+        if (str_contains($order, ' ')) {
+            $orderTemp       = explode(' ', $order);
+            $orderBy         = $orderTemp[0];
+            $oderByDirection = $orderTemp[1];
+        }
+
+        if (!array_key_exists($orderBy, $allowedColumns) || !in_array($oderByDirection, ['ASC', 'DESC', ''])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getReportsWithGraphs(): array
     {
         $ownedBy = $this->security->isGranted('report:reports:viewother') ? null : $this->userHelper->getUser()->getId();
 
@@ -714,10 +757,8 @@ class ReportModel extends FormModel
 
     /**
      * @param int $segmentId
-     *
-     * @return array
      */
-    public function getReportsIdsWithDependenciesOnSegment($segmentId)
+    public function getReportsIdsWithDependenciesOnSegment($segmentId): array
     {
         $search = 'lll.leadlist_id';
         $filter = [
@@ -741,6 +782,65 @@ class ReportModel extends FormModel
         }
 
         return $dependents;
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    public function getReportsIdsWithDependenciesOnEmail(int $emailId): array
+    {
+        $search = 'e.id';
+        $filter = [
+            'force'  => [
+                ['column' => 'r.source', 'expr' => 'IN', 'value'=> ['emails', 'email.stats']],
+                ['column' => 'r.filters', 'expr' => 'LIKE', 'value'=>'%'.$search.'"%'],
+            ],
+        ];
+        $entities = $this->getEntities(
+            [
+                'filter'     => $filter,
+            ]
+        );
+
+        $dependents = [];
+        foreach ($entities as $entity) {
+            foreach ($entity->getFilters() as $entityFilter) {
+                if ($entityFilter['column'] == $search && $entityFilter['value'] == $emailId) {
+                    $dependents[] = $entity->getId();
+                }
+            }
+        }
+
+        return array_unique($dependents);
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    public function getReportsIdsWithDependenciesOnTag(int $tagId): array
+    {
+        $search = 'tag';
+        $filter = [
+            'force'  => [
+                ['column' => 'r.filters', 'expr' => 'LIKE', 'value'=>'%'.$search.'"%'],
+            ],
+        ];
+        $entities = $this->getEntities(
+            [
+                'filter'     => $filter,
+            ]
+        );
+
+        $dependents = [];
+        foreach ($entities as $entity) {
+            foreach ($entity->getFilters() as $entityFilter) {
+                if ($entityFilter['column'] == $search && in_array($tagId, $entityFilter['value'])) {
+                    $dependents[] = $entity->getId();
+                }
+            }
+        }
+
+        return array_unique($dependents);
     }
 
     /**

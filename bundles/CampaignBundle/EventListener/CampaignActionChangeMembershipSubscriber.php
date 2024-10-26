@@ -4,27 +4,31 @@ namespace Mautic\CampaignBundle\EventListener;
 
 use Mautic\CampaignBundle\CampaignEvents;
 use Mautic\CampaignBundle\Entity\Campaign;
+use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Event\CampaignBuilderEvent;
 use Mautic\CampaignBundle\Event\PendingEvent;
 use Mautic\CampaignBundle\Form\Type\CampaignEventAddRemoveLeadType;
+use Mautic\CampaignBundle\Form\Validator\Constraints\InfiniteLoopValidator;
 use Mautic\CampaignBundle\Membership\MembershipManager;
 use Mautic\CampaignBundle\Model\CampaignModel;
+use Mautic\CoreBundle\Event\EntityValidateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CampaignActionChangeMembershipSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private MembershipManager $membershipManager, private CampaignModel $campaignModel)
-    {
+    public function __construct(
+        private MembershipManager $membershipManager,
+        private CampaignModel $campaignModel,
+        private InfiniteLoopValidator $infiniteLoopValidator
+    ) {
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             CampaignEvents::CAMPAIGN_ON_BUILD                    => ['addAction', 0],
             CampaignEvents::ON_CAMPAIGN_ACTION_CHANGE_MEMBERSHIP => ['changeMembership', 0],
+            EntityValidateEvent::class                           => ['validateInfiniteLoop', 0],
         ];
     }
 
@@ -80,6 +84,27 @@ class CampaignActionChangeMembershipSubscriber implements EventSubscriberInterfa
         }
 
         $event->passAll();
+    }
+
+    public function validateInfiniteLoop(EntityValidateEvent $event): void
+    {
+        $campaignEvent = $event->getEntity();
+
+        if (!$campaignEvent instanceof Event) {
+            return;
+        }
+
+        if ('campaign.addremovelead' !== $campaignEvent->getType()) {
+            return;
+        }
+
+        $this->infiniteLoopValidator->validateEvent(
+            $event->getContext(),
+            $campaignEvent->getTriggerMode(),
+            $campaignEvent->getProperties()['addTo'],
+            $campaignEvent->getTriggerInterval(),
+            $campaignEvent->getTriggerIntervalUnit()
+        );
     }
 
     /**

@@ -15,16 +15,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class ReportSubscriber implements EventSubscriberInterface
 {
     public const MOBILE_NOTIFICATIONS       = 'mobile_notifications';
+
     public const MOBILE_NOTIFICATIONS_STATS = 'mobile_notifications.stats';
 
-    public function __construct(private Connection $db, private CompanyReportData $companyReportData, private StatRepository $statRepository)
-    {
+    public function __construct(
+        private Connection $db,
+        private CompanyReportData $companyReportData,
+        private StatRepository $statRepository
+    ) {
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             ReportEvents::REPORT_ON_BUILD          => ['onReportBuilder', 0],
@@ -283,7 +284,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $graphData              = [];
                     $graphData['data']      = $items;
                     $graphData['name']      = $g;
-                    $graphData['iconClass'] = 'fa-paper-plane-o';
+                    $graphData['iconClass'] = 'ri-send-plane-line';
                     $graphData['link']      = 'mautic_mobile_notification_action';
                     $event->setGraph($g, $graphData);
                     break;
@@ -298,7 +299,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $graphData              = [];
                     $graphData['data']      = $items;
                     $graphData['name']      = $g;
-                    $graphData['iconClass'] = 'fa-eye';
+                    $graphData['iconClass'] = 'ri-eye-line';
                     $graphData['link']      = 'mautic_mobile_notification_action';
                     $event->setGraph($g, $graphData);
                     break;
@@ -313,7 +314,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     $graphData              = [];
                     $graphData['data']      = $items;
                     $graphData['name']      = $g;
-                    $graphData['iconClass'] = 'fa-tachometer';
+                    $graphData['iconClass'] = 'ri-speed-up-line';
                     $graphData['link']      = 'mautic_mobile_notification_action';
                     $event->setGraph($g, $graphData);
                     break;

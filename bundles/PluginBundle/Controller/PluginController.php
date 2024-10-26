@@ -30,7 +30,7 @@ class PluginController extends FormController
             return $this->accessDenied();
         }
 
-        /** @var \Mautic\PluginBundle\Model\PluginModel $pluginModel */
+        /** @var PluginModel $pluginModel */
         $pluginModel = $this->getModel('plugin');
 
         // List of plugins for filter and to show as a single integration
@@ -93,9 +93,7 @@ class PluginController extends FormController
         // sort by name
         uksort(
             $integrations,
-            function ($a, $b): int {
-                return strnatcasecmp($a, $b);
-            }
+            fn ($a, $b): int => strnatcasecmp($a, $b)
         );
 
         $tmpl = $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index';
@@ -170,7 +168,7 @@ class PluginController extends FormController
         $pluginModel   = $this->getModel('plugin');
         $leadFields    = $pluginModel->getLeadFields();
         $companyFields = $pluginModel->getCompanyFields();
-        /** @var \Mautic\PluginBundle\Integration\AbstractIntegration $integrationObject */
+        /** @var AbstractIntegration $integrationObject */
         $entity = $integrationObject->getIntegrationSettings();
 
         $form = $this->createForm(
@@ -269,7 +267,7 @@ class PluginController extends FormController
 
                     if ($authorize) {
                         // redirect to the oauth URL
-                        /** @var \Mautic\PluginBundle\Integration\AbstractIntegration $integrationObject */
+                        /** @var AbstractIntegration $integrationObject */
                         $event = $this->dispatcher->dispatch(
                             new PluginIntegrationAuthRedirectEvent(
                                 $integrationObject,
@@ -368,7 +366,7 @@ class PluginController extends FormController
             return $this->accessDenied();
         }
 
-        /** @var \Mautic\PluginBundle\Model\PluginModel $pluginModel */
+        /** @var PluginModel $pluginModel */
         $pluginModel = $this->getModel('plugin');
 
         $bundle = $pluginModel->getRepository()->findOneBy(

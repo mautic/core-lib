@@ -2,9 +2,11 @@
 
 namespace Mautic\CoreBundle\Model;
 
+use Mautic\CoreBundle\Entity\SkipModifiedInterface;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\UserBundle\Entity\User;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\EventDispatcher\Event;
 
@@ -194,7 +196,7 @@ class FormModel extends AbstractCommonModel
                 case 'published':
                 case 'expired':
                 case 'pending':
-                    $event = $this->dispatchEvent('pre_unpublish', $entity);
+                    $this->dispatchEvent('pre_unpublish', $entity);
                     $entity->setIsPublished(false);
                     break;
             }
@@ -224,6 +226,12 @@ class FormModel extends AbstractCommonModel
      */
     public function setTimestamps(&$entity, $isNew, $unlock = true): void
     {
+        // unlock the row if applicable
+        if ($unlock && method_exists($entity, 'setCheckedOut')) {
+            $entity->setCheckedOut(null);
+            $entity->setCheckedOutBy(null);
+        }
+
         if ($isNew) {
             if (method_exists($entity, 'setDateAdded') && !$entity->getDateAdded()) {
                 $entity->setDateAdded(new \DateTime());
@@ -236,38 +244,38 @@ class FormModel extends AbstractCommonModel
                     $entity->setCreatedByUser($this->userHelper->getUser()->getName());
                 }
             }
-        } else {
-            if (method_exists($entity, 'setDateModified')) {
-                $setDateModified = true;
-                if (method_exists($entity, 'getChanges')) {
-                    $changes = $entity->getChanges();
-                    if (empty($changes)) {
-                        $setDateModified = false;
-                    }
-                    if (is_array($changes) && 1 === count($changes) && isset($changes['dateLastActive'])) {
-                        $setDateModified = false;
-                    }
+
+            return;
+        }
+
+        if ($entity instanceof SkipModifiedInterface && $entity->shouldSkipSettingModifiedProperties()) {
+            return;
+        }
+
+        if (method_exists($entity, 'setDateModified')) {
+            $setDateModified = true;
+            if (method_exists($entity, 'getChanges')) {
+                $changes = $entity->getChanges();
+                if (empty($changes)) {
+                    $setDateModified = false;
                 }
-                if ($setDateModified) {
-                    $dateModified = (defined('MAUTIC_DATE_MODIFIED_OVERRIDE')) ? \DateTime::createFromFormat('U', MAUTIC_DATE_MODIFIED_OVERRIDE)
-                        : new \DateTime();
-                    $entity->setDateModified($dateModified);
+                if (is_array($changes) && 1 === count($changes) && isset($changes['dateLastActive'])) {
+                    $setDateModified = false;
                 }
             }
-
-            if ($this->userHelper->getUser() instanceof User) {
-                if (method_exists($entity, 'setModifiedBy')) {
-                    $entity->setModifiedBy($this->userHelper->getUser());
-                } elseif (method_exists($entity, 'setModifiedByUser')) {
-                    $entity->setModifiedByUser($this->userHelper->getUser()->getName());
-                }
+            if ($setDateModified) {
+                $dateModified = (defined('MAUTIC_DATE_MODIFIED_OVERRIDE')) ? \DateTime::createFromFormat('U', MAUTIC_DATE_MODIFIED_OVERRIDE)
+                    : new \DateTime();
+                $entity->setDateModified($dateModified);
             }
         }
 
-        // unlock the row if applicable
-        if ($unlock && method_exists($entity, 'setCheckedOut')) {
-            $entity->setCheckedOut(null);
-            $entity->setCheckedOutBy(null);
+        if ($this->userHelper->getUser() instanceof User) {
+            if (method_exists($entity, 'setModifiedBy')) {
+                $entity->setModifiedBy($this->userHelper->getUser());
+            } elseif (method_exists($entity, 'setModifiedByUser')) {
+                $entity->setModifiedByUser($this->userHelper->getUser()->getName());
+            }
         }
     }
 
@@ -315,6 +323,7 @@ class FormModel extends AbstractCommonModel
             }
         }
         $this->em->flush();
+
         // retrieving the entities while here so may as well return them so they can be used if needed
         return $entities;
     }
@@ -326,11 +335,11 @@ class FormModel extends AbstractCommonModel
      * @param string|null $action
      * @param array       $options
      *
-     * @return \Symfony\Component\Form\Form
+     * @return \Symfony\Component\Form\FormInterface<mixed>
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws NotFoundHttpException
      */
-    public function createForm($entity, FormFactoryInterface $formFactory, $action = null, $options = [])
+    public function createForm($entity, FormFactoryInterface $formFactory, $action = null, $options = []): FormInterface
     {
         throw new NotFoundHttpException('Object does not support edits.');
     }
@@ -354,10 +363,8 @@ class FormModel extends AbstractCommonModel
      *
      * @param string $subject
      * @param object $entity
-     *
-     * @return mixed
      */
-    public function getUserContactSubject($subject, $entity)
+    public function getUserContactSubject($subject, $entity): string
     {
         $msg = match ($subject) {
             'locked' => 'mautic.user.user.contact.locked',
@@ -374,10 +381,8 @@ class FormModel extends AbstractCommonModel
 
     /**
      * Returns the function used to name the entity.
-     *
-     * @return string
      */
-    public function getNameGetter()
+    public function getNameGetter(): string
     {
         return 'getName';
     }
@@ -386,21 +391,25 @@ class FormModel extends AbstractCommonModel
      * Cleans a string to be used as an alias. The returned string will be alphanumeric or underscore, less than 25 characters
      * and if it is a reserved SQL keyword, it will be prefixed with f_.
      *
-     * @param string $prefix         Used when the alias is a reserved keyword by the database platform
-     * @param int    $maxLength      Maximum number of characters used; 0 to disable
-     * @param string $spaceCharacter Character to replace spaces with
-     *
-     * @return string
+     * @param string   $prefix            Used when the alias is a reserved keyword by the database platform
+     * @param int      $maxLength         Maximum number of characters used; 0 to disable
+     * @param string   $spaceCharacter    Character to replace spaces with
+     * @param string[] $allowedCharacters Allowed characters in alias
      *
      * @throws \Doctrine\DBAL\Exception
      */
-    public function cleanAlias(string $alias, string $prefix = '', int $maxLength = 0, string $spaceCharacter = '_')
-    {
+    public function cleanAlias(
+        string $alias,
+        string $prefix = '',
+        int $maxLength = 0,
+        string $spaceCharacter = '_',
+        array $allowedCharacters = []
+    ): string {
         // Transliterate to latin characters
         $alias = InputHelper::transliterate(trim($alias));
 
         // Some labels are quite long if a question so cut this short
-        $alias = strtolower(InputHelper::alphanum($alias, false, $spaceCharacter));
+        $alias = strtolower(InputHelper::alphanum($alias, false, $spaceCharacter, $allowedCharacters));
 
         // Ensure we have something
         if (empty($alias)) {
@@ -412,7 +421,7 @@ class FormModel extends AbstractCommonModel
             $alias = substr($alias, 0, $maxLength);
         }
 
-        if ('_' == substr($alias, -1)) {
+        if (str_ends_with($alias, '_')) {
             $alias = substr($alias, 0, -1);
         }
 

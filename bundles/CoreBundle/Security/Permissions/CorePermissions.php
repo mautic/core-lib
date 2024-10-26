@@ -12,35 +12,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CorePermissions
 {
-    /**
-     * @var array
-     */
-    private $permissionClasses = [];
+    private array $permissionClasses = [];
 
-    /**
-     * @var array
-     */
-    private $permissionObjectsByClass = [];
+    private array $permissionObjectsByClass = [];
 
-    /**
-     * @var array
-     */
-    private $permissionObjectsByName = [];
+    private array $permissionObjectsByName = [];
 
-    /**
-     * @var array
-     */
-    private $grantedPermissions = [];
+    private array $grantedPermissions = [];
 
-    /**
-     * @var array
-     */
-    private $checkedPermissions = [];
+    private array $checkedPermissions = [];
 
-    /**
-     * @var bool
-     */
-    private $permissionObjectsGenerated = false;
+    private bool $permissionObjectsGenerated = false;
 
     public function __construct(
         protected UserHelper $userHelper,
@@ -54,7 +36,7 @@ class CorePermissions
 
     public function setPermissionObject(AbstractPermissions $permissionObject): void
     {
-        $this->permissionObjectsByClass[get_class($permissionObject)] = $permissionObject;
+        $this->permissionObjectsByClass[$permissionObject::class]     = $permissionObject;
         $this->permissionObjectsByName[$permissionObject->getName()]  = $permissionObject;
     }
 
@@ -251,6 +233,8 @@ class CorePermissions
                 } elseif ('anon.' == $userEntity) {
                     // anon user or session timeout
                     $permissions[$permission] = false;
+                } elseif ($permissionObject instanceof VirtualPermissions) {
+                    $permissions[$permission] = $permissionObject->isVirtuallyGranted($parts[1], $parts[2]);
                 } elseif (!isset($activePermissions[$parts[0]])) {
                     // user does not have implicit access to bundle so deny
                     $permissions[$permission] = false;
@@ -425,10 +409,7 @@ class CorePermissions
         return $this->pluginBundles;
     }
 
-    /**
-     * @return array
-     */
-    protected function getParams()
+    protected function getParams(): array
     {
         return $this->coreParametersHelper->all();
     }

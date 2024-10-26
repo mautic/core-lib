@@ -14,11 +14,11 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class CampaignConditionLeadPageHitType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('page_url', TextType::class, [
@@ -51,7 +51,7 @@ class CampaignConditionLeadPageHitType extends AbstractType
                 'label'  => 'mautic.page.campaign.condition.form.startdate',
                 'attr'   => [
                     'class'       => 'form-control',
-                    'preaddon'    => 'fa fa-calendar',
+                    'preaddon'    => 'ri-calendar-line',
                     'data-toggle' => 'datetime',
                 ],
                 'required' => false,
@@ -65,7 +65,7 @@ class CampaignConditionLeadPageHitType extends AbstractType
                 'label'  => 'mautic.page.campaign.condition.form.enddate',
                 'attr'   => [
                     'class'       => 'form-control',
-                    'preaddon'    => 'fa fa-calendar',
+                    'preaddon'    => 'ri-calendar-line',
                     'data-toggle' => 'datetime',
                 ],
                 'required' => false,
@@ -115,9 +115,6 @@ class CampaignConditionLeadPageHitType extends AbstractType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix()
     {
         return 'campaigncondition_lead_pageHit';

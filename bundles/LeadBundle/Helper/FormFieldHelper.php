@@ -7,17 +7,12 @@ use Symfony\Component\Intl\Locales;
 
 class FormFieldHelper extends AbstractFormFieldHelper
 {
-    /**
-     * @var array
-     */
-    private static $types = [
+    private static array $types = [
         'text' => [
             'properties' => [],
         ],
         'textarea' => [
-            'properties' => [
-                'allowHtml' => [],
-            ],
+            'properties' => [],
         ],
         'multiselect' => [
             'properties' => [
@@ -69,6 +64,9 @@ class FormFieldHelper extends AbstractFormFieldHelper
             'properties' => [],
         ],
         'email' => [
+            'properties' => [],
+        ],
+        'html' => [
             'properties' => [],
         ],
         'number' => [
@@ -125,15 +123,11 @@ class FormFieldHelper extends AbstractFormFieldHelper
             return [false, 'mautic.lead.field.typenotrecognized'];
         }
 
-        $fieldType = self::$types[$type];
-        foreach ($properties as $key => $value) {
-            if (!array_key_exists($key, $fieldType['properties'])) {
-                unset($properties[$key]);
-            }
-
-            if (!empty($fieldType['properties'][$key]['required']) && empty($value)) {
-                // ensure requirements are met
-                return [false, $fieldType['properties'][$key]['error_msg']];
+        $fieldType = self::$types[$type]['properties'];
+        foreach ($fieldType as $key => $property) {
+            $value = array_key_exists($key, $properties) ? $properties[$key] : null;
+            if (!empty($property['required']) && empty($value)) {
+                return [false, $property['error_msg']];
             }
         }
 
@@ -145,8 +139,10 @@ class FormFieldHelper extends AbstractFormFieldHelper
      */
     public static function getCountryChoices(): array
     {
-        $countryJson = file_get_contents(__DIR__.'/../../CoreBundle/Assets/json/countries.json');
-        $countries   = json_decode($countryJson);
+        $customFile = $_ENV['MAUTIC_UPLOAD_DIR'].'/countries.json';
+        $listFile   = file_exists($customFile) ? $customFile : __DIR__.'/../../CoreBundle/Assets/json/countries.json';
+        $json       = file_get_contents($listFile);
+        $countries  = json_decode($json);
 
         return array_combine($countries, $countries);
     }
@@ -156,11 +152,14 @@ class FormFieldHelper extends AbstractFormFieldHelper
      */
     public static function getRegionChoices(): array
     {
-        $regionJson = file_get_contents(__DIR__.'/../../CoreBundle/Assets/json/regions.json');
-        $regions    = json_decode($regionJson);
-        $choices    = [];
+        $customFile = $_ENV['MAUTIC_UPLOAD_DIR'].'/regions.json';
+        $listFile   = file_exists($customFile) ? $customFile : __DIR__.'/../../CoreBundle/Assets/json/regions.json';
+        $json       = file_get_contents($listFile);
+        $regions    = json_decode($json);
 
-        foreach ($regions as $country => &$regionGroup) {
+        $choices = [];
+
+        foreach ($regions as $country => $regionGroup) {
             $choices[$country] = array_combine($regionGroup, $regionGroup);
         }
 

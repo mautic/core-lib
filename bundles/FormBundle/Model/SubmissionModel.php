@@ -151,6 +151,7 @@ class SubmissionModel extends CommonFormModel
         $leadFieldMatches = [];
         $validationErrors = [];
         $filesToUpload    = new UploadFileCrate();
+        $company          = null;
 
         /** @var Field $f */
         foreach ($fields as $f) {
@@ -225,7 +226,7 @@ class SubmissionModel extends CommonFormModel
                 $params = $components['fields'][$f->getType()];
                 if (!empty($value)) {
                     if (isset($params['valueFilter'])) {
-                        if (is_string($params['valueFilter']) && is_callable([\Mautic\CoreBundle\Helper\InputHelper::class, $params['valueFilter']])) {
+                        if (is_string($params['valueFilter']) && is_callable([InputHelper::class, $params['valueFilter']])) {
                             $value = InputHelper::_($value, $params['valueFilter']);
                         } elseif (is_callable($params['valueFilter'])) {
                             $value = call_user_func_array($params['valueFilter'], [$f, $value]);
@@ -257,6 +258,13 @@ class SubmissionModel extends CommonFormModel
                 $leadValue = $value;
 
                 $leadFieldMatches[$mappedField] = $leadValue;
+            }
+
+            if ('companyLookup' === $f->getType() && !empty($value)) {
+                $company = $this->companyModel->getEntity($value);
+                if ($company instanceof Company) {
+                    $value = $company->getName();
+                }
             }
 
             $tokens["{formfield={$alias}}"] = $this->normalizeValue($value, $f);
@@ -304,7 +312,7 @@ class SubmissionModel extends CommonFormModel
 
         // Create/update lead
         if (!empty($leadFieldMatches)) {
-            $lead = $this->createLeadFromSubmit($form, $leadFieldMatches, $leadFields);
+            $lead = $this->createLeadFromSubmit($form, $leadFieldMatches, $leadFields, $company);
         }
 
         $trackedDevice = $this->deviceTrackingService->getTrackedDevice();
@@ -395,9 +403,6 @@ class SubmissionModel extends CommonFormModel
         parent::deleteEntity($submission);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEntities(array $args = [])
     {
         return $this->getRepository()->getEntities($args);
@@ -408,7 +413,7 @@ class SubmissionModel extends CommonFormModel
      *
      * @return array<mixed>
      */
-    public function getEntitiesByPage(array $args = [])
+    public function getEntitiesByPage(array $args = []): array
     {
         return $this->getRepository()->getEntitiesByPage($args);
     }
@@ -748,8 +753,6 @@ class SubmissionModel extends CommonFormModel
      * @param string      $dateFormat
      * @param array       $filter
      * @param bool        $canViewOthers
-     *
-     * @return array
      */
     public function getSubmissionsLineChartData(
         ?string $unit,
@@ -758,7 +761,7 @@ class SubmissionModel extends CommonFormModel
         $dateFormat = null,
         $filter = [],
         $canViewOthers = true
-    ) {
+    ): array {
         $chart = new LineChart($unit, $dateFrom, $dateTo, $dateFormat);
         $query = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
         $q     = $query->prepareTimeDataQuery('form_submissions', 'date_submitted', $filter);
@@ -805,7 +808,7 @@ class SubmissionModel extends CommonFormModel
         $chartQuery->applyFilters($q, $filters);
         $chartQuery->applyDateFilters($q, 'date_submitted');
 
-        return $q->execute()->fetchAllAssociative();
+        return $q->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -839,7 +842,7 @@ class SubmissionModel extends CommonFormModel
         $chartQuery->applyFilters($q, $filters);
         $chartQuery->applyDateFilters($q, 'date_submitted');
 
-        return $q->execute()->fetchAllAssociative();
+        return $q->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -853,9 +856,7 @@ class SubmissionModel extends CommonFormModel
         $customComponents = $this->formModel->getCustomComponents();
         $availableActions = $customComponents['actions'] ?? [];
 
-        $actions->filter(function (Action $action) use ($availableActions): bool {
-            return array_key_exists($action->getType(), $availableActions);
-        })->map(function (Action $action) use ($event, $availableActions): void {
+        $actions->filter(fn (Action $action): bool => array_key_exists($action->getType(), $availableActions))->map(function (Action $action) use ($event, $availableActions): void {
             $event->setAction($action);
             $this->dispatcher->dispatch($event, $availableActions[$action->getType()]['eventName']);
         });
@@ -866,7 +867,7 @@ class SubmissionModel extends CommonFormModel
      *
      * @throws ORMException
      */
-    protected function createLeadFromSubmit(Form $form, array $leadFieldMatches, $leadFields): Lead
+    protected function createLeadFromSubmit(Form $form, array $leadFieldMatches, $leadFields, Company $companyEntity = null): Lead
     {
         // set the mapped data
         $inKioskMode   = $form->isInKioskMode();
@@ -915,7 +916,7 @@ class SubmissionModel extends CommonFormModel
         $getCompanyData = function ($currentFields) use ($companyFields): array {
             $companyData = [];
             // force add company contact field to company fields check
-            $companyFields = array_merge($companyFields, ['company'=> 'company']);
+            $companyFields = array_merge($companyFields, ['company' => 'company']);
             foreach ($companyFields as $alias => $properties) {
                 if (isset($currentFields[$alias])) {
                     $value               = $currentFields[$alias];
@@ -955,7 +956,7 @@ class SubmissionModel extends CommonFormModel
 
         // Check for duplicate lead
         /** @var \Mautic\LeadBundle\Entity\Lead[] $leads */
-        $leads = (!empty($uniqueFieldsWithData)) ? $this->em->getRepository(\Mautic\LeadBundle\Entity\Lead::class)->getLeadsByUniqueFields(
+        $leads = (!empty($uniqueFieldsWithData)) ? $this->em->getRepository(Lead::class)->getLeadsByUniqueFields(
             $uniqueFieldsWithData,
             $leadId
         ) : [];
@@ -964,7 +965,7 @@ class SubmissionModel extends CommonFormModel
         if (count($leads)) {
             $this->logger->debug(count($leads).' found based on unique identifiers');
 
-            /** @var \Mautic\LeadBundle\Entity\Lead $foundLead */
+            /** @var Lead $foundLead */
             $foundLead = $leads[0];
 
             $this->logger->debug('FORM: Testing contact ID# '.$foundLead->getId().' for conflicts');
@@ -973,8 +974,8 @@ class SubmissionModel extends CommonFormModel
             $foundLeadFields = $foundLead->getProfileFields();
 
             // Get unique identifier fields for the found lead then compare with the lead currently tracked
-            $uniqueFieldsFound             = $getData($foundLeadFields, true);
-            [$hasConflict, $conflicts]     = $checkForIdentifierConflict($uniqueFieldsFound, $uniqueFieldsCurrent);
+            $uniqueFieldsFound         = $getData($foundLeadFields, true);
+            [$hasConflict, $conflicts] = $checkForIdentifierConflict($uniqueFieldsFound, $uniqueFieldsCurrent);
 
             if ($inKioskMode || $hasConflict || !$lead->getId()) {
                 // Use the found lead without merging because there is some sort of conflict with unique identifiers or in kiosk mode and thus should not merge
@@ -1041,6 +1042,10 @@ class SubmissionModel extends CommonFormModel
             }
         }
 
+        if ($companyEntity) {
+            unset($data['company']);
+        }
+
         // set the mapped fields
         $this->leadModel->setFieldValues($lead, $data, false, true, true);
 
@@ -1062,6 +1067,12 @@ class SubmissionModel extends CommonFormModel
         } else {
             // Set system current lead which will still allow execution of events without generating tracking cookies
             $this->contactTracker->setSystemContact($lead);
+        }
+
+        if ($companyEntity instanceof Company) {
+            $this->companyModel->addLeadToCompany($companyEntity, $lead);
+
+            return $lead;
         }
 
         $companyFieldMatches = $getCompanyData($leadFieldMatches);

@@ -15,10 +15,14 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class ConfigMonitoredMailboxesType extends AbstractType
 {
-    public function __construct(private Mailbox $imapHelper)
-    {
+    public function __construct(
+        private Mailbox $imapHelper
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -129,7 +133,7 @@ class ConfigMonitoredMailboxesType extends AbstractType
                 'attr'       => [
                     'class'        => 'form-control',
                     'placeholder'  => 'mautic.user.user.form.passwordplaceholder',
-                    'preaddon'     => 'fa fa-lock',
+                    'preaddon'     => 'ri-lock-fill',
                     'tooltip'      => 'mautic.email.config.monitored_email_password.tooltip',
                     'autocomplete' => 'off',
                     'data-show-on' => $monitoredShowOn,
@@ -204,32 +208,23 @@ class ConfigMonitoredMailboxesType extends AbstractType
                 'label'    => 'mautic.email.config.monitored_email.test_connection',
                 'required' => false,
                 'attr'     => [
-                    'class'   => 'btn btn-success',
+                    'class'   => 'btn btn-tertiary btn-sm',
                     'onclick' => 'Mautic.testMonitoredEmailServerConnection(\''.$options['mailbox'].'\')',
                 ],
             ]
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['mailbox', 'default_folder', 'general_settings']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['mailbox'] = $options['mailbox'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix()
     {
         return 'monitored_mailboxes';

@@ -11,8 +11,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LeadSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private TranslatorInterface $translator, private RouterInterface $router, private MessageQueueRepository $messageQueueRepository)
-    {
+    public function __construct(
+        private TranslatorInterface $translator,
+        private RouterInterface $router,
+        private MessageQueueRepository $messageQueueRepository
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -63,7 +66,7 @@ class LeadSubscriber implements EventSubscriberInterface
                             'log' => $log,
                         ],
                         'contentTemplate' => '@MauticChannel/SubscribedEvents/Timeline/queued_messages.html.twig',
-                        'icon'            => 'fa-comments-o',
+                        'icon'            => 'ri-question-answer-line',
                         'contactId'       => $log['lead_id'],
                     ]
                 );

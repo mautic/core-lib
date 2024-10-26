@@ -16,14 +16,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LeadSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private TriggerModel $triggerModel, private TranslatorInterface $translator, private PointsChangeLogRepository $pointsChangeLogRepository, private LeadPointLogRepository $leadPointLogRepository, private LeadTriggerLogRepository $leadTriggerLogRepository)
-    {
+    public function __construct(
+        private TriggerModel $triggerModel,
+        private TranslatorInterface $translator,
+        private PointsChangeLogRepository $pointsChangeLogRepository,
+        private LeadPointLogRepository $leadPointLogRepository,
+        private LeadTriggerLogRepository $leadTriggerLogRepository
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             LeadEvents::LEAD_POINTS_CHANGE   => ['onLeadPointsChange', 0],
@@ -89,7 +91,7 @@ class LeadSubscriber implements EventSubscriberInterface
                         'extra'      => [
                             'log' => $log,
                         ],
-                        'icon'      => 'fa-calculator',
+                        'icon'      => 'ri-calculator-line',
                         'contactId' => $log['lead_id'],
                     ]
                 );

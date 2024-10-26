@@ -14,14 +14,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LeadSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private FormModel $formModel, private PageModel $pageModel, private SubmissionRepository $submissionRepository, private TranslatorInterface $translator, private RouterInterface $router)
-    {
+    public function __construct(
+        private FormModel $formModel,
+        private PageModel $pageModel,
+        private SubmissionRepository $submissionRepository,
+        private TranslatorInterface $translator,
+        private RouterInterface $router
+    ) {
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             LeadEvents::TIMELINE_ON_GENERATE => ['onTimelineGenerate', 0],
@@ -72,7 +74,7 @@ class LeadSubscriber implements EventSubscriberInterface
                             'page'       => $this->pageModel->getEntity($row['page_id']),
                         ],
                         'contentTemplate' => '@MauticForm/SubscribedEvents/Timeline/index.html.twig',
-                        'icon'            => 'fa-pencil-square-o',
+                        'icon'            => 'ri-edit-2-line',
                         'contactId'       => $row['lead_id'],
                     ]
                 );
