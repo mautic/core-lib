@@ -42,29 +42,29 @@ class FieldList
             'result_cache' => new ResultCacheOptions(LeadField::CACHE_NAMESPACE),
         ]);
 
-            $leadFields = [];
+        $leadFields = [];
 
-            foreach ($fields as $f) {
-                if ($byGroup) {
-                    $fieldName                              = $this->translator->trans('mautic.lead.field.group.'.$f->getGroup());
-                    $leadFields[$fieldName][$f->getAlias()] = $f->getLabel();
-                } else {
-                    $leadFields[$f->getAlias()] = $f->getLabel();
-                }
+        foreach ($fields as $f) {
+            if ($byGroup) {
+                $fieldName                              = $this->translator->trans('mautic.lead.field.group.'.$f->getGroup());
+                $leadFields[$fieldName][$f->getAlias()] = $f->getLabel();
+            } else {
+                $leadFields[$f->getAlias()] = $f->getLabel();
             }
-
-            if ($alphabetical) {
-                // Sort the groups
-                uksort($leadFields, 'strnatcmp');
-
-                if ($byGroup) {
-                    // Sort each group by translation
-                    foreach ($leadFields as &$fieldGroup) {
-                        uasort($fieldGroup, 'strnatcmp');
-                    }
-                }
-            }
-
-            return $leadFields;
         }
+
+        if ($alphabetical) {
+            // Sort the groups
+            uksort($leadFields, 'strnatcmp');
+
+            if ($byGroup) {
+                // Sort each group by translation
+                foreach ($leadFields as &$fieldGroup) {
+                    uasort($fieldGroup, 'strnatcmp');
+                }
+            }
+        }
+
+        return $leadFields;
+    }
 }
