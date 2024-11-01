@@ -10,6 +10,8 @@ class PluginToken extends AbstractToken
 {
     private ?string $providerKey;
 
+    private ?string $authenticatingUser = null;
+
     /**
      * @param UserInterface|string|null $user
      * @param array<string>             $roles
@@ -37,6 +39,11 @@ class PluginToken extends AbstractToken
         }
 
         $this->providerKey = $providerKey;
+    }
+
+    public function getAuthenticatingUser(): ?string
+    {
+        return $this->authenticatingUser;
     }
 
     public function getCredentials(): string
