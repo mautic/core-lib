@@ -215,23 +215,29 @@ var Mautic = {
         }
 
         // Show all dismissible elements
-        mQuery('[data-dismiss]').each(function () {
+        mQuery('[user-dismiss]').each(function () {
             var dismissButton = mQuery(this);
-            var dismissType = dismissButton.data('dismiss');
+            var dismissType = dismissButton.attr('user-dismiss');
             var dismissibleElement = dismissButton.closest('.' + dismissType);
 
             // Remove any inline display styles and show the element
             dismissibleElement.css('display', '');
         });
+
+        // Create the flash message
+        const flashMessage = Mautic.addInfoFlashMessage(
+            Mautic.translate('mautic.user.config.title.experience_and_learning.reset_confirmation')
+        );
+        Mautic.setFlashes(flashMessage);
     },
 
     /**
      * Attaches event handlers to dismiss buttons.
      */
     attachDismissHandlers: function() {
-        mQuery('[data-dismiss]').each(function () {
+        mQuery('[user-dismiss]').each(function () {
             var dismissButton = mQuery(this);
-            var dismissType = dismissButton.data('dismiss');
+            var dismissType = dismissButton.attr('user-dismiss');
             var dismissibleElement = dismissButton.closest('.' + dismissType);
             var elementId = dismissibleElement.attr('id');
 

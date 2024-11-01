@@ -4050,6 +4050,10 @@ fieldset[disabled] .btn-ghost.btn-icon.focus {
   color: var(--text-inverse);
   margin-left: 10px;
   font-weight: normal;
+  position: relative;
+  order: 2;
+  top: unset;
+  right: unset;
 }
 .xdsoft_datetimepicker {
   background: var(--layer);

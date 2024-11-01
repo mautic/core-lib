@@ -189,10 +189,6 @@ ul.tag-cloud li {
     margin-left: 0px;
 }
 
-#contact-timeline tr.timeline-row-highlighted {
-    background-color: var(--layer-alternate);
-}
-
 #contact-timeline tr.timeline-details img {
     max-height: 200px;
 }
