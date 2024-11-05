@@ -22,7 +22,7 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
     /**
      * @return Response
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token): ?Response
     {
         // Remove post_logout if set
         $request->getSession()->remove('post_logout');
@@ -45,7 +45,7 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
     /**
      * @return Response
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         // Remove post_logout if set
         $request->getSession()->remove('post_logout');
