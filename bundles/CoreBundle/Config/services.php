@@ -57,6 +57,7 @@ return function (ContainerConfigurator $configurator): void {
     $services->alias('mautic.helper.email.address', Mautic\CoreBundle\Helper\EmailAddressHelper::class);
     $services->alias('mautic.helper.assetgeneration', Mautic\CoreBundle\Helper\AssetGenerationHelper::class);
     $services->alias('twig.helper.slots', Mautic\CoreBundle\Twig\Helper\SlotsHelper::class);
+    $services->set('session', Symfony\Component\HttpFoundation\Session\SessionInterface::class)->factory(service(\Mautic\CoreBundle\Factory\SessionFactory::class));
 
     $services->get(Mautic\CoreBundle\Twig\Helper\AssetsHelper::class)->tag('twig.helper', ['alias' => 'assets']);
 
