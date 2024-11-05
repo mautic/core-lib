@@ -297,8 +297,7 @@ class RoleController extends FormController
         $translator        = $this->translator;
 
         $permissionsArray = ($role->getId()) ?
-            $this->doctrine->getRepository(Entity\Permission::class)->getPermissionsByRole($role, true) :
-            [];
+            $this->doctrine->getRepository(Entity\Permission::class)->getPermissionsByRole($role, true) : [];
 
         $permissions     = [];
         $permissionsList = [];

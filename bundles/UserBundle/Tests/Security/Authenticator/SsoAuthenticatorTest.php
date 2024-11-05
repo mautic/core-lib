@@ -14,7 +14,6 @@ use Mautic\UserBundle\Security\Authenticator\SsoAuthenticator;
 use Mautic\UserBundle\Security\Provider\UserProvider;
 use Mautic\UserBundle\UserEvents;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -241,7 +240,7 @@ class SsoAuthenticatorTest extends TestCase
         $session           = $this->createMock(SessionInterface::class);
         $session->expects(self::once())
             ->method('set')
-            ->with(Security::LAST_USERNAME, $username);
+            ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         $authenticator = new SsoAuthenticator(
             $options,

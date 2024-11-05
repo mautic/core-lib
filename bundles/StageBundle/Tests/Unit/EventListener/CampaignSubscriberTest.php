@@ -447,6 +447,11 @@ final class CampaignSubscriberTest extends TestCase
             {
                 return '[trans]'.$id.'[/trans]';
             }
+
+            public function getLocale(): string
+            {
+                return 'en';
+            }
         };
     }
 }

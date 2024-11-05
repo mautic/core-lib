@@ -177,7 +177,7 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         $field->setAlias($fieldDetails['alias']);
         $field->setProperties($fieldDetails['properties']);
 
-        $fieldModel = self::$container->get('mautic.lead.model.field');
+        $fieldModel = self::getContainer()->get('mautic.lead.model.field');
         \assert($fieldModel instanceof FieldModel);
         $fieldModel->saveEntity($field);
     }
@@ -218,7 +218,7 @@ class CampaignDecisionTest extends MauticMysqlTestCase
                     ],
                 ],
             ]);
-            $leadModel = self::$container->get('mautic.lead.model.lead');
+            $leadModel = self::getContainer()->get('mautic.lead.model.lead');
             \assert($leadModel instanceof LeadModel);
             $leadModel->setFieldValues($lead, [$customField['alias'] => $customField['value']]);
         }
@@ -300,7 +300,7 @@ class CampaignDecisionTest extends MauticMysqlTestCase
                     ],
                 ],
             ]);
-            $companyModel = self::$container->get('mautic.lead.model.company');
+            $companyModel = self::getContainer()->get('mautic.lead.model.company');
             \assert($companyModel instanceof CompanyModel);
             $companyModel->setFieldValues($company, [$customField['alias'] => $customField['value']]);
         }

@@ -675,7 +675,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
         ];
 
         foreach ($namespaces as $namespace) {
-            if ($this->get('twig')->getLoader()->exists($namespace.'/'.$file)) {
+            if ($this->container->get('twig')->getLoader()->exists($namespace.'/'.$file)) {
                 return $namespace.'/'.$file;
             }
         }

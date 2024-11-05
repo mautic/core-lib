@@ -325,7 +325,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
         }
     }
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -335,7 +335,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
         return $this->username;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         // bcrypt generates its own salt
         return null;
@@ -776,6 +776,10 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      */
     public function isEqualTo(UserInterface $user): bool
     {
+        if (!$user instanceof self) {
+            return false;
+        }
+
         $thisUser = $this->getId().$this->getUserIdentifier().$this->getPassword();
         $thatUser = $user->getId().$user->getUserIdentifier().$user->getPassword();
 

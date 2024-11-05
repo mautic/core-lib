@@ -36,7 +36,7 @@ class FieldModelTest extends MauticMysqlTestCase
     public function testGetFieldsProperties(array $filters, int $expectedCount): void
     {
         /** @var FieldModel $fieldModel */
-        $fieldModel = self::$container->get('mautic.lead.model.field');
+        $fieldModel = self::getContainer()->get('mautic.lead.model.field');
 
         // Create an unpublished lead field.
         $field = new LeadField();

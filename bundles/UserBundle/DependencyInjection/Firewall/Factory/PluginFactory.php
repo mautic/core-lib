@@ -21,14 +21,14 @@ class PluginFactory implements AuthenticatorFactoryInterface
      */
     public function create(ContainerBuilder $container, string $id, array $config, string $userProviderId, ?string $defaultEntryPointId): array
     {
-        $providerId = 'security.authentication.provider.mautic.'.$firewallName;
+        $providerId = 'security.authentication.provider.mautic.'.$id;
         $container->setDefinition($providerId, new ChildDefinition('mautic.user.preauth_authenticator'))
             ->replaceArgument(3, new Reference($userProviderId))
             ->replaceArgument(4, $id);
 
-        $listenerId = 'security.authentication.listener.mautic.'.$firewallName;
+        $listenerId = 'security.authentication.listener.mautic.'.$id;
         $container->setDefinition($listenerId, new ChildDefinition('mautic.security.authentication_listener'))
-            ->replaceArgument(5, $firewallName);
+            ->replaceArgument(5, $id);
 
         return [$providerId, $listenerId, $defaultEntryPointId];
     }

@@ -2,6 +2,7 @@
 
 namespace Mautic\LeadBundle\Form\Type;
 
+use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Mautic\CoreBundle\Form\EventListener\FormExitSubscriber;
@@ -516,6 +517,27 @@ class FieldType extends AbstractType
                 $event->setData($data);
                 $setupOrderField($event->getForm());
             }
+        );
+
+        /** @var LeadFieldRepository $leadFieldRepository */
+        $leadFieldRepository = $this->em->getRepository(LeadField::class);
+
+        // get order list
+        $transformer = new FieldToOrderTransformer($leadFieldRepository);
+        $builder->add(
+            $builder->create(
+                'order',
+                EntityType::class,
+                [
+                    'label'         => 'mautic.core.order.field',
+                    'class'         => LeadField::class,
+                    'choice_label'  => 'label',
+                    'label_attr'    => ['class' => 'control-label'],
+                    'attr'          => ['class' => 'form-control', 'tooltip' => 'mautic.core.order.field.tooltip'],
+                    'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('f')->orderBy('f.order', Order::Ascending->value),
+                    'required'      => false,
+                ]
+            )->addModelTransformer($transformer)
         );
 
         $builder->add(

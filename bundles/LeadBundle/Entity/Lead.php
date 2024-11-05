@@ -5,6 +5,7 @@ namespace Mautic\LeadBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -1096,7 +1097,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
     {
         $criteria = Criteria::create()
             ->where(Criteria::expr()->eq('action', $action))
-            ->orderBy(['dateAdded' => Criteria::DESC])
+            ->orderBy(['dateAdded' => Order::Descending->value])
             ->setFirstResult(0)
             ->setMaxResults(1);
 
