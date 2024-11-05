@@ -52,6 +52,9 @@ class SecurityController extends CommonController implements EventSubscriberInte
             return;
         }
 
+        $authChecker = $this->container->get('security.authorization_checker');
+        \assert($authChecker instanceof AuthorizationCheckerInterface);
+
         // redirect user if they are already authenticated
         if ($this->authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')
             || $this->authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')

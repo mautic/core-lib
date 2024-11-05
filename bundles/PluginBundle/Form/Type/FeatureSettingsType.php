@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -19,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class FeatureSettingsType extends AbstractType
 {
     public function __construct(
-        protected SessionInterface $session,
+        protected RequestStack $requestStack,
         protected CoreParametersHelper $coreParametersHelper,
         protected LoggerInterface $logger
     ) {
@@ -36,7 +36,7 @@ class FeatureSettingsType extends AbstractType
 
         $formModifier = function (FormInterface $form, $data, $method = 'get') use ($integrationObject, $leadFields, $companyFields): void {
             $integrationName = $integrationObject->getName();
-            $session         = $this->session;
+            $session         = $this->requestStack->getSession();
             $limit           = $session->get(
                 'mautic.plugin.'.$integrationName.'.lead.limit',
                 $this->coreParametersHelper->get('default_pagelimit')

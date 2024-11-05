@@ -40,7 +40,6 @@ use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -73,8 +72,6 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
 
     protected ?CacheStorageHelper $cache;
 
-    protected ?SessionInterface $session;
-
     protected ?Request $request;
 
     /**
@@ -102,8 +99,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         protected EventDispatcherInterface $dispatcher,
         CacheStorageHelper $cacheStorageHelper,
         protected EntityManager $em,
-        SessionInterface $session,
-        RequestStack $requestStack,
+        protected RequestStack $requestStack,
         protected RouterInterface $router,
         protected TranslatorInterface $translator,
         protected LoggerInterface $logger,
@@ -117,7 +113,6 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         protected DoNotContactModel $doNotContact
     ) {
         $this->cache                  = $cacheStorageHelper->getCache($this->getName());
-        $this->session                = (!defined('IN_MAUTIC_CONSOLE')) ? $session : null;
         $this->request                = (!defined('IN_MAUTIC_CONSOLE')) ? $requestStack->getCurrentRequest() : null;
     }
 
@@ -993,8 +988,8 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
                 $url .= '&scope='.urlencode($scope);
             }
 
-            if ($this->session) {
-                $this->session->set($this->getName().'_csrf_token', $state);
+            if ($this->requestStack->getCurrentRequest()?->hasSession()) {
+                $this->requestStack->getSession()->set($this->getName().'_csrf_token', $state);
             }
 
             return $url;
@@ -1064,12 +1059,12 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
 
         switch ($authType) {
             case 'oauth2':
-                if ($this->session) {
-                    $state      = $this->session->get($this->getName().'_csrf_token', false);
+                if ($this->requestStack->getCurrentRequest()?->hasSession()) {
+                    $state      = $this->requestStack->getSession()->get($this->getName().'_csrf_token', false);
                     $givenState = ($this->request->isXmlHttpRequest()) ? $this->request->request->get('state') : $this->request->get('state');
 
                     if ($state && $state !== $givenState) {
-                        $this->session->remove($this->getName().'_csrf_token');
+                        $this->requestStack->getSession()->remove($this->getName().'_csrf_token');
                         throw new ApiErrorException($this->translator->trans('mautic.integration.auth.invalid.state'));
                     }
                 }
@@ -1128,14 +1123,14 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             $encrypted = $this->encryptApiKeys($keys);
             $entity->setApiKeys($encrypted);
 
-            if ($this->session) {
-                $this->session->set($this->getName().'_tokenResponse', $data);
+            if ($this->requestStack->getCurrentRequest()?->hasSession()) {
+                $this->requestStack->getSession()->set($this->getName().'_tokenResponse', $data);
             }
 
             $error = false;
         } elseif (is_array($data) && isset($data['access_token'])) {
-            if ($this->session) {
-                $this->session->set($this->getName().'_tokenResponse', $data);
+            if ($this->requestStack->getCurrentRequest()?->hasSession()) {
+                $this->requestStack->getSession()->set($this->getName().'_tokenResponse', $data);
             }
             $error = false;
         } else {
