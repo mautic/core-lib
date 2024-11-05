@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
@@ -29,6 +28,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 /**
  * Merges in the implementation of the \Mautic\UserBundle\Security\Firewall\AuthenticationListener
@@ -160,7 +160,7 @@ final class PluginAuthenticator extends AbstractAuthenticator
         $this->logger->info(sprintf('User "%s" has been authenticated successfully', $token->getUserIdentifier()));
 
         $session = $request->getSession();
-        $session->remove(Security::AUTHENTICATION_ERROR);
+        $session->remove(SecurityRequestAttributes::AUTHENTICATION_ERROR);
 
         $loginEvent = new InteractiveLoginEvent($request, $token);
         $this->dispatcher->dispatch($loginEvent, SecurityEvents::INTERACTIVE_LOGIN);

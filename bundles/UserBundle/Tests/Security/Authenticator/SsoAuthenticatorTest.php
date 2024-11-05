@@ -14,12 +14,12 @@ use Mautic\UserBundle\Security\Authenticator\SsoAuthenticator;
 use Mautic\UserBundle\Security\Provider\UserProvider;
 use Mautic\UserBundle\UserEvents;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
@@ -28,6 +28,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\HttpUtils;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 class SsoAuthenticatorTest extends TestCase
 {
@@ -311,7 +312,7 @@ class SsoAuthenticatorTest extends TestCase
         $session           = $this->createMock(SessionInterface::class);
         $session->expects(self::once())
             ->method('set')
-            ->with(Security::LAST_USERNAME, $username);
+            ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         $integrations = [$this->createMock(AbstractSsoServiceIntegration::class)];
         $integrationHelper->expects(self::once())
@@ -373,7 +374,7 @@ class SsoAuthenticatorTest extends TestCase
         $session           = $this->createMock(SessionInterface::class);
         $session->expects(self::once())
             ->method('set')
-            ->with(Security::LAST_USERNAME, $username);
+            ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         $integrations = [$this->createMock(AbstractSsoServiceIntegration::class)];
         $integrationHelper->expects(self::once())
@@ -438,7 +439,7 @@ class SsoAuthenticatorTest extends TestCase
         $session           = $this->createMock(SessionInterface::class);
         $session->expects(self::once())
             ->method('set')
-            ->with(Security::LAST_USERNAME, $username);
+            ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         $integrations = [$this->createMock(AbstractSsoServiceIntegration::class)];
         $integrationHelper->expects(self::once())
@@ -531,7 +532,7 @@ class SsoAuthenticatorTest extends TestCase
         $session           = $this->createMock(SessionInterface::class);
         $session->expects(self::once())
             ->method('set')
-            ->with(Security::LAST_USERNAME, $username);
+            ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         $integrations = [$this->createMock(AbstractSsoServiceIntegration::class)];
         $integrationHelper->expects(self::once())
