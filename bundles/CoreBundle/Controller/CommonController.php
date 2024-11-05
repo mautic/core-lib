@@ -291,7 +291,7 @@ class CommonController extends AbstractController implements MauticController
             $ajaxRouteName = false;
 
             try {
-                $routeParams   = $this->get('router')->match($routePath);
+                $routeParams   = $this->container->get('router')->match($routePath);
                 $ajaxRouteName = $routeParams['_route'];
 
                 $request->attributes->set('ajaxRoute',
