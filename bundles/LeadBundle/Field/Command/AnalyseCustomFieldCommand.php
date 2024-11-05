@@ -17,7 +17,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class AnalyseCustomFieldCommand extends Command
 {
     protected static $defaultDescription = 'Analyse actual usage of custom columns in leads table.';
-
     public function __construct(private FieldModel $fieldModel, private LeadModel $leadModel, private TranslatorInterface $translator)
     {
         parent::__construct();

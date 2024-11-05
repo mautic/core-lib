@@ -35,7 +35,7 @@ class CompanyListType extends AbstractType
     /**
      * @return string
      */
-    public function getParent()
+    public function getParent(): ?string
     {
         return EntityLookupType::class;
     }

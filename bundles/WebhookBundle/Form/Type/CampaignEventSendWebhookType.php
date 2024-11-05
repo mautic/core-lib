@@ -100,10 +100,7 @@ class CampaignEventSendWebhookType extends AbstractType
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'campaignevent_sendwebhook';
     }

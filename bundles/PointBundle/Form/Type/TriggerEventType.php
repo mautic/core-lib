@@ -103,7 +103,7 @@ class TriggerEventType extends AbstractType
         $resolver->setRequired(['settings']);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'pointtriggerevent';
     }

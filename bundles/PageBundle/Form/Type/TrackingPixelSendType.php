@@ -90,10 +90,7 @@ class TrackingPixelSendType extends AbstractType
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'tracking_pixel_send_action';
     }

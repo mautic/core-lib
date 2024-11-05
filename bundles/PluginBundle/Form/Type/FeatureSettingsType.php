@@ -145,7 +145,7 @@ class FeatureSettingsType extends AbstractType
         $resolver->setRequired(['integration', 'integration_object', 'lead_fields', 'company_fields']);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'integration_featuresettings';
     }

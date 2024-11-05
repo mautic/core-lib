@@ -99,10 +99,7 @@ class SmsSendType extends AbstractType
         $resolver->setDefined(['update_select']);
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'smssend_list';
     }

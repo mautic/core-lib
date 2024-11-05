@@ -1250,7 +1250,7 @@ class LeadModel extends FormModel
             $log->setType('lead');
             $log->setEventName($this->translator->trans('mautic.lead.import.event.name'));
             $log->setActionName($this->translator->trans('mautic.lead.import.action.name', [
-                '%name%' => $this->userHelper->getUser()->getUsername(),
+                '%name%' => $this->userHelper->getUser()->getUserIdentifier(),
             ]));
             $log->setIpAddress($this->ipLookupHelper->getIpAddress());
             $log->setDateAdded(new \DateTime());
@@ -1284,7 +1284,7 @@ class LeadModel extends FormModel
                 $this->translator->trans(
                     'mautic.stage.import.action.name',
                     [
-                        '%name%' => $this->userHelper->getUser()->getUsername(),
+                        '%name%' => $this->userHelper->getUser()->getUserIdentifier(),
                     ]
                 )
             );
@@ -1298,7 +1298,7 @@ class LeadModel extends FormModel
             $doNotEmail = filter_var($data[$fields['doNotEmail']], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if (null !== $doNotEmail) {
                 $reason = $this->translator->trans('mautic.lead.import.by.user', [
-                    '%user%' => $this->userHelper->getUser()->getUsername(),
+                    '%user%' => $this->userHelper->getUser()->getUserIdentifier(),
                 ]);
 
                 // The email must be set for successful unsubscribtion

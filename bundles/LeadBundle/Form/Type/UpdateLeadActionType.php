@@ -43,10 +43,7 @@ class UpdateLeadActionType extends AbstractType
         $this->getFormFields($builder, $options);
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'updatelead_action';
     }

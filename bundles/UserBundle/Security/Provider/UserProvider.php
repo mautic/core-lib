@@ -68,7 +68,7 @@ class UserProvider implements UserProviderInterface
         return $user;
     }
 
-    public function refreshUser(UserInterface $user)
+    public function refreshUser(UserInterface $user): \Symfony\Component\Security\Core\User\UserInterface
     {
         $class = $user::class;
         if (!$this->supportsClass($class)) {

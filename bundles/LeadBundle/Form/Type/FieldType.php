@@ -686,10 +686,7 @@ class FieldType extends AbstractType
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'leadfield';
     }

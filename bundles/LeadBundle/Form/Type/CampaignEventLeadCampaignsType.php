@@ -78,7 +78,7 @@ class CampaignEventLeadCampaignsType extends AbstractType
         );
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'campaignevent_lead_campaigns';
     }

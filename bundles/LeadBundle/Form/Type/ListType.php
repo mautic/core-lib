@@ -168,10 +168,7 @@ class ListType extends AbstractType
         $view->vars['fields'] = $this->listModel->getChoiceFields();
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'leadlist';
     }

@@ -42,10 +42,7 @@ class UpdateCompanyActionType extends AbstractType
         $this->getFormFields($builder, $options, 'company');
     }
 
-    /**
-     * @return string
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'updatecompany_action';
     }
