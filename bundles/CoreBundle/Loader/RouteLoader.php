@@ -20,10 +20,8 @@ class RouteLoader extends Loader
     /**
      * Load each bundles routing.php file.
      *
-     * @param mixed $resource
      *
      * @return RouteCollection
-     *
      * @throws \RuntimeException
      */
     public function load(mixed $resource, $type = null)

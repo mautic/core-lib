@@ -56,9 +56,6 @@ class DashboardMostHitEmailRedirectsWidgetType extends AbstractType
         );
     }
 
-    /**
-     * @return string
-     */
     public function getBlockPrefix(): string
     {
         return 'email_dashboard_most_hit_email_redirects_widget';

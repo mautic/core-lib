@@ -168,7 +168,7 @@ class ConfigController extends AbstractFormController
     /**
      * @return FormInterface<mixed>
      */
-    private function getForm(FormFactoryInterface $formFactory)
+    private function getForm(FormFactoryInterface $formFactory): \Symfony\Component\Form\FormInterface
     {
         return $formFactory->create(
             $this->integrationObject->getConfigFormName() ?: IntegrationConfigType::class,

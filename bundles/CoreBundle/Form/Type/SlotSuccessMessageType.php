@@ -26,9 +26,6 @@ class SlotSuccessMessageType extends SlotType
         parent::buildForm($builder, $options);
     }
 
-    /**
-     * @return string
-     */
     public function getBlockPrefix(): string
     {
         return 'slot_successmessage';

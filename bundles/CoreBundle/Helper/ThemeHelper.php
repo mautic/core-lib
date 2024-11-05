@@ -143,7 +143,7 @@ class ThemeHelper implements ThemeHelperInterface
         return InputHelper::filename(str_replace(' ', '-', $newName));
     }
 
-    public function exists($theme)
+    public function exists($theme): bool
     {
         $root    = $this->pathsHelper->getSystemPath('themes', true).'/';
         $dirName = $this->getDirectoryName($theme);

@@ -39,9 +39,6 @@ class CategoryBundlesType extends AbstractType
         ]);
     }
 
-    /**
-     * @return string
-     */
     public function getBlockPrefix(): string
     {
         return 'category_bundles_form';

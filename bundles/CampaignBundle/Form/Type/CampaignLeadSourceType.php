@@ -101,9 +101,6 @@ class CampaignLeadSourceType extends AbstractType
         $resolver->setRequired(['source_choices']);
     }
 
-    /**
-     * @return string
-     */
     public function getBlockPrefix(): string
     {
         return 'campaign_leadsource';

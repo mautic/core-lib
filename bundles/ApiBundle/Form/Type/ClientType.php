@@ -143,10 +143,8 @@ class ClientType extends AbstractType
 
                         $errors = $this->validator->validate($uri, $urlConstraint);
 
-                        if (!empty($errors)) {
-                            foreach ($errors as $error) {
-                                $form['redirectUris']->addError(new FormError($error->getMessage()));
-                            }
+                        foreach ($errors as $error) {
+                            $form['redirectUris']->addError(new FormError($error->getMessage()));
                         }
                     }
                 }

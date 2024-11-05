@@ -49,9 +49,6 @@ class DynamicContentListType extends AbstractType
         );
     }
 
-    /**
-     * @return string
-     */
     public function getBlockPrefix(): string
     {
         return 'dwc_list';

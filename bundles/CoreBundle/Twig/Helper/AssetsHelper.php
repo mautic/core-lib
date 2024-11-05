@@ -117,10 +117,8 @@ final class AssetsHelper
      * @param string|null $version
      * @param bool|false  $absolute
      * @param bool|false  $ignorePrefix
-     *
-     * @return string
      */
-    public function getUrl($path, $packageName = null, $version = null, $absolute = false, $ignorePrefix = false)
+    public function getUrl($path, $packageName = null, $version = null, $absolute = false, $ignorePrefix = false): string
     {
         // if we have http in the url it is absolute and we can just return it
         if (str_starts_with($path, 'http')) {

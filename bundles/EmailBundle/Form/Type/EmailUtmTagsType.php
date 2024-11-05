@@ -69,9 +69,6 @@ class EmailUtmTagsType extends AbstractType
         );
     }
 
-    /**
-     * @return string
-     */
     public function getBlockPrefix(): string
     {
         return 'utm_tags';

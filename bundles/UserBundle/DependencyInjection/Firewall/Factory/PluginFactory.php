@@ -54,10 +54,8 @@ class PluginFactory implements AuthenticatorFactoryInterface
 
     /**
      * @deprecated Remove in Mautic 6.0. Use new authentication system.
-     *
-     * @return string
      */
-    public function getPosition()
+    public function getPosition(): int
     {
         return 0;
     }

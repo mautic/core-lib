@@ -72,9 +72,6 @@ class CategoryListType extends AbstractType
         $resolver->setRequired(['bundle']);
     }
 
-    /**
-     * @return string
-     */
     public function getBlockPrefix(): string
     {
         return 'category';

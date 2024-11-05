@@ -53,10 +53,7 @@ class RequestSubscriber implements EventSubscriberInterface
         return 1 === preg_match('/^\/s\//', $request->getPathinfo());
     }
 
-    /**
-     * @return bool
-     */
-    private function isCsrfTokenFromRequestHeaderValid(Request $request)
+    private function isCsrfTokenFromRequestHeaderValid(Request $request): bool
     {
         $csrfRequestToken = $request->headers->get('X-CSRF-Token');
 

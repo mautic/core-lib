@@ -51,9 +51,7 @@ trait RequestTrait
             }
 
             $type = $child->getConfig()->getType();
-            if ($type instanceof ResolvedFormTypeInterface) {
-                $type = $type->getInnerType();
-            }
+            $type = $type->getInnerType();
             switch ($type::class) {
                 case YesNoButtonGroupType::class:
                 case BooleanType::class:

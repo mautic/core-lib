@@ -42,9 +42,6 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
         }
     }
 
-    /**
-     * @return Response
-     */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         // Remove post_logout if set

@@ -42,9 +42,6 @@ class UploadType extends AbstractType
         }
     }
 
-    /**
-     * @return string
-     */
     public function getBlockPrefix(): string
     {
         return 'dashboard_upload';
