@@ -355,7 +355,7 @@ Mautic.switchFormFieldState = function (formName) {
 
     var resetField = function (field) {
         // Set Yes/No toggle to No.
-        if ('Mautic.toggleYesNo(this);' === field.attr('onchange')
+        if (field.attr('onchange')?.includes('Mautic.toggleYesNo(this)')
             && field.val() === "1"
             && field.is(':checked')
         ) {
