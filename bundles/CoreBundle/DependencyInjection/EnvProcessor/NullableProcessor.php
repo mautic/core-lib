@@ -6,7 +6,7 @@ use Symfony\Component\DependencyInjection\EnvVarProcessorInterface;
 
 class NullableProcessor implements EnvVarProcessorInterface
 {
-    public function getEnv(string $prefix, string $name, \Closure $getEnv): string
+    public function getEnv(string $prefix, string $name, \Closure $getEnv): ?string
     {
         $env = $getEnv($name);
 
