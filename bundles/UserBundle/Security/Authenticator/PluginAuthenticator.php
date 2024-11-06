@@ -30,10 +30,6 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
-/**
- * Merges in the implementation of the \Mautic\UserBundle\Security\Firewall\AuthenticationListener
- * and \Mautic\UserBundle\Security\Authenticator\PreAuthAuthenticator.
- */
 final class PluginAuthenticator extends AbstractAuthenticator
 {
     public function __construct(private TokenPermissions $tokenPermissions, private EventDispatcherInterface $dispatcher, private IntegrationHelper $integrationHelper, private UserProviderInterface $userProvider, private AuthenticationHandler $authenticationHandler, private OAuth2 $oAuth2, private LoggerInterface $logger, private string $firewallName)
@@ -78,8 +74,6 @@ final class PluginAuthenticator extends AbstractAuthenticator
                 $authenticatingService = $authEvent->getAuthenticatingService();
 
                 if ($eventToken !== $token) {
-                    // Merge app/bundles/UserBundle/Security/Authenticator/PreAuthAuthenticator.php:68
-                    // and app/bundles/UserBundle/Security/Firewall/AuthenticationListener.php:61
                     return new SelfValidatingPassport(
                         new UserBadge($eventToken->getUserIdentifier(), function () use ($eventToken): UserInterface {
                             return $eventToken->getUser();
@@ -99,9 +93,6 @@ final class PluginAuthenticator extends AbstractAuthenticator
             }
         }
 
-        // First part is from app/bundles/UserBundle/Security/Firewall/AuthenticationListener.php:61
-        // plus app/bundles/UserBundle/Security/Authenticator/PreAuthAuthenticator.php:47
-        // AND is from app/bundles/UserBundle/Security/Authenticator/PreAuthAuthenticator.php:86
         if (!$user instanceof User && !$authenticated && null === $response) {
             throw new AuthenticationException('mautic.user.auth.error.invalidlogin');
         }

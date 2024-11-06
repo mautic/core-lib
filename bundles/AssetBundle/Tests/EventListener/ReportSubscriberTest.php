@@ -153,6 +153,11 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             {
                 return '[trans]'.$id.'[/trans]';
             }
+
+            public function getLocale(): string
+            {
+                return 'en';
+            }
         };
     }
 

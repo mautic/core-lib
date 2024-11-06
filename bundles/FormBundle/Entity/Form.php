@@ -4,6 +4,7 @@ namespace Mautic\FormBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -101,7 +102,7 @@ class Form extends FormEntity
      * @var Collection<int, Submission>
      */
     #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'form', fetch: 'EXTRA_LAZY')]
-    #[ORM\OrderBy(['dateSubmitted' => \Doctrine\Common\Collections\Criteria::DESC])]
+    #[ORM\OrderBy(['dateSubmitted' => Order::Descending->value])]
     private Collection $submissions;
 
     /**

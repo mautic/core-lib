@@ -15,27 +15,27 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class FlashBagTest extends TestCase
 {
     /**
-     * @var MockObject|SymfonyFlashBag
+     * @var MockObject&SymfonyFlashBag
      */
     private MockObject $symfonyFlashBag;
 
     /**
-     * @var MockObject|Session
+     * @var MockObject&Session
      */
     private MockObject $session;
 
     /**
-     * @var MockObject|TranslatorInterface
+     * @var MockObject&TranslatorInterface
      */
     private MockObject $translator;
 
     /**
-     * @var MockObject|RequestStack
+     * @var MockObject&RequestStack
      */
     private MockObject $requestStack;
 
     /**
-     * @var NotificationModel|MockObject
+     * @var NotificationModel&MockObject
      */
     private MockObject $notificationModel;
 
@@ -53,7 +53,7 @@ class FlashBagTest extends TestCase
         $this->translator        = $this->createMock(TranslatorInterface::class);
         $this->requestStack      = $this->createMock(RequestStack::class);
         $this->notificationModel = $this->createMock(NotificationModel::class);
-        $this->flashBag          = new FlashBag($this->session, $this->translator, $this->requestStack, $this->notificationModel);
+        $this->flashBag          = new FlashBag($this->translator, $this->requestStack, $this->notificationModel);
 
         parent::setUp();
     }

@@ -90,7 +90,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $crawler = $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk());
 
-        $divClass = $crawler->filter('#mauticform_postActionProperty')->parents()->first()->attr('class');
+        $divClass = $crawler->filter('#mauticform_postActionProperty')->ancestors()->first()->attr('class');
 
         $this->assertStringContainsString('has-error', $divClass);
     }

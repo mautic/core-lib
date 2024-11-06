@@ -302,7 +302,7 @@ class ThemeHelperTest extends TestCase
                 {
                 }
 
-                public function in($dirs)
+                public function in($dirs): static
                 {
                     $this->dirs = [
                         new SplFileInfo('origin-template-dir', 'origin-template-dir', 'origin-template-dir'),
@@ -356,7 +356,7 @@ class ThemeHelperTest extends TestCase
                 /**
                  * @param string $files
                  */
-                public function exists($files)
+                public function exists($files): bool
                 {
                     if ('/path/to/themes/requested-theme-dir' === $files) {
                         return false;
@@ -398,7 +398,7 @@ class ThemeHelperTest extends TestCase
                 {
                 }
 
-                public function in($dirs)
+                public function in($dirs): static
                 {
                     $this->dirs = [
                         new SplFileInfo('origin-template-dir', 'origin-template-dir', 'origin-template-dir'),

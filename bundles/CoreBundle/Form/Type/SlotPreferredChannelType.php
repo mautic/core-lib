@@ -33,9 +33,6 @@ class SlotPreferredChannelType extends SlotType
         parent::buildForm($builder, $options);
     }
 
-    /**
-     * @return mixed
-     */
     public function getBlockPrefix(): string
     {
         return 'slot_preferredchannel';

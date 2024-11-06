@@ -17,7 +17,7 @@ class TranslationLoader extends ArrayLoader implements LoaderInterface
     ) {
     }
 
-    public function load($resource, $locale, $domain = 'messages'): MessageCatalogue
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
         $bundles   = $this->bundleHelper->getMauticBundles(true);
         $catalogue = new MessageCatalogue($locale);

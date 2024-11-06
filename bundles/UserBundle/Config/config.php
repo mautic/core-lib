@@ -132,29 +132,6 @@ return [
                 'arguments' => Mautic\UserBundle\Entity\Permission::class,
                 'factory'   => ['@doctrine', 'getManagerForClass'],
             ],
-            'mautic.user.form_guard_authenticator' => [
-                'class'     => Mautic\UserBundle\Security\Authenticator\FormAuthenticator::class,
-                'arguments' => [
-                    'mautic.helper.integration',
-                    'security.password_hasher',
-                    'event_dispatcher',
-                    'request_stack',
-                    'security.csrf.token_manager',
-                    'router',
-                    'mautic.user.model.password_strength_estimator',
-                ],
-            ],
-            'mautic.user.preauth_authenticator' => [
-                'class'     => Mautic\UserBundle\Security\Authenticator\PreAuthAuthenticator::class,
-                'arguments' => [
-                    'mautic.helper.integration',
-                    'event_dispatcher',
-                    'request_stack',
-                    '', // providerKey
-                    '', // User provider
-                ],
-                'public' => false,
-            ],
             'mautic.user.provider' => [
                 'class'     => Mautic\UserBundle\Security\Provider\UserProvider::class,
                 'arguments' => [

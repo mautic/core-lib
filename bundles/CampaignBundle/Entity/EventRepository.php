@@ -2,6 +2,7 @@
 
 namespace Mautic\CampaignBundle\Entity;
 
+use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\ArrayParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
@@ -149,7 +150,7 @@ class EventRepository extends CommonRepository
             ->where(
                 $q->expr()->eq('IDENTITY(e.campaign)', (int) $campaignId)
             )
-            ->orderBy('e.order', \Doctrine\Common\Collections\Criteria::ASC);
+            ->orderBy('e.order', Order::Ascending->value);
 
         if ($ignoreDeleted) {
             $q->andWhere($q->expr()->isNull('e.deleted'));
