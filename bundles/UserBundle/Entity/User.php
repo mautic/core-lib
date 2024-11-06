@@ -25,10 +25,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      */
     protected $id;
 
-    /**
-     * @var string
-     */
-    protected $username;
+    protected ?string $username;
 
     /**
      * @var string
@@ -325,14 +322,14 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
         }
     }
 
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
     public function getUserIdentifier(): string
     {
-        return $this->username;
+        return $this->username ?? '';
     }
 
     public function getSalt(): ?string
