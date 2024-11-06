@@ -20,8 +20,6 @@ trait FormThemeTrait
     {
         $formView = $form->createView();
 
-        $twig = $this->get('twig');
-
         // Extract form theme from options if applicable
         $fieldThemes = [];
         $findThemes  = function ($form, $formView) use ($twig, &$findThemes, &$fieldThemes): void {
