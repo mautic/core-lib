@@ -35,9 +35,6 @@ class StageActionListType extends AbstractType
         ]);
     }
 
-    /**
-     * @return string
-     */
     public function getParent(): ?string
     {
         return ChoiceType::class;

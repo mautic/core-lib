@@ -3,7 +3,6 @@
 namespace Mautic\Middleware;
 
 use Mautic\CoreBundle\Cache\MiddlewareCacheWarmer;
-use Mautic\Middleware\StackedHttpKernel;
 
 class MiddlewareBuilder
 {

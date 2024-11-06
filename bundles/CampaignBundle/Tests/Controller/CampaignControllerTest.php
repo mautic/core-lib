@@ -13,7 +13,7 @@ class CampaignControllerTest extends MauticMysqlTestCase
     public function testIndexActionWhenNotFiltered(): void
     {
         $this->client->request('GET', '/s/campaigns');
-        $clientResponse = $this->client->getResponse();
+        $this->client->getResponse();
         $this->assertResponseIsSuccessful('Return code must be 200.');
     }
 
@@ -23,7 +23,7 @@ class CampaignControllerTest extends MauticMysqlTestCase
     public function testIndexActionWhenFiltering(): void
     {
         $this->client->request('GET', '/s/campaigns?search=has%3Aresults&tmpl=list');
-        $clientResponse = $this->client->getResponse();
+        $this->client->getResponse();
         $this->assertResponseIsSuccessful('Return code must be 200.');
     }
 
@@ -33,8 +33,8 @@ class CampaignControllerTest extends MauticMysqlTestCase
     public function testNewActionCampaign(): void
     {
         $this->client->request('GET', '/s/campaigns/new/');
-        $clientResponse         = $this->client->getResponse();
-        $clientResponseContent  = $clientResponse->getContent();
+        $clientResponse = $this->client->getResponse();
+        $clientResponse->getContent();
         $this->assertEquals(Response::HTTP_OK, $clientResponse->getStatusCode());
     }
 
@@ -45,13 +45,13 @@ class CampaignControllerTest extends MauticMysqlTestCase
      */
     public function testNewActionCampaignCancel(): void
     {
-        $crawler                = $this->client->request('GET', '/s/campaigns/new/');
-        $clientResponse         = $this->client->getResponse();
+        $crawler = $this->client->request('GET', '/s/campaigns/new/');
+        $this->client->getResponse();
         self::assertResponseIsSuccessful();
 
         $form = $crawler->filter('form[name="campaign"]')->selectButton('campaign_buttons_cancel')->form();
         $this->client->submit($form);
-        $clientResponse         = $this->client->getResponse();
+        $this->client->getResponse();
         self::assertResponseIsSuccessful();
     }
 }

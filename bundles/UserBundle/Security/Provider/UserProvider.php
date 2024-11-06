@@ -32,7 +32,7 @@ class UserProvider implements UserProviderInterface
     /**
      * @param string $username
      */
-    public function loadUserByUsername($username): \Mautic\UserBundle\Entity\User
+    public function loadUserByUsername($username): User
     {
         return $this->loadUserByIdentifier($username);
     }
@@ -68,7 +68,7 @@ class UserProvider implements UserProviderInterface
         return $user;
     }
 
-    public function refreshUser(UserInterface $user): \Symfony\Component\Security\Core\User\UserInterface
+    public function refreshUser(UserInterface $user): UserInterface
     {
         $class = $user::class;
         if (!$this->supportsClass($class)) {

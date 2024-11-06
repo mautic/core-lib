@@ -54,9 +54,6 @@ class DynamicContentListType extends AbstractType
         return 'dwc_list';
     }
 
-    /**
-     * @return string
-     */
     public function getParent(): ?string
     {
         return EntityLookupType::class;

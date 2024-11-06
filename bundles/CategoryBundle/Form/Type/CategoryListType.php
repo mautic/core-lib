@@ -77,9 +77,6 @@ class CategoryListType extends AbstractType
         return 'category';
     }
 
-    /**
-     * @return string
-     */
     public function getParent(): ?string
     {
         return ChoiceType::class;
