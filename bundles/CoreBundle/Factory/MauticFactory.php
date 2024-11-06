@@ -138,16 +138,6 @@ class MauticFactory
     }
 
     /**
-     * Retrieves twig service.
-     *
-     * @return \Twig\Environment
-     */
-    public function getTwig(): ?object
-    {
-        return $this->container->get('twig');
-    }
-
-    /**
      * Retrieves event dispatcher.
      *
      * @return EventDispatcherInterface

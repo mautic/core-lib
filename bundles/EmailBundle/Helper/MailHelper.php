@@ -61,11 +61,6 @@ class MailHelper
      */
     protected $transport;
 
-    /**
-     * @var Environment
-     */
-    protected $twig;
-
     protected ?EventDispatcherInterface $dispatcher = null;
 
     /**
@@ -240,7 +235,8 @@ class MailHelper
         private Mailbox $mailbox,
         private LoggerInterface $logger,
         private MailHashHelper $mailHashHelper,
-        private RouterInterface $router
+        private RouterInterface $router,
+        private Environment $twig
     ) {
         $this->transport  = $this->getTransport();
         $this->returnPath = $coreParametersHelper->get('mailer_return_path');
@@ -719,10 +715,6 @@ class MailHelper
      */
     public function setTemplate($template, $vars = [], $returnContent = false, $charset = null)
     {
-        if (null == $this->twig) {
-            $this->twig = $this->factory->getTwig();
-        }
-
         $content = $this->twig->render($template, $vars);
 
         unset($vars);

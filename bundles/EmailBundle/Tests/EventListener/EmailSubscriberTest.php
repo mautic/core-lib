@@ -29,6 +29,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 
 final class EmailSubscriberTest extends \PHPUnit\Framework\TestCase
 {
@@ -288,6 +289,9 @@ CONTENT,
         /** @var MockObject&RouterInterface $router */
         $router = $this->createMock(RouterInterface::class);
 
+        /** @var MockObject&Environment $twig */
+        $twig = $this->createMock(Environment::class);
+
         $coreParametersHelper->method('get')
             ->willReturnMap(
                 [
@@ -297,7 +301,7 @@ CONTENT,
             );
         $mockFactory = $this->createMock(MauticFactory::class); /** @phpstan-ignore-line MauticFactory is deprecated */
         $mailer      = new Mailer(new BatchTransport());
-        $mailHelper  = new MailHelper($mockFactory, $mailer, $fromEmailHelper, $coreParametersHelper, $mailbox, new NullLogger(), new MailHashHelper($coreParametersHelper), $router);
+        $mailHelper  = new MailHelper($mockFactory, $mailer, $fromEmailHelper, $coreParametersHelper, $mailbox, new NullLogger(), new MailHashHelper($coreParametersHelper), $router, $twig);
 
         $email = new Email();
         $email->setCustomHtml($html);
