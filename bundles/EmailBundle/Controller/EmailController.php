@@ -1197,7 +1197,7 @@ class EmailController extends FormController
      *
      * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function abtestAction(Request $request, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, EmailConfig $emailConfig, EmailModel $model, $objectId)
+    public function abtestAction(Request $request, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, EmailConfig $emailConfig, EmailModel $model, EntityManager $entityManager, $objectId)
     {
         $entity = $model->getEntity($objectId);
 
@@ -1224,7 +1224,7 @@ class EmailController extends FormController
             $clone->setVariantParent($entity);
         }
 
-        return $this->newAction($request, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $emailConfig, $model, $clone);
+        return $this->newAction($request, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $emailConfig, $model, $entityManager, $clone);
     }
 
     /**
