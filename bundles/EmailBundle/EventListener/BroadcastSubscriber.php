@@ -48,6 +48,17 @@ class BroadcastSubscriber implements EventSubscriberInterface
                 $event->getThreadId()
             );
 
+            if ($this->shouldCheckForUnpublishEmail($emailEntity)) {
+                $isNotParallelSending = !$event->getThreadId() || 1 === $event->getThreadId();
+                $totalPendingCount ??= $this->model->getPendingLeads($emailEntity, null, true);
+                // only If no pending and nothing was sent
+                if ($isNotParallelSending && !$totalPendingCount && !$sentCount) {
+                    $emailEntity->setIsPublished(false);
+                    $this->model->saveEntity($emailEntity);
+                    $event->getOutput()->writeln('Email "'.$emailEntity->getName().'" has been unpublished as there are no more pending contacts to send to.');
+                }
+            }
+
             $event->setResults(
                 $this->translator->trans('mautic.email.email').': '.$emailEntity->getName(),
                 $sentCount,
@@ -56,5 +67,43 @@ class BroadcastSubscriber implements EventSubscriberInterface
             );
             $this->em->detach($emailEntity);
         }
+    }
+
+    protected function setStartDateOfABTesting(Email $emailEntity): void
+    {
+        if (!$emailEntity->getVariantSentCount(true)) {
+            $dateTimeHelper = new DateTimeHelper();
+            $this->model->getRepository()->resetVariants(
+                $emailEntity->getRelatedEntityIds(),
+                $dateTimeHelper->toUtcString()
+            );
+        }
+    }
+
+    /**
+     * @return int|mixed
+     */
+    protected function getLimitForABTest(mixed $limit, Email $emailEntity, int $totalLeadCountForVariants): mixed
+    {
+        $limit = $limit ?? 10000;
+        $diff  = ($emailEntity->getVariantSentCount(true) + $limit) - $totalLeadCountForVariants;
+        if ($diff > 0) {
+            $limit = $limit - $diff;
+        }
+
+        return $limit;
+    }
+
+    private function shouldCheckForUnpublishEmail(Email $email): bool
+    {
+        if ($email->isContinueSending()) {
+            return false;
+        }
+
+        if (empty($email->getSentCount(true))) {
+            return false;
+        }
+
+        return true;
     }
 }

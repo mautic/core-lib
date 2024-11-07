@@ -237,6 +237,7 @@ Mautic.selectEmailType = function(emailType) {
         mQuery('#templateTranslationParent').addClass('hide');
         mQuery('.page-header h3').text(mauticLang.newListEmail);
         mQuery('#scheduleOptions').removeClass('hide');
+        mQuery('#publishDates').addClass('hide');
     } else {
         mQuery('#segmentTranslationParent').addClass('hide');
         mQuery('#templateTranslationParent').removeClass('hide');
