@@ -16,6 +16,9 @@ use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
 use Mautic\LeadBundle\Model\LeadModel;
+use Mautic\PageBundle\Entity\Hit;
+use Mautic\PageBundle\Entity\Redirect;
+use Mautic\PageBundle\Entity\Trackable;
 
 class EmailModelFunctionalTest extends MauticMysqlTestCase
 {
