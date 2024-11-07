@@ -40,13 +40,12 @@
   {%- set icon = 'ri-donut-chart-line text-info' %}
   {%- set text = 'mautic.core.form.pending.start_at'|trans({'%date%': dateToFull(item.publishUp)}) %}
 {%- elseif status is same as 'running' %}
-  {%- set icon = 'fa-pause-circle-o text-success' %}
+  {%- set icon = 'ri-pause-circle-line text-success' %}
   {%- set text = 'mautic.core.form.running'|trans %}
 {%- elseif status is same as 'sent' %}
-    {%- set icon = 'fa-check-circle text-success' %}
-    {%- set text = 'mautic.core.form.sent'|trans %}
+  {%- set icon = 'ri-checkbox-circle-fill text-success' %}
+  {%- set text = 'mautic.core.form.sent'|trans %}
 {%- endif %}
-
 {%- if true is same as status %}
   {%- set icon = 'ri-toggle-fill text-success' %}
   {%- set text = 'mautic.core.form.public'|trans %}
