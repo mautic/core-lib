@@ -56,7 +56,7 @@ class ScheduleSendType extends AbstractType
                 'label'    => 'mautic.email.send.continue',
                 'required' => false,
                 'attr'     => [
-                  'tooltip' => 'mautic.email.send.continue.tooltip',
+                    'tooltip' => 'mautic.email.send.continue.tooltip',
                 ],
                 'data'     => $options['data']['continueSending'] ?? false,
             ]
