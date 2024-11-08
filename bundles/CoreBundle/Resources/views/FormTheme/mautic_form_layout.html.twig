@@ -488,7 +488,7 @@ id="{{ id|escape }}" name="{{ full_name|escape }}"
 
 {# Twig version of MauticCoreBundle:Views:FormTheme:Custom:yesno_button_group_widget.html.php #}
 {% block yesno_button_group_widget %}
-    {% set attr = form.vars.attr|merge({'onchange': (form.vars.attr.onchange|default('') ~ ' Mautic.toggleYesNo(this);')|trim}) %}
+    {% set attr = form.vars.attr|merge({'onchange': (form.vars.attr.onchange|default('') ~ ';Mautic.toggleYesNo(this);')|trim}) %}
     {% set id = form.vars.id %}
     {% set name = form.vars.full_name %}
     {% set value = form.vars.value %}
