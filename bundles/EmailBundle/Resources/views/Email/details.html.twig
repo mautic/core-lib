@@ -83,12 +83,43 @@
 {% set allowAbTest = email.isTranslation(true) and translations['parent'].isVariant(true) ? false : true %}
 
 {% block publishStatus %}
-  {% if not isEmbedded %}
-  {{- include('@MauticCore/Helper/publishstatus_badge.html.twig', {
-    'entity': email,
-    'status': 'available'
-}) -}}
-  {% endif %}
+    {% if not isEmbedded %}
+    {{- include('@MauticCore/Helper/publishstatus_badge.html.twig', {
+        'entity': email,
+        'status': email.getPublishUp() is not null ? 'sending' : 'available'
+    }) -}}
+
+
+
+
+        {% set tags = [
+            {
+                color: 'warm-gray',
+                label: emailType == 'list'
+                    ? 'mautic.email.type.list.header'
+                    : (emailType == 'template' ? 'mautic.email.type.template.header' : type)
+            }
+        ] %}
+
+        {# Additional tags based on conditions #}
+        {% set tags = tags
+            |merge(email.isVariant and not email.isVariant(true)
+                ? [{ color: 'warm-gray', label: 'mautic.email.icon_tooltip.abtest' }]
+                : [])
+            |merge(email.isVariant(true)
+                ? [{ color: 'warm-gray', label: 'mautic.core.variant_of'|trans({'%parent%' : variants.parent.getName()}), icon: 'ri-organization-chart' }]
+                : [])
+            |merge(email.isTranslation and not email.isTranslation(true)
+                ? [{ color: 'warm-gray', label: 'mautic.core.icon_tooltip.translation' }]
+                : [])
+            |merge(email.isTranslation(true)
+                ? [{ color: 'warm-gray', label: 'mautic.core.translation_of'|trans({'%parent%' : translations.parent.name}), icon: 'ri-translate' }]
+                : [])
+        %}
+
+        {% include '@MauticCore/Helper/_tag.html.twig' with { tags: tags } %}
+
+    {% endif %}
 {% endblock %}
 
 {% block actions %}

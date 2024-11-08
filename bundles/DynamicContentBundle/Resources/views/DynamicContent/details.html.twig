@@ -11,6 +11,26 @@
         'entity': entity,
         'status': 'available'
     }) -}}
+
+    {% set tags = [
+        {
+            color: 'warm-gray',
+            label: entity.isCampaignBased
+                ? 'mautic.dwc.form.is.campaign'
+                : 'mautic.dwc.form.is.standalone'
+        }
+    ] %}
+
+    {% set tags = tags
+        |merge(entity.isTranslation and not entity.isTranslation(true)
+            ? [{ color: 'warm-gray', label: 'mautic.core.icon_tooltip.translation' }]
+            : [])
+        |merge(entity.isTranslation(true)
+            ? [{ color: 'warm-gray', label: 'mautic.core.translation_of'|trans({'%parent%' : translations.parent.getName()}), icon: 'ri-translate' }]
+            : [])
+    %}
+
+    {% include '@MauticCore/Helper/_tag.html.twig' with { tags: tags } %}
 {% endblock %}
 
 {% block actions include('@MauticCore/Helper/page_actions.html.twig', {

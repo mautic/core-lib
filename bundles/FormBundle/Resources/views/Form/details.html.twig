@@ -58,6 +58,18 @@
     'entity': activeForm,
     'status': 'available'
 }) -}}
+{% include '@MauticCore/Helper/_tag.html.twig' with {
+    tags: [
+        {
+            type: 'read-only',
+            color: 'warm-gray',
+            label: activeForm.formType == 'campaign'
+                ? 'mautic.form.type.campaign.header'
+                : 'mautic.form.type.standalone.header'
+        }
+    ]
+} %}
+
 {% endblock %}
 
 {% block content %}
