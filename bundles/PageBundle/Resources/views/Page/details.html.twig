@@ -43,6 +43,29 @@
         'entity': activePage,
         'status': 'available'
     }) -}}
+
+    {% set tags = [] %}
+
+    {% set tags = tags
+        |merge(activePage.isPreferenceCenter
+            ? [{ type: 'read-only', color: 'warm-gray', label: 'mautic.email.form.preference_center' }]
+            : [])
+        |merge(activePage.isVariant and not activePage.isVariant(true)
+            ? [{ type: 'read-only', color: 'warm-gray', label: 'mautic.email.icon_tooltip.abtest' }]
+            : [])
+        |merge(activePage.isVariant(true)
+            ? [{ color: 'warm-gray', label: 'mautic.core.variant_of'|trans({'%parent%' : variants.parent.getName()}), icon: 'ri-organization-chart' }]
+            : [])
+        |merge(activePage.isTranslation and not activePage.isTranslation(true)
+            ? [{ color: 'warm-gray', label: 'mautic.core.icon_tooltip.translation' }]
+            : [])
+        |merge(activePage.isTranslation(true)
+            ? [{ color: 'warm-gray', label: 'mautic.core.translation_of'|trans({'%parent%' : translations.parent.getName()}), icon: 'ri-translate' }]
+            : [])
+    %}
+
+    {% include '@MauticCore/Helper/_tag.html.twig' with { tags: tags } %}
+
 {% endblock %}
 
 {% block content %}

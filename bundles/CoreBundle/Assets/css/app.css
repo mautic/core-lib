@@ -2428,11 +2428,7 @@ a.text-danger:focus {
   color: #f6421e;
 }
 .text-info {
-  color: #35B4B9;
-}
-a.text-info:hover,
-a.text-info:focus {
-  color: #2a8d91;
+  color: var(--support-info);
 }
 .text-twitter {
   color: #55acee;
@@ -3754,28 +3750,34 @@ fieldset[disabled] .btn-ghost.btn-icon.focus {
 .btn-group > .btn.active.btn-no {
   outline-color: transparent;
 }
-.btn-xs {
+.btn-xs,
+.btn[size="xs"] {
   height: var(--spacing-06);
   line-height: var(--spacing-06);
 }
-.btn-sm {
+.btn-sm,
+.btn[size="sm"] {
   height: var(--spacing-07);
   line-height: var(--spacing-07);
 }
-.btn-md {
+.btn-md,
+.btn[size="md"] {
   height: var(--spacing-08);
   line-height: var(--spacing-08);
 }
-.btn-lg {
+.btn-lg,
+.btn[size="lg"] {
   height: var(--spacing-09);
   line-height: var(--spacing-09);
 }
-.btn-xl {
+.btn-xl,
+.btn[size="xl"] {
   height: var(--spacing-10);
   line-height: var(--spacing-08);
   align-items: flex-start;
 }
-.btn-2xl {
+.btn-2xl,
+.btn[size="2xl"] {
   height: var(--spacing-11);
   line-height: var(--spacing-08);
   align-items: flex-start;
@@ -4062,6 +4064,7 @@ fieldset[disabled] .btn-ghost.btn-icon.focus {
   border-right: 1px solid var(--layer);
   border-top: 1px solid var(--layer);
   color: var(--text-secondary);
+  border-radius: var(--border-radius-md);
 }
 .xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_default,
 .xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_current,
@@ -5862,6 +5865,15 @@ input[style] {
 input[style]:hover {
   background-color: var(--field-hover) !important;
 }
+.btn-datepicker + input,
+.btn-datepicker + input:hover {
+  background-color: transparent;
+  border-color: transparent;
+  padding-left: 6px;
+  color: var(--text-secondary);
+  cursor: default;
+  font-size: 92%;
+}
 .form-control,
 .chosen-container .chosen-single,
 .form-control.search.tt-input {
@@ -5925,6 +5937,10 @@ input[style]:hover {
 .form-control[readonly],
 fieldset[disabled] .form-control {
   color: var(--text-disabled);
+}
+.form-control[disabled] {
+  cursor: not-allowed;
+  border-bottom-color: transparent;
 }
 .search-container {
   display: flex;

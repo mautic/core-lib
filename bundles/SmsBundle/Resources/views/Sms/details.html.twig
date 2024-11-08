@@ -37,15 +37,24 @@
 {% block publishStatus %}
 {{- include('@MauticCore/Helper/publishstatus_badge.html.twig', {
     'entity': sms,
-    'status': 'available'
+    'status': sms.getPublishUp() is not null ? 'sending' : 'available'
 }) -}}
+{% set tags = [
+    {
+        color: 'warm-gray',
+        label: smsType == 'list'
+            ? 'mautic.sms.type.list.header'
+            : (smsType == 'template' ? 'mautic.sms.type.template.header' : type)
+    }
+] %}
+
+{% include '@MauticCore/Helper/_tag.html.twig' with { tags: tags } %}
 {% endblock %}
 
-{# This doesn't seem to be used anywhere: #}
-{# {% set smsType = sms.getSmsType() %}
+{% set smsType = sms.getSmsType() %}
 {% if smsType is empty %}
     {% set smsType = 'template' %}
-{% endif %} #}
+{% endif %}
 
 {% block content %}
 <!-- start: box layout -->

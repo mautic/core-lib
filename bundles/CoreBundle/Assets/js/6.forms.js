@@ -526,38 +526,96 @@ Mautic.updateEntitySelect = function (response) {
 
 /**
  * Toggles the class for yes/no button groups
- * @param changedId
+ * @param {HTMLElement} element - The toggle label element
  */
 Mautic.toggleYesNo = function(element) {
-    var $label = mQuery(element);
-    var $toggle = $label.closest('.toggle');
-    var yesId = $label.data('yes-id');
-    var noId = $label.data('no-id');
-    var $yesInput = mQuery('#' + yesId);
-    var $noInput = mQuery('#' + noId);
-    var $switchEl = $toggle.find('.toggle__switch');
-    var $textEl = $toggle.find('.toggle__text');
+    let $label = mQuery(element),
+        $toggle = $label.closest('.toggle'),
+        yesId = $label.data('yes-id'),
+        noId = $label.data('no-id'),
+        $yesInput = mQuery('#' + yesId),
+        $noInput = mQuery('#' + noId),
+        $switchEl = $toggle.find('.toggle__switch'),
+        $textEl = $toggle.find('.toggle__text'),
+        isYes = $yesInput.is(':checked');
 
-    var yesText = $toggle.data('yes');
-    var noText = $toggle.data('no');
+    $yesInput.prop('checked', !isYes).trigger('change');
+    $noInput.prop('checked', isYes);
+    $switchEl.toggleClass('toggle__switch--checked', !isYes);
+    $textEl.text($toggle.data(isYes ? 'no' : 'yes'));
+    $label.attr('aria-checked', !isYes);
 
-    if ($yesInput.is(':checked')) {
-        // Switch to 'No'
-        $noInput.prop('checked', true).trigger('change');
-        $yesInput.prop('checked', false);
-        $switchEl.removeClass('toggle__switch--checked');
-        $textEl.text(noText);
-        $label.attr('aria-checked', 'false');
+    Mautic.updatePublishingToggle(element);
+};
+
+Mautic.updatePublishingToggle = function(element) {
+    let $label = mQuery(element),
+        $toggle = $label.closest('.toggle'),
+        $form = $toggle.closest('form'),
+        yesId = $label.data('yes-id'),
+        noId = $label.data('no-id'),
+        $yesInput = mQuery('#' + yesId),
+        $noInput = mQuery('#' + noId),
+        $textEl = $toggle.find('.toggle__text'),
+        isYes = $yesInput.is(':checked'),
+        yesText = $toggle.data('yes'),
+        noText = $toggle.data('no'),
+        noneText = $toggle.data('none'),
+        startText = $toggle.data('start'),
+        bothText = $toggle.data('both'),
+        endText = $toggle.data('end'),
+        $publishUp = $form.find('input[name$="[publishUp]"]'),
+        $publishDown = $form.find('input[name$="[publishDown]"]'),
+        hasPublishUp = $publishUp.length && $publishUp.val().trim() !== '',
+        hasPublishDown = $publishDown.length && $publishDown.val().trim() !== '';
+
+    // Inner function to toggle publish fields and datepicker buttons
+    function togglePublishFields(enable) {
+        [$publishUp, $publishDown].forEach($input => {
+            $input.prop('disabled', !enable);
+            $input.closest('.form-group').find(`label.btn-datepicker[for="${$input.attr('id')}"]`)
+                .toggleClass('disabled', !enable)
+                .attr('aria-disabled', !enable);
+        });
+    }
+
+    if (typeof noneText !== 'undefined') {
+        if (isYes) {
+            $textEl.text(hasPublishUp && hasPublishDown ? bothText : hasPublishUp ? startText : hasPublishDown ? endText : yesText);
+            togglePublishFields(true);
+        } else {
+            $textEl.text(hasPublishUp || hasPublishDown ? noneText : noText);
+            togglePublishFields(false);
+        }
     } else {
-        // Switch to 'Yes'
-        $yesInput.prop('checked', true).trigger('change');
-        $noInput.prop('checked', false);
-        $switchEl.addClass('toggle__switch--checked');
-        $textEl.text(yesText);
-        $label.attr('aria-checked', 'true');
+        $textEl.text(isYes ? yesText : noText);
     }
 };
 
+// Initialize publishing toggles on page load and re-initialize after AJAX content is loaded
+Mautic.initializePublishingToggles = function() {
+    mQuery('.toggle[data-none]').each(function() {
+        const $label = mQuery(this).find('.toggle__label');
+        Mautic.updatePublishingToggle($label);
+    });
+
+    mQuery('input[name$="[publishUp]"], input[name$="[publishDown]"]').off('change').on('change', function() {
+        const $form = mQuery(this).closest('form');
+        $form.find('.toggle[data-none]').each(function() {
+            const $label = mQuery(this).find('.toggle__label');
+            Mautic.updatePublishingToggle($label);
+        });
+    });
+};
+
+mQuery(document).ready(Mautic.initializePublishingToggles);
+mQuery(document).ajaxComplete(Mautic.initializePublishingToggles);
+
+/**
+ * Handles keydown events for accessibility
+ * @param {KeyboardEvent} event - The keydown event
+ * @param {HTMLElement} element - The toggle label element
+ */
 Mautic.handleKeyDown = function(event, element) {
     if (event.key === ' ' || event.key === 'Enter') {
         event.preventDefault();
