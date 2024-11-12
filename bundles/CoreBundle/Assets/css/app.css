@@ -1592,6 +1592,8 @@ body > #app-wrapper {
   float: left;
   border: 1px solid #eee;
   border: 1px solid rgba(0, 0, 0, 0.06);
+  border-top-left-radius: var(--border-radius-md);
+  border-top-right-radius: var(--border-radius-md);
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
 }
@@ -2576,7 +2578,6 @@ kbd {
 }
 .btn:hover {
   border: 1px solid transparent;
-  color: var(--text-primary);
 }
 .btn,
 .btn:active,
@@ -2728,6 +2729,26 @@ kbd {
   background-color: var(--button-primary-active);
   border-color: var(--button-primary-active);
 }
+.btn-primary:active:hover i,
+.btn-primary + .dropdown-toggle:active:hover i,
+.btn-primary.active:hover i,
+.btn-primary + .dropdown-toggle.active:hover i,
+.open > .dropdown-toggle.btn-primary:hover i,
+.open > .dropdown-toggle.btn-primary + .dropdown-toggle:hover i,
+.btn-primary:active:focus i,
+.btn-primary + .dropdown-toggle:active:focus i,
+.btn-primary.active:focus i,
+.btn-primary + .dropdown-toggle.active:focus i,
+.open > .dropdown-toggle.btn-primary:focus i,
+.open > .dropdown-toggle.btn-primary + .dropdown-toggle:focus i,
+.btn-primary:active.focus i,
+.btn-primary + .dropdown-toggle:active.focus i,
+.btn-primary.active.focus i,
+.btn-primary + .dropdown-toggle.active.focus i,
+.open > .dropdown-toggle.btn-primary.focus i,
+.open > .dropdown-toggle.btn-primary + .dropdown-toggle.focus i {
+  color: var(--text-on-color);
+}
 .btn-primary:focus,
 .btn-primary + .dropdown-toggle:focus,
 .btn-primary.focus,
@@ -2737,6 +2758,18 @@ kbd {
   border: 1px solid var(--button-primary-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
+.btn-primary:focus i,
+.btn-primary + .dropdown-toggle:focus i,
+.btn-primary.focus i,
+.btn-primary + .dropdown-toggle.focus i {
+  color: var(--text-on-color);
+}
+.btn-primary[disabled],
+.btn-primary + .dropdown-toggle[disabled],
+.btn-primary.disabled,
+.btn-primary + .dropdown-toggle.disabled,
+fieldset[disabled] .btn-primary,
+fieldset[disabled] .btn-primary + .dropdown-toggle,
 .btn-primary[disabled]:hover,
 .btn-primary + .dropdown-toggle[disabled]:hover,
 .btn-primary.disabled:hover,
@@ -2758,6 +2791,32 @@ fieldset[disabled] .btn-primary + .dropdown-toggle.focus {
   background-color: var(--button-disabled);
   color: var(--text-on-color-disabled);
   border: 1px solid var(--button-disabled);
+}
+.btn-primary[disabled] i,
+.btn-primary + .dropdown-toggle[disabled] i,
+.btn-primary.disabled i,
+.btn-primary + .dropdown-toggle.disabled i,
+fieldset[disabled] .btn-primary i,
+fieldset[disabled] .btn-primary + .dropdown-toggle i,
+.btn-primary[disabled]:hover i,
+.btn-primary + .dropdown-toggle[disabled]:hover i,
+.btn-primary.disabled:hover i,
+.btn-primary + .dropdown-toggle.disabled:hover i,
+fieldset[disabled] .btn-primary:hover i,
+fieldset[disabled] .btn-primary + .dropdown-toggle:hover i,
+.btn-primary[disabled]:focus i,
+.btn-primary + .dropdown-toggle[disabled]:focus i,
+.btn-primary.disabled:focus i,
+.btn-primary + .dropdown-toggle.disabled:focus i,
+fieldset[disabled] .btn-primary:focus i,
+fieldset[disabled] .btn-primary + .dropdown-toggle:focus i,
+.btn-primary[disabled].focus i,
+.btn-primary + .dropdown-toggle[disabled].focus i,
+.btn-primary.disabled.focus i,
+.btn-primary + .dropdown-toggle.disabled.focus i,
+fieldset[disabled] .btn-primary.focus i,
+fieldset[disabled] .btn-primary + .dropdown-toggle.focus i {
+  color: var(--text-on-color-disabled);
 }
 .btn-primary.btn-danger,
 .btn-primary + .dropdown-toggle.btn-danger {
@@ -2835,6 +2894,26 @@ fieldset[disabled] .btn-primary + .dropdown-toggle.focus {
   background-color: var(--button-danger-active);
   border-color: var(--button-danger-active);
 }
+.btn-primary.btn-danger:active:hover i,
+.btn-primary + .dropdown-toggle.btn-danger:active:hover i,
+.btn-primary.btn-danger.active:hover i,
+.btn-primary + .dropdown-toggle.btn-danger.active:hover i,
+.open > .dropdown-toggle.btn-primary.btn-danger:hover i,
+.open > .dropdown-toggle.btn-primary + .dropdown-toggle.btn-danger:hover i,
+.btn-primary.btn-danger:active:focus i,
+.btn-primary + .dropdown-toggle.btn-danger:active:focus i,
+.btn-primary.btn-danger.active:focus i,
+.btn-primary + .dropdown-toggle.btn-danger.active:focus i,
+.open > .dropdown-toggle.btn-primary.btn-danger:focus i,
+.open > .dropdown-toggle.btn-primary + .dropdown-toggle.btn-danger:focus i,
+.btn-primary.btn-danger:active.focus i,
+.btn-primary + .dropdown-toggle.btn-danger:active.focus i,
+.btn-primary.btn-danger.active.focus i,
+.btn-primary + .dropdown-toggle.btn-danger.active.focus i,
+.open > .dropdown-toggle.btn-primary.btn-danger.focus i,
+.open > .dropdown-toggle.btn-primary + .dropdown-toggle.btn-danger.focus i {
+  color: var(--text-inverse);
+}
 .btn-primary.btn-danger:focus,
 .btn-primary + .dropdown-toggle.btn-danger:focus,
 .btn-primary.btn-danger.focus,
@@ -2844,6 +2923,18 @@ fieldset[disabled] .btn-primary + .dropdown-toggle.focus {
   border: 1px solid var(--button-danger-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
+.btn-primary.btn-danger:focus i,
+.btn-primary + .dropdown-toggle.btn-danger:focus i,
+.btn-primary.btn-danger.focus i,
+.btn-primary + .dropdown-toggle.btn-danger.focus i {
+  color: var(--text-inverse);
+}
+.btn-primary.btn-danger[disabled],
+.btn-primary + .dropdown-toggle.btn-danger[disabled],
+.btn-primary.btn-danger.disabled,
+.btn-primary + .dropdown-toggle.btn-danger.disabled,
+fieldset[disabled] .btn-primary.btn-danger,
+fieldset[disabled] .btn-primary + .dropdown-toggle.btn-danger,
 .btn-primary.btn-danger[disabled]:hover,
 .btn-primary + .dropdown-toggle.btn-danger[disabled]:hover,
 .btn-primary.btn-danger.disabled:hover,
@@ -2865,6 +2956,32 @@ fieldset[disabled] .btn-primary + .dropdown-toggle.btn-danger.focus {
   background-color: var(--button-disabled);
   color: var(--text-on-color-disabled);
   border: 1px solid var(--button-disabled);
+}
+.btn-primary.btn-danger[disabled] i,
+.btn-primary + .dropdown-toggle.btn-danger[disabled] i,
+.btn-primary.btn-danger.disabled i,
+.btn-primary + .dropdown-toggle.btn-danger.disabled i,
+fieldset[disabled] .btn-primary.btn-danger i,
+fieldset[disabled] .btn-primary + .dropdown-toggle.btn-danger i,
+.btn-primary.btn-danger[disabled]:hover i,
+.btn-primary + .dropdown-toggle.btn-danger[disabled]:hover i,
+.btn-primary.btn-danger.disabled:hover i,
+.btn-primary + .dropdown-toggle.btn-danger.disabled:hover i,
+fieldset[disabled] .btn-primary.btn-danger:hover i,
+fieldset[disabled] .btn-primary + .dropdown-toggle.btn-danger:hover i,
+.btn-primary.btn-danger[disabled]:focus i,
+.btn-primary + .dropdown-toggle.btn-danger[disabled]:focus i,
+.btn-primary.btn-danger.disabled:focus i,
+.btn-primary + .dropdown-toggle.btn-danger.disabled:focus i,
+fieldset[disabled] .btn-primary.btn-danger:focus i,
+fieldset[disabled] .btn-primary + .dropdown-toggle.btn-danger:focus i,
+.btn-primary.btn-danger[disabled].focus i,
+.btn-primary + .dropdown-toggle.btn-danger[disabled].focus i,
+.btn-primary.btn-danger.disabled.focus i,
+.btn-primary + .dropdown-toggle.btn-danger.disabled.focus i,
+fieldset[disabled] .btn-primary.btn-danger.focus i,
+fieldset[disabled] .btn-primary + .dropdown-toggle.btn-danger.focus i {
+  color: var(--text-on-color-disabled);
 }
 .btn-secondary {
   background-color: var(--button-secondary);
@@ -2918,6 +3035,17 @@ fieldset[disabled] .btn-primary + .dropdown-toggle.btn-danger.focus {
   background-color: var(--button-secondary-active);
   border-color: var(--button-secondary-active);
 }
+.btn-secondary:active:hover i,
+.btn-secondary.active:hover i,
+.open > .dropdown-toggle.btn-secondary:hover i,
+.btn-secondary:active:focus i,
+.btn-secondary.active:focus i,
+.open > .dropdown-toggle.btn-secondary:focus i,
+.btn-secondary:active.focus i,
+.btn-secondary.active.focus i,
+.open > .dropdown-toggle.btn-secondary.focus i {
+  color: var(--button-secondary-text);
+}
 .btn-secondary:focus,
 .btn-secondary.focus {
   color: var(--button-secondary-text);
@@ -2925,6 +3053,13 @@ fieldset[disabled] .btn-primary + .dropdown-toggle.btn-danger.focus {
   border: 1px solid var(--button-secondary-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
+.btn-secondary:focus i,
+.btn-secondary.focus i {
+  color: var(--button-secondary-text);
+}
+.btn-secondary[disabled],
+.btn-secondary.disabled,
+fieldset[disabled] .btn-secondary,
 .btn-secondary[disabled]:hover,
 .btn-secondary.disabled:hover,
 fieldset[disabled] .btn-secondary:hover,
@@ -2938,6 +3073,20 @@ fieldset[disabled] .btn-secondary.focus {
   color: var(--text-on-color-disabled);
   border: 1px solid var(--button-disabled);
 }
+.btn-secondary[disabled] i,
+.btn-secondary.disabled i,
+fieldset[disabled] .btn-secondary i,
+.btn-secondary[disabled]:hover i,
+.btn-secondary.disabled:hover i,
+fieldset[disabled] .btn-secondary:hover i,
+.btn-secondary[disabled]:focus i,
+.btn-secondary.disabled:focus i,
+fieldset[disabled] .btn-secondary:focus i,
+.btn-secondary[disabled].focus i,
+.btn-secondary.disabled.focus i,
+fieldset[disabled] .btn-secondary.focus i {
+  color: var(--text-on-color-disabled);
+}
 .btn-tertiary,
 .btn-tertiary + .dropdown-toggle,
 .btn-primary + .btn-primary:not(.dropdown-toggle),
@@ -2949,7 +3098,6 @@ fieldset[disabled] .btn-secondary.focus {
   border: 1px solid var(--button-tertiary);
   outline: 2px var(--outline-style) transparent;
   outline-offset: -2px;
-  margin-left: -1px;
 }
 .btn-tertiary:hover,
 .btn-tertiary + .dropdown-toggle:hover,
@@ -3111,6 +3259,62 @@ fieldset[disabled] .btn-secondary.focus {
   background-color: var(--button-tertiary-active);
   border-color: var(--button-tertiary-active);
 }
+.btn-tertiary:active:hover i,
+.btn-tertiary + .dropdown-toggle:active:hover i,
+.btn-primary + .btn-primary:not(.dropdown-toggle):active:hover i,
+.btn-primary + .btn-primary + .btn-primary:active:hover i,
+.btn-primary + .btn-primary + .btn-secondary:active:hover i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary:active:hover i,
+.btn-tertiary.active:hover i,
+.btn-tertiary + .dropdown-toggle.active:hover i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).active:hover i,
+.btn-primary + .btn-primary + .btn-primary.active:hover i,
+.btn-primary + .btn-primary + .btn-secondary.active:hover i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.active:hover i,
+.open > .dropdown-toggle.btn-tertiary:hover i,
+.open > .dropdown-toggle.btn-tertiary + .dropdown-toggle:hover i,
+.open > .dropdown-toggle.btn-primary + .btn-primary:not(.dropdown-toggle):hover i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-primary:hover i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-secondary:hover i,
+.open > .dropdown-toggle.open > .btn-tertiary + .dropdown-toggle.btn-primary:hover i,
+.btn-tertiary:active:focus i,
+.btn-tertiary + .dropdown-toggle:active:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle):active:focus i,
+.btn-primary + .btn-primary + .btn-primary:active:focus i,
+.btn-primary + .btn-primary + .btn-secondary:active:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary:active:focus i,
+.btn-tertiary.active:focus i,
+.btn-tertiary + .dropdown-toggle.active:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).active:focus i,
+.btn-primary + .btn-primary + .btn-primary.active:focus i,
+.btn-primary + .btn-primary + .btn-secondary.active:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.active:focus i,
+.open > .dropdown-toggle.btn-tertiary:focus i,
+.open > .dropdown-toggle.btn-tertiary + .dropdown-toggle:focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary:not(.dropdown-toggle):focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-primary:focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-secondary:focus i,
+.open > .dropdown-toggle.open > .btn-tertiary + .dropdown-toggle.btn-primary:focus i,
+.btn-tertiary:active.focus i,
+.btn-tertiary + .dropdown-toggle:active.focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle):active.focus i,
+.btn-primary + .btn-primary + .btn-primary:active.focus i,
+.btn-primary + .btn-primary + .btn-secondary:active.focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary:active.focus i,
+.btn-tertiary.active.focus i,
+.btn-tertiary + .dropdown-toggle.active.focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).active.focus i,
+.btn-primary + .btn-primary + .btn-primary.active.focus i,
+.btn-primary + .btn-primary + .btn-secondary.active.focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.active.focus i,
+.open > .dropdown-toggle.btn-tertiary.focus i,
+.open > .dropdown-toggle.btn-tertiary + .dropdown-toggle.focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary:not(.dropdown-toggle).focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-primary.focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-secondary.focus i,
+.open > .dropdown-toggle.open > .btn-tertiary + .dropdown-toggle.btn-primary.focus i {
+  color: var(--text-on-color);
+}
 .btn-tertiary:focus,
 .btn-tertiary + .dropdown-toggle:focus,
 .btn-primary + .btn-primary:not(.dropdown-toggle):focus,
@@ -3128,6 +3332,38 @@ fieldset[disabled] .btn-secondary.focus {
   border: 1px solid var(--button-tertiary-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
+.btn-tertiary:focus i,
+.btn-tertiary + .dropdown-toggle:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle):focus i,
+.btn-primary + .btn-primary + .btn-primary:focus i,
+.btn-primary + .btn-primary + .btn-secondary:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary:focus i,
+.btn-tertiary.focus i,
+.btn-tertiary + .dropdown-toggle.focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).focus i,
+.btn-primary + .btn-primary + .btn-primary.focus i,
+.btn-primary + .btn-primary + .btn-secondary.focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.focus i {
+  color: var(--text-on-color);
+}
+.btn-tertiary[disabled],
+.btn-tertiary + .dropdown-toggle[disabled],
+.btn-primary + .btn-primary:not(.dropdown-toggle)[disabled],
+.btn-primary + .btn-primary + .btn-primary[disabled],
+.btn-primary + .btn-primary + .btn-secondary[disabled],
+.open > .btn-tertiary + .dropdown-toggle.btn-primary[disabled],
+.btn-tertiary.disabled,
+.btn-tertiary + .dropdown-toggle.disabled,
+.btn-primary + .btn-primary:not(.dropdown-toggle).disabled,
+.btn-primary + .btn-primary + .btn-primary.disabled,
+.btn-primary + .btn-primary + .btn-secondary.disabled,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.disabled,
+fieldset[disabled] .btn-tertiary,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle),
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary,
 .btn-tertiary[disabled]:hover,
 .btn-tertiary + .dropdown-toggle[disabled]:hover,
 .btn-primary + .btn-primary:not(.dropdown-toggle)[disabled]:hover,
@@ -3185,6 +3421,80 @@ fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.focus {
   background-color: transparent;
   color: var(--text-disabled);
   border: 1px solid transparent;
+}
+.btn-tertiary[disabled] i,
+.btn-tertiary + .dropdown-toggle[disabled] i,
+.btn-primary + .btn-primary:not(.dropdown-toggle)[disabled] i,
+.btn-primary + .btn-primary + .btn-primary[disabled] i,
+.btn-primary + .btn-primary + .btn-secondary[disabled] i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary[disabled] i,
+.btn-tertiary.disabled i,
+.btn-tertiary + .dropdown-toggle.disabled i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).disabled i,
+.btn-primary + .btn-primary + .btn-primary.disabled i,
+.btn-primary + .btn-primary + .btn-secondary.disabled i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.disabled i,
+fieldset[disabled] .btn-tertiary i,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle i,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle) i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary i,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary i,
+.btn-tertiary[disabled]:hover i,
+.btn-tertiary + .dropdown-toggle[disabled]:hover i,
+.btn-primary + .btn-primary:not(.dropdown-toggle)[disabled]:hover i,
+.btn-primary + .btn-primary + .btn-primary[disabled]:hover i,
+.btn-primary + .btn-primary + .btn-secondary[disabled]:hover i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary[disabled]:hover i,
+.btn-tertiary.disabled:hover i,
+.btn-tertiary + .dropdown-toggle.disabled:hover i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).disabled:hover i,
+.btn-primary + .btn-primary + .btn-primary.disabled:hover i,
+.btn-primary + .btn-primary + .btn-secondary.disabled:hover i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.disabled:hover i,
+fieldset[disabled] .btn-tertiary:hover i,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle:hover i,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle):hover i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary:hover i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary:hover i,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary:hover i,
+.btn-tertiary[disabled]:focus i,
+.btn-tertiary + .dropdown-toggle[disabled]:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle)[disabled]:focus i,
+.btn-primary + .btn-primary + .btn-primary[disabled]:focus i,
+.btn-primary + .btn-primary + .btn-secondary[disabled]:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary[disabled]:focus i,
+.btn-tertiary.disabled:focus i,
+.btn-tertiary + .dropdown-toggle.disabled:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).disabled:focus i,
+.btn-primary + .btn-primary + .btn-primary.disabled:focus i,
+.btn-primary + .btn-primary + .btn-secondary.disabled:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.disabled:focus i,
+fieldset[disabled] .btn-tertiary:focus i,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle:focus i,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle):focus i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary:focus i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary:focus i,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary:focus i,
+.btn-tertiary[disabled].focus i,
+.btn-tertiary + .dropdown-toggle[disabled].focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle)[disabled].focus i,
+.btn-primary + .btn-primary + .btn-primary[disabled].focus i,
+.btn-primary + .btn-primary + .btn-secondary[disabled].focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary[disabled].focus i,
+.btn-tertiary.disabled.focus i,
+.btn-tertiary + .dropdown-toggle.disabled.focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).disabled.focus i,
+.btn-primary + .btn-primary + .btn-primary.disabled.focus i,
+.btn-primary + .btn-primary + .btn-secondary.disabled.focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.disabled.focus i,
+fieldset[disabled] .btn-tertiary.focus i,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle.focus i,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle).focus i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary.focus i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary.focus i,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.focus i {
+  color: var(--text-disabled);
 }
 .btn-tertiary.btn-danger,
 .btn-tertiary + .dropdown-toggle.btn-danger,
@@ -3358,6 +3668,62 @@ fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.focus {
   background-color: var(--button-danger-active);
   border-color: var(--button-danger-active);
 }
+.btn-tertiary.btn-danger:active:hover i,
+.btn-tertiary + .dropdown-toggle.btn-danger:active:hover i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger:active:hover i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger:active:hover i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger:active:hover i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger:active:hover i,
+.btn-tertiary.btn-danger.active:hover i,
+.btn-tertiary + .dropdown-toggle.btn-danger.active:hover i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.active:hover i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger.active:hover i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger.active:hover i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.active:hover i,
+.open > .dropdown-toggle.btn-tertiary.btn-danger:hover i,
+.open > .dropdown-toggle.btn-tertiary + .dropdown-toggle.btn-danger:hover i,
+.open > .dropdown-toggle.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger:hover i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-primary.btn-danger:hover i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-secondary.btn-danger:hover i,
+.open > .dropdown-toggle.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger:hover i,
+.btn-tertiary.btn-danger:active:focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger:active:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger:active:focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger:active:focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger:active:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger:active:focus i,
+.btn-tertiary.btn-danger.active:focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger.active:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.active:focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger.active:focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger.active:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.active:focus i,
+.open > .dropdown-toggle.btn-tertiary.btn-danger:focus i,
+.open > .dropdown-toggle.btn-tertiary + .dropdown-toggle.btn-danger:focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger:focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-primary.btn-danger:focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-secondary.btn-danger:focus i,
+.open > .dropdown-toggle.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger:focus i,
+.btn-tertiary.btn-danger:active.focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger:active.focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger:active.focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger:active.focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger:active.focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger:active.focus i,
+.btn-tertiary.btn-danger.active.focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger.active.focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.active.focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger.active.focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger.active.focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.active.focus i,
+.open > .dropdown-toggle.btn-tertiary.btn-danger.focus i,
+.open > .dropdown-toggle.btn-tertiary + .dropdown-toggle.btn-danger.focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-primary.btn-danger.focus i,
+.open > .dropdown-toggle.btn-primary + .btn-primary + .btn-secondary.btn-danger.focus i,
+.open > .dropdown-toggle.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.focus i {
+  color: var(--text-inverse);
+}
 .btn-tertiary.btn-danger:focus,
 .btn-tertiary + .dropdown-toggle.btn-danger:focus,
 .btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger:focus,
@@ -3375,6 +3741,38 @@ fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.focus {
   border: 1px solid var(--button-danger-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
+.btn-tertiary.btn-danger:focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger:focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger:focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger:focus i,
+.btn-tertiary.btn-danger.focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger.focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger.focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger.focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.focus i {
+  color: var(--text-inverse);
+}
+.btn-tertiary.btn-danger[disabled],
+.btn-tertiary + .dropdown-toggle.btn-danger[disabled],
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger[disabled],
+.btn-primary + .btn-primary + .btn-primary.btn-danger[disabled],
+.btn-primary + .btn-primary + .btn-secondary.btn-danger[disabled],
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger[disabled],
+.btn-tertiary.btn-danger.disabled,
+.btn-tertiary + .dropdown-toggle.btn-danger.disabled,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.disabled,
+.btn-primary + .btn-primary + .btn-primary.btn-danger.disabled,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger.disabled,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.disabled,
+fieldset[disabled] .btn-tertiary.btn-danger,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle.btn-danger,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary.btn-danger,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary.btn-danger,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger,
 .btn-tertiary.btn-danger[disabled]:hover,
 .btn-tertiary + .dropdown-toggle.btn-danger[disabled]:hover,
 .btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger[disabled]:hover,
@@ -3432,6 +3830,80 @@ fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-dang
   background-color: var(--button-disabled);
   color: var(--text-disabled);
   border: 1px solid var(--button-disabled);
+}
+.btn-tertiary.btn-danger[disabled] i,
+.btn-tertiary + .dropdown-toggle.btn-danger[disabled] i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger[disabled] i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger[disabled] i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger[disabled] i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger[disabled] i,
+.btn-tertiary.btn-danger.disabled i,
+.btn-tertiary + .dropdown-toggle.btn-danger.disabled i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.disabled i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger.disabled i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger.disabled i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.disabled i,
+fieldset[disabled] .btn-tertiary.btn-danger i,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle.btn-danger i,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary.btn-danger i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary.btn-danger i,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger i,
+.btn-tertiary.btn-danger[disabled]:hover i,
+.btn-tertiary + .dropdown-toggle.btn-danger[disabled]:hover i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger[disabled]:hover i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger[disabled]:hover i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger[disabled]:hover i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger[disabled]:hover i,
+.btn-tertiary.btn-danger.disabled:hover i,
+.btn-tertiary + .dropdown-toggle.btn-danger.disabled:hover i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.disabled:hover i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger.disabled:hover i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger.disabled:hover i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.disabled:hover i,
+fieldset[disabled] .btn-tertiary.btn-danger:hover i,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle.btn-danger:hover i,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger:hover i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary.btn-danger:hover i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary.btn-danger:hover i,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger:hover i,
+.btn-tertiary.btn-danger[disabled]:focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger[disabled]:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger[disabled]:focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger[disabled]:focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger[disabled]:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger[disabled]:focus i,
+.btn-tertiary.btn-danger.disabled:focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger.disabled:focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.disabled:focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger.disabled:focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger.disabled:focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.disabled:focus i,
+fieldset[disabled] .btn-tertiary.btn-danger:focus i,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle.btn-danger:focus i,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger:focus i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary.btn-danger:focus i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary.btn-danger:focus i,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger:focus i,
+.btn-tertiary.btn-danger[disabled].focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger[disabled].focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger[disabled].focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger[disabled].focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger[disabled].focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger[disabled].focus i,
+.btn-tertiary.btn-danger.disabled.focus i,
+.btn-tertiary + .dropdown-toggle.btn-danger.disabled.focus i,
+.btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.disabled.focus i,
+.btn-primary + .btn-primary + .btn-primary.btn-danger.disabled.focus i,
+.btn-primary + .btn-primary + .btn-secondary.btn-danger.disabled.focus i,
+.open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.disabled.focus i,
+fieldset[disabled] .btn-tertiary.btn-danger.focus i,
+fieldset[disabled] .btn-tertiary + .dropdown-toggle.btn-danger.focus i,
+fieldset[disabled] .btn-primary + .btn-primary:not(.dropdown-toggle).btn-danger.focus i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-primary.btn-danger.focus i,
+fieldset[disabled] .btn-primary + .btn-primary + .btn-secondary.btn-danger.focus i,
+fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-danger.focus i {
+  color: var(--text-disabled);
 }
 .btn-primary,
 .btn-secondary,
@@ -3516,6 +3988,17 @@ fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-dang
   background-color: var(--background-active);
   border-color: var(--background-active);
 }
+.btn-ghost:active:hover i,
+.btn-ghost.active:hover i,
+.open > .dropdown-toggle.btn-ghost:hover i,
+.btn-ghost:active:focus i,
+.btn-ghost.active:focus i,
+.open > .dropdown-toggle.btn-ghost:focus i,
+.btn-ghost:active.focus i,
+.btn-ghost.active.focus i,
+.open > .dropdown-toggle.btn-ghost.focus i {
+  color: var(--link-primary-hover);
+}
 .btn-ghost:focus,
 .btn-ghost.focus {
   color: var(--link-primary-hover);
@@ -3523,6 +4006,13 @@ fieldset[disabled] .open > .btn-tertiary + .dropdown-toggle.btn-primary.btn-dang
   border: 1px solid var(--background-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
+.btn-ghost:focus i,
+.btn-ghost.focus i {
+  color: var(--link-primary-hover);
+}
+.btn-ghost[disabled],
+.btn-ghost.disabled,
+fieldset[disabled] .btn-ghost,
 .btn-ghost[disabled]:hover,
 .btn-ghost.disabled:hover,
 fieldset[disabled] .btn-ghost:hover,
@@ -3535,6 +4025,20 @@ fieldset[disabled] .btn-ghost.focus {
   background-color: transparent;
   color: var(--text-disabled);
   border: 1px solid transparent;
+}
+.btn-ghost[disabled] i,
+.btn-ghost.disabled i,
+fieldset[disabled] .btn-ghost i,
+.btn-ghost[disabled]:hover i,
+.btn-ghost.disabled:hover i,
+fieldset[disabled] .btn-ghost:hover i,
+.btn-ghost[disabled]:focus i,
+.btn-ghost.disabled:focus i,
+fieldset[disabled] .btn-ghost:focus i,
+.btn-ghost[disabled].focus i,
+.btn-ghost.disabled.focus i,
+fieldset[disabled] .btn-ghost.focus i {
+  color: var(--text-disabled);
 }
 .btn-ghost span {
   gap: var(--spacing-03);
@@ -3615,6 +4119,26 @@ fieldset[disabled] .btn-ghost.focus {
   background-color: var(--button-danger-active);
   border-color: var(--button-danger-active);
 }
+.btn-ghost.btn-danger:active:hover i,
+.btn-ghost.btn-danger.btn-icon:active:hover i,
+.btn-ghost.btn-danger.active:hover i,
+.btn-ghost.btn-danger.btn-icon.active:hover i,
+.open > .dropdown-toggle.btn-ghost.btn-danger:hover i,
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon:hover i,
+.btn-ghost.btn-danger:active:focus i,
+.btn-ghost.btn-danger.btn-icon:active:focus i,
+.btn-ghost.btn-danger.active:focus i,
+.btn-ghost.btn-danger.btn-icon.active:focus i,
+.open > .dropdown-toggle.btn-ghost.btn-danger:focus i,
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon:focus i,
+.btn-ghost.btn-danger:active.focus i,
+.btn-ghost.btn-danger.btn-icon:active.focus i,
+.btn-ghost.btn-danger.active.focus i,
+.btn-ghost.btn-danger.btn-icon.active.focus i,
+.open > .dropdown-toggle.btn-ghost.btn-danger.focus i,
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon.focus i {
+  color: var(--text-inverse);
+}
 .btn-ghost.btn-danger:focus,
 .btn-ghost.btn-danger.btn-icon:focus,
 .btn-ghost.btn-danger.focus,
@@ -3624,6 +4148,18 @@ fieldset[disabled] .btn-ghost.focus {
   border: 1px solid var(--button-danger-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
+.btn-ghost.btn-danger:focus i,
+.btn-ghost.btn-danger.btn-icon:focus i,
+.btn-ghost.btn-danger.focus i,
+.btn-ghost.btn-danger.btn-icon.focus i {
+  color: var(--text-inverse);
+}
+.btn-ghost.btn-danger[disabled],
+.btn-ghost.btn-danger.btn-icon[disabled],
+.btn-ghost.btn-danger.disabled,
+.btn-ghost.btn-danger.btn-icon.disabled,
+fieldset[disabled] .btn-ghost.btn-danger,
+fieldset[disabled] .btn-ghost.btn-danger.btn-icon,
 .btn-ghost.btn-danger[disabled]:hover,
 .btn-ghost.btn-danger.btn-icon[disabled]:hover,
 .btn-ghost.btn-danger.disabled:hover,
@@ -3645,6 +4181,32 @@ fieldset[disabled] .btn-ghost.btn-danger.btn-icon.focus {
   background-color: transparent;
   color: var(--text-disabled);
   border: 1px solid transparent;
+}
+.btn-ghost.btn-danger[disabled] i,
+.btn-ghost.btn-danger.btn-icon[disabled] i,
+.btn-ghost.btn-danger.disabled i,
+.btn-ghost.btn-danger.btn-icon.disabled i,
+fieldset[disabled] .btn-ghost.btn-danger i,
+fieldset[disabled] .btn-ghost.btn-danger.btn-icon i,
+.btn-ghost.btn-danger[disabled]:hover i,
+.btn-ghost.btn-danger.btn-icon[disabled]:hover i,
+.btn-ghost.btn-danger.disabled:hover i,
+.btn-ghost.btn-danger.btn-icon.disabled:hover i,
+fieldset[disabled] .btn-ghost.btn-danger:hover i,
+fieldset[disabled] .btn-ghost.btn-danger.btn-icon:hover i,
+.btn-ghost.btn-danger[disabled]:focus i,
+.btn-ghost.btn-danger.btn-icon[disabled]:focus i,
+.btn-ghost.btn-danger.disabled:focus i,
+.btn-ghost.btn-danger.btn-icon.disabled:focus i,
+fieldset[disabled] .btn-ghost.btn-danger:focus i,
+fieldset[disabled] .btn-ghost.btn-danger.btn-icon:focus i,
+.btn-ghost.btn-danger[disabled].focus i,
+.btn-ghost.btn-danger.btn-icon[disabled].focus i,
+.btn-ghost.btn-danger.disabled.focus i,
+.btn-ghost.btn-danger.btn-icon.disabled.focus i,
+fieldset[disabled] .btn-ghost.btn-danger.focus i,
+fieldset[disabled] .btn-ghost.btn-danger.btn-icon.focus i {
+  color: var(--text-disabled);
 }
 .btn-ghost.btn-icon {
   background-color: transparent;
@@ -3698,6 +4260,17 @@ fieldset[disabled] .btn-ghost.btn-danger.btn-icon.focus {
   background-color: var(--background-active);
   border-color: var(--background-active);
 }
+.btn-ghost.btn-icon:active:hover i,
+.btn-ghost.btn-icon.active:hover i,
+.open > .dropdown-toggle.btn-ghost.btn-icon:hover i,
+.btn-ghost.btn-icon:active:focus i,
+.btn-ghost.btn-icon.active:focus i,
+.open > .dropdown-toggle.btn-ghost.btn-icon:focus i,
+.btn-ghost.btn-icon:active.focus i,
+.btn-ghost.btn-icon.active.focus i,
+.open > .dropdown-toggle.btn-ghost.btn-icon.focus i {
+  color: var(--icon-primary);
+}
 .btn-ghost.btn-icon:focus,
 .btn-ghost.btn-icon.focus {
   color: var(--icon-primary);
@@ -3705,6 +4278,13 @@ fieldset[disabled] .btn-ghost.btn-danger.btn-icon.focus {
   border: 1px solid var(--background-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
+.btn-ghost.btn-icon:focus i,
+.btn-ghost.btn-icon.focus i {
+  color: var(--icon-primary);
+}
+.btn-ghost.btn-icon[disabled],
+.btn-ghost.btn-icon.disabled,
+fieldset[disabled] .btn-ghost.btn-icon,
 .btn-ghost.btn-icon[disabled]:hover,
 .btn-ghost.btn-icon.disabled:hover,
 fieldset[disabled] .btn-ghost.btn-icon:hover,
@@ -3717,6 +4297,20 @@ fieldset[disabled] .btn-ghost.btn-icon.focus {
   background-color: transparent;
   color: var(--icon-disabled);
   border: 1px solid transparent;
+}
+.btn-ghost.btn-icon[disabled] i,
+.btn-ghost.btn-icon.disabled i,
+fieldset[disabled] .btn-ghost.btn-icon i,
+.btn-ghost.btn-icon[disabled]:hover i,
+.btn-ghost.btn-icon.disabled:hover i,
+fieldset[disabled] .btn-ghost.btn-icon:hover i,
+.btn-ghost.btn-icon[disabled]:focus i,
+.btn-ghost.btn-icon.disabled:focus i,
+fieldset[disabled] .btn-ghost.btn-icon:focus i,
+.btn-ghost.btn-icon[disabled].focus i,
+.btn-ghost.btn-icon.disabled.focus i,
+fieldset[disabled] .btn-ghost.btn-icon.focus i {
+  color: var(--icon-disabled);
 }
 .btn-ghost.btn-icon.btn-toggletip {
   color: inherit;
@@ -3833,6 +4427,9 @@ fieldset[disabled] .btn-ghost.btn-icon.focus {
 }
 .btn-link {
   font-weight: normal;
+  height: auto;
+  line-height: normal;
+  padding: 0;
 }
 .btn-link:hover,
 .btn-link:focus {
@@ -3843,6 +4440,13 @@ fieldset[disabled] .btn-ghost.btn-icon.focus {
 }
 .btn-info:hover {
   color: #3c4650;
+}
+.btn-back {
+  gap: var(--spacing-02);
+  font-size: 92%;
+}
+.btn-back i {
+  order: unset;
 }
 .modal-footer .modal-form-buttons {
   display: flex;
@@ -3929,6 +4533,7 @@ fieldset[disabled] .btn-ghost.btn-icon.focus {
 .alert.alert-warning.notification,
 .alert.alert-danger.notification {
   position: relative;
+  border-radius: 0;
 }
 .alert.alert-success.notification:before,
 .alert.alert-info.notification:before,
@@ -3945,7 +4550,7 @@ fieldset[disabled] .btn-ghost.btn-icon.focus {
 .alert.alert-danger.notification .close {
   position: absolute;
   top: 10px;
-  right: 0;
+  right: 5px;
 }
 .alert .close {
   font-size: 13px;
@@ -5570,9 +6175,12 @@ ul.dropdown-menu-form {
   width: 50px;
   aspect-ratio: 1 / 1;
   background-color: var(--layer-alternate);
+  border-top-left-radius: var(--border-radius-md);
+  border-bottom-left-radius: var(--border-radius-md);
 }
 .notes > .note-single .tile {
   background-color: var(--layer-alternate);
+  border-top-left-radius: 0;
 }
 .bullet {
   display: inline-block;
@@ -6470,13 +7078,14 @@ input[type=file].focus {
   padding-left: 4px;
 }
 input[type="checkbox"] {
+  --mtc-checkbox-size: 14px;
   aspect-ratio: 1 / 1;
-  height: 16px;
+  height: var(--mtc-checkbox-size);
   vertical-align: -3px;
   background-color: transparent;
   appearance: none;
   border: 1px solid var(--interactive);
-  border-radius: 3px;
+  border-radius: 4px;
   margin: 0;
   align-items: center;
   display: flex;
@@ -6497,19 +7106,28 @@ input[type="checkbox"].focus {
   outline: 2px solid var(--focus);
   outline-offset: 1px;
 }
-input[type="checkbox"]:checked:after {
+input[type="checkbox"]:after {
   content: "";
+  height: calc(var(--mtc-checkbox-size) - 6px);
+  aspect-ratio: 1/1;
+  border-radius: 3px;
+  -webkit-transform: scale(0.5);
+  -ms-transform: scale(0.5);
+  -o-transform: scale(0.5);
+  transform: scale(0.5);
+  -webkit-transition: var(--transition-all-productive);
+  -o-transition: var(--transition-all-productive);
+  transition: var(--transition-all-productive);
+}
+input[type="checkbox"]:checked:after {
   background-color: var(--interactive);
-  height: 10px;
-  width: 10px;
-  border-radius: 2px;
   -webkit-transform: scale(1);
   -ms-transform: scale(1);
   -o-transform: scale(1);
   transform: scale(1);
-  -webkit-transition: all 0.1s ease;
-  -o-transition: all 0.1s ease;
-  transition: all 0.1s ease;
+  -webkit-transition: var(--transition-all-productive);
+  -o-transition: var(--transition-all-productive);
+  transition: var(--transition-all-productive);
 }
 .time-input select {
   margin: 0 3px 0 3px;
@@ -9747,9 +10365,6 @@ table.table > tbody > tr > td.long-text {
   word-wrap: break-word;
   white-space: normal;
 }
-.dynamicContentFilterContainer .btn-primary:hover {
-  color: #5d6c7c;
-}
 #dynamicContentContainer .remove-item {
   display: block;
 }
@@ -9929,6 +10544,17 @@ code:hover > .copy-icon {
   svg.mautic-logo-text {
     display: none;
   }
+}
+.dropup.quick-help {
+  position: fixed;
+  z-index: 9999;
+  bottom: 15px;
+  right: 15px;
+}
+.dropdown-toggle.quick-help {
+  background-color: var(--background);
+  border: 1px solid var(--border-subtle);
+  box-shadow: rgba(0, 0, 0, 0.07) 0px -1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
 }
 .toggle {
   display: inline-block;
