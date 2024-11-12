@@ -557,4 +557,61 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals($email->getSubject(), $response['subject']);
         $this->assertNotEmpty($response['body']);
     }
+
+    public function testSegmentEmailSendWithContinueSending(): void
+    {
+        $segment = $this->createSegment('Segment A', 'segment-a');
+
+        foreach (['test@one.email', 'test@two.email'] as $emailAddress) {
+            $contact = new Lead();
+            $contact->setEmail($emailAddress);
+
+            $member = new ListLead();
+            $member->setLead($contact);
+            $member->setList($segment);
+            $member->setDateAdded(new \DateTime());
+
+            $this->em->persist($member);
+            $this->em->persist($contact);
+        }
+
+        $this->em->flush();
+        $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
+        $email->setPublishUp(new \DateTime('now'));
+        $email->setContinueSending(null);
+        $this->em->persist($email);
+        $this->em->flush();
+
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+        $this->assertStringContainsString('Email: Email A | 2', $commandTester->getDisplay());
+
+        // Add another contact to the segment
+        $contact = new Lead();
+        $contact->setEmail('test@three.email');
+
+        $member = new ListLead();
+        $member->setLead($contact);
+        $member->setList($segment);
+        $member->setDateAdded(new \DateTime());
+
+        $this->em->persist($member);
+        $this->em->persist($contact);
+        $this->em->flush();
+
+        // Verify that the email isn't sent to the new contact
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+        $this->assertStringContainsString('Email: Email A | 0', $commandTester->getDisplay());
+
+        // Enable continue sending for the email
+        $email->setPublishUp(new \DateTime('now -1 hour'));
+        $email->setContinueSending(true);
+        $email->setPublishDown(new \DateTime('now +1 hour'));
+        $this->em->persist($email);
+        $this->em->flush();
+
+        // Verify that the email is sent to the new contact
+        $this->testSymfonyCommand('mautic:segments:update');
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+        $this->assertStringContainsString('Email: Email A | 1', $commandTester->getDisplay());
+    }
 }
