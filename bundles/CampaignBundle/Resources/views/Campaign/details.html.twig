@@ -1,5 +1,20 @@
 {% extends '@MauticCore/Default/content.html.twig' %}
 
+{% block indexButton %}
+{{- include('@MauticCore/Helper/page_actions.html.twig', {
+    'item': campaign,
+    'templateButtons': {
+        'close': securityHasEntityAccess(
+            permissions['campaign:campaigns:viewown'],
+            permissions['campaign:campaigns:viewother'],
+            campaign.createdBy
+        ),
+    },
+    'routeBase': 'campaign',
+    'targetLabel': 'mautic.campaign.campaigns'|trans
+  }) -}}
+{% endblock %}
+
 {% block headerTitle %}{{ campaign.name }}{% endblock %}
 
 {% block actions %}
@@ -15,11 +30,6 @@
         'delete': securityHasEntityAccess(
             permissions['campaign:campaigns:deleteown'],
             permissions['campaign:campaigns:deleteother'],
-            campaign.createdBy
-        ),
-        'close': securityHasEntityAccess(
-            permissions['campaign:campaigns:viewown'],
-            permissions['campaign:campaigns:viewother'],
             campaign.createdBy
         ),
     },

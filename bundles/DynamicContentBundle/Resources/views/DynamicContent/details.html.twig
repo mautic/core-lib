@@ -33,17 +33,31 @@
     {% include '@MauticCore/Helper/_tag.html.twig' with { tags: tags } %}
 {% endblock %}
 
-{% block actions include('@MauticCore/Helper/page_actions.html.twig', {
-    'item': entity,
-    'customButtons': customButtons|default([]),
-    'templateButtons': {
-        'edit': securityHasEntityAccess(permissions['dynamiccontent:dynamiccontents:editown'], permissions['dynamiccontent:dynamiccontents:editother'], entity.createdBy),
-        'clone': permissions['dynamiccontent:dynamiccontents:create'],
-        'delete': securityHasEntityAccess(permissions['dynamiccontent:dynamiccontents:deleteown'], permissions['dynamiccontent:dynamiccontents:deleteother'], entity.createdBy),
-        'close': securityHasEntityAccess(permissions['dynamiccontent:dynamiccontents:viewown'], permissions['dynamiccontent:dynamiccontents:viewother'], entity.createdBy),
-    },
-    'routeBase': 'dynamicContent',
-})  %}
+{% block indexButton %}
+{{- include('@MauticCore/Helper/page_actions.html.twig',
+    {
+        'item'            : entity,
+        'templateButtons' : {
+            'close' : securityHasEntityAccess(permissions['dynamiccontent:dynamiccontents:viewown'], permissions['dynamiccontent:dynamiccontents:viewother'], entity.createdBy),
+        },
+        'routeBase'       : 'dynamicContent',
+        'targetLabel'     : 'mautic.dynamicContent.dynamicContents'|trans
+    }
+) -}}
+{% endblock %}
+
+{% block actions %}
+    {{- include('@MauticCore/Helper/page_actions.html.twig', {
+        'item': entity,
+        'customButtons': customButtons|default([]),
+        'templateButtons': {
+            'edit': securityHasEntityAccess(permissions['dynamiccontent:dynamiccontents:editown'], permissions['dynamiccontent:dynamiccontents:editother'], entity.createdBy),
+            'clone': permissions['dynamiccontent:dynamiccontents:create'],
+            'delete': securityHasEntityAccess(permissions['dynamiccontent:dynamiccontents:deleteown'], permissions['dynamiccontent:dynamiccontents:deleteother'], entity.createdBy),
+        },
+        'routeBase': 'dynamicContent',
+    }) -}}
+{% endblock %}
 
 {% block content %}
   {%- set translationContent = include('@MauticCore/Translation/index.html.twig', {

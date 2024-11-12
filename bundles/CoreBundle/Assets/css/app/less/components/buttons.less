@@ -21,7 +21,6 @@
   width: fit-content;
   &:hover {
     border: 1px solid transparent;
-    color: var(--text-primary);
   }
   &,
   &:active,
@@ -156,7 +155,6 @@
     @disabled-background: transparent,
     @disabled-text-color: var(--text-disabled)
   );
-  margin-left: -1px;
 
   /// Tertiary danger
   &.btn-danger {
@@ -303,6 +301,9 @@
 // Make a button look and behave like a link
 .btn-link {
   font-weight: @btn-font-weight;
+  height: auto;
+  line-height: normal;
+  padding: 0;
   &:hover,
   &:focus { text-decoration: none; }
 }
@@ -310,6 +311,13 @@
 .btn-info {
   color: @gray-dark;
   &:hover { color: @gray-dark; }
+}
+
+// Back to index button
+.btn-back {
+  gap: var(--spacing-02);
+  font-size: 92%;
+  i { order: unset; }
 }
 
 // Modal footer buttons

@@ -60,7 +60,6 @@
 
     <!-- start: right nav -->
     <ul class="nav navbar-nav navbar-right">
-        {{ include('@MauticCore/Menu/quick_help.html.twig') }}
         {{ render(controller('Mautic\\CoreBundle\\Controller\\DefaultController::notificationsAction')) }}
         {{ include('@MauticCore/Menu/profile.html.twig') }}
         {{ menuRender('admin') }}

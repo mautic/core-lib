@@ -4,6 +4,24 @@
 
 {% block mauticContent 'email' %}
 
+{% block indexButton %}
+    {% if not isEmbedded %}
+        {{- include('@MauticCore/Helper/page_actions.html.twig', {
+            'item'            : email,
+            'templateButtons' : {
+                'close' : securityHasEntityAccess(
+                    permissions['email:emails:viewown'],
+                    permissions['email:emails:viewother'],
+                    email.getCreatedBy()
+                ),
+            },
+            'routeBase'     : 'email',
+            'targetLabel': 'mautic.email.emails'|trans,
+            'customButtons' : []
+        }) -}}
+    {% endif %}
+{% endblock %}
+
 {% set variantContent = include('@MauticCore/Variant/index.html.twig', {
         'activeEntity': email,
         'variants': variants,
@@ -60,7 +78,6 @@
         },
         'iconClass' : 'ri-mail-send-line',
         'btnText'   : 'mautic.email.send.example',
-        'primary'   : true,
     } %}
     {% set customButtons = customButtons|merge([sendExampleButton]) %}
     {% set heatmapButton = {
@@ -139,18 +156,12 @@
                     permissions['email:emails:deleteother'],
                     email.getCreatedBy()
                 ),
-                'close' : securityHasEntityAccess(
-                    permissions['email:emails:viewown'],
-                    permissions['email:emails:viewother'],
-                    email.getCreatedBy()
-                ),
             },
             'routeBase'     : 'email',
             'customButtons' : customButtons,
         }) -}}
     {% endif %}
 {% endblock %}
-
 
 {% block content %}
   <!-- start: box layout -->
@@ -437,9 +448,21 @@
                               </div>
                               <input id="content_preview_url" data-route="email/preview" onclick="this.setSelectionRange(0, this.value.length);" type="text" class="form-control" readonly value="{{ previewUrl|escape }}"/>
                               <span class="input-group-btn">
-                              <button id="content_preview_url_button" class="btn btn-ghost btn-icon btn-sm btn-md btn-nospin" onclick="window.open('{{ previewUrl }}', '_blank');">
-                                  <i class="ri-external-link-line"></i>
-                              </button>
+                                {% include '@MauticCore/Helper/button.html.twig' with {
+                                    buttons: [
+                                        {
+                                            label: 'mautic.core.open_link',
+                                            variant: 'ghost',
+                                            icon_only: true,
+                                            icon: 'ri-external-link-line',
+                                            attributes: {
+                                                'id': 'content_preview_url_button',
+                                                'type': 'button'
+                                            },
+                                            onclick: 'window.open("' ~ previewUrl ~ '", "_blank");'
+                                        }
+                                    ]
+                                } %}
                           </span>
                               <input type="hidden" id="content_preview_settings_object_id" value="{{ email.id }}">
                               <input type="hidden" id="content_preview_settings_contact_id" value="">
@@ -461,7 +484,6 @@
 
           <!-- activity feed -->
           {{- include('@MauticCore/Helper/recentactivity.html.twig', {'logs': logs}) -}}
-
 
       </div>
       <!-- right section -->

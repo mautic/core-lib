@@ -5,6 +5,23 @@
 {% block mauticContent %}sms{% endblock %}
 {% block headerTitle %}{{sms.getName()}}{% endblock %}
 
+{% block indexButton %}
+{{- include('@MauticCore/Helper/page_actions.html.twig',
+    {
+        'item'            : sms,
+        'templateButtons' : {
+            'close' : securityHasEntityAccess(
+                permissions['sms:smses:viewown'],
+                permissions['sms:smses:viewother'],
+                sms.getCreatedBy()
+            ),
+        },
+        'routeBase' : 'sms',
+        'targetLabel': 'mautic.sms.smses'|trans
+    }
+) -}}
+{% endblock %}
+
 {% block actions %}
     {% set customButtons = [] %}
     {{- include('@MauticCore/Helper/page_actions.html.twig',
@@ -21,11 +38,6 @@
                 'delete' : securityHasEntityAccess(
                     permissions['sms:smses:deleteown'],
                     permissions['sms:smses:deleteother'],
-                    sms.getCreatedBy()
-                ),
-                'close' : securityHasEntityAccess(
-                    permissions['sms:smses:viewown'],
-                    permissions['sms:smses:viewother'],
                     sms.getCreatedBy()
                 ),
             },
