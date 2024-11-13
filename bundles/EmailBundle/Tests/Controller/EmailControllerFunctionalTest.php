@@ -569,7 +569,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             $member = new ListLead();
             $member->setLead($contact);
             $member->setList($segment);
-            $member->setDateAdded(new \DateTime());
+            $member->setDateAdded(new \DateTime('now -1 hour'));
 
             $this->em->persist($member);
             $this->em->persist($contact);
@@ -610,7 +610,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         // Verify that the email is sent to the new contact
-        $this->testSymfonyCommand('mautic:segments:update');
         $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
         $this->assertStringContainsString('Email: Email A | 1', $commandTester->getDisplay());
     }
