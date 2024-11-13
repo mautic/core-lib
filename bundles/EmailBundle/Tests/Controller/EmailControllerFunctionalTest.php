@@ -611,6 +611,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         // Verify that the email is sent to the new contact
         $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
-        $this->assertStringContainsString('Email: Email A | 1', $commandTester->getDisplay());
+        $this->assertStringContainsString('Email: Email A | 1', $commandTester->getDisplay()); // @todo Fix test-  why is this not 1 but 0?
     }
 }
