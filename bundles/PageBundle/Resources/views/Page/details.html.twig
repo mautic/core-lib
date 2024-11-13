@@ -105,32 +105,32 @@
       <div class="col-md-9 height-auto">
           <div>
               <!-- page detail header -->
-              <div class="pr-md pl-md pt-lg pb-lg">
-                  <div class="box-layout">
-                      <div class="col-xs-10">
-                          <div class="text-muted">{{ activePage.metaDescription }}</div>
-                          {% if activePage.isVariant(true) %}
-                              <div class="small">
-                                  <a href="{{ path('mautic_page_action', {'objectAction': 'view', 'objectId': variants.parent.id}) }}" data-toggle="ajax">
-                                      {{- 'mautic.core.variant_of'|trans({'%parent%': variants.parent.getName()}) -}}
-                                  </a>
-                              </div>
-                          {% endif %}
-                          {% if activePage.isTranslation(true) %}
-                          <div class="small">
-                              <a href="{{ path('mautic_page_action', {'objectAction': 'view', 'objectId': translations.parent.id}) }}" data-toggle="ajax">
-                                  {{- 'mautic.core.translation_of'|trans({'%parent%': translations.parent.getName()}) -}}
-                              </a>
-                          </div>
-                          {% endif %}
-                          {% if activePage.isPreferenceCenter %}
-                              <div class="small">
-                                  {{ 'mautic.core.icon_tooltip.preference_center'|trans }}
-                              </div>
-                          {% endif %}
-                      </div>
-                  </div>
-              </div>
+                {% set extra_content %}
+                    {% if activePage.isVariant(true) %}
+                        <div class="small">
+                            <a href="{{ path('mautic_page_action', {'objectAction': 'view', 'objectId': variants.parent.id}) }}" data-toggle="ajax">
+                                {{- 'mautic.core.variant_of'|trans({'%parent%': variants.parent.getName()}) -}}
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% if activePage.isTranslation(true) %}
+                        <div class="small">
+                            <a href="{{ path('mautic_page_action', {'objectAction': 'view', 'objectId': translations.parent.id}) }}" data-toggle="ajax">
+                                {{- 'mautic.core.translation_of'|trans({'%parent%': translations.parent.getName()}) -}}
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% if activePage.isPreferenceCenter %}
+                        <div class="small">
+                            {{ 'mautic.core.icon_tooltip.preference_center'|trans }}
+                        </div>
+                    {% endif %}
+                {% endset %}
+
+                {% include '@MauticCore/Helper/description.html.twig' with {
+                    'description': activePage.metaDescription,
+                    'extra_content': extra_content
+                } %}
               <!--/ page detail header -->
 
               <!-- page detail collapseable -->
