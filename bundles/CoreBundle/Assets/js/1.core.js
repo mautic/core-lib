@@ -361,7 +361,7 @@ var Mautic = {
         mQuery('code').each(function() {
             var $codeBlock = mQuery(this);
             if (!$codeBlock.find('.copy-icon').length) {
-                $codeBlock.append('<i class="ri-clipboard-fill ml-xs copy-icon"></i>');
+                $codeBlock.append('<i class="ri-clipboard-fill copy-icon"></i>');
             }
         });
     },

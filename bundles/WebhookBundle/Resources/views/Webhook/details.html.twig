@@ -45,24 +45,7 @@
 <div class="box-layout">
     <!-- left section -->
     <div class="col-md-9 height-auto">
-        <div>
-            <!-- page detail header -->
-            <div class="pr-md pl-md pt-lg pb-lg">
-                <div class="box-layout">
-                    <div class="col-xs-10">
-                        <div class="text-muted">{{ item.getDescription()|purify }}</div>
-                    </div>
-                    <div class="col-xs-2 text-right">
-                        {{- include(
-                            '@MauticCore/Helper/page_actions.html.twig', {
-                                entity: item
-                            }
-                        ) }}
-                    </div>
-                </div>
-            </div>
-            <!--/ page detail header -->
-        </div>
+        {% include '@MauticCore/Helper/description.html.twig' with {'description': item.description} %}
         <div class="pa-md">
             <div class="row">
                 <div class="col-md-12">

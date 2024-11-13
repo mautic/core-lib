@@ -27,7 +27,7 @@
   {% set listCommand = 'mautic.lead.lead.searchcommand.list'|trans %}
 
   {% if isIndex %}
-    <div id="page-list-wrapper">
+    <div id="page-list-wrapper" class="panel">
         {{ include('@MauticCore/Helper/list_toolbar.html.twig', {
                 'searchValue': searchValue,
                 'searchHelp': 'mautic.lead.list.help.searchcommands',
