@@ -25,7 +25,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      */
     protected $id;
 
-    protected ?string $username;
+    protected ?string $username = null;
 
     /**
      * @var string
