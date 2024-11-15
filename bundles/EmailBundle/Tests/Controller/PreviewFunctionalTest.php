@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Tests\Controller;
 
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\UserBundle\Entity\User;
+use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 
 class PreviewFunctionalTest extends MauticMysqlTestCase
 {
@@ -33,7 +34,8 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
         $this->assertPageContent($urlWithContact, $contentNoContactInfo, self::PREHEADER_TEXT);
 
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
 
         // Admin user
         $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
@@ -119,7 +121,8 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
         $this->assertPageContent($urlWithContact, $contentNoContactInfo, self::PREHEADER_TEXT);
 
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
 
         // Admin user
         $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
@@ -222,7 +225,8 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $this->assertPageContent($urlWithContact1, $defaultContent);
 
         // Login admin user
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
 
         // Admin user with contact preview - show variant content - true filter matches
         $urlWithContact1 = "{$url}?contactId={$contacts['contacts'][0]['id']}";

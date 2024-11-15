@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Controller\Api;
 
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\DynamicContentBundle\Entity\DynamicContent;
-use Mautic\EmailBundle\Entity\Email;
-use Mautic\EmailBundle\Helper\MailHelper;
-use Mautic\LeadBundle\Entity\Company;
+use PHPUnit\Framework\Assert;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\UserBundle\Entity\User;
+use Mautic\EmailBundle\Entity\Email;
+use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
-use PHPUnit\Framework\Assert;
+use Mautic\EmailBundle\Helper\MailHelper;
 use Symfony\Component\HttpFoundation\Request;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\DynamicContentBundle\Entity\DynamicContent;
 
 class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 {
@@ -27,7 +28,8 @@ class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testCreateNewCampaign(): void
     {
-        $user = $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
 
         $segment = new LeadList();
         $segment->setName('test');

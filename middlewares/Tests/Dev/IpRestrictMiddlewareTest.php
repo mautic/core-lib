@@ -10,6 +10,23 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class IpRestrictMiddlewareTest extends \PHPUnit\Framework\TestCase
 {
+    private mixed $originalDdevTldValue;
+
+    public function setUp(): void
+    {
+        $this->originalDdevTldValue = getenv('DDEV_TLD');
+        putenv('DDEV_TLD');
+
+        parent::setUp();
+    }
+
+    public function tearDown(): void
+    {
+        putenv('DDEV_TLD=' . $this->originalDdevTldValue);
+
+        parent::tearDown();
+    }
+
     public function testWorkflowWithLocalhostIp(): void
     {
         $inputRequest = new Request();

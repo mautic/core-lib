@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Functional\Controller;
 
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\LeadBundle\Entity\Import;
-use Mautic\LeadBundle\Entity\Lead;
-use Mautic\LeadBundle\Entity\LeadField;
+use PHPUnit\Framework\Assert;
 use Mautic\LeadBundle\Entity\Tag;
+use Mautic\LeadBundle\Entity\Lead;
+use Mautic\UserBundle\Entity\User;
+use Mautic\LeadBundle\Entity\Import;
+use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\ImportModel;
-use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 
 class ImportControllerFunctionalTest extends MauticMysqlTestCase
 {
@@ -45,7 +46,8 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testScheduleImport(): void
     {
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
         $tagName = 'tag1';
         $tag     = $this->createTag($tagName);
         // Show mapping page.
@@ -83,7 +85,8 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testImportCSVWithFileAsHeaderName(): void
     {
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
         // Create 'file' field.
         $this->createField('text', 'file');
         // Create contact import.
@@ -120,7 +123,8 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testImportWithSpecialCharacterTag(): void
     {
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
 
         // Count tags before import
         $tagRepository  = $this->em->getRepository(Tag::class);

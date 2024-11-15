@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Mautic\PageBundle\Tests\Controller;
 
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\DynamicContentBundle\Entity\DynamicContent;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\PageBundle\Entity\Page;
+use Mautic\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\DynamicContentBundle\Entity\DynamicContent;
 
 class PreviewFunctionalTest extends MauticMysqlTestCase
 {
@@ -27,7 +28,8 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $this->client->request(Request::METHOD_GET, $url);
         self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
 
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
 
         // Admin user is allowed to access preview
         $this->assertPageContent($url, $defaultContent);

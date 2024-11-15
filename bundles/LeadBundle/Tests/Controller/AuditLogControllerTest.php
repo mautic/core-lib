@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Controller;
 
+use Mautic\UserBundle\Entity\User;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
@@ -37,7 +38,8 @@ final class AuditLogControllerTest extends MauticMysqlTestCase
         $this->em->persist($contact);
         $this->em->flush();
 
-        $this->loginUser(self::SALES_USER);
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => self::SALES_USER]);
+        $this->client->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', self::SALES_USER);
         $this->client->request('GET', '/s/contacts/auditlog/batchExport/'.$contact->getId());
 

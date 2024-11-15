@@ -49,7 +49,7 @@ class Stat
      */
     private $ipAddress;
 
-    private ?\DateTimeInterface $dateSent;
+    private ?\DateTimeInterface $dateSent = null;
 
     /**
      * @var bool

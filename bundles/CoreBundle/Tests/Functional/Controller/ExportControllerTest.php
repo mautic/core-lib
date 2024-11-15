@@ -80,7 +80,7 @@ final class ExportControllerTest extends MauticMysqlTestCase
 
         // Check the details page
         $this->client->request('GET', '/s/reports/view/'.$report->getId());
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
 
         $this->client->request(Request::METHOD_GET, '/s/reports/view/'.$report->getId().'');
         $this->assertStringContainsString('Export to CSV', $this->client->getResponse()->getContent());
@@ -105,7 +105,7 @@ final class ExportControllerTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->detach($role);
         /** @phpstan-ignore-next-line  */
-        $this->loginUser($user->getUsername());
+        $this->client->loginUser($user);
         /** @phpstan-ignore-next-line  */
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUsername());
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');

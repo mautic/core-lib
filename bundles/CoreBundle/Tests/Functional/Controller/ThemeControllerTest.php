@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Tests\Functional\Controller;
 
+use PHPUnit\Framework\Assert;
+use Mautic\UserBundle\Entity\User;
 use Mautic\CoreBundle\Helper\Filesystem;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 
 final class ThemeControllerTest extends MauticMysqlTestCase
 {
@@ -87,7 +88,8 @@ final class ThemeControllerTest extends MauticMysqlTestCase
 
         // Reboot kernel to reload all themes
         self::bootKernel();
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
 
         // Email theme list has hidden 'Aurora' theme
         $newEmail = $this->client->request(Request::METHOD_GET, '/s/emails/new');

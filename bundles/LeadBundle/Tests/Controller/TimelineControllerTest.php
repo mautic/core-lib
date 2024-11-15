@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Controller;
 
+use Mautic\UserBundle\Entity\User;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
+use Symfony\Component\HttpFoundation\Response;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
-use Symfony\Component\HttpFoundation\Response;
 
 final class TimelineControllerTest extends MauticMysqlTestCase
 {
@@ -66,7 +67,8 @@ final class TimelineControllerTest extends MauticMysqlTestCase
         $this->em->persist($contact);
         $this->em->flush();
 
-        $this->loginUser(self::SALES_USER);
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => self::SALES_USER]);
+        $this->client->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', self::SALES_USER);
         $this->client->request('GET', '/s/contacts/timeline/batchExport/'.$contact->getId());
 

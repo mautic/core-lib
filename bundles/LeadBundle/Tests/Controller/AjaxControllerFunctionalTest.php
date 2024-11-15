@@ -501,7 +501,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request(Request::METHOD_GET, '/s/logout');
 
         // Check suggestions for a non admin user.
-        $this->loginUser('non-admin-user');
+        $this->client->loginUser($nonAdminUser);
         $this->client->setServerParameter('PHP_AUTH_USER', 'non-admin-user');
         // Set the new password, because new authenticator system checks for it.
         $this->client->setServerParameter('PHP_AUTH_PW', $passwordNonAdmin);

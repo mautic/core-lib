@@ -166,6 +166,9 @@ abstract class AbstractMauticTestCase extends WebTestCase
         ];
     }
 
+    /**
+     * @deprecated Use $this->client->loginUser() instead.
+     */
     protected function loginUser(string $username): User
     {
         /** @var User|null $user */

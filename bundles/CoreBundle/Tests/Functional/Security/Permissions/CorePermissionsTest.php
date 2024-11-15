@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Tests\Functional\Security\Permissions;
 
-use Mautic\CoreBundle\Security\Permissions\AbstractPermissions;
-use Mautic\CoreBundle\Security\Permissions\VirtualPermissions;
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use PHPUnit\Framework\Assert;
+use Mautic\UserBundle\Entity\User;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\CoreBundle\Security\Permissions\VirtualPermissions;
+use Mautic\CoreBundle\Security\Permissions\AbstractPermissions;
 
 class CorePermissionsTest extends MauticMysqlTestCase
 {
@@ -25,7 +26,8 @@ class CorePermissionsTest extends MauticMysqlTestCase
      */
     public function testVirtualPermission(bool $grant): void
     {
-        $user        = $this->loginUser('sales');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->client->loginUser($user);
         $permissions = self::getContainer()->get('mautic.security');
         $permissions->setPermissionObject($this->createVirtualPermission($grant));
 
