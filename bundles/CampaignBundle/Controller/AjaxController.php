@@ -41,7 +41,7 @@ class AjaxController extends CommonAjaxController
     {
         $session        = $request->getSession();
         $campaignId     = InputHelper::clean($request->query->get('campaignId'));
-        $canvasSettings = $request->request->get('canvasSettings') ?? [];
+        $canvasSettings = $request->request->all()['canvasSettings'] ?? [];
         if (empty($campaignId)) {
             $dataArray = ['success' => 0];
         } else {

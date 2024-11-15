@@ -56,7 +56,7 @@ class AjaxController extends CommonAjaxController
             $sessionVar = 'mautic.pagebuilder.'.$entityId.'.content';
 
             // Check for an array of slots
-            $slots   = InputHelper::_($request->request->get('slots') ?? [], 'html');
+            $slots   = InputHelper::_($request->request->all()['slots'] ?? [], 'html');
             $content = $session->get($sessionVar, []);
 
             if (!is_array($content)) {

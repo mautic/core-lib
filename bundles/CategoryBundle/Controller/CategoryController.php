@@ -588,7 +588,7 @@ class CategoryController extends AbstractFormController
     {
         $inForm = $request->get('inForm', 0);
         if (Request::METHOD_POST == $method) {
-            $category_form = $request->request->get('category_form');
+            $category_form = $request->request->all()['category_form'];
             $inForm        = $category_form['inForm'] ?? 0;
         }
 

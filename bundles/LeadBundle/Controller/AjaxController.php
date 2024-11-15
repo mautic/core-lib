@@ -328,8 +328,8 @@ class AjaxController extends CommonAjaxController
     protected function updateTimelineAction(Request $request, Session $session): JsonResponse
     {
         $dataArray     = ['success' => 0];
-        $includeEvents = InputHelper::clean($request->request->get('includeEvents') ?? []);
-        $excludeEvents = InputHelper::clean($request->request->get('excludeEvents') ?? []);
+        $includeEvents = InputHelper::clean($request->request->all()['includeEvents'] ?? []);
+        $excludeEvents = InputHelper::clean($request->request->all()['excludeEvents'] ?? []);
         $search        = InputHelper::clean($request->request->get('search'));
         $leadId        = (int) $request->request->get('leadId');
 

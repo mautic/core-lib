@@ -318,7 +318,7 @@ class AjaxController extends CommonController
         $dataArray   = ['success' => 0];
         $name        = InputHelper::clean($request->request->get('model'));
         $id          = (int) $request->request->get('id');
-        $extra       = InputHelper::clean($request->request->get('parameter'));
+        $extra       = InputHelper::clean($request->request->all()['parameter']);
         $model       = $this->getModel($name);
         $entity      = $model->getEntity($id);
         $currentUser = $this->user;
