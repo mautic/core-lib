@@ -145,7 +145,7 @@ abstract class AbstractFormController extends CommonController
             throw new \RuntimeException('Request is required.');
         }
 
-        $formData = $request->request->get($form->getName());
+        $formData = $request->request->all()[$form->getName()] ?? [];
 
         return array_key_exists('buttons', $formData) && array_key_exists('apply', $formData['buttons']);
     }
