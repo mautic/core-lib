@@ -106,7 +106,7 @@ class Stat
      */
     private $openCount = 0;
 
-    private ?\DateTimeInterface $lastOpened;
+    private ?\DateTimeInterface $lastOpened = null;
 
     /**
      * @var array

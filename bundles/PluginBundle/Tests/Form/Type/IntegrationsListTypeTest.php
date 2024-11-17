@@ -188,7 +188,7 @@ class IntegrationsListTypeTest extends TestCase
         $callsForm = 0;
         $form      = $this->createMock(FormInterface::class);
         $form->method('add')
-            ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($integrationInstance1, &$callsForm): void {
+            ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($integrationInstance1, &$callsForm, $form): FormInterface {
                 if ('config' === $key) {
                     ++$callsForm;
                     self::assertSame(IntegrationConfigType::class, $fieldFQCN);
@@ -209,6 +209,8 @@ class IntegrationsListTypeTest extends TestCase
                         'some'                   => 'other',
                     ], $options['data']);
                 }
+
+                return $form;
             });
 
         $data = [
@@ -232,8 +234,9 @@ class IntegrationsListTypeTest extends TestCase
 
         $callsBuilder = 0;
         $builder      = $this->createMock(FormBuilderInterface::class);
+        \assert($builder instanceof FormBuilderInterface);
         $builder->method('add')
-            ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($pluginName, &$callsBuilder): void {
+            ->willReturnCallback(static function (string $key, string $fieldFQCN, array $options) use ($pluginName, &$callsBuilder, $builder): FormBuilderInterface {
                 if ('integration' === $key) {
                     ++$callsBuilder;
                     self::assertSame(ChoiceType::class, $fieldFQCN);
@@ -245,16 +248,20 @@ class IntegrationsListTypeTest extends TestCase
                         ],
                     ], $options['choices']);
                 }
+
+                return $builder;
             });
 
         $calledCallback = 0;
         $builder->expects(self::exactly(2))
             ->method('addEventListener')
-            ->willReturnCallback(static function (string $eventName, callable $callback) use ($formEvent, &$calledCallback): void {
+            ->willReturnCallback(static function (string $eventName, callable $callback) use ($formEvent, &$calledCallback, $builder): FormBuilderInterface {
                 self::assertContains($eventName, [FormEvents::PRE_SET_DATA, FormEvents::PRE_SUBMIT]);
 
                 ++$calledCallback;
                 $callback($formEvent);
+
+                return $builder;
             });
 
         $integrationsListType = new IntegrationsListType($integrationHelper);
