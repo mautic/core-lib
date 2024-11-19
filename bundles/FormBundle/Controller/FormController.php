@@ -502,7 +502,7 @@ class FormController extends CommonFormController
     {
         /** @var FormModel $model */
         $model            = $this->getModel('form');
-        $formData         = $request->request->all()['mauticform'];
+        $formData         = $request->request->all()['mauticform'] ?? [];
         $sessionId        = $formData['sessionId'] ?? null;
         $customComponents = $model->getCustomComponents();
         $modifiedFields   = [];

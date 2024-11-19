@@ -178,7 +178,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         $crawler = $this->client->request('GET', sprintf('/s/forms/edit/%d', $form->getId()));
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
 
         $formElement = $crawler->filterXPath('//form[@name="mauticform"]')->form();
         $this->client->submit($formElement);

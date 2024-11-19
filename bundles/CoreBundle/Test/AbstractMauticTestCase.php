@@ -18,6 +18,10 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 use Symfony\Component\Mime\RawMessage;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -107,6 +111,13 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $this->router = static::getContainer()->get('router');
         $scheme       = $this->router->getContext()->getScheme();
         $secure       = 0 === strcasecmp($scheme, 'https');
+
+        // Avoiding "There is currently no session available." error
+        $stack   = static::getContainer()->get(RequestStack::class);
+        $session = new Session(new MockFileSessionStorage());
+        $request = new Request();
+        $request->setSession($session);
+        $stack->push($request);
 
         $this->client->setServerParameter('HTTPS', (string) $secure);
     }
