@@ -5,6 +5,8 @@ namespace Mautic\UserBundle\Controller;
 use Mautic\CoreBundle\Controller\FormController;
 use Mautic\CoreBundle\Factory\PageHelperFactoryInterface;
 use Mautic\UserBundle\Entity;
+use Mautic\UserBundle\Entity\PermissionRepository;
+use Mautic\UserBundle\Entity\UserRepository;
 use Mautic\UserBundle\Model\RoleModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -295,9 +297,10 @@ class RoleController extends FormController
     {
         $permissionObjects = $this->security->getPermissionObjects();
         $translator        = $this->translator;
+        $permissionRepo    = $this->doctrine->getRepository(Entity\Permission::class);
+        \assert($permissionRepo instanceof PermissionRepository);
 
-        $permissionsArray = ($role->getId()) ?
-            $this->doctrine->getRepository(Entity\Permission::class)->getPermissionsByRole($role, true) : [];
+        $permissionsArray = ($role->getId()) ? $permissionRepo->getPermissionsByRole($role, true) : [];
 
         $permissions     = [];
         $permissionsList = [];
@@ -413,7 +416,7 @@ class RoleController extends FormController
      *
      * @return Response
      */
-    public function batchDeleteAction(Request $request)
+    public function batchDeleteAction(Request $request, RoleModel $model)
     {
         $page      = $request->getSession()->get('mautic.role.page', 1);
         $returnUrl = $this->generateUrl('mautic_role_index', ['page' => $page]);
@@ -430,16 +433,15 @@ class RoleController extends FormController
         ];
 
         if (Request::METHOD_POST === $request->getMethod()) {
-            /** @var RoleModel $model */
-            $model = $this->getModel('user.role');
-            \assert($model instanceof RoleModel);
-            $ids         = json_decode($request->query->get('ids', ''));
-            $deleteIds   = [];
+            $ids       = json_decode($request->query->get('ids', ''));
+            $deleteIds = [];
+            $userRepo  = $this->doctrine->getRepository(Entity\User::class);
+            \assert($userRepo instanceof UserRepository);
 
             // Loop over the IDs to perform access checks pre-delete
             foreach ($ids as $objectId) {
                 $entity = $model->getEntity($objectId);
-                $users  = $this->doctrine->getRepository(Entity\User::class)->findByRole($entity);
+                $users  = $userRepo->findByRole($entity);
 
                 if (null === $entity) {
                     $flashes[] = [
