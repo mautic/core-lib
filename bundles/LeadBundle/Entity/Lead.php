@@ -640,7 +640,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
         }
 
         $ip = $ipAddress->getIpAddress();
-        if (!isset($this->ipAddresses[$ip])) {
+        if (null !== $ip && !isset($this->ipAddresses[$ip])) {
             $this->isChanged('ipAddresses', $ipAddress);
             $this->ipAddresses[$ip] = $ipAddress;
         }

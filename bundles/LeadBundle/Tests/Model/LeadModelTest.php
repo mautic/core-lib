@@ -215,7 +215,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $this->mockGetLeadRepository();
 
         $entity    = new Lead();
-        $ipAddress = new IpAddress();
+        $ipAddress = new IpAddress('some.ip');
 
         $ipAddress->setIpDetails(['organization' => 'Doctors Without Borders']);
 
@@ -246,7 +246,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $companyFromIpLookup = 'Doctors Without Borders';
         $entity              = new Lead();
-        $ipAddress           = new IpAddress();
+        $ipAddress           = new IpAddress('some.ip');
 
         $ipAddress->setIpDetails(['organization' => $companyFromIpLookup]);
 
@@ -280,7 +280,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $companyFromIpLookup = 'Doctors Without Borders';
         $companyFromEntity   = 'Red Cross';
         $entity              = new Lead();
-        $ipAddress           = new IpAddress();
+        $ipAddress           = new IpAddress('some.ip');
 
         $entity->setCompany($companyFromEntity);
         $ipAddress->setIpDetails(['organization' => $companyFromIpLookup]);
