@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 final class oAuthHelperTest extends TestCase
 {
     /**
+     * @param array<int, string> $headers
+     *
      * @dataProvider dataForHashSensitiveHeaderData
      */
     public function testHashSensitiveHeaderData(string $authorization, array $headers): void
