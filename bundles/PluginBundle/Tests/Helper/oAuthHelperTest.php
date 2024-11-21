@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class oAuthHelperTest extends TestCase
 {
-    public function testHashSensitiveHeaderData()
+    public function testHashSensitiveHeaderData(): void
     {
         $headers = [
             'Authorization: Bearer SME-ASA',
