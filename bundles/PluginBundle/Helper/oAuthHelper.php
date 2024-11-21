@@ -205,4 +205,20 @@ class oAuthHelper
 
         return $result;
     }
+
+    /**
+     * @param string[] $data
+     *
+     * @return string[]
+     */
+    public static function hashSensitiveHeaderData(array $data): array
+    {
+        foreach ($data as &$value) {
+            if (preg_match('/Authorization:\s+Bearer\s+(\S+)/', $value, $match)) {
+                $value = 'Authorization: Bearer '.hash('sha256', $match[1]);
+            }
+        }
+
+        return $data;
+    }
 }
