@@ -214,8 +214,8 @@ class oAuthHelper
     public static function hashSensitiveHeaderData(array $data): array
     {
         foreach ($data as &$value) {
-            if (preg_match('/Authorization:\s+Bearer\s+(\S+)/', $value, $match)) {
-                $value = 'Authorization: Bearer '.hash('sha256', $match[1]);
+            if (preg_match('/Authorization:\s+(Bearer|Basic)\s+(\S+)/', $value, $match)) {
+                $value = sprintf('Authorization: %s %s', $match[1], hash('sha256', $match[2]));
             }
         }
 

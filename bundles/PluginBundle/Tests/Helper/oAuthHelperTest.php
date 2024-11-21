@@ -9,15 +9,34 @@ use PHPUnit\Framework\TestCase;
 
 final class oAuthHelperTest extends TestCase
 {
-    public function testHashSensitiveHeaderData(): void
+    /**
+     * @dataProvider dataForHashSensitiveHeaderData
+     */
+    public function testHashSensitiveHeaderData(string $authorization, array $headers): void
     {
-        $headers = [
-            'Authorization: Bearer SME-ASA',
-        ];
-
         $hashedHeaders = oAuthHelper::hashSensitiveHeaderData($headers);
 
-        $this->assertStringContainsString('Authorization: Bearer ', $hashedHeaders[0]);
-        $this->assertMatchesRegularExpression('/Authorization: Bearer [a-f0-9]{64}/', $hashedHeaders[0]);
+        $this->assertStringContainsString(sprintf('Authorization: %s ', $authorization), $hashedHeaders[0]);
+        $this->assertMatchesRegularExpression(sprintf('/Authorization: %s [a-f0-9]{64}/', $authorization), $hashedHeaders[0]);
+    }
+
+    /**
+     * @return \Generator<string, array<int, string|array<int, string>>>
+     */
+    public function dataForHashSensitiveHeaderData(): \Generator
+    {
+        yield 'For Bearer' => [
+            'Bearer',
+            [
+                'Authorization: Bearer SME-ASA',
+            ],
+        ];
+
+        yield 'For Basic' => [
+            'Basic',
+            [
+                'Authorization: Basic YWxhZGRpbjpvcGVuc2VzYW1l',
+            ],
+        ];
     }
 }
