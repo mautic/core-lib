@@ -26,12 +26,25 @@
             'iconClass': 'ri-spy-line',
         }]) %}
     {% endif %}
-    <div id="page-list-wrapper" class="panel">
-        {{ include('@MauticCore/Helper/list_toolbar.html.twig', {
+    <div id="page-list-wrapper" class="panel panel-default">
+        {{- include('@MauticCore/Helper/list_toolbar.html.twig', {
             'searchValue': searchValue|default(''),
-            'searchHelp': 'mautic.lead.lead.help.searchcommands',
             'action': currentRoute,
             'customButtons': toolbarButtons,
-        }) }}
+            'quickFilters': [
+                {
+                    'search': 'mautic.core.searchcommand.ismine',
+                    'label': 'mautic.core.searchcommand.ismine.label',
+                    'tooltip': 'mautic.core.searchcommand.ismine.description',
+                    'icon': 'ri-user-line'
+                },
+                {
+                    'search': 'mautic.lead.lead.searchcommand.isunowned',
+                    'label': 'mautic.lead.lead.searchcommand.isunowned.label',
+                    'tooltip': 'mautic.lead.lead.searchcommand.isunowned.description',
+                    'icon': 'ri-user-unfollow-line'
+                }
+            ]
+        }) -}}
         <div class="page-list">
 {% endif %}

@@ -18,16 +18,23 @@
 
 {% block content %}
     {% if isIndex %}
-        {{- include('@MauticCore/Helper/list_toolbar.html.twig',
-            {
-                'searchValue' : searchValue,
-                'searchHelp'  : 'mautic.user.role.help.searchcommands',
-                'action'      : currentRoute,
-            }
-        ) -}}
-        <div class="page-list">
-            {{ block('listResults') }}
-        </div>
+    <div id="page-list-wrapper" class="panel panel-default">
+        {{- include('@MauticCore/Helper/list_toolbar.html.twig', {
+            'searchValue' : searchValue,
+            'action'      : currentRoute,
+            'quickFilters': [
+                    {
+                        'search': 'mautic.user.user.searchcommand.isadmin',
+                        'label': 'mautic.user.role.form.isadmin',
+                        'tooltip': 'mautic.core.search.quickfilter.is_admin',
+                        'icon': 'ri-admin-line'
+                    }
+                ]
+            }) -}}
+            <div class="page-list">
+                {{ block('listResults') }}
+            </div>
+    </div>
     {% else %}
         {{ block('listResults') }}
     {% endif %}
@@ -107,7 +114,7 @@
                         </a>
                     {% else %}
                         {{ item.getName() }}
-                    
+
                     {% endif %}
                 </td>
                 <td class="visible-md visible-lg">

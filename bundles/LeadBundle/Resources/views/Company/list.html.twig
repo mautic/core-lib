@@ -45,13 +45,20 @@
 
 {% block content %}
   {% if isIndex %}
-    <div id="page-list-wrapper" class="panel">
-        {{ include('@MauticCore/Helper/list_toolbar.html.twig', {
-                'searchValue': searchValue,
-                'searchHelp': 'mautic.core.help.searchcommands',
-                'action': currentRoute,
-        }) }}
-        <div class="page-list">
+    <div id="page-list-wrapper" class="panel panel-default">
+      {{- include('@MauticCore/Helper/list_toolbar.html.twig', {
+        'searchValue': searchValue,
+        'action': currentRoute,
+        'quickFilters': [
+            {
+                'search': 'mautic.core.searchcommand.ismine',
+                'label': 'mautic.core.searchcommand.ismine.label',
+                'tooltip': 'mautic.core.searchcommand.ismine.description',
+                'icon': 'ri-user-line'
+            }
+        ]
+    }) -}}
+    <div class="page-list">
   {% endif %}
 
   {% if items|length > 0 %}
