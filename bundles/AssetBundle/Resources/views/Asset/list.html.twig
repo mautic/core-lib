@@ -19,13 +19,38 @@
 
 {% block content %}
 	{% if isIndex %}
-		<div id="page-list-wrapper" class="panel">
+		<div id="page-list-wrapper" class="panel panel-default">
 
 			{{- include('@MauticCore/Helper/list_toolbar.html.twig', {
-        'searchValue' : searchValue,
-        'action'      : currentRoute,
-        'searchHelp'  : 'mautic.asset.asset.help.searchcommands',
-    }) -}}
+                'searchValue': searchValue,
+                'action': currentRoute,
+                'quickFilters': [
+                    {
+                        'search': 'mautic.core.searchcommand.isuncategorized',
+                        'label': 'mautic.core.form.uncategorized',
+                        'tooltip': 'mautic.core.search.quickfilter.is_uncategorized',
+                        'icon': 'ri-folder-unknow-line'
+                    },
+                    {
+                        'search': 'mautic.core.searchcommand.ispublished',
+                        'label': 'mautic.core.form.available',
+                        'tooltip': 'mautic.core.search.quickfilter.is_published',
+                        'icon': 'ri-check-line'
+                    },
+                    {
+                        'search': 'mautic.core.searchcommand.isunpublished',
+                        'label': 'mautic.core.form.unavailable',
+                        'tooltip': 'mautic.core.search.quickfilter.is_unpublished',
+                        'icon': 'ri-close-line'
+                    },
+                    {
+                        'search': 'mautic.core.searchcommand.ismine',
+                        'label': 'mautic.core.searchcommand.ismine.label',
+                        'tooltip': 'mautic.core.searchcommand.ismine.description',
+                        'icon': 'ri-user-line'
+                    }
+                ]
+            }) -}}
 			<div class="page-list">
 				{{ block('listResults') }}
 			</div>
