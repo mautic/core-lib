@@ -14,6 +14,16 @@
   padding: 0;
   vertical-align: middle;
 
+  &:first-child > a {
+    border-top-left-radius: clamp(4px, var(--border-radius-md), 12px);
+    border-top-right-radius: clamp(4px, var(--border-radius-md), 12px);
+  }
+
+  &:last-child > a {
+    border-bottom-left-radius: clamp(4px, var(--border-radius-md), 12px);
+    border-bottom-right-radius: clamp(4px, var(--border-radius-md), 12px);
+  }
+
   > a, > label {
     position: relative;
     z-index: 1;
@@ -21,6 +31,8 @@
     padding: 10px 15px;
     cursor: pointer;
     color: @list-group-link-color;
+    .outline();
+
     input {
       position: absolute;
       top: 0;
