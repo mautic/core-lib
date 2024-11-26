@@ -17,6 +17,7 @@ use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\UserBundle\Entity\Permission;
+use Mautic\UserBundle\Entity\Permission;
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
@@ -191,6 +192,50 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $this->assertInsufficientPermissionError($logs[1], $user);
         Assert::assertSame('updated', $logs[2]->getAction());
         Assert::assertArrayNotHasKey('error', $logs[2]->getProperties());
+    }
+
+    public function testImportPublishAndUnpublish(): void
+    {
+        // Create non-admin role
+        $permission = ['lead:imports' => ['view', 'edit', 'create', 'delete']];
+        $role       = $this->createRole(false, $permission);
+        // Create permissions for the role
+        $this->createPermission('lead:imports:create', $role, 180);
+        // Create non-admin user
+        $user = $this->createUser($role);
+        $this->em->flush();
+        $this->em->clear();
+
+        // Login newly created non-admin user
+        $this->loginUser($user->getUsername());
+        $this->client->setServerParameter('PHP_AUTH_USER', $user->getUsername());
+        $this->client->setServerParameter('PHP_AUTH_PW', 'mautic');
+
+        $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
+        $uploadForm = $crawler->selectButton('Upload')->form();
+        $file       = new UploadedFile(dirname(__FILE__).'/../Fixtures/contacts.csv', 'contacs.csv', 'itext/csv');
+
+        $uploadForm['lead_import[file]']->setValue((string) $file);
+
+        $crawler     = $this->client->submit($uploadForm);
+        $mappingForm = $crawler->selectButton('Import')->form();
+        $crawler     = $this->client->submit($mappingForm);
+
+        Assert::assertStringContainsString(
+            'Import process was successfully created. But it will not be processed as you do not have permission to publish.',
+            $crawler->html(),
+            $crawler->html()
+        );
+
+        /** @var ImportRepository $importRepository */
+        $importRepository = $this->em->getRepository(Import::class);
+
+        /** @var Import $importEntity */
+        $importEntity = $importRepository->findOneBy(['originalFile' => 'contacts.csv']);
+
+        Assert::assertNotNull($importEntity);
+        Assert::assertSame(false, $importEntity->getIsPublished());
+        Assert::assertSame(Import::STOPPED, $importEntity->getStatus());
     }
 
     public function testImportFailedWithImportFailedException(): void
