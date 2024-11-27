@@ -92,6 +92,12 @@
   &.btn-block {width: 100%;}
 }
 
+.btn ~ .btn,
+.btn ~ .btn-group,
+.btn-group ~ .btn,
+.btn-group ~ .btn-group {
+  margin-left: 5px;
+}
 
 // Hierarchycal buttons
 // ---------------------------------
@@ -286,7 +292,6 @@
 .btn-2xl, .btn[size="2xl"] { height: var(--spacing-11); line-height: var(--spacing-08); align-items: flex-start; }
 
 // Fix for outline
-.btn.active,
 .dropdown-toggle,
 .dropdown-menu > .active > a,
 .open > a,
