@@ -9,25 +9,6 @@
 	{% trans %}mautic.category.header.index{% endtrans %}
 {% endblock %}
 
-{% block actions %}
-	{{- include('@MauticCore/Helper/page_actions.html.twig', {
-        'templateButtons': {
-            'new': permissions[permissionBase ~ ":create"]
-        },
-        'routeBase': 'category',
-        'query': {
-            'bundle': bundle,
-            'show_bundle_select': true,
-        },
-        'editMode': 'ajaxModal',
-        'editAttr': {
-            'data-target': '#MauticSharedModal',
-            'data-header': 'mautic.category.header.new'|trans,
-            'data-toggle':'ajaxmodal',
-        },
-    }) -}}
-{% endblock %}
-
 {% block content %}
 	{% if isIndex %}
 		<div id="page-list-wrapper" class="panel panel-default">
@@ -46,6 +27,22 @@
                                         },
                                     },
                                     'action': currentRoute,
+                                    'list_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+                                        'templateButtons': {
+                                            'new': permissions[permissionBase ~ ":create"]
+                                        },
+                                        'routeBase': 'category',
+                                        'query': {
+                                            'bundle': bundle,
+                                            'show_bundle_select': true,
+                                        },
+                                        'editMode': 'ajaxModal',
+                                        'editAttr': {
+                                            'data-target': '#MauticSharedModal',
+                                            'data-header': 'mautic.category.header.new'|trans,
+                                            'data-toggle': 'ajaxmodal',
+                                        },
+                                    }),
                                     'quickFilters': [
                                         {
                                             'search': 'mautic.core.searchcommand.ispublished',

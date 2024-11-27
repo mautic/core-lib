@@ -259,30 +259,6 @@
   padding: 2px;
 }
 
-.btn-group {
-  > .btn {
-    &.btn-yes,
-    &.btn-no {
-      &:first-child:not(:last-child):not(.dropdown-toggle),
-      &:not(:first-child):not(:last-child):not(.dropdown-toggle),
-      &:last-child:not(:first-child),
-      & {
-        padding: 5px;
-        aspect-ratio: 1/1;
-        align-items: center;
-        justify-content: center;
-      }
-    }
-
-    &.active {
-      &.btn-yes,
-      &.btn-no {
-        outline-color: transparent;
-      }
-    }
-  }
-}
-
 // Standard sizes
 .btn-xs, .btn[size="xs"] { height: var(--spacing-06); line-height: var(--spacing-06); }
 .btn-sm, .btn[size="sm"] { height: var(--spacing-07); line-height: var(--spacing-07); }
