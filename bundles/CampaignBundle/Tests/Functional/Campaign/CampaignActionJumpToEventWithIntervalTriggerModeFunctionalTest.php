@@ -13,6 +13,15 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends MauticMysqlTestCase
 {
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+
+        $this->configParams += [
+            'default_timezone' => 'UTC',
+        ];
+    }
+
     /**
      * @dataProvider dataForCampaignWithJumpToEventWithIntervalTriggerMode
      */
