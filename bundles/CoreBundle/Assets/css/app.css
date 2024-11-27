@@ -4828,6 +4828,10 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
   position: fixed;
   z-index: 99999;
 }
+.ck.ck-content.ck-editor__editable a {
+  text-decoration: underline;
+  color: var(--link-primary);
+}
 a.media {
   display: block;
 }
