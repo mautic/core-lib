@@ -7346,9 +7346,9 @@ ul.line-legend li {
   color: #3c4650;
 }
 .bg-primary {
-  background-color: #4E5D9D !important;
-  border-color: #4E5D9D !important;
-  color: #fff !important;
+  background-color: var(--background-brand) !important;
+  border-color: var(--background-brand) !important;
+  color: var(--text-on-color) !important;
 }
 .bg-success {
   background-color: var(--support-success) !important;
@@ -10278,9 +10278,9 @@ code:hover > .copy-icon {
   pointer-events: none;
   -webkit-transform: translate3d(0, 48px, 0);
   transform: translate3d(0, 48px, 0);
-  z-index: 5;
   transition: var(--transition-all-productive);
   will-change: transform;
+  z-index: 5;
 }
 .toolbar--batch-actions .btn {
   padding-inline: var(--spacing-05);
