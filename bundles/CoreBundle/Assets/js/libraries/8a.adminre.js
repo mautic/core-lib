@@ -353,8 +353,8 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
             // ================================
             (function () {
                 var contextual,
-                    toggler     = "[data-toggle~=selectrow]",
-                    target      = $(toggler).data("target");
+                    toggler = "[data-toggle~=selectrow]",
+                    target = $(toggler).data("target");
 
                 // check on DOM ready
                 $(toggler).each(function () {
@@ -362,6 +362,7 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                         selectrow(this, "checked");
                     }
                 });
+                updateToolbarState();
 
                 // clicker
                 $(document).on("change", toggler, function () {
@@ -372,6 +373,7 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                     } else {
                         selectrow(this, "unchecked");
                     }
+                    updateToolbarState();
                 });
 
                 // Core SelectRow function
@@ -393,6 +395,12 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                         // publish event
                         $(element).trigger(settings.eventPrefix+".selectrow.unselected", { "element": $($this).parentsUntil(target) });
                     }
+                }
+
+                // Check if any checkbox is selected and update toolbar state
+                function updateToolbarState() {
+                    var checkedBoxes = $(toggler + ":checked").length;
+                    $(".toolbar--batch-actions").toggleClass("toolbar--batch-actions--active", checkedBoxes > 0);
                 }
 
                 // Event console
@@ -424,6 +432,19 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                     } else {
                         unchecked(target);
                     }
+                });
+
+                // Add this new handler right here
+                $(document).on("click", "[data-toggle=cancel-checkall]", function() {
+                    // Uncheck the main toggle checkbox
+                    $(toggler).prop("checked", false);
+
+                    // Uncheck all row checkboxes
+                    $("input[data-toggle=selectrow]").each(function() {
+                        $(this)
+                            .prop("checked", false)
+                            .trigger("change");
+                    });
                 });
 
                 // Core CheckAll function
