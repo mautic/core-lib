@@ -33,6 +33,26 @@
             'routeBase': 'form',
             'langVar': 'form.form'
         },
+        'bulk_actions': {
+          'routeBase': 'form',
+          'templateButtons': {
+              'delete': permissions['form:forms:deleteown'] or permissions['form:forms:deleteother'],
+          },
+          'customButtons': [
+              {
+                  'confirm': {
+                      'message': 'mautic.form.confirm_batch_rebuild'|trans,
+                      'confirmText': 'mautic.form.rebuild'|trans,
+                      'confirmAction': path('mautic_form_action', {'objectAction': 'batchRebuildHtml'}),
+                      'iconClass': 'fa ri-fw ri-refresh-line',
+                      'btnText': 'mautic.form.rebuild'|trans,
+                      'precheck': 'batchActionPrecheck',
+                      'confirmCallback': 'executeBatchAction',
+                  },
+                  'primary': true,
+              },
+          ],
+        },
         'quickFilters': [
             {
                 'search': 'mautic.core.searchcommand.ispublished',
