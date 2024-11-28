@@ -18,6 +18,12 @@
                 },
                 'routeBase': 'point',
             },
+            'bulk_actions': {
+                'routeBase': 'point',
+                'templateButtons': {
+                    'delete': permissions['point:points:delete'],
+                },
+            },
             'quickFilters': [
                 {
                     'search': 'mautic.core.searchcommand.ispublished',
