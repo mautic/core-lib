@@ -1,45 +1,51 @@
+{{- include('@MauticCore/Helper/action_button_helper.html.twig') -}}
+{{ restore('action_button_helper') }}
+
+{{ buttonReset(
+    constant('Mautic\\CoreBundle\\Twig\\Helper\\ButtonHelper::LOCATION_TOOLBAR_BULK_ACTIONS')
+) }}
+{% if templateButtons.delete is defined and templateButtons.delete is not empty %}
+    {{ buttonAdd({
+        confirm: {
+            message: translatorHasId(translationBase ~ '.form.confirmbatchdelete')
+                ? (translationBase ~ '.form.confirmbatchdelete')|trans
+                : 'mautic.core.form.confirmbatchdelete'|trans,
+            confirmAction: path(actionRoute, query|merge({objectAction: 'batchDelete'})),
+            template: 'batchdelete'
+        },
+        priority: 1
+    }) }}
+{% endif %}
+
+{{ buttonsRender() }}
+
 {{ buttonReset(
     constant('Mautic\\CoreBundle\\Twig\\Helper\\ButtonHelper::LOCATION_BULK_ACTIONS'),
     constant('Mautic\\CoreBundle\\Twig\\Helper\\ButtonHelper::TYPE_DROPDOWN')
-    ) }}
+) }}
 
-    {{- include('@MauticCore/Helper/action_button_helper.html.twig') -}}
-    {# Workaround to get variables from action_button_helper here #}
-    {{ restore('action_button_helper') }}
-
-    {% if templateButtons.delete is defined and templateButtons.delete is not empty %}
-        {{ buttonAdd({
-            confirm: {
-                message: translatorHasId(translationBase ~ '.form.confirmbatchdelete')
-                    ? (translationBase ~ '.form.confirmbatchdelete')|trans
-                    : 'mautic.core.form.confirmbatchdelete'|trans,
-                confirmAction: path(actionRoute, query|merge({objectAction: 'batchDelete'})),
-                template: 'batchdelete'
-            },
-            priority: -1
-        }) }}
-    {% endif %}
-
+{% set dropdownButtons = buttonsRender() %}
+{% if dropdownButtons is not empty %}
     <div class="dropdown ml-xs">
         {% include '@MauticCore/Helper/button.html.twig' with {
             buttons: [
                 {
                     label: 'mautic.core.options',
-                    size: 'sm',
-                    variant: 'ghost',
+                    size: 'lg',
+                    variant: 'primary',
                     icon: 'ri-more-2-line',
                     icon_only: true,
                     spin: false,
                     attributes: {
-                        'class': 'dropdown-toggle',
+                        'class': 'dropdown-toggle bdr-rds-0 pa-0',
                         'data-toggle': 'dropdown',
                         'type': 'button',
-
                     }
                 }
             ]
         } %}
         <ul class="pull-{{ pull }} page-list-actions dropdown-menu" role="menu">
-            {{ buttonsRender() }}
+            {{ dropdownButtons|raw }}
         </ul>
     </div>
+{% endif %}
