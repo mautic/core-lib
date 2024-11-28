@@ -132,7 +132,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
                 Assert::assertEqualsWithDelta(10, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%i'), 1);
-            }
+            },
         ];
 
         $adjustPointEvent = clone $event;
@@ -146,7 +146,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
                     (new \DateTime())->format('Y-m-d H:00:00'),
                     $eventLog->getTriggerDate()->format('Y-m-d H:00:00')
                 );
-            }
+            },
         ];
 
         $adjustPointEvent = clone $event;
@@ -160,44 +160,57 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
                 Assert::assertEqualsWithDelta(0, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
-            }
+            },
         ];
 
         $adjustPointEvent = clone $event;
-        $adjustPointEvent->setTriggerDate(new \DateTime('tomorrow'));
-        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime('tomorrow'))->modify('+2 hour'));
-        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime('tomorrow'))->modify('+3 hour'));
+        $adjustPointEvent->setTriggerInterval(1);
+        $adjustPointEvent->setTriggerIntervalUnit('d');
+        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('+2 hours')->format('H:i'));
+        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('+3 hours')->format('H:i'));
 
-        yield 'Points at a relative time: Between future start and stop time on same day' => [
+        yield 'Points at a relative time: Between future start and stop time with 1 day delay will trigger tomorrow when the time slot starts' => [
             $adjustPointEvent,
-            function (LeadEventLog $eventLog) use ($adjustPointEvent): void {
+            function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                Assert::assertEqualsWithDelta((int) $adjustPointEvent->getTriggerRestrictedStartHour()->diff(new \DateTime())->format('%h'), $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
-            }
+                $this->assertPlusMinusOneMinuteOf((new \DateTime())->modify('+1 day')->modify('+2 hours')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+            },
         ];
 
         $adjustPointEvent = clone $event;
-        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('-2 hour'));
-        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('-1 hour'));
+        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('-2 hour')->format('H:i'));
+        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('-1 hour')->format('H:i'));
 
         yield 'Points at a relative time: Between passed time' => [
             $adjustPointEvent,
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
                 Assert::assertEqualsWithDelta(22, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
-            }
+            },
         ];
 
         $adjustPointEvent = clone $event;
-        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime('tomorrow'))->modify('+3 hour'));
-        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime('tomorrow'))->modify('+4 hour'));
+        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('+3 hour')->format('H:i'));
+        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('+4 hour')->format('H:i'));
 
-        yield 'Points at a relative time: Between future time' => [
+        yield 'Points at a relative time: Between future time today will schedule for today when the window starts' => [
             $adjustPointEvent,
-            function (LeadEventLog $eventLog) use ($adjustPointEvent): void {
+            function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                Assert::assertEqualsWithDelta((int) $adjustPointEvent->getTriggerRestrictedStartHour()->diff(new \DateTime())->format('%h'), $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
-            }
+                $this->assertPlusMinusOneMinuteOf((new \DateTime())->modify('+3 hour')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+            },
+        ];
+
+        $adjustPointEvent = clone $event;
+        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('-1 hour')->format('H:i'));
+        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('+1 hour')->format('H:i'));
+
+        yield 'Points at a relative time: Between future time today will execute immediatelly as the window is open right now' => [
+            $adjustPointEvent,
+            function (LeadEventLog $eventLog): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                $this->assertPlusMinusOneMinuteOf((new \DateTime())->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+            },
         ];
 
         $adjustPointEvent = clone $event;
@@ -210,7 +223,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
                 Assert::assertEqualsWithDelta(1, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
-            }
+            },
         ];
 
         $adjustPointEvent = clone $event;
@@ -222,7 +235,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
                 Assert::assertEqualsWithDelta(5, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
-            }
+            },
         ];
 
         $triggerHourDate  = (new \DateTime())->modify('+3 hours');
@@ -236,8 +249,8 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog) use ($triggerHourDate): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                Assert::assertSame($triggerHourDate->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
-            }
+                $this->assertPlusMinusOneMinuteOf($triggerHourDate->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+            },
         ];
 
         $adjustPointEvent = clone $event;
@@ -250,11 +263,8 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                Assert::assertSame(
-                    (new \DateTime('tomorrow'))->setTime(15, 0, 0)->format('Y-m-d 15:00:00'),
-                    $eventLog->getTriggerDate()->format('Y-m-d H:i:s')
-                );
-            }
+                $this->assertPlusMinusOneMinuteOf((new \DateTime('tomorrow'))->format('Y-m-d 15:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:i:s'));
+            },
         ];
 
         $triggerHourDate  = (new \DateTime())->modify('-3 hours');
@@ -268,8 +278,19 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                Assert::assertSame((new \DateTime())->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
-            }
+                $this->assertPlusMinusOneMinuteOf((new \DateTime())->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+            },
         ];
+    }
+
+    /**
+     * Avoid flaky test when executing the test right whe the minute is increasing.
+     */
+    private function assertPlusMinusOneMinuteOf(string $expectedDateString, string $actualDateString): void
+    {
+        $expectedDate = new \DateTime($expectedDateString);
+        $actualDate   = new \DateTime($actualDateString);
+        Assert::assertLessThanOrEqual($expectedDate->modify('+1 minute'), $actualDate);
+        Assert::assertGreaterThanOrEqual($expectedDate->modify('-1 minute'), $actualDate);
     }
 }
