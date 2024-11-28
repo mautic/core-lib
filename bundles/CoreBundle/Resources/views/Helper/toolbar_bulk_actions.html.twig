@@ -1,5 +1,3 @@
-{% set target = target is defined ? target : '.page-list' %}
-{% if checkall is defined and checkall is not empty %}
 {{ buttonReset(
     constant('Mautic\\CoreBundle\\Twig\\Helper\\ButtonHelper::LOCATION_BULK_ACTIONS'),
     constant('Mautic\\CoreBundle\\Twig\\Helper\\ButtonHelper::TYPE_DROPDOWN')
@@ -45,4 +43,3 @@
             {{ buttonsRender() }}
         </ul>
     </div>
-{% endif %}
