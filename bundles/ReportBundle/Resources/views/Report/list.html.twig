@@ -19,6 +19,13 @@
           'routeBase': 'report',
           'langVar': 'report.report',
       },
+      'bulk_actions': {
+        'langVar': 'report.report',
+        'routeBase': 'report',
+        'templateButtons': {
+            'delete': permissions['report:reports:deleteown'] or permissions['report:reports:deleteother'],
+        },
+      },
       'quickFilters': [
           {
               'search': 'mautic.core.searchcommand.ispublished',
