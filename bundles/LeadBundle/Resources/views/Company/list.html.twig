@@ -45,11 +45,11 @@
 {{- include('@MauticCore/Helper/list_toolbar.html.twig', {
     'searchValue': searchValue,
     'action': currentRoute,
-    'page_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+    'page_actions': {
         'templateButtons': {'new': permissions['lead:leads:create']},
         'routeBase': 'company',
         'customButtons': pageButtons,
-    }),
+    },
     'quickFilters': [
         {
             'search': 'mautic.core.searchcommand.ismine',

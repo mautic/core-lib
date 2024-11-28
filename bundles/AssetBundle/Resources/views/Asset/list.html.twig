@@ -15,13 +15,13 @@
 			{{- include('@MauticCore/Helper/list_toolbar.html.twig', {
                 'searchValue': searchValue,
                 'action': currentRoute,
-                'page_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+                'page_actions': {
                     'templateButtons': {
                         'new': permissions['asset:assets:create'],
                     },
                     'routeBase': 'asset',
                     'langVar': 'asset.asset',
-                }),
+                },
                 'quickFilters': [
                     {
                         'search': 'mautic.core.searchcommand.isuncategorized',

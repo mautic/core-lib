@@ -24,12 +24,12 @@
         'searchValue': searchValue,
         'searchHelp': 'mautic.page.help.searchcommands',
         'action': currentRoute,
-        'page_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+        'page_actions': {
             'templateButtons': {
                 'new': permissions['dynamiccontent:dynamiccontents:create'],
             },
             'routeBase': 'dynamicContent',
-        }),
+        },
         'quickFilters': [
             {
                 'search': 'mautic.core.searchcommand.ispublished',

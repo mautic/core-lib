@@ -25,12 +25,12 @@
             'searchValue': searchValue,
             'searchId': 'notification-search',
             'action': currentRoute,
-            'page_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+            'page_actions': {
                 'templateButtons': {
                     'new': permissions['notification:notifications:create'],
                 },
                 'routeBase': 'notification',
-            }),
+            },
             'quickFilters': [
                 {
                     'search': 'mautic.core.searchcommand.ispublished',

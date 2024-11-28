@@ -26,13 +26,13 @@
         'searchValue': searchValue,
         'searchId': 'list-search',
         'action': currentRoute,
-        'page_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+        'page_actions': {
             'templateButtons': {
                 'new': permissions['form:forms:create']
             },
             'routeBase': 'form',
             'langVar': 'form.form'
-        }),
+        },
         'quickFilters': [
             {
                 'search': 'mautic.core.searchcommand.ispublished',
