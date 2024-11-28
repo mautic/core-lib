@@ -17,15 +17,6 @@
 
 {% block headerTitle 'mautic.dynamicContent.dynamicContents'|trans %}
 
-{% block actions %}
-    {{ include('@MauticCore/Helper/page_actions.html.twig', {
-            'templateButtons': {
-                'new': permissions['dynamiccontent:dynamiccontents:create'],
-            },
-            'routeBase': 'dynamicContent',
-    }) }}
-{% endblock %}
-
 {% block content %}
   {% if isIndex %}
     <div id="page-list-wrapper" class="panel panel-default">
@@ -33,6 +24,12 @@
         'searchValue': searchValue,
         'searchHelp': 'mautic.page.help.searchcommands',
         'action': currentRoute,
+        'list_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+            'templateButtons': {
+                'new': permissions['dynamiccontent:dynamiccontents:create'],
+            },
+            'routeBase': 'dynamicContent',
+        }),
         'quickFilters': [
             {
                 'search': 'mautic.core.searchcommand.ispublished',

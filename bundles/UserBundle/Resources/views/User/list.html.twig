@@ -7,22 +7,20 @@
 {% block headerTitle %}
 	{% trans %}mautic.user.users{% endtrans %}
 {% endblock %}
-{% block actions %}
-	{{- include('@MauticCore/Helper/page_actions.html.twig', {
-        'templateButtons' : {
-                'new' : permissions['create'],
-        },
-        'routeBase' : 'user',
-        'langVar'   : 'user.user',
-    }) -}}
-{% endblock %}
 
 {% block content %}
 	{% if isIndex %}
 	<div id="page-list-wrapper" class="panel panel-default">
 		{{- include('@MauticCore/Helper/list_toolbar.html.twig', {
-            'searchValue' : searchValue,
-            'action'      : currentRoute,
+			'searchValue': searchValue,
+			'action': currentRoute,
+			'list_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+				'templateButtons': {
+					'new': permissions['create'],
+				},
+				'routeBase': 'user',
+				'langVar': 'user.user',
+			}),
 			'quickFilters': [
 				{
 					'search': 'mautic.user.user.searchcommand.isadmin',
@@ -43,7 +41,7 @@
 					'icon': 'ri-close-line'
 				}
 			]
-        }) -}}
+		}) -}}
 		<div class="page-list">
 			{{ block('listResults') }}
 		</div>

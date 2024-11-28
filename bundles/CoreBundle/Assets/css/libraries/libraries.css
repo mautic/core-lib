@@ -5120,7 +5120,7 @@ button.close {
 }
 .modal-content {
   position: relative;
-  background-color: var(--layer);
+  background-color: var(--background);
   background-clip: padding-box;
   border: 1px solid #999;
   border: 1px solid transparent;

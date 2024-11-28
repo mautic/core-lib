@@ -7,15 +7,6 @@
 {% block headerTitle %}
 	{% trans %}mautic.asset.assets{% endtrans %}
 {% endblock %}
-{% block actions %}
-	{{- include('@MauticCore/Helper/page_actions.html.twig', {
-         'templateButtons' : {
-                'new' : permissions['asset:assets:create'],
-         },
-            'routeBase' : 'asset',
-            'langVar'   : 'asset.asset',
-    }) -}}
-{% endblock %}
 
 {% block content %}
 	{% if isIndex %}
@@ -24,6 +15,13 @@
 			{{- include('@MauticCore/Helper/list_toolbar.html.twig', {
                 'searchValue': searchValue,
                 'action': currentRoute,
+                'list_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+                    'templateButtons': {
+                        'new': permissions['asset:assets:create'],
+                    },
+                    'routeBase': 'asset',
+                    'langVar': 'asset.asset',
+                }),
                 'quickFilters': [
                     {
                         'search': 'mautic.core.searchcommand.isuncategorized',

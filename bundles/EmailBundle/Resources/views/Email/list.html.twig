@@ -6,15 +6,6 @@
 
 {% block headerTitle 'mautic.email.emails'|trans %}
 
-{% block actions %}
-    {{- include('@MauticCore/Helper/page_actions.html.twig', {
-        'templateButtons' : {
-            'new' : permissions['email:emails:create']
-        },
-        'routeBase' : 'email',
-    }) -}}
-{% endblock %}
-
 {% block content %}
     {% if isIndex %}
         <div id="page-list-wrapper" class="panel panel-default">
@@ -22,6 +13,12 @@
                 'searchValue': searchValue,
                 'action': currentRoute,
                 'filters': filters,
+                'list_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+                    'templateButtons': {
+                        'new': permissions['email:emails:create']
+                    },
+                    'routeBase': 'email',
+                }),
                 'quickFilters': [
                     {
                         'search': 'mautic.core.searchcommand.ispublished',
