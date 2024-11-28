@@ -1,9 +1,11 @@
+<!-- Batch actions: always visible -->
 {{- include('@MauticCore/Helper/action_button_helper.html.twig') -}}
 {{ restore('action_button_helper') }}
 
 {{ buttonReset(
     constant('Mautic\\CoreBundle\\Twig\\Helper\\ButtonHelper::LOCATION_TOOLBAR_BULK_ACTIONS')
 ) }}
+
 {% if templateButtons.delete is defined and templateButtons.delete is not empty %}
     {{ buttonAdd({
         confirm: {
@@ -19,10 +21,14 @@
 
 {{ buttonsRender() }}
 
+<!-- Batch actions: others, within the dropdown -->
 {{ buttonReset(
     constant('Mautic\\CoreBundle\\Twig\\Helper\\ButtonHelper::LOCATION_BULK_ACTIONS'),
     constant('Mautic\\CoreBundle\\Twig\\Helper\\ButtonHelper::TYPE_DROPDOWN')
-) }}
+    ) }}
+
+{{- include('@MauticCore/Helper/action_button_helper.html.twig') -}}
+{{ restore('action_button_helper') }}
 
 {% set dropdownButtons = buttonsRender() %}
 {% if dropdownButtons is not empty %}
