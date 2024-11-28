@@ -30,6 +30,12 @@
             },
             'routeBase': 'dynamicContent',
         },
+        'bulk_actions': {
+          'routeBase': 'dynamicContent',
+          'templateButtons': {
+              'delete': permissions['dynamiccontent:dynamiccontents:deleteown'] or permissions['dynamiccontent:dynamiccontents:deleteother'],
+          },
+        },
         'quickFilters': [
             {
                 'search': 'mautic.core.searchcommand.ispublished',
