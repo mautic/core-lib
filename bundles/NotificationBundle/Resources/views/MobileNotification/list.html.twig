@@ -31,6 +31,12 @@
             },
             'routeBase': 'mobile_notification',
         },
+        'bulk_actions': {
+          'routeBase': 'mobile_notification',
+          'templateButtons': {
+              'delete': permissions['notification:mobile_notifications:deleteown'] or permissions['notification:mobile_notifications:deleteother'],
+          },
+        },
         'quickFilters': [
             {
                 'search': 'mautic.core.searchcommand.ispublished',
