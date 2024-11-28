@@ -348,9 +348,6 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                 });
             })();
 
-            // @PLUGIN: SelectRow
-            // Self invoking
-            // ================================
             (function () {
                 var contextual,
                     toggler = "[data-toggle~=selectrow]",
@@ -401,6 +398,7 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                 function updateToolbarState() {
                     var checkedBoxes = $(toggler + ":checked").length;
                     $(".toolbar--batch-actions").toggleClass("toolbar--batch-actions--active", checkedBoxes > 0);
+                    $(".toolbar--batch-summary__count").text(checkedBoxes + " items selected");
                 }
 
                 // Event console
