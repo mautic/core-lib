@@ -256,11 +256,11 @@ class Interval implements ScheduleModeInterface
         $testGroupHour->setTime($groupHour->format('H'), $groupHour->format('i'));
 
         if ($groupExecutionDate <= $testGroupHour) {
+            // Schedule for the configured hour today if it's not passed yet.
             return $testGroupHour;
-        } else {
-            $groupExecutionDate->modify('+1 day')->setTime($groupHour->format('H'), $groupHour->format('i'));
         }
 
+        // Execute rigtaway if the hour has passed.
         return $groupExecutionDate;
     }
 

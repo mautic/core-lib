@@ -136,13 +136,16 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         ];
 
         $adjustPointEvent = clone $event;
-        $adjustPointEvent->setTriggerHour((new \DateTime())->modify('-1 hour')->format('H:i'));
+        $adjustPointEvent->setTriggerHour((new \DateTime())->modify('-1 hour')->format('H:00:00'));
 
-        yield 'Points at a relative time: Scheduled at - before one hour' => [
+        yield 'Points at a relative time: Scheduled at - before one hour. Should trigger now.' => [
             $adjustPointEvent,
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                Assert::assertEqualsWithDelta(23, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
+                Assert::assertSame(
+                    (new \DateTime())->format('Y-m-d H:00:00'),
+                    $eventLog->getTriggerDate()->format('Y-m-d H:00:00')
+                );
             }
         ];
 
@@ -219,6 +222,53 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
                 Assert::assertEqualsWithDelta(5, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
+            }
+        ];
+
+        $triggerHourDate  = (new \DateTime())->modify('+3 hours');
+        $adjustPointEvent = clone $event;
+        $adjustPointEvent->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
+        $adjustPointEvent->setTriggerHour($triggerHourDate->format('H:00:00'));
+        $adjustPointEvent->setTriggerIntervalUnit('d');
+        $adjustPointEvent->setTriggerRestrictedDaysOfWeek([(new \DateTime())->format('N')]);
+
+        yield 'Schedule the event when Send From is in the future on the selected day when the day is today' => [
+            $adjustPointEvent,
+            function (LeadEventLog $eventLog) use ($triggerHourDate): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertSame($triggerHourDate->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+            }
+        ];
+
+        $adjustPointEvent = clone $event;
+        $adjustPointEvent->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
+        $adjustPointEvent->setTriggerHour('15:00:00');
+        $adjustPointEvent->setTriggerIntervalUnit('d');
+        $adjustPointEvent->setTriggerRestrictedDaysOfWeek([(new \DateTime('tomorrow'))->format('N')]);
+
+        yield 'Schedule the event when Send From is in the future on the selected day when the day is tomorrow' => [
+            $adjustPointEvent,
+            function (LeadEventLog $eventLog): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertSame(
+                    (new \DateTime('tomorrow'))->setTime(15, 0, 0)->format('Y-m-d 15:00:00'),
+                    $eventLog->getTriggerDate()->format('Y-m-d H:i:s')
+                );
+            }
+        ];
+
+        $triggerHourDate  = (new \DateTime())->modify('-3 hours');
+        $adjustPointEvent = clone $event;
+        $adjustPointEvent->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
+        $adjustPointEvent->setTriggerHour($triggerHourDate->format('H:00:00'));
+        $adjustPointEvent->setTriggerIntervalUnit('d');
+        $adjustPointEvent->setTriggerRestrictedDaysOfWeek([(new \DateTime())->format('N')]);
+
+        yield 'Execute the event when Send From is in the past on the selected day when the day is today' => [
+            $adjustPointEvent,
+            function (LeadEventLog $eventLog): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertSame((new \DateTime())->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             }
         ];
     }
