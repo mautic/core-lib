@@ -118,6 +118,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         $event->setEventType(Event::TYPE_ACTION);
         $event->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
         $event->setType('lead.changepoints');
+        $event->setProperties(['points' => 10]);
         $event->setDecisionPath('no');
         $event->setTriggerInterval(0);
         $event->setTriggerIntervalUnit('i');
@@ -142,10 +143,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                Assert::assertSame(
-                    (new \DateTime())->format('Y-m-d H:00:00'),
-                    $eventLog->getTriggerDate()->format('Y-m-d H:00:00')
-                );
+                $this->assertPlusMinusOneMinuteOf((new \DateTime())->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             },
         ];
 
@@ -263,7 +261,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf((new \DateTime('tomorrow'))->format('Y-m-d 15:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:i:s'));
+                // In this case firstly the time is set as 15:00 if less then that or right now if more, then the date is set to tomorrow.
+                // So the range can be tomorrow 15:00 - tomorrow 23:59:59
+                Assert::assertLessThanOrEqual((new \DateTime('tomorrow'))->format('Y-m-d 23:59:59'), $eventLog->getTriggerDate()->format('Y-m-d H:i:s'));
+                Assert::assertGreaterThanOrEqual((new \DateTime('tomorrow'))->format('Y-m-d 15:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:i:s'));
             },
         ];
 
@@ -291,6 +292,6 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         $expectedDate = new \DateTime($expectedDateString);
         $actualDate   = new \DateTime($actualDateString);
         Assert::assertLessThanOrEqual($expectedDate->modify('+1 minute'), $actualDate);
-        Assert::assertGreaterThanOrEqual($expectedDate->modify('-1 minute'), $actualDate);
+        Assert::assertGreaterThanOrEqual($expectedDate->modify('-2 minute'), $actualDate);
     }
 }
