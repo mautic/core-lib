@@ -29,6 +29,13 @@
             'langVar': 'lead.list',
             'tooltip': 'mautic.lead.lead.segment.add.help',
         },
+        'bulk_actions': {
+          'langVar': 'lead.list',
+          'routeBase': 'segment',
+          'templateButtons': {
+              'delete': permissions['lead:lists:deleteother'],
+          },
+        },
         'quickFilters': [
             {
                 'search': 'mautic.core.searchcommand.ismine',
