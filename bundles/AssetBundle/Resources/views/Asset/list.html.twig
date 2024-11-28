@@ -22,6 +22,13 @@
                     'routeBase': 'asset',
                     'langVar': 'asset.asset',
                 },
+                'bulk_actions': {
+                    'langVar': 'asset.asset',
+                    'routeBase': 'asset',
+                    'templateButtons': {
+                        'delete': permissions['asset:assets:deleteown'] or permissions['asset:assets:deleteother'],
+                    },
+                },
                 'quickFilters': [
                     {
                         'search': 'mautic.core.searchcommand.isuncategorized',
@@ -64,18 +71,10 @@
         <table class="table table-hover asset-list" id="assetTable">
             <thead>
             <tr>
-                {{- include(
-                    '@MauticCore/Helper/tableheader.html.twig',
-                    {
-                        'checkall'        : 'true',
-                        'target'          : '#assetTable',
-                        'langVar'         : 'asset.asset',
-                        'routeBase'       : 'asset',
-                        'templateButtons' : {
-                            'delete' : permissions['asset:assets:deleteown'] or permissions['asset:assets:deleteother'],
-                    },
-                    }
-                ) -}}
+                {{ include('@MauticCore/Helper/tableheader.html.twig', {
+                    'checkall': 'true',
+                    'target': '#assetTable',
+                }) }}
                 {{- include(
                     '@MauticCore/Helper/tableheader.html.twig',
                     {
