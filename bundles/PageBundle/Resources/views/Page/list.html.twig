@@ -30,6 +30,12 @@
                 },
                 'routeBase': 'page',
             },
+            'bulk_actions': {
+                'routeBase': 'page',
+                'templateButtons': {
+                    'delete': permissions['page:pages:deleteown'] or permissions['page:pages:deleteother'],
+                },
+            },
             'quickFilters': [
                 {
                     'search': 'mautic.core.searchcommand.ispublished',
