@@ -10,6 +10,7 @@ use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Lead;
+use PHPUnit\Framework\Assert;
 
 class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends MauticMysqlTestCase
 {
@@ -25,7 +26,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
     /**
      * @dataProvider dataForCampaignWithJumpToEventWithIntervalTriggerMode
      */
-    public function testCampaignWithJumpToEventWithIntervalTriggerMode(Event $adjustPointEvent, string $format, int $expected): void
+    public function testCampaignWithJumpToEventWithIntervalTriggerMode(Event $adjustPointEvent, callable $assertEventLog): void
     {
         // Create Campaign
         $campaign = new Campaign();
@@ -102,14 +103,9 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         // Search the logs
         $leadEventLogRepo = $this->em->getRepository(LeadEventLog::class);
+        $adjustEventLog   = $leadEventLogRepo->findOneBy(['event' => $adjustPointEvent->getId()]);
 
-        $adjustEventLog = $leadEventLogRepo->findOneBy(['event' => $adjustPointEvent->getId()]);
-
-        $triggeredDate = $adjustEventLog->getTriggerDate();
-        $dateTriggered = $adjustEventLog->getDateTriggered();
-
-        $this->assertTrue($adjustEventLog->getIsScheduled());
-        $this->assertEqualsWithDelta($expected, $dateTriggered->diff($triggeredDate)->format($format), 1);
+        $assertEventLog($adjustEventLog);
     }
 
     /**
@@ -133,8 +129,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points Interval with 10 minutes' => [
             $adjustPointEvent,
-            '%i',
-            10,
+            function (LeadEventLog $eventLog): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertEqualsWithDelta(10, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%i'), 1);
+            }
         ];
 
         $adjustPointEvent = clone $event;
@@ -142,8 +140,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at a relative time: Scheduled at - before one hour' => [
             $adjustPointEvent,
-            '%h',
-            23,
+            function (LeadEventLog $eventLog): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertEqualsWithDelta(23, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
+            }
         ];
 
         $adjustPointEvent = clone $event;
@@ -154,8 +154,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at a relative time: Scheduled at - before one hour with delay of 1 hour' => [
             $adjustPointEvent,
-            '%h',
-            0,
+            function (LeadEventLog $eventLog): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertEqualsWithDelta(0, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
+            }
         ];
 
         $adjustPointEvent = clone $event;
@@ -165,8 +167,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at a relative time: Between future start and stop time on same day' => [
             $adjustPointEvent,
-            '%h',
-            (int) $adjustPointEvent->getTriggerRestrictedStartHour()->diff(new \DateTime())->format('%h'),
+            function (LeadEventLog $eventLog) use ($adjustPointEvent): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertEqualsWithDelta((int) $adjustPointEvent->getTriggerRestrictedStartHour()->diff(new \DateTime())->format('%h'), $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
+            }
         ];
 
         $adjustPointEvent = clone $event;
@@ -175,8 +179,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at a relative time: Between passed time' => [
             $adjustPointEvent,
-            '%h',
-            22,
+            function (LeadEventLog $eventLog): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertEqualsWithDelta(22, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
+            }
         ];
 
         $adjustPointEvent = clone $event;
@@ -185,8 +191,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at a relative time: Between future time' => [
             $adjustPointEvent,
-            '%h',
-            (int) $adjustPointEvent->getTriggerRestrictedStartHour()->diff(new \DateTime())->format('%h'),
+            function (LeadEventLog $eventLog) use ($adjustPointEvent): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertEqualsWithDelta((int) $adjustPointEvent->getTriggerRestrictedStartHour()->diff(new \DateTime())->format('%h'), $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
+            }
         ];
 
         $adjustPointEvent = clone $event;
@@ -196,8 +204,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at a relative time: One hour interval and All Days' => [
             $adjustPointEvent,
-            '%h',
-            1,
+            function (LeadEventLog $eventLog): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertEqualsWithDelta(1, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
+            }
         ];
 
         $adjustPointEvent = clone $event;
@@ -206,8 +216,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at specific date/time' => [
             $adjustPointEvent,
-            '%h',
-            5,
+            function (LeadEventLog $eventLog): void {
+                Assert::assertTrue($eventLog->getIsScheduled());
+                Assert::assertEqualsWithDelta(5, $eventLog->getDateTriggered()->diff($eventLog->getTriggerDate())->format('%h'), 1);
+            }
         ];
     }
 }
