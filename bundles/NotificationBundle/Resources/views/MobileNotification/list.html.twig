@@ -25,7 +25,7 @@
         'searchValue': searchValue,
         'searchId': 'mobile-notification-search',
         'action': currentRoute,
-        'list_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+        'page_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
             'templateButtons': {
                 'new': permissions['notification:mobile_notifications:create'],
             },

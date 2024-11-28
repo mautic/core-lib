@@ -67,7 +67,7 @@
     'searchValue': searchValue|default(''),
     'action': currentRoute,
     'customButtons': toolbarButtons,
-    'list_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+    'page_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
         'templateButtons': {'new': permissions['lead:leads:create']},
         'routeBase': 'contact',
         'langVar': 'lead.lead',

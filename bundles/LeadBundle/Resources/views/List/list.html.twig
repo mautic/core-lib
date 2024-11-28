@@ -23,7 +23,7 @@
         'searchValue': searchValue,
         'action': currentRoute,
         'filters': filters|default([]),
-        'list_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+        'page_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
             'templateButtons': {'new': permissions[constant('Mautic\\LeadBundle\\Security\\Permissions\\LeadPermissions::LISTS_CREATE')]},
             'routeBase': 'segment',
             'langVar': 'lead.list',
