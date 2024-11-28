@@ -19,6 +19,13 @@
                 'routeBase': 'pointtrigger',
                 'langVar': 'point.trigger',
             },
+            'bulk_actions': {
+                'langVar': 'point.trigger',
+                'routeBase': 'pointtrigger',
+                'templateButtons': {
+                    'delete': permissions['point:triggers:delete'],
+                },
+            },
             'quickFilters': [
                 {
                     'search': 'mautic.core.searchcommand.ispublished',
