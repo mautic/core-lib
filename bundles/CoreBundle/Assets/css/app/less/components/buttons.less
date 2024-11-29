@@ -92,6 +92,12 @@
   &.btn-block {width: 100%;}
 }
 
+.btn ~ .btn,
+.btn ~ .btn-group,
+.btn-group ~ .btn,
+.btn-group ~ .btn-group {
+  margin-left: 5px;
+}
 
 // Hierarchycal buttons
 // ---------------------------------
@@ -253,30 +259,6 @@
   padding: 2px;
 }
 
-.btn-group {
-  > .btn {
-    &.btn-yes,
-    &.btn-no {
-      &:first-child:not(:last-child):not(.dropdown-toggle),
-      &:not(:first-child):not(:last-child):not(.dropdown-toggle),
-      &:last-child:not(:first-child),
-      & {
-        padding: 5px;
-        aspect-ratio: 1/1;
-        align-items: center;
-        justify-content: center;
-      }
-    }
-
-    &.active {
-      &.btn-yes,
-      &.btn-no {
-        outline-color: transparent;
-      }
-    }
-  }
-}
-
 // Standard sizes
 .btn-xs, .btn[size="xs"] { height: var(--spacing-06); line-height: var(--spacing-06); }
 .btn-sm, .btn[size="sm"] { height: var(--spacing-07); line-height: var(--spacing-07); }
@@ -286,7 +268,6 @@
 .btn-2xl, .btn[size="2xl"] { height: var(--spacing-11); line-height: var(--spacing-08); align-items: flex-start; }
 
 // Fix for outline
-.btn.active,
 .dropdown-toggle,
 .dropdown-menu > .active > a,
 .open > a,

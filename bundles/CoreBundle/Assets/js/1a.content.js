@@ -337,11 +337,6 @@ Mautic.onPageLoad = function (container, response, inModal) {
         Mautic.activateLiveSearch(mQuery(this), "lastSearchStr", "liveCache");
     });
 
-    //initialize list filters
-    mQuery(container + " *[data-toggle='listfilter']").each(function (index) {
-        Mautic.activateListFilterSelect(mQuery(this));
-    });
-
     //initialize tooltips
     var pageTooltips = mQuery(container + " *[data-toggle='tooltip']");
     pageTooltips.tooltip({html: true, container: 'body'});

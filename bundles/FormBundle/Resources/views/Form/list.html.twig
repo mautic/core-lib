@@ -19,24 +19,20 @@
   {{ 'mautic.form.forms'|trans }}
 {% endblock %}
 
-{% block actions %}
-    {{ include('@MauticCore/Helper/page_actions.html.twig', {
-            'templateButtons': {
-                'new': permissions['form:forms:create'],
-            },
-            'routeBase': 'form',
-            'langVar': 'form.form',
-        }
-    ) }}
-{% endblock %}
-
 {% block content %}
   {% if isIndex %}
     <div id="page-list-wrapper" class="panel panel-default">
-      {{ include('@MauticCore/Helper/list_toolbar.html.twig', {
+      {{- include('@MauticCore/Helper/list_toolbar.html.twig', {
         'searchValue': searchValue,
         'searchId': 'list-search',
         'action': currentRoute,
+        'list_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+            'templateButtons': {
+                'new': permissions['form:forms:create']
+            },
+            'routeBase': 'form',
+            'langVar': 'form.form'
+        }),
         'quickFilters': [
             {
                 'search': 'mautic.core.searchcommand.ispublished',
@@ -81,7 +77,7 @@
                 'icon': 'ri-file-list-2-line'
             }
         ]
-    }) }}
+    }) -}}
 
         <div class="page-list">
           {{ include('@MauticForm/Form/_list.html.twig') }}
