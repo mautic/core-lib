@@ -401,6 +401,15 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                     $(".toolbar--batch-summary__count").text(checkedBoxes + " items selected");
                 }
 
+                $(document).on("click", ".pagination a[data-toggle='ajax']", function() {
+                    // Reset toolbar state
+                    $(".toolbar--batch-actions").removeClass("toolbar--batch-actions--active");
+                    $(".toolbar--batch-summary__count").text("0");
+
+                    // Uncheck main toggle checkbox if it exists
+                    $("[data-toggle=checkall]").prop("checked", false);
+                });
+
                 // Event console
                 MAIN.prototype.HELPER.Console(settings.eventPrefix+".selectrow.selected");
                 MAIN.prototype.HELPER.Console(settings.eventPrefix+".selectrow.unselected");
