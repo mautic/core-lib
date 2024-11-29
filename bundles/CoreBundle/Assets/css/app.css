@@ -7344,6 +7344,30 @@ ul.line-legend li {
 .table > thead > tr > th {
   vertical-align: middle;
   border-bottom: 1px solid var(--border-subtle);
+  background-color: var(--layer-accent);
+}
+.table-sort {
+  height: 48px;
+  border-radius: unset;
+  border-color: transparent;
+}
+.table-sort,
+.table-sort:hover,
+.table-sort i {
+  color: var(--text-primary);
+}
+.table-sort .table-sort__icon-unsorted {
+  visibility: hidden;
+}
+.table-sort:hover {
+  background-color: var(--layer-selected-hover);
+  border-color: transparent;
+}
+.table-sort:hover .table-sort__icon-unsorted {
+  visibility: visible;
+}
+.table-sort:hover i {
+  color: var(--text-primary);
 }
 .table-responsive-force {
   width: 100%;
@@ -10646,6 +10670,7 @@ code:hover > .copy-icon {
 .list-toolbar div {
   height: 48px;
   border-radius: unset;
+  margin: 0;
 }
 .list-toolbar .input-group .twitter-typeahead:last-child .tt-input:hover,
 .list-toolbar .input-group .twitter-typeahead:last-child .tt-hint:hover,
