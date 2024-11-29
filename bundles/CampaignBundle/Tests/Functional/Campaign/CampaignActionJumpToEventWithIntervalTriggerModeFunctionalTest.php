@@ -113,6 +113,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
      */
     public function dataForCampaignWithJumpToEventWithIntervalTriggerMode(): iterable
     {
+        // Event times starts when the PHPUNIT suite starts. The closures can run minutes later
+        // which breaks the test in the CI. Use this time in the closures to avoid flaky tests.
+        $testNow = new \DateTime();
+
         $event = new Event();
         $event->setName('Adjust points');
         $event->setEventType(Event::TYPE_ACTION);
@@ -141,9 +145,9 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at a relative time: Scheduled at - before one hour. Should trigger now.' => [
             $adjustPointEvent,
-            function (LeadEventLog $eventLog): void {
+            function (LeadEventLog $eventLog) use ($testNow): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf((new \DateTime())->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+                $this->assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             },
         ];
 
@@ -169,9 +173,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at a relative time: Between future start and stop time with 1 day delay will trigger tomorrow when the time slot starts' => [
             $adjustPointEvent,
-            function (LeadEventLog $eventLog): void {
+            function (LeadEventLog $eventLog) use ($testNow): void {
+                $testNow = clone $testNow;
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf((new \DateTime())->modify('+1 day')->modify('+2 hours')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+                $this->assertPlusMinusOneMinuteOf($testNow->modify('+1 day')->modify('+2 hours')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
             },
         ];
 
@@ -193,9 +198,10 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Points at a relative time: Between future time today will schedule for today when the window starts' => [
             $adjustPointEvent,
-            function (LeadEventLog $eventLog): void {
+            function (LeadEventLog $eventLog) use ($testNow): void {
+                $testNow = clone $testNow;
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf((new \DateTime())->modify('+3 hour')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+                $this->assertPlusMinusOneMinuteOf($testNow->modify('+3 hour')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
             },
         ];
 
@@ -277,9 +283,9 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
         yield 'Execute the event when Send From is in the past on the selected day when the day is today' => [
             $adjustPointEvent,
-            function (LeadEventLog $eventLog): void {
+            function (LeadEventLog $eventLog) use ($testNow): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf((new \DateTime())->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+                $this->assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             },
         ];
     }
