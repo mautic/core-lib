@@ -68,18 +68,6 @@ mQuery(document).ajaxComplete(function(event, xhr, settings) {
     }
     Mautic.attachDismissHandlers();
 
-    // Add toolbar reset functionality
-    var $toolbar = mQuery('.toolbar--batch-actions');
-    if ($toolbar.length) {
-        // Uncheck all checkboxes
-        mQuery('input[data-toggle=selectrow]').prop('checked', false);
-        mQuery('input[data-toggle=checkall]').prop('checked', false);
-
-        // Reset toolbar state
-        $toolbar.removeClass('toolbar--batch-actions--active');
-        mQuery('.toolbar--batch-summary__count').text('0');
-    }
-
     // Initialize Bootstrap Popovers
     mQuery('[data-toggle="popover"]').popover({
         sanitize: false
