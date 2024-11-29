@@ -51,7 +51,7 @@ class IntegrationSubscriber implements EventSubscriberInterface
         } else {
             $this->logger->debug("$name REQUEST URL: ".$event->getMethod().' '.$event->getUrl());
             if ('' !== $headers) {
-                $hashedHeaders  = oAuthHelper::hashSensitiveHeaderData($event->getHeaders());
+                $hashedHeaders  = oAuthHelper::sanitizeHeaderData($event->getHeaders());
                 $headers        = var_export($hashedHeaders, true);
                 $this->logger->debug("$name REQUEST HEADERS: \n".$headers.PHP_EOL);
             }

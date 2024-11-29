@@ -211,11 +211,11 @@ class oAuthHelper
      *
      * @return string[]
      */
-    public static function hashSensitiveHeaderData(array $data): array
+    public static function sanitizeHeaderData(array $data): array
     {
         foreach ($data as &$value) {
             if (preg_match('/Authorization:\s+(Bearer|Basic)\s+(\S+)/', $value, $match)) {
-                $value = sprintf('Authorization: %s %s', $match[1], hash('sha256', $match[2]));
+                $value = sprintf('Authorization: %s %s', $match[1], '[REDACTED]');
             }
         }
 

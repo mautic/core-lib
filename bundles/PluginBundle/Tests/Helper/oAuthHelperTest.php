@@ -16,10 +16,9 @@ final class oAuthHelperTest extends TestCase
      */
     public function testHashSensitiveHeaderData(string $authorization, array $headers): void
     {
-        $hashedHeaders = oAuthHelper::hashSensitiveHeaderData($headers);
+        $hashedHeaders = oAuthHelper::sanitizeHeaderData($headers);
 
-        $this->assertStringContainsString(sprintf('Authorization: %s ', $authorization), $hashedHeaders[0]);
-        $this->assertMatchesRegularExpression(sprintf('/Authorization: %s [a-f0-9]{64}/', $authorization), $hashedHeaders[0]);
+        $this->assertStringContainsString(sprintf('Authorization: %s [REDACTED]', $authorization), $hashedHeaders[0]);
     }
 
     /**

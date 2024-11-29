@@ -21,7 +21,7 @@ final class IntegrationSubscriberTest extends TestCase
         $event->method('getParameters')->willReturn(['key' => 'value']);
         $event->method('getSettings')->willReturn(['setting' => 'value']);
 
-        $authorization = ['Authorization: Bearer 9a45520a1213f15016d2d768b5fb3d904492a44ee274b44d4de8803e00fb536a'];
+        $authorization = ['Authorization: Bearer [REDACTED]'];
         $authorization = var_export($authorization, true);
 
         $logger = $this->createMock(LoggerInterface::class);
