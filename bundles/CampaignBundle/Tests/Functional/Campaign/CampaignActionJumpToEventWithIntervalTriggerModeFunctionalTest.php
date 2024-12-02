@@ -168,8 +168,8 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         $adjustPointEvent = clone $event;
         $adjustPointEvent->setTriggerInterval(1);
         $adjustPointEvent->setTriggerIntervalUnit('d');
-        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('+2 hours')->format('H:i'));
-        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('+3 hours')->format('H:i'));
+        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('+2 hours'));
+        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('+3 hours'));
 
         yield 'Points at a relative time: Between future start and stop time with 1 day delay will trigger tomorrow when the time slot starts' => [
             $adjustPointEvent,
@@ -181,8 +181,8 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         ];
 
         $adjustPointEvent = clone $event;
-        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('-2 hour')->format('H:i'));
-        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('-1 hour')->format('H:i'));
+        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('-2 hour'));
+        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('-1 hour'));
 
         yield 'Points at a relative time: Between passed time' => [
             $adjustPointEvent,
@@ -193,8 +193,8 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         ];
 
         $adjustPointEvent = clone $event;
-        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('+3 hour')->format('H:i'));
-        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('+4 hour')->format('H:i'));
+        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('+3 hour'));
+        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('+4 hour'));
 
         yield 'Points at a relative time: Between future time today will schedule for today when the window starts' => [
             $adjustPointEvent,
@@ -206,8 +206,8 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         ];
 
         $adjustPointEvent = clone $event;
-        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('-1 hour')->format('H:i'));
-        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('+1 hour')->format('H:i'));
+        $adjustPointEvent->setTriggerRestrictedStartHour((new \DateTime())->modify('-1 hour'));
+        $adjustPointEvent->setTriggerRestrictedStopHour((new \DateTime())->modify('+1 hour'));
 
         yield 'Points at a relative time: Between future time today will execute immediatelly as the window is open right now' => [
             $adjustPointEvent,
