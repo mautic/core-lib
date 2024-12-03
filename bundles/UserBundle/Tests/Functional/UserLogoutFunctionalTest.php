@@ -36,7 +36,7 @@ class UserLogoutFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Login newly created non-admin user
-        $this->client->loginUser($user);
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 

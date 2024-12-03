@@ -116,7 +116,7 @@ class LeadControllerTest extends MauticMysqlTestCase
     private function setAdminUser(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($user);
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', 'admin');
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
     }
@@ -152,7 +152,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->detach($role);
 
-        $this->client->loginUser($user);
+        $this->client->loginUser($user, 'mautic');
         $this->client->setServerParameter('PHP_AUTH_USER', self::USERNAME);
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 

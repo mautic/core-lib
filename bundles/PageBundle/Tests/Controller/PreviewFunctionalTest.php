@@ -6,7 +6,6 @@ namespace Mautic\PageBundle\Tests\Controller;
 
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\PageBundle\Entity\Page;
-use Mautic\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
@@ -24,13 +23,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $url = "/page/preview/{$page->getId()}";
 
-        // Anonymous visitor is not allowed to access preview
-        $this->client->request(Request::METHOD_GET, $url);
-        self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
-
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($user);
-
         // Admin user is allowed to access preview
         $this->assertPageContent($url, $defaultContent);
 
@@ -39,6 +31,12 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
 
         // Check there is no DWC replacement for a non-existent lead
         $this->assertPageContent("{$url}?contactId=987", $defaultContent);
+
+        $this->logoutUser();
+
+        // Anonymous visitor is not allowed to access preview
+        $this->client->request(Request::METHOD_GET, $url);
+        self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
     private function assertPageContent(string $url, string $expectedContent): void

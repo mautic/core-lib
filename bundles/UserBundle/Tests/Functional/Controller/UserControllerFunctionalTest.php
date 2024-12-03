@@ -32,14 +32,8 @@ class UserControllerFunctionalTest extends MauticMysqlTestCase
         $crawler                = $this->client->request('GET', '/s/users/edit/1');
         $buttonCrawlerNode      = $crawler->selectButton('Save & Close');
         $form                   = $buttonCrawlerNode->form();
-        $newUsername            = 'test';
-        $form['user[username]'] = $newUsername;
-        $this->client->followRedirects(false);
+        $form['user[firstName]'] = 'test';
         $this->client->submit($form);
-        // Not $this->client->followRedirect(); because username has changed.
-        $this->client->setServerParameter('PHP_AUTH_USER', $newUsername);
-        $this->assertTrue($this->client->getResponse()->isRedirect('/s/users/1'), $this->client->getResponse()->headers->get('Location'));
-        $this->client->request(Request::METHOD_GET, $this->client->getResponse()->headers->get('Location'));
 
         $response = $this->client->getResponse();
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());

@@ -102,6 +102,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testContactPreferencesLandingPageTracking(): void
     {
+        $this->logoutUser();
         $lead                 = $this->createLead();
         $preferenceCenterPage = $this->getPreferencesCenterLandingPage();
         $stat                 = $this->getStat(null, $lead, $preferenceCenterPage);

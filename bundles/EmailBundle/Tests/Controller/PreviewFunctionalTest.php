@@ -30,16 +30,15 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $contentNoContactInfo   = 'Contact emails is [Email]';
         $contentWithContactInfo = sprintf('Contact emails is %s', $lead->getEmail());
 
-        // Anonymous visitor
-        $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
-        $this->assertPageContent($urlWithContact, $contentNoContactInfo, self::PREHEADER_TEXT);
-
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($user);
-
         // Admin user
         $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
         $this->assertPageContent($urlWithContact, $contentWithContactInfo, self::PREHEADER_TEXT);
+
+        $this->logoutUser();
+
+        // Anonymous visitor
+        $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
+        $this->assertPageContent($urlWithContact, $contentNoContactInfo, self::PREHEADER_TEXT);
     }
 
     private function assertPageContent(string $url, string ...$expectedContents): void
@@ -117,16 +116,15 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $contentNoContactInfo   = 'Default Dynamic Content';
         $contentWithContactInfo = 'Variation 1';
 
-        // Anonymous visitor
-        $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
-        $this->assertPageContent($urlWithContact, $contentNoContactInfo, self::PREHEADER_TEXT);
-
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($user);
-
         // Admin user
         $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
         $this->assertPageContent($urlWithContact, $contentWithContactInfo, self::PREHEADER_TEXT);
+
+        $this->logoutUser();
+
+        // Anonymous visitor
+        $this->assertPageContent($url, $contentNoContactInfo, self::PREHEADER_TEXT);
+        $this->assertPageContent($urlWithContact, $contentNoContactInfo, self::PREHEADER_TEXT);
     }
 
     public function testPreviewEmailForDynamicContentVariantsWithCustomField(): void
@@ -217,17 +215,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $defaultContent = 'Default Dynamic Content';
         $variantContent = 'Variant 1 Dynamic Content';
 
-        // Non admin user - show default content
-        $this->assertPageContent($url, $defaultContent);
-
-        // Non admin user with contact preview - show default content
-        $urlWithContact1 = "{$url}?contactId={$contacts['contacts'][0]['id']}";
-        $this->assertPageContent($urlWithContact1, $defaultContent);
-
-        // Login admin user
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($user);
-
         // Admin user with contact preview - show variant content - true filter matches
         $urlWithContact1 = "{$url}?contactId={$contacts['contacts'][0]['id']}";
         $this->assertPageContent($urlWithContact1, $variantContent);
@@ -239,6 +226,15 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         // Admin user with contact preview - show variant content - null filter doesn't matches
         $urlWithContact3 = "{$url}?contactId={$contacts['contacts'][2]['id']}";
         $this->assertPageContent($urlWithContact3, $defaultContent);
+
+        $this->logoutUser();
+
+        // Non admin user - show default content
+        $this->assertPageContent($url, $defaultContent);
+
+        // Non admin user with contact preview - show default content
+        $urlWithContact1 = "{$url}?contactId={$contacts['contacts'][0]['id']}";
+        $this->assertPageContent($urlWithContact1, $defaultContent);
     }
 
     public function testPreviewEmailWithInvalidIdThrows404Error(): void

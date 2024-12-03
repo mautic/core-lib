@@ -17,6 +17,8 @@ class PointActionFunctionalTest extends MauticMysqlTestCase
 {
     public function testPointActionReadEmail(): void
     {
+        $this->logoutUser();
+
         /** @var LeadModel $leadModel */
         $leadModel = static::getContainer()->get('mautic.lead.model.lead');
 
@@ -35,6 +37,8 @@ class PointActionFunctionalTest extends MauticMysqlTestCase
 
     public function testPointActionWithGroupReadEmail(): void
     {
+        $this->logoutUser();
+
         /** @var LeadModel $leadModel */
         $leadModel = static::getContainer()->get('mautic.lead.model.lead');
 

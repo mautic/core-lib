@@ -21,8 +21,8 @@ final class TimelineControllerTest extends MauticMysqlTestCase
         $contact = $this->createLead('TestFirstName');
         $this->em->flush();
 
-        $crawler = $this->client->request('GET', '/s/contacts/timeline/'.$contact->getId());
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->client->request('GET', '/s/contacts/timeline/'.$contact->getId());
+        $this->assertResponseIsSuccessful();
     }
 
     public function testFilterCaseInsensitive(): void
@@ -36,7 +36,7 @@ final class TimelineControllerTest extends MauticMysqlTestCase
         ]);
         $this->em->flush();
 
-        $crawler = $this->client->request('POST', '/s/contacts/timeline/'.$contact->getId(), [
+        $this->client->request('POST', '/s/contacts/timeline/'.$contact->getId(), [
             'search' => 'test',
             'leadId' => $contact->getId(),
         ]);
@@ -56,9 +56,6 @@ final class TimelineControllerTest extends MauticMysqlTestCase
 
         $this->client->request('GET', '/s/contacts/timeline/batchExport/'.$contact->getId());
         $this->assertResponseIsSuccessful();
-
-        $response = $this->client->getResponse();
-        $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testBatchExportActionAsUserNotPermission(): void
@@ -68,11 +65,8 @@ final class TimelineControllerTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => self::SALES_USER]);
-        $this->client->loginUser($user);
-        $this->client->setServerParameter('PHP_AUTH_USER', self::SALES_USER);
+        $this->loginUser($user);
         $this->client->request('GET', '/s/contacts/timeline/batchExport/'.$contact->getId());
-
-        $response = $this->client->getResponse();
-        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 }

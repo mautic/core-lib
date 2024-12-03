@@ -29,7 +29,7 @@ class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
     public function testCreateNewCampaign(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($user);
+        $this->loginUser($user);
 
         $segment = new LeadList();
         $segment->setName('test');

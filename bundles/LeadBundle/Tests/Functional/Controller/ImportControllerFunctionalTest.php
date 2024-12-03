@@ -47,7 +47,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
     public function testScheduleImport(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($user);
+        $this->loginUser($user);
         $tagName = 'tag1';
         $tag     = $this->createTag($tagName);
         // Show mapping page.
@@ -86,7 +86,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
     public function testImportCSVWithFileAsHeaderName(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($user);
+        $this->client->loginUser($user, 'mautic');
         // Create 'file' field.
         $this->createField('text', 'file');
         // Create contact import.
@@ -124,7 +124,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
     public function testImportWithSpecialCharacterTag(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->client->loginUser($user);
+        $this->client->loginUser($user, 'mautic');
 
         // Count tags before import
         $tagRepository  = $this->em->getRepository(Tag::class);

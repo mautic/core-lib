@@ -54,7 +54,7 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Login newly created non-admin user
-        $this->client->loginUser($user);
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
@@ -77,7 +77,7 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Login newly created admin user
-        $this->client->loginUser($user);
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
@@ -98,7 +98,7 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $this->client->loginUser($user);
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
@@ -120,7 +120,7 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $this->client->loginUser($user);
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', $weakPassword);
 

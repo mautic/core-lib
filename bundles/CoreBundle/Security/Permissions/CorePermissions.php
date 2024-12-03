@@ -34,6 +34,11 @@ class CorePermissions
         $this->registerPermissionClasses();
     }
 
+    public function reset(): void
+    {
+        $this->permissionObjectsGenerated = false;
+    }
+
     public function setPermissionObject(AbstractPermissions $permissionObject): void
     {
         $this->permissionObjectsByClass[$permissionObject::class]     = $permissionObject;

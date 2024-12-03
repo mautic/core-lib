@@ -299,13 +299,12 @@ class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         $crawler = $this->client->request(Request::METHOD_POST, '/s/segments/clone/'.$segment->getId());
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
         $form['leadlist[alias]']->setValue('clonesegment2');
         $this->client->submit($form);
-
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         $this->client->submit($form);
 
