@@ -543,7 +543,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             'template' => $email->getId(),
         ];
 
-        $this->client->request('GET', '/s/ajax', $payload, [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('GET', '/s/ajax', $payload);
         $clientResponse = $this->client->getResponse();
 
         $this->assertTrue($clientResponse->isOk(), $clientResponse->getContent());

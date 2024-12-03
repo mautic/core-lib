@@ -45,7 +45,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
             'campaignAction' => 'add',
         ];
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax', $payload, [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest(Request::METHOD_POST, '/s/ajax', $payload);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
@@ -65,7 +65,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
             'campaignAction' => 'remove',
         ];
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax', $payload, [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest(Request::METHOD_POST, '/s/ajax', $payload);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
@@ -108,7 +108,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testCompanyLookupWithNoModelSet(): void
     {
-        $this->client->request(Request::METHOD_GET, '/s/ajax?action=lead:getLookupChoiceList&lead.company=unicorn', [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax?action=lead:getLookupChoiceList&lead.company=unicorn');
         $response = $this->client->getResponse();
         Assert::assertSame(400, $response->getStatusCode());
         Assert::assertStringContainsString('Bad Request - The searchKey parameter is required', $response->getContent());
@@ -497,11 +497,10 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $leadRepository->saveEntities($nonAdminLeads);
         $this->em->clear();
 
-        // Logout admin.
-        $this->client->request(Request::METHOD_GET, '/s/logout');
+        $this->logoutUser();
 
         // Check suggestions for a non admin user.
-        $this->client->loginUser($nonAdminUser);
+        $this->client->loginUser($nonAdminUser, 'mautic');
         $this->client->setServerParameter('PHP_AUTH_USER', 'non-admin-user');
         // Set the new password, because new authenticator system checks for it.
         $this->client->setServerParameter('PHP_AUTH_PW', $passwordNonAdmin);

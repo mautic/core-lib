@@ -124,7 +124,7 @@ class LeadRepositoryFunctionalTest extends MauticMysqlTestCase
             'value'  => $emails,
         ];
 
-        $this->client->request(Request::METHOD_GET, '/s/ajax', $payload, [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax', $payload);
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), print_r(json_decode($this->client->getResponse()->getContent(), true), true));
         $contentArray = json_decode($this->client->getResponse()->getContent(), true);
 

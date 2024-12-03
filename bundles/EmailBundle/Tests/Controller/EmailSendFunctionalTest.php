@@ -31,12 +31,10 @@ final class EmailSendFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $this->client->request(
+        $this->client->xmlHttpRequest(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
-            ['id' => $email->getId(), 'pending' => 2],
-            [],
-            $this->createAjaxHeaders()
+            ['id' => $email->getId(), 'pending' => 2]
         );
 
         $response = $this->client->getResponse();

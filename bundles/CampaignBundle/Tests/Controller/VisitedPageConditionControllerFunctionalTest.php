@@ -28,7 +28,7 @@ final class VisitedPageConditionControllerFunctionalTest extends MauticMysqlTest
     ): void {
         // Fetch the campaign condition form.
         $uri = 's/campaigns/events/new?type=lead.pageHit&eventType=condition&campaignId=3&anchor=leadsource&anchorEventType=source&_=1682493324393&mauticUserLastActive=897&mauticLastNotificationId=';
-        $this->client->request('GET', $uri, [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('GET', $uri);
         $response = $this->client->getResponse();
         Assert::assertTrue($response->isOk(), $response->getContent());
 
@@ -51,7 +51,7 @@ final class VisitedPageConditionControllerFunctionalTest extends MauticMysqlTest
             ]
         );
 
-        $this->client->request($form->getMethod(), $form->getUri(), $form->getPhpValues(), [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues());
         $response = $this->client->getResponse();
         Assert::assertTrue($response->isOk(), $response->getContent());
         $responseData = json_decode($response->getContent(), true);

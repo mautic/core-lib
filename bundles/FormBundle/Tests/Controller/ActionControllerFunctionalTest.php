@@ -23,13 +23,11 @@ final class ActionControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         // Fetch the form
-        $this->client->request(Request::METHOD_GET, '/s/forms/action/new',
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/forms/action/new',
             [
                 'formId' => $form->getId(),
                 'type'   => 'form.email',
-            ],
-            [],
-            $this->createAjaxHeaders(),
+            ]
         );
         $this->assertTrue($this->client->getResponse()->isOk());
         $content     = $this->client->getResponse()->getContent();
@@ -44,7 +42,7 @@ final class ActionControllerFunctionalTest extends MauticMysqlTestCase
             'formaction[properties][subject]' => 'Test Japanese',
             'formaction[properties][message]' => '<p style="font-family: メイリオ">Test</p>',
         ]);
-        $this->client->submit($form, [], $this->createAjaxHeaders());
+        $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk());
         $content  = $this->client->getResponse()->getContent();
         $content  = json_decode($content)->actionHtml;
@@ -52,7 +50,7 @@ final class ActionControllerFunctionalTest extends MauticMysqlTestCase
         $editPage = $crawler->filter('.btn-edit')->attr('href');
 
         // Check the content was not changed
-        $this->client->request(Request::METHOD_GET, $editPage, [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest(Request::METHOD_GET, $editPage);
         $this->assertStringContainsString('&lt;p style=&quot;font-family: メイリオ&quot;&gt;Test&lt;/p&gt;', json_decode($this->client->getResponse()->getContent())->newContent);
     }
 }

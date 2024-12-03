@@ -17,12 +17,9 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testNewEmailFieldFormIsPreMapped(): void
     {
-        $this->client->request(
+        $this->client->xmlHttpRequest(
             Request::METHOD_GET,
-            '/s/forms/field/new?type=email&tmpl=field&formId=temporary_form_hash&inBuilder=1',
-            [],
-            [],
-            $this->createAjaxHeaders()
+            '/s/forms/field/new?type=email&tmpl=field&formId=temporary_form_hash&inBuilder=1'
         );
         $clientResponse = $this->client->getResponse();
         $payload        = json_decode($clientResponse->getContent(), true);
@@ -59,7 +56,7 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED, $clientResponse->getContent());
 
-        $crawler     = $this->client->request(Request::METHOD_GET, "/s/forms/field/new?type=captcha&tmpl=field&formId={$formId}&inBuilder=1", [], [], $this->createAjaxHeaders());
+        $crawler     = $this->client->xmlHttpRequest(Request::METHOD_GET, "/s/forms/field/new?type=captcha&tmpl=field&formId={$formId}&inBuilder=1");
         $content     = $this->client->getResponse()->getContent();
         Assert::assertTrue($this->client->getResponse()->isOk(), $content);
         $content     = json_decode($content)->newContent;
@@ -75,7 +72,7 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
                 'formfield[properties][captcha]' => 'Prague',
             ]
         );
-        $this->client->request($form->getMethod(), $form->getUri(), $form->getPhpValues(), $form->getPhpFiles(), $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues(), $form->getPhpFiles());
 
         Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
 
@@ -94,12 +91,9 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($form);
         $this->em->flush();
 
-        $this->client->request(
+        $this->client->xmlHttpRequest(
             Request::METHOD_GET,
-            '/s/forms/field/new?type=companyLookup&tmpl=field&formId='.$form->getId().'&inBuilder=1',
-            [],
-            [],
-            $this->createAjaxHeaders()
+            '/s/forms/field/new?type=companyLookup&tmpl=field&formId='.$form->getId().'&inBuilder=1'
         );
 
         Assert::assertTrue($this->client->getResponse()->isOk());

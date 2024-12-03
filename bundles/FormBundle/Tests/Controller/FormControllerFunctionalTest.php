@@ -184,7 +184,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($formElement);
         $this->assertTrue($this->client->getResponse()->isOk());
 
-        $this->client->request('GET', sprintf('/s/forms/field/edit/%d?formId=%d', $field->getId(), $form->getId()), [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('GET', sprintf('/s/forms/field/edit/%d?formId=%d', $field->getId(), $form->getId()));
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
         $this->assertJson($response->getContent());

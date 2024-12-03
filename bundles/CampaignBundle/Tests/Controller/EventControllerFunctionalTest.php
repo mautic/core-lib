@@ -17,7 +17,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
     {
         // Fetch the campaign condition form.
         $uri = '/s/campaigns/events/new?type=lead.field_value&eventType=condition&campaignId=mautic_89f7f52426c1dff3daa3beaea708a6b39fe7a775&anchor=leadsource&anchorEventType=source';
-        $this->client->request('GET', $uri, [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('GET', $uri);
         $response = $this->client->getResponse();
         Assert::assertTrue($response->isOk(), $response->getContent());
 
@@ -38,7 +38,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
 
-        $this->client->request($form->getMethod(), $form->getUri(), $form->getPhpValues(), [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues());
         $response = $this->client->getResponse();
         Assert::assertTrue($response->isOk(), $response->getContent());
         $responseData = json_decode($response->getContent(), true);
@@ -81,7 +81,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
     public function testActionAtSpecificTimeWorkflow(): void
     {
         $uri = '/s/campaigns/events/new?type=lead.changepoints&eventType=action&campaignId=mautic_89f7f52426c1dff3daa3beaea708a6b39fe7a775&anchor=no&anchorEventType=condition';
-        $this->client->request('GET', $uri, [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('GET', $uri);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk(), $response->getContent());
 
@@ -111,7 +111,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
 
-        $this->client->request($form->getMethod(), $form->getUri(), $form->getPhpValues(), [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues());
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk(), $response->getContent());
         $responseData = json_decode($response->getContent(), true);
@@ -130,7 +130,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
 
         // GET EDIT FORM
         $uri = "/s/campaigns/events/edit/{$eventId}?campaignId=mautic_89f7f52426c1dff3daa3beaea708a6b39fe7a775&anchor=no&anchorEventType=condition";
-        $this->client->request('GET', $uri, [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('GET', $uri);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk(), $response->getContent());
 
@@ -160,7 +160,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
 
-        $this->client->request($form->getMethod(), $form->getUri(), $form->getPhpValues(), [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues());
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk(), $response->getContent());
         $responseData = json_decode($response->getContent(), true);
@@ -180,7 +180,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
     public function testCloneWorkflow(): void
     {
         $uri = '/s/campaigns/events/new?type=lead.changepoints&eventType=action&campaignId=mautic_89f7f52426c1dff3daa3beaea708a6b39fe7a775&anchor=no&anchorEventType=condition';
-        $this->client->request('GET', $uri, [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('GET', $uri);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk(), $response->getContent());
 
@@ -210,7 +210,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
 
-        $this->client->request($form->getMethod(), $form->getUri(), $form->getPhpValues(), [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues());
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk(), $response->getContent());
         $responseData = json_decode($response->getContent(), true);
@@ -219,7 +219,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
 
         // CLONE EVENT
         $uri = "/s/campaigns/events/clone/{$eventId}?campaignId=mautic_89f7f52426c1dff3daa3beaea708a6b39fe7a775";
-        $this->client->request('POST', $uri, [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('POST', $uri);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk(), $response->getContent());
         $responseData = json_decode($response->getContent(), true);
@@ -230,7 +230,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
 
         // INSERT EVENT
         $uri = "/s/campaigns/events/insert/{$eventId}?campaignId=mautic_89f7f52426c1dff3daa3beaea708a6b39fe7a775";
-        $this->client->request('POST', $uri, [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('POST', $uri);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk(), $response->getContent());
         $responseData = json_decode($response->getContent(), true);
@@ -246,7 +246,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
     {
         // Fetch the campaign action form.
         $uri = '/s/campaigns/events/new?type=email.send&eventType=action&campaignId=mautic_89f7f52426c1dff3daa3beaea708a6b39fe7a775&anchor=leadsource&anchorEventType=source';
-        $this->client->request('GET', $uri, [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('GET', $uri);
         $response = $this->client->getResponse();
         Assert::assertTrue($response->isOk(), $response->getContent());
 
