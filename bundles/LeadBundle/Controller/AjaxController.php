@@ -75,7 +75,7 @@ class AjaxController extends CommonAjaxController
     public function getLeadIdsByFieldValueAction(Request $request, LeadModel $leadModel): JsonResponse
     {
         $field     = InputHelper::clean($request->query->get('field'));
-        $value     = InputHelper::clean($request->query->get('value'));
+        $value     = InputHelper::clean($request->query->all()['value'] ?? '');
         $ignore    = (int) $request->query->get('ignore');
         $dataArray = ['items' => []];
 
