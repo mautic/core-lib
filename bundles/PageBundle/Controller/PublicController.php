@@ -378,7 +378,7 @@ class PublicController extends AbstractFormController
 
             $content = $response->getContent();
         } else {
-            $content = str_replace('</head>', $analytics.$this->renderView('@MauticPage/Page/preview_header.html.twig')."\n</head>", $content);
+            $content = str_replace('</head>', $analytics."\n</head>", $content);
         }
 
         if ($this->dispatcher->hasListeners(PageEvents::PAGE_ON_DISPLAY)) {

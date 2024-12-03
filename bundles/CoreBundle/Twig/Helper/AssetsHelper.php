@@ -559,7 +559,6 @@ final class AssetsHelper
             $plugins.'table.js?v'.$this->version,
             $plugins.'url.js?v'.$this->version,
             // $plugins . 'video.js?v' . $this->version,
-            $plugins.'gatedvideo.js?v'.$this->version,
             $plugins.'token.js?v'.$this->version,
             $plugins.'dynamic_content.js?v'.$this->version,
         ];

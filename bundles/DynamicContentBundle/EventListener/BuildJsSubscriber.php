@@ -99,10 +99,6 @@ MauticJS.replaceDynamicContent = function (params) {
                             MauticJS.insertScript(m[1]);
                         }
                     }
-
-                    if (dwcContent.search("fr-gatedvideo") > 0) {
-                        MauticJS.initGatedVideo();
-                    }
                 }
             });
         });
