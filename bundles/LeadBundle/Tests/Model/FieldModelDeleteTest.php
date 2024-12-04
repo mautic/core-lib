@@ -11,7 +11,18 @@ use PHPUnit\Framework\Assert;
 class FieldModelDeleteTest extends MauticMysqlTestCase
 {
     // copied creation and deletion and getColumns() from app/bundles/LeadBundle/Tests/Model/FieldModelTest.php
+    private ?object $fieldModel;
+    private LeadField $leadField;
+    private LeadField $leadField2;
+
     public function setUp(): void
+    {
+        $this->configParams['create_custom_field_in_background'] = $this->getName() === 'testBatchDeleteFields';
+
+        parent::setUp();
+    }
+    
+    public function testBatchCreateFields()
     {
         $this->fieldModel = self::$container->get('mautic.lead.model.field');
 
@@ -40,14 +51,20 @@ class FieldModelDeleteTest extends MauticMysqlTestCase
             ->setObject('company');
 
         $this->fieldModel->saveEntities([$this->leadField, $this->leadField2, $this->companyField, $this->companyField2]);
-
-        $this->configParams['create_custom_field_in_background']  = true;
-
-        parent::setUp();
+        
+        $this->assertCount(1, $this->getColumns('leads', $this->leadField->getAlias()));
+        $this->assertCount(1, $this->getColumns('leads', $this->leadField2->getAlias()));
+        $this->assertCount(1, $this->getColumns('companies', $this->companyField->getAlias()));
+        $this->assertCount(1, $this->getColumns('companies', $this->companyField2->getAlias()));
+        
     }
 
+    /**
+     * @depends testBatchCreateFields
+     */
     public function testBatchDeleteFields()
     {
+
         $this->fieldModel->deleteEntities([$this->leadField->getId(), $this->leadField2->getId(), $this->companyField->getId(), $this->companyField2->getId()]);
 
         $this->assertCount(0, $this->getColumns('leads', $this->leadField->getAlias()));
