@@ -110,6 +110,11 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
      */
     private $emailStatModel;
 
+    /**
+     * @var MockObject&Environment
+     */
+    private MockObject $twig;
+
     private StatHelper $statHelper;
 
     protected function setUp(): void
@@ -125,6 +130,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->loggerMock           = $this->createMock(LoggerInterface::class);
         $this->mailHashHelper       = new MailHashHelper($this->coreParametersHelper);
         $this->translator           = $this->createMock(TranslatorInterface::class);
+        $this->twig                 = $this->createMock(Environment::class);
     }
 
     /**
@@ -254,7 +260,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->coreParametersHelper->method('get')->will($this->returnValueMap([['mailer_from_email', null, 'nobody@nowhere.com'], ['secret_key', null, 'secret']]));
 
         $mailHelper = $this->getMockBuilder(MailHelper::class)
-            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock])
+            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $this->twig])
             ->onlyMethods(['createEmailStat'])
             ->getMock();
 
@@ -376,7 +382,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             ->willReturn(new AddressDTO('someone@somewhere.com'));
 
         $mailHelper = $this->getMockBuilder(MailHelper::class)
-            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock])
+            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $this->twig])
             ->onlyMethods([])
             ->getMock();
 
@@ -448,7 +454,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             ->willReturn(new AddressDTO('someone@somewhere.com'));
 
         $mailHelper = $this->getMockBuilder(MailHelper::class)
-            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock])
+            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $this->twig])
             ->onlyMethods(['createEmailStat'])
             ->getMock();
 

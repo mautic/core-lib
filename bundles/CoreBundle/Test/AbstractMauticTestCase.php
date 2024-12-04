@@ -50,7 +50,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
         'messenger_dsn_failed'              => 'in-memory://default',
     ];
 
-    protected $authenticateApi = false;
+    protected bool $authenticateApi = false;
 
     protected AbstractDatabaseTool $databaseTool;
 
