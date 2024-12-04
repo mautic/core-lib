@@ -39,7 +39,6 @@ class ActionController extends CommonFormController
 
         // ajax only for form fields
         if (!$actionType
-            || !$request->isXmlHttpRequest()
             || !$this->security->isGranted(['form:forms:editown', 'form:forms:editother', 'form:forms:create'], 'MATCH_ONE')
         ) {
             return $this->modalAccessDenied();
