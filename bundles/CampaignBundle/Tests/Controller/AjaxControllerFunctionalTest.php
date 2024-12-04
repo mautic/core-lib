@@ -32,6 +32,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
             'contactId' => $contact->getId(),
         ];
 
+        $this->setCsrfHeader();
         $this->client->xmlHttpRequest(Request::METHOD_POST, '/s/ajax', $payload);
 
         // Ensure we'll fetch fresh data from the database and not from entity manager.

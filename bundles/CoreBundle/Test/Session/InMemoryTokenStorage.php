@@ -37,7 +37,7 @@ class InMemoryTokenStorage implements ClearableTokenStorageInterface
 
     public function setToken(string $tokenId, #[\SensitiveParameter] string $token): void
     {
-        $this->store[$this->namespace][$tokenId] = $token;// "Bi0SXg7nmVKYxW3VtRjUtnCaqUASdMOa3OG2tBnOq2o"
+        $this->store[$this->namespace][$tokenId] = $token;
     }
 
     public function hasToken(string $tokenId): bool

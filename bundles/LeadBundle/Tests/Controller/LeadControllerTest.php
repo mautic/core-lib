@@ -863,8 +863,8 @@ class LeadControllerTest extends MauticMysqlTestCase
 
         $uri = "/s/contacts/contactGroupPoints/{$contact->getId()}";
         $this->client->xmlHttpRequest('GET', $uri);
+        $this->assertResponseIsSuccessful();
         $response = $this->client->getResponse();
-        $this->assertTrue($response->isOk(), $response->getContent());
 
         // Get the form HTML element out of the response, fill it in and submit.
         $responseData = json_decode($response->getContent(), true);
@@ -879,9 +879,10 @@ class LeadControllerTest extends MauticMysqlTestCase
             ]
         );
 
+        $this->setCsrfHeader();
         $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues());
+        $this->assertResponseIsSuccessful();
         $response = $this->client->getResponse();
-        $this->assertTrue($response->isOk(), $response->getContent());
 
         $scores = $contact->getGroupScores();
         $this->assertCount(2, $scores);

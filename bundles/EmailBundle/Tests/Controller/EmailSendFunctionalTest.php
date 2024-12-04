@@ -15,6 +15,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class EmailSendFunctionalTest extends MauticMysqlTestCase
 {
+    protected function setUp(): void
+    {
+        $this->configParams['disable_trackable_urls'] = false;
+
+        parent::setUp();
+    }
+
     public function testSendEmailWithContact(): void
     {
         $segment = $this->createSegment('Segment A', 'seg-a');
@@ -31,6 +38,7 @@ final class EmailSendFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
+        $this->setCsrfHeader();
         $this->client->xmlHttpRequest(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
