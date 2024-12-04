@@ -699,7 +699,6 @@ class FieldModel extends FormModel
         /** @var LeadField $entity */
         foreach ($entities as $entity) {
             $this->customFieldColumn->deleteLeadColumn($entity);
-            $this->leadFieldDeleter->deleteLeadFieldEntity($entity);
         }
 
         return $entities;
