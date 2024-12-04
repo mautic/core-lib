@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\FormBundle\Tests\Controller;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\FormBundle\Entity\Form;
+use PHPUnit\Framework\Assert;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -29,7 +32,7 @@ final class ActionControllerFunctionalTest extends MauticMysqlTestCase
                 'type'   => 'form.email',
             ]
         );
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
         $content     = $this->client->getResponse()->getContent();
         $content     = json_decode($content)->newContent;
         $crawler     = new Crawler($content, $this->client->getInternalRequest()->getUri());
@@ -43,14 +46,16 @@ final class ActionControllerFunctionalTest extends MauticMysqlTestCase
             'formaction[properties][message]' => '<p style="font-family: メイリオ">Test</p>',
         ]);
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk());
-        $content  = $this->client->getResponse()->getContent();
-        $content  = json_decode($content)->actionHtml;
-        $crawler  = new Crawler($content);
+        $this->assertResponseIsSuccessful();
+        $content    = $this->client->getResponse()->getContent();
+        $actionHtml = json_decode($content, true)['actionHtml'] ?? null;
+        Assert::assertNotNull($actionHtml, $content);
+        $crawler  = new Crawler($actionHtml);
         $editPage = $crawler->filter('.btn-edit')->attr('href');
 
         // Check the content was not changed
         $this->client->xmlHttpRequest(Request::METHOD_GET, $editPage);
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('&lt;p style=&quot;font-family: メイリオ&quot;&gt;Test&lt;/p&gt;', json_decode($this->client->getResponse()->getContent())->newContent);
     }
 }

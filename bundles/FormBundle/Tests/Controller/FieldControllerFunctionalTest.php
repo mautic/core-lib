@@ -57,8 +57,8 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED, $clientResponse->getContent());
 
         $crawler     = $this->client->xmlHttpRequest(Request::METHOD_GET, "/s/forms/field/new?type=captcha&tmpl=field&formId={$formId}&inBuilder=1");
+        $this->assertResponseIsSuccessful();
         $content     = $this->client->getResponse()->getContent();
-        Assert::assertTrue($this->client->getResponse()->isOk(), $content);
         $content     = json_decode($content)->newContent;
         $crawler     = new Crawler($content, $this->client->getInternalRequest()->getUri());
         $formCrawler = $crawler->filter('form[name=formfield]');
@@ -72,14 +72,14 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
                 'formfield[properties][captcha]' => 'Prague',
             ]
         );
+        $this->setCsrfHeader();
         $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues(), $form->getPhpFiles());
-
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
 
         $response = json_decode($this->client->getResponse()->getContent(), true);
 
-        Assert::assertSame(1, $response['success'], $this->client->getResponse()->getContent());
-        Assert::assertSame(1, $response['closeModal'], $this->client->getResponse()->getContent());
+        Assert::assertSame(1, $response['success'] ?? null, $this->client->getResponse()->getContent());
+        Assert::assertSame(1, $response['closeModal'] ?? null, $this->client->getResponse()->getContent());
     }
 
     public function testNewCompanyLookupFieldForm(): void
