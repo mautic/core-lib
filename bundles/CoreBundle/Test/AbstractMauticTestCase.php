@@ -98,7 +98,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
         EnvLoader::load();
 
         self::ensureKernelShutdown();
-        $this->client = static::createClient($this->clientOptions, $this->authenticateApi ? $this->clientServer : []);//, $this->clientServer
+        $this->client = static::createClient($this->clientOptions, $this->authenticateApi ? $this->clientServer : []);
         $this->client->disableReboot();
         $this->client->followRedirects(true);
 
@@ -110,7 +110,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $secure           = 0 === strcasecmp($scheme, 'https');
 
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => $this->clientServer['PHP_AUTH_USER']]);
-        $this->client->loginUser($user, 'mautic'); // also creates session
+        $this->loginUser($user); // also creates session
 
         $this->client->setServerParameter('HTTPS', (string) $secure);
     }
@@ -159,14 +159,15 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $this->loadFixtures($classNames);
     }
 
+    public function setCsrfHeader(string $intention = 'mautic_ajax_post'): void
+    {
+        $this->client->setServerParameter('HTTP_X-CSRF-Token', $this->getCsrfToken($intention));
+    }
+
     /**
      * Use when POSTing directly to forms.
-     *
-     * @param string $intention
-     *
-     * @return string
      */
-    protected function getCsrfToken($intention)
+    protected function getCsrfToken(string $intention): string
     {
         return $this->client->getContainer()->get('security.csrf.token_manager')->refreshToken($intention)->getValue();
     }

@@ -44,15 +44,17 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
             'campaignId'     => $campaign->getId(),
             'campaignAction' => 'add',
         ];
-
+        $this->setCsrfHeader();
         $this->client->xmlHttpRequest(Request::METHOD_POST, '/s/ajax', $payload);
-        $clientResponse = $this->client->getResponse();
-        $response       = json_decode($clientResponse->getContent(), true);
-
-        $this->assertTrue($clientResponse->isOk(), $clientResponse->getContent());
+        $this->assertResponseIsSuccessful();
+        $response = json_decode($this->client->getResponse()->getContent(), true);
 
         // Ensure the contact 1 is a campaign 1 member now.
-        $this->assertSame([['lead_id' => (string) $contact->getId(), 'manually_added' => '1', 'manually_removed' => '0']], $this->getMembersForCampaign($campaign->getId()));
+        $this->assertSame(
+            [['lead_id' => (string) $contact->getId(), 'manually_added' => '1', 'manually_removed' => '0']],
+            $this->getMembersForCampaign($campaign->getId()),
+            $this->client->getResponse()->getContent()
+        );
 
         $this->assertTrue(isset($response['success']), 'The response does not contain the `success` param.');
         $this->assertSame(1, $response['success']);
