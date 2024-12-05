@@ -150,9 +150,9 @@ class AuthenticationEvent extends Event
     public function setIsAuthenticated($service, User $user = null, $createIfNotExists = true): void
     {
         $this->authenticatingService = $service;
-        $this->isAuthenticated       = true;
 
         if (null !== $user) {
+            $this->isAuthenticated = true;
             $this->setUser($user, $createIfNotExists);
         }
 

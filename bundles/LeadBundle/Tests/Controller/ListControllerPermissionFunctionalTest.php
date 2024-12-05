@@ -605,7 +605,7 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
         $this->client->request(Request::METHOD_GET, '/s/logout');
         $this->loginUser($name);
         $this->client->setServerParameter('PHP_AUTH_USER', $name);
-        $this->client->setServerParameter('PHP_AUTH_PW', 'mautic');
+        $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
     }
 
     /**
@@ -628,9 +628,9 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
         $user->setLastName($userDetails['last-name']);
         $user->setRole($role);
 
-        /** @var PasswordHasherInterface $encoder */
-        $encoder = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
-        $user->setPassword($encoder->hash('mautic'));
+        $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
+        \assert($hasher instanceof PasswordHasherInterface);
+        $user->setPassword($hasher->hash('Maut1cR0cks!'));
 
         $this->em->persist($user);
         $this->em->flush();
