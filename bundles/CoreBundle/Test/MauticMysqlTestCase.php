@@ -59,7 +59,7 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
             $this->markDatabasePrepared();
         }
 
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => $this->clientServer['PHP_AUTH_USER']]);
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => $this->clientServer['PHP_AUTH_USER'] ?? 'admin']);
         $this->loginUser($user); // also creates session
 
         if ($this->useCleanupRollback) {
