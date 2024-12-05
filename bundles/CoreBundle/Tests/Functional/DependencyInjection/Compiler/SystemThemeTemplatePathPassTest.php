@@ -20,8 +20,8 @@ class SystemThemeTemplatePathPassTest extends MauticMysqlTestCase
 
         // Clear the cache
         /** @var CacheHelper $cacheHelper */
-        $cacheHelper = self::getContainer()->get('mautic.helper.cache');
-        $cacheHelper->nukeCache();
+        // $cacheHelper = self::getContainer()->get('mautic.helper.cache');
+        // $cacheHelper->nukeCache();
 
         parent::setUp();
     }
