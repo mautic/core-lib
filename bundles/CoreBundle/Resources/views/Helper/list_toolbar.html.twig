@@ -4,7 +4,8 @@
 
     <div class="toolbar--batch-actions d-flex jc-space-between bg-primary fd-column fd-row-md">
         <div class="toolbar--batch-summary d-flex">
-            <span class="toolbar--batch-summary__count"> {{ 'mautic.core.items_selected'|trans|lower }}</span>
+            <span class="toolbar--batch-summary__count" data-singular="{{ 'mautic.core.item_selected'|trans|lower }}"
+            data-plural="{{ 'mautic.core.items_selected'|trans|lower }}">0 {{ 'mautic.core.items_selected'|trans|lower }}</span>
             <!-- <span class="toolbar--batch-summary__divider">|</span> -->
             <!-- Here you must put a button for "Select all" to select all items from the user's search -->
         </div>

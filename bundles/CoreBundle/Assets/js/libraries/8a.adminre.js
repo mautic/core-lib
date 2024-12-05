@@ -398,7 +398,13 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                 function updateToolbarState() {
                     var checkedBoxes = $(toggler + ":checked").length;
                     $(".toolbar--batch-actions").toggleClass("toolbar--batch-actions--active", checkedBoxes > 0);
-                    $(".toolbar--batch-summary__count").text(checkedBoxes + " items selected");
+
+                    var $summaryCount = $(".toolbar--batch-summary__count");
+                    var singularText = $summaryCount.data('singular');
+                    var pluralText = $summaryCount.data('plural');
+
+                    var itemText = checkedBoxes === 1 ? singularText : pluralText;
+                    $summaryCount.text(checkedBoxes + " " + itemText);
                 }
 
                 $(document).on("click", ".pagination a[data-toggle='ajax']", function() {
