@@ -332,17 +332,11 @@ class LeadControllerTest extends MauticMysqlTestCase
     public function testExcelIsExportedCorrectly(): void
     {
         $this->loadFixtures([LoadLeadData::class]);
-
-        ob_start();
         $this->client->request(Request::METHOD_GET, '/s/contacts/batchExport?filetype=xlsx');
-        $content = ob_get_contents();
-        ob_end_clean();
-
-        $clientResponse = $this->client->getResponse();
-
-        $this->assertEquals(Response::HTTP_OK, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
+        $content = $this->client->getInternalResponse()->getContent();
         $this->assertEquals($this->client->getInternalResponse()->getHeader('content-type'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $this->assertEquals(true, strlen($content) > 10000);
+        $this->assertTrue(strlen($content) > 10000, $content);
     }
 
     public function testContactsAreAddedAndRemovedFromCompanies(): void
@@ -980,10 +974,8 @@ class LeadControllerTest extends MauticMysqlTestCase
     {
         $this->loadFixtures([LoadLeadData::class]);
 
-        ob_start();
         $this->client->request(Request::METHOD_GET, '/s/contacts/batchExport?filetype=xlsx');
-        $content = ob_get_contents();
-        ob_end_clean();
+        $content = $this->client->getInternalResponse()->getContent();
 
         $this->assertResponseIsSuccessful();
         $this->assertEquals($this->client->getInternalResponse()->getHeader('content-type'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

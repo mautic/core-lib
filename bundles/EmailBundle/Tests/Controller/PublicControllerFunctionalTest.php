@@ -209,6 +209,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testUnsubscribeActionWithCustomPreferenceCenterHasCsrfToken(): void
     {
+        $this->logoutUser();
         $lead              = $this->createLead();
         $preferencesCenter = $this->createCustomPreferencesPage('{segmentlist}{saveprefsbutton}');
         $stat              = $this->getStat(null, $lead, $preferencesCenter);
@@ -322,9 +323,10 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
     }
 
-    public function testPreviewForExpiredEmail(): void
+    public function testPreviewForExpiredEmailForAnonymousUser(): void
     {
-        $emailName    = 'Test preview email';
+        $this->logoutUser();
+        $emailName = 'Test preview email';
 
         $email = new Email();
         $email->setName($emailName);

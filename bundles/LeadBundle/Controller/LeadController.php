@@ -2064,8 +2064,7 @@ class LeadController extends FormController
         ];
 
         $iterator = new IteratorExportDataModel($model, $args, fn ($contact) => $exportHelper->parseLeadToExport($contact));
-
-        $response              = $this->exportResultsAs($iterator, $fileType, 'contacts', $exportHelper);
+        $response = $this->exportResultsAs($iterator, $fileType, 'contacts', $exportHelper);
 
         $details['total'] = $iterator->getTotal();
         $details['args']  = $iterator->getArgs();

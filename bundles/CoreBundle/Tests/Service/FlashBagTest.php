@@ -43,17 +43,16 @@ class FlashBagTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->symfonyFlashBag  = $this->createMock(SymfonyFlashBag::class);
-
-        $this->session = $this->createMock(Session::class);
-        $this->session
-            ->expects($this->once())
-            ->method('getFlashBag')
-            ->willReturn($this->symfonyFlashBag);
+        $this->symfonyFlashBag   = $this->createMock(SymfonyFlashBag::class);
+        $this->session           = $this->createMock(Session::class);
         $this->translator        = $this->createMock(TranslatorInterface::class);
         $this->requestStack      = $this->createMock(RequestStack::class);
         $this->notificationModel = $this->createMock(NotificationModel::class);
-        $this->flashBag          = new FlashBag($this->translator, $this->requestStack, $this->notificationModel);
+
+        $this->session->method('getFlashBag')->willReturn($this->symfonyFlashBag);
+        $this->requestStack->method('getSession')->willReturn($this->session);
+
+        $this->flashBag = new FlashBag($this->translator, $this->requestStack, $this->notificationModel);
 
         parent::setUp();
     }
