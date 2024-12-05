@@ -27,7 +27,7 @@ class CorePermissionsTest extends MauticMysqlTestCase
      */
     public function testVirtualPermission(bool $grant): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'sales']);
         $this->loginUser($user);
         $permissions = self::getContainer()->get('mautic.security');
         \assert($permissions instanceof CorePermissions);
@@ -59,7 +59,7 @@ class CorePermissionsTest extends MauticMysqlTestCase
              */
             public function isGranted($userPermissions, $name, $level): bool
             {
-                Assert::fail('This method should not be invoked.');
+                throw new \BadMethodCallException('This method should not be invoked.');
             }
 
             public function isEnabled(): bool

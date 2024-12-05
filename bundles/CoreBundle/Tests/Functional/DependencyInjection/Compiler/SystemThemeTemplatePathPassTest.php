@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Tests\Functional\DependencyInjection\Compiler;
 
-use Mautic\CoreBundle\Helper\CacheHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use PHPUnit\Framework\Assert;
@@ -17,11 +16,6 @@ class SystemThemeTemplatePathPassTest extends MauticMysqlTestCase
     {
         // Create a twig file
         $this->createOverrideFile();
-
-        // Clear the cache
-        /** @var CacheHelper $cacheHelper */
-        // $cacheHelper = self::getContainer()->get('mautic.helper.cache');
-        // $cacheHelper->nukeCache();
 
         parent::setUp();
     }

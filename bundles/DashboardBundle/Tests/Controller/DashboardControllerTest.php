@@ -21,6 +21,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -65,7 +66,7 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
     private MockObject $sessionMock;
 
     /**
-     * @var MockObject|FlashBag
+     * @var MockObject&FlashBagInterface
      */
     private MockObject $flashBagMock;
 
@@ -111,14 +112,13 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             $this->securityMock
         );
         $this->controller->setContainer($this->containerMock);
-        $this->sessionMock->method('getFlashBag')->willReturn($this->flashBagMock);
+        $this->sessionMock->method('getFlashBag')->willReturn($this->createMock(FlashBagInterface::class));
     }
 
     public function testSaveWithGetWillCallAccessDenied(): void
     {
         $this->requestMock->expects($this->once())
             ->method('isMethod')
-            ->willReturn(Request::METHOD_POST)
             ->willReturn(true);
 
         $this->requestMock->expects(self::once())
@@ -133,7 +133,6 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
     {
         $this->requestMock->expects($this->once())
             ->method('isMethod')
-            ->willReturn('POST')
             ->willReturn(true);
 
         $this->requestMock->method('isXmlHttpRequest')
@@ -151,7 +150,6 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
     {
         $this->requestMock->expects($this->once())
             ->method('isMethod')
-            ->willReturn('POST')
             ->willReturn(true);
 
         $this->requestMock->method('isXmlHttpRequest')
@@ -198,7 +196,6 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
     {
         $this->requestMock->expects($this->once())
             ->method('isMethod')
-            ->willReturn('POST')
             ->willReturn(true);
 
         $this->requestMock->method('isXmlHttpRequest')

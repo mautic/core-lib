@@ -31,7 +31,7 @@ final class ThemeControllerTest extends MauticMysqlTestCase
 
         $themePath = $this->pathsHelper->getThemesPath();
 
-        if ($this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT)) {
+        if ($this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT) && !$this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT.'.bkp')) {
             $this->filesystem->rename($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT, $themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT.'.bkp');
         }
     }
@@ -42,7 +42,7 @@ final class ThemeControllerTest extends MauticMysqlTestCase
 
         $themePath = $this->pathsHelper->getThemesPath();
 
-        if ($this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT.'.bkp')) {
+        if ($this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT.'.bkp') && !$this->filesystem->exists($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT)) {
             $this->filesystem->rename($themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT.'.bkp', $themePath.'/'.ThemeHelper::HIDDEN_THEMES_TXT);
         }
     }
@@ -50,7 +50,7 @@ final class ThemeControllerTest extends MauticMysqlTestCase
     public function testDeleteTheme(): void
     {
         $this->client->request(Request::METHOD_POST, 's/themes/batchDelete?ids=[%22aurora%22]');
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('aurora is the default theme and therefore cannot be removed.', $this->client->getResponse()->getContent());
     }
 
@@ -58,13 +58,13 @@ final class ThemeControllerTest extends MauticMysqlTestCase
     {
         // Email theme list has 'Aurora' theme
         $email = $this->client->request(Request::METHOD_GET, '/s/emails/new');
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
         $themesInEmail = $email->filterXPath('//div[@id="email-container"]');
         Assert::assertStringContainsString('Aurora', $themesInEmail->html());
 
         // List themes
         $themeList = $this->client->request(Request::METHOD_GET, '/s/themes');
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
 
         // Theme list has 'Aurora' theme
         $themeRow = $themeList->filter('tr:contains("Aurora (aurora)")');
@@ -76,7 +76,7 @@ final class ThemeControllerTest extends MauticMysqlTestCase
 
         // Hide the 'Aurora' theme
         $this->client->request(Request::METHOD_POST, '/s/themes/visibility/aurora');
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
 
         // Check if hidden-themes.txt file exists
         $themePath           = $this->pathsHelper->getThemesPath();
@@ -93,13 +93,13 @@ final class ThemeControllerTest extends MauticMysqlTestCase
 
         // Email theme list has hidden 'Aurora' theme
         $newEmail = $this->client->request(Request::METHOD_GET, '/s/emails/new');
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
         $hiddenThemesInEmail = $newEmail->filterXPath('//div[contains(@class, "theme-list") and contains(@class, "hide")]');
         Assert::assertStringContainsString('Aurora', $hiddenThemesInEmail->html(), $newEmail->html());
 
         // List fresh themes
         $newThemeList = $this->client->request(Request::METHOD_GET, '/s/themes');
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
 
         // Check if 'Aurora' is the last theme in the list
         $hiddenThemeRow = $newThemeList->filter('table tr')->last();
@@ -117,7 +117,7 @@ final class ThemeControllerTest extends MauticMysqlTestCase
 
         // Unhide the 'Aurora' theme
         $this->client->request(Request::METHOD_POST, '/s/themes/visibility/aurora');
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
 
         // Check if hidden-themes.txt file is removed since there was only one theme before
         $themePath           = $this->pathsHelper->getThemesPath();
