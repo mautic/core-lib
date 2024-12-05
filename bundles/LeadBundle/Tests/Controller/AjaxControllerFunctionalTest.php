@@ -531,13 +531,8 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
             'group'  => $group,
         ];
 
-        $this->client->request(
-            Request::METHOD_POST,
-            '/s/ajax',
-            $payload,
-            [],
-            $this->createAjaxHeaders()
-        );
+        $this->setCsrfHeader();
+        $this->client->xmlHttpRequest(Request::METHOD_POST, '/s/ajax', $payload);
 
         // Get the response HTML
         $response    = $this->client->getResponse();

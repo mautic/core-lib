@@ -109,9 +109,6 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $scheme           = $this->router->getContext()->getScheme();
         $secure           = 0 === strcasecmp($scheme, 'https');
 
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => $this->clientServer['PHP_AUTH_USER']]);
-        $this->loginUser($user); // also creates session
-
         $this->client->setServerParameter('HTTPS', (string) $secure);
     }
 

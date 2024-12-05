@@ -467,7 +467,7 @@ class FieldType extends AbstractType
             // There's no need to filter list during FormEvents::PRE_SUBMIT.
             if ($object && $group) {
                 $options['query_builder'] = fn (EntityRepository $er) => $er->createQueryBuilder('f')
-                    ->orderBy('f.order', \Doctrine\Common\Collections\Criteria::ASC)
+                    ->orderBy('f.order', Order::Ascending->value)
                     ->where('f.object = :object')
                     ->setParameter('object', $object)
                     ->andWhere('f.group = :group')
