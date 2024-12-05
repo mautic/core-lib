@@ -8,9 +8,10 @@ use Mautic\CoreBundle\Security\Exception\PermissionBadFormatException;
 use Mautic\CoreBundle\Security\Exception\PermissionNotFoundException;
 use Mautic\UserBundle\Entity\Permission;
 use Mautic\UserBundle\Entity\User;
+use Symfony\Contracts\Service\ResetInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CorePermissions
+class CorePermissions implements ResetInterface
 {
     private array $permissionClasses = [];
 
