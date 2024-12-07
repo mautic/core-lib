@@ -1650,8 +1650,8 @@ body > #app-wrapper {
 }
 #app-header.navbar .navbar-nocollapse .navbar-form .form-group,
 #app-header.navbar .navbar-nocollapse .navbar-form .input-group {
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 7.5px;
+  margin-bottom: 7.5px;
 }
 #app-header.navbar .navbar-nocollapse .navbar-form .form-group .fa,
 #app-header.navbar .navbar-nocollapse .navbar-form .input-group .fa {
@@ -2199,7 +2199,7 @@ h6,
   color: var(--link-primary);
 }
 .fs-base {
-  font-size: 13px;
+  font-size: 14px;
 }
 .fs-2 {
   font-size: 2px !important;
@@ -2628,18 +2628,18 @@ kbd {
   margin-top: -1px;
 }
 .btn.btn-rounded {
-  border-radius: 32px;
+  border-radius: 33px;
   padding-left: 16px;
   padding-right: 16px;
 }
 .btn.btn-circle {
-  width: 32px;
+  width: 33px;
   padding-left: 0;
   padding-right: 0;
   border-radius: 50%;
 }
 .btn.btn-circle.btn-lg {
-  width: 43px;
+  width: 45px;
 }
 .btn.btn-circle.btn-sm {
   width: 28px;
@@ -4664,7 +4664,7 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
   margin-left: 5px;
 }
 .alert-growl .close {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-inverse);
   margin-left: 10px;
   font-weight: normal;
@@ -6070,7 +6070,7 @@ ul.dropdown-menu-form {
 .nav > li > a .text,
 .nav > li > a .icon,
 .nav > li > a .arrow {
-  line-height: 18px;
+  line-height: 19px;
 }
 .nav .open > a,
 .nav .open > a:hover,
@@ -6613,7 +6613,7 @@ input[style]:hover {
 .form-control.form-control-rounded,
 .chosen-container .chosen-single.form-control-rounded,
 .form-control.search.tt-input.form-control-rounded {
-  border-radius: 32px;
+  border-radius: 33px;
 }
 .form-control:hover,
 .chosen-container .chosen-single:hover,
@@ -6737,15 +6737,15 @@ fieldset[disabled] .form-control {
   position: relative;
 }
 .form-control-icon .form-control {
-  padding-left: 32px;
+  padding-left: 33px;
 }
 .form-control-icon .form-control.input-lg {
-  padding-left: 42px;
+  padding-left: 44px;
 }
 .form-control-icon .form-control.input-lg + .the-icon {
-  font-size: 16px;
-  line-height: 42px;
-  width: 42px;
+  font-size: 17px;
+  line-height: 44px;
+  width: 44px;
 }
 .form-control-icon .form-control.input-sm {
   padding-left: 29px;
@@ -6760,9 +6760,9 @@ fieldset[disabled] .form-control {
   z-index: 2;
   top: 50%;
   transform: translate(-50%, -50%);
-  left: 32px;
-  line-height: 31px;
-  width: 32px;
+  left: 33px;
+  line-height: 32px;
+  width: 33px;
   text-align: center;
 }
 .form-control-icon.form-control-icon-right .the-icon {
@@ -6771,11 +6771,11 @@ fieldset[disabled] .form-control {
 }
 .form-control-icon.form-control-icon-right .form-control {
   padding-left: 12px;
-  padding-right: 32px;
+  padding-right: 33px;
 }
 .form-control-icon.form-control-icon-right .form-control.input-lg {
   padding-left: 16px;
-  padding-right: 42px;
+  padding-right: 44px;
 }
 .form-control-icon.form-control-icon-right .form-control.input-sm {
   padding-left: 10px;
@@ -7385,7 +7385,7 @@ ul.line-legend li {
 }
 .table-responsive-force {
   width: 100%;
-  margin-bottom: 13.5px;
+  margin-bottom: 14.25px;
   overflow-y: hidden;
   overflow-x: auto;
   -ms-overflow-style: -ms-autohiding-scrollbar;
@@ -7462,16 +7462,16 @@ ul.line-legend li {
   box-shadow: none;
 }
 .progress.progress-md {
-  height: 12px;
+  height: 13px;
   border-radius: 6px;
 }
 .progress.progress-sm {
-  height: 8px;
+  height: 9px;
   border-radius: 6px;
   margin-top: 2px;
 }
 .progress.progress-xs {
-  height: 4px;
+  height: 5px;
   border-radius: 6px;
 }
 .progress-bar {
@@ -7542,7 +7542,7 @@ ul.line-legend li {
   clear: both;
 }
 .panel-heading .panel-title {
-  padding: 10px 0;
+  padding: 9.5px 0;
   display: table-cell;
   vertical-align: middle;
   font-weight: 600;
@@ -7824,7 +7824,7 @@ ul.line-legend li {
 .step > li + li .steps:after {
   content: "";
   position: absolute;
-  left: 32px / 2;
+  left: 33px / 2;
   top: -15px;
   height: 15px;
   width: 1px;
@@ -7859,11 +7859,11 @@ ul.line-legend li {
 }
 .step .steps > .steps-figure {
   display: inline-block;
-  width: 32px;
-  height: 32px;
+  width: 33px;
+  height: 33px;
   text-align: center;
   font-size: 14px;
-  line-height: 28px;
+  line-height: 29px;
   border-radius: 50%;
   border: 2px solid #a0acb8;
 }
@@ -7888,7 +7888,7 @@ ul.line-legend li {
   content: "";
   position: absolute;
   left: -18px;
-  top: 32px / 2;
+  top: 33px / 2;
   height: 1px;
   width: 18px;
   background-color: #a0acb8;
@@ -7935,11 +7935,11 @@ ul.line-legend li {
 }
 .horizontal-step .steps > .steps-figure {
   display: inline-block;
-  width: 32px;
-  height: 32px;
+  width: 33px;
+  height: 33px;
   text-align: center;
   font-size: 14px;
-  line-height: 28px;
+  line-height: 29px;
   border-radius: 50%;
   border: 2px solid #a0acb8;
 }
