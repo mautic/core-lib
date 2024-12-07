@@ -4465,16 +4465,16 @@ a.thumbnail.active {
   padding: 10px 15px;
   margin-bottom: -1px;
   background-color: transparent;
-  border: 1px solid transparent;
+  border: 1px solid var(--border-subtle);
 }
 .list-group-item:first-child {
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
+  border-top-left-radius: 10.8px;
+  border-top-right-radius: 10.8px;
 }
 .list-group-item:last-child {
   margin-bottom: 0;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 10.8px;
+  border-bottom-left-radius: 10.8px;
 }
 .list-group-item.disabled,
 .list-group-item.disabled:hover,
@@ -4497,8 +4497,8 @@ a.thumbnail.active {
 .list-group-item.active:hover,
 .list-group-item.active:focus {
   z-index: 2;
-  color: var(--text-inverse);
-  background-color: var(--layer-selected-inverse);
+  color: var(--text-primary);
+  background-color: var(--layer-hover);
   border-color: var(--border-subtle);
 }
 .list-group-item.active .list-group-item-heading,
@@ -4515,7 +4515,7 @@ a.thumbnail.active {
 .list-group-item.active .list-group-item-text,
 .list-group-item.active:hover .list-group-item-text,
 .list-group-item.active:focus .list-group-item-text {
-  color: var(--text-inverse);
+  color: var(--text-primary);
 }
 a.list-group-item,
 button.list-group-item {

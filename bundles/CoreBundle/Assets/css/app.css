@@ -5775,10 +5775,53 @@ a.media {
     margin-left: 0%;
   }
 }
-.list-group {
+.list-group.list-group-tabs {
   border: 1px solid var(--border-inverse);
   border-radius: clamp(4px, var(--border-radius-md), 12px);
   overflow: hidden;
+}
+.list-group.list-group-tabs .list-group-item {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+.list-group.list-group-tabs .list-group-item:first-child > a {
+  border-top-left-radius: clamp(4px, var(--border-radius-md), 12px);
+  border-top-right-radius: clamp(4px, var(--border-radius-md), 12px);
+}
+.list-group.list-group-tabs .list-group-item:last-child > a {
+  border-bottom-left-radius: clamp(4px, var(--border-radius-md), 12px);
+  border-bottom-right-radius: clamp(4px, var(--border-radius-md), 12px);
+}
+.list-group.list-group-tabs .list-group-item.active {
+  background-color: var(--layer-selected-inverse);
+}
+.list-group.list-group-tabs .list-group-item.active .list-group-item-text {
+  color: var(--text-inverse);
+}
+.list-group.list-group-tabs .list-group-item > a,
+.list-group.list-group-tabs .list-group-item > label,
+.list-group.list-group-tabs .list-group-item .list-group-item-text {
+  padding: 10px 15px;
+  outline: 2px var(--outline-style) transparent;
+  outline-offset: -2px;
+}
+.list-group.list-group-tabs .list-group-item > a:hover,
+.list-group.list-group-tabs .list-group-item > label:hover,
+.list-group.list-group-tabs .list-group-item .list-group-item-text:hover {
+  outline: 2px var(--outline-style) transparent;
+}
+.list-group.list-group-tabs .list-group-item > a:focus,
+.list-group.list-group-tabs .list-group-item > label:focus,
+.list-group.list-group-tabs .list-group-item .list-group-item-text:focus,
+.list-group.list-group-tabs .list-group-item > a.focus,
+.list-group.list-group-tabs .list-group-item > label.focus,
+.list-group.list-group-tabs .list-group-item .list-group-item-text.focus,
+.list-group.list-group-tabs .list-group-item > a:focus-visible,
+.list-group.list-group-tabs .list-group-item > label:focus-visible,
+.list-group.list-group-tabs .list-group-item .list-group-item-text:focus-visible {
+  outline: 2px var(--outline-style) var(--focus);
 }
 .nav-justified .list-group-item.btn {
   border: 1px solid transparent;
@@ -5803,17 +5846,6 @@ a.media {
 }
 .list-group-item {
   transition: var(--transition-all-productive);
-  border: 0;
-  padding: 0;
-  vertical-align: middle;
-}
-.list-group-item:first-child > a {
-  border-top-left-radius: clamp(4px, var(--border-radius-md), 12px);
-  border-top-right-radius: clamp(4px, var(--border-radius-md), 12px);
-}
-.list-group-item:last-child > a {
-  border-bottom-left-radius: clamp(4px, var(--border-radius-md), 12px);
-  border-bottom-right-radius: clamp(4px, var(--border-radius-md), 12px);
 }
 .list-group-item > a,
 .list-group-item > label,
@@ -5821,27 +5853,8 @@ a.media {
   position: relative;
   z-index: 1;
   display: block;
-  padding: 10px 15px;
   cursor: pointer;
   color: var(--text-secondary);
-  outline: 2px var(--outline-style) transparent;
-  outline-offset: -2px;
-}
-.list-group-item > a:hover,
-.list-group-item > label:hover,
-.list-group-item .list-group-item-text:hover {
-  outline: 2px var(--outline-style) transparent;
-}
-.list-group-item > a:focus,
-.list-group-item > label:focus,
-.list-group-item .list-group-item-text:focus,
-.list-group-item > a.focus,
-.list-group-item > label.focus,
-.list-group-item .list-group-item-text.focus,
-.list-group-item > a:focus-visible,
-.list-group-item > label:focus-visible,
-.list-group-item .list-group-item-text:focus-visible {
-  outline: 2px var(--outline-style) var(--focus);
 }
 .list-group-item > a input,
 .list-group-item > label input,
