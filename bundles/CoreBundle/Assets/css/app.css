@@ -5846,6 +5846,10 @@ a.media {
 }
 .list-group-item {
   transition: var(--transition-all-productive);
+  outline: 2px solid transparent;
+}
+.list-group-item:has(a:focus) {
+  outline: 2px solid var(--focus);
 }
 .list-group-item > a,
 .list-group-item > label,
