@@ -4,9 +4,13 @@
 </a>
 {% else %}
 <a class="gsearch--results-common" href="{{ url('mautic_asset_action', {'objectAction' : 'view', 'objectId' : asset.getId()}) }}" data-toggle="ajax">
-    <i class="{{ asset.getIconClass() }} gsearch--results-common__icon mr-3"></i>
-    {{ asset.getTitle()|escape }}
-    <span size="sm" class="label label-gray pull-right" data-toggle="tooltip" title="{% trans %}mautic.asset.downloadcount{% endtrans %}" data-placement="left">
+    <span>
+        <i class="{{ asset.getIconClass() }} gsearch--results-common__icon mr-3"></i>
+        {{ asset.getTitle()|escape }}
+        <span class="ml-4">#{{ asset.getId() }}</span>
+    </span>
+    <span size="sm" class="pull-right" data-toggle="tooltip" title="{% trans %}mautic.asset.downloadcount{% endtrans %}" data-placement="left">
+        <i class="ri-download-line"></i>
         {{ asset.getDownloadCount() }}
     </span>
 </a>
