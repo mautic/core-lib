@@ -3,7 +3,8 @@
     <span>{{ 'mautic.core.search.more'|trans({'%count%' : remaining})|escape }}</span>
 </a>
 {% else %}
-<a href="{{ url('mautic_asset_action', {'objectAction' : 'view', 'objectId' : asset.getId()}) }}" data-toggle="ajax">
+<a class="gsearch--results-common" href="{{ url('mautic_asset_action', {'objectAction' : 'view', 'objectId' : asset.getId()}) }}" data-toggle="ajax">
+    <i class="{{ asset.getIconClass() }} gsearch--results-common__icon mr-3"></i>
     {{ asset.getTitle()|escape }}
     <span size="sm" class="label label-gray pull-right" data-toggle="tooltip" title="{% trans %}mautic.asset.downloadcount{% endtrans %}" data-placement="left">
         {{ asset.getDownloadCount() }}

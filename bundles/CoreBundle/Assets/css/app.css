@@ -10881,10 +10881,11 @@ code:hover > .copy-icon {
   transform: translateX(-1em);
 }
 .gsearch--toolbar {
-  border: 3px solid var(--interactive);
+  border: 2px solid var(--interactive);
   overflow: hidden;
   box-shadow: rgba(100, 100, 111, 0.24) 0px 7px 20px 0px;
   border-radius: var(--border-radius-md);
+  outline: 3px solid rgb(from var(--background-brand) r g b / 35%);
 }
 .gsearch--field {
   display: flex;
@@ -10907,4 +10908,10 @@ code:hover > .copy-icon {
   overflow: hidden;
   box-shadow: rgba(100, 100, 111, 0.24) 0px 7px 20px 0px;
   border-radius: var(--border-radius-md);
+}
+.gsearch--results-common__icon {
+  padding: 6px;
+  background-color: var(--layer);
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
 }
