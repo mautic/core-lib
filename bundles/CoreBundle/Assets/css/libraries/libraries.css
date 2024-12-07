@@ -4468,13 +4468,13 @@ a.thumbnail.active {
   border: 1px solid var(--border-subtle);
 }
 .list-group-item:first-child {
-  border-top-left-radius: 10.8px;
-  border-top-right-radius: 10.8px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 .list-group-item:last-child {
   margin-bottom: 0;
-  border-bottom-right-radius: 10.8px;
-  border-bottom-left-radius: 10.8px;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 .list-group-item.disabled,
 .list-group-item.disabled:hover,

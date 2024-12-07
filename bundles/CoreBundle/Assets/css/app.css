@@ -10915,3 +10915,7 @@ code:hover > .copy-icon {
   border-radius: 4px;
   border: 1px solid var(--border-subtle);
 }
+.gsearch--results-item {
+  border: 0;
+  border-radius: var(--border-radius-sm);
+}
