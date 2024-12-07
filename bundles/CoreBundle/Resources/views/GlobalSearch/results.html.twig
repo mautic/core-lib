@@ -1,25 +1,25 @@
-<div class="panel-group" id="globalSearchPanel">
-{%- for header, result in results %}
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                {{ header }}
-                {% if result.count is defined and result.count is not empty %}
-                <span class="badge pull-right gs-count-badge">{{ result.count }}</span>
-                {% endif %}
-            </h4>
-        </div>
-        <div class="panel-body np">
-            <ul class="list-group">
-                {% for k, r in result %}
-                  {% if 'count' is not same as k %}
-                    <li class="list-group-item">
-                        {{ r|raw }}
-                    </li>
-                  {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
+<div class="panel-group pa-md" id="globalSearchPanel">
+    {%- for header, result in results %}
+    <hr>
+
+    <div class="text-secondary pi-md mb-xs d-flex gap-xs">
+        {{ header }}
+        {% if result.count is defined and result.count is not empty %}
+        <span class="label label-gray fs-10 gs-count-badge" size="sm">{{ result.count }}</span>
+        {% endif %}
     </div>
-{%- endfor %}
+
+    <div class="np">
+        <ul class="pa-0">
+            {% for k, r in result %}
+            {% if 'count' is not same as k %}
+            <li class="list-group-item text-primary">
+                {{ r|raw }}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    {%- endfor %}
 </div>
