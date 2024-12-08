@@ -671,28 +671,28 @@ Mautic.onPageLoad = function (container, response, inModal) {
             }
         });
 
-        mQuery("#globalSearchInput").on('change keyup paste', function () {
-            if (mQuery(this).val()) {
-                mQuery('.gsearch--results').removeClass('hide');
-            } else {
-                mQuery('.gsearch--results').addClass('hide');
-                mQuery('#globalSearchPanel').empty();
-            }
+        const $modal = mQuery('#gsearchModal'),
+        $input = mQuery('#globalSearchInput'),
+        $results = mQuery('.gsearch--results'),
+        $panel = mQuery('#globalSearchPanel');
+
+        $input.on('change keyup paste', function () {
+            const hasValue = mQuery(this).val();
+            $results.toggleClass('hide', !hasValue);
+            if (!hasValue) $panel.empty();
         });
 
         Mautic.activateLiveSearch("#globalSearchInput", "lastGlobalSearchStr", "globalLivecache");
 
-        mQuery('#gsearchModal').on('shown.bs.modal', function () {
-            setTimeout(function () {
-                mQuery('#globalSearchInput').focus();
-            }, 100);
-        });
+        $modal
+            .on('shown.bs.modal', () => setTimeout(() => $input.focus(), 100))
+            .on('hidden.bs.modal', () => {
+                $input.val('');
+                $results.addClass('hide');
+                $panel.empty();
+            });
 
-        mQuery('#gsearchModal').on('hidden.bs.modal', function () {
-            mQuery('#globalSearchInput').val('');
-            mQuery('.gsearch--results').addClass('hide');
-            mQuery('#globalSearchPanel').empty();
-        });
+        $results.on('click', 'a', () => $modal.modal('hide'));
     }
 
     Mautic.renderCharts(container);
@@ -936,11 +936,6 @@ Mautic.ajaxifyLink = function (el, event) {
 
     //give an ajaxified link the option of not displaying the global loading bar
     var showLoadingBar = (mQuery(el).attr('data-hide-loadingbar')) ? false : true;
-
-    //close the global search results if opened
-    if (mQuery('#globalSearchContainer').length && mQuery('#globalSearchContainer').hasClass('active')) {
-        Mautic.closeGlobalSearchResults();
-    }
 
     Mautic.loadContent(route, link, method, target, showLoadingBar);
 };
@@ -1701,15 +1696,6 @@ Mautic.activateSortable = function(el) {
             });
         }
     });
-};
-
-/**
- * Close global search results
- */
-Mautic.closeGlobalSearchResults = function () {
-    mQuery('#globalSearchContainer').removeClass('active');
-    mQuery('#globalSearchDropdown').removeClass('open');
-    mQuery('body').off('click.globalsearch');
 };
 
 /**
