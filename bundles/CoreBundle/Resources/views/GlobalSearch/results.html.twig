@@ -1,8 +1,10 @@
 <div class="panel-group pa-md" id="globalSearchPanel">
     {%- for header, result in results %}
-    <hr class="mr-md ml-md">
+    {% if not loop.first %}
+        <hr class="mr-md ml-md">
+    {% endif %}
 
-    <div class="text-secondary pi-md mb-xs d-flex gap-xs">
+    <div class="text-secondary pi-md mb-xs d-flex gap-xs{% if loop.first %} mt-lg"{% endif %}>
         {{ header }}
         {% if result.count is defined and result.count is not empty %}
         <span class="label label-gray fs-10 gs-count-badge" size="sm">{{ result.count }}</span>
@@ -13,7 +15,7 @@
         <ul class="pa-0">
             {% for k, r in result %}
             {% if 'count' is not same as k %}
-            <li class="list-group-item gsearch--results-item">
+            <li class="list-group-item gsearch--results-item pt-xs pb-xs mb-3">
                 {{ r|raw }}
             </li>
             {% endif %}

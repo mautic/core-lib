@@ -1,7 +1,7 @@
 .gsearch--toolbar {
     border: 2px solid var(--interactive);
     overflow: hidden;
-    box-shadow: rgba(100, 100, 111, 0.24) 0px 7px 20px 0px;
+    box-shadow: rgb(0 0 139 / 25%) 0px 20px 20px -20px, rgb(0 0 0 / 30%) 0px 20px 60px -30px, rgb(0 90 180 / 35%) 0px -2px 6px 0px inset;
     border-radius: var(--border-radius-md);
     outline: 3px solid rgb(from var(--background-brand) r g b / 35%);
 }
@@ -17,6 +17,7 @@
 }
 .gsearch--field__input {
     background-color: transparent;
+    &:focus { outline-color: transparent; }
     &:hover { background-color: transparent; }
 }
 

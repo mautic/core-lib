@@ -16,7 +16,6 @@
 	<div class="modal-dialog">
 		<div class="modal-content gsearch--toolbar">
 
-			{# Parte de cima #}
 			<div aria-hidden="false" class="gsearch--field d-flex ai-center gap-3 pr-md pl-md pt-sm pb-xs">
 				<div class="gsearch--search-magnifier" tabindex="-1">
 					<i class="gsearch--field-addon__icon ri-search-2-line ri-xl"></i>
@@ -28,11 +27,10 @@
 					data-action="{{ path('mautic_core_ajax', {action: 'globalSearch'}) }}" data-overlay="true"
 					data-overlay-text="{% trans %}mautic.core.search.livesearch{% endtrans %}" />
 				<span class="gsearch--field-addon">
-					<kbd>f</kbd><kbd>/</kbd>
+					<kbd class="mr-2">f</kbd><kbd>/</kbd>
 				</span>
 			</div>
 
-			{# Parte de baixo #}
 			<div aria-hidden="true"
 				class="gsearch--interaction-helper d-flex jc-space-between pr-md pl-md pt-sm pb-sm text-secondary">
 				<div class="gsearch--interaction-navigate d-flex ai-center gap-5">

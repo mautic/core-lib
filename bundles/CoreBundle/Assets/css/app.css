@@ -10886,7 +10886,7 @@ code:hover > .copy-icon {
 .gsearch--toolbar {
   border: 2px solid var(--interactive);
   overflow: hidden;
-  box-shadow: rgba(100, 100, 111, 0.24) 0px 7px 20px 0px;
+  box-shadow: rgba(0, 0, 139, 0.25) 0px 20px 20px -20px, rgba(0, 0, 0, 0.3) 0px 20px 60px -30px, rgba(0, 90, 180, 0.35) 0px -2px 6px 0px inset;
   border-radius: var(--border-radius-md);
   outline: 3px solid rgb(from var(--background-brand) r g b / 35%);
 }
@@ -10900,6 +10900,9 @@ code:hover > .copy-icon {
 }
 .gsearch--field__input {
   background-color: transparent;
+}
+.gsearch--field__input:focus {
+  outline-color: transparent;
 }
 .gsearch--field__input:hover {
   background-color: transparent;
