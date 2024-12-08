@@ -671,32 +671,28 @@ Mautic.onPageLoad = function (container, response, inModal) {
             }
         });
 
-        if (mQuery('#globalSearchContainer').length) {
-            mQuery('#globalSearchContainer .search-button').click(function () {
-                mQuery('#globalSearchContainer').addClass('active');
-                if (mQuery('#globalSearchInput').val()) {
-                    mQuery('#globalSearchDropdown').addClass('open');
-                }
-                setTimeout(function () {
-                    mQuery('#globalSearchInput').focus();
-                }, 100);
-                mQuery('body').on('click.globalsearch', function (event) {
-                    var target = event.target;
-                    if (!mQuery(target).parents('#globalSearchContainer').length && !mQuery(target).parents('#globalSearchDropdown').length) {
-                        Mautic.closeGlobalSearchResults();
-                    }
-                });
-            });
+        mQuery("#globalSearchInput").on('change keyup paste', function () {
+            if (mQuery(this).val()) {
+                mQuery('.gsearch--results').removeClass('hide');
+            } else {
+                mQuery('.gsearch--results').addClass('hide');
+                mQuery('#globalSearchPanel').empty();
+            }
+        });
 
-            mQuery("#globalSearchInput").on('change keyup paste', function () {
-                if (mQuery(this).val()) {
-                    mQuery('#globalSearchDropdown').addClass('open');
-                } else {
-                    mQuery('#globalSearchDropdown').removeClass('open');
-                }
-            });
-            Mautic.activateLiveSearch("#globalSearchInput", "lastGlobalSearchStr", "globalLivecache");
-        }
+        Mautic.activateLiveSearch("#globalSearchInput", "lastGlobalSearchStr", "globalLivecache");
+
+        mQuery('#gsearchModal').on('shown.bs.modal', function () {
+            setTimeout(function () {
+                mQuery('#globalSearchInput').focus();
+            }, 100);
+        });
+
+        mQuery('#gsearchModal').on('hidden.bs.modal', function () {
+            mQuery('#globalSearchInput').val('');
+            mQuery('.gsearch--results').addClass('hide');
+            mQuery('#globalSearchPanel').empty();
+        });
     }
 
     Mautic.renderCharts(container);
