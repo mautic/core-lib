@@ -7,22 +7,18 @@
 	<div class="search-container" id="globalSearchContainer">
 
 	</div>
-
-
 </li>
 
-<div class="modal fade" id="gsearchModal" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby=""
+<div class="modal fade" id="gsearchModal" data-backdrop="true" tabindex="-1" role="dialog" aria-labelledby=""
 	aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content gsearch--toolbar">
 
-			<div aria-hidden="false" class="gsearch--field d-flex ai-center gap-3 pr-md pl-md pt-sm pb-xs">
-				<div class="gsearch--search-magnifier" tabindex="-1">
-					<i class="gsearch--field-addon__icon ri-search-2-line ri-xl"></i>
-				</div>
+			<div aria-hidden="false" class="gsearch--field d-flex ai-center gap-3 pr-md pl-md pt-sm pb-sm">
+				<i class="gsearch--search-magnifier ri-search-2-line ri-xl" tabindex="-1"></i>
 				<input type="search" value="{{ searchString|escape }}"
 					class="gsearch--field__input form-control search fs-16" id="globalSearchInput" name="global_search"
-					placeholder="{% trans %}mautic.core.search.everything.placeholder{% endtrans %}"
+					placeholder="{% trans %}mautic.core.search_everything{% endtrans %}"
 					autocomplete="false" data-toggle="livesearch" data-target="#globalSearchResults"
 					data-action="{{ path('mautic_core_ajax', {action: 'globalSearch'}) }}" data-overlay="true"
 					data-overlay-text="{% trans %}mautic.core.search.livesearch{% endtrans %}" />
@@ -31,20 +27,6 @@
 				</span>
 			</div>
 
-			<div aria-hidden="true"
-				class="gsearch--interaction-helper d-flex jc-space-between pr-md pl-md pt-sm pb-sm text-secondary">
-				<div class="gsearch--interaction-navigate d-flex ai-center gap-5">
-					<span class="fs-16">{{ 'mautic.core.navigate'|trans }}</span>
-					<kbd><i class="ri-arrow-up-line"></i></kbd>
-					<kbd><i class="ri-arrow-down-line"></i></kbd>
-					<span class="fs-16">{{ 'mautic.core.or'|trans }}</span>
-					<kbd>tab</kbd>
-				</div>
-				<div class="gsearch--interaction-close d-flex ai-center gap-5">
-					<span class="fs-16">{{ 'mautic.core.close'|trans }}</span>
-					<kbd>esc</kbd>
-				</div>
-			</div>
 
 		</div>
 		<!-- end modal content -->
@@ -52,6 +34,7 @@
 		<div class="modal-content gsearch--results hide mt-xs">
 			<div class="pt-0 pb-xs pl-0 pr-0">
 				<div class="scroll-content slimscroll" style="max-height: 70vh;" id="globalSearchResults">
+
 					{{ include('@MauticCore/GlobalSearch/results.html.twig', {results: results}) }}
 				</div>
 			</div>
