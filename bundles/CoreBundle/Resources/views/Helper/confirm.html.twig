@@ -9,6 +9,7 @@
         {% set wrapClosingTag = wrapClosingTag is defined ? wrapClosingTag : '' %}
         {%- set precheck = precheck|default('batchActionPrecheck') %}
     {%- elseif template is same as 'delete' %}
+        {%- set btnClass = 'danger' %}
         {%- set confirmText = confirmText|default('mautic.core.form.delete'|trans) %}
         {%- set iconClass = iconClass|default('ri-delete-bin-line') %}
         {%- set btnText = btnText|default('mautic.core.form.delete')|trans %}
