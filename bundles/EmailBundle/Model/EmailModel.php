@@ -117,7 +117,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         CoreParametersHelper $coreParametersHelper,
         private EmailStatModel $emailStatModel
     ) {
-        $this->connection = $em->getConnection(); // Necessary for FilterTrait
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
 
