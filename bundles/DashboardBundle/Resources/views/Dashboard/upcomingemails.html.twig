@@ -20,7 +20,7 @@
                             {% include '@MauticCore/Helper/button.html.twig' with {
                                 buttons: [
                                     {
-                                        label: email.lead_name,
+                                        label: email.lead_name ?: ('mautic.lead.lead'|trans ~ ' #' ~ email.lead_id),
                                         variant: 'tertiary',
                                         size: 'xs',
                                         href: path('mautic_contact_action', {'objectAction': 'view', 'objectId': email.lead_id}),
