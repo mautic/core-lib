@@ -35,6 +35,12 @@
     border-radius: var(--border-radius-md);
 }
 
+.gsearch--results-scroll {
+    max-height: 70vh;
+
+    &:has(.content-overlay) { max-height: 55px; }
+}
+
 .gsearch--results-common__icon {
     padding: 6px;
     background-color: var(--layer);
