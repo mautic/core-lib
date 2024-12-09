@@ -323,7 +323,7 @@ class CommonController extends AbstractController implements MauticController
                 // directly parsing the template
                 $query                 = ['ignoreAjax' => true, 'subrequest' => true];
                 $parameters['request'] = $request;
-                $newContentResponse = $this->forward($contentTemplate, $parameters, $query);
+                $newContentResponse    = $this->forward($contentTemplate, $parameters, $query);
                 if ($newContentResponse instanceof RedirectResponse) {
                     $passthrough['redirect'] = $newContentResponse->getTargetUrl();
                     $passthrough['route']    = false;

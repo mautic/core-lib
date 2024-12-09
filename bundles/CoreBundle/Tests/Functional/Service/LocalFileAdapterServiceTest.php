@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Tests\Functional\Service;
 
+use FM\ElfinderBundle\Connector\ElFinderConnector;
+use FM\ElfinderBundle\Loader\ElFinderLoader;
+use Mautic\CoreBundle\Helper\PathsHelper;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\UserBundle\Entity\User;
 use Psr\Container\ContainerInterface;
-use Mautic\CoreBundle\Helper\PathsHelper;
-use FM\ElfinderBundle\Loader\ElFinderLoader;
 use Symfony\Component\HttpFoundation\Request;
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use FM\ElfinderBundle\Connector\ElFinderConnector;
 
 class LocalFileAdapterServiceTest extends MauticMysqlTestCase
 {
@@ -51,7 +51,7 @@ class LocalFileAdapterServiceTest extends MauticMysqlTestCase
         static::getContainer()->set('fm_elfinder.loader', $elFinderLoader);
 
         $this->folderName = (string) time();
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $user             = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->loginUser($user);
         $_SERVER['REQUEST_METHOD'] = Request::METHOD_POST;
         $this->client->request(

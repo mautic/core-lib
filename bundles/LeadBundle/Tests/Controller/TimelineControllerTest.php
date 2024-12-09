@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Controller;
 
-use Mautic\UserBundle\Entity\User;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
-use Symfony\Component\HttpFoundation\Response;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
+use Mautic\UserBundle\Entity\User;
+use Symfony\Component\HttpFoundation\Response;
 
 final class TimelineControllerTest extends MauticMysqlTestCase
 {

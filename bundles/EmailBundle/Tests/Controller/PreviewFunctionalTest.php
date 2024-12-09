@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Tests\Controller;
 
-use Mautic\LeadBundle\Entity\Lead;
-use Mautic\UserBundle\Entity\User;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
+use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
+use Mautic\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 
 class PreviewFunctionalTest extends MauticMysqlTestCase
 {

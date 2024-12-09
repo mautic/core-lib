@@ -6,22 +6,20 @@ namespace Mautic\InstallBundle\Tests\Install;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Mautic\UserBundle\Entity\User;
+use Mautic\CoreBundle\Configurator\Configurator;
+use Mautic\CoreBundle\Configurator\Step\StepInterface;
+use Mautic\CoreBundle\Doctrine\Loader\FixturesLoaderInterface;
 use Mautic\CoreBundle\Helper\CacheHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
-use PHPUnit\Framework\MockObject\MockObject;
-use Mautic\CoreBundle\Configurator\Configurator;
 use Mautic\InstallBundle\Install\InstallService;
+use Mautic\UserBundle\Entity\User;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Validator\ConstraintViolation;
-use Mautic\CoreBundle\Configurator\Step\StepInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Mautic\CoreBundle\Doctrine\Loader\FixturesLoaderInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class InstallServiceTest extends \PHPUnit\Framework\TestCase
 {

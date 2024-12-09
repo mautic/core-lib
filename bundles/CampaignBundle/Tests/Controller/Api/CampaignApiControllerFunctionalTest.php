@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Controller\Api;
 
-use PHPUnit\Framework\Assert;
-use Mautic\LeadBundle\Entity\Lead;
-use Mautic\UserBundle\Entity\User;
-use Mautic\EmailBundle\Entity\Email;
-use Mautic\LeadBundle\Entity\Company;
-use Mautic\LeadBundle\Entity\LeadList;
-use Mautic\LeadBundle\Entity\ListLead;
-use Mautic\EmailBundle\Helper\MailHelper;
-use Symfony\Component\HttpFoundation\Request;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\DynamicContentBundle\Entity\DynamicContent;
+use Mautic\EmailBundle\Entity\Email;
+use Mautic\EmailBundle\Helper\MailHelper;
+use Mautic\LeadBundle\Entity\Company;
+use Mautic\LeadBundle\Entity\Lead;
+use Mautic\LeadBundle\Entity\LeadList;
+use Mautic\LeadBundle\Entity\ListLead;
+use Mautic\UserBundle\Entity\User;
+use PHPUnit\Framework\Assert;
+use Symfony\Component\HttpFoundation\Request;
 
 class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 {

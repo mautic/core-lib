@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Mautic\PageBundle\Tests\Controller;
 
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\DynamicContentBundle\Entity\DynamicContent;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\PageBundle\Entity\Page;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\DynamicContentBundle\Entity\DynamicContent;
 
 class PreviewFunctionalTest extends MauticMysqlTestCase
 {

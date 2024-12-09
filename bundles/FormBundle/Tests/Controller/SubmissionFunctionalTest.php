@@ -25,7 +25,7 @@ use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 final class SubmissionFunctionalTest extends MauticMysqlTestCase
 {
-    protected $useCleanupRollback = false;
+    protected $useCleanupRollback   = false;
     protected bool $authenticateApi = true;
 
     public function testRedirectPostAction(): void

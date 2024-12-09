@@ -22,7 +22,7 @@ class IpRestrictMiddlewareTest extends \PHPUnit\Framework\TestCase
 
     public function tearDown(): void
     {
-        putenv('DDEV_TLD=' . $this->originalDdevTldValue);
+        putenv('DDEV_TLD='.$this->originalDdevTldValue);
 
         parent::tearDown();
     }

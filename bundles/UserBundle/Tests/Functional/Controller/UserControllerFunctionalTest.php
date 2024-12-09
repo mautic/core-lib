@@ -8,7 +8,6 @@ use Mautic\CoreBundle\Entity\AuditLog;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerFunctionalTest extends MauticMysqlTestCase
@@ -29,9 +28,9 @@ class UserControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testEditActionFormSubmissionValid(): void
     {
-        $crawler                = $this->client->request('GET', '/s/users/edit/1');
-        $buttonCrawlerNode      = $crawler->selectButton('Save & Close');
-        $form                   = $buttonCrawlerNode->form();
+        $crawler                 = $this->client->request('GET', '/s/users/edit/1');
+        $buttonCrawlerNode       = $crawler->selectButton('Save & Close');
+        $form                    = $buttonCrawlerNode->form();
         $form['user[firstName]'] = 'test';
         $this->client->submit($form);
 

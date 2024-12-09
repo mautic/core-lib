@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Tests\Functional\Controller;
 
-use PHPUnit\Framework\Assert;
-use Mautic\UserBundle\Entity\User;
 use Mautic\CoreBundle\Helper\Filesystem;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\UserBundle\Entity\User;
+use PHPUnit\Framework\Assert;
+use Symfony\Component\HttpFoundation\Request;
 
 final class ThemeControllerTest extends MauticMysqlTestCase
 {

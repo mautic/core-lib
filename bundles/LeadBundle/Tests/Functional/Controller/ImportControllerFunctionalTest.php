@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Functional\Controller;
 
-use PHPUnit\Framework\Assert;
-use Mautic\LeadBundle\Entity\Tag;
-use Mautic\LeadBundle\Entity\Lead;
-use Mautic\UserBundle\Entity\User;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Import;
+use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadField;
+use Mautic\LeadBundle\Entity\Tag;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\ImportModel;
+use Mautic\UserBundle\Entity\User;
+use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 
 class ImportControllerFunctionalTest extends MauticMysqlTestCase
 {

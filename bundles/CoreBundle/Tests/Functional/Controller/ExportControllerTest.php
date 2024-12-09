@@ -17,7 +17,7 @@ use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 final class ExportControllerTest extends MauticMysqlTestCase
 {
-    protected $useCleanupRollback = false;
+    protected $useCleanupRollback   = false;
     protected bool $authenticateApi = true;
 
     public const PERMISSION_LEAD_EXPORT     = 'lead:export:enable';
