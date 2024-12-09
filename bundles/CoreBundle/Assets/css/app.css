@@ -10565,9 +10565,8 @@ ul.media-list.media-list-feed div.media-body {
   display: inline-flex;
 }
 .disabled-row {
-  opacity: 0.6;
   pointer-events: none;
-  background-color: #f2f2f2;
+  color: var(--text-disabled);
 }
 .publishstatus_pulse {
   width: 8px;
