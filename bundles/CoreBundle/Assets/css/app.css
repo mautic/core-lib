@@ -6646,44 +6646,6 @@ fieldset[disabled] .form-control {
   cursor: not-allowed;
   border-bottom-color: transparent;
 }
-.search-container {
-  display: flex;
-  align-items: center;
-  -webkit-transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
-  transition: all 0.3s ease;
-}
-.search-container .search {
-  border: none;
-  background-color: transparent !important;
-  position: absolute;
-  left: 0px;
-  width: 24px;
-  height: 34px;
-  padding: 0 0 0 32px;
-  z-index: 1;
-  -webkit-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease;
-}
-.search-container a.search-button {
-  color: var(--icon-secondary);
-  position: absolute;
-  display: inline-flex;
-  left: 12px;
-  z-index: 5;
-  transition: var(--transition-all-productive);
-}
-.search-container a.search-button:hover {
-  color: var(--icon-primary);
-}
-.search-container.active .search {
-  width: 225px;
-  border: 1px solid #d5d5d5;
-}
-.search-container.active i {
-  color: var(--icon-interactive);
-}
 .form-stack .form-control {
   position: relative;
   border-radius: 0;
@@ -10556,9 +10518,6 @@ ul.media-list.media-list-feed div.media-body {
 .ico-sms:before {
   font-family: "FontAwesome";
   content: "\f27b";
-}
-#globalSearchDropdown .list-group-item > a {
-  padding-top: 10px;
 }
 .characters-count {
   z-index: 100;
