@@ -3,7 +3,6 @@
 namespace Mautic\PageBundle\Entity;
 
 use Mautic\CoreBundle\Entity\CommonRepository;
-use Mautic\EmailBundle\Entity\Email;
 
 /**
  * @extends CommonRepository<Redirect>
@@ -23,23 +22,6 @@ class RedirectRepository extends CommonRepository
 
         $q->where($expr)
             ->setParameter('urls', $urls);
-
-        return $q->getQuery()->getResult();
-    }
-
-    /**
-     * @return array
-     */
-    public function findByIds(array $ids)
-    {
-        $q = $this->createQueryBuilder('r');
-
-        $expr = $q->expr()->andX(
-            $q->expr()->in('r.id', ':ids')
-        );
-
-        $q->where($expr)
-            ->setParameter('ids', $ids);
 
         return $q->getQuery()->getResult();
     }

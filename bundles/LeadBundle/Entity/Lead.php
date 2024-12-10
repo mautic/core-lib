@@ -628,37 +628,26 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
         return $this->getOwner() ?? $this->getCreatedBy();
     }
 
-    /**
-     * Add ipAddress.
-     *
-     * @return Lead
-     */
-    public function addIpAddress(IpAddress $ipAddress)
+    public function addIpAddress(IpAddress $ipAddress): self
     {
         if (!$ipAddress->isTrackable()) {
             return $this;
         }
 
-        $ip = $ipAddress->getIpAddress();
-        if (null !== $ip && !isset($this->ipAddresses[$ip])) {
+        if (null !== $ipAddress->getIpAddress() && !$this->ipAddresses->exists(fn (int $key, IpAddress $ip) => $ip->getIpAddress() === $ipAddress->getIpAddress())) {
             $this->isChanged('ipAddresses', $ipAddress);
-            $this->ipAddresses[$ip] = $ipAddress;
+            $this->ipAddresses->add($ipAddress);
         }
 
         return $this;
     }
 
-    /**
-     * Remove ipAddress.
-     */
     public function removeIpAddress(IpAddress $ipAddress): void
     {
         $this->ipAddresses->removeElement($ipAddress);
     }
 
     /**
-     * Get ipAddresses.
-     *
      * @return Collection
      */
     public function getIpAddresses()
@@ -1114,7 +1103,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
             'comments' => $doNotContact->getComments(),
         ];
 
-        $this->doNotContact[$doNotContact->getChannel()] = $doNotContact;
+        $this->doNotContact->add($doNotContact);
 
         return $this;
     }
@@ -1333,7 +1322,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
     public function addTag(Tag $tag)
     {
         $this->isChanged('tags', $tag);
-        $this->tags[$tag->getTag()] = $tag;
+        $this->tags->add($tag);
 
         return $this;
     }
