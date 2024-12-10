@@ -30,24 +30,13 @@ class RedirectRepository extends CommonRepository
     /**
      * @return array
      */
-    public function findByIds(array $ids, Email $email = null)
+    public function findByIds(array $ids)
     {
         $q = $this->createQueryBuilder('r');
 
         $expr = $q->expr()->andX(
             $q->expr()->in('r.id', ':ids')
         );
-
-        if (null === $email) {
-            $expr->add(
-                $q->expr()->isNull('r.email')
-            );
-        } else {
-            $expr->add(
-                $q->expr()->eq('r.email', ':email')
-            );
-            $q->setParameter('email', $email);
-        }
 
         $q->where($expr)
             ->setParameter('ids', $ids);
