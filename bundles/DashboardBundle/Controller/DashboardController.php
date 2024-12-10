@@ -554,11 +554,9 @@ class DashboardController extends AbstractFormController
     /**
      * Gets name from request and defaults it to the timestamp if not provided.
      *
-     * @return string
-     *
      * @throws \Exception
      */
-    private function getNameFromRequest(Request $request)
+    private function getNameFromRequest(Request $request): mixed
     {
         return $request->get('name', (new \DateTime())->format('Y-m-dTH:i:s'));
     }

@@ -15,10 +15,8 @@ class ProfileController extends FormController
 {
     /**
      * Generate's account profile.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, TokenStorageInterface $tokenStorage)
+    public function indexAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, TokenStorageInterface $tokenStorage): \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         // get current user
         $me = $tokenStorage->getToken()->getUser();

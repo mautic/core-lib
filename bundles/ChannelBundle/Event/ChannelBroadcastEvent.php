@@ -9,15 +9,11 @@ class ChannelBroadcastEvent extends Event
 {
     /**
      * Specific channel.
-     *
-     * @var null
      */
     protected $channel;
 
     /**
      * Specific ID of a specific channel.
-     *
-     * @var null
      */
     protected $id;
 

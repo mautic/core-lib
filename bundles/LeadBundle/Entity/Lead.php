@@ -110,9 +110,6 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
      */
     private $pointsChangeLog;
 
-    /**
-     * @var null
-     */
     private $actualPoints;
 
     /**

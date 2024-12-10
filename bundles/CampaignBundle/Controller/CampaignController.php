@@ -1056,10 +1056,7 @@ class CampaignController extends AbstractStandardFormController
         $this->getCurrentRequest()->getSession()->set('mautic.campaign.'.$sessionId.'.events.canvassettings', $canvasSettings);
     }
 
-    /**
-     * @return mixed
-     */
-    protected function getSessionCanvasSettings($sessionId)
+    protected function getSessionCanvasSettings($sessionId): mixed
     {
         return $this->getCurrentRequest()->getSession()->get('mautic.campaign.'.$sessionId.'.events.canvassettings');
     }

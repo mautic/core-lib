@@ -10,10 +10,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserSummaryNotificationHelper
 {
-    /**
-     * @var array
-     */
-    private $userNotifications = [];
+    private array $userNotifications = [];
 
     /**
      * @var string

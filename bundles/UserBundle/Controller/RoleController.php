@@ -413,10 +413,8 @@ class RoleController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return Response
      */
-    public function batchDeleteAction(Request $request, RoleModel $model)
+    public function batchDeleteAction(Request $request, RoleModel $model): Response
     {
         $page      = $request->getSession()->get('mautic.role.page', 1);
         $returnUrl = $this->generateUrl('mautic_role_index', ['page' => $page]);

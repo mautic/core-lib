@@ -742,10 +742,8 @@ class CompanyController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return Response
      */
-    public function batchDeleteAction(Request $request)
+    public function batchDeleteAction(Request $request): Response
     {
         $page      = $request->getSession()->get('mautic.company.page', 1);
         $returnUrl = $this->generateUrl('mautic_company_index', ['page' => $page]);

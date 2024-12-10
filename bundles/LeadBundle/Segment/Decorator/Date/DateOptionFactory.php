@@ -34,7 +34,7 @@ class DateOptionFactory
     /**
      * @return FilterDecoratorInterface
      */
-    public function getDateOption(ContactSegmentFilterCrate $leadSegmentFilterCrate)
+    public function getDateOption(ContactSegmentFilterCrate $leadSegmentFilterCrate): DateDefault|DateAnniversary|DateDayToday|DateDayTomorrow|DateDayYesterday|DateWeekLast|DateWeekNext|DateWeekThis|DateMonthLast|DateMonthNext|DateMonthThis|DateYearLast|DateYearNext|DateYearThis|DateRelativeInterval
     {
         $originalValue        = $leadSegmentFilterCrate->getFilter();
         $relativeDateStrings  = $this->relativeDate->getRelativeDateStrings();

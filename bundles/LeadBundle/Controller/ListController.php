@@ -39,11 +39,9 @@ class ListController extends FormController
      *
      * @param int $page
      *
-     * @return JsonResponse|Response
-     *
      * @throws \Exception
      */
-    public function indexAction(Request $request, $page = 1)
+    public function indexAction(Request $request, $page = 1): Response
     {
         /** @var ListModel $model */
         $model   = $this->getModel('lead.list');
@@ -540,10 +538,8 @@ class ListController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return Response
      */
-    public function batchDeleteAction(Request $request)
+    public function batchDeleteAction(Request $request): Response
     {
         $page      = $request->getSession()->get('mautic.segment.page', 1);
         $returnUrl = $this->generateUrl('mautic_segment_index', ['page' => $page]);

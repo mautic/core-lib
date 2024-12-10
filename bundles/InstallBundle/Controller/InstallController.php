@@ -233,8 +233,6 @@ class InstallController extends CommonController
     /**
      * Controller action for the final step.
      *
-     * @return JsonResponse|Response
-     *
      * @throws \Exception
      */
     public function finalAction(Request $request, PathsHelper $pathsHelper): \Symfony\Component\HttpFoundation\RedirectResponse|Response

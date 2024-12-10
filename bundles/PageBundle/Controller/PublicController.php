@@ -630,7 +630,7 @@ class PublicController extends AbstractFormController
     /**
      * Track video views.
      */
-    public function hitVideoAction(Request $request)
+    public function hitVideoAction(Request $request): JsonResponse|Response
     {
         // Only track XMLHttpRequests, because the hit should only come from there
         if ($request->isXmlHttpRequest()) {

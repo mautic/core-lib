@@ -360,10 +360,7 @@ class TriggerModel extends CommonFormModel
         }
     }
 
-    /**
-     * @return bool
-     */
-    private function invokeCallback($event, Lead $lead, array $settings)
+    private function invokeCallback($event, Lead $lead, array $settings): mixed
     {
         $args = [
             'event'   => $event,
