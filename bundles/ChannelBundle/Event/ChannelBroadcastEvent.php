@@ -10,12 +10,12 @@ class ChannelBroadcastEvent extends Event
     /**
      * Specific channel.
      */
-    protected $channel;
+    protected ?string $channel;
 
     /**
      * Specific ID of a specific channel.
      */
-    protected $id;
+    protected string|int|null $id;
 
     /**
      * Number of contacts successfully processed and/or failed per channel.

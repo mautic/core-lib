@@ -18,9 +18,9 @@ class ApiMetadataDriver implements DriverInterface
 
     private string $groupPrefix = '';
 
-    private $defaultVersion = '1.0';
+    private string $defaultVersion = '1.0';
 
-    private $currentPropertyName;
+    private ?string $currentPropertyName = null;
 
     /**
      * @throws \ReflectionException
@@ -79,7 +79,7 @@ class ApiMetadataDriver implements DriverInterface
      *
      * @return $this
      */
-    public function setDefaultVersion($version)
+    public function setDefaultVersion(string $version)
     {
         $this->defaultVersion = $version;
 
