@@ -294,32 +294,6 @@ class EventRepository extends CommonRepository
     }
 
     /**
-     * @param string $eventType
-     */
-    public function getEventsByChannel($channel, $campaignId = null, $eventType = 'action')
-    {
-        $q = $this->getEntityManager()->createQueryBuilder();
-
-        $q->select('e')
-            ->from(Event::class, 'e', 'e.id')
-            ->where('e.channel = :channel')
-            ->setParameter('channel', $channel);
-
-        if ($campaignId) {
-            $q->andWhere('IDENTITY(e.campaign) = :campaignId')
-                ->setParameter('campaignId', $campaignId)
-                ->orderBy('e.order');
-        }
-
-        if ($eventType) {
-            $q->andWhere('e.eventType', ':eventType')
-            ->setParameter('eventType', $eventType);
-        }
-
-        return $q->getQuery()->getResult();
-    }
-
-    /**
      * Get an array of events that have been triggered by this lead.
      */
     public function getLeadTriggeredEvents($leadId): array
