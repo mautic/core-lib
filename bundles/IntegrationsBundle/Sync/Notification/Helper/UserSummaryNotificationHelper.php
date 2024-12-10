@@ -12,10 +12,7 @@ class UserSummaryNotificationHelper
 {
     private array $userNotifications = [];
 
-    /**
-     * @var string
-     */
-    private $integrationDisplayName;
+    private ?string $integrationDisplayName = null;
 
     /**
      * @var string
