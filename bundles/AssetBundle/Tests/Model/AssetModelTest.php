@@ -26,8 +26,6 @@ use Mautic\LeadBundle\Tracker\Service\DeviceCreatorService\DeviceCreatorService;
 use Mautic\LeadBundle\Tracker\Service\DeviceTrackingService\DeviceTrackingServiceInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
-use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +35,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AssetModelTest extends \PHPUnit\Framework\TestCase
 {
-
     private AssetModel $assetModel;
 
     private CoreParametersHelper&MockObject $coreParametersHelper;
@@ -87,25 +84,25 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
             ->with($this->equalTo('max_size'))
             ->willReturn('2MB');
 
-        $this->container = $this->createMock(ContainerInterface::class);
-        $this->cacheProvider = new CacheProvider($this->coreParametersHelper, $this->container);
-        $this->leadModel = $this->createMock(LeadModel::class);
-        $this->categoryModel = $this->createMock(CategoryModel::class);
-        $this->requestStack = $this->createMock(RequestStack::class);
-        $this->ipLookupHelper = $this->createMock(IpLookupHelper::class);
+        $this->container             = $this->createMock(ContainerInterface::class);
+        $this->cacheProvider         = new CacheProvider($this->coreParametersHelper, $this->container);
+        $this->leadModel             = $this->createMock(LeadModel::class);
+        $this->categoryModel         = $this->createMock(CategoryModel::class);
+        $this->requestStack          = $this->createMock(RequestStack::class);
+        $this->ipLookupHelper        = $this->createMock(IpLookupHelper::class);
         $this->deviceDetectorFactory = new DeviceDetectorFactory($this->cacheProvider);
-        $this->deviceCreatorService = new DeviceCreatorService();
+        $this->deviceCreatorService  = new DeviceCreatorService();
         $this->deviceTrackingService = $this->getMockBuilder(DeviceTrackingServiceInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->contactTracker = $this->createMock(ContactTracker::class);
-        $this->entityManager = $this->createMock(EntityManager::class);
+        $this->contactTracker  = $this->createMock(ContactTracker::class);
+        $this->entityManager   = $this->createMock(EntityManager::class);
         $this->corePermissions = $this->createMock(CorePermissions::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
-        $this->translator = $this->createMock(Translator::class);
-        $this->userHelper = $this->createMock(UserHelper::class);
-        $this->logger = $this->createMock(LoggerInterface::class);
+        $this->urlGenerator    = $this->createMock(UrlGeneratorInterface::class);
+        $this->translator      = $this->createMock(Translator::class);
+        $this->userHelper      = $this->createMock(UserHelper::class);
+        $this->logger          = $this->createMock(LoggerInterface::class);
 
         $this->assetModel = new AssetModel(
             $this->leadModel,
@@ -128,7 +125,7 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Test that TrackDownload works only with a request
+     * Test that TrackDownload works only with a request.
      */
     public function testTrackDownloadRequest(): void
     {
@@ -155,12 +152,12 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Test that TrackDownload works successfully
+     * Test that TrackDownload works successfully.
      */
     public function testTrackDownload(): void
     {
         $asset = new Asset();
-        $lead = new Lead();
+        $lead  = new Lead();
 
         $this->corePermissions->expects($this->once())
             ->method('isAnonymous')
@@ -221,7 +218,11 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
 
         $assetRepository->expects($this->once())
             ->method('upDownloadCount')
-            ->with($this->equalTo($asset->getId(), 1, true));
+            ->with(
+                $this->equalTo($asset->getId()),
+                $this->equalTo(1),
+                $this->equalTo(true),
+            );
 
         $ipAddress = new IpAddress('127.0.0.1');
 
@@ -241,6 +242,7 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
             ->method('persist')
             ->with($this->callback(function ($downloadPersist) use (&$download) {
                 $download = $downloadPersist;
+
                 return $download instanceof Download;
             }));
 
@@ -251,6 +253,7 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
             ->method('detach')
             ->with($this->callback(function ($downloadDetach) use (&$download) {
                 $this->assertSame($downloadDetach, $download);
+
                 return true;
             }));
 
@@ -267,5 +270,4 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($asset, $download->getAsset());
         $this->assertEquals('http://localhost', $download->getReferer());
     }
-
 }
