@@ -123,7 +123,7 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
     private $doNotContact;
 
     /**
-     * @var Collection<int, \Mautic\CoreBundle\Entity\IpAddress>
+     * @var Collection<string, \Mautic\CoreBundle\Entity\IpAddress>
      */
     private $ipAddresses;
 
@@ -631,9 +631,10 @@ class Lead extends FormEntity implements CustomFieldEntityInterface, IdentifierF
             return $this;
         }
 
-        if (null !== $ipAddress->getIpAddress() && !$this->ipAddresses->exists(fn (int $key, IpAddress $ip) => $ip->getIpAddress() === $ipAddress->getIpAddress())) {
+        $ip = $ipAddress->getIpAddress();
+        if (null !== $ip && !isset($this->ipAddresses[$ip])) {
             $this->isChanged('ipAddresses', $ipAddress);
-            $this->ipAddresses->add($ipAddress);
+            $this->ipAddresses[$ip] = $ipAddress;
         }
 
         return $this;
