@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -66,8 +67,12 @@ class CacheHelper
     protected function clearSessionItems(): void
     {
         // Clear the menu items and icons so they can be rebuilt
-        $this->requestStack->getSession()->remove('mautic.menu.items');
-        $this->requestStack->getSession()->remove('mautic.menu.icons');
+        try {
+            $this->requestStack->getSession()->remove('mautic.menu.items');
+            $this->requestStack->getSession()->remove('mautic.menu.icons');
+        } catch (SessionNotFoundException) {
+            // No need to clear the session if it's not available
+        }
     }
 
     private function clearConfigOpcache(): void
