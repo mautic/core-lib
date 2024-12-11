@@ -136,7 +136,7 @@ $container->register('mautic.install.fixture.lead_field', Mautic\InstallBundle\I
     ->addTag(FixturesCompilerPass::FIXTURE_TAG)
     ->setPublic(true);
 
-$container->register('security.csrf.token_storage', Mautic\CoreBundle\Test\Session\InMemoryTokenStorage::class)->setAutowired(true);
+// $container->register('security.csrf.token_storage', Mautic\CoreBundle\Test\Session\InMemoryTokenStorage::class)->setAutowired(true);
 
 // Use static namespace for token manager
 $container->register('security.csrf.token_manager', Symfony\Component\Security\Csrf\CsrfTokenManager::class)
