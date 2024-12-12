@@ -191,7 +191,7 @@ class AjaxController extends CommonAjaxController
         $model = $this->getModel('email');
 
         $id  = $request->query->get('id');
-        $ids = $request->query->get('ids');
+        $ids = $request->query->all()['ids'] ?? [];
 
         // Support for legacy calls
         if (!$ids && $id) {
