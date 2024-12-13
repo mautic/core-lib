@@ -115,9 +115,6 @@ abstract class AbstractMauticTestCase extends WebTestCase
     public function loginUser(User $user): void
     {
         $this->client->loginUser($user, 'mautic');
-        // $corePermissions = $this->getContainer()->get('mautic.security');
-        // \assert($corePermissions instanceof CorePermissions);
-        // $corePermissions->reset();
     }
 
     protected function logoutUser(): void

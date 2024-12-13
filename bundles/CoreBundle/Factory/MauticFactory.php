@@ -24,6 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
@@ -137,12 +138,7 @@ class MauticFactory
         return $this->translator;
     }
 
-    /**
-     * Retrieves event dispatcher.
-     *
-     * @return EventDispatcherInterface
-     */
-    public function getDispatcher(): ?object
+    public function getDispatcher(): ?EventDispatcherInterface
     {
         return $this->container->get('event_dispatcher');
     }
@@ -189,12 +185,7 @@ class MauticFactory
         return new DateTimeHelper($string, $format, $tz);
     }
 
-    /**
-     * Get Router.
-     *
-     * @return Router
-     */
-    public function getRouter(): ?object
+    public function getRouter(): ?Router
     {
         return $this->container->get('router');
     }
@@ -362,12 +353,7 @@ class MauticFactory
         }
     }
 
-    /**
-     * Get's the Symfony kernel.
-     *
-     * @return \AppKernel
-     */
-    public function getKernel(): ?object
+    public function getKernel(): ?KernelInterface
     {
         return $this->container->get('kernel');
     }

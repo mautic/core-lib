@@ -222,7 +222,7 @@ class CompanyController extends FormController
                 if ($valid = $this->isFormValid($form)) {
                     // form is valid so process the data
                     // get custom field values
-                    $data = $request->request->all()['company'];
+                    $data = $request->request->all()['company'] ?? [];
                     // pull the data from the form in order to apply the form's formatting
                     foreach ($form as $f) {
                         $data[$f->getName()] = $f->getData();

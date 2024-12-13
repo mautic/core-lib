@@ -49,8 +49,7 @@ trait RequestTrait
                 continue;
             }
 
-            $type = $child->getConfig()->getType();
-            $type = $type->getInnerType();
+            $type = $child->getConfig()->getType()->getInnerType();
             switch ($type::class) {
                 case YesNoButtonGroupType::class:
                 case BooleanType::class:

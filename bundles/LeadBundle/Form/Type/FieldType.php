@@ -519,27 +519,6 @@ class FieldType extends AbstractType
             }
         );
 
-        /** @var LeadFieldRepository $leadFieldRepository */
-        $leadFieldRepository = $this->em->getRepository(LeadField::class);
-
-        // get order list
-        $transformer = new FieldToOrderTransformer($leadFieldRepository);
-        $builder->add(
-            $builder->create(
-                'order',
-                EntityType::class,
-                [
-                    'label'         => 'mautic.core.order.field',
-                    'class'         => LeadField::class,
-                    'choice_label'  => 'label',
-                    'label_attr'    => ['class' => 'control-label'],
-                    'attr'          => ['class' => 'form-control', 'tooltip' => 'mautic.core.order.field.tooltip'],
-                    'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('f')->orderBy('f.order', Order::Ascending->value),
-                    'required'      => false,
-                ]
-            )->addModelTransformer($transformer)
-        );
-
         $builder->add(
             'alias',
             TextType::class,

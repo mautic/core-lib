@@ -554,7 +554,7 @@ class DashboardController extends AbstractFormController
      *
      * @throws \Exception
      */
-    private function getNameFromRequest(Request $request): mixed
+    private function getNameFromRequest(Request $request): string
     {
         return $request->get('name', (new \DateTime())->format('Y-m-dTH:i:s'));
     }
