@@ -16,6 +16,7 @@ use Mautic\CoreBundle\Model\NotificationModel;
 use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\DoNotContact as DoNotContactModel;
 use Mautic\LeadBundle\Model\FieldModel;
@@ -42,6 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -110,7 +112,8 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         protected NotificationModel $notificationModel,
         protected FieldModel $fieldModel,
         protected IntegrationEntityModel $integrationEntityModel,
-        protected DoNotContactModel $doNotContact
+        protected DoNotContactModel $doNotContact,
+        protected FieldsWithUniqueIdentifier $fieldsWithUniqueIdentifier
     ) {
         $this->cache                  = $cacheStorageHelper->getCache($this->getName());
         $this->request                = (!defined('IN_MAUTIC_CONSOLE')) ? $requestStack->getCurrentRequest() : null;
@@ -1687,7 +1690,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         // Find unique identifier fields used by the integration
         /** @var LeadModel $leadModel */
         $leadModel           = $this->leadModel;
-        $uniqueLeadFields    = $this->fieldModel->getUniqueIdentifierFields();
+        $uniqueLeadFields    = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier();
         $uniqueLeadFieldData = [];
 
         foreach ($matchedFields as $leadField => $value) {

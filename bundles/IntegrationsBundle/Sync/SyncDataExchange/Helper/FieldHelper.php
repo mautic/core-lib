@@ -16,6 +16,7 @@ use Mautic\IntegrationsBundle\Sync\SyncDataExchange\Internal\Object\Contact;
 use Mautic\IntegrationsBundle\Sync\SyncDataExchange\Internal\ObjectProvider;
 use Mautic\IntegrationsBundle\Sync\SyncDataExchange\MauticSyncDataExchange;
 use Mautic\IntegrationsBundle\Sync\VariableExpresser\VariableExpresserHelperInterface;
+use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\LeadModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -36,6 +37,7 @@ class FieldHelper
 
     public function __construct(
         private FieldModel $fieldModel,
+        private FieldsWithUniqueIdentifier $fieldWithUniqueIdentifier,
         private VariableExpresserHelperInterface $variableExpresserHelper,
         private ChannelListHelper $channelListHelper,
         private TranslatorInterface $translator,
@@ -161,7 +163,7 @@ class FieldHelper
             return $this->requiredFieldList[$object];
         }
 
-        $uniqueIdentifierFields = $this->fieldModel->getUniqueIdentifierFields(
+        $uniqueIdentifierFields = $this->fieldWithUniqueIdentifier->getFieldsWithUniqueIdentifier(
             [
                 'isPublished' => true,
                 'object'      => $object,
