@@ -60,11 +60,6 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
     private MockObject $routerMock;
 
     /**
-     * @var MockObject|Session
-     */
-    private MockObject $sessionMock;
-
-    /**
      * @var MockObject&FlashBag
      */
     private MockObject $flashBagMock;
