@@ -45,24 +45,7 @@ JSON;
     {
         // creating a double since we can't instantiate
         // we also need to expose some things for better unit test coverage
-        return new class(
-            $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(CacheStorageHelper::class),
-            $this->createMock(EntityManager::class),
-            $this->createMock(RequestStack::class),
-            $this->createMock(Router::class),
-            $this->createMock(TranslatorInterface::class),
-            $this->createMock(Logger::class),
-            $this->createMock(EncryptionHelper::class),
-            $this->createMock(LeadModel::class),
-            $this->createMock(CompanyModel::class),
-            $this->createMock(PathsHelper::class),
-            $this->createMock(NotificationModel::class),
-            $this->createMock(FieldModel::class),
-            $this->createMock(IntegrationEntityModel::class),
-            $this->createMock(DoNotContactModel::class),
-            $this->createMock(FieldsWithUniqueIdentifier::class
-        )) extends AbstractIntegration {
+        return new class($this->createMock(EventDispatcherInterface::class), $this->createMock(CacheStorageHelper::class), $this->createMock(EntityManager::class), $this->createMock(RequestStack::class), $this->createMock(Router::class), $this->createMock(TranslatorInterface::class), $this->createMock(Logger::class), $this->createMock(EncryptionHelper::class), $this->createMock(LeadModel::class), $this->createMock(CompanyModel::class), $this->createMock(PathsHelper::class), $this->createMock(NotificationModel::class), $this->createMock(FieldModel::class), $this->createMock(IntegrationEntityModel::class), $this->createMock(DoNotContactModel::class), $this->createMock(FieldsWithUniqueIdentifier::class)) extends AbstractIntegration {
             public function getName(): string
             {
                 return 'double';
