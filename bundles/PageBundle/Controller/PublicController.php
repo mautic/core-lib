@@ -38,6 +38,8 @@ use Symfony\Component\Routing\RouterInterface;
 class PublicController extends AbstractFormController
 {
     /**
+     * @param string $slug
+     *
      * @return Response
      *
      * @throws \Exception
@@ -72,7 +74,11 @@ class PublicController extends AbstractFormController
                 if (null != $entity->getRedirectType()) {
                     $model->hitPage($entity, $request, $entity->getRedirectType());
 
-                    return $this->redirect($entity->getRedirectUrl(), (int) $entity->getRedirectType());
+                    if ($entity->getRedirectUrl()) {
+                        return $this->redirect($entity->getRedirectUrl(), (int) $entity->getRedirectType());
+                    } else {
+                        return $this->notFound();
+                    }
                 } else {
                     $model->hitPage($entity, $request, 401);
 
