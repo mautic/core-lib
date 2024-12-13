@@ -78,7 +78,6 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->requestMock        = $this->createMock(Request::class);
         $this->dashboardModelMock = $this->createMock(DashboardModel::class);
         $this->routerMock         = $this->createMock(RouterInterface::class);
-        $this->sessionMock        = $this->createMock(Session::class);
         $this->containerMock      = $this->createMock(Container::class);
 
         $doctrine                 = $this->createMock(ManagerRegistry::class);
