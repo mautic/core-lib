@@ -19,6 +19,12 @@
             },
             'routeBase': 'stage',
         },
+        'bulk_actions': {
+            'routeBase': 'stage',
+            'templateButtons': {
+                'delete': permissions['stage:stages:delete']
+            }
+        },
         'quickFilters': [
             {
                 'search': 'mautic.core.searchcommand.ispublished',
@@ -46,6 +52,7 @@
             }
         ]
     }) }}
+
     <div class="page-list">
         {{ block('listResults') }}
     </div>
@@ -64,11 +71,7 @@
                 {{- include('@MauticCore/Helper/tableheader.html.twig',
                     {
                         'checkall'        : 'true',
-                        'target'          : '#stageTable',
-                        'routeBase'       : 'stage',
-                        'templateButtons' : {
-                            'delete' : permissions['stage:stages:delete'],
-                        },
+                        'target'          : '#stageTable'
                     }) -}}
                     {{- include('@MauticCore/Helper/tableheader.html.twig',
                     {
