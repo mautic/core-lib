@@ -21,6 +21,13 @@
 				'routeBase': 'user',
 				'langVar': 'user.user',
 			},
+			'bulk_actions': {
+				'routeBase': 'user',
+				'langVar': 'user.user',
+				'templateButtons': {
+					'delete': permissions['delete']
+				}
+			},
 			'quickFilters': [
 				{
 					'search': 'mautic.user.user.searchcommand.isadmin',
@@ -58,12 +65,7 @@
 				<tr>
 					{{- include('@MauticCore/Helper/tableheader.html.twig', {
                     'checkall'        : 'true',
-                    'target'          : '#userTable',
-                    'langVar'         : 'user.user',
-                    'routeBase'       : 'user',
-                    'templateButtons' : {
-                        'delete' : permissions['delete'],
-                    },
+                    'target'          : '#userTable'
             }) -}}
 
 					<th class="visible-md visible-lg col-user-avatar"></th>
