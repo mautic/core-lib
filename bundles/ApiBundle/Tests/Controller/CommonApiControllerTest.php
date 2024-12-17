@@ -76,15 +76,8 @@ class CommonApiControllerTest extends CampaignTestAbstract
             ],
         ];
 
-        $request = $this->getMockBuilder(Request::class)
-            ->onlyMethods(['get'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $request->method('get')
-            ->willReturn($where);
-
-        $result = $this->getResultFromProtectedMethod('getWhereFromRequest', [$request]);
+        $request = new Request(['where' => $where]);
+        $result  = $this->getResultFromProtectedMethod('getWhereFromRequest', [$request]);
 
         $this->assertEquals($where, $result);
     }

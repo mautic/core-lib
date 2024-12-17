@@ -48,17 +48,8 @@ class FieldApiControllerTest extends TestCase
             ],
         ];
 
-        $request = $this->getMockBuilder(Request::class)
-            ->onlyMethods(['get'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $request->method('get')
-            ->willReturnMap([
-                ['where', [], $where],
-            ]);
-
-        $result = $this->getResultFromProtectedMethod('getWhereFromRequest', [$request], $request);
+        $request = new Request(['where' => $where]);
+        $result  = $this->getResultFromProtectedMethod('getWhereFromRequest', [$request], $request);
 
         $this->assertEquals(array_merge($where, $this->defaultWhere), $result);
     }
