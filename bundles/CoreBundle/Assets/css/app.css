@@ -5413,9 +5413,22 @@ label.list-group-item:focus {
   color: var(--text-primary);
   background-color: var(--layer-selected);
 }
-.dropdown-menu > li a.danger:hover,
-.dropdown-menu > li a.danger:focus {
+.dropdown-menu > li a#delete {
+  background-color: transparent;
+  border-color: transparent;
+}
+.dropdown-menu > li a#delete,
+.dropdown-menu > li a#delete i {
+  color: var(--text-secondary);
+}
+.dropdown-menu > li a#delete:hover,
+.dropdown-menu > li a#delete:focus {
   background-color: var(--support-error);
+}
+.dropdown-menu > li a#delete:hover,
+.dropdown-menu > li a#delete:focus,
+.dropdown-menu > li a#delete:hover i,
+.dropdown-menu > li a#delete:focus i {
   color: var(--text-on-color);
 }
 .scrollable-menu {
