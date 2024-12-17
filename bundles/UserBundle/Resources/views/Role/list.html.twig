@@ -18,6 +18,13 @@
                 'routeBase': 'role',
                 'langVar': 'user.role',
             },
+            'bulk_actions': {
+                'routeBase': 'role',
+                'langVar': 'user.role',
+                'templateButtons': {
+                    'delete': permissions['delete']
+                }
+            },
             'quickFilters': [
                 {
                     'search': 'mautic.user.user.searchcommand.isadmin',
@@ -44,12 +51,7 @@
             {{- include('@MauticCore/Helper/tableheader.html.twig',
                 {
                     'checkall'        : 'true',
-                    'target'          : '#roleTable',
-                    'langVar'         : 'user.role',
-                    'routeBase'       : 'role',
-                    'templateButtons' : {
-                        'delete' : permissions['delete'],
-                    },
+                    'target'          : '#roleTable'
                 }
             ) -}}
 
