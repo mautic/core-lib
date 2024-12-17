@@ -32,11 +32,8 @@ class FieldApiControllerTest extends TestCase
 
     public function testgetWhereFromRequestWithNoWhere(): void
     {
-        $request = $this->getMockBuilder(Request::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $result = $this->getResultFromProtectedMethod('getWhereFromRequest', [$request], $request);
+        $request = new Request();
+        $result  = $this->getResultFromProtectedMethod('getWhereFromRequest', [$request], $request);
 
         $this->assertEquals($this->defaultWhere, $result);
     }
