@@ -21,7 +21,7 @@ class FeatureSettingsType extends AbstractType
     public function __construct(
         protected RequestStack $requestStack,
         protected CoreParametersHelper $coreParametersHelper,
-        protected LoggerInterface $logger
+        protected LoggerInterface $logger,
     ) {
     }
 

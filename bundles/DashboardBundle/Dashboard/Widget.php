@@ -18,7 +18,7 @@ class Widget
     public function __construct(
         private DashboardModel $dashboardModel,
         private UserHelper $userHelper,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
     ) {
     }
 

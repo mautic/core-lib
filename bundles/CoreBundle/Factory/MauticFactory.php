@@ -49,7 +49,7 @@ class MauticFactory
         private IntegrationHelper $integrationHelper,
         private SlotsHelper $slotsHelper,
         private AssetsHelper $assetsHelper,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
     ) {
     }
 

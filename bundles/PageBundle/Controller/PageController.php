@@ -495,7 +495,7 @@ class PageController extends FormController
         RouterInterface $routerHelper,
         CoreParametersHelper $coreParametersHelper,
         $objectId,
-        $ignorePost = false
+        $ignorePost = false,
     ) {
         /** @var PageModel $model */
         $model    = $this->getModel('page.page');

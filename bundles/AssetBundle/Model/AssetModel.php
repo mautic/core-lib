@@ -63,7 +63,7 @@ class AssetModel extends FormModel
         Translator $translator,
         UserHelper $userHelper,
         LoggerInterface $logger,
-        CoreParametersHelper $coreParametersHelper
+        CoreParametersHelper $coreParametersHelper,
     ) {
         $this->maxAssetSize           = $coreParametersHelper->get('max_size');
 

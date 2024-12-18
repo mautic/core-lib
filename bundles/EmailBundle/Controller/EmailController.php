@@ -649,7 +649,7 @@ class EmailController extends FormController
         EmailModel $model,
         $objectId,
         $ignorePost = false,
-        $forceTypeSelection = false
+        $forceTypeSelection = false,
     ) {
         $method  = $request->getMethod();
         $entity  = $model->getEntity($objectId);
@@ -1669,7 +1669,7 @@ class EmailController extends FormController
         Request $request,
         PageHelperFactoryInterface $pageHelperFactory,
         $objectId,
-        $page = 1
+        $page = 1,
     ) {
         return $this->generateContactsGrid(
             $request,

@@ -21,7 +21,7 @@ class ConfigType extends AbstractType
 {
     public function __construct(
         protected CoreParametersHelper $parameters,
-        protected TranslatorInterface $translator
+        protected TranslatorInterface $translator,
     ) {
     }
 

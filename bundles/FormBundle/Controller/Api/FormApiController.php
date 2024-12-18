@@ -49,7 +49,7 @@ class FormApiController extends CommonApiController
         ModelFactory $modelFactory,
         EventDispatcherInterface $dispatcher,
         CoreParametersHelper $coreParametersHelper,
-        MauticFactory $factory
+        MauticFactory $factory,
     ) {
         $formModel = $modelFactory->getModel('form');
         \assert($formModel instanceof FormModel);

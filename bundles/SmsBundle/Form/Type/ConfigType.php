@@ -18,7 +18,7 @@ class ConfigType extends AbstractType
 
     public function __construct(
         private TransportChain $transportChain,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
     ) {
     }
 
