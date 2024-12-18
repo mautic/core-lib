@@ -230,16 +230,6 @@ class MauticFactory
     }
 
     /**
-     * Returns if Symfony is in debug mode.
-     *
-     * @return mixed
-     */
-    public function getDebugMode()
-    {
-        return $this->container->getParameter('kernel.debug');
-    }
-
-    /**
      * returns a ThemeHelper instance for the given theme.
      *
      * @param string $theme
@@ -356,43 +346,6 @@ class MauticFactory
     public function getKernel(): ?KernelInterface
     {
         return $this->container->get('kernel');
-    }
-
-    /**
-     * Get's an array of details for Mautic core bundles.
-     *
-     * @param bool|false $includePlugins
-     *
-     * @return array|mixed
-     */
-    public function getMauticBundles($includePlugins = false)
-    {
-        return $this->container->get('mautic.helper.bundle')->getMauticBundles($includePlugins);
-    }
-
-    /**
-     * Get's an array of details for enabled Mautic plugins.
-     *
-     * @return array
-     */
-    public function getPluginBundles()
-    {
-        return $this->container->get('mautic.helper.bundle')->getPluginBundles();
-    }
-
-    /**
-     * Gets an array of a specific bundle's config settings.
-     *
-     * @param string $configKey
-     * @param bool   $includePlugins
-     *
-     * @return mixed
-     *
-     * @throws \Exception
-     */
-    public function getBundleConfig($bundleName, $configKey = '', $includePlugins = false)
-    {
-        return $this->container->get('mautic.helper.bundle')->getBundleConfig($bundleName, $configKey, $includePlugins);
     }
 
     public function serviceExists($service): bool
