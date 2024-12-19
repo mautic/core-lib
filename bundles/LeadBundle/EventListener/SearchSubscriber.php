@@ -13,6 +13,8 @@ use Mautic\LeadBundle\Event\LeadBuildSearchEvent;
 use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\LeadModel;
+use Mautic\LeadBundle\Model\ListModel;
+use Mautic\LeadBundle\Security\Permissions\LeadPermissions;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -22,12 +24,12 @@ use Twig\Error\SyntaxError;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
-    public const RESULTS_LIMIT = 5;
     private \Mautic\LeadBundle\Entity\LeadRepository $leadRepo;
 
     public function __construct(
         private LeadModel $leadModel,
         private CompanyModel $companyModel,
+        private ListModel $listModel,
         private EmailRepository $emailRepository,
         private TranslatorInterface $translator,
         private CorePermissions $security,
@@ -42,6 +44,7 @@ class SearchSubscriber implements EventSubscriberInterface
             CoreEvents::GLOBAL_SEARCH  => [
                 ['onGlobalSearchForContacts', 0],
                 ['onGlobalSearchForCompanies', 0],
+                ['onGlobalSearchForSegments', 0],
             ],
             CoreEvents::BUILD_COMMAND_LIST         => ['onBuildCommandList', 0],
             LeadEvents::LEAD_BUILD_SEARCH_COMMANDS => ['onBuildSearchCommands', 0],
@@ -77,16 +80,54 @@ class SearchSubscriber implements EventSubscriberInterface
 
             $results = $this->leadModel->getEntities(
                 [
-                    'limit'          => 5,
+                    'limit'          => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
                     'filter'         => $filter,
                     'withTotalCount' => true,
                 ]);
             $this->addGlobalSearchResults(
                 $event,
-                'lead',
                 $results,
                 '@MauticLead/SubscribedEvents/Search/global.html.twig',
                 'mautic.lead.leads'
+            );
+        }
+    }
+
+    public function onGlobalSearchForSegments(MauticEvents\GlobalSearchEvent $event): void
+    {
+        $str = $event->getSearchString();
+        if (empty($str)) {
+            return;
+        }
+
+        $mine   = $this->translator->trans('mautic.core.searchcommand.ismine');
+        $filter = ['string' => $str, 'force' => ''];
+
+        $permissions = $this->security->isGranted(
+            [LeadPermissions::LISTS_VIEW_OWN, LeadPermissions::LISTS_VIEW_OTHER],
+            'RETURN_ARRAY'
+        );
+
+        if ($permissions[LeadPermissions::LISTS_VIEW_OWN] || $permissions[LeadPermissions::LISTS_VIEW_OTHER]) {
+            // only show own leads if the user does not have permission to view others
+            if (!$permissions[LeadPermissions::LISTS_VIEW_OTHER]) {
+                $filter['force'] .= " $mine";
+            }
+
+            $results['results'] = $this->listModel->getEntities(
+                [
+                    'start'            => 0,
+                    'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
+                    'filter'           => $filter,
+                    'ignore_paginator' => true,
+                ]);
+            $results['count'] = count($results['results']);
+
+            $this->addGlobalSearchResults(
+                $event,
+                $results,
+                '@MauticLead/SubscribedEvents/Search/global_segment.html.twig',
+                'mautic.segment.segment'
             );
         }
     }
@@ -113,14 +154,13 @@ class SearchSubscriber implements EventSubscriberInterface
         if ($permissions['lead:leads:viewown'] || $permissions['lead:leads:viewother']) {
             $results = $this->companyModel->getEntities(
                 [
-                    'limit'          => 5,
+                    'limit'          => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
                     'filter'         => $filter,
                     'withTotalCount' => true,
                 ]);
 
             $this->addGlobalSearchResults(
                 $event,
-                'company',
                 $results,
                 '@MauticLead/SubscribedEvents/Search/global_company.html.twig',
                 'mautic.company.company'
@@ -500,7 +540,6 @@ class SearchSubscriber implements EventSubscriberInterface
      */
     private function addGlobalSearchResults(
         MauticEvents\GlobalSearchEvent $event,
-        string $entityType,
         array $results,
         string $template,
         string $resultKey
@@ -508,15 +547,15 @@ class SearchSubscriber implements EventSubscriberInterface
         if ($results['count'] > 0) {
             $items           = $results['results'];
             $renderedResults = array_map(
-                fn ($item) => $this->twig->render($template, [$entityType => $item]),
+                fn ($item) => $this->twig->render($template, ['item' => $item]),
                 $items
             );
 
-            if ($results['count'] > self::RESULTS_LIMIT) {
+            if ($results['count'] > MauticEvents\GlobalSearchEvent::RESULTS_LIMIT) {
                 $renderedResults[] = $this->twig->render($template, [
                     'showMore'     => true,
                     'searchString' => $event->getSearchString(),
-                    'remaining'    => $results['count'] - self::RESULTS_LIMIT,
+                    'remaining'    => $results['count'] - MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
                 ]);
             }
 
