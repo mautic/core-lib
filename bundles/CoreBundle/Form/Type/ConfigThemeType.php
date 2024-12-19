@@ -16,6 +16,42 @@ class ConfigThemeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add(
+            'company_name',
+            TextType::class,
+            [
+                'label'      => 'mautic.core.config.form.company_name',
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'  => [
+                    'class'   => 'form-control',
+                    'tooltip' => 'mautic.core.config.form.company_name.tooltip',
+                ],
+                'required' => false,
+                'data'     => $options['data']['company_name'] ?? '',
+            ]
+        );
+
+        $builder->add(
+            'primary_brand_color',
+            TextType::class,
+            [
+                'label'      => 'mautic.core.config.form.primary_brand_color',
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'  => [
+                    'class'        => 'form-control minicolors-input',
+                    'tooltip'      => 'mautic.core.config.form.primary_brand_color.tooltip',
+                    'data-toggle'  => 'color',
+                    'autocomplete' => 'false',
+                    'size'         => '7',
+                ],
+                'required' => false,
+            ]
+        );
+
+        $builder->add(
             'theme',
             ThemeListType::class,
             [
