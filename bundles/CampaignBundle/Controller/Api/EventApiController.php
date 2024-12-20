@@ -13,6 +13,7 @@ use Mautic\CoreBundle\Helper\AppVersion;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
+use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\LeadBundle\Controller\LeadAccessTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -45,10 +46,7 @@ class EventApiController extends CommonApiController
     }
 
     /**
-     * @param Event  $entity
-     * @param string $action
-     *
-     * @return bool|mixed
+     * @param Event|FormEntity $entity
      */
     protected function checkEntityAccess($entity, $action = 'view')
     {

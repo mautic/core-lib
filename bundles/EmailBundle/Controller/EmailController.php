@@ -511,11 +511,12 @@ class EmailController extends FormController
             $valid = false;
 
             if (!$cancelled = $this->isFormCancelled($form)) {
-                $formData = $request->request->all()['emailform'] ?? [];
                 if ($valid = $this->isFormValid($form)) {
                     $content = $entity->getCustomHtml();
 
                     $entity->setCustomHtml($content);
+
+                    $this->unpublishIfLackingPermission($entity);
 
                     try {
                         // form is valid so process the data
@@ -720,7 +721,9 @@ class EmailController extends FormController
                     $content = $entity->getCustomHtml();
                     $entity->setCustomHtml($content);
 
-                    // form is valid so process the data
+                    $this->unpublishIfLackingPermission($entity);
+
+                    //form is valid so process the data
                     try {
                         $model->saveEntity($entity, $this->getFormButton($form, ['buttons', 'save'])->isClicked());
 
@@ -1683,5 +1686,21 @@ class EmailController extends FormController
         $clonedEmail->setVariantStartDate($cloningEmail->getVariantStartDate());
         $clonedEmail->setEmailType($cloningEmail->getEmailType());
         $clonedEmail->setDraft($cloningEmail->getDraft());
+    }
+
+    private function unpublishIfLackingPermission(Email $entity): Email
+    {
+        $security = $this->get('mautic.security');
+        \assert($security instanceof CorePermissions);
+        $canPublish = $security->hasPublishAccessForEntity(
+            $entity,
+            'email:emails:publishown',
+            'email:emails:publishother'
+        );
+        if ($entity->isNew() && !$canPublish) {
+            $entity->setIsPublished(false);
+        }
+
+        return $entity;
     }
 }

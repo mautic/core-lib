@@ -26,7 +26,9 @@ trait TranslationEntityTrait
     private $translationChildren;
 
     /**
-     * @var mixed
+     * @var (TranslationEntityInterface&self)|null
+     *
+     * @Groups({"page:read", "page:write", "download:read", "download:write", "email:read", "email:write", "dynamicContent:read", "dynamicContent:write"})
      **/
     private $translationParent;
 
@@ -76,6 +78,8 @@ trait TranslationEntityTrait
     }
 
     /**
+     * @param (TranslationEntityInterface&self)|null $parent
+     *
      * @return $this
      */
     public function setTranslationParent(?TranslationEntityInterface $parent = null): self

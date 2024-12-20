@@ -10,6 +10,7 @@ use Mautic\CoreBundle\Helper\AppVersion;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
+use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\LeadBundle\Controller\LeadAccessTrait;
 use Mautic\LeadBundle\Entity\LeadDevice;
 use Mautic\LeadBundle\Model\DeviceModel;
@@ -65,6 +66,9 @@ class DeviceApiController extends CommonApiController
         }
     }
 
+    /**
+     * @param LeadDevice|FormEntity $entity
+     */
     protected function checkEntityAccess($entity, $action = 'view')
     {
         return parent::checkEntityAccess($entity->getLead(), $action);

@@ -17,7 +17,9 @@ trait VariantEntityTrait
     private $variantChildren;
 
     /**
-     * @var mixed
+     * @var (VariantEntityInterface&self)|null
+     *
+     * @Groups({"email:read", "email:write", "download:read"})
      **/
     #[Groups(['email:read', 'email:write', 'download:read'])]
     private $variantParent;
@@ -88,9 +90,6 @@ trait VariantEntityTrait
         return $this->variantChildren;
     }
 
-    /**
-     * Set variantParent.
-     */
     public function setVariantParent(?VariantEntityInterface $parent = null): static
     {
         if (method_exists($this, 'isChanged')) {
@@ -102,9 +101,6 @@ trait VariantEntityTrait
         return $this;
     }
 
-    /**
-     * Get variantParent.
-     */
     public function getVariantParent(): ?VariantEntityInterface
     {
         return $this->variantParent;

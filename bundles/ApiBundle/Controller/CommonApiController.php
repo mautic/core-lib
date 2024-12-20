@@ -10,6 +10,7 @@ use Mautic\ApiBundle\Helper\EntityResultHelper;
 use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\AppVersion;
+use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Model\FormModel;
@@ -475,6 +476,7 @@ class CommonApiController extends FetchCommonApiController
                 if (!$this->checkEntityAccess($entity, 'publish')) {
                     if ('new' === $action) {
                         $parameters['isPublished'] = 0;
+                        unset($parameters['publishUp'], $parameters['publishDown']);
                     } else {
                         unset($parameters['isPublished'], $parameters['publishUp'], $parameters['publishDown']);
                     }
