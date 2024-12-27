@@ -7,6 +7,7 @@ use Mautic\CoreBundle\Controller\FormController;
 use Mautic\CoreBundle\Factory\PageHelperFactoryInterface;
 use Mautic\CoreBundle\Form\Type\DateRangeType;
 use Mautic\CoreBundle\Helper\InputHelper;
+use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Model\ListModel;
@@ -786,9 +787,15 @@ class ListController extends FormController
 
         $permissions = [LeadPermissions::LISTS_CREATE, LeadPermissions::LISTS_VIEW_OWN, LeadPermissions::LISTS_VIEW_OTHER, LeadPermissions::LISTS_EDIT_OWN, LeadPermissions::LISTS_EDIT_OTHER, LeadPermissions::LISTS_DELETE_OWN, LeadPermissions::LISTS_DELETE_OTHER];
 
+        // Audit Log
+        $auditLogModel = $this->getModel('core.auditlog');
+        \assert($auditLogModel instanceof AuditLogModel);
+        $logs          = $auditLogModel->getLogForObject('segment', $list->getId(), $list->getDateAdded());
+
         return $this->delegateView([
             'returnUrl'      => $this->generateUrl('mautic_segment_action', ['objectAction' => 'view', 'objectId' => $list->getId()]),
             'viewParameters' => [
+                'logs'           => $logs,
                 'usageStats'     => $segmentDependencies->getChannelsIds($list->getId()),
                 'campaignStats'  => $segmentCampaignShare->getCampaignList($list->getId()),
                 'stats'          => $segmentContactsLineChartData,
