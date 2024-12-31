@@ -15,6 +15,9 @@ use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
 use PHPUnit\Framework\Assert;
 use Symfony\Bridge\Doctrine\DataCollector\DoctrineDataCollector;
+
+use function Symfony\Component\Clock\now;
+
 use Symfony\Component\HttpFoundation\Request;
 
 final class EmailControllerFunctionalTest extends MauticMysqlTestCase
@@ -558,59 +561,77 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertNotEmpty($response['body']);
     }
 
-    public function testSegmentEmailSendWithContinueSending(): void
+    public function testSegmentEmailSendWithoutContinueSending(): void
     {
         $segment = $this->createSegment('Segment A', 'segment-a');
 
-        foreach (['test@one.email', 'test@two.email'] as $emailAddress) {
+        $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
+        $email->setPublishUp(new \DateTime('-15 minutes'));
+        $email->setContinueSending(null);
+        $this->em->persist($email);
+
+        foreach (['test@one.email', 'test@two.email', 'test@three.email'] as $emailAddress) {
             $contact = new Lead();
             $contact->setEmail($emailAddress);
 
             $member = new ListLead();
             $member->setLead($contact);
             $member->setList($segment);
-            $member->setDateAdded(new \DateTime('now -1 hour'));
+            if ('test@three.email' === $emailAddress) {
+                $member->setDateAdded(new \DateTime('-10 minutes'));
+            } else {
+                $member->setDateAdded(new \DateTime('-1 hour'));
+            }
 
             $this->em->persist($member);
             $this->em->persist($contact);
         }
 
         $this->em->flush();
-        $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
-        $email->setPublishUp(new \DateTime('now'));
-        $email->setContinueSending(null);
-        $this->em->persist($email);
-        $this->em->flush();
 
         $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
         $this->assertStringContainsString('Email: Email A | 2', $commandTester->getDisplay());
 
-        // Add another contact to the segment
-        $contact = new Lead();
-        $contact->setEmail('test@three.email');
-
-        $member = new ListLead();
-        $member->setLead($contact);
-        $member->setList($segment);
-        $member->setDateAdded(new \DateTime());
-
-        $this->em->persist($member);
-        $this->em->persist($contact);
-        $this->em->flush();
-
-        // Verify that the email isn't sent to the new contact
         $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
-        $this->assertStringContainsString('Email: Email A | 0', $commandTester->getDisplay());
 
-        // Enable continue sending for the email
-        $email->setPublishUp(new \DateTime('now -1 hour'));
+        $email = $this->em->getRepository(Email::class)->find($email->getId());
+        $this->assertFalse($email->getIsPublished(), $commandTester->getDisplay());
+    }
+
+    public function testSegmentEmailSendWithContinueSending(): void
+    {
+        $segment = $this->createSegment('Segment A', 'segment-a');
+
+        $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
+        $email->setPublishUp(new \DateTime('-15 minutes'));
         $email->setContinueSending(true);
-        $email->setPublishDown(new \DateTime('now +1 hour'));
         $this->em->persist($email);
+
+        foreach (['test@one.email', 'test@two.email', 'test@three.email'] as $emailAddress) {
+            $contact = new Lead();
+            $contact->setEmail($emailAddress);
+
+            $member = new ListLead();
+            $member->setLead($contact);
+            $member->setList($segment);
+            if ('test@three.email' === $emailAddress) {
+                $member->setDateAdded(new \DateTime('-10 minutes'));
+            } else {
+                $member->setDateAdded(new \DateTime('-1 hour'));
+            }
+
+            $this->em->persist($member);
+            $this->em->persist($contact);
+        }
+
         $this->em->flush();
 
-        // Verify that the email is sent to the new contact
         $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
-        $this->assertStringContainsString('Email: Email A | 1', $commandTester->getDisplay()); // @todo Fix test-  why is this not 1 but 0?
+        $this->assertStringContainsString('Email: Email A | 3', $commandTester->getDisplay());
+
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+
+        $email = $this->em->getRepository(Email::class)->find($email->getId());
+        $this->assertTrue($email->getIsPublished(), $commandTester->getDisplay());
     }
 }

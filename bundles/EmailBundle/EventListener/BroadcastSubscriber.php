@@ -5,7 +5,6 @@ namespace Mautic\EmailBundle\EventListener;
 use Doctrine\ORM\EntityManager;
 use Mautic\ChannelBundle\ChannelEvents;
 use Mautic\ChannelBundle\Event\ChannelBroadcastEvent;
-use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Model\EmailModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -69,31 +68,6 @@ class BroadcastSubscriber implements EventSubscriberInterface
             );
             $this->em->detach($emailEntity);
         }
-    }
-
-    protected function setStartDateOfABTesting(Email $emailEntity): void
-    {
-        if (!$emailEntity->getVariantSentCount(true)) {
-            $dateTimeHelper = new DateTimeHelper();
-            $this->model->getRepository()->resetVariants(
-                $emailEntity->getRelatedEntityIds(),
-                $dateTimeHelper->toUtcString()
-            );
-        }
-    }
-
-    /**
-     * @return int|mixed
-     */
-    protected function getLimitForABTest(mixed $limit, Email $emailEntity, int $totalLeadCountForVariants): mixed
-    {
-        $limit = $limit ?? 10000;
-        $diff  = ($emailEntity->getVariantSentCount(true) + $limit) - $totalLeadCountForVariants;
-        if ($diff > 0) {
-            $limit = $limit - $diff;
-        }
-
-        return $limit;
     }
 
     private function shouldCheckForUnpublishEmail(Email $email): bool
