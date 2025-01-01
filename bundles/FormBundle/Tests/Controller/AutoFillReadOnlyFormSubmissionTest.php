@@ -11,11 +11,20 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class AutoFillReadOnlyFormSubmissionTest extends MauticMysqlTestCase
 {
-    public function testReadOnlyConfigurationSetting(): void
+    protected $useCleanupRollback = false;
+
+    /**
+     * @param array<string, bool>   $data
+     * @param array<string, string> $expected
+     *
+     * @dataProvider dataForReadOnlyConfigurationSetting
+     */
+    public function testFieldConfiguration(array $data, array $expected): void
     {
+        // Create a form
         $form = $this->createForm();
 
-        $emailField = $this->createFormField($form, 'Email', 'email', false, false, 'email', 'contact');
+        $emailField = $this->createFormField($form, 'Email', 'email', $data['isAutoFill'], $data['isReadOnly'], 'email', 'contact');
         $form->addField(1, $emailField);
 
         $this->em->flush();
@@ -33,7 +42,54 @@ final class AutoFillReadOnlyFormSubmissionTest extends MauticMysqlTestCase
 
         $response = $this->client->getResponse();
         $content  = json_decode($response->getContent())->newContent;
-        dump($content);
+        $crawler  = new Crawler($content, $this->client->getInternalRequest()->getUri());
+
+        $formValues = $crawler->selectButton('Update')->form()->getPhpValues();
+
+        $this->assertSame($expected['isAutoFill'], $formValues['formfield']['isAutoFill']);
+        $this->assertSame($expected['isReadOnly'], $formValues['formfield']['isReadOnly']);
+    }
+
+    public function dataForReadOnlyConfigurationSetting(): iterable
+    {
+        yield 'When field set to read only' => [
+            // given
+            [
+                'isAutoFill' => true,
+                'isReadOnly' => true,
+            ],
+            // expected
+            [
+                'isAutoFill' => '1',
+                'isReadOnly' => '1',
+            ],
+        ];
+
+        yield 'When field set to read only and not autofill' => [
+            // given
+            [
+                'isAutoFill' => false,
+                'isReadOnly' => true,
+            ],
+            // expected
+            [
+                'isAutoFill' => '0',
+                'isReadOnly' => '1',
+            ],
+        ];
+
+        yield 'When field set to autofill and not read only' => [
+            // given
+            [
+                'isAutoFill' => true,
+                'isReadOnly' => false,
+            ],
+            // expected
+            [
+                'isAutoFill' => '1',
+                'isReadOnly' => '0',
+            ],
+        ];
     }
 
     public function testAutoFilledFormForReadOnlyAttribute(): void
