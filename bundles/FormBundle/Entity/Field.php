@@ -1026,6 +1026,15 @@ class Field
         return $this->isReadOnly;
     }
 
+    public function isAutoFillReadOnly(): bool
+    {
+        if ($this->isAutoFill && $this->isReadOnly) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function setIsReadOnly(bool $isReadOnly): void
     {
         $this->isReadOnly = $isReadOnly;
