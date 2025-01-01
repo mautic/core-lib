@@ -220,6 +220,7 @@ class PublicController extends AbstractFormController
                         $lead,
                         $request
                     );
+                    \assert($translatedEntity instanceof Page);
 
                     if ($translationParent && $translatedEntity !== $entity) {
                         if (!$request->get('ntrd', 0)) {

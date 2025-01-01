@@ -188,9 +188,6 @@ class PageModel extends FormModel
         parent::deleteEntity($entity);
     }
 
-    /**
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
     public function createForm($entity, FormFactoryInterface $formFactory, $action = null, $options = []): \Symfony\Component\Form\FormInterface
     {
         if (!$entity instanceof Page) {
@@ -965,10 +962,8 @@ class PageModel extends FormModel
      * @param int   $limit
      * @param array $filters
      * @param bool  $canViewOthers
-     *
-     * @return array
      */
-    public function getPopularPages($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $canViewOthers = true)
+    public function getPopularPages($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $canViewOthers = true): array
     {
         $q = $this->em->getConnection()->createQueryBuilder();
         $q->select('COUNT(DISTINCT t.id) AS hits, p.id, p.title, p.alias')
@@ -996,10 +991,8 @@ class PageModel extends FormModel
      * @param int   $limit
      * @param array $filters
      * @param bool  $canViewOthers
-     *
-     * @return array
      */
-    public function getPageList($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $canViewOthers = true)
+    public function getPageList($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $canViewOthers = true): array
     {
         $q = $this->em->getConnection()->createQueryBuilder();
         $q->select('t.id, t.title AS name, t.date_added, t.date_modified')

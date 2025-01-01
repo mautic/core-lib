@@ -59,7 +59,6 @@ class TrackingHelper
     {
         $cacheKey = $this->getCacheKey();
         if (null !== $cacheKey) {
-            /** @var CacheItemInterface $item */
             $item = $this->cache->getItem($cacheKey);
             $item->set(serialize(array_merge($values, $this->getCacheItem())));
             $item->expiresAfter(86400); // one day in seconds

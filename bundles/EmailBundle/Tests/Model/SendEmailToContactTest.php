@@ -606,10 +606,6 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @testdox Test that sending an email with invalid Bcc address is handled
-     *
-     * @covers \Mautic\EmailBundle\Model\SendEmailToContact::setContact()
-     * @covers \Mautic\EmailBundle\Model\SendEmailToContact::send()
-     * @covers \Mautic\EmailBundle\Model\SendEmailToContact::failContact()
      */
     public function testThatInvalidBccFailureIsHandled(): void
     {

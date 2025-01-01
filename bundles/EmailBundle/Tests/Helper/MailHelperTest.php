@@ -881,12 +881,8 @@ class MailHelperTest extends TestCase
 
     /**
      * @param mixed[] $parameterMap
-     *
-     * @phpstan-ignore-next-line as it's using a deprecated class
-     *
-     * @return MauticFactory&MockObject
      */
-    protected function getMockFactory(bool $mailIsOwner = true, array $parameterMap = []): MauticFactory
+    protected function getMockFactory(bool $mailIsOwner = true, array $parameterMap = []): MauticFactory&MockObject // @phpstan-ignore return.deprecatedClass
     {
         $mockLeadRepository = $this->createMock(LeadRepository::class);
 
