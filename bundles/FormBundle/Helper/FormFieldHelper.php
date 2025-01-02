@@ -172,7 +172,8 @@ class FormFieldHelper extends AbstractFormFieldHelper
     {
         $alias = $field->getAlias();
 
-        $fieldAttributeReadOnly = fn ($field, $sanitizedValue) => ($field->isAutoFillReadOnly() && $sanitizedValue) ? ' readonly' : '';
+        // Adds the "readonly" attribute to a field if it is configured as read-only with auto-fill enabled and a sanitized value exists.
+        $fieldAttributeReadOnly = fn ($field, $sanitizedValue) => ($field->isAutoFillReadOnly() && $sanitizedValue) ? ' readonly ' : '';
 
         switch ($field->getType()) {
             case 'text':
@@ -190,7 +191,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 }
                 if (preg_match('/<input(.*?)value="(.*?)"(.*?)id="mauticform_input_'.$formName.'_'.$alias.'"(.*?)\/?>/i', $formHtml, $match)) {
                     $replace = '<input'.$match[1].'id="mauticform_input_'.$formName.'_'.$alias.'"'.$match[3].'value="'.$sanitizedValue.'"'
-                        .$match[4].$fieldAttributeReadOnly($field, $sanitizedValue).' />';
+                        .$match[4].$fieldAttributeReadOnly($field, $sanitizedValue).'/>';
                     $formHtml = str_replace($match[0], $replace, $formHtml);
                 }
                 break;
