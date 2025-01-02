@@ -172,7 +172,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
     {
         $alias = $field->getAlias();
 
-        $fieldAttributeReadOnly = fn ($field, $sanitizedValue) => ($field->isAutoFillReadOnly() && $sanitizedValue) ? 'readonly' : '';
+        $fieldAttributeReadOnly = fn ($field, $sanitizedValue) => ($field->isAutoFillReadOnly() && $sanitizedValue) ? ' readonly' : '';
 
         switch ($field->getType()) {
             case 'text':
@@ -190,14 +190,14 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 }
                 if (preg_match('/<input(.*?)value="(.*?)"(.*?)id="mauticform_input_'.$formName.'_'.$alias.'"(.*?)\/?>/i', $formHtml, $match)) {
                     $replace = '<input'.$match[1].'id="mauticform_input_'.$formName.'_'.$alias.'"'.$match[3].'value="'.$sanitizedValue.'"'
-                        .$match[4].' '.$fieldAttributeReadOnly($field, $sanitizedValue).' />';
+                        .$match[4].$fieldAttributeReadOnly($field, $sanitizedValue).' />';
                     $formHtml = str_replace($match[0], $replace, $formHtml);
                 }
                 break;
             case 'textarea':
                 if (preg_match('/<textarea(.*?)id="mauticform_input_'.$formName.'_'.$alias.'"(.*?)>(.*?)<\/textarea>/i', $formHtml, $match)) {
                     $value    = $this->sanitizeValue($value);
-                    $replace  = '<textarea'.$match[1].'id="mauticform_input_'.$formName.'_'.$alias.'"'.$match[2].' '.$fieldAttributeReadOnly($field, $value).'>'.$value.'</textarea>';
+                    $replace  = '<textarea'.$match[1].'id="mauticform_input_'.$formName.'_'.$alias.'"'.$match[2].$fieldAttributeReadOnly($field, $value).'>'.$value.'</textarea>';
                     $formHtml = str_replace($match[0], $replace, $formHtml);
                 }
                 break;
