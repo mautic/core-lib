@@ -14,6 +14,7 @@ use Mautic\CoreBundle\Form\Type\ContentPreviewSettingsType;
 use Mautic\CoreBundle\Form\Type\DateRangeType;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
+use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
@@ -1122,7 +1123,7 @@ class EmailController extends FormController
      * @throws \Exception
      * @throws \Mautic\CoreBundle\Exception\FileNotFoundException
      */
-    public function builderAction(Request $request, SlotsHelper $slotsHelper, $objectId)
+    public function builderAction(Request $request, SlotsHelper $slotsHelper, ThemeHelper $themeHelper, $objectId)
     {
         /** @var EmailModel $model */
         $model = $this->getModel('email');
@@ -1164,7 +1165,7 @@ class EmailController extends FormController
 
         $this->processSlots($slotsHelper, $slots, $entity);
 
-        $logicalName = $this->factory->getHelper('theme')->checkForTwigTemplate('@themes/'.$template.'/html/email.html.twig');
+        $logicalName = $themeHelper->checkForTwigTemplate('@themes/'.$template.'/html/email.html.twig');
 
         return $this->render(
             $logicalName,
