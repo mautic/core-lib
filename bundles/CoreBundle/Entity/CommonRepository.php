@@ -382,6 +382,8 @@ class CommonRepository extends ServiceEntityRepository
         if (!empty($args['with_total_count'])) {
             $countQuery = clone $q;
             $countQuery->select("COUNT($alias.id)");
+            $countQuery->resetDQLPart('join');
+            $countQuery->resetDQLPart('groupBy');
             $countQuery->resetDQLPart('orderBy'); // Remove any orderBy clause as it is not relevant for count queries
             $totalCount = (int) $countQuery->getQuery()->getSingleScalarResult();
         }

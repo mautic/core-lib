@@ -1,0 +1,15 @@
+{% if showMore is defined %}
+    <a href="{{ url('mautic_message_index', {'search': searchString}) }}" data-toggle="ajax">
+        <span>{{ 'mautic.core.search.more'|trans({'%count%': remaining}) }}</span>
+    </a>
+{% else %}
+    {% if canEdit %}
+        <a href="{{ url('mautic_message_action', {'objectAction': 'edit', 'objectId': item.id}) }}" data-toggle="ajax">
+            <span class="fw-sb">{{ item.name }}</span>
+            <span class="ml-4 mr-sm">#{{ item.id }}</span>
+        </a>
+    {% else %}
+        <span class="fw-sb">{{ item.tag }}</span>
+    {% endif %}
+    <div class="clearfix"></div>
+{% endif %}
