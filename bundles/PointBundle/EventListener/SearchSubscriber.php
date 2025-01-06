@@ -36,7 +36,7 @@ class SearchSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onGlobalSearchPointActions(MauticEvents\GlobalSearchEvent $event)
+    public function onGlobalSearchPointActions(MauticEvents\GlobalSearchEvent $event): void
     {
         if (!$this->security->isGranted('point:points:view')) {
             return;
