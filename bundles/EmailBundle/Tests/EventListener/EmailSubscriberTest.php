@@ -8,7 +8,9 @@ use Doctrine\ORM\EntityManager;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
+use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
+use Mautic\CoreBundle\Twig\Helper\SlotsHelper;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Event\EmailSendEvent;
@@ -29,6 +31,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 
 final class EmailSubscriberTest extends \PHPUnit\Framework\TestCase
 {
@@ -85,7 +88,7 @@ final class EmailSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testOnEmailResendWithNoStat(): void
     {
-        $message = new class() extends MauticMessage {
+        $message = new class extends MauticMessage {
             public ?string $leadIdHash = 'some-hash';
         };
 
@@ -107,7 +110,7 @@ final class EmailSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testOnEmailResendWithNoRetry(): void
     {
-        $message = new class() extends MauticMessage {
+        $message = new class extends MauticMessage {
             public ?string $leadIdHash = 'some-hash';
         };
 
@@ -174,7 +177,7 @@ final class EmailSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testOnEmailResendWith4Retry(): void
     {
-        $message = new class() extends MauticMessage {
+        $message = new class extends MauticMessage {
             public ?string $leadIdHash = 'some-hash';
         };
 
@@ -288,6 +291,14 @@ CONTENT,
         /** @var MockObject&RouterInterface $router */
         $router = $this->createMock(RouterInterface::class);
 
+        /** @var MockObject&Environment $twig */
+        $twig = $this->createMock(Environment::class);
+
+        $slotsHelper = new SlotsHelper();
+        $themeHelper = $this->createMock(ThemeHelper::class);
+        $themeHelper->expects(self::never())
+            ->method('checkForTwigTemplate');
+
         $coreParametersHelper->method('get')
             ->willReturnMap(
                 [
@@ -297,7 +308,19 @@ CONTENT,
             );
         $mockFactory = $this->createMock(MauticFactory::class); /** @phpstan-ignore-line MauticFactory is deprecated */
         $mailer      = new Mailer(new BatchTransport());
-        $mailHelper  = new MailHelper($mockFactory, $mailer, $fromEmailHelper, $coreParametersHelper, $mailbox, new NullLogger(), new MailHashHelper($coreParametersHelper), $router);
+        $mailHelper  = new MailHelper(
+            $mockFactory,
+            $mailer,
+            $fromEmailHelper,
+            $coreParametersHelper,
+            $mailbox,
+            new NullLogger(),
+            new MailHashHelper($coreParametersHelper),
+            $router,
+            $twig,
+            $themeHelper,
+            $slotsHelper,
+        );
 
         $email = new Email();
         $email->setCustomHtml($html);

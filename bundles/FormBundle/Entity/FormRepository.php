@@ -91,7 +91,7 @@ class FormRepository extends CommonRepository
         switch ($command) {
             case $this->translator->trans('mautic.form.form.searchcommand.isexpired'):
             case $this->translator->trans('mautic.form.form.searchcommand.isexpired', [], null, 'en_US'):
-                $expr = $q->expr()->andX(
+                $expr = $q->expr()->and(
                     $q->expr()->eq('f.isPublished', ":$unique"),
                     $q->expr()->isNotNull('f.publishDown'),
                     $q->expr()->neq('f.publishDown', $q->expr()->literal('')),
@@ -101,7 +101,7 @@ class FormRepository extends CommonRepository
                 break;
             case $this->translator->trans('mautic.form.form.searchcommand.ispending'):
             case $this->translator->trans('mautic.form.form.searchcommand.ispending', [], null, 'en_US'):
-                $expr = $q->expr()->andX(
+                $expr = $q->expr()->and(
                     $q->expr()->eq('f.isPublished', ":$unique"),
                     $q->expr()->isNotNull('f.publishUp'),
                     $q->expr()->neq('f.publishUp', $q->expr()->literal('')),

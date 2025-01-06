@@ -19,7 +19,7 @@ class SearchSubscriber implements EventSubscriberInterface
     public function __construct(
         private ClientModel $apiClientModel,
         private CorePermissions $security,
-        private Environment $twig
+        private Environment $twig,
     ) {
     }
 

@@ -116,7 +116,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         UserHelper $userHelper,
         LoggerInterface $mauticLogger,
         CoreParametersHelper $coreParametersHelper,
-        private EmailStatModel $emailStatModel
+        private EmailStatModel $emailStatModel,
     ) {
         $this->connection = $em->getConnection(); // Necessary for FilterTrait
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
@@ -262,8 +262,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
      * @param array       $options
      *
      * @return FormInterface<Email>
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function createForm($entity, FormFactoryInterface $formFactory, $action = null, $options = []): FormInterface
     {
@@ -378,7 +376,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         bool $viaBrowser = false,
         bool $activeRequest = true,
         \DateTimeInterface $hitDateTime = null,
-        bool $throwDoctrineExceptions = false
+        bool $throwDoctrineExceptions = false,
     ): void {
         if (!$stat instanceof Stat) {
             $stat = $this->getEmailStatus($stat);
@@ -931,7 +929,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         $countWithMaxMin = false,
         $storeToCache = true,
         int $maxThreads = null,
-        int $threadId = null
+        int $threadId = null,
     ) {
         $variantIds = ($includeVariants) ? $email->getRelatedEntityIds() : null;
         $total      = $this->getRepository()->getEmailPendingLeads(
@@ -1016,7 +1014,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         $minContactId = null,
         $maxContactId = null,
         int $maxThreads = null,
-        int $threadId = null
+        int $threadId = null,
     ): array {
         // get the leads
         if (empty($lists)) {
@@ -1526,7 +1524,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         $saveStat = false,
         array $to = [],
         array $cc = [],
-        array $bcc = []
+        array $bcc = [],
     ) {
         if (!$emailId = $email->getId()) {
             return false;
@@ -1726,7 +1724,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         $leadRepo = $this->em->getRepository(Lead::class);
         $leadId   = (array) $leadRepo->getLeadByEmail($email, true);
 
-        /** @var \Mautic\LeadBundle\Entity\Lead[] $leads */
+        /** @var Lead[] $leads */
         $leads = [];
 
         foreach ($leadId as $lead) {
@@ -1802,7 +1800,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         \DateTime $dateTo,
         array $filter = [],
         $canViewOthers = true,
-        $timeFormat = 24
+        $timeFormat = 24,
     ): array {
         $companyId  = ArrayHelper::pickValue('companyId', $filter);
         $campaignId = ArrayHelper::pickValue('campaignId', $filter);
@@ -1862,7 +1860,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         \DateTime $dateTo,
         $dateFormat = null,
         array $filter = [],
-        $canViewOthers = true
+        $canViewOthers = true,
     ): array {
         $fetchOptions = new EmailStatOptions();
         $fetchOptions->setCanViewOthers($canViewOthers);
@@ -2011,10 +2009,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
      * @param int   $limit
      * @param array $filters
      * @param array $options
-     *
-     * @return array
      */
-    public function getEmailStatList($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $options = [])
+    public function getEmailStatList($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $options = []): array
     {
         $canViewOthers = empty($options['canViewOthers']) ? false : $options['canViewOthers'];
         $q             = $this->em->getConnection()->createQueryBuilder();
@@ -2050,10 +2046,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
      * @param int   $limit
      * @param array $filters
      * @param array $options
-     *
-     * @return array
      */
-    public function getEmailList($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $options = [])
+    public function getEmailList($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $options = []): array
     {
         $canViewOthers = empty($options['canViewOthers']) ? false : $options['canViewOthers'];
         $q             = $this->em->getConnection()->createQueryBuilder();
@@ -2175,7 +2169,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         $leadFields = null,
         $tokens = [],
         $assetAttachments = [],
-        $saveStat = true
+        $saveStat = true,
     ) {
         if (!$emailId = $email->getId()) {
             return false;

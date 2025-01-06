@@ -38,7 +38,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
 
         $this->client->request('GET', 's/ajax?action=core:updateRunChecks');
         $response = $this->client->getResponse();
-        Assert::assertSame(200, $response->getStatusCode(), $response->getContent());
+        self::assertResponseIsSuccessful($response->getContent());
         Assert::assertStringContainsString('Great! You are running the current version of Mautic.', $response->getContent());
     }
 
@@ -57,7 +57,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         $this->em->flush();
 
         // Searching for a string that does not match any entity.
-        $this->client->request(Request::METHOD_GET, '/s/ajax?action=globalSearch&global_search=unicorn&tmp=list', [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax?action=globalSearch&global_search=unicorn&tmp=list');
         $response = $this->client->getResponse();
         Assert::assertTrue($response->isOk(), $response->getContent());
         $content = \json_decode($response->getContent(), true);
@@ -86,7 +86,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         );
 
         // Searching for a string that match 2 entities.
-        $this->client->request(Request::METHOD_GET, '/s/ajax?action=globalSearch&global_search=John8888&tmp=list', [], [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax?action=globalSearch&global_search=John8888&tmp=list');
         $response = $this->client->getResponse();
         Assert::assertTrue($response->isOk(), $response->getContent());
         $content = \json_decode($response->getContent(), true);
