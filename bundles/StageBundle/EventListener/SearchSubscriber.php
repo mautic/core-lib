@@ -1,16 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\StageBundle\EventListener;
 
 use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\Event as MauticEvents;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\LeadBundle\EventListener\GlobalSearchTrait;
 use Mautic\StageBundle\Model\StageModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Twig\Environment;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
+    use GlobalSearchTrait;
+
     public function __construct(
         private StageModel $stageModel,
         private CorePermissions $security,
@@ -28,44 +33,31 @@ class SearchSubscriber implements EventSubscriberInterface
 
     public function onGlobalSearch(MauticEvents\GlobalSearchEvent $event): void
     {
-        if ($this->security->isGranted('stage:stages:view')) {
-            $str = $event->getSearchString();
-            if (empty($str)) {
-                return;
-            }
-
-            $items = $this->stageModel->getEntities(
-                [
-                    'limit'  => 5,
-                    'filter' => $str,
-                ]);
-            $stageCount = count($items);
-            if ($stageCount > 0) {
-                $stagesResults = [];
-                $canEdit       = $this->security->isGranted('stage:stages:edit');
-                foreach ($items as $item) {
-                    $stagesResults[] = $this->twig->render(
-                        '@MauticStage/SubscribedEvents/Search/global.html.twig',
-                        [
-                            'item'    => $item,
-                            'canEdit' => $canEdit,
-                        ]
-                    );
-                }
-                if ($stageCount > 5) {
-                    $stagesResults[] = $this->twig->render(
-                        '@MauticStage/SubscribedEvents/Search/global.html.twig',
-                        [
-                            'showMore'     => true,
-                            'searchString' => $str,
-                            'remaining'    => ($stageCount - 5),
-                        ]
-                    );
-                }
-                $stagesResults['count'] = $stageCount;
-                $event->addResults('mautic.stage.actions.header.index', $stagesResults);
-            }
+        if (!$this->security->isGranted('stage:stages:view')) {
+            return;
         }
+
+        $searchString = $event->getSearchString();
+        if (empty($searchString)) {
+            return;
+        }
+
+        $items = $this->stageModel->getEntities([
+            'filter'           => $searchString,
+            'start'            => 0,
+            'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
+            'ignore_paginator' => true,
+            'with_total_count' => true,
+        ]);
+
+        $this->addGlobalSearchResults(
+            $this->twig,
+            $event,
+            $items,
+            'mautic.stage.actions.header.index',
+            '@MauticStage/SubscribedEvents/Search/global.html.twig',
+            ['canEdit' => $this->security->isGranted('stage:stages:edit')]
+        );
     }
 
     public function onBuildCommandList(MauticEvents\CommandListEvent $event): void
