@@ -90,8 +90,8 @@ class SearchSubscriber implements EventSubscriberInterface
                 $this->twig,
                 $event,
                 $results,
-                '@MauticLead/SubscribedEvents/Search/global.html.twig',
-                'mautic.lead.leads'
+                'mautic.lead.leads',
+                '@MauticLead/SubscribedEvents/Search/global.html.twig'
             );
         }
     }
@@ -129,8 +129,8 @@ class SearchSubscriber implements EventSubscriberInterface
                 $this->twig,
                 $event,
                 $results,
-                '@MauticLead/SubscribedEvents/Search/global_segment.html.twig',
-                'mautic.segment.segment'
+                'mautic.segment.segment',
+                '@MauticLead/SubscribedEvents/Search/global_segment.html.twig'
             );
         }
     }
@@ -166,8 +166,8 @@ class SearchSubscriber implements EventSubscriberInterface
                 $this->twig,
                 $event,
                 $results,
-                '@MauticLead/SubscribedEvents/Search/global_company.html.twig',
-                'mautic.company.company'
+                'mautic.company.company',
+                '@MauticLead/SubscribedEvents/Search/global_company.html.twig'
             );
         }
     }

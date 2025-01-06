@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\PageBundle\EventListener;
 
 use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\Event as MauticEvents;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\LeadBundle\EventListener\GlobalSearchTrait;
 use Mautic\PageBundle\Model\PageModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Twig\Environment;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
+    use GlobalSearchTrait;
+
     public function __construct(
         private UserHelper $userHelper,
         private PageModel $pageModel,
@@ -52,32 +57,20 @@ class SearchSubscriber implements EventSubscriberInterface
 
             $pages = $this->pageModel->getEntities(
                 [
-                    'limit'  => 5,
-                    'filter' => $filter,
+                    'filter'           => $filter,
+                    'start'            => 0,
+                    'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
+                    'ignore_paginator' => true,
+                    'with_total_count' => true,
                 ]);
 
-            if (count($pages) > 0) {
-                $pageResults = [];
-
-                foreach ($pages as $page) {
-                    $pageResults[] = $this->twig->render(
-                        '@MauticPage/SubscribedEvents/Search/global.html.twig',
-                        ['page' => $page]
-                    );
-                }
-                if (count($pages) > 5) {
-                    $pageResults[] = $this->twig->render(
-                        '@MauticPage/SubscribedEvents/Search/global.html.twig',
-                        [
-                            'showMore'     => true,
-                            'searchString' => $str,
-                            'remaining'    => (count($pages) - 5),
-                        ]
-                    );
-                }
-                $pageResults['count'] = count($pages);
-                $event->addResults('mautic.page.pages', $pageResults);
-            }
+            $this->addGlobalSearchResults(
+                $this->twig,
+                $event,
+                $pages,
+                'mautic.page.pages',
+                '@MauticPage/SubscribedEvents/Search/global.html.twig'
+            );
         }
     }
 

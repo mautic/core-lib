@@ -5,11 +5,11 @@
         </a>
     {% else %}
         {% if canEdit %}
-            <a href="{{ url('mautic_client_action', {'objectAction' : 'edit', 'objectId' : client.getId()}) }}" data-toggle="ajax">
-                {{ client.getName() }}
+            <a href="{{ url('mautic_client_action', {'objectAction' : 'edit', 'objectId' : item.getId()}) }}" data-toggle="ajax">
+                {{ item.getName() }}
             </a>
         {% else %}
-            <span>{{ client.getName() }}</span>
+            <span>{{ item.getName() }}</span>
         {% endif %}
     {% endif %}
 {% endblock %}

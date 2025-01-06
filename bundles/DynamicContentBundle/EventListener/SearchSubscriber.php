@@ -64,8 +64,8 @@ class SearchSubscriber implements EventSubscriberInterface
                 $this->twig,
                 $event,
                 $results,
-                '@MauticDynamicContent/SubscribedEvents/Search/global.html.twig',
-                'mautic.dynamicContent.dynamicContent'
+                'mautic.dynamicContent.dynamicContent',
+                '@MauticDynamicContent/SubscribedEvents/Search/global.html.twig'
             );
         }
     }

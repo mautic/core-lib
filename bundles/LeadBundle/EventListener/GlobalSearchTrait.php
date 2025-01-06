@@ -11,13 +11,15 @@ trait GlobalSearchTrait
 {
     /**
      * @param array<string, int|string|array<int, object>> $results
+     * @param array<string, mixed> $templateParameters
      */
     private function addGlobalSearchResults(
         Environment $twig,
         GlobalSearchEvent $event,
         array $results,
+        string $resultKey,
         string $template,
-        string $resultKey
+        array $templateParameters = []
     ): void {
         $count = $results['count'] ? (int) $results['count'] : 0;
 
@@ -26,7 +28,7 @@ trait GlobalSearchTrait
         }
 
         $renderedResults = array_map(
-            fn ($item) => $twig->render($template, ['item' => $item]),
+            fn ($item) => $twig->render($template, array_merge(['item' => $item], $templateParameters)),
             $results['results']
         );
 
