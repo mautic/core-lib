@@ -49,16 +49,6 @@ class MauticFactory
     }
 
     /**
-     * Retrieves Doctrine database connection for DBAL use.
-     *
-     * @return \Doctrine\DBAL\Connection
-     */
-    public function getDatabase()
-    {
-        return $this->doctrine->getConnection();
-    }
-
-    /**
      * Retrieves a Mautic parameter.
      *
      * @param mixed $default
