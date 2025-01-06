@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\EventListener;
 
-use Mautic\CoreBundle\Doctrine\Paginator\SimplePaginator;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
 use Twig\Environment;
 
 trait GlobalSearchTrait
 {
     /**
-     * @param array<string, int|string|array<int, object>>|iterable<object>|SimplePaginator<mixed> $results
-     * @param array<string, mixed>                                                                 $templateParameters
+     * @param array<string, mixed> $results
+     * @param array<string, mixed> $templateParameters
      */
     private function addGlobalSearchResults(
         Environment $twig,
