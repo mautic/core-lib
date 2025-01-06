@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\EmailBundle\EventListener;
 
 use Mautic\CoreBundle\CoreEvents;
@@ -7,11 +9,14 @@ use Mautic\CoreBundle\Event as MauticEvents;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\Model\EmailModel;
+use Mautic\LeadBundle\EventListener\GlobalSearchTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Twig\Environment;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
+    use GlobalSearchTrait;
+
     public function __construct(
         private UserHelper $userHelper,
         private EmailModel $emailModel,
@@ -51,32 +56,20 @@ class SearchSubscriber implements EventSubscriberInterface
 
             $emails = $this->emailModel->getEntities(
                 [
-                    'limit'  => 5,
-                    'filter' => $filter,
+                    'filter'           => $filter,
+                    'start'            => 0,
+                    'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
+                    'ignore_paginator' => true,
+                    'with_total_count' => true,
                 ]);
 
-            if (count($emails) > 0) {
-                $emailResults = [];
-
-                foreach ($emails as $email) {
-                    $emailResults[] = $this->twig->render(
-                        '@MauticEmail/SubscribedEvents/Search/global.html.twig',
-                        ['email' => $email]
-                    );
-                }
-                if (count($emails) > 5) {
-                    $emailResults[] = $this->twig->render(
-                        '@MauticEmail/SubscribedEvents/Search/global.html.twig',
-                        [
-                            'showMore'     => true,
-                            'searchString' => $str,
-                            'remaining'    => (count($emails) - 5),
-                        ]
-                    );
-                }
-                $emailResults['count'] = count($emails);
-                $event->addResults('mautic.email.emails', $emailResults);
-            }
+            $this->addGlobalSearchResults(
+                $this->twig,
+                $event,
+                $emails,
+                'mautic.email.emails',
+                '@MauticEmail/SubscribedEvents/Search/global.html.twig'
+            );
         }
     }
 

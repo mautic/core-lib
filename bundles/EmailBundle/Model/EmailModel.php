@@ -5,6 +5,7 @@ namespace Mautic\EmailBundle\Model;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
 use Mautic\ChannelBundle\Entity\MessageQueue;
 use Mautic\ChannelBundle\Model\MessageQueueModel;
@@ -299,11 +300,13 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
      *
      * @param array $args [start, limit, filter, orderBy, orderByDir]
      *
-     * @return \Doctrine\ORM\Tools\Pagination\Paginator|array
+     * @return Paginator|array<string, int|object>
      */
     public function getEntities(array $args = [])
     {
-        $entities = parent::getEntities($args);
+        $entitiesResult = parent::getEntities($args);
+        $entities       = !empty($args['with_total_count']) ? $entitiesResult['results'] : $entitiesResult;
+        $count          = !empty($args['with_total_count']) ? $entitiesResult['count'] : 0;
 
         foreach ($entities as $entity) {
             $queued  = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'queued'));
@@ -318,7 +321,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
             }
         }
 
-        return $entities;
+        return !empty($args['with_total_count'])
+            ? ['results' => $entities, 'count' => $count]
+            : $entities;
     }
 
     /**
