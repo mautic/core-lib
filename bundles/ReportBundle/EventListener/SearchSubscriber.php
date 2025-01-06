@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\ReportBundle\EventListener;
 
 use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\Event as MauticEvents;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\LeadBundle\EventListener\GlobalSearchTrait;
 use Mautic\ReportBundle\Model\ReportModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Twig\Environment;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
+    use GlobalSearchTrait;
+
     public function __construct(
         private UserHelper $userHelper,
         private ReportModel $reportModel,
@@ -30,56 +35,47 @@ class SearchSubscriber implements EventSubscriberInterface
 
     public function onGlobalSearch(MauticEvents\GlobalSearchEvent $event): void
     {
-        $str = $event->getSearchString();
-        if (empty($str)) {
+        $searchString = $event->getSearchString();
+        if (empty($searchString)) {
             return;
         }
 
-        $filter = ['string' => $str, 'force' => []];
+        $filter = ['string' => $searchString, 'force' => []];
 
         $permissions = $this->security->isGranted(
             ['report:reports:viewown', 'report:reports:viewother'],
             'RETURN_ARRAY'
         );
-        if ($permissions['report:reports:viewown'] || $permissions['report:reports:viewother']) {
-            if (!$permissions['report:reports:viewother']) {
-                $filter['force'][] = [
-                    'column' => 'IDENTITY(r.createdBy)',
-                    'expr'   => 'eq',
-                    'value'  => $this->userHelper->getUser()->getId(),
-                ];
-            }
 
-            $items = $this->reportModel->getEntities(
-                [
-                    'limit'  => 5,
-                    'filter' => $filter,
-                ]);
-
-            $count = count($items);
-            if ($count > 0) {
-                $results = [];
-
-                foreach ($items as $item) {
-                    $results[] = $this->twig->render(
-                        '@MauticReport/SubscribedEvents/Search/global.html.twig',
-                        ['item' => $item]
-                    );
-                }
-                if ($count > 5) {
-                    $results[] = $this->twig->render(
-                        '@MauticReport/SubscribedEvents/Search/global.html.twig',
-                        [
-                            'showMore'     => true,
-                            'searchString' => $str,
-                            'remaining'    => ($count - 5),
-                        ]
-                    );
-                }
-                $results['count'] = $count;
-                $event->addResults('mautic.report.reports', $results);
-            }
+        // Check permissions
+        if (!$permissions['report:reports:viewown'] && !$permissions['report:reports:viewother']) {
+            return;
         }
+
+        if (!$permissions['report:reports:viewother']) {
+            $filter['force'][] = [
+                'column' => 'IDENTITY(r.createdBy)',
+                'expr'   => 'eq',
+                'value'  => $this->userHelper->getUser()->getId(),
+            ];
+        }
+
+        $items = $this->reportModel->getEntities([
+            'filter'           => $filter,
+            'start'            => 0,
+            'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
+            'ignore_paginator' => true,
+            'with_total_count' => true,
+        ]);
+
+        $this->addGlobalSearchResults(
+            $this->twig,
+            $event,
+            $items,
+            'mautic.report.reports',
+            '@MauticReport/SubscribedEvents/Search/global.html.twig',
+            ['canEdit' => $this->security->isGranted('point:points:edit')]
+        );
     }
 
     public function onBuildCommandList(MauticEvents\CommandListEvent $event): void
