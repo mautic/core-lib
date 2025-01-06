@@ -12,14 +12,18 @@ class FormRepository extends CommonRepository
 {
     public function getEntities(array $args = [])
     {
-        // use a subquery to get a count of submissions otherwise doctrine will not pull all of the results
-        $sq = $this->_em->createQueryBuilder()
-            ->select('count(fs.id)')
-            ->from(Submission::class, 'fs')
-            ->where('fs.form = f');
-
         $q = $this->createQueryBuilder('f');
-        $q->select('f, ('.$sq->getDql().') as submission_count');
+        $q->select('f');
+
+        if (empty($args['with_total_count'])) {
+            // use a subquery to get a count of submissions otherwise doctrine will not pull all of the results
+            $sq = $this->_em->createQueryBuilder()
+                ->select('count(fs.id)')
+                ->from(Submission::class, 'fs')
+                ->where('fs.form = f');
+
+            $q->addSelect('('.$sq->getDql().') as submission_count');
+        }
         $q->leftJoin('f.category', 'c');
 
         $args['qb'] = $q;
