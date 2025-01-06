@@ -10,6 +10,8 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\DBAL\Query\QueryBuilder as DbalQueryBuilder;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -338,7 +340,7 @@ class CommonRepository extends ServiceEntityRepository
      *
      * @param array<string,mixed> $args
      *
-     * @return object[]|array<int,mixed>|iterable<object>|\Doctrine\ORM\Internal\Hydration\IterableResult<object>|Paginator<object>|SimplePaginator<mixed>
+     * @return object[]|array<int,mixed>|array<string, object[]>|iterable<object>|IterableResult<object>|Paginator<object>|SimplePaginator<mixed>
      */
     public function getEntities(array $args = [])
     {
@@ -353,7 +355,7 @@ class CommonRepository extends ServiceEntityRepository
                 ->from($this->getEntityName(), $alias, "{$alias}.id");
 
             if ($this->getClassMetadata()->hasAssociation('category')) {
-                $q->leftJoin($this->getTableAlias().'.category', 'cat');
+                $q->leftJoin($alias.'.category', 'cat');
             }
         }
 
@@ -372,31 +374,47 @@ class CommonRepository extends ServiceEntityRepository
             $hydrationMode = constant('\\Doctrine\\ORM\\Query::'.strtoupper($args['hydration_mode']));
             $query->setHydrationMode($hydrationMode);
         } else {
-            $hydrationMode = Query::HYDRATE_OBJECT;
+            $hydrationMode = AbstractQuery::HYDRATE_OBJECT;
+        }
+
+        // Handle total count if requested
+        $totalCount = null;
+        if (!empty($args['with_total_count'])) {
+            $countQuery = clone $q;
+            $countQuery->select("COUNT($alias.id)");
+            $countQuery->resetDQLPart('orderBy'); // Remove any orderBy clause as it is not relevant for count queries
+            $totalCount = (int) $countQuery->getQuery()->getSingleScalarResult();
         }
 
         if (array_key_exists('iterable_mode', $args) && true === $args['iterable_mode']) {
             // Hydrate one by one
-            return $query->toIterable([], $hydrationMode);
-        }
-
-        if (!empty($args['iterator_mode'])) {
+            $results = $query->toIterable([], $hydrationMode);
+        } elseif (!empty($args['iterator_mode'])) {
             // When you remove the following, please search for the "iterator_mode" in the project.
             @\trigger_error('Using "iterator_mode" is deprecated. Use "iterable_mode" instead. Usage of "iterator_mode" will be removed in 6.0.', \E_USER_DEPRECATED);
-
-            return $query->iterate(null, $hydrationMode);
+            $results = $query->iterate(null, $hydrationMode);
         } elseif (empty($args['ignore_paginator'])) {
             if (!empty($args['use_simple_paginator'])) {
                 // FAST paginator that can handle only simple queries using no joins or ManyToOne joins.
-                return new SimplePaginator($query);
+                $results = new SimplePaginator($query);
             } else {
                 // SLOW paginator that can handle complex queries using oneToMany/ManyToMany joins.
-                return new Paginator($query, false);
+                $results = new Paginator($query, false);
             }
         } else {
             // All results
-            return $query->getResult($hydrationMode);
+            $results = $query->getResult($hydrationMode);
         }
+
+        // Return results with total count if requested
+        if (!empty($args['with_total_count'])) {
+            return [
+                'results' => $results,
+                'count'   => $totalCount,
+            ];
+        }
+
+        return $results;
     }
 
     /**

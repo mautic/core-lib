@@ -24,6 +24,7 @@ use Twig\Error\SyntaxError;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
+    use GlobalSearchTrait;
     private \Mautic\LeadBundle\Entity\LeadRepository $leadRepo;
 
     public function __construct(
@@ -84,7 +85,9 @@ class SearchSubscriber implements EventSubscriberInterface
                     'filter'         => $filter,
                     'withTotalCount' => true,
                 ]);
+
             $this->addGlobalSearchResults(
+                $this->twig,
                 $event,
                 $results,
                 '@MauticLead/SubscribedEvents/Search/global.html.twig',
@@ -114,16 +117,16 @@ class SearchSubscriber implements EventSubscriberInterface
                 $filter['force'] .= " $mine";
             }
 
-            $results['results'] = $this->listModel->getEntities(
-                [
-                    'start'            => 0,
-                    'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
-                    'filter'           => $filter,
-                    'ignore_paginator' => true,
-                ]);
-            $results['count'] = count($results['results']);
+            $results = $this->listModel->getEntities([
+                'start'            => 0,
+                'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
+                'filter'           => $filter,
+                'ignore_paginator' => true,
+                'with_total_count' => true,
+            ]);
 
             $this->addGlobalSearchResults(
+                $this->twig,
                 $event,
                 $results,
                 '@MauticLead/SubscribedEvents/Search/global_segment.html.twig',
@@ -160,6 +163,7 @@ class SearchSubscriber implements EventSubscriberInterface
                 ]);
 
             $this->addGlobalSearchResults(
+                $this->twig,
                 $event,
                 $results,
                 '@MauticLead/SubscribedEvents/Search/global_company.html.twig',
@@ -529,38 +533,5 @@ class SearchSubscriber implements EventSubscriberInterface
         $event->setReturnParameters(true); // replace search string
         $event->setStrict(true);           // don't use like
         $event->setSearchStatus(true);     // finish searching
-    }
-
-    /**
-     * @param array<string, int|array<int, object> $results
-     *
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    private function addGlobalSearchResults(
-        MauticEvents\GlobalSearchEvent $event,
-        array $results,
-        string $template,
-        string $resultKey
-    ): void {
-        if ($results['count'] > 0) {
-            $items           = $results['results'];
-            $renderedResults = array_map(
-                fn ($item) => $this->twig->render($template, ['item' => $item]),
-                $items
-            );
-
-            if ($results['count'] > MauticEvents\GlobalSearchEvent::RESULTS_LIMIT) {
-                $renderedResults[] = $this->twig->render($template, [
-                    'showMore'     => true,
-                    'searchString' => $event->getSearchString(),
-                    'remaining'    => $results['count'] - MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
-                ]);
-            }
-
-            $renderedResults['count'] = $results['count'];
-            $event->addResults($resultKey, $renderedResults);
-        }
     }
 }
