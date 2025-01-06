@@ -53,7 +53,7 @@ class SearchSubscriber implements EventSubscriberInterface
 
             $forms = $this->formModel->getEntities(
                 [
-                    'filter' => $filter,
+                    'filter'           => $filter,
                     'start'            => 0,
                     'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
                     'ignore_paginator' => true,

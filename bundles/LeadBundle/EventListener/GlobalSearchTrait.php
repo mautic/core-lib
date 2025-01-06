@@ -20,7 +20,7 @@ trait GlobalSearchTrait
         array $results,
         string $resultKey,
         string $template,
-        array $templateParameters = []
+        array $templateParameters = [],
     ): void {
         $count = $results['count'] ? (int) $results['count'] : 0;
 
