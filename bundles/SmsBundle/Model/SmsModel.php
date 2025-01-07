@@ -154,7 +154,9 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface
      */
     public function getEntities(array $args = [])
     {
-        $entities = parent::getEntities($args);
+        $entitiesResult = parent::getEntities($args);
+        $entities       = !empty($args['with_total_count']) ? $entitiesResult['results'] : $entitiesResult;
+        $count          = !empty($args['with_total_count']) ? $entitiesResult['count'] : 0;
 
         foreach ($entities as $entity) {
             $pending = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'sms', $entity->getId(), 'pending'));
@@ -164,7 +166,9 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface
             }
         }
 
-        return $entities;
+        return !empty($args['with_total_count'])
+            ? ['results' => $entities, 'count' => $count]
+            : $entities;
     }
 
     /**
