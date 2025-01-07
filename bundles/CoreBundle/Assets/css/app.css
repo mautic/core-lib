@@ -5248,9 +5248,6 @@ a.media {
   transition: var(--transition-all-productive);
   outline: 2px solid transparent;
 }
-.list-group-item:has(a:focus) {
-  outline: 2px solid var(--focus);
-}
 .list-group-item > a,
 .list-group-item > label,
 .list-group-item .list-group-item-text {
@@ -5974,7 +5971,6 @@ label {
 }
 .control-label {
   color: var(--text-secondary);
-  white-space: nowrap;
 }
 .control-label.text-left {
   text-align: left;
@@ -6045,7 +6041,6 @@ input[style]:hover {
 .form-control + .help-text,
 .form-control + p {
   margin-top: 5px;
-  font-size: var(--utility-01);
 }
 .form-control.not-chosen {
   padding: var(--spacing-01) var(--spacing-04);
@@ -8580,6 +8575,10 @@ lesshat-selector { -lh-property: 0 ;
 .pi-md {
   padding-inline: var(--spacing-05) !important;
 }
+.mi-16,
+.mi-md {
+  margin-inline: var(--spacing-05) !important;
+}
 .w-44 {
   width: 44px;
 }
@@ -9643,6 +9642,9 @@ a.inline-token .text-muted {
   margin-block: 20px;
   margin-block-end: 25px;
 }
+.accordion-content--slim {
+  --layout-density-padding-inline-local: 0px;
+}
 .tile {
   --layout-density-padding-inline-local: 16px;
   position: relative;
@@ -9704,10 +9706,6 @@ a.inline-token .text-muted {
 }
 .tile * {
   box-sizing: inherit;
-}
-.tile hr {
-  margin-inline: calc(-1 * var(--layout-density-padding-inline-local));
-  width: auto;
 }
 .nav-tabs-contained + .tab-content .tile {
   background-color: var(--layer-02);
@@ -10368,4 +10366,7 @@ code:hover > .copy-icon {
 .gsearch--results-item:hover,
 .gsearch--results-item a:hover {
   color: var(--text-primary);
+}
+.gsearch--results-item:has(a:focus) {
+  outline: 2px solid var(--focus);
 }
