@@ -40,16 +40,17 @@ class SearchSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $filter = ['string' => $str, 'force' => []];
-
         $permissions = $this->security->isGranted(
             ['asset:assets:viewown', 'asset:assets:viewother'],
             'RETURN_ARRAY'
         );
+
         if ($permissions['asset:assets:viewown'] || $permissions['asset:assets:viewother']) {
+            $filter = ['string' => $str, 'force' => []];
+
             if (!$permissions['asset:assets:viewother']) {
                 $filter['force'][] = [
-                    'column' => 'IDENTITY(a.createdBy)',
+                    'column' => 'a.createdBy',
                     'expr'   => 'eq',
                     'value'  => $this->userHelper->getUser()->getId(),
                 ];

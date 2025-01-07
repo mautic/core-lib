@@ -48,7 +48,7 @@ class SearchSubscriber implements EventSubscriberInterface
         if ($permissions['email:emails:viewown'] || $permissions['email:emails:viewother']) {
             if (!$permissions['email:emails:viewother']) {
                 $filter['force'][] = [
-                    'column' => 'IDENTITY(e.createdBy)',
+                    'column' => 'e.createdBy',
                     'expr'   => 'eq',
                     'value'  => $this->userHelper->getUser()->getId(),
                 ];
