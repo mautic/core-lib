@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Mautic\CoreBundle\Exception\FileNotFoundException;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
-use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\CoreBundle\Model\AbstractCommonModel;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Psr\Log\LoggerInterface;
@@ -14,7 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @deprecated 2.0 to be removed in 3.0
@@ -206,11 +204,6 @@ class MauticFactory
         }
 
         return $this->container->get('monolog.logger.mautic');
-    }
-
-    public function getKernel(): ?KernelInterface
-    {
-        return $this->container->get('kernel');
     }
 
     public function serviceExists($service): bool
