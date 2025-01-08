@@ -8,6 +8,7 @@ use Mautic\ChannelBundle\Model\MessageModel;
 use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\CoreBundle\Service\GlobalSearch;
 use Mautic\LeadBundle\EventListener\GlobalSearchTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Twig\Environment;
@@ -20,6 +21,7 @@ class SearchSubscriber implements EventSubscriberInterface
         private MessageModel $model,
         private CorePermissions $security,
         private Environment $twig,
+        private GlobalSearch $globalSearch
     ) {
     }
 
@@ -31,6 +33,24 @@ class SearchSubscriber implements EventSubscriberInterface
     }
 
     public function onGlobalSearch(GlobalSearchEvent $event): void
+    {
+        $searchString = $event->getSearchString();
+        if (empty($searchString)) {
+            return;
+        }
+
+        $results = $this->globalSearch->performSearch(
+            $searchString,
+            $this->model,
+            '@MauticChannel/SubscribedEvents/Search/global.html.twig',
+        );
+
+        if (!empty($results)) {
+            $event->addResults('mautic.messages.header', $results);
+        }
+    }
+
+    public function onGlobalSearchOrg(GlobalSearchEvent $event): void
     {
         if (!$this->security->isGranted('channel:messages:view')) {
             return;
