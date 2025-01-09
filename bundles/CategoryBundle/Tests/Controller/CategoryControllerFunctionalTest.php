@@ -78,7 +78,7 @@ class CategoryControllerFunctionalTest extends MauticMysqlTestCase
         $crawler->addHtmlContent($html);
         $saveButton = $crawler->selectButton('category_form[buttons][save]');
         $form       = $saveButton->form();
-        $form['category_form[bundle]']->setValue('category');
+        $form['category_form[bundle]']->setValue('global');
         $form['category_form[title]']->setValue('Test');
         $form['category_form[isPublished]']->setValue('1');
         $form['category_form[inForm]']->setValue('1');
