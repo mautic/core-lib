@@ -219,7 +219,7 @@ class CategoryController extends AbstractFormController
         $cancelled  = $valid  = false;
         $method     = $request->getMethod();
         $inForm     = $this->getInFormValue($request, $method);
-        $showSelect = $request->get('show_bundle_select', false);
+        $showSelect = $request->get('show_bundle_select', true);
 
         // not found
         if (!$this->security->isGranted($model->getPermissionBase($bundle).':create')) {
