@@ -107,8 +107,10 @@ class AssetModel extends FormModel
     }
 
     /**
-     * @param string $code
-     * @param array  $systemEntry
+     * @param Asset               $asset
+     * @param ?Request            $request
+     * @param string              $code
+     * @param array<string,mixed> $systemEntry
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Exception
