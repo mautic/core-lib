@@ -19,7 +19,7 @@ final class AssetDownloadFunctionalTest extends MauticMysqlTestCase
         // It happened only if the device was already tracked.
         $this->client->request(Request::METHOD_GET, '/asset/unicorn'); // returns 404 correctly
         $this->client->request(Request::METHOD_GET, '/asset/unicorn'); // returned 500 but it should return 404
-        
+
         Assert::assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 }
