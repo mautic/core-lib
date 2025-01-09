@@ -7,6 +7,7 @@ namespace Mautic\LeadBundle\EventListener;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
 use Twig\Environment;
 
+// @todo, this should be removed when refactoring is complete.
 trait GlobalSearchTrait
 {
     /**
