@@ -8,7 +8,6 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\CoreBundle\Translation\Translator;
-use Mautic\CoreBundle\Twig\Helper\SlotsHelper;
 use Mautic\EmailBundle\Event\EmailBuilderEvent;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\EmailBundle\Helper\FromEmailHelper;
@@ -305,7 +304,6 @@ class OwnerSubscriberTest extends TestCase
         /** @var MockObject&Environment $twig */
         $twig = $this->createMock(Environment::class);
 
-        $slotsHelper = new SlotsHelper();
         $themeHelper = $this->createMock(ThemeHelper::class);
         $themeHelper->expects(self::never())
             ->method('checkForTwigTemplate');
@@ -324,7 +322,6 @@ class OwnerSubscriberTest extends TestCase
             $router,
             $twig,
             $themeHelper,
-            $slotsHelper,
             $this->createMock(PathsHelper::class),
             $this->createMock(EventDispatcherInterface::class),
             $requestStack,
