@@ -6,6 +6,7 @@ namespace Mautic\ChannelBundle\EventListener;
 
 use Mautic\ChannelBundle\Model\MessageModel;
 use Mautic\CoreBundle\CoreEvents;
+use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
 use Mautic\CoreBundle\Service\GlobalSearch;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -28,9 +29,9 @@ class SearchSubscriber implements EventSubscriberInterface
     public function onGlobalSearch(GlobalSearchEvent $event): void
     {
         $results = $this->globalSearch->performSearch(
-            $event->getSearchString(),
+            new GlobalSearchFilterDTO($event->getSearchString()),
             $this->model,
-            '@MauticChannel/SubscribedEvents/Search/global.html.twig',
+            '@MauticChannel/SubscribedEvents/Search/global.html.twig'
         );
 
         if (!empty($results)) {

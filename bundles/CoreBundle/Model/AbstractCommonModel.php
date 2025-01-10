@@ -5,6 +5,7 @@ namespace Mautic\CoreBundle\Model;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Mautic\CoreBundle\Doctrine\Paginator\SimplePaginator;
+use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Helper\ClickthroughHelper;
@@ -247,9 +248,9 @@ abstract class AbstractCommonModel implements MauticModelInterface
         return $this->em->getRepository($class);
     }
 
-    public function getEntitiesForGlobalSearch(string $searchString): ?Paginator
+    public function getEntitiesForGlobalSearch(GlobalSearchFilterDTO $filterDTO): ?Paginator
     {
-        $filter = ['string' => $searchString, 'force' => []];
+        $filter = $filterDTO->getFilters();
 
         if (!$this->canViewOthersEntity()) {
             $filter['force'][] = [

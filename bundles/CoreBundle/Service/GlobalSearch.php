@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Mautic\CoreBundle\Service;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
-use Mautic\CoreBundle\Model\GlobalSearchModalInterface;
+use Mautic\CoreBundle\Model\GlobalSearchInterface;
 use Twig\Environment;
 
 class GlobalSearch
@@ -17,20 +18,26 @@ class GlobalSearch
     }
 
     /**
+     * @param array<mixed> $additionalSearchFilters
+     *
      * @return array<int, string>
      */
     public function performSearch(
-        string $searchString,
-        GlobalSearchModalInterface $model,
-        string $template,
+        GlobalSearchFilterDTO $filterDTO,
+        GlobalSearchInterface $model,
+        string                $template,
     ): array {
-        if (empty($searchString) || (!$model->canViewOwnEntity() && !$model->canViewOthersEntity())) {
+        if (empty($filterDTO->getSearchString()) || (!$model->canViewOwnEntity() && !$model->canViewOthersEntity())) {
             return [];
         }
 
-        $entities = $model->getEntitiesForGlobalSearch($searchString);
+        $entities = $model->getEntitiesForGlobalSearch($filterDTO);
 
-        return $this->processResults($entities, $searchString, $template);
+        if (empty($entities)) {
+            return [];
+        }
+
+        return $this->processResults($entities, $filterDTO->getSearchString(), $template);
     }
 
     /**
