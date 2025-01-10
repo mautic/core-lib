@@ -4,7 +4,6 @@ namespace Mautic\PageBundle\EventListener;
 
 use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Helper\BuilderTokenHelperFactory;
-use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Event\EmailBuilderEvent;
 use Mautic\EmailBundle\Event\EmailSendEvent;
@@ -56,7 +55,6 @@ final class BuilderSubscriber implements EventSubscriberInterface
     private array $renderedContentCache = [];
 
     public function __construct(
-        private CorePermissions $security,
         private TokenHelper $tokenHelper,
         private IntegrationHelper $integrationHelper,
         private PageModel $pageModel,
