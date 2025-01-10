@@ -7,18 +7,14 @@ namespace Mautic\NotificationBundle\EventListener;
 use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Event as MauticEvents;
-use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Service\GlobalSearch;
 use Mautic\NotificationBundle\Model\NotificationModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Twig\Environment;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private NotificationModel $model,
-        private CorePermissions $security,
-        private Environment $twig,
         private GlobalSearch $globalSearch,
     ) {
     }
