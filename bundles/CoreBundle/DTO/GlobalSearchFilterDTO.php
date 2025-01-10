@@ -6,16 +6,13 @@ namespace Mautic\CoreBundle\DTO;
 
 final class GlobalSearchFilterDTO
 {
-    private string $searchString;
-
     /**
      * @var array<int|string, mixed>
      */
     private array $filters = [];
 
-    public function __construct(string $searchString)
+    public function __construct(private string $searchString)
     {
-        $this->searchString = $searchString;
     }
 
     public function getSearchString(): string

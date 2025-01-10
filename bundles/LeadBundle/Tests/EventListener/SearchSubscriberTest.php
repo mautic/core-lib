@@ -6,6 +6,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\CoreBundle\Service\GlobalSearch;
 use Mautic\CoreBundle\Test\Doctrine\MockedConnectionTrait;
 use Mautic\EmailBundle\Entity\EmailRepository;
 use Mautic\LeadBundle\Entity\LeadRepository;
@@ -39,6 +40,7 @@ class SearchSubscriberTest extends TestCase
         $translator        = $this->createMock(TranslatorInterface::class);
         $security          = $this->createMock(CorePermissions::class);
         $twig              = $this->createMock(Environment::class);
+        $globalSearch      = $this->createMock(GlobalSearch::class);
 
         $contactRepository->method('applySearchQueryRelationship')
             ->willReturnCallback(
@@ -97,7 +99,8 @@ class SearchSubscriberTest extends TestCase
             $emailRepository,
             $translator,
             $security,
-            $twig
+            $twig,
+            $globalSearch
         );
 
         $dispatcher = new EventDispatcher();

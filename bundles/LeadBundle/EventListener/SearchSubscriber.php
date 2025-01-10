@@ -103,7 +103,7 @@ class SearchSubscriber implements EventSubscriberInterface
         $results = $this->globalSearch->performSearch(
             new GlobalSearchFilterDTO($event->getSearchString()),
             $this->listModel,
-            '@MauticLead/SubscribedEvents/Search/global_segment.html.twig', []
+            '@MauticLead/SubscribedEvents/Search/global_segment.html.twig'
         );
 
         if (!empty($results)) {
