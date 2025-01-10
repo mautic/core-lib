@@ -4,17 +4,13 @@ namespace Mautic\CoreBundle\Factory;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
-use Mautic\CoreBundle\Exception\FileNotFoundException;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
-use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\CoreBundle\Model\AbstractCommonModel;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @deprecated 2.0 to be removed in 3.0
@@ -66,11 +62,6 @@ class MauticFactory
     public function getDatabase()
     {
         return $this->doctrine->getConnection();
-    }
-
-    public function getDispatcher(): ?EventDispatcherInterface
-    {
-        return $this->container->get('event_dispatcher');
     }
 
     /**
@@ -132,35 +123,6 @@ class MauticFactory
     }
 
     /**
-     * returns a ThemeHelper instance for the given theme.
-     *
-     * @param string $theme
-     * @param bool   $throwException
-     *
-     * @return mixed
-     *
-     * @throws FileNotFoundException
-     * @throws \Exception
-     */
-    public function getTheme($theme = 'current', $throwException = false)
-    {
-        return $this->container->get('mautic.helper.theme')->getTheme($theme, $throwException);
-    }
-
-    /**
-     * Gets a list of installed themes.
-     *
-     * @param string $specificFeature limits list to those that support a specific feature
-     * @param bool   $extended        returns extended information about the themes
-     *
-     * @return array
-     */
-    public function getInstalledThemes($specificFeature = 'all', $extended = false)
-    {
-        return $this->container->get('mautic.helper.theme')->getInstalledThemes($specificFeature, $extended);
-    }
-
-    /**
      * Returns MailHelper wrapper for Email via $helper->message.
      *
      * @param bool $cleanSlate False to preserve current settings, i.e. to process batched emails
@@ -206,11 +168,6 @@ class MauticFactory
         }
 
         return $this->container->get('monolog.logger.mautic');
-    }
-
-    public function getKernel(): ?KernelInterface
-    {
-        return $this->container->get('kernel');
     }
 
     public function serviceExists($service): bool

@@ -22,6 +22,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 
 class TokenSubscriberTest extends \PHPUnit\Framework\TestCase
@@ -78,6 +79,7 @@ class TokenSubscriberTest extends \PHPUnit\Framework\TestCase
             $twig,
             $themeHelper,
             $slotsHelper,
+            $this->createMock(EventDispatcherInterface::class)
         );
         $mailHelper->setTokens($tokens);
 

@@ -303,7 +303,7 @@ class PublicController extends CommonFormController
             // Use form specific template or system-wide default theme
             $template = $form->getTemplate() ?? $this->coreParametersHelper->get('theme');
             if (!empty($template)) {
-                $theme = $this->factory->getTheme($template);
+                $theme = $themeHelper->getTheme($template);
                 if ($theme->getTheme() != $template) {
                     $config = $theme->getConfig();
                     if (in_array('form', $config['features'])) {

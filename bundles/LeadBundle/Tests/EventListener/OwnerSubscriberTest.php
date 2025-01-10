@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
@@ -327,7 +328,8 @@ class OwnerSubscriberTest extends TestCase
             $router,
             $twig,
             $themeHelper,
-            $slotsHelper
+            $slotsHelper,
+            $this->createMock(EventDispatcherInterface::class)
         );
         $mailerHelper->setLead($lead);
 
