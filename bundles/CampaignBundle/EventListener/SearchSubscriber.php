@@ -6,20 +6,18 @@ namespace Mautic\CampaignBundle\EventListener;
 
 use Mautic\CampaignBundle\Model\CampaignModel;
 use Mautic\CoreBundle\CoreEvents;
+use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Event as MauticEvents;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\LeadBundle\EventListener\GlobalSearchTrait;
+use Mautic\CoreBundle\Service\GlobalSearch;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Twig\Environment;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
-    use GlobalSearchTrait;
-
     public function __construct(
         private CampaignModel $campaignModel,
         private CorePermissions $security,
-        private Environment $twig,
+        private GlobalSearch $globalSearch,
     ) {
     }
 
@@ -33,28 +31,15 @@ class SearchSubscriber implements EventSubscriberInterface
 
     public function onGlobalSearch(MauticEvents\GlobalSearchEvent $event): void
     {
-        if ($this->security->isGranted('campaign:campaigns:view')) {
-            $str = $event->getSearchString();
-            if (empty($str)) {
-                return;
-            }
+        $filterDTO = new GlobalSearchFilterDTO($event->getSearchString());
+        $results   = $this->globalSearch->performSearch(
+            $filterDTO,
+            $this->campaignModel,
+            '@MauticCampaign/SubscribedEvents/Search/global.html.twig'
+        );
 
-            $campaigns = $this->campaignModel->getEntities(
-                [
-                    'filter'           => $str,
-                    'start'            => 0,
-                    'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
-                    'ignore_paginator' => true,
-                    'with_total_count' => true,
-                ]);
-
-            $this->addGlobalSearchResults(
-                $this->twig,
-                $event,
-                $campaigns,
-                'mautic.campaign.campaigns',
-                '@MauticCampaign/SubscribedEvents/Search/global.html.twig'
-            );
+        if (!empty($results)) {
+            $event->addResults('mautic.campaign.campaigns', $results);
         }
     }
 
