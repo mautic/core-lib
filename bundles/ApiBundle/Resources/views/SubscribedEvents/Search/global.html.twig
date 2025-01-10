@@ -4,12 +4,8 @@
             <span>{{ 'mautic.core.search.more'|trans({'%count%' : remaining}) }}</span>
         </a>
     {% else %}
-        {% if canEdit %}
-            <a href="{{ url('mautic_client_action', {'objectAction' : 'edit', 'objectId' : item.getId()}) }}" data-toggle="ajax">
-                {{ item.getName() }}
-            </a>
-        {% else %}
-            <span>{{ item.getName() }}</span>
-        {% endif %}
+        <a href="{{ url('mautic_client_action', {'objectAction' : 'view', 'objectId' : item.getId()}) }}">
+            {{ item.getName() }}
+        </a>
     {% endif %}
 {% endblock %}

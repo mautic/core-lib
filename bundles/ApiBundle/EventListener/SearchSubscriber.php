@@ -6,20 +6,18 @@ namespace Mautic\ApiBundle\EventListener;
 
 use Mautic\ApiBundle\Model\ClientModel;
 use Mautic\CoreBundle\CoreEvents;
+use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Event as MauticEvents;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\LeadBundle\EventListener\GlobalSearchTrait;
+use Mautic\CoreBundle\Service\GlobalSearch;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Twig\Environment;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
-    use GlobalSearchTrait;
-
     public function __construct(
         private ClientModel $apiClientModel,
         private CorePermissions $security,
-        private Environment $twig,
+        private GlobalSearch $globalSearch,
     ) {
     }
 
@@ -33,29 +31,15 @@ class SearchSubscriber implements EventSubscriberInterface
 
     public function onGlobalSearch(MauticEvents\GlobalSearchEvent $event): void
     {
-        if ($this->security->isGranted('api:clients:view')) {
-            $str = $event->getSearchString();
-            if (empty($str)) {
-                return;
-            }
+        $filterDTO = new GlobalSearchFilterDTO($event->getSearchString());
+        $results   = $this->globalSearch->performSearch(
+            $filterDTO,
+            $this->apiClientModel,
+            '@MauticApi/SubscribedEvents/Search/global.html.twig'
+        );
 
-            $clients = $this->apiClientModel->getEntities(
-                [
-                    'filter'           => $str,
-                    'start'            => 0,
-                    'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
-                    'ignore_paginator' => true,
-                    'with_total_count' => true,
-                ]);
-
-            $this->addGlobalSearchResults(
-                $this->twig,
-                $event,
-                $clients,
-                'mautic.api.client.menu.index',
-                '@MauticApi/SubscribedEvents/Search/global.html.twig',
-                ['canEdit' => $this->security->isGranted('api:clients:edit')]
-            );
+        if (!empty($results)) {
+            $event->addResults('mautic.api.client.menu.index', $results);
         }
     }
 
