@@ -18,14 +18,12 @@ class GlobalSearch
     }
 
     /**
-     * @param array<mixed> $additionalSearchFilters
-     *
      * @return array<int, string>
      */
     public function performSearch(
         GlobalSearchFilterDTO $filterDTO,
         GlobalSearchInterface $model,
-        string                $template,
+        string $template,
     ): array {
         if (empty($filterDTO->getSearchString()) || (!$model->canViewOwnEntity() && !$model->canViewOthersEntity())) {
             return [];

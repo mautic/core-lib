@@ -30,12 +30,15 @@ final class GlobalSearchFilterDTO
     {
         $filter = [
             'string' => $this->searchString,
-            'force' => []
+            'force'  => [],
         ];
 
         return array_merge($filter, $this->filters);
     }
 
+    /**
+     * @param array<mixed> $filters
+     */
     public function setFilters(array $filters): self
     {
         $this->filters = $filters;
