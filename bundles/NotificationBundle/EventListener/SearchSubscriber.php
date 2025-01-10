@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Mautic\NotificationBundle\EventListener;
 
 use Mautic\CoreBundle\CoreEvents;
+use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Event as MauticEvents;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\CoreBundle\Service\GlobalSearch;
 use Mautic\LeadBundle\EventListener\GlobalSearchTrait;
 use Mautic\NotificationBundle\Model\NotificationModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -20,6 +22,7 @@ class SearchSubscriber implements EventSubscriberInterface
         private NotificationModel $model,
         private CorePermissions $security,
         private Environment $twig,
+        private GlobalSearch $globalSearch,
     ) {
     }
 
@@ -35,17 +38,8 @@ class SearchSubscriber implements EventSubscriberInterface
 
     public function onGlobalSearchWebNotification(MauticEvents\GlobalSearchEvent $event): void
     {
-        if (!$this->security->isGranted('notification:notifications:view')) {
-            return;
-        }
-
-        $searchString = $event->getSearchString();
-        if (empty($searchString)) {
-            return;
-        }
-
-        $filter = [
-            'string' => $searchString,
+        $filterDTO = new GlobalSearchFilterDTO($event->getSearchString());
+        $filterDTO->setFilters([
             'where'  => [
                 [
                     'expr' => 'eq',
@@ -53,39 +47,22 @@ class SearchSubscriber implements EventSubscriberInterface
                     'val'  => 0,
                 ],
             ],
-        ];
-
-        $items = $this->model->getEntities([
-            'filter'           => $filter,
-            'start'            => 0,
-            'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
-            'ignore_paginator' => true,
-            'with_total_count' => true,
         ]);
-
-        $this->addGlobalSearchResults(
-            $this->twig,
-            $event,
-            $items,
-            'mautic.notification.notification.header',
-            '@MauticNotification/SubscribedEvents/Search/global-web.html.twig',
-            ['canEdit' => $this->security->isGranted('notification:notifications:edit')]
+        $results = $this->globalSearch->performSearch(
+            $filterDTO,
+            $this->model,
+            '@MauticNotification/SubscribedEvents/Search/global-web.html.twig'
         );
+
+        if (!empty($results)) {
+            $event->addResults('mautic.notification.notification.header', $results);
+        }
     }
 
     public function onGlobalSearchMobileNotification(MauticEvents\GlobalSearchEvent $event): void
     {
-        if (!$this->security->isGranted('notification:notifications:view')) {
-            return;
-        }
-
-        $searchString = $event->getSearchString();
-        if (empty($searchString)) {
-            return;
-        }
-
-        $filter = [
-            'string' => $searchString,
+        $filterDTO = new GlobalSearchFilterDTO($event->getSearchString());
+        $filterDTO->setFilters([
             'where'  => [
                 [
                     'expr' => 'eq',
@@ -93,23 +70,15 @@ class SearchSubscriber implements EventSubscriberInterface
                     'val'  => 1,
                 ],
             ],
-        ];
-
-        $items = $this->model->getEntities([
-            'filter'           => $filter,
-            'start'            => 0,
-            'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
-            'ignore_paginator' => true,
-            'with_total_count' => true,
         ]);
-
-        $this->addGlobalSearchResults(
-            $this->twig,
-            $event,
-            $items,
-            'mautic.notification.mobile_notification.header',
-            '@MauticNotification/SubscribedEvents/Search/global-mobile.html.twig',
-            ['canEdit' => $this->security->isGranted('notification:notifications:edit')]
+        $results = $this->globalSearch->performSearch(
+            $filterDTO,
+            $this->model,
+            '@MauticNotification/SubscribedEvents/Search/global-mobile.html.twig'
         );
+
+        if (!empty($results)) {
+            $event->addResults('mautic.notification.mobile_notification.header', $results);
+        }
     }
 }

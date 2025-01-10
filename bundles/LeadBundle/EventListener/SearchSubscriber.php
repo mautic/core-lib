@@ -5,8 +5,10 @@ namespace Mautic\LeadBundle\EventListener;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Mautic\ChannelBundle\Entity\MessageQueue;
 use Mautic\CoreBundle\CoreEvents;
+use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Event as MauticEvents;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\CoreBundle\Service\GlobalSearch;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\EmailRepository;
 use Mautic\LeadBundle\Event\LeadBuildSearchEvent;
@@ -14,7 +16,6 @@ use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Model\ListModel;
-use Mautic\LeadBundle\Security\Permissions\LeadPermissions;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -35,6 +36,7 @@ class SearchSubscriber implements EventSubscriberInterface
         private TranslatorInterface $translator,
         private CorePermissions $security,
         private Environment $twig,
+        private GlobalSearch $globalSearch,
     ) {
         $this->leadRepo        = $leadModel->getRepository();
     }
@@ -98,40 +100,14 @@ class SearchSubscriber implements EventSubscriberInterface
 
     public function onGlobalSearchForSegments(MauticEvents\GlobalSearchEvent $event): void
     {
-        $str = $event->getSearchString();
-        if (empty($str)) {
-            return;
-        }
-
-        $mine   = $this->translator->trans('mautic.core.searchcommand.ismine');
-        $filter = ['string' => $str, 'force' => ''];
-
-        $permissions = $this->security->isGranted(
-            [LeadPermissions::LISTS_VIEW_OWN, LeadPermissions::LISTS_VIEW_OTHER],
-            'RETURN_ARRAY'
+        $results = $this->globalSearch->performSearch(
+            new GlobalSearchFilterDTO($event->getSearchString()),
+            $this->listModel,
+            '@MauticLead/SubscribedEvents/Search/global_segment.html.twig', []
         );
 
-        if ($permissions[LeadPermissions::LISTS_VIEW_OWN] || $permissions[LeadPermissions::LISTS_VIEW_OTHER]) {
-            // only show own leads if the user does not have permission to view others
-            if (!$permissions[LeadPermissions::LISTS_VIEW_OTHER]) {
-                $filter['force'] .= " $mine";
-            }
-
-            $results = $this->listModel->getEntities([
-                'start'            => 0,
-                'limit'            => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
-                'filter'           => $filter,
-                'ignore_paginator' => true,
-                'with_total_count' => true,
-            ]);
-
-            $this->addGlobalSearchResults(
-                $this->twig,
-                $event,
-                $results,
-                'mautic.segment.segment',
-                '@MauticLead/SubscribedEvents/Search/global_segment.html.twig'
-            );
+        if (!empty($results)) {
+            $event->addResults('mautic.segment.segment', $results);
         }
     }
 
@@ -147,7 +123,7 @@ class SearchSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $filter    = ['string' => $str, 'force' => ''];
+        $filter = ['string' => $str, 'force' => ''];
 
         $permissions = $this->security->isGranted(
             ['lead:leads:viewown', 'lead:leads:viewother'],
