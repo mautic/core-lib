@@ -249,7 +249,7 @@ class PublicController extends AbstractFormController
                  */
                 $template = $entity->getTemplate();
                 // all the checks pass so display the content
-                $slots   = $this->factory->getTheme($template)->getSlots('page');
+                $slots   = $themeHelper->getTheme($template)->getSlots('page');
                 $content = $entity->getContent();
 
                 $this->processSlots($assetsHelper, $slotsHelper, $slots, $entity);
@@ -359,7 +359,7 @@ class PublicController extends AbstractFormController
         if (empty($content) && !empty($BCcontent)) {
             $template = $page->getTemplate();
             // all the checks pass so display the content
-            $slots   = $this->factory->getTheme($template)->getSlots('page');
+            $slots   = $themeHelper->getTheme($template)->getSlots('page');
             $content = $page->getContent();
 
             $this->processSlots($assetsHelper, $slotsHelper, $slots, $page);
