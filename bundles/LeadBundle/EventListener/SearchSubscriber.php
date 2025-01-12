@@ -6,7 +6,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Mautic\ChannelBundle\Entity\MessageQueue;
 use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
-use Mautic\CoreBundle\Event as MauticEvents;
+use Mautic\CoreBundle\Event\CommandListEvent;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Service\GlobalSearch;
@@ -54,7 +54,7 @@ class SearchSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onGlobalSearchForContacts(MauticEvents\GlobalSearchEvent $event): void
+    public function onGlobalSearchForContacts(GlobalSearchEvent $event): void
     {
         $str = $event->getSearchString();
         if (empty($str)) {
@@ -83,7 +83,7 @@ class SearchSubscriber implements EventSubscriberInterface
 
             $results = $this->leadModel->getEntities(
                 [
-                    'limit'          => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
+                    'limit'          => GlobalSearchEvent::RESULTS_LIMIT,
                     'filter'         => $filter,
                     'withTotalCount' => true,
                 ]);
@@ -98,7 +98,7 @@ class SearchSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onGlobalSearchForSegments(MauticEvents\GlobalSearchEvent $event): void
+    public function onGlobalSearchForSegments(GlobalSearchEvent $event): void
     {
         $results = $this->globalSearch->performSearch(
             new GlobalSearchFilterDTO($event->getSearchString()),
@@ -116,7 +116,7 @@ class SearchSubscriber implements EventSubscriberInterface
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function onGlobalSearchForCompanies(MauticEvents\GlobalSearchEvent $event): void
+    public function onGlobalSearchForCompanies(GlobalSearchEvent $event): void
     {
         $str = $event->getSearchString();
         if (empty($str)) {
@@ -133,7 +133,7 @@ class SearchSubscriber implements EventSubscriberInterface
         if ($permissions['lead:leads:viewown'] || $permissions['lead:leads:viewother']) {
             $results = $this->companyModel->getEntities(
                 [
-                    'limit'          => MauticEvents\GlobalSearchEvent::RESULTS_LIMIT,
+                    'limit'          => GlobalSearchEvent::RESULTS_LIMIT,
                     'filter'         => $filter,
                     'withTotalCount' => true,
                 ]);
@@ -148,7 +148,7 @@ class SearchSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onBuildCommandList(MauticEvents\CommandListEvent $event): void
+    public function onBuildCommandList(CommandListEvent $event): void
     {
         if ($this->security->isGranted(['lead:leads:viewown', 'lead:leads:viewother'], 'MATCH_ONE')) {
             $event->addCommands(
