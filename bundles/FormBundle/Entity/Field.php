@@ -1021,11 +1021,6 @@ class Field
         $this->leadField = null;
     }
 
-    public function isReadOnly(): bool
-    {
-        return $this->isReadOnly;
-    }
-
     public function isAutoFillReadOnly(): bool
     {
         if ($this->isAutoFill && $this->isReadOnly) {

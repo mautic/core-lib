@@ -50,6 +50,9 @@ final class AutoFillReadOnlyFormSubmissionTest extends MauticMysqlTestCase
         $this->assertSame($expected['isReadOnly'], $formValues['formfield']['isReadOnly']);
     }
 
+    /**
+     * @return iterable<string, array<int, array<string, bool|string>>>
+     */
     public function dataForReadOnlyConfigurationSetting(): iterable
     {
         yield 'When field set to read only' => [
