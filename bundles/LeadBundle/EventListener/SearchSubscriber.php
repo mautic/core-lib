@@ -7,6 +7,7 @@ use Mautic\ChannelBundle\Entity\MessageQueue;
 use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Event as MauticEvents;
+use Mautic\CoreBundle\Event\GlobalSearchEvent;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Service\GlobalSearch;
 use Mautic\EmailBundle\Entity\Email;
@@ -25,7 +26,6 @@ use Twig\Error\SyntaxError;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
-    use GlobalSearchTrait;
     private \Mautic\LeadBundle\Entity\LeadRepository $leadRepo;
 
     public function __construct(
@@ -509,5 +509,40 @@ class SearchSubscriber implements EventSubscriberInterface
         $event->setReturnParameters(true); // replace search string
         $event->setStrict(true);           // don't use like
         $event->setSearchStatus(true);     // finish searching
+    }
+
+    /**
+     * @param array<string, mixed> $results
+     * @param array<string, mixed> $templateParameters
+     */
+    private function addGlobalSearchResults(
+        Environment $twig,
+        GlobalSearchEvent $event,
+        array $results,
+        string $resultKey,
+        string $template,
+        array $templateParameters = [],
+    ): void {
+        $count = $results['count'] ? (int) $results['count'] : 0;
+
+        if (0 === $count) {
+            return;
+        }
+
+        $renderedResults = array_map(
+            fn ($item) => $twig->render($template, array_merge(['item' => $item], $templateParameters)),
+            $results['results']
+        );
+
+        if ($count > GlobalSearchEvent::RESULTS_LIMIT) {
+            $renderedResults[] = $twig->render($template, [
+                'showMore'     => true,
+                'searchString' => $event->getSearchString(),
+                'remaining'    => $count - GlobalSearchEvent::RESULTS_LIMIT,
+            ]);
+        }
+
+        $renderedResults['count'] = $count;
+        $event->addResults($resultKey, $renderedResults);
     }
 }

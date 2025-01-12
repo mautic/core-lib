@@ -393,18 +393,6 @@ class CommonRepository extends ServiceEntityRepository
             $hydrationMode = AbstractQuery::HYDRATE_OBJECT;
         }
 
-        // Handle total count if requested
-        // @todo, this should be removed when refactoring is complete.
-        $totalCount = null;
-        if (!empty($args['with_total_count'])) {
-            $countQuery = clone $q;
-            $countQuery->select("COUNT($alias.id)");
-            $countQuery->resetDQLPart('join');
-            $countQuery->resetDQLPart('groupBy');
-            $countQuery->resetDQLPart('orderBy'); // Remove any orderBy clause as it is not relevant for count queries
-            $totalCount = (int) $countQuery->getQuery()->getSingleScalarResult();
-        }
-
         if (array_key_exists('iterable_mode', $args) && true === $args['iterable_mode']) {
             // Hydrate one by one
             $results = $query->toIterable([], $hydrationMode);
@@ -423,15 +411,6 @@ class CommonRepository extends ServiceEntityRepository
         } else {
             // All results
             $results = $query->getResult($hydrationMode);
-        }
-
-        // Return results with total count if requested
-        // @todo, this should be removed when refactoring is complete.
-        if (!empty($args['with_total_count'])) {
-            return [
-                'results' => $results,
-                'count'   => $totalCount,
-            ];
         }
 
         return $results;
