@@ -356,7 +356,7 @@ class CommonRepository extends ServiceEntityRepository
      *
      * @param array<string,mixed> $args
      *
-     * @return object[]|array<int,mixed>|array<string, object[]>|iterable<object>|IterableResult<object>|Paginator<object>|SimplePaginator<mixed>
+     * @return object[]|array<int,mixed>|iterable<object>|\Doctrine\ORM\Internal\Hydration\IterableResult<object>|Paginator<object>|SimplePaginator<mixed>
      */
     public function getEntities(array $args = [])
     {
@@ -371,7 +371,7 @@ class CommonRepository extends ServiceEntityRepository
                 ->from($this->getEntityName(), $alias, "{$alias}.id");
 
             if ($this->getClassMetadata()->hasAssociation('category')) {
-                $q->leftJoin($alias.'.category', 'cat');
+                $q->leftJoin($this->getTableAlias().'.category', 'cat');
             }
         }
 
@@ -390,30 +390,31 @@ class CommonRepository extends ServiceEntityRepository
             $hydrationMode = constant('\\Doctrine\\ORM\\Query::'.strtoupper($args['hydration_mode']));
             $query->setHydrationMode($hydrationMode);
         } else {
-            $hydrationMode = AbstractQuery::HYDRATE_OBJECT;
+            $hydrationMode = Query::HYDRATE_OBJECT;
         }
 
         if (array_key_exists('iterable_mode', $args) && true === $args['iterable_mode']) {
             // Hydrate one by one
-            $results = $query->toIterable([], $hydrationMode);
-        } elseif (!empty($args['iterator_mode'])) {
+            return $query->toIterable([], $hydrationMode);
+        }
+
+        if (!empty($args['iterator_mode'])) {
             // When you remove the following, please search for the "iterator_mode" in the project.
             @\trigger_error('Using "iterator_mode" is deprecated. Use "iterable_mode" instead. Usage of "iterator_mode" will be removed in 6.0.', \E_USER_DEPRECATED);
-            $results = $query->iterate(null, $hydrationMode);
+
+            return $query->iterate(null, $hydrationMode);
         } elseif (empty($args['ignore_paginator'])) {
             if (!empty($args['use_simple_paginator'])) {
                 // FAST paginator that can handle only simple queries using no joins or ManyToOne joins.
-                $results = new SimplePaginator($query);
+                return new SimplePaginator($query);
             } else {
                 // SLOW paginator that can handle complex queries using oneToMany/ManyToMany joins.
-                $results = new Paginator($query, false);
+                return new Paginator($query, false);
             }
         } else {
             // All results
-            $results = $query->getResult($hydrationMode);
+            return $query->getResult($hydrationMode);
         }
-
-        return $results;
     }
 
     /**
