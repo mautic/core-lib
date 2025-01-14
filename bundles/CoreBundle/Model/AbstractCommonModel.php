@@ -265,25 +265,31 @@ abstract class AbstractCommonModel implements MauticModelInterface
 
     public function canViewOwnEntity(): bool
     {
-        $permissionBase = $this->getPermissionBase();
-        if ($this->security->checkPermissionExists("$permissionBase:viewown")) {
-            return $this->security->isGranted(["$permissionBase:viewown"]);
-        } elseif ($this->security->checkPermissionExists("$permissionBase:view")) {
-            return $this->security->isGranted("$permissionBase:view");
+        if ($this->security->isAdmin()) {
+            return true;
         }
 
-        return $this->userHelper->getUser()->isAdmin();
+        $isGranted      = false;
+        $permissionBase = $this->getPermissionBase();
+        if ($this->security->checkPermissionExists("$permissionBase:viewown")) {
+            $isGranted = $this->security->isGranted("$permissionBase:viewown");
+        }
+
+        return $isGranted;
     }
 
     public function canViewOthersEntity(): bool
     {
-        $permissionBase = $this->getPermissionBase();
-        if ($this->security->checkPermissionExists("$permissionBase:viewother")) {
-            return $this->security->isGranted(["$permissionBase:viewother"]);
-        } elseif ($this->security->checkPermissionExists("$permissionBase:view")) {
-            return $this->security->isGranted("$permissionBase:view");
+        if ($this->security->isAdmin()) {
+            return true;
         }
 
-        return $this->userHelper->getUser()->isAdmin();
+        $isGranted      = false;
+        $permissionBase = $this->getPermissionBase();
+        if ($this->security->checkPermissionExists("$permissionBase:viewother")) {
+            $isGranted = $this->security->isGranted(["$permissionBase:viewother"]);
+        }
+
+        return $isGranted;
     }
 }
