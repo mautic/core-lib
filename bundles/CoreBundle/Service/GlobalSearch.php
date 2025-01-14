@@ -31,7 +31,7 @@ class GlobalSearch
 
         $entities = $model->getEntitiesForGlobalSearch($filterDTO);
 
-        if (empty($entities)) {
+        if (is_null($entities) || ($entities instanceof Paginator && empty($entities->count()))) {
             return [];
         }
 
@@ -43,11 +43,7 @@ class GlobalSearch
      */
     private function processResults(Paginator $entities, string $searchString, string $template): array
     {
-        $count = $entities->count();
-        if (0 === $count) {
-            return [];
-        }
-
+        $count           = $entities->count();
         $renderedResults = [];
         foreach ($entities as $entity) {
             $renderedResults[] = $this->twig->render($template, ['item' => $entity]);

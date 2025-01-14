@@ -31,6 +31,7 @@ use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use MauticPlugin\MauticFocusBundle\Entity\Focus;
 use PHPUnit\Framework\Assert;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
@@ -90,10 +91,10 @@ final class AjaxControllerTest extends MauticMysqlTestCase
     public function dataForGlobalSearch(): iterable
     {
         // Api
-        $apiClient = $this->createApiClient();
+        $apiClient = $this->createApiClient('client');
 
         yield 'Search API' => [
-            'Client',
+            'client',
             $apiClient,
             's/credentials/view/',
         ];
@@ -340,28 +341,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         $content = \json_decode($response->getContent(), true);
         $this->assertArrayHasKey('newContent', $content);
 
-        $this->assertMatchesRegularExpression(
-            '/<div.*?>\s*'.
-            '<div.*?>\n'.
-            '\s*<span class="fs-16">Navigate<\/span>\n'.
-            '\s*<kbd><i class="ri-arrow-up-line"><\/i><\/kbd>\n'.
-            '\s*<kbd><i class="ri-arrow-down-line"><\/i><\/kbd>\n'.
-            '\s*<span class="fs-16">or<\/span>\n'.
-            '\s*<kbd>tab<\/kbd>\n'.
-            '\s*<\/div>\n'.
-            '\s*<div.*?>\n'.
-            '\s*<span class="fs-16">Close<\/span>\n'.
-            '\s*<kbd>esc<\/kbd>\n'.
-            '\s*<\/div>\n'.
-            '\s*<\/div>\n\n'.
-            '<div class="pa-sm" id="globalSearchPanel">\n'. // Matches the search panel div
-            '\s*<!-- No results message -->\n'. // Matches the "No results message" comment
-            '\s*<div class="text-center text-secondary mt-sm">\n'. // Matches the no-results div
-            '\s*.*?\n'. // Matches random text inside the no-results div
-            '\s*<\/div>\n'.
-            '\s*<\/div>/s',
-            $content['newContent']
-        );
+        $this->assertGlobalSearchNotResult($content['newContent']);
 
         $this->assertStringNotContainsString($notExpectedLink, $content['newContent']);
     }
@@ -371,7 +351,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
      */
     public function dataForGlobalSearchForNonAdminUser(): iterable
     {
-        $apiClient = $this->createApiClient();
+        $apiClient = $this->createApiClient('Client');
 
         yield 'Search API' => [
             // Search string
@@ -401,8 +381,102 @@ final class AjaxControllerTest extends MauticMysqlTestCase
                 'bitwise'   => 42, // just viewown, editown, create
             ],
             // link
-            's/credentials/view/',
+            's/assets/view/',
         ];
+
+        $form = $this->createForm();
+        yield 'Search Form' => [
+            // Search string
+            'form',
+            // Object
+            $form,
+            // role
+            [
+                'name'      => 'perm_form_own',
+                'perm'      => 'form:forms',
+                'bitwise'   => 34, // just viewown, create
+            ],
+            // link
+            's/forms/view/',
+        ];
+    }
+
+    public function testGlobalSearchForRandomAndEmptyString(): void
+    {
+        $apiClient = $this->createApiClient('client');
+        $this->em->persist($apiClient);
+        $this->em->flush();
+        $this->em->clear();
+
+        $searchString = '';
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax?action=globalSearch&global_search='.$searchString.'&tmp=list');
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isOk());
+
+        $content = \json_decode($response->getContent(), true);
+        $this->assertGlobalSearchNotResult($content['newContent']);
+
+        $searchString = 'random';
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax?action=globalSearch&global_search='.$searchString.'&tmp=list');
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isOk());
+
+        $content = \json_decode($response->getContent(), true);
+        $this->assertGlobalSearchNotResult($content['newContent']);
+    }
+
+    public function testGlobalSearchForMoreLink(): void
+    {
+        $contactOne   = $this->createLead('contact-1@mautic-test.com');
+        $contactTwo   = $this->createLead('contact-2@mautic-test.com');
+        $contactThree = $this->createLead('contact-3@mautic-test.com');
+        $contactFour  = $this->createLead('contact-4@mautic-test.com');
+
+        $client1 = $this->createApiClient('Client1');
+        $client2 = $this->createApiClient('Client2');
+        $client3 = $this->createApiClient('Client3');
+        $client4 = $this->createApiClient('Client4');
+
+        $this->em->persist($contactOne);
+        $this->em->persist($contactTwo);
+        $this->em->persist($contactThree);
+        $this->em->persist($contactFour);
+
+        $this->em->persist($client1);
+        $this->em->persist($client2);
+        $this->em->persist($client3);
+        $this->em->persist($client4);
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $searchString = 'john';
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax?action=globalSearch&global_search='.$searchString.'&tmp=list');
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isOk());
+
+        $content = \json_decode($response->getContent(), true);
+
+        $translator = self::getContainer()->get('translator');
+        $this->assertStringContainsString('s/contacts?search='.$searchString, $content['newContent']);
+        $this->assertStringContainsString($translator->trans('mautic.core.search.more', ['%count%' => 1]), $content['newContent']);
+
+        $crawler = new Crawler($content['newContent']);
+        $this->assertCount(4, $crawler->filterXPath("//li[contains(@class, 'gsearch--results-item')]"));
+
+        $searchString = 'client';
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax?action=globalSearch&global_search='.$searchString.'&tmp=list');
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isOk());
+
+        $content = \json_decode($response->getContent(), true);
+
+        $translator = self::getContainer()->get('translator');
+        $this->assertStringContainsString('s/credentials?search='.$searchString, $content['newContent']);
+        $this->assertStringContainsString($translator->trans('mautic.core.search.more', ['%count%' => 1]), $content['newContent']);
+
+        $crawler = new Crawler($content['newContent']);
+        $this->assertCount(4, $crawler->filterXPath("//li[contains(@class, 'gsearch--results-item')]"));
     }
 
     private function loginOtherUser(string $name): void
@@ -456,11 +530,11 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         $this->em->persist($permission);
     }
 
-    private function createApiClient(): Client
+    private function createApiClient(string $name): Client
     {
         $apiClient = new Client();
-        $apiClient->setName('Client');
-        $apiClient->setRedirectUris(['https://example.com/testing']);
+        $apiClient->setName($name);
+        $apiClient->setRedirectUris(['https://example.com/'.$name]);
 
         return $apiClient;
     }
@@ -524,10 +598,11 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         return $form;
     }
 
-    private function createLead(): Lead
+    private function createLead(string $email = 'jon@example.com'): Lead
     {
         $lead = new Lead();
         $lead->setFirstname('John');
+        $lead->setEmail($email);
 
         return $lead;
     }
@@ -652,5 +727,31 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         ]);
 
         return $focus;
+    }
+
+    private function assertGlobalSearchNotResult($newContent): void
+    {
+        $this->assertMatchesRegularExpression(
+            '/<div.*?>\s*'.
+            '<div.*?>\n'.
+            '\s*<span class="fs-16">Navigate<\/span>\n'.
+            '\s*<kbd><i class="ri-arrow-up-line"><\/i><\/kbd>\n'.
+            '\s*<kbd><i class="ri-arrow-down-line"><\/i><\/kbd>\n'.
+            '\s*<span class="fs-16">or<\/span>\n'.
+            '\s*<kbd>tab<\/kbd>\n'.
+            '\s*<\/div>\n'.
+            '\s*<div.*?>\n'.
+            '\s*<span class="fs-16">Close<\/span>\n'.
+            '\s*<kbd>esc<\/kbd>\n'.
+            '\s*<\/div>\n'.
+            '\s*<\/div>\n\n'.
+            '<div class="pa-sm" id="globalSearchPanel">\n'. // Matches the search panel div
+            '\s*<!-- No results message -->\n'. // Matches the "No results message" comment
+            '\s*<div class="text-center text-secondary mt-sm">\n'. // Matches the no-results div
+            '\s*.*?\n'. // Matches random text inside the no-results div
+            '\s*<\/div>\n'.
+            '\s*<\/div>/s',
+            $newContent
+        );
     }
 }
