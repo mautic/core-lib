@@ -729,7 +729,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         return $focus;
     }
 
-    private function assertGlobalSearchNotResult($newContent): void
+    private function assertGlobalSearchNotResult(string $newContent): void
     {
         $this->assertMatchesRegularExpression(
             '/<div.*?>\s*'.
