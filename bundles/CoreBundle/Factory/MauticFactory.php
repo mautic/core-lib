@@ -121,16 +121,6 @@ class MauticFactory
         return $this->container->get('mautic.helper.ip_lookup')->getIpAddressFromRequest();
     }
 
-    /**
-     * Retrieves the application's version number.
-     *
-     * @return string
-     */
-    public function getVersion()
-    {
-        return $this->container->get('kernel')->getVersion();
-    }
-
     public function serviceExists($service): bool
     {
         return $this->container->has($service);
