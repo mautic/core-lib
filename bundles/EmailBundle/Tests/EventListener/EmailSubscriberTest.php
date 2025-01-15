@@ -30,6 +30,7 @@ use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
@@ -320,6 +321,7 @@ CONTENT,
             $twig,
             $themeHelper,
             $slotsHelper,
+            $this->createMock(EventDispatcherInterface::class)
         );
 
         $email = new Email();

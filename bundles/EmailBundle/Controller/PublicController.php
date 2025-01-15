@@ -166,7 +166,7 @@ class PublicController extends CommonFormController
             $template = $formTemplate;
         }
 
-        $theme = $this->factory->getTheme($template);
+        $theme = $themeHelper->getTheme($template);
         if ($theme->getTheme() != $template) {
             $template = $theme->getTheme();
         }
@@ -412,14 +412,14 @@ class PublicController extends CommonFormController
 
         $template = (!empty($email) && 'mautic_code_mode' !== $email->getTemplate()) ? $email->getTemplate() : $this->coreParametersHelper->get('theme');
 
-        $theme = $this->factory->getTheme($template);
+        $theme = $themeHelper->getTheme($template);
 
         if ($theme->getTheme() != $template) {
             $template = $theme->getTheme();
         }
 
         // Ensure template still exists
-        $theme = $this->factory->getTheme($template);
+        $theme = $themeHelper->getTheme($template);
         if (empty($theme) || $theme->getTheme() !== $template) {
             $template = $this->coreParametersHelper->get('theme');
         }
@@ -508,7 +508,7 @@ class PublicController extends CommonFormController
 
         if (empty($content) && !empty($BCcontent)) {
             $template = $emailEntity->getTemplate();
-            $slots    = $this->factory->getTheme($template)->getSlots('email');
+            $slots    = $themeHelper->getTheme($template)->getSlots('email');
 
             $assetsHelper->addCustomDeclaration('<meta name="robots" content="noindex">');
 
