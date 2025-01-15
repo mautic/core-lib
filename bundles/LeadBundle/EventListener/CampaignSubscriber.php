@@ -32,6 +32,7 @@ use Mautic\LeadBundle\Form\Type\UpdateCompanyActionType;
 use Mautic\LeadBundle\Form\Type\UpdateLeadActionType;
 use Mautic\LeadBundle\Helper\CustomFieldHelper;
 use Mautic\LeadBundle\Helper\IdentifyCompanyHelper;
+use Mautic\LeadBundle\Helper\TokenHelper;
 use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\DoNotContact;
@@ -323,7 +324,17 @@ class CampaignSubscriber implements EventSubscriberInterface
         $values = $event->getConfig();
         $fields = $lead->getFields(true);
 
-        $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $values), false);
+        // Token replacement
+        $tokenizedValues = [];
+        foreach ($values as $field => $value) {
+            if (is_string($value)) {
+                $tokenizedValues[$field] = TokenHelper::findLeadTokens($value, $lead->getProfileFields(), true);
+            } else {
+                $tokenizedValues[$field] = $value;
+            }
+        }
+        $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $tokenizedValues), false);
+
         $this->leadModel->saveEntity($lead);
 
         return $event->setResult(true);

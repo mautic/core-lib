@@ -292,6 +292,49 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals(2, $contactCGroupScores->first()->getScore());
     }
 
+    public function testUpdateLeadActionWithTokensInTextCustomField(): void
+    {
+        $application = new Application(self::$kernel);
+        $application->setAutoExit(false);
+        $applicationTester = new ApplicationTester($application);
+
+        $contactIds = $this->createContacts();
+        $campaign   = $this->createCampaignWithTokens($contactIds);
+
+        // Force Doctrine to re-fetch the entities
+        $this->em->clear();
+
+        // Execute the campaign
+        $exitCode = $applicationTester->run([
+            'command'       => 'mautic:campaigns:trigger',
+            '--campaign-id' => $campaign->getId(),
+        ]);
+
+        Assert::assertSame(0, $exitCode, $applicationTester->getDisplay());
+
+        // Force Doctrine to re-fetch the entities to ensure we're getting the latest data
+        $this->em->clear();
+
+        $now   = new \DateTime();
+        $today = new \DateTime('today');
+
+        /** @var Lead $contact */
+        $contact = $this->contactRepository->getEntity($contactIds[0]);
+
+        $positionValue = $contact->getFieldValue('position');
+        $cityValue     = $contact->getFieldValue('city');
+
+        $this->assertNotNull($positionValue, 'Position value should not be null');
+        $this->assertNotNull($cityValue, 'City value should not be null');
+
+        // Check if the position value is within 5 seconds of now
+        $this->assertEquals($today->format('Y-m-d H:i:s'), $positionValue);
+
+        // Check if the city value is today's date
+        $expectedCityValue = 'Hello '.$today->format('Y-m-d H:i:s').' '.$this->contacts[0]['firstname'];
+        $this->assertEquals($expectedCityValue, $cityValue);
+    }
+
     /**
      * @return array<int, int>
      */
@@ -871,6 +914,157 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
                         'targetId' => $event2->getId(),
                         'anchors'  => [
                             'source' => 'yes',
+                            'target' => 'top',
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $this->em->persist($campaign);
+        $this->em->flush();
+
+        return $campaign;
+    }
+
+    /**
+     * @param array<int, int> $contactIds
+     */
+    private function createCampaignWithTokens(array $contactIds): Campaign
+    {
+        $campaign = new Campaign();
+        $campaign->setName('Test Update contact');
+
+        $this->em->persist($campaign);
+        $this->em->flush();
+
+        foreach ($contactIds as $key => $contactId) {
+            $campaignLead = new CampaignLead();
+            $campaignLead->setCampaign($campaign);
+            /** @var Lead $lead */
+            $lead = $this->em->getReference(Lead::class, $contactId);
+            $campaignLead->setLead($lead);
+            $campaignLead->setDateAdded(new \DateTime());
+            $this->em->persist($campaignLead);
+            $campaign->addLead($key, $campaignLead);
+        }
+
+        $this->em->flush();
+
+        $event = new Event();
+        $event->setCampaign($campaign);
+        $event->setName('Update contact with tokens');
+        $event->setType('lead.updatelead');
+        $event->setEventType('action');
+        $event->setTriggerMode('immediate');
+        $event->setProperties(
+            [
+                'canvasSettings'             => [
+                    'droppedX' => '696',
+                    'droppedY' => '155',
+                ],
+                'name'                       => '',
+                'triggerMode'                => 'immediate',
+                'triggerDate'                => null,
+                'triggerInterval'            => '1',
+                'triggerIntervalUnit'        => 'd',
+                'triggerHour'                => '',
+                'triggerRestrictedStartHour' => '',
+                'triggerRestrictedStopHour'  => '',
+                'anchor'                     => 'leadsource',
+                'properties'                 => [
+                    'html'                 => '',
+                    'title'                => '',
+                    'html2'                => '',
+                    'firstname'            => '',
+                    'lastname'             => '',
+                    'company'              => '',
+                    'position'             => '%now%',
+                    'email'                => '',
+                    'mobile'               => '',
+                    'phone'                => '',
+                    'points'               => '',
+                    'fax'                  => '',
+                    'address1'             => '',
+                    'address2'             => '',
+                    'city'                 => '%TODAY%',
+                    'state'                => '',
+                    'zipcode'              => '',
+                    'country'              => '',
+                    'preferred_locale'     => '',
+                    'timezone'             => '',
+                    'last_active'          => '',
+                    'attribution_date'     => '',
+                    'attribution'          => '',
+                    'website'              => '',
+                    'facebook'             => '',
+                    'foursquare'           => '',
+                    'instagram'            => '',
+                    'linkedin'             => '',
+                    'skype'                => '',
+                    'twitter'              => '',
+                ],
+                'type'                       => 'lead.updatelead',
+                'eventType'                  => 'action',
+                'anchorEventType'            => 'source',
+                'campaignId'                 => 'mautic_28ac4b8a4758b8597e8d189fa97b245996e338bb',
+                '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
+                'buttons'                    => ['save' => ''],
+                'html'                       => null,
+                'title'                      => null,
+                'html2'                      => null,
+                'firstname'                  => null,
+                'lastname'                   => null,
+                'company'                    => null,
+                'position'                   => '%TODAY%',
+                'email'                      => null,
+                'mobile'                     => null,
+                'phone'                      => null,
+                'points'                     => null,
+                'fax'                        => null,
+                'address1'                   => null,
+                'address2'                   => null,
+                'city'                       => 'Hello %TODAY% {contactfield=firstname}',
+                'state'                      => null,
+                'zipcode'                    => null,
+                'country'                    => null,
+                'preferred_locale'           => null,
+                'timezone'                   => null,
+                'last_active'                => null,
+                'attribution_date'           => null,
+                'attribution'                => null,
+                'website'                    => null,
+                'facebook'                   => null,
+                'foursquare'                 => null,
+                'instagram'                  => null,
+                'linkedin'                   => null,
+                'skype'                      => null,
+                'twitter'                    => null,
+            ]
+        );
+
+        $campaign->addEvent(1, $event);
+
+        $campaign->setCanvasSettings(
+            [
+                'nodes'       => [
+                    [
+                        'id'        => $event->getId(),
+                        'positionX' => '696',
+                        'positionY' => '155',
+                    ],
+                    [
+                        'id'        => 'lists',
+                        'positionX' => '796',
+                        'positionY' => '50',
+                    ],
+                ],
+                'connections' => [
+                    [
+                        'sourceId' => 'lists',
+                        'targetId' => $event->getId(),
+                        'anchors'  => [
+                            'source' => 'leadsource',
                             'target' => 'top',
                         ],
                     ],
