@@ -918,11 +918,8 @@ class MailHelperTest extends TestCase
             $parameterMap
         );
 
-        $fromEmailHelper = new FromEmailHelper($this->createMock(CoreParametersHelper::class), $mockLeadRepository);
-
         $mockFactory->method('getParameter')->willReturnMap($parameterMap);
         $mockFactory->method('getModel')->willReturnMap([['lead', $mockLeadModel]]);
-        $mockFactory->method('get')->willReturnMap([['mautic.helper.from_email_helper', $fromEmailHelper]]);
 
         $mockMailboxHelper = $this->getMockBuilder(Mailbox::class)
             ->disableOriginalConstructor()

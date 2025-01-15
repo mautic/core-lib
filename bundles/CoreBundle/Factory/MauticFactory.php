@@ -107,23 +107,4 @@ class MauticFactory
     {
         return $this->container->get('mautic.helper.ip_lookup')->getIpAddressFromRequest();
     }
-
-    public function serviceExists($service): bool
-    {
-        return $this->container->has($service);
-    }
-
-    /**
-     * @param string $service
-     *
-     * @return object|bool
-     */
-    public function get($service)
-    {
-        if ($this->serviceExists($service)) {
-            return $this->container->get($service);
-        }
-
-        return false;
-    }
 }
