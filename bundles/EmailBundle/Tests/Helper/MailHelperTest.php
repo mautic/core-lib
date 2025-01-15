@@ -20,7 +20,6 @@ use Mautic\EmailBundle\Tests\Helper\Transport\SmtpTransport;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\Model\LeadModel;
-use Monolog\Logger;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -920,12 +919,6 @@ class MailHelperTest extends TestCase
         $mockFactory->method('getParameter')->willReturnMap($parameterMap);
         $mockFactory->method('getModel')->willReturnMap([['lead', $mockLeadModel]]);
         $mockFactory->method('get')->willReturnMap([['mautic.helper.from_email_helper', $fromEmailHelper]]);
-
-        $mockLogger = $this->getMockBuilder(Logger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $mockFactory->method('getLogger')
-            ->willReturn($mockLogger);
 
         $mockMailboxHelper = $this->getMockBuilder(Mailbox::class)
             ->disableOriginalConstructor()
