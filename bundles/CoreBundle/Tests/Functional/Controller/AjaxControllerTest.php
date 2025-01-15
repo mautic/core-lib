@@ -21,6 +21,7 @@ use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\Tag;
 use Mautic\NotificationBundle\Entity\Notification;
 use Mautic\PageBundle\Entity\Page;
+use Mautic\PointBundle\Entity\Group;
 use Mautic\PointBundle\Entity\Point;
 use Mautic\PointBundle\Entity\Trigger;
 use Mautic\ReportBundle\Entity\Report;
@@ -214,6 +215,15 @@ final class AjaxControllerTest extends MauticMysqlTestCase
             'action',
             $pointAction,
             's/points/edit/',
+        ];
+
+        // Point Group
+        $pointGroup = $this->createPointGroup();
+
+        yield 'Search Points Group' => [
+            'group',
+            $pointGroup,
+            's/points/groups/edit/',
         ];
 
         // Point Trigger
@@ -655,6 +665,14 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         $pointAction->setProperties(['emails' => [1]]);
 
         return $pointAction;
+    }
+
+    private function createPointGroup(): Group
+    {
+        $pointGroup = new Group();
+        $pointGroup->setName('New Group');
+
+        return $pointGroup;
     }
 
     private function createPointTrigger(): Trigger
