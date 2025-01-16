@@ -18,21 +18,6 @@
     } %}
 {% endif %}
 
-<!-- Required -->
-{% if field.isRequired is defined and field.isRequired == 1 %}
-    {% include '@MauticCore/Helper/_tag.html.twig' with {
-        tags: [
-            {
-                label: 'mautic.core.required',
-                icon: 'ri-asterisk',
-                color: 'red',
-                icon_only: true
-
-            }
-        ]
-    } %}
-{% endif %}
-
 {% if field.alwaysDisplay is defined and field.alwaysDisplay %}
     <!-- Always display -->
     {% if field.alwaysDisplay == 1 %}
@@ -85,4 +70,22 @@
         }
     ]
 } %}
+{% endif %}
+
+<!-- Required -->
+{% if field.isRequired is defined and field.isRequired == 1 %}
+    {% include '@MauticCore/Helper/_tag.html.twig' with {
+        tags: [
+            {
+                label: 'mautic.core.required',
+                icon: 'ri-asterisk',
+                color: 'red',
+                icon_only: true,
+                attributes: {
+                    'class': 'ml-a'
+                }
+
+            }
+        ]
+    } %}
 {% endif %}
