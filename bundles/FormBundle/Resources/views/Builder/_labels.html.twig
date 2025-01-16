@@ -71,3 +71,16 @@
     ]
 } %}
 {% endif %}
+
+<!-- Show after X submissions -->
+{% if field.showAfterXSubmissions is defined and field.showAfterXSubmissions is not empty %}
+{% include '@MauticCore/Helper/_tag.html.twig' with {
+    tags: [
+        {
+            label: 'mautic.form.field.form.show.after.submissions'|trans({'%number%': field.showAfterXSubmissions}),
+            icon: 'ri-timer-line',
+            color: 'green'
+        }
+    ]
+} %}
+{% endif %}
