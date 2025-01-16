@@ -58,3 +58,16 @@
     ]
 } %}
 {% endif %}
+
+<!-- Auto fill -->
+{% if field.isAutoFill == 1 %}
+{% include '@MauticCore/Helper/_tag.html.twig' with {
+    tags: [
+        {
+            label: 'mautic.form.field.form.auto_fill',
+            icon: 'ri-magic-line',
+            color: 'green'
+        }
+    ]
+} %}
+{% endif %}
