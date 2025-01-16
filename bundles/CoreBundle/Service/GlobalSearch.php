@@ -57,6 +57,8 @@ class GlobalSearch
             ]);
         }
 
+        $renderedResults['count'] = $count;
+
         return $renderedResults;
     }
 }
