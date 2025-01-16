@@ -39,7 +39,7 @@ class GlobalSearch
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int|string, int|string>
      */
     private function processResults(Paginator $entities, string $searchString, string $template): array
     {
