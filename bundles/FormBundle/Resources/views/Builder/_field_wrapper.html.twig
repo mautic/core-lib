@@ -61,16 +61,7 @@
                     <br>
                 {% endif %}
 
-                {% if field.mappedObject is not empty and field.mappedField is not empty and mappedFields[field.mappedObject] is defined %}
-                    {% set icon = 'compress' %}
-                    {% set icon = 'company' is same as field.mappedObject ? 'building' : icon %}
-                    {% set icon = 'contact' is same as field.mappedObject ? 'user' : icon %}
-                    <i class="{{ icon }}" aria-hidden="true"></i>
-                    <span class="inline-spacer">
-                        {% set fieldCollection = mappedFields[field.mappedObject] is defined %}
-                        {{ field.mappedObject }}: {% if fieldCollection[field.mappedField] is defined %}{{ fieldCollection[field.mappedField].name }}{% else %}{{ field.mappedField|capitalize }}{% endif %}
-                    </span>
-                {% endif %}
+                {% include '@MauticForm/Builder/_labels.html.twig' %}
 
                 {% if field.alwaysDisplay is defined and field.alwaysDisplay %}
                   <i class="ri-eye-line" aria-hidden="true"></i>

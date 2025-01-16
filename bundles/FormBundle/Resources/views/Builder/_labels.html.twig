@@ -1,0 +1,19 @@
+<!-- Mapped field -->
+{% if field.mappedObject is not empty and field.mappedField is not empty and mappedFields[field.mappedObject] is defined %}
+    {% set objectLabel = field.mappedObject == 'company' ? 'mautic.company.company'|trans|lower : (field.mappedObject == 'contact' ? 'mautic.lead.contact'|trans|lower : field.mappedObject|lower) %}
+
+    {% include '@MauticCore/Helper/_tag.html.twig' with {
+        'tags': [{
+            'type': 'read-only',
+            'variant': 'warm-gray',
+            'icon': field.mappedObject == 'company' ? 'ri-building-3-line' : (field.mappedObject == 'contact' ? 'ri-contacts-book-line' : 'ri-shape-line'),
+            'label': fieldCollection[field.mappedField] is defined ? fieldCollection[field.mappedField].name :
+                    (field.mappedObject == 'contact' ? ('mautic.core.' ~ field.mappedField) :
+                    (field.mappedObject == 'company' ? ('mautic.lead.field.' ~ field.mappedField) : field.mappedField)),
+            'attributes': {
+                'data-toggle': 'tooltip',
+                'title': 'mautic.core.field.mapped.to'|trans({'%object%': objectLabel})
+            }
+        }]
+    } %}
+{% endif %}
