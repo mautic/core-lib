@@ -5,7 +5,7 @@
     {% include '@MauticCore/Helper/_tag.html.twig' with {
         'tags': [{
             'type': 'read-only',
-            'variant': 'warm-gray',
+            'color': 'warm-gray',
             'icon': field.mappedObject == 'company' ? 'ri-building-3-line' : (field.mappedObject == 'contact' ? 'ri-contacts-book-line' : 'ri-shape-line'),
             'label': fieldCollection[field.mappedField] is defined ? fieldCollection[field.mappedField].name :
                     (field.mappedObject == 'contact' ? ('mautic.core.' ~ field.mappedField) :
@@ -15,5 +15,20 @@
                 'title': 'mautic.core.field.mapped.to'|trans({'%object%': objectLabel})
             }
         }]
+    } %}
+{% endif %}
+
+<!-- Required -->
+{% if field.isRequired is defined and field.isRequired == 1 %}
+    {% include '@MauticCore/Helper/_tag.html.twig' with {
+        tags: [
+            {
+                label: 'mautic.core.required',
+                icon: 'ri-asterisk',
+                color: 'red',
+                icon_only: true
+
+            }
+        ]
     } %}
 {% endif %}
