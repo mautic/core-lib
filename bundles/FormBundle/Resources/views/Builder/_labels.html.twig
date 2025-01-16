@@ -33,30 +33,45 @@
     } %}
 {% endif %}
 
-<!-- Always display -->
-{% if field.alwaysDisplay == 1 %}
-{% include '@MauticCore/Helper/_tag.html.twig' with {
-    tags: [
-        {
-            label: 'mautic.form.field.form.always_display',
-            icon: 'ri-eye-line',
-            color: 'green'
-        }
-    ]
-} %}
-{% endif %}
+{% if field.alwaysDisplay is defined and field.alwaysDisplay %}
+    <!-- Always display -->
+    {% if field.alwaysDisplay == 1 %}
+    {% include '@MauticCore/Helper/_tag.html.twig' with {
+        tags: [
+            {
+                label: 'mautic.form.field.form.always_display',
+                icon: 'ri-eye-line',
+                color: 'green'
+            }
+        ]
+    } %}
+    {% endif %}
+{% else %}
+    <!-- Show when value exists -->
+    {% if field.showWhenValueExists == 1 %}
+    {% include '@MauticCore/Helper/_tag.html.twig' with {
+        tags: [
+            {
+                label: 'mautic.form.field.form.show.when.value.exists',
+                icon: 'ri-checkbox-circle-line',
+                color: 'green'
+            }
+        ]
+    } %}
+    {% endif %}
 
-<!-- Show when value exists -->
-{% if field.showWhenValueExists == 1 %}
-{% include '@MauticCore/Helper/_tag.html.twig' with {
-    tags: [
-        {
-            label: 'mautic.form.field.form.show.when.value.exists',
-            icon: 'ri-checkbox-circle-line',
-            color: 'green'
-        }
-    ]
-} %}
+    <!-- Show after X submissions -->
+    {% if field.showAfterXSubmissions is defined and field.showAfterXSubmissions is not empty %}
+    {% include '@MauticCore/Helper/_tag.html.twig' with {
+        tags: [
+            {
+                label: 'mautic.form.field.hide.if.submission.count'|trans({'%count%': field.showAfterXSubmissions}),
+                icon: 'ri-timer-line',
+                color: 'green'
+            }
+        ]
+    } %}
+    {% endif %}
 {% endif %}
 
 <!-- Auto fill -->
@@ -66,19 +81,6 @@
         {
             label: 'mautic.form.field.form.auto_fill',
             icon: 'ri-magic-line',
-            color: 'green'
-        }
-    ]
-} %}
-{% endif %}
-
-<!-- Show after X submissions -->
-{% if field.showAfterXSubmissions is defined and field.showAfterXSubmissions is not empty %}
-{% include '@MauticCore/Helper/_tag.html.twig' with {
-    tags: [
-        {
-            label: 'mautic.form.field.form.show.after.submissions'|trans({'%number%': field.showAfterXSubmissions}),
-            icon: 'ri-timer-line',
             color: 'green'
         }
     ]

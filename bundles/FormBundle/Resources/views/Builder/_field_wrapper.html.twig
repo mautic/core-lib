@@ -63,20 +63,7 @@
 
                 {% include '@MauticForm/Builder/_labels.html.twig' %}
 
-                {% if field.alwaysDisplay is defined and field.alwaysDisplay %}
-                  <i class="ri-eye-line" aria-hidden="true"></i>
-                  <span class="inline-spacer">{{ 'mautic.form.field.form.always_display'|trans }}</span>
-                {% else %}
-                  {% if field.showWhenValueExists is defined and false is same as field.showWhenValueExists %}
-                    <i class="ri-eye-line-slash" aria-hidden="true"></i>
-                    <span class="inline-spacer">{{ 'mautic.form.field.hide.if.value'|trans }}</span>
-                  {% endif %}
-
-                  {% if field.showAfterXSubmissions is defined and field.showAfterXSubmissions is not empty %}
-                    <i class="ri-refresh-line" aria-hidden="true"></i>
-                    <span class="inline-spacer">{{ 'mautic.form.field.hide.if.submission.count'|trans({'%count%': field.showAfterXSubmissions}) }}</span>
-                  {% endif %}
-                {% endif %}
+                
             </div>
         {% endif %}
 
