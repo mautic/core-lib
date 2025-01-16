@@ -45,3 +45,16 @@
     ]
 } %}
 {% endif %}
+
+<!-- Show when value exists -->
+{% if field.showWhenValueExists == 1 %}
+{% include '@MauticCore/Helper/_tag.html.twig' with {
+    tags: [
+        {
+            label: 'mautic.form.field.form.show.when.value.exists',
+            icon: 'ri-checkbox-circle-line',
+            color: 'green'
+        }
+    ]
+} %}
+{% endif %}
