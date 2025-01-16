@@ -32,3 +32,16 @@
         ]
     } %}
 {% endif %}
+
+<!-- Always display -->
+{% if field.alwaysDisplay == 1 %}
+{% include '@MauticCore/Helper/_tag.html.twig' with {
+    tags: [
+        {
+            label: 'mautic.form.field.form.always_display',
+            icon: 'ri-eye-line',
+            color: 'green'
+        }
+    ]
+} %}
+{% endif %}
