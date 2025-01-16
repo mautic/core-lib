@@ -132,7 +132,7 @@ class CampaignSubscriber implements EventSubscriberInterface
             ++$priority;
         }
 
-        $pendingEvent->failRemaining($this->translator->trans('mautic.channel.message.failed'));
+        $pendingEvent->failRemainingPending($this->translator->trans('mautic.channel.message.failed'));
     }
 
     /**
