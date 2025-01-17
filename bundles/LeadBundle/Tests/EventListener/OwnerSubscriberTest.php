@@ -23,6 +23,7 @@ use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -310,6 +311,7 @@ class OwnerSubscriberTest extends TestCase
 
         $transport    = new SmtpTransport();
         $mailer       = new Mailer($transport);
+        $requestStack = new RequestStack();
         $mailerHelper = new MailHelper(
             $mockFactory,
             $mailer,
@@ -322,7 +324,8 @@ class OwnerSubscriberTest extends TestCase
             $twig,
             $themeHelper,
             $slotsHelper,
-            $this->createMock(EventDispatcherInterface::class)
+            $this->createMock(EventDispatcherInterface::class),
+            $requestStack,
         );
         $mailerHelper->setLead($lead);
 

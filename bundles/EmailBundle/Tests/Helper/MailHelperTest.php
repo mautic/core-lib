@@ -24,6 +24,7 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Header\HeaderInterface;
 use Symfony\Component\Mime\Header\MailboxListHeader;
@@ -97,6 +98,8 @@ class MailHelperTest extends TestCase
 
     private SlotsHelper $slotsHelper;
 
+    private RequestStack $requestStack;
+
     /**
      * @var array<array<string,string|int>>
      */
@@ -146,6 +149,7 @@ class MailHelperTest extends TestCase
         $this->themeHelper          = $this->createMock(ThemeHelper::class);
         $this->mailHashHelper       = new MailHashHelper($this->coreParametersHelper);
         $this->slotsHelper          = new SlotsHelper();
+        $this->requestStack         = new RequestStack();
     }
 
     public function testQueueModeThrowsExceptionWhenBatchLimitHit(): void
@@ -160,7 +164,7 @@ class MailHelperTest extends TestCase
                 ]
             );
 
-        $batchMailHelper = new MailHelper($this->mockFactory, new Mailer(new BatchTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $batchMailHelper = new MailHelper($this->mockFactory, new Mailer(new BatchTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $batchMailHelper->enableQueue();
         $batchMailHelper->addTo('somebody@somewhere.com');
         $batchMailHelper->addTo('somebodyelse@somewhere.com');
@@ -179,7 +183,7 @@ class MailHelperTest extends TestCase
                 ]
             );
 
-        $singleMailHelper = new MailHelper($this->mockFactory, new Mailer(new BcInterfaceTokenTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $singleMailHelper = new MailHelper($this->mockFactory, new Mailer(new BcInterfaceTokenTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
 
         try {
             $singleMailHelper->addTo('somebody@somewhere.com');
@@ -196,7 +200,7 @@ class MailHelperTest extends TestCase
     {
         $this->coreParametersHelper->method('get')->willReturnMap($this->defaultParams);
 
-        $singleMailHelper = new MailHelper($this->mockFactory, new Mailer(new BcInterfaceTokenTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $singleMailHelper = new MailHelper($this->mockFactory, new Mailer(new BcInterfaceTokenTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $singleMailHelper->enableQueue();
 
         $email = new Email();
@@ -234,7 +238,7 @@ class MailHelperTest extends TestCase
 
     public function testBatchMode(): void
     {
-        $singleMailHelper = new MailHelper($this->mockFactory, new Mailer(new BcInterfaceTokenTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $singleMailHelper = new MailHelper($this->mockFactory, new Mailer(new BcInterfaceTokenTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $singleMailHelper->enableQueue();
 
         $email = new Email();
@@ -270,7 +274,7 @@ class MailHelperTest extends TestCase
         $transport     = new BatchTransport();
         $symfonyMailer = new Mailer($transport);
 
-        $mailer = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
 
         $email = new Email();
         $email->setUseOwnerAsMailer(true);
@@ -343,7 +347,7 @@ class MailHelperTest extends TestCase
         $transport     = new BatchTransport();
         $symfonyMailer = new Mailer($transport);
 
-        $mailer = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $email  = new Email();
         $email->setUseOwnerAsMailer(true);
 
@@ -378,7 +382,7 @@ class MailHelperTest extends TestCase
                 ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => 'owner 2', 'last_name' => '', 'signature' => 'owner 2'],
             );
         $transport = new BatchTransport();
-        $mailer    = new MailHelper($this->mockFactory, new Mailer($transport), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer    = new MailHelper($this->mockFactory, new Mailer($transport), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $email     = new Email();
 
         $email->setUseOwnerAsMailer(true);
@@ -419,7 +423,7 @@ class MailHelperTest extends TestCase
         $transport     = new BcInterfaceTokenTransport();
         $symfonyMailer = new Mailer($transport);
 
-        $mailer = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $mailer->enableQueue();
         $mailer->setSubject('Hello');
         $mailer->setFrom('override@owner.com');
@@ -441,7 +445,7 @@ class MailHelperTest extends TestCase
     {
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $email         = new Email();
 
         $email->setUseOwnerAsMailer(false);
@@ -467,7 +471,7 @@ class MailHelperTest extends TestCase
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $email         = new Email();
 
         $email->setSubject('Subject');
@@ -490,7 +494,7 @@ class MailHelperTest extends TestCase
         $this->coreParametersHelper->method('get')->willReturnMap($this->defaultParams);
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $email         = new Email();
 
         // From address is set
@@ -515,7 +519,7 @@ class MailHelperTest extends TestCase
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $email         = new Email();
 
         // From address is set
@@ -544,7 +548,7 @@ class MailHelperTest extends TestCase
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
 
         $email = new Email();
         $email->setUseOwnerAsMailer(true);
@@ -689,7 +693,7 @@ class MailHelperTest extends TestCase
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $mailer->setBody('{signature}');
         $mailer->addTo($this->contacts[0]['email']);
         $mailer->send();
@@ -718,7 +722,7 @@ class MailHelperTest extends TestCase
         $this->coreParametersHelper->method('get')->willReturnMap($params);
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $mailer->addTo($this->contacts[0]['email']);
 
         $email = new Email();
@@ -750,7 +754,7 @@ class MailHelperTest extends TestCase
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $mailer->addTo($this->contacts[0]['email']);
         $mailer->setTokens([
             '{contactfield=email}' => $this->contacts[0]['email'],
@@ -809,7 +813,7 @@ class MailHelperTest extends TestCase
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $mailer->setIdHash('hash');
 
         $email = new Email();
@@ -857,7 +861,7 @@ class MailHelperTest extends TestCase
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $mailer->setIdHash('hash');
 
         $email = new Email();
@@ -881,7 +885,7 @@ class MailHelperTest extends TestCase
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
 
-        return new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        return new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
     }
 
     /**
@@ -940,7 +944,7 @@ class MailHelperTest extends TestCase
             );
 
         $symfonyMailer = new Mailer(new SmtpTransport());
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
 
         $mailer->setTo(['sombody@somewhere.com', 'sombodyelse@somewhere.com'], 'test');
 
@@ -971,7 +975,7 @@ class MailHelperTest extends TestCase
         $params[] = ['mailer_append_tracking_pixel', null, false];
         $this->coreParametersHelper->method('get')->willReturnMap($params);
         $symfonyMailer = new Mailer(new SmtpTransport());
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
 
         $mailer->addTo($this->contacts[0]['email']);
 
@@ -1005,7 +1009,7 @@ class MailHelperTest extends TestCase
                 ]
             );
 
-        $smtpMailHelper = new MailHelper($this->mockFactory, new Mailer(new SmtpTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $smtpMailHelper = new MailHelper($this->mockFactory, new Mailer(new SmtpTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $smtpMailHelper->addTo($this->contacts[0]['email']);
 
         $email = new Email();
@@ -1055,7 +1059,7 @@ class MailHelperTest extends TestCase
 
         $this->router->method('generate')->willReturn('http://tracking.url');
         $transport = new BatchTransport();
-        $mailer    = new MailHelper($this->mockFactory, new Mailer($transport), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer    = new MailHelper($this->mockFactory, new Mailer($transport), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $email     = new Email();
 
         // We should use a local image to avoid network requests.
@@ -1101,7 +1105,7 @@ class MailHelperTest extends TestCase
         $this->router->method('generate')->willReturn('http://tracking.url');
 
         $transport = new BatchTransport();
-        $mailer    = new MailHelper($this->mockFactory, new Mailer($transport), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class));
+        $mailer    = new MailHelper($this->mockFactory, new Mailer($transport), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->slotsHelper, $this->createMock(EventDispatcherInterface::class), $this->requestStack);
         $email     = new Email();
 
         $email->setUseOwnerAsMailer(false);
