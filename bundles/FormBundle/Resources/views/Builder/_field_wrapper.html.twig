@@ -36,36 +36,31 @@
             <!-- end: "{{ template }}" -->
         </div>
 
-        {% if ((field.showWhenValueExists is defined and false is same as field.showWhenValueExists) or field.showAfterXSubmissions is not empty)
-            or (true is same as field.alwaysDisplay|default(null))
-            or (field.mappedField|default(null) is not empty)
-            or (field.conditions|default(null) is not empty)
-        %}
-            <div class="panel-footer">
-                {% if field.conditions.expr is defined and field.conditions.expr is not empty %}
-                    <span class="inline-spacer">
-                      <span style="text-transform: none">{{ 'mautic.form.field.form.condition.show.on'|trans }}</span>
-                      <strong>{{ formFields[field['parent']]['label'] }}</strong>
-                      <span style="text-transform: none">
-                          {{ ('mautic.core.operator.' ~ field['conditions']['expr']|lower)|trans }}
-                          {{ 'mautic.form.field.form.condition.select.value'|trans }}
-                      </span>
-                      <strong>
-                          {% if 'in' is same as field.conditions.expr and (field.conditions.any is not empty and 0 is not same as field.conditions.any) %}
-                              *
-                          {% else %}
-                            {{ field.conditions.values|join(', ') }}
-                          {% endif %}
-                      </strong>
-                    </span>
-                    <br>
-                {% endif %}
+        {% if (field.conditions|default(null) is not empty) %}
+        <div class="panel-footer">
+            {% if field.conditions.expr is defined and field.conditions.expr is not empty %}
+                <span class="inline-spacer">
+                  <span style="text-transform: none">{{ 'mautic.form.field.form.condition.show.on'|trans }}</span>
+                  <strong>{{ formFields[field['parent']]['label'] }}</strong>
+                  <span style="text-transform: none">
+                      {{ ('mautic.core.operator.' ~ field['conditions']['expr']|lower)|trans }}
+                      {{ 'mautic.form.field.form.condition.select.value'|trans }}
+                  </span>
+                  <strong>
+                      {% if 'in' is same as field.conditions.expr and (field.conditions.any is not empty and 0 is not same as field.conditions.any) %}
+                          *
+                      {% else %}
+                        {{ field.conditions.values|join(', ') }}
+                      {% endif %}
+                  </strong>
+                </span>
+                <br>
+            {% endif %}
 
-                {% include '@MauticForm/Builder/_labels.html.twig' %}
-
-                
-            </div>
+        </div>
         {% endif %}
+
+        {% include '@MauticForm/Builder/_labels.html.twig' %}
 
         {% if (isConditional is not defined or (isConditional is defined and isConditional is same as false)) and fields is defined and field.type in enumConditionalFieldTypes() %}
             <div class="row ml-15 mr-0 pb-15">
