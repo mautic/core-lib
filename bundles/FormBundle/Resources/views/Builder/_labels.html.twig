@@ -61,6 +61,19 @@
         } %}
     {% endif %}
 
+    <!-- Multiple -->
+    {% if field.properties.multiple is defined and field.properties.multiple == 1 %}
+        {% include '@MauticCore/Helper/_tag.html.twig' with {
+            tags: [
+                {
+                    label: 'mautic.form.field.form.multiple',
+                    icon: 'ri-list-check-2',
+                    color: 'gray'
+                }
+            ]
+        } %}
+    {% endif %}
+
     {% if field.alwaysDisplay is defined and field.alwaysDisplay %}
         <!-- Always display -->
         {% if field.alwaysDisplay == 1 %}
