@@ -142,6 +142,18 @@
         } %}
     {% endif %}
 
+    <!-- Set as profile image -->
+    {% if field.properties.profile_image is defined and field.properties.profile_image == 1 %}
+        {% include '@MauticCore/Helper/_tag.html.twig' with {
+            tags: [
+                {
+                    label: 'mautic.form.field.file.set_as_profile_image',
+                    icon: 'ri-user-smile-line',
+                    color: 'gray'
+                }
+            ]
+        } %}
+    {% endif %}
 {% endset %}
 
 {% if footerContent|trim is not empty %}
