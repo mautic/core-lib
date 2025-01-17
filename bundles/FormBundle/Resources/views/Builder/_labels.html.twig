@@ -20,6 +20,47 @@
         } %}
     {% endif %}
 
+    <!-- Field type -->
+    {% set typeIcons = {
+        'button': 'ri-cursor-fill',
+        'captcha': 'ri-shield-check-line',
+        'checkboxgrp': 'ri-checkbox-multiple-line',
+        'freetext': 'ri-text',
+        'freehtml': 'ri-code-line',
+        'hidden': 'ri-eye-off-line',
+        'lookup': 'ri-search-line',
+        'password': 'ri-lock-password-line',
+        'pagebreak': 'ri-separator',
+        'radiogrp': 'ri-radio-button-line',
+        'textarea': 'ri-text-wrap',
+        'url': 'ri-link',
+        'text': 'ri-input-field',
+        'select': 'ri-list-check',
+        'country': 'ri-map-pin-line',
+        'tel': 'ri-phone-line',
+        'email': 'ri-mail-line',
+        'date': 'ri-calendar-line',
+        'datetime': 'ri-calendar-schedule-line',
+        'companyLookup': 'ri-building-line',
+        'file': 'ri-file-upload-line'
+    } %}
+
+    {% if field.type is defined %}
+        {% include '@MauticCore/Helper/_tag.html.twig' with {
+            tags: [
+                {
+                    label: 'mautic.form.field.type.' ~ field.type,
+                    icon: typeIcons[field.type] ?? 'ri-input-field',
+                    color: 'gray',
+                    attributes: {
+                        'data-toggle': 'tooltip',
+                        'data-original-title': 'mautic.form.field.type'|trans
+                    }
+                }
+            ]
+        } %}
+    {% endif %}
+
     {% if field.alwaysDisplay is defined and field.alwaysDisplay %}
         <!-- Always display -->
         {% if field.alwaysDisplay == 1 %}
