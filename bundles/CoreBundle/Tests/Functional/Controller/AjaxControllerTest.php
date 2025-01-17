@@ -97,7 +97,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         yield 'Search API' => [
             'client',
             $apiClient,
-            's/credentials/view/',
+            's/credentials/edit/',
         ];
 
         // Asset
@@ -375,7 +375,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
                 'bitwise'   => 32, // just create
             ],
             // link
-            's/credentials/view/',
+            's/credentials/edit/',
         ];
 
         $asset = $this->createAsset();
