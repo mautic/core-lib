@@ -15,7 +15,8 @@
     - conditionalFieldTypes
 #}
 {% set inBuilder = inBuilder|default(false) %}
-<div class="{% if isConditional is not defined or (isConditional is defined and false == isConditional) %}panel{% else %}panel2{% endif %} form-field-wrapper" data-sortable-id="mauticform_{{ field.id }}">
+<div class="pb-lg"></div>
+<div class="{% if isConditional is not defined or (isConditional is defined and false == isConditional) %}panel{% else %}panel2{% endif %} form-field-wrapper mb-0 mt-lg" data-sortable-id="mauticform_{{ field.id }}">
         {{ include('@MauticForm/Builder/_actions.html.twig', {
                 'id': field.id,
                 'formId': formId,
@@ -60,7 +61,7 @@
         </div>
         {% endif %}
 
-        {% include '@MauticForm/Builder/_labels.html.twig' %}
+
 
         {% if (isConditional is not defined or (isConditional is defined and isConditional is same as false)) and fields is defined and field.type in enumConditionalFieldTypes() %}
             <div class="row ml-15 mr-0 pb-15">
@@ -108,3 +109,5 @@
             {% endif %}
         {% endfor %}
 </div>
+
+    {% include '@MauticForm/Builder/_labels.html.twig' %}
