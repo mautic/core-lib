@@ -6,6 +6,11 @@
     <a href="{{ url('mautic_message_action', {'objectAction': 'view', 'objectId': item.id}) }}" data-toggle="ajax">
         <span class="fw-sb">{{ item.name }}</span>
         <span class="ml-4 mr-sm">#{{ item.id }}</span>
+        {{- include('@MauticCore/Helper/publishstatus_badge.html.twig', {
+            'entity': item,
+            'status': 'available',
+            'simplified': 'true'
+        }) -}}
     </a>
     <div class="clearfix"></div>
 {% endif %}
