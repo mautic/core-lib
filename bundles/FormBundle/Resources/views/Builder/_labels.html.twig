@@ -154,6 +154,19 @@
             ]
         } %}
     {% endif %}
+
+    <!-- International phone number -->
+    {% if field.validation.international is defined and field.validation.international == 1 %}
+        {% include '@MauticCore/Helper/_tag.html.twig' with {
+            tags: [
+                {
+                    label: 'mautic.form.field.type.tel.international',
+                    icon: 'ri-earth-line',
+                    color: 'gray'
+                }
+            ]
+        } %}
+    {% endif %}
 {% endset %}
 
 {% if footerContent|trim is not empty %}
