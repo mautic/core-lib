@@ -129,6 +129,19 @@
         } %}
     {% endif %}
 
+    <!-- Public -->
+    {% if field.properties.public is defined and field.properties.public == 1 %}
+        {% include '@MauticCore/Helper/_tag.html.twig' with {
+            tags: [
+                {
+                    label: 'mautic.form.field.file.public',
+                    icon: 'ri-global-line',
+                    color: 'gray'
+                }
+            ]
+        } %}
+    {% endif %}
+
 {% endset %}
 
 {% if footerContent|trim is not empty %}
