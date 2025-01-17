@@ -6,8 +6,7 @@
 
         {% include '@MauticCore/Helper/_tag.html.twig' with {
             'tags': [{
-                'type': 'read-only',
-                'color': 'warm-gray',
+                'color': 'primary',
                 'icon': field.mappedObject == 'company' ? 'ri-building-3-line' : (field.mappedObject == 'contact' ? 'ri-contacts-book-line' : 'ri-shape-line'),
                 'label': fieldCollection[field.mappedField] is defined ? fieldCollection[field.mappedField].name :
                         (field.mappedObject == 'contact' ? ('mautic.core.' ~ field.mappedField) :
@@ -22,7 +21,7 @@
 
     <!-- Field type -->
     {% set typeIcons = {
-        'button': 'ri-cursor-fill',
+        'button': 'ri-rectangle-fill',
         'captcha': 'ri-shield-check-line',
         'checkboxgrp': 'ri-checkbox-multiple-line',
         'freetext': 'ri-text',
@@ -51,7 +50,7 @@
                 {
                     label: 'mautic.form.field.type.' ~ field.type,
                     icon: typeIcons[field.type] ?? 'ri-input-field',
-                    color: 'gray',
+                    color: 'high-contrast',
                     attributes: {
                         'data-toggle': 'tooltip',
                         'data-original-title': 'mautic.form.field.type'|trans
@@ -68,7 +67,7 @@
                 {
                     label: 'mautic.form.field.form.multiple',
                     icon: 'ri-list-check-2',
-                    color: 'gray'
+                    color: 'warm-gray'
                 }
             ]
         } %}
@@ -81,7 +80,7 @@
             tags: [
                 {
                     label: 'mautic.form.field.form.always_display',
-                    icon: 'ri-eye-line',
+                    icon: 'ri-eye-fill',
                     color: 'green'
                 }
             ]
@@ -89,16 +88,16 @@
         {% endif %}
     {% else %}
         <!-- Show when value exists -->
-        {% if field.showWhenValueExists == 1 %}
-        {% include '@MauticCore/Helper/_tag.html.twig' with {
-            tags: [
-                {
-                    label: 'mautic.form.field.form.show.when.value.exists',
-                    icon: 'ri-refresh-fill',
-                    color: 'green'
-                }
-            ]
-        } %}
+        {% if field.showWhenValueExists is defined and field.showWhenValueExists == 0 %}
+            {% include '@MauticCore/Helper/_tag.html.twig' with {
+                tags: [
+                    {
+                        label: 'mautic.form.field.form.hide_when_value_exists',
+                        icon: 'ri-refresh-fill',
+                        color: 'green'
+                    }
+                ]
+            } %}
         {% endif %}
 
         <!-- Show after X submissions -->
@@ -128,20 +127,6 @@
     } %}
     {% endif %}
 
-    <!-- Required -->
-    {% if field.isRequired is defined and field.isRequired == 1 %}
-        {% include '@MauticCore/Helper/_tag.html.twig' with {
-            tags: [
-                {
-                    label: 'mautic.core.required',
-                    icon: 'ri-asterisk',
-                    color: 'red',
-                    icon_only: true
-                }
-            ]
-        } %}
-    {% endif %}
-
     <!-- Public -->
     {% if field.properties.public is defined and field.properties.public == 1 %}
         {% include '@MauticCore/Helper/_tag.html.twig' with {
@@ -149,7 +134,7 @@
                 {
                     label: 'mautic.form.field.file.public',
                     icon: 'ri-global-line',
-                    color: 'gray'
+                    color: 'warm-gray'
                 }
             ]
         } %}
@@ -162,7 +147,7 @@
                 {
                     label: 'mautic.form.field.file.set_as_profile_image',
                     icon: 'ri-user-smile-line',
-                    color: 'gray'
+                    color: 'warm-gray'
                 }
             ]
         } %}
@@ -175,11 +160,29 @@
                 {
                     label: 'mautic.form.field.type.tel.international',
                     icon: 'ri-earth-line',
-                    color: 'gray'
+                    color: 'warm-gray'
                 }
             ]
         } %}
     {% endif %}
+
+    <!-- Required -->
+    {% if field.isRequired is defined and field.isRequired == 1 %}
+    {% include '@MauticCore/Helper/_tag.html.twig' with {
+        tags: [
+            {
+                label: 'mautic.core.required',
+                icon: 'ri-asterisk',
+                color: 'red',
+                icon_only: true,
+                attributes: {
+                    'class': 'ml-a'
+                }
+            }
+        ]
+    } %}
+    {% endif %}
+
 {% endset %}
 
 {% if footerContent|trim is not empty %}
