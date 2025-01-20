@@ -73,7 +73,7 @@ class ReportModel extends FormModel
         Translator $translator,
         UserHelper $userHelper,
         LoggerInterface $mauticLogger,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
     ) {
         $this->defaultPageLimit  = $coreParametersHelper->get('default_pagelimit');
 
@@ -309,12 +309,9 @@ class ReportModel extends FormModel
     }
 
     /**
-     * @property filterList
-     * @property definitions
-     *
      * @param string $context
      *
-     * @return \stdClass[filterList => [], definitions => [], operatorChoices =>  [], operatorHtml => [], filterListHtml => '']
+     * return \stdClass{filterList: mixed[], definitions: mixed[], operatorChoices: mixed[], operatorHtml: mixed[], filterListHtml: string}
      */
     public function getFilterList($context = 'all'): \stdClass
     {
