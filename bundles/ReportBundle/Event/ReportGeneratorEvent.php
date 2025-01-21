@@ -255,8 +255,6 @@ class ReportGeneratorEvent extends AbstractReportEvent
      * @param string $tablePrefix
      * @param bool   $dateOnly
      *
-     * @return $this
-     *
      * @throws \Exception
      */
     public function applyDateFilters(QueryBuilder $queryBuilder, $dateColumn, $tablePrefix = 't', $dateOnly = false): ReportGeneratorEvent
