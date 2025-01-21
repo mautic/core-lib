@@ -114,6 +114,28 @@ class CommonController extends AbstractController implements MauticController
     }
 
     /**
+     * eventAwareRenderView.
+     *
+     * @param array<string, string> $parameters
+     */
+    public function eventAwareRenderView(string &$contentTemplate, array &$parameters, Request $request = null): string
+    {
+        if ($this->dispatcher->hasListeners(CoreEvents::VIEW_INJECT_CUSTOM_TEMPLATE)) {
+            $event = $this->dispatcher->dispatch(
+                new CustomTemplateEvent($request, $contentTemplate, $parameters),
+                CoreEvents::VIEW_INJECT_CUSTOM_TEMPLATE
+            );
+
+            /** @var string $contentTemplate */
+            $contentTemplate   = $event->getTemplate();
+            /** @var array<string, string> $parameters */
+            $parameters        = $event->getVars();
+        }
+
+        return $this->renderView($contentTemplate, $parameters);
+    }
+
+    /**
      * Determines if ajax content should be returned or direct content (page refresh).
      *
      * @param array $args
