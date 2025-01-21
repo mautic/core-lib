@@ -322,6 +322,9 @@ class ReportGeneratorEventTest extends TestCase
         $this->reportGeneratorEvent->applyDateFilters($this->queryBuilder, $dateColumn, $tablePrefix, $dateOnly);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function applyFilterProvider(): array
     {
         return [
@@ -364,6 +367,9 @@ class ReportGeneratorEventTest extends TestCase
         $this->reportGeneratorEvent->applyDateFiltersWithoutNullValues($this->queryBuilder, $dateColumn, $tablePrefix, $dateOnly);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function applyFilterWithoutNullValuesProvider(): array
     {
         return [
