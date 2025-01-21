@@ -81,6 +81,7 @@
             <tbody>
             {% for i in items %}
                 {% set item = i[0] %}
+                {% set mauticTemplateVars = mauticTemplateVars|merge({'item': item}) %}
                 <tr>
                     <td>
                         {{ include('@MauticCore/Helper/list_actions.html.twig', {
@@ -118,6 +119,7 @@
                                 </span>
                             {% endif %}
                         </a>
+                        {{ customContent('page.name', mauticTemplateVars) }}
                     </td>
                     <td class="visible-md visible-lg">
                         {% set category = item.category %}

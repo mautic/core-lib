@@ -51,6 +51,7 @@
             </thead>
             <tbody>
             {% for item in items %}
+                {% set mauticTemplateVars = mauticTemplateVars|merge({'item': item}) %}
                 <tr>
                     <td>
                         {{ include('@MauticCore/Helper/list_actions.html.twig', {
@@ -82,6 +83,7 @@
                                  </span>
                             {% endif %}
                         </a>
+                        {{ customContent('dynamiccontent.name', mauticTemplateVars) }}
                     </td>
                     <td class="visible-md visible-lg">{{ item.slotName }}</td>
                     <td class="visible-md visible-lg">

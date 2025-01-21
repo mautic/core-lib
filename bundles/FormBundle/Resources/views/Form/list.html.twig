@@ -100,13 +100,13 @@
     }) -}}
 
         <div class="page-list">
-          {{ include('@MauticForm/Form/_list.html.twig') }}
+          {{ include('@MauticForm/Form/_list.html.twig', mauticTemplateVars) }}
         </div>
     </div>
     {{ include('@MauticCore/Helper/protip.html.twig', {
       tip: random(['mautic.protip.forms.redirect', 'mautic.protip.forms.minimize', 'mautic.protip.forms.language', 'mautic.protip.forms.multistep'])
   }) }}
   {% else %}
-    {{ include('@MauticForm/Form/_list.html.twig') }}
+    {{ include('@MauticForm/Form/_list.html.twig', mauticTemplateVars) }}
   {% endif %}
 {% endblock %}

@@ -68,6 +68,6 @@
         </div>
     </div>
   {% else %}
-    {{ include('@MauticDynamicContent/DynamicContent/_list.html.twig') }}
+    {{ include('@MauticDynamicContent/DynamicContent/_list.html.twig', mauticTemplateVars) }}
   {% endif %}
 {% endblock %}

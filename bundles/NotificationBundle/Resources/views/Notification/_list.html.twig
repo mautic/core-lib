@@ -48,6 +48,7 @@
             {# @var \Mautic\NotificationBundle\Entity\Notification $item #}
             {% for item in items %}
                 {% set type = item.notificationType %}
+                {% set mauticTemplateVars = mauticTemplateVars|merge({'item': item}) %}
                 <tr>
                     <td>
                         {{ include('@MauticCore/Helper/list_actions.html.twig', {
@@ -85,6 +86,7 @@
                                     <span data-toggle="tooltip" title="{{ 'mautic.notification.icon_tooltip.list_notification'|trans }}"><i class="ri-fw ri-list-check"></i></span>
                                 {% endif %}
                             </a>
+                            {{ customContent('notification.name', mauticTemplateVars) }}
                         </div>
                     </td>
                     <td class="visible-md visible-lg">
