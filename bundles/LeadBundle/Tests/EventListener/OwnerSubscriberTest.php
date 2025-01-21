@@ -5,6 +5,7 @@ namespace Mautic\LeadBundle\Tests\EventListener;
 use Mautic\CoreBundle\Event\TokenReplacementEvent;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\CoreBundle\Twig\Helper\SlotsHelper;
@@ -324,6 +325,7 @@ class OwnerSubscriberTest extends TestCase
             $twig,
             $themeHelper,
             $slotsHelper,
+            $this->createMock(PathsHelper::class),
             $this->createMock(EventDispatcherInterface::class),
             $requestStack,
         );
