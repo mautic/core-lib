@@ -397,10 +397,10 @@ class FieldType extends AbstractType
                     'label' => 'mautic.form.field.form.read_only',
                     'data'  => $isReadOnlyValue,
                     'attr'  => [
-                        'class'        => 'read-only-data',
-                        'tooltip'      => 'mautic.form.field.help.auto_fill',
-                        'data-hide-on' => '{"formfield_isAutoFill_0": "checked"}',
-                        'data-show-on' => '{"formfield_isAutoFill_1": "checked"}',
+                        'class'           => 'read-only-data',
+                        'tooltip'         => 'mautic.form.field.help.auto_fill',
+                        'data-disable-on' => '{"formfield_isAutoFill_0": "checked"}',
+                        'data-enable-on'  => '{"formfield_isAutoFill_1": "checked"}',
                     ],
                 ]
             );
