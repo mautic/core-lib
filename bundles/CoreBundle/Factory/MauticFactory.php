@@ -83,22 +83,6 @@ class MauticFactory
     }
 
     /**
-     * Get the path to specified area.  Returns relative by default with the exception of cache and log
-     * which will be absolute regardless of $fullPath setting.
-     *
-     * @param string $name
-     * @param bool   $fullPath
-     *
-     * @return string
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function getSystemPath($name, $fullPath = false)
-    {
-        return $this->container->get('mautic.helper.paths')->getSystemPath($name, $fullPath);
-    }
-
-    /**
      * Guess the IP address from current session.
      *
      * @return string
