@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Model\AbstractCommonModel;
-use Mautic\EmailBundle\Helper\MailHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -97,18 +96,6 @@ class MauticFactory
     public function getSystemPath($name, $fullPath = false)
     {
         return $this->container->get('mautic.helper.paths')->getSystemPath($name, $fullPath);
-    }
-
-    /**
-     * Returns MailHelper wrapper for Email via $helper->message.
-     *
-     * @param bool $cleanSlate False to preserve current settings, i.e. to process batched emails
-     *
-     * @return MailHelper
-     */
-    public function getMailer($cleanSlate = true)
-    {
-        return $this->container->get('mautic.helper.mailer')->getMailer($cleanSlate);
     }
 
     /**
