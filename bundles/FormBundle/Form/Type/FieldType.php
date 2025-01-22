@@ -389,7 +389,7 @@ class FieldType extends AbstractType
                 ]
             );
 
-            $isReadOnlyValue = (!isset($options['data']['isReadOnly'])) ? false : (bool) $options['data']['isReadOnly'];
+            $isReadOnlyValue = (bool) ($options['data']['isReadOnly'] ?? false);
             $builder->add(
                 'isReadOnly',
                 YesNoButtonGroupType::class,

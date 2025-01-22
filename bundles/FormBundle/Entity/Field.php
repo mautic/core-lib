@@ -1023,11 +1023,7 @@ class Field
 
     public function isAutoFillReadOnly(): bool
     {
-        if ($this->isAutoFill && $this->isReadOnly) {
-            return true;
-        }
-
-        return false;
+        return $this->isAutoFill && $this->isReadOnly;
     }
 
     public function setIsReadOnly(bool $isReadOnly): void
