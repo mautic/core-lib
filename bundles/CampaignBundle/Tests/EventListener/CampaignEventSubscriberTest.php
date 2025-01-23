@@ -261,8 +261,7 @@ class CampaignEventSubscriberTest extends TestCase
     {
         $mockEventLog = $this->createMock(LeadEventLog::class);
 
-        $lead = new Lead();
-        $lead->setId(null);
+        $lead            = new Lead();
         $lead->deletedId = 10;
 
         $eventMock = $this->createMock(Event::class);
@@ -270,24 +269,24 @@ class CampaignEventSubscriberTest extends TestCase
             ->method('getId')
             ->willReturn(1);
 
-        $mockEventLog->expects($this->at(0))
+        $mockEventLog->expects($this->once())
             ->method('getEvent')
             ->willReturn($eventMock);
 
-        $mockEventLog->expects($this->at(1))
+        $mockEventLog->expects($this->once())
             ->method('getLead')
             ->willReturn($lead);
 
         $this->leadEventLogRepositoryMock->expects($this->once())
             ->method('isLastFailed')
-            ->with($lead->deletedId, $eventMock->getId())
+            ->with($lead->deletedId, 1)
             ->willReturn(true);
 
         $executedEvent = new ExecutedEvent($this->createMock(AbstractEventAccessor::class), $mockEventLog);
 
         $this->eventRepo->expects($this->once())
             ->method('getFailedCountLeadEvent')
-            ->with($lead->deletedId, $eventMock->getId())
+            ->with($lead->deletedId, 1)
             ->willReturn(101);
 
         $this->eventRepo->expects($this->once())
