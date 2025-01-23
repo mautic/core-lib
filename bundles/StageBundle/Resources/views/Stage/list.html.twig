@@ -99,7 +99,6 @@
             </thead>
             <tbody>
             {% for item in items %}
-                {% set mauticTemplateVars = mauticTemplateVars|merge({'item': item}) %}
                 <tr>
                     <td>
                     {{- include('@MauticCore/Helper/list_actions.html.twig',
@@ -127,7 +126,7 @@
                             {% else %}
                                 {{ item.getName() }}
                             {% endif %}
-                            {{ customContent('stage.name', mauticTemplateVars) }}
+                            {{ customContent('stage.name', _context) }}
                         </div>
                         {% set description = item.getDescription() %}
                         {% if description %}

@@ -123,7 +123,6 @@
 				</thead>
 				<tbody>
 					{% for item in items %}
-                        {% set mauticTemplateVars = mauticTemplateVars|merge({'item': item}) %}
 						<tr>
 							<td>
 								{% set title = 'mautic.category.header.edit'|trans({'%type%' :  ('mautic.' ~ item.getBundle() ~ '.' ~ item.getBundle())|trans, '%name%' :  item.getTitle()}) %}
@@ -161,7 +160,7 @@
                                     {% if permissions[permissionBase ~ ':edit'] %}
                                         </a>
                                     {% endif %}
-                                    {{ customContent('category.name', mauticTemplateVars) }}
+                                    {{ customContent('category.name', _context) }}
                                 </div>
                                 {% set description = item.getDescription() %}
                                 {% if description %}

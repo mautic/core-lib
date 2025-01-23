@@ -49,7 +49,6 @@
             </thead>
             <tbody>
             {% for item in items %}
-                {% set mauticTemplateVars = mauticTemplateVars|merge({'item': item}) %}
                 <tr>
                     <td>
                         {{ include('@MauticCore/Helper/list_actions.html.twig', {
@@ -72,7 +71,7 @@
                             {% else %}
                                 {{ item.name }}
                             {% endif %}
-                            {{ customContent('point.name', mauticTemplateVars) }}
+                            {{ customContent('point.name', _context) }}
                         </div>
                         {% if item.description is not empty %}
                             <div class="text-secondary mt-4">

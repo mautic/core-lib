@@ -143,7 +143,6 @@
             </thead>
             <tbody>
             {% for k, item in items %}
-                {% set mauticTemplateVars = mauticTemplateVars|merge({'item': item}) %}
                 <tr>
                     <td>
                         {{- include(
@@ -200,7 +199,7 @@
                                 {{ item.getTitle() }} ({{ item.getAlias() }})
                             </a>
                             <i class="{{ item.getIconClass() }}"></i>
-                            {{ customContent('asset.name', mauticTemplateVars) }}
+                            {{ customContent('asset.name', _context) }}
                         </div>
                         {% set description = item.getDescription() %}
                         {% if description %}
