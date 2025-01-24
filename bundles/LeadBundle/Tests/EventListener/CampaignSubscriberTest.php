@@ -139,10 +139,7 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
      */
     private $subscriber;
 
-    /**
-     * @var FilterOperatorProvider|MockObject
-     */
-    private $filterOperatorProvider;
+    private FilterOperatorProvider $filterOperatorProvider;
 
     /**
      * @var DoNotContact|MockObject
