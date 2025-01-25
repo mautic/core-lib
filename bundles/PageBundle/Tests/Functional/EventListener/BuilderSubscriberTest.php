@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Mautic\PageBundle\Tests\Functional\EventListener;
 
-use Mautic\CategoryBundle\Entity\Category;
-use Mautic\CoreBundle\Test\AbstractMauticTestCase;
-use Mautic\EmailBundle\Entity\Email;
-use Mautic\EmailBundle\Entity\Stat;
-use Mautic\EmailBundle\Helper\MailHashHelper;
-use Mautic\LeadBundle\Entity\Lead;
-use Mautic\LeadBundle\Entity\LeadList as Segment;
-use Mautic\PageBundle\Entity\Page;
 use PHPUnit\Framework\Assert;
+use Mautic\LeadBundle\Entity\Lead;
+use Mautic\PageBundle\Entity\Page;
+use Mautic\EmailBundle\Entity\Stat;
+use Mautic\EmailBundle\Entity\Email;
+use Mautic\CategoryBundle\Entity\Category;
+use Mautic\EmailBundle\Helper\MailHashHelper;
+use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\LeadBundle\Entity\LeadList as Segment;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -20,8 +20,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @preserveGlobalState disabled
  */
-class BuilderSubscriberTest extends AbstractMauticTestCase
+class BuilderSubscriberTest extends MauticMysqlTestCase
 {
+    protected $useCleanupRollback = false;
+
     // Custom preference center page
     public const CUSTOM_SEGMENT_SELECTOR           = '.pref-segmentlist';
     public const CUSTOM_CATEGORY_SELECTOR          = '.pref-categorylist';
@@ -41,6 +43,15 @@ class BuilderSubscriberTest extends AbstractMauticTestCase
     public const TOKEN_SELECTOR = '#lead_contact_frequency_rules__token';
     public const FORM_SELECTOR  = 'form[name="lead_contact_frequency_rules"]';
 
+    protected function setUp(): void
+    {
+        $this->configParams['show_contact_preferences'] = 1;
+        $data = $this->getProvidedData();
+        $this->configParams = array_merge($data[0], $this->configParams);
+
+        parent::setUp();
+    }
+
     /**
      * Tests both the default and custom preference center pages.
      *
@@ -51,8 +62,6 @@ class BuilderSubscriberTest extends AbstractMauticTestCase
      */
     public function testUnsubscribeFormRendersPreferenceCenterPageCorrectly(array $configParams, array $selectorsAndExpectedCounts, bool $hasPreferenceCenter): void
     {
-        $this->setUpSymfony(array_merge(['show_contact_preferences' => 1], $configParams, $this->configParams));
-
         $emailStat = $this->createStat(
             $this->createEmail($hasPreferenceCenter),
             $lead = $this->createLead()
