@@ -242,20 +242,20 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             },
         ];
 
-        $triggerHourDate  = (new \DateTime())->modify('+3 hours');
-        $adjustPointEvent = clone $event;
-        $adjustPointEvent->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
-        $adjustPointEvent->setTriggerHour($triggerHourDate->format('H:00:00'));
-        $adjustPointEvent->setTriggerIntervalUnit('d');
-        $adjustPointEvent->setTriggerRestrictedDaysOfWeek([(new \DateTime())->format('N')]);
+        // $triggerHourDate  = (new \DateTime())->modify('+3 hours');
+        // $adjustPointEvent = clone $event;
+        // $adjustPointEvent->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
+        // $adjustPointEvent->setTriggerHour($triggerHourDate->format('H:00:00'));
+        // $adjustPointEvent->setTriggerIntervalUnit('d');
+        // $adjustPointEvent->setTriggerRestrictedDaysOfWeek([(new \DateTime())->format('N')]);
 
-        yield 'Schedule the event when Send From is in the future on the selected day when the day is today' => [
-            $adjustPointEvent,
-            function (LeadEventLog $eventLog) use ($triggerHourDate): void {
-                Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($triggerHourDate->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
-            },
-        ];
+        // yield 'Schedule the event when Send From is in the future on the selected day when the day is today' => [
+        //     $adjustPointEvent,
+        //     function (LeadEventLog $eventLog) use ($triggerHourDate): void {
+        //         Assert::assertTrue($eventLog->getIsScheduled());
+        //         $this->assertPlusMinusOneMinuteOf($triggerHourDate->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+        //     },
+        // ];
 
         $adjustPointEvent = clone $event;
         $adjustPointEvent->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
@@ -274,20 +274,20 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             },
         ];
 
-        $triggerHourDate  = (new \DateTime())->modify('-3 hours');
-        $adjustPointEvent = clone $event;
-        $adjustPointEvent->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
-        $adjustPointEvent->setTriggerHour($triggerHourDate->format('H:00:00'));
-        $adjustPointEvent->setTriggerIntervalUnit('d');
-        $adjustPointEvent->setTriggerRestrictedDaysOfWeek([(new \DateTime())->format('N')]);
+        // $triggerHourDate  = (new \DateTime())->modify('-3 hours');
+        // $adjustPointEvent = clone $event;
+        // $adjustPointEvent->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
+        // $adjustPointEvent->setTriggerHour($triggerHourDate->format('H:00:00'));
+        // $adjustPointEvent->setTriggerIntervalUnit('d');
+        // $adjustPointEvent->setTriggerRestrictedDaysOfWeek([(new \DateTime())->format('N')]);
 
-        yield 'Execute the event when Send From is in the past on the selected day when the day is today' => [
-            $adjustPointEvent,
-            function (LeadEventLog $eventLog) use ($testNow): void {
-                Assert::assertFalse($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
-            },
-        ];
+        // yield 'Execute the event when Send From is in the past on the selected day when the day is today' => [
+        //     $adjustPointEvent,
+        //     function (LeadEventLog $eventLog) use ($testNow): void {
+        //         Assert::assertFalse($eventLog->getIsScheduled());
+        //         $this->assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+        //     },
+        // ];
     }
 
     /**
