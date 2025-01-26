@@ -1127,7 +1127,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     public function &getEmailSettings(Email $email, $includeVariants = true)
     {
         if (empty($this->emailSettings[$email->getId()])) {
-
             // store the settings of all the variants in order to properly disperse the emails
             // set the parent's settings
             $emailSettings = [

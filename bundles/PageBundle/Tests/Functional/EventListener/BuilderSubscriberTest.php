@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Mautic\PageBundle\Tests\Functional\EventListener;
 
-use PHPUnit\Framework\Assert;
-use Mautic\LeadBundle\Entity\Lead;
-use Mautic\PageBundle\Entity\Page;
-use Mautic\EmailBundle\Entity\Stat;
-use Mautic\EmailBundle\Entity\Email;
 use Mautic\CategoryBundle\Entity\Category;
-use Mautic\EmailBundle\Helper\MailHashHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\EmailBundle\Entity\Email;
+use Mautic\EmailBundle\Entity\Stat;
+use Mautic\EmailBundle\Helper\MailHashHelper;
+use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList as Segment;
+use Mautic\PageBundle\Entity\Page;
+use PHPUnit\Framework\Assert;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -46,8 +46,8 @@ class BuilderSubscriberTest extends MauticMysqlTestCase
     protected function setUp(): void
     {
         $this->configParams['show_contact_preferences'] = 1;
-        $data = $this->getProvidedData();
-        $this->configParams = array_merge($data[0], $this->configParams);
+        $data                                           = $this->getProvidedData();
+        $this->configParams                             = array_merge($data[0], $this->configParams);
 
         parent::setUp();
     }
