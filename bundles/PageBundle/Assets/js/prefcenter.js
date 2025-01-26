@@ -4,17 +4,29 @@ if (typeof MauticPrefCenterLoaded === 'undefined') {
 
     function togglePreferredChannel(channel) {
         var status = document.getElementById(channel).checked;
-        if (status) {
-            document.getElementById('lead_contact_frequency_rules_frequency_number_' + channel).disabled = false;
-            document.getElementById('lead_contact_frequency_rules_frequency_time_' + channel).disabled = false;
-            document.getElementById('lead_contact_frequency_rules_contact_pause_start_date_' + channel).disabled = false;
-            document.getElementById('lead_contact_frequency_rules_contact_pause_end_date_' + channel).disabled = false;
-        } else {
-            document.getElementById('lead_contact_frequency_rules_frequency_number_' + channel).disabled = true;
-            document.getElementById('lead_contact_frequency_rules_frequency_time_' + channel).disabled = true;
-            document.getElementById('lead_contact_frequency_rules_contact_pause_start_date_' + channel).disabled = true;
-            document.getElementById('lead_contact_frequency_rules_contact_pause_end_date_' + channel).disabled = true;
-        }
+        const fieldsToToggle = [
+            'frequency_number',
+            'frequency_time',
+            'contact_pause_start_date',
+            'contact_pause_end_date',
+            // Do we need the 4 above?
+            'lead_channels_frequency_number',
+            'lead_channels_frequency_time',
+            'lead_channels_contact_pause_start_date',
+            'lead_channels_contact_pause_end_date',
+        ];
+        fieldsToToggle.forEach(field => {
+            const element = document.getElementById('lead_contact_frequency_rules_' + field + '_' + channel);
+
+            if (element) {
+                if (status) {
+                    element.removeAttribute('disabled');
+                } else {
+                    element.setAttribute('disabled', 'disabled');
+                }
+                element.dispatchEvent(new CustomEvent('chosen:updated'));
+            }
+        });
     }
 
     function saveUnsubscribePreferences(formId) {
