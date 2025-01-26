@@ -46,6 +46,44 @@ Mautic.openMediaManager = function() {
 }
 
 /**
+ * Removes stuff the Builder needs for it's magic but cannot be in the HTML result
+ *
+ * @param  object htmlContent
+ */
+Mautic.sanitizeHtmlBeforeSave = function(htmlContent) {
+    // Remove Mautic's assets
+    htmlContent.find('[data-source="mautic"]').remove();
+    htmlContent.find('.atwho-container').remove();
+    htmlContent.find('.fr-image-overlay, .fr-quick-insert, .fr-tooltip, .fr-toolbar, .fr-popup, .fr-image-resizer').remove();
+
+    // Remove the slot focus highlight
+    htmlContent.find('[data-slot-focus], [data-section-focus]').remove();
+
+    // Replace all url("${URL}") with url('${URL}')
+    var customHtml = Mautic.domToString(htmlContent).replace(/url\(&quot;(.+)&quot;\)/g, 'url(\'$1\')');
+
+    // Convert dynamic slot definitions into tokens
+    // customHtml = Mautic.convertDynamicContentSlotsToTokens(customHtml);
+
+    // return Mautic.prepareCodeModeBlocksBeforeSave(customHtml);
+    return customHtml;
+};
+
+/**
+ * Serializes DOM (full HTML document) to string
+ *
+ * @param  object dom
+ * @return string
+ */
+Mautic.domToString = function(dom) {
+    if (typeof dom === 'string') {
+        return dom;
+    }
+    var xs = new XMLSerializer();
+    return xs.serializeToString(dom.get(0));
+};
+
+/**
  * Receives a file URL from Filemanager when selected
  */
 Mautic.setFileUrl = function(url, width, height, alt) {
