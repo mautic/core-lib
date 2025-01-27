@@ -11,7 +11,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\Event;
 
-class FormModelTest extends TestCase
+final class FormModelTest extends TestCase
 {
     /**
      * @var FormModel
