@@ -14,7 +14,7 @@ final class AutoFillReadOnlyFormSubmissionTest extends MauticMysqlTestCase
     protected $useCleanupRollback = false;
 
     /**
-     * @param array<string, bool>   $data
+     * @param array<string, bool|null>   $data
      * @param array<string, string> $expected
      *
      * @dataProvider dataForReadOnlyConfigurationSetting
@@ -51,7 +51,7 @@ final class AutoFillReadOnlyFormSubmissionTest extends MauticMysqlTestCase
     }
 
     /**
-     * @return iterable<string, array<int, array<string, bool|string>>>
+     * @return iterable<string, array<int, array<string, bool|string|null>>>
      */
     public function dataForReadOnlyConfigurationSetting(): iterable
     {
