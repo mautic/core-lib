@@ -52,7 +52,7 @@
             'color': 'green',
             'icon': field.mappedObject == 'company' ? 'ri-building-3-line' : (field.mappedObject == 'contact' ? 'ri-contacts-book-line' : 'ri-shape-line'),
             'label': fieldCollection[field.mappedField] is defined ? fieldCollection[field.mappedField].name :
-                    (field.mappedObject == 'contact' ? ('mautic.core.' ~ field.mappedField) :
+                    (field.mappedObject == 'contact' ? ('mautic.lead.field.' ~ field.mappedField) :
                     (field.mappedObject == 'company' ? ('mautic.lead.field.' ~ field.mappedField) : field.mappedField)),
             'attributes': {
                 'data-toggle': 'tooltip',
