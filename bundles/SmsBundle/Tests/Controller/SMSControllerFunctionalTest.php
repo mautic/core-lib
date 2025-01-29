@@ -108,7 +108,7 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertInstanceOf(Sms::class, $savedSms);
         Assert::assertSame($clonedMessage, $savedSms->getMessage());
         Assert::assertSame($media, $savedSms->getMedia());
-        Assert::assertTrue($savedSms->isMms());
+        Assert::assertTrue($savedSms->getIsMms());
     }
 
     public function testSaveSmsWithMediaFalse(): void
@@ -129,7 +129,7 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
         $savedSms = $this->em->getRepository(Sms::class)->find($sms->getId());
         Assert::assertInstanceOf(Sms::class, $savedSms);
         Assert::assertSame([], $savedSms->getMedia());
-        Assert::assertFalse($savedSms->isMms());
+        Assert::assertFalse($savedSms->getIsMms());
     }
 
     /**

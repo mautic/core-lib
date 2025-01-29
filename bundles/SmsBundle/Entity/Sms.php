@@ -46,7 +46,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
     normalizationContext: [
         'groups'                  => ['sms:read'],
         'swagger_definition_name' => 'Read',
-        'api_included'            => ['category'],
+        'api_included'            => ['category', 'lists'],
     ],
     denormalizationContext: [
         'groups'                  => ['sms:write'],
@@ -133,16 +133,21 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
     /**
      * @var array<mixed>
+     *
+     * @Groups({"sms:read", "sms:write"})
      */
     private array $media = [];
 
+    /**
+     * @Groups({"sms:read", "sms:write"})
+     */
     private bool $isMms = false;
 
     /**
      * @var int
      */
     #[Groups(['sms:read'])]
-    private $pendingCount = 0;
+    private ?int $pendingCount = 0;
 
     public function __clone()
     {
@@ -208,7 +213,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
             ->setJoinTable('sms_message_list_xref')
             ->setIndexBy('id')
             ->addInverseJoinColumn('leadlist_id', 'id', false, false, 'CASCADE')
-            ->addJoinColumn('sms_id', 'id', false, false, 'CASCADE')
+            ->addJoinColumn('sms_id', 'id', true, false, 'CASCADE')
             ->fetchExtraLazy()
             ->build();
 
@@ -305,6 +310,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
                     'publishUp',
                     'publishDown',
                     'sentCount',
+                    'lists',
                 ]
             )
             ->build();
@@ -464,7 +470,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection|LeadList[]
      */
     public function getLists()
     {
@@ -556,7 +562,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         return $this;
     }
 
-    public function isMms(): bool
+    public function getIsMms(): bool
     {
         return (bool) $this->isMms;
     }

@@ -293,7 +293,7 @@ class SmsController extends FormController
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
-                    if (!$entity->isMms()) {
+                    if (!$entity->getIsMms()) {
                         $entity->setMedia([]);
                     }
                     // form is valid so process the data
@@ -458,7 +458,7 @@ class SmsController extends FormController
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     // form is valid so process the data
-                    if (!$entity->isMms()) {
+                    if (!$entity->getIsMms()) {
                         $entity->setMedia([]);
                     }
                     $model->saveEntity($entity, $this->getFormButton($form, ['buttons', 'save'])->isClicked());

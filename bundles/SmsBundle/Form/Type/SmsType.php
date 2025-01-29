@@ -85,7 +85,7 @@ class SmsType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label' => 'mautic.sms.form.is_mms',
-                'data'  => (bool) $options['data']->isMms(),
+                'data'  => (bool) $options['data']->getIsMms(),
                 'attr'  => [
                     'onchange' => 'Mautic.toggleIsMms()',
                 ],
