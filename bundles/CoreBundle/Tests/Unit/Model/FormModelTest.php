@@ -3,21 +3,23 @@
 namespace Mautic\CoreBundle\Tests\Unit\Model;
 
 use Doctrine\ORM\EntityManager;
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Model\FormModel;
+use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\CoreBundle\Translation\Translator;
+use Mautic\FormBundle\Entity\FormRepository;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\Event;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
 final class FormModelTest extends TestCase
 {
-    /**
-     * @var FormModel
-     */
-    private $formModel;
-
     /**
      * @var MockObject|EntityManager
      */
@@ -28,15 +30,48 @@ final class FormModelTest extends TestCase
      */
     private $userHelperMock;
 
+    /**
+     * @var MockObject|CorePermissions
+     */
+    private $corePermissionsMock;
+
+    /**
+     * @var MockObject|EventDispatcherInterface
+     */
+    private $dispatcherMock;
+
+    /**
+     * @var MockObject|UrlGeneratorInterface
+     */
+    private $routerMock;
+
+    /**
+     * @var MockObject|Translator
+     */
+    private $translatorMock;
+
+    /**
+     * @var MockObject|LoggerInterface
+     */
+    private $loggerMock;
+
+    /**
+     * @var MockObject|CoreParametersHelper
+     */
+    private $coreParametersHelperMock;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->entityManagerMock = $this->createMock(EntityManager::class);
-        $this->userHelperMock    = $this->createMock(UserHelper::class);
-        $this->formModel         = new FormModel();
-        $this->formModel->setEntityManager($this->entityManagerMock);
-        $this->formModel->setUserHelper($this->userHelperMock);
+        $this->entityManagerMock        = $this->createMock(EntityManager::class);
+        $this->corePermissionsMock      = $this->createMock(CorePermissions::class);
+        $this->dispatcherMock           = $this->createMock(EventDispatcherInterface::class);
+        $this->routerMock               = $this->createMock(UrlGeneratorInterface::class);
+        $this->translatorMock           = $this->createMock(Translator::class);
+        $this->userHelperMock           = $this->createMock(UserHelper::class);
+        $this->loggerMock               = $this->createMock(LoggerInterface::class);
+        $this->coreParametersHelperMock = $this->createMock(CoreParametersHelper::class);
     }
 
     public function testSaveEntities(): void
@@ -55,10 +90,17 @@ final class FormModelTest extends TestCase
             ->method('getUser')
             ->willReturn(new User());
 
-        $formModel           = new class() extends FormModel {
-            private $actions = [];
+        $this->entityManagerMock->expects($this->any())
+            ->method('getRepository')
+            ->willReturn($this->createMock(FormRepository::class));
 
-            protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null)
+        $formModel           = new class($this->entityManagerMock, $this->corePermissionsMock, $this->dispatcherMock, $this->routerMock, $this->translatorMock, $this->userHelperMock, $this->loggerMock, $this->coreParametersHelperMock) extends FormModel {
+            /**
+             * @var array<string>
+             */
+            private array $actions = [];
+
+            protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
             {
                 $this->actions[] = $action;
 
@@ -72,13 +114,14 @@ final class FormModelTest extends TestCase
                 return $event;
             }
 
+            /**
+             * @return string[]
+             */
             public function getActionsSent(): array
             {
                 return $this->actions;
             }
         };
-        $formModel->setEntityManager($this->entityManagerMock);
-        $formModel->setUserHelper($this->userHelperMock);
         $formModel->saveEntities($leads);
         $actionsSent   = $formModel->getActionsSent();
         $countDispatch = 0;
@@ -87,7 +130,7 @@ final class FormModelTest extends TestCase
                 $this->assertSame('pre_save', $action);
             } elseif (30 === $countDispatch) {
                 $this->assertSame('pre_batch_save', $action);
-            } elseif ($countDispatch > 30 && $countDispatch < 61) {
+            } elseif ($countDispatch < 61) {
                 $this->assertSame('post_save', $action);
             } elseif (61 === $countDispatch) {
                 $this->assertSame('post_batch_save', $action);

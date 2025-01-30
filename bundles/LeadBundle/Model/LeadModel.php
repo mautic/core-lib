@@ -365,7 +365,7 @@ class LeadModel extends FormModel
     /**
      * {@inheritdoc}
      */
-    protected function dispatchEventFromBatch($action, &$entity, bool $isNew = false, Event $event = null): ?Event
+    protected function dispatchEventFromBatch(string $action, &$entity, bool $isNew = false, Event $event = null): ?Event
     {
         if (empty($event)) {
             $event = new LeadEvent($entity, $isNew);
@@ -413,7 +413,7 @@ class LeadModel extends FormModel
                 }
                 $event = new SaveBatchLeadsEvent($leadEvents);
             }
-            $this->dispatcher->dispatch($name, $event);
+            $this->dispatcher->dispatch($event, $name);
 
             return $event;
         }

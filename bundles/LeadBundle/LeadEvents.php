@@ -821,7 +821,7 @@ final class LeadEvents
      *
      * @var string
      */
-    const LEAD_PRE_BATCH_SAVE = 'mautic.lead_pre_batch_save';
+    public const LEAD_PRE_BATCH_SAVE = 'mautic.lead_pre_batch_save';
 
     /**
      * The mautic.ost_batch_save event is dispatched when a list of entities is saved.
@@ -830,5 +830,5 @@ final class LeadEvents
      *
      * @var string
      */
-    const LEAD_POST_BATCH_SAVE = 'mautic.lead_post_batch_save';
+    public const LEAD_POST_BATCH_SAVE = 'mautic.lead_post_batch_save';
 }

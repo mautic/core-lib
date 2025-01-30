@@ -43,7 +43,6 @@ use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Security\Provider\UserProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -165,6 +164,21 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $translator;
 
+    /**
+     * @var MockObject&UrlGeneratorInterface
+     */
+    private MockObject $urlGeneratorInterfaceMock;
+
+    /**
+     * @var MockObject&LoggerInterface
+     */
+    private MockObject $loginInterfaceMock;
+
+    /**
+     * @var MockObject&CorePermissions
+     */
+    private MockObject $corePermissionsMock;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -191,7 +205,11 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $this->userHelperMock                   = $this->createMock(UserHelper::class);
         $this->dispatcherMock                   = $this->createMock(EventDispatcherInterface::class);
         $this->entityManagerMock                = $this->createMock(EntityManager::class);
+        $this->corePermissionsMock              = $this->createMock(CorePermissions::class);
         $this->translator                       = $this->createMock(Translator::class);
+        $this->urlGeneratorInterfaceMock        = $this->createMock(UrlGeneratorInterface::class);
+        $this->loginInterfaceMock               = $this->createMock(LoggerInterface::class);
+
         $this->leadModel                        = new LeadModel(
             $this->requestStackMock,
             $this->ipLookupHelperMock,
@@ -211,12 +229,12 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             $this->deviceTrackerMock,
             $this->ipAddressModelMock,
             $this->entityManagerMock,
-            $this->createMock(CorePermissions::class),
+            $this->corePermissionsMock,
             $this->dispatcherMock,
-            $this->createMock(UrlGeneratorInterface::class),
+            $this->urlGeneratorInterfaceMock,
             $this->translator,
             $this->userHelperMock,
-            $this->createMock(LoggerInterface::class)
+            $this->loginInterfaceMock
         );
 
         $this->companyModelMock->method('getCompanyLeadRepository')->willReturn($this->companyLeadRepositoryMock);
@@ -786,28 +804,36 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $action = 'post_batch_save';
 
         // Lead Model that provides access to dispatchBatchEvent
-        $leadModel = new class($this->requestStackMock, $this->cookieHelperMock, $this->ipLookupHelperMock, $this->pathsHelperMock, $this->integrationHelperkMock, $this->fieldModelMock, $this->listModelMock, $this->formFactoryMock, $this->companyModelMock, $this->categoryModelMock, $this->channelListHelperMock, $this->coreParametersHelperMock, $this->emailValidatorMock, $this->userProviderMock, $this->contactTrackerMock, $this->deviceTrackerMock, $this->legacyLeadModelMock, $this->ipAddressModelMock) extends LeadModel {
-            public function dispatchBatchEventForTest(string $action, array $leads): ?Event
+        $leadModel = new class($this->requestStackMock, $this->ipLookupHelperMock, $this->pathsHelperMock, $this->integrationHelperkMock, $this->fieldModelMock, $this->fieldsWithUniqueIdentifier, $this->listModelMock, $this->formFactoryMock, $this->companyModelMock, $this->categoryModelMock, $this->channelListHelperMock, $this->coreParametersHelperMock, $this->emailValidatorMock, $this->userProviderMock, $this->contactTrackerMock, $this->deviceTrackerMock, $this->ipAddressModelMock, $this->entityManagerMock, $this->corePermissionsMock, $this->dispatcherMock, $this->urlGeneratorInterfaceMock, $this->translator, $this->userHelperMock, $this->loginInterfaceMock) extends LeadModel {
+            /**
+             * @param array<mixed> $leads
+             */
+            public function dispatchBatchEventForTest(string $action, array $leads): ?\Symfony\Contracts\EventDispatcher\Event
             {
                 return $this->dispatchBatchEvent($action, $leads);
             }
         };
 
+        $leadEvent1 =  new LeadEvent($leadsParams[0]['entity'], $leadsParams[0]['isNew']);
+        $leadEvent1->setEntityManager($this->entityManagerMock);
+
+        $leadEvent2 =  new LeadEvent($leadsParams[1]['entity'], $leadsParams[1]['isNew']);
+        $leadEvent2->setEntityManager($this->entityManagerMock);
+
         $event = new SaveBatchLeadsEvent([
-            new LeadEvent($leadsParams[0]['entity'], $leadsParams[0]['isNew']),
-            new LeadEvent($leadsParams[1]['entity'], $leadsParams[1]['isNew']),
+            $leadEvent1,
+            $leadEvent2,
         ]);
 
-        $dispatcherMock = $this->createMock(EventDispatcherInterface::class);
-        $dispatcherMock->expects($this->once())
+        $this->dispatcherMock->expects($this->once())
             ->method('hasListeners')
             ->with(LeadEvents::LEAD_POST_BATCH_SAVE)
             ->willReturn(true);
-        $dispatcherMock->expects($this->once())
+        $this->dispatcherMock->expects($this->once())
             ->method('dispatch')
-            ->with(LeadEvents::LEAD_POST_BATCH_SAVE, $event);
+            ->with($event, LeadEvents::LEAD_POST_BATCH_SAVE)
+            ->willReturn($event);
 
-        $leadModel->setDispatcher($dispatcherMock);
         $leadModel->dispatchBatchEventForTest($action, $leadsParams);
     }
 }

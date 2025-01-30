@@ -370,6 +370,8 @@ class FormModel extends AbstractCommonModel
 
     /**
      * Dispatches events for child classes.
+     *
+     * @param object $entity
      */
     protected function dispatchEventFromBatch(string $action, &$entity, bool $isNew = false, Event $event = null): ?Event
     {
@@ -378,6 +380,8 @@ class FormModel extends AbstractCommonModel
 
     /**
      * Dispatches batch events for child classes.
+     *
+     * @param mixed[] $entitiesBatchParams
      */
     protected function dispatchBatchEvent(string $action, array &$entitiesBatchParams, Event $event = null): ?Event
     {
