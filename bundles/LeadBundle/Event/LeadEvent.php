@@ -8,7 +8,7 @@ use Mautic\LeadBundle\Entity\Lead;
 class LeadEvent extends CommonEvent
 {
     /**
-     * @var bool;
+     * @var bool
      */
     protected $alreadyProcessedInBatch = false;
 
