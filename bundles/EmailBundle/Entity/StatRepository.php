@@ -654,8 +654,8 @@ class StatRepository extends CommonRepository
             ->where('s.email_id = :emailId')
             ->andWhere('s.lead_id = :contactId')
             ->andWhere('is_failed = 0')
-            ->setParameter(':emailId', $emailId)
-            ->setParameter(':contactId', $contactId)
+            ->setParameter('emailId', $emailId)
+            ->setParameter('contactId', $contactId)
             ->setMaxResults(1);
 
         return (bool) $query->executeQuery()->fetchOne();
