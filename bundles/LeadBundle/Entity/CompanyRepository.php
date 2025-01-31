@@ -454,7 +454,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
                 ->setParameter('true', true, 'boolean');
         }
 
-        if (!empty($limit)) {
+        if ($limit > 0) {
             $q->setFirstResult($start)
                 ->setMaxResults($limit);
         }
