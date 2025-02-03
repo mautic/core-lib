@@ -153,12 +153,10 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         $contactModel->saveEntity($contact);
         $contactModel->deleteEntity($contact);
         $this->client->request('GET', "/s/dashboard/widget/{$widget->getId()}", [], [], $this->createAjaxHeaders());
-        Assert::assertTrue(
-            $this->client->getResponse()->isOk(),
-            print_r(json_decode($this->client->getResponse()->getContent(), true), true)
-        );
-        Assert::assertStringContainsString('identified', $this->client->getResponse()->getContent());
-        Assert::assertStringContainsString('deleted', $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
+        $printResponse = fn () => print_r(json_decode($this->client->getResponse()->getContent(), true), true);
+        Assert::assertStringContainsString('created', $printResponse());
+        Assert::assertStringContainsString('deleted', $printResponse());
     }
 
     private function createSegment(string $name, string $alias, float $lastBuildTime = 0, ?User $user = null): LeadList
