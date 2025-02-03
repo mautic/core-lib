@@ -142,7 +142,7 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         $widget->setName('Recent activity');
         $widget->setType('recent.activity');
         $widget->setWidth(100);
-        $widget->setHeight(200);
+        $widget->setHeight(300);
         $widget->setCreatedBy($user);
         $this->em->persist($widget);
         $this->em->flush();
@@ -152,6 +152,7 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         \assert($contactModel instanceof LeadModel);
         $contactModel->saveEntity($contact);
         $contactModel->deleteEntity($contact);
+        $this->em->clear();
         $this->client->request('GET', "/s/dashboard/widget/{$widget->getId()}", [], [], $this->createAjaxHeaders());
         $this->assertResponseIsSuccessful();
         $printResponse = fn () => print_r(json_decode($this->client->getResponse()->getContent(), true), true);
