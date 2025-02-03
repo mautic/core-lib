@@ -2,8 +2,6 @@
 
 namespace Mautic\LeadBundle\EventListener;
 
-use Mautic\CoreBundle\Helper\IpLookupHelper;
-use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\LeadBundle\Event\ChannelSubscriptionChange;
 use Mautic\LeadBundle\Event\CompanyEvent;
 use Mautic\LeadBundle\Event\LeadChangeCompanyEvent;
@@ -21,9 +19,7 @@ class WebhookSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private WebhookModel $webhookModel,
-        private LeadModel $leadModel,
-        private IpLookupHelper $ipLookupHelper,
-        private AuditLogModel $auditLogModel
+        private LeadModel $leadModel
     ) {
     }
 
@@ -200,16 +196,6 @@ class WebhookSubscriber implements EventSubscriberInterface
                 'ipAddress',
             ]
         );
-
-        $log = [
-            'bundle'    => 'lead',
-            'object'    => 'lead',
-            'objectId'  => $lead->deletedId,
-            'action'    => 'delete',
-            'details'   => ['name' => $lead->getPrimaryIdentifier()],
-            'ipAddress' => $this->ipLookupHelper->getIpAddressFromRequest(),
-        ];
-        $this->auditLogModel->writeToLog($log);
     }
 
     public function onChannelSubscriptionChange(ChannelSubscriptionChange $event): void
