@@ -413,7 +413,7 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         // The segment 101 is invalid.
-        $this->assertStringContainsString('No list with an id of 101 was found!', $crawler->text());
+        $this->assertStringContainsString('No segment with an id of 101 was found!', $crawler->text());
     }
 
     public function testBatchDeleteSegmentWhenUserHavePermission(): void
@@ -443,7 +443,7 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         // Only one segments is deleted.
-        $this->assertStringContainsString('1 lists have been deleted!', $crawler->html());
+        $this->assertStringContainsString('1 segments have been deleted!', $crawler->html());
     }
 
     public function testBatchDeleteSegmentWhenDeletingLocked(): void
