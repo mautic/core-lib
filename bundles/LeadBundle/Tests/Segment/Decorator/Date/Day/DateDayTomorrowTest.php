@@ -80,6 +80,7 @@ class DateDayTomorrowTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Day\DateDayTomorrow::getParameterValue
+     *
      * @dataProvider dataProviderForOperatorAndType
      */
     public function testGetParameterValueSingle(string $operator, string $type, string $expectedDateValue): void
