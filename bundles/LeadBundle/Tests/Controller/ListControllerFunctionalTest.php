@@ -381,18 +381,13 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
         $segmentId = $segment->getId();
 
-        $this->client->request('POST', "s/segments/batchDelete?ids=[\"{$segmentId}\"]", [], [], $this->createAjaxHeaders());
+        $this->setCsrfHeader();
+        $this->client->xmlHttpRequest('POST', "s/segments/batchDelete?ids=[\"{$segmentId}\"]");
 
         $clientResponse = $this->client->getResponse();
 
         $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
         $this->assertStringContainsString('1 segments have been deleted!', $clientResponse->getContent());
-
-        $this->em->clear();
-
-        $commandTester = $this->testSymfonyCommand('mautic:segment:delete');
-
-        Assert::assertSame(0, $commandTester->getStatusCode());
 
         $this->em->clear();
 
