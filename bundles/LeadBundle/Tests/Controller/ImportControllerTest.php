@@ -24,6 +24,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 final class ImportControllerTest extends MauticMysqlTestCase
 {
@@ -135,9 +136,9 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Login newly created non-admin user
-        $this->loginUser($user->getUserIdentifier());
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
-        $this->client->setServerParameter('PHP_AUTH_PW', 'mautic');
+        $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
         $uploadForm = $crawler->selectButton('Upload')->form();
@@ -269,8 +270,9 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $user->setLastName('Doe');
         $user->setUsername('john.doe');
         $user->setEmail('john.doe@email.com');
-        $encoder = self::$container->get('security.encoder_factory')->getEncoder($user);
-        $user->setPassword($encoder->encodePassword('mautic', null));
+        $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
+        \assert($hasher instanceof PasswordHasherInterface);
+        $user->setPassword($hasher->hash('Maut1cR0cks!'));
         $user->setRole($role);
         $this->em->persist($user);
 
