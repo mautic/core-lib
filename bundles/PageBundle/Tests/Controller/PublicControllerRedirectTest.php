@@ -46,9 +46,11 @@ class PublicControllerRedirectTest extends MauticMysqlTestCase
         $page->setTitle('Page A');
         $page->setAlias('page-a');
         $page->setIsPublished(false);
-        $page->setRedirectType(Response::HTTP_MOVED_PERMANENTLY);
+        $page->setRedirectType((string) Response::HTTP_MOVED_PERMANENTLY);
         $this->em->persist($page);
         $this->em->flush();
+
+        $this->logoutUser();
 
         $this->client->request(Request::METHOD_GET, '/page-a');
 

@@ -578,7 +578,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     }
 
     /**
-     * @param ?int $redirectType
+     * @param ?string $redirectType
      *
      * @return Page
      */
@@ -591,7 +591,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     }
 
     /**
-     * @return ?int
+     * @return ?string
      */
     public function getRedirectType()
     {

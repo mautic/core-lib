@@ -295,11 +295,11 @@ class PublicController extends AbstractFormController
                 'mautic_js'
             );
 
-            $event = new PageDisplayEvent($content, $entity);
+            $event = new PageDisplayEvent((string) $content, $entity);
             $this->dispatcher->dispatch($event, PageEvents::PAGE_ON_DISPLAY);
             $content = $event->getContent();
 
-            $model->hitPage($entity, $request, 200, $lead, $query);
+            $model->hitPage($entity, $request, Response::HTTP_OK, $lead, $query);
 
             return new Response($content);
         }
