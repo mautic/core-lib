@@ -29,6 +29,7 @@ final class SegmentNumberFilterWithOrsCommandFunctionalTest extends MauticMysqlT
 
         $segment = new LeadList();
         $segment->setName('Segment A');
+        $segment->setPublicName('Segment A');
         $segment->setAlias('segment-a');
         $segment->setFilters([
             [
@@ -79,6 +80,7 @@ final class SegmentNumberFilterWithOrsCommandFunctionalTest extends MauticMysqlT
 
         $segment = new LeadList();
         $segment->setName('Segment A');
+        $segment->setPublicName('Segment A');
         $segment->setAlias('segment-a');
         $segment->setFilters([
             [

@@ -108,7 +108,7 @@ class ContactSegmentFilterCrate
         ];
 
         if (!in_array($this->operator, $excludeTypecastOperators)) {
-            return match ($this->getType()) {
+            return match ((string) $this->getType()) {
                 'number'  => (float) $this->filter,
                 'boolean' => (bool) $this->filter,
             };
