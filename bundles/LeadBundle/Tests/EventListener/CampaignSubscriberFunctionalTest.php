@@ -464,11 +464,57 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($event);
         $this->em->flush();
 
+        $event2 = new Event();
+        $event2->setCampaign($campaign);
+        $event2->setName('Check UTM Source Lead Field Value');
+        $event2->setType('lead.field_value');
+        $event2->setEventType('condition');
+        $event2->setTriggerMode('immediate');
+        $event2->setProperties(
+            [
+                'canvasSettings'             => [
+                    'droppedX' => '696',
+                    'droppedY' => '155',
+                ],
+                'name'                       => '',
+                'triggerMode'                => 'immediate',
+                'triggerDate'                => null,
+                'triggerInterval'            => '1',
+                'triggerIntervalUnit'        => 'd',
+                'triggerHour'                => '',
+                'triggerRestrictedStartHour' => '',
+                'triggerRestrictedStopHour'  => '',
+                'anchor'                     => 'leadsource',
+                'properties'                 => [
+                    'field'    => 'utm_source',
+                    'operator' => '=',
+                    'value'    => 'val',
+                ],
+                'type'                       => 'lead.field_value',
+                'eventType'                  => 'condition',
+                'anchorEventType'            => 'condition',
+                'campaignId'                 => 'mautic_28ac4b8a4758b8597e8d189fa97b245996e338bb',
+                '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
+                'buttons'                    => ['save' => ''],
+                'field'                      => 'utm_source',
+                'operator'                   => '=',
+                'value'                      => 'val',
+            ]
+        );
+
+        $this->em->persist($event2);
+        $this->em->flush();
+
         $campaign->setCanvasSettings(
             [
                 'nodes'       => [
                     [
                         'id'        => $event->getId(),
+                        'positionX' => '696',
+                        'positionY' => '155',
+                    ],
+                    [
+                        'id'        => $event2->getId(),
                         'positionX' => '696',
                         'positionY' => '155',
                     ],
@@ -482,6 +528,14 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
                     [
                         'sourceId' => 'lists',
                         'targetId' => $event->getId(),
+                        'anchors'  => [
+                            'source' => 'leadsource',
+                            'target' => 'top',
+                        ],
+                    ],
+                    [
+                        'sourceId' => 'lists',
+                        'targetId' => $event2->getId(),
                         'anchors'  => [
                             'source' => 'leadsource',
                             'target' => 'top',
