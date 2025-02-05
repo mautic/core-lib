@@ -2,24 +2,19 @@
 
 declare(strict_types=1);
 
-/*
- * @copyright   2020 Mautic Contributors. All rights reserved.
- * @author      Mautic
- * @link        https://mautic.org
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 namespace Mautic\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
 use Mautic\CoreBundle\Doctrine\AbstractMauticMigration;
-use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20210211081531 extends AbstractMauticMigration
 {
-    private $uuidColumn = 'uuid';
+    private string $uuidColumn = 'uuid';
 
-    private $tableList = [
+    /**
+     * @var string[]
+     */
+    private array $tableList = [
         'assets',
         'campaign_events',
         'campaigns',
@@ -49,13 +44,6 @@ final class Version20210211081531 extends AbstractMauticMigration
         'beefree_rows',
     ];
 
-    /**
-     * @return bool
-     *
-     * @throws \Doctrine\DBAL\Schema\SchemaException
-     *
-     * @description If a table already has `uuid` column, remove that TABLE from the list where we want to add column in the up()
-     */
     public function preUp(Schema $schema): void
     {
         foreach ($this->tableList as $key => $table) {
@@ -65,10 +53,6 @@ final class Version20210211081531 extends AbstractMauticMigration
         }
     }
 
-    /**
-     * @description This method adds a `uuid` column to the list of remanining tables from `preup` and sets default value to NULL.
-     * After processing the above, generates random values for uuid using MySql's built-in UUID() to populate the values replacing NULL's.
-     */
     public function up(Schema $schema): void
     {
         if (0 === count($this->tableList)) {

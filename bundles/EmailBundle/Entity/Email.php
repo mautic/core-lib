@@ -1405,39 +1405,4 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
         return $keys;
     }
-
-    /**
-     * @param string $field
-     *
-     * @return Callback
-     */
-    private static function getTokenOrEmailConstraint($field)
-    {
-        return new Callback([
-            'callback' => function ($value, ExecutionContextInterface $context) use ($field) {
-                if (preg_match('/{contactfield=(.*?)}/', $value)) {
-                    return;
-                }
-
-                $validator  = $context->getValidator();
-                $violations = $validator->validate(
-                    $value,
-                    [
-                        new \Symfony\Component\Validator\Constraints\Email(
-                            [
-                                'message' => 'mautic.core.email.required',
-                            ]
-                        ),
-                    ]
-                );
-
-                if (count($violations) > 0) {
-                    $string = (string) $violations;
-                    $context->buildViolation($string)
-                        ->atPath($field)
-                        ->addViolation();
-                }
-            },
-        ]);
-    }
 }
