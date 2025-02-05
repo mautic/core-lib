@@ -913,7 +913,12 @@ class MailHelper
         $this->checkBatchMaxRecipients();
 
         try {
-            $this->message->addTo((new AddressDTO($address, $name))->toMailerAddress());
+            $encodedAddress = $this->encodeEmailAddressWithName($address, $name);
+            if (mb_strlen($encodedAddress, 'UTF-8') > 320) {
+                $this->message->addTo((new AddressDTO($address))->toMailerAddress());
+            } else {
+                $this->message->addTo((new AddressDTO($address, $name))->toMailerAddress());
+            }
             $this->queuedRecipients[$address] = $name;
 
             return true;
@@ -922,6 +927,21 @@ class MailHelper
 
             return false;
         }
+    }
+
+    public function encodeEmailAddressWithName(string $email, ?string $name = null): string
+    {
+        $encodedName = '';
+        $nameChunks  = str_split($name, 12); // Split name into chunks of 12 characters
+
+        foreach ($nameChunks as $chunk) {
+            $encodedChunk = mb_encode_mimeheader($chunk, 'UTF-8', 'Q');
+            $encodedName .= $encodedChunk.' ';
+        }
+
+        $encodedName = rtrim($encodedName);
+
+        return sprintf('%s <%s>,', $encodedName, $email);
     }
 
     /**
