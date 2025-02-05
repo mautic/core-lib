@@ -26,7 +26,6 @@ use Mautic\EmailBundle\Validator\EmailLists;
 use Mautic\EmailBundle\Validator\EmailOrEmailTokenList;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\LeadList;
-use Mautic\LeadBundle\Form\Validator\Constraints\LeadListAccess;
 use Mautic\PageBundle\Entity\Page;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -66,30 +65,35 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @var int
+     *
      * @Groups({"email:read", "download:read"})
      */
     private $id;
 
     /**
      * @var string
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $name;
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $description;
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $subject;
 
     /**
      * @var bool|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $useOwnerAsMailer;
@@ -98,108 +102,126 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $fromAddress;
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $fromName;
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $replyToAddress;
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $bccAddress;
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $template;
 
     /**
      * @var array
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $content = [];
 
     /**
      * @var array
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $utmTags = [];
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $plainText;
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $customHtml;
 
     /**
      * @var string|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $emailType = 'template';
 
     /**
      * @var \DateTimeInterface|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $publishUp;
 
     /**
      * @var \DateTimeInterface|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $publishDown;
 
     /**
      * @var bool|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $publicPreview = false;
 
     /**
      * @var int
+     *
      * @Groups({"email:read", "download:read"})
      */
     private $readCount = 0;
 
     /**
      * @var int
+     *
      * @Groups({"email:read", "download:read"})
      */
     private $sentCount = 0;
 
     /**
      * @var int
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $revision = 1;
 
     /**
      * @var Category|null
+     *
      * @Groups({"email:read", "email:write"})
      **/
     private $category;
 
     /**
      * @var ArrayCollection<LeadList>
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $lists;
@@ -216,30 +238,35 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @var int
+     *
      * @Groups({"email:read", "download:read"})
      */
     private $variantSentCount = 0;
 
     /**
      * @var int
+     *
      * @Groups({"email:read", "download:read"})
      */
     private $variantReadCount = 0;
 
     /**
      * @var Form|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $unsubscribeForm;
 
     /**
      * @var Page|null
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $preferenceCenter;
 
     /**
      * @var ArrayCollection<Asset>
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $assetAttachments;
@@ -251,6 +278,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @var array
+     *
      * @Groups({"email:read", "email:write", "download:read"})
      */
     private $headers = [];
@@ -262,6 +290,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @var int
+     *
      * @Groups({"email:read", "download:read"})
      */
     private $queuedCount = 0;
@@ -1380,7 +1409,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     /**
      * @param string $field
      *
-     * @return \Symfony\Component\Validator\Constraints\Callback
+     * @return Callback
      */
     private static function getTokenOrEmailConstraint($field)
     {
@@ -1390,7 +1419,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
                     return;
                 }
 
-                $validator = $context->getValidator();
+                $validator  = $context->getValidator();
                 $violations = $validator->validate(
                     $value,
                     [

@@ -48,42 +48,49 @@ class Asset extends FormEntity implements UuidInterface
 
     /**
      * @var int|null
+     *
      * @Groups({"asset:read", "download:read", "email:read"})
      */
     private $id;
 
     /**
      * @var string|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $title;
 
     /**
      * @var string|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $description;
 
     /**
      * @var string|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $storageLocation = 'local';
 
     /**
      * @var string|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $path;
 
     /**
      * @var string|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $remotePath;
 
     /**
      * @var string|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $originalFileName;
@@ -124,60 +131,70 @@ class Asset extends FormEntity implements UuidInterface
 
     /**
      * @var string
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $alias;
 
     /**
      * @var string
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $language = 'en';
 
     /**
      * @var \DateTimeInterface|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $publishUp;
 
     /**
      * @var \DateTimeInterface|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $publishDown;
 
     /**
      * @var int
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $downloadCount = 0;
 
     /**
      * @var int
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $uniqueDownloadCount = 0;
 
     /**
      * @var int
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $revision = 1;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      **/
     private $category;
 
     /**
      * @var string|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $extension;
 
     /**
      * @var string|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $mime;
@@ -189,12 +206,14 @@ class Asset extends FormEntity implements UuidInterface
 
     /**
      * @var string|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $downloadUrl;
 
     /**
      * @var bool|null
+     *
      * @Groups({"asset:read", "asset:write", "download:read", "email:read"})
      */
     private $disallow = true;

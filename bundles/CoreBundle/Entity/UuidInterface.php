@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Entity;
 
+use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
+
 interface UuidInterface
 {
     public function getUuid(): ?string;
