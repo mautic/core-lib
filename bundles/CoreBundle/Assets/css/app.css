@@ -9538,6 +9538,10 @@ lesshat-selector { -lh-property: 0 ;
 .media-list .media-body {
   width: auto;
 }
+.dropdown-menu-right {
+  max-height: 85vh;
+  overflow-y: auto;
+}
 form[name="lead"] .media-body,
 form[name="lead"] .contact-avatar {
   width: 100%;
