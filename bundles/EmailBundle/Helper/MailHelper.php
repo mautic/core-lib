@@ -29,6 +29,7 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Exception\RfcComplianceException;
 use Symfony\Component\Mime\Header\HeaderInterface;
+use Symfony\Component\Mime\Header\MailboxListHeader;
 use Symfony\Component\Mime\Header\UnstructuredHeader;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -80,6 +81,8 @@ class MailHelper
     protected ?string $replyTo = null;
 
     protected ?string $systemReplyTo = null;
+
+    protected int $addressLengthLimit;
 
     /**
      * @var string
@@ -250,6 +253,7 @@ class MailHelper
         $systemFromName     = $this->cleanName(
             $coreParametersHelper->get('mailer_from_name')
         );
+        $this->addressLengthLimit = $coreParametersHelper->get('mailer_address_length_limit');
         $this->setDefaultFrom(false, new AddressDTO($systemFromEmail, $systemFromName));
         $this->setDefaultReplyTo($systemReplyToEmail, $this->from);
 
@@ -913,11 +917,15 @@ class MailHelper
         $this->checkBatchMaxRecipients();
 
         try {
-            $encodedAddress = $this->encodeEmailAddressWithName($address, $name);
-            if (mb_strlen($encodedAddress, 'UTF-8') > 320) {
-                $this->message->addTo((new AddressDTO($address))->toMailerAddress());
+            $fullAddress          = (new AddressDTO($address, $name))->toMailerAddress();
+            $encodedAddressLength = strlen((new MailboxListHeader('To', [$fullAddress]))->getBodyAsString());
+
+            if ($encodedAddressLength > $this->addressLengthLimit) {
+                // When encoded address with name length doesn't meet the limit, use only the email
+                $shortAddress = (new AddressDTO($address))->toMailerAddress();
+                $this->message->addTo($shortAddress);
             } else {
-                $this->message->addTo((new AddressDTO($address, $name))->toMailerAddress());
+                $this->message->addTo($fullAddress);
             }
             $this->queuedRecipients[$address] = $name;
 
@@ -927,21 +935,6 @@ class MailHelper
 
             return false;
         }
-    }
-
-    public function encodeEmailAddressWithName(string $email, ?string $name = null): string
-    {
-        $encodedName = '';
-        $nameChunks  = str_split($name, 12); // Split name into chunks of 12 characters
-
-        foreach ($nameChunks as $chunk) {
-            $encodedChunk = mb_encode_mimeheader($chunk, 'UTF-8', 'Q');
-            $encodedName .= $encodedChunk.' ';
-        }
-
-        $encodedName = rtrim($encodedName);
-
-        return sprintf('%s <%s>,', $encodedName, $email);
     }
 
     /**
