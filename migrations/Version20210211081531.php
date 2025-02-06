@@ -19,10 +19,8 @@ final class Version20210211081531 extends AbstractMauticMigration
         'campaign_events',
         'campaigns',
         'categories',
-        'custom_field',
         'dynamic_content',
         'emails',
-        'emails_beefree_metadata',
         'focus',
         'form_actions',
         'form_fields',
@@ -40,8 +38,6 @@ final class Version20210211081531 extends AbstractMauticMigration
         'stages',
         'sms_messages',
         'monitoring',
-        'global_tokens',
-        'beefree_rows',
     ];
 
     public function preUp(Schema $schema): void
