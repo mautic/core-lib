@@ -25,7 +25,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -151,6 +153,7 @@ class ConfigType extends AbstractType
                             'message' => 'mautic.core.value.required',
                         ]
                     ),
+                    new Callback([$this, 'validateImagePath']),
                 ],
             ]
         );
@@ -692,6 +695,24 @@ class ConfigType extends AbstractType
                 ],
             ]
         );
+    }
+
+    // Validate $value to check ../ and denied system folders
+    public function validateImagePath(?string $value, ExecutionContextInterface $context): void
+    {
+        if (empty($value) || str_contains($value, '..') || str_contains($value, './') || '/' === $value) {
+            $context->buildViolation('mautic.core.config.form.image.path.invalid')->atPath('image_path')->addViolation();
+        }
+
+        $mediaFile = substr($value, 0, 6);
+
+        if ('media/' !== $mediaFile) {
+            $context->buildViolation('mautic.core.config.form.image.path.invalid.not.media')->atPath('image_path')->addViolation();
+        }
+
+        if (!is_dir($value)) {
+            $context->buildViolation('mautic.core.config.form.image.path.invalid.folder.not.exists')->atPath('image_path')->addViolation();
+        }
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
