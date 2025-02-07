@@ -253,7 +253,7 @@ class MailHelper
         $systemFromName     = $this->cleanName(
             $coreParametersHelper->get('mailer_from_name')
         );
-        $this->addressLengthLimit = $coreParametersHelper->get('mailer_address_length_limit');
+        $this->addressLengthLimit = (int) $coreParametersHelper->get('mailer_address_length_limit');
         $this->setDefaultFrom(false, new AddressDTO($systemFromEmail, $systemFromName));
         $this->setDefaultReplyTo($systemReplyToEmail, $this->from);
 
