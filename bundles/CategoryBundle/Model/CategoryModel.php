@@ -190,7 +190,6 @@ class CategoryModel extends FormModel
 
     /**
      * @return array<mixed>
-     *
      */
     public function getUsage(Category $category): array
     {
