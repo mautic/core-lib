@@ -8,12 +8,15 @@ use Mautic\CoreBundle\Event\CommonEvent;
 
 class CategoryTypeEntityEvent extends CommonEvent
 {
+    /**
+     * @var array<mixed>
+     */
     protected array $types = [];
 
     /**
      * Returns the array of Category Type Entity.
      *
-     * @return array[mixed]
+     * @return array<mixed>
      */
     public function getCategoryTypeEntity(string $type): array
     {
@@ -25,7 +28,7 @@ class CategoryTypeEntityEvent extends CommonEvent
     }
 
     /**
-     * @param null|array[mixed] $data
+     * @param null|array<mixed> $data
      */
     public function addCategoryTypeEntity(string $type, ?array $data): void
     {

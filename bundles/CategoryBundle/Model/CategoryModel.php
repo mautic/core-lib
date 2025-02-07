@@ -189,9 +189,8 @@ class CategoryModel extends FormModel
     }
 
     /**
-     * @return array[mixed]|false
+     * @return array<mixed>
      *
-     * @template T of object
      */
     public function getUsage(Category $category): array
     {

@@ -55,7 +55,7 @@ return [
 
     'categories' => [
         'messages' => [
-            'class' => \Mautic\ChannelBundle\Entity\Message::class,
+            'class' => Mautic\ChannelBundle\Entity\Message::class,
         ],
     ],
 

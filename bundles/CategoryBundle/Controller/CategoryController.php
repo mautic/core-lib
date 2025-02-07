@@ -588,13 +588,11 @@ class CategoryController extends AbstractFormController
                 ];
             }
 
-            if (!empty($deletedExceptions)) {
-                foreach ($deletedExceptions as $deletedException) {
-                    $flashes[] = [
-                        'type' => 'notice',
-                        'msg'  => $deletedException->getMessage(),
-                    ];
-                }
+            foreach ($deletedExceptions as $deletedException) {
+                $flashes[] = [
+                    'type' => 'notice',
+                    'msg'  => $deletedException->getMessage(),
+                ];
             }
         } // else don't do anything
 
