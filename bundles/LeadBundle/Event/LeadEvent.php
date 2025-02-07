@@ -7,10 +7,7 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class LeadEvent extends CommonEvent
 {
-    /**
-     * @var bool
-     */
-    protected $alreadyProcessedInBatch = false;
+    protected bool $alreadyProcessedInBatch = false;
 
     /**
      * @param bool $isNew

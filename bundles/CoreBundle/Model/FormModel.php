@@ -370,10 +370,8 @@ class FormModel extends AbstractCommonModel
 
     /**
      * Dispatches events for child classes.
-     *
-     * @param object $entity
      */
-    protected function dispatchEventFromBatch(string $action, &$entity, bool $isNew = false, Event $event = null): ?Event
+    protected function dispatchEventFromBatch(string $action, object &$entity, bool $isNew = false, Event $event = null): ?Event
     {
         return $this->dispatchEvent($action, $entity, $isNew, $event);
     }
