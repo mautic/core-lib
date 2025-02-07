@@ -9,6 +9,7 @@ use Mautic\CoreBundle\Controller\AjaxLookupControllerTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\Tree\JsPlumbFormatter;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\LeadField;
@@ -228,7 +229,7 @@ class AjaxController extends CommonAjaxController
     /**
      * Updates the cache and gets returns updated HTML.
      */
-    public function updateSocialProfileAction(Request $request): JsonResponse
+    public function updateSocialProfileAction(Request $request, IntegrationHelper $integrationHelper): JsonResponse
     {
         $dataArray = ['success' => 0];
         $network   = InputHelper::clean($request->request->get('network'));
@@ -240,9 +241,7 @@ class AjaxController extends CommonAjaxController
             $lead  = $model->getEntity($leadId);
 
             if (null !== $lead && $this->security->hasEntityAccess('lead:leads:editown', 'lead:leads:editown', $lead->getPermissionUser())) {
-                $leadFields = $lead->getFields();
-                /** @var IntegrationHelper $integrationHelper */
-                $integrationHelper = $this->factory->getHelper('integration');
+                $leadFields        = $lead->getFields();
                 $socialProfiles    = $integrationHelper->getUserProfiles($lead, $leadFields, true, $network);
                 $socialProfileUrls = $integrationHelper->getSocialProfileUrlRegex(false);
                 $integrations      = [];
@@ -286,7 +285,7 @@ class AjaxController extends CommonAjaxController
     /**
      * Clears the cache for a network.
      */
-    public function clearSocialProfileAction(Request $request): JsonResponse
+    public function clearSocialProfileAction(Request $request, IntegrationHelper $helper): JsonResponse
     {
         $dataArray = ['success' => 0];
         $network   = InputHelper::clean($request->request->get('network'));
@@ -299,10 +298,8 @@ class AjaxController extends CommonAjaxController
 
             if (null !== $lead && $this->security->hasEntityAccess('lead:leads:editown', 'lead:leads:editown', $lead->getPermissionUser())) {
                 $dataArray['success'] = 1;
-                /** @var IntegrationHelper $helper */
-                $helper         = $this->factory->getHelper('integration');
-                $socialProfiles = $helper->clearIntegrationCache($lead, $network);
-                $socialCount    = count($socialProfiles);
+                $socialProfiles       = $helper->clearIntegrationCache($lead, $network);
+                $socialCount          = count($socialProfiles);
 
                 if (empty($socialCount)) {
                     $dataArray['completeProfile'] = $this->renderView(
@@ -606,7 +603,7 @@ class AjaxController extends CommonAjaxController
         return $this->sendJsonResponse($dataArray);
     }
 
-    public function getEmailTemplateAction(Request $request, EmailModel $model): JsonResponse
+    public function getEmailTemplateAction(Request $request, EmailModel $model, MailHelper $mailHelper): JsonResponse
     {
         $data    = ['success' => 1, 'body' => '', 'subject' => ''];
         $emailId = $request->query->get('template');
@@ -621,11 +618,10 @@ class AjaxController extends CommonAjaxController
                 $email->getCreatedBy()
             )
         ) {
-            $mailer = $this->factory->getMailer();
-            $mailer->setEmail($email, true, [], [], true);
+            $mailHelper->setEmail($email, true, [], [], true);
 
-            $data['body']    = $mailer->getBody();
-            $data['subject'] = $mailer->getSubject();
+            $data['body']    = $mailHelper->getBody();
+            $data['subject'] = $mailHelper->getSubject();
         }
 
         return $this->sendJsonResponse($data);

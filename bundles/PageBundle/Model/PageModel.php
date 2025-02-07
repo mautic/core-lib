@@ -15,6 +15,7 @@ use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Model\BuilderModelTrait;
 use Mautic\CoreBundle\Model\FormModel;
+use Mautic\CoreBundle\Model\GlobalSearchInterface;
 use Mautic\CoreBundle\Model\TranslationModelTrait;
 use Mautic\CoreBundle\Model\VariantModelTrait;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
@@ -52,7 +53,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * @extends FormModel<Page>
  */
-class PageModel extends FormModel
+class PageModel extends FormModel implements GlobalSearchInterface
 {
     use TranslationModelTrait;
     use VariantModelTrait;
@@ -793,41 +794,6 @@ class PageModel extends FormModel
             $data = $query->loadAndBuildTimeData($q);
             $chart->setDataset($this->translator->trans('mautic.page.show.unique.visits'), $data);
         }
-
-        return $chart->render();
-    }
-
-    /**
-     * @deprecated Use getUniqueVsReturningPieChartData() instead.
-     *
-     * Get data for pie chart showing new vs returning leads.
-     * Returning leads are even leads who visit 2 different page once.
-     *
-     * @param \DateTime $dateFrom
-     * @param \DateTime $dateTo
-     * @param array     $filters
-     * @param bool      $canViewOthers
-     */
-    public function getNewVsReturningPieChartData($dateFrom, $dateTo, $filters = [], $canViewOthers = true): array
-    {
-        $chart              = new PieChart();
-        $query              = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
-        $allQ               = $query->getCountQuery('page_hits', 'id', 'date_hit', $filters);
-        $filters['lead_id'] = [
-            'expression' => 'isNull',
-        ];
-        $returnQ            = $query->getCountQuery('page_hits', 'id', 'date_hit', $filters);
-
-        if (!$canViewOthers) {
-            $this->limitQueryToCreator($allQ);
-            $this->limitQueryToCreator($returnQ);
-        }
-
-        $all       = $query->fetchCount($allQ);
-        $returning = $query->fetchCount($returnQ);
-        $unique    = $all - $returning;
-        $chart->setDataset($this->translator->trans('mautic.page.unique'), $unique);
-        $chart->setDataset($this->translator->trans('mautic.page.graph.pie.new.vs.returning.returning'), $returning);
 
         return $chart->render();
     }
