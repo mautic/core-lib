@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Event;
 
-use DateTimeImmutable;
 use Symfony\Component\EventDispatcher\Event;
 
 class GetStatDataEvent extends Event
