@@ -618,7 +618,7 @@ class AjaxController extends CommonAjaxController
                 $email->getCreatedBy()
             )
         ) {
-            $mailHelper->setEmail($email, true, [], [], true);
+            $mailHelper->setEmail($email, true, [], true);
 
             $data['body']    = $mailHelper->getBody();
             $data['subject'] = $mailHelper->getSubject();
