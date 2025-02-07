@@ -25,9 +25,9 @@ class CategoryTypeEntityEvent extends CommonEvent
     }
 
     /**
-     * @param array<mixed> $data
+     * @param null|array[mixed] $data
      */
-    public function addCategoryTypeEntity(string $type, array $data): void
+    public function addCategoryTypeEntity(string $type, ?array $data): void
     {
         if (!empty($data)) {
             if (!isset($data['label'])) {

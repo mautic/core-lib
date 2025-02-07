@@ -199,7 +199,7 @@ class CategoryModel extends FormModel
 
         $types = [];
         if ($this->dispatcher->hasListeners(CategoryEvents::CATEGORY_TYPE_ENTITY)) {
-            $event = $this->dispatcher->dispatch(CategoryEvents::CATEGORY_TYPE_ENTITY, new CategoryTypeEntityEvent());
+            $event = $this->dispatcher->dispatch(new CategoryTypeEntityEvent(), CategoryEvents::CATEGORY_TYPE_ENTITY);
             $types = $event->getCategoryTypeEntity($bundle);
         }
 
