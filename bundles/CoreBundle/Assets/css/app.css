@@ -6626,7 +6626,9 @@ input[style]:hover {
   box-shadow: none;
 }
 .form-control {
-  padding: var(--spacing-04) var(--spacing-05);
+  &:not(select) {
+    padding: var(--spacing-04) var(--spacing-05);
+  }
   color: var(--text-primary);
 }
 .form-control + .help-text,
