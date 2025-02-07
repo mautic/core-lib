@@ -12,7 +12,7 @@ final class Version20230601082815 extends PreUpAssertionMigration
     protected function preUpAssertions(): void
     {
         $this->skipAssertion(function (Schema $schema) {
-            $sql  = sprintf('select category_id from %s%s where category_id is null', $this->prefix, 'beefree_rows');
+            $sql         = sprintf('select category_id from %s%s where category_id is null', $this->prefix, 'beefree_rows');
             $recordCount = $this->connection->executeQuery($sql)->rowCount();
 
             return !$recordCount;
