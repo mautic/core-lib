@@ -11,14 +11,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SegmentStatsSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var LeadListRepository
-     */
-    private $leadListRepository;
-
-    public function __construct(LeadListRepository $leadListRepository)
+    public function __construct(private LeadListRepository $leadListRepository)
     {
-        $this->leadListRepository = $leadListRepository;
     }
 
     /**
@@ -27,7 +21,7 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            LeadEvents::LEAD_LIST_STAT   => ['getStatsLeadEvents', 0],
+            LeadEvents::LEAD_LIST_STAT => ['getStatsLeadEvents', 0],
         ];
     }
 
@@ -40,8 +34,6 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
             $this->leadListRepository->getFilterSegmentsAction(),
             $this->leadListRepository->getLeadListLeads(),
             $this->leadListRepository->getNotificationIncludedList(),
-            $this->leadListRepository->getRandomSegment(),
-            $this->leadListRepository->getRandomSegmentContacts(),
             $this->leadListRepository->getSMSIncludedList(),
             $this->leadListRepository->getFormAction()
         );

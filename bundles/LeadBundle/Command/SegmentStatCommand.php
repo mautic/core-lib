@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Command;
 
 use Mautic\CoreBundle\Command\ModeratedCommand;
-use Mautic\CoreBundle\Helper\ExitCode;
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Mautic\LeadBundle\LeadEvents;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -15,15 +17,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class SegmentStatCommand extends ModeratedCommand
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    public function __construct(EventDispatcherInterface $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
-        parent::__construct();
+    public function __construct(
+        private EventDispatcherInterface $dispatcher,
+        PathsHelper $pathsHelper,
+        CoreParametersHelper $coreParametersHelper,
+    ) {
+        parent::__construct($pathsHelper, $coreParametersHelper);
     }
 
     protected function configure(): void
@@ -42,7 +41,7 @@ class SegmentStatCommand extends ModeratedCommand
     {
         $io         = new SymfonyStyle($input, $output);
         $event      = new GetStatDataEvent();
-        $this->dispatcher->dispatch(LeadEvents::LEAD_LIST_STAT, $event);
+        $this->dispatcher->dispatch($event, LeadEvents::LEAD_LIST_STAT);
 
         if (empty($event->getResults())) {
             $io->write('There is no segment to show!!');
@@ -57,6 +56,6 @@ class SegmentStatCommand extends ModeratedCommand
             );
         }
 
-        return ExitCode::SUCCESS;
+        return Command::SUCCESS;
     }
 }

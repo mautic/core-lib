@@ -778,38 +778,6 @@ SQL;
     /**
      * @return mixed[]
      */
-    public function getRandomSegment(): array
-    {
-        $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('item_id', 'item_id');
-
-        $query = $this->getEntityManager()->createNativeQuery('SELECT 
-            segment_id as item_id
-        FROM '.MAUTIC_TABLE_PREFIX.'random_segments
-            GROUP BY segment_id', $rsm);
-
-        return $query->getResult();
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function getRandomSegmentContacts(): array
-    {
-        $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('item_id', 'item_id');
-
-        $query = $this->getEntityManager()->createNativeQuery('SELECT 
-            segment_id as item_id
-        FROM '.MAUTIC_TABLE_PREFIX.'random_segments_contacts
-            GROUP BY segment_id', $rsm);
-
-        return $query->getResult();
-    }
-
-    /**
-     * @return mixed[]
-     */
     public function getSMSIncludedList(): array
     {
         $rsm = new ResultSetMapping();

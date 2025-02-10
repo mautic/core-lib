@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class GetStatDataEvent extends Event
+final class GetStatDataEvent extends Event
 {
     /**
      * @var array<string,mixed[]>
      */
-    private $results = [];
+    private array $results = [];
 
     /**
      * @param mixed[] $data

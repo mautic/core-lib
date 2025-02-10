@@ -11,9 +11,7 @@ use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Mautic\LeadBundle\EventListener\SegmentStatsSubscriber;
-use Mautic\LeadBundle\LeadEvents;
 use PHPUnit\Framework\Assert;
-use Ramsey\Uuid\Uuid;
 
 class SegmentStatsSubscriberTest extends MauticMysqlTestCase
 {
@@ -39,7 +37,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
      */
     public function testGetSubscribedEvents(): void
     {
-        Assert::assertArrayHasKey(LeadEvents::LEAD_LIST_STAT, SegmentStatsSubscriber::getSubscribedEvents());
+        Assert::assertArrayHasKey(GetStatDataEvent::class, SegmentStatsSubscriber::getSubscribedEvents());
     }
 
     public function testGetCampaignEntryPoints(): void
@@ -124,7 +122,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $this->assertSame(1, (int) $event->getResults()[0]['is_published']);
 
         $this->assertSame($segment->getId(), (int) $event->getResults()[1]['item_id']);
-        $this->assertNull($event->getResults()[1]['is_used']);
+        $this->assertNull($event->getResults()[1]['is_used'] ?? null);
         $this->assertSame(1, (int) $event->getResults()[1]['is_published']);
     }
 
@@ -133,6 +131,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $segmentName = 'Segment For Campaign';
         $segment     = new LeadList();
         $segment->setName($segmentName);
+        $segment->setPublicName($segmentName);
         $segment->setAlias(mb_strtolower($segmentName));
         $segment->setIsPublished(true);
         $this->em->persist($segment);
@@ -153,6 +152,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $segmentName         = 'addToLists Segment';
         $includedSegment     = new LeadList();
         $includedSegment->setName($segmentName);
+        $includedSegment->setPublicName($segmentName);
         $includedSegment->setAlias(mb_strtolower($segmentName));
         $includedSegment->setIsPublished(true);
         $this->em->persist($includedSegment);
@@ -161,6 +161,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $segmentName         = 'removeFromLists Segment';
         $excludedSegment     = new LeadList();
         $excludedSegment->setName($segmentName);
+        $excludedSegment->setPublicName($segmentName);
         $excludedSegment->setAlias(mb_strtolower($segmentName));
         $excludedSegment->setIsPublished(true);
         $this->em->persist($excludedSegment);
@@ -197,6 +198,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $segmentName         = 'Included Segment';
         $includedSegment     = new LeadList();
         $includedSegment->setName($segmentName);
+        $includedSegment->setPublicName($segmentName);
         $includedSegment->setAlias(mb_strtolower($segmentName));
         $includedSegment->setIsPublished(true);
         $this->em->persist($includedSegment);
@@ -205,6 +207,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $segmentName         = 'Excluded Segment';
         $excludedSegment     = new LeadList();
         $excludedSegment->setName($segmentName);
+        $excludedSegment->setPublicName($segmentName);
         $excludedSegment->setAlias(mb_strtolower($segmentName));
         $excludedSegment->setIsPublished(true);
         $this->em->persist($excludedSegment);
@@ -213,7 +216,6 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $email = new Email();
         $email->setName('Email 1');
         $email->setSubject('Subject 1');
-        $email->setUuid(Uuid::uuid4()->toString());
         $email->setDateAdded(new \DateTime());
         $email->setPublicPreview(true);
         $email->setCustomHtml(json_encode(''));
@@ -233,6 +235,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $segmentName          = 'Segment For Filter';
         $segmentForFilter     = new LeadList();
         $segmentForFilter->setName($segmentName);
+        $segmentForFilter->setPublicName($segmentName);
         $segmentForFilter->setAlias(mb_strtolower($segmentName));
         $segmentForFilter->setIsPublished(true);
         $this->em->persist($segmentForFilter);
@@ -241,6 +244,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $segmentName = 'Segment With Filter';
         $segment     = new LeadList();
         $segment->setName($segmentName);
+        $segment->setPublicName($segmentName);
         $segment->setAlias(mb_strtolower($segmentName));
         $segment->setIsPublished(true);
         $segment->setFilters([['field' => 'leadlist', 'type' => 'leadlist', 'properties' => ['filter' => [$segmentForFilter->getId()]]]]);
