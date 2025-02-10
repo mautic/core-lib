@@ -4,6 +4,7 @@ namespace Mautic\CategoryBundle\EventListener;
 
 use Mautic\CategoryBundle\CategoryEvents;
 use Mautic\CategoryBundle\Event as Events;
+use Mautic\CategoryBundle\Event\CategoryTypeEntityEvent;
 use Mautic\CategoryBundle\Event\CategoryTypesEvent;
 use Mautic\CategoryBundle\Model\CategoryModel;
 use Mautic\CoreBundle\Exception\RecordCanNotBeDeletedException;
@@ -31,7 +32,7 @@ class CategorySubscriber implements EventSubscriberInterface
             CategoryEvents::CATEGORY_POST_SAVE            => ['onCategoryPostSave', 0],
             CategoryEvents::CATEGORY_POST_DELETE          => ['onCategoryDelete', 0],
             CategoryEvents::CATEGORY_PRE_DELETE           => ['onCategoryPreDelete', 0],
-            CategoryEvents::CATEGORY_TYPE_ENTITY          => ['onCategoryTypeEntity', 0],
+            CategoryTypeEntityEvent::class                => ['onCategoryTypeEntity', 0],
         ];
     }
 

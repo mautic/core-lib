@@ -6,7 +6,7 @@ namespace Mautic\CategoryBundle\Event;
 
 use Mautic\CoreBundle\Event\CommonEvent;
 
-class CategoryTypeEntityEvent extends CommonEvent
+final class CategoryTypeEntityEvent extends CommonEvent
 {
     /**
      * @var array<mixed>
@@ -16,7 +16,7 @@ class CategoryTypeEntityEvent extends CommonEvent
     /**
      * Returns the array of Category Type Entity.
      *
-     * @return array<mixed>
+     * @return array<class-string[]>
      */
     public function getCategoryTypeEntity(string $type): array
     {

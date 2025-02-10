@@ -476,7 +476,6 @@ class CategoryController extends AbstractFormController
         ];
 
         if (Request::METHOD_POST === $request->getMethod()) {
-            /** @var CategoryModel $model */
             $model  = $this->getModel('category');
             \assert($model instanceof CategoryModel);
             $entity = $model->getEntity($objectId);

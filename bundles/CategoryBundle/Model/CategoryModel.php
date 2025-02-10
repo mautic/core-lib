@@ -196,14 +196,13 @@ class CategoryModel extends FormModel
         $bundle = $category->getBundle();
 
         $types = [];
-        if ($this->dispatcher->hasListeners(CategoryEvents::CATEGORY_TYPE_ENTITY)) {
-            $event = $this->dispatcher->dispatch(new CategoryTypeEntityEvent(), CategoryEvents::CATEGORY_TYPE_ENTITY);
+        if ($this->dispatcher->hasListeners(CategoryTypeEntityEvent::class)) {
+            $event = $this->dispatcher->dispatch(new CategoryTypeEntityEvent());
             $types = $event->getCategoryTypeEntity($bundle);
         }
 
         $data = [];
         foreach ($types as $type) {
-            /** @phpstan-var class-string $class */
             $class     = $type['class'];
             $resources = $this->em->getRepository($class)->findBy(['category' => $category->getId()]);
 

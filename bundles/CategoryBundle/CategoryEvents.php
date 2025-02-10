@@ -56,14 +56,4 @@ final class CategoryEvents
      * @var string
      */
     public const CATEGORY_ON_BUNDLE_LIST_BUILD = 'mautic.category_on_bundle_list_build';
-
-    /**
-     * The mautic.category_type_entity event is thrown when get specific bundle entity.
-     *
-     * The event listener receives a
-     * Mautic\CategoryBundle\Event\CategoryTypeEntityEvent instance.
-     *
-     * @var string
-     */
-    public const CATEGORY_TYPE_ENTITY = 'mautic.category_type_entity';
 }
