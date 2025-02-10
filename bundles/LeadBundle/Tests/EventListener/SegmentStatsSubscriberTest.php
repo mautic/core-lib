@@ -11,6 +11,7 @@ use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Mautic\LeadBundle\EventListener\SegmentStatsSubscriber;
+use Mautic\LeadBundle\LeadEvents;
 use PHPUnit\Framework\Assert;
 
 class SegmentStatsSubscriberTest extends MauticMysqlTestCase
@@ -37,7 +38,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
      */
     public function testGetSubscribedEvents(): void
     {
-        Assert::assertArrayHasKey(GetStatDataEvent::class, SegmentStatsSubscriber::getSubscribedEvents());
+        Assert::assertArrayHasKey(LeadEvents::LEAD_LIST_STAT, SegmentStatsSubscriber::getSubscribedEvents());
     }
 
     public function testGetCampaignEntryPoints(): void
