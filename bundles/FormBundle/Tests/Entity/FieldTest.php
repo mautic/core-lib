@@ -340,7 +340,7 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $customField->setAlias('custom_boolean_field');
         $customField->setProperties([
             'yes' => 'Yes',
-            'no'  => 'No'
+            'no'  => 'No',
         ]);
 
         // Create a new form
@@ -353,7 +353,7 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setType('checkboxgrp');
         $field->setLabel('Test Checkbox Group');
         $field->setAlias('test_checkbox_group');
-        
+
         // Map to custom field
         $field->setMappedField('custom_boolean_field');
         $field->setMappedObject('contact');
@@ -362,8 +362,8 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $fieldProperties = [
             'list' => [
                 'option1' => 'First Option',
-                'option2' => 'Second Option'
-            ]
+                'option2' => 'Second Option',
+            ],
         ];
         $field->setProperties($fieldProperties);
 
