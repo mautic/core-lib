@@ -16,7 +16,7 @@
 #}
 {% set inBuilder = inBuilder|default(false) %}
 <div class="form-field-wrapper" data-sortable-id="mauticform_{{ field.id }}">
-<div class="{% if isConditional is not defined or (isConditional is defined and false == isConditional) %}panel{% else %}panel2{% endif %} mb-0 mt-40">
+<div class="{% if isConditional is not defined or (isConditional is defined and false == isConditional) %}panel mt-40{% else %}panel2 tile ml-sm mt-sm{% endif %} mb-0">
         {{ include('@MauticForm/Builder/_actions.html.twig', {
                 'id': field.id,
                 'formId': formId,
@@ -38,7 +38,7 @@
         </div>
 
         {% if (field.conditions|default(null) is not empty) %}
-        <div class="panel-footer">
+        <div class="mr-sm ml-sm">
             {% if field.conditions.expr is defined and field.conditions.expr is not empty %}
                 <span class="inline-spacer">
                   <span style="text-transform: none">{{ 'mautic.form.field.form.condition.show.on'|trans }}</span>
