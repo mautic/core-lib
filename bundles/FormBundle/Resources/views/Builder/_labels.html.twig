@@ -30,7 +30,7 @@
                 {
                     label: 'mautic.form.field.type.' ~ field.type,
                     icon: typeIcons[field.type] ?? 'ri-input-field',
-                    color: 'high-contrast',
+                    color: isConditional ? 'warm-gray' : 'high-contrast',
                     attributes: {
                         'data-toggle': 'tooltip',
                         'data-original-title': 'mautic.form.field.type'|trans
