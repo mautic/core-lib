@@ -533,7 +533,7 @@ class Stat
     }
 
     /**
-     * @param string $details
+     * @param array<mixed> $details
      */
     public function addOpenDetails($details): void
     {

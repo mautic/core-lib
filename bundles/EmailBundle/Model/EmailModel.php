@@ -391,11 +391,13 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         if (!$ipAddress->isTrackable()) {
             return;
         }
-        $readDateTime = new DateTimeHelper($dateTime);
+
+        $readDateTime = new DateTimeHelper($hitDateTime);
         $userAgent    = $request->server->get('HTTP_USER_AGENT');
         if ($this->botRatioHelper->isHitByBot($stat, $readDateTime->getDateTime(), $ipAddress, (string) $userAgent)) {
             return;
         }
+
         $email = $stat->getEmail();
 
         if ((int) $stat->isRead()) {
@@ -405,7 +407,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             }
         }
 
-        $readDateTime = new DateTimeHelper($hitDateTime ?? '');
         $stat->setLastOpened($readDateTime->getDateTime());
 
         $lead = $stat->getLead();
@@ -470,7 +471,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         if ($lead) {
             $trackedDevice = $this->deviceTracker->createDeviceFromUserAgent(
                 $lead,
-                $request->server->get('HTTP_USER_AGENT')
+                $userAgent
             );
 
             // As the entity might be cached, present in EM, but not attached, we need to reload it

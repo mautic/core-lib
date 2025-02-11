@@ -470,6 +470,8 @@ return [
                     'monolog.logger.mautic',
                     'event_dispatcher',
                     'mautic.lead.merger',
+                    'mautic.email.repository.stat',
+                    'mautic.helper.bot_ratio',
                 ],
             ],
             'mautic.lead.validator.length' => [
