@@ -9,7 +9,6 @@ use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\LeadField;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FormControllerFunctionalTest extends MauticMysqlTestCase
@@ -199,46 +198,45 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testMappedFieldCheckboxGroup(): void
     {
+        // Create custom boolean field.
+        $customField = new LeadField();
+        $customField->setObject('lead');
+        $customField->setType('boolean');
+        $customField->setLabel('Custom Bool Field');
+        $customField->setAlias('custom_boolean_field');
+        $customField->setProperties([
+            'yes' => 'Absolutely yes',
+            'no'  => 'Obviously No',
+        ]);
 
-      // Create custom boolean field.
-      $customField = new LeadField();
-      $customField->setObject('lead');
-      $customField->setType('boolean');
-      $customField->setLabel('Custom Bool Field');
-      $customField->setAlias('custom_boolean_field');
-      $customField->setProperties([
-        'yes' => 'Absolutely yes',
-        'no'  => 'Obviously No',
-      ]);
+        // Create & add checkbox group type field to form.
+        $form  = $this->createForm('Test form', 'test_form');
+        $field = $this->createFormField([
+            'label' => 'Test Checkbox Group',
+            'type'  => 'checkboxgrp',
+        ]);
+        $field->setMappedObject('contact');
+        $field->setMappedField('custom_boolean_field');
+        $fieldProperties = [
+            'list' => [
+                'option1' => 'First Option',
+                'option2' => 'Second Option',
+            ],
+        ];
+        $field->setProperties($fieldProperties);
+        $field->setForm($form);
+        $this->em->persist($field);
+        $this->em->flush();
+        $this->em->clear();
 
-      // Create & add checkbox group type field to form.
-      $form  = $this->createForm('Test form', 'test_form');
-      $field = $this->createFormField([
-        'label' => 'Test Checkbox Group',
-        'type'  => 'checkboxgrp',
-      ]);
-      $field->setMappedObject('contact');
-      $field->setMappedField('custom_boolean_field');
-      $fieldProperties = [
-        'list' => [
-          'option1' => 'First Option',
-          'option2' => 'Second Option',
-        ],
-      ];
-      $field->setProperties($fieldProperties);
-      $field->setForm($form);
-      $this->em->persist($field);
-      $this->em->flush();
-      $this->em->clear();
+        $crawler = $this->client->request('GET', sprintf('/s/forms/edit/%d', $form->getId()));
+        $this->assertTrue($this->client->getResponse()->isOk());
 
-      $crawler = $this->client->request('GET', sprintf('/s/forms/edit/%d', $form->getId()));
-      $this->assertTrue($this->client->getResponse()->isOk());
-
-      // Visit the form preview page
-      $crawler = $this->client->request('GET', sprintf('/s/forms/preview/%d', $form->getId()));
-      $this->assertTrue($this->client->getResponse()->isOk());
-      $this->assertStringContainsString('First Option', $this->client->getResponse()->getContent());
-      $this->assertStringContainsString('Second Option', $this->client->getResponse()->getContent());
+        // Visit the form preview page
+        $crawler = $this->client->request('GET', sprintf('/s/forms/preview/%d', $form->getId()));
+        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertStringContainsString('First Option', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('Second Option', $this->client->getResponse()->getContent());
     }
 
     private function createForm(string $name, string $alias): Form
