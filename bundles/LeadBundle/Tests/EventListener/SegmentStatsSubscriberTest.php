@@ -11,15 +11,11 @@ use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Mautic\LeadBundle\EventListener\SegmentStatsSubscriber;
-use Mautic\LeadBundle\LeadEvents;
 use PHPUnit\Framework\Assert;
 
-class SegmentStatsSubscriberTest extends MauticMysqlTestCase
+final class SegmentStatsSubscriberTest extends MauticMysqlTestCase
 {
-    /**
-     * @var SegmentStatsSubscriber
-     */
-    private $subscriber;
+    private SegmentStatsSubscriber $subscriber;
 
     /**
      * @throws \Exception
@@ -38,7 +34,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
      */
     public function testGetSubscribedEvents(): void
     {
-        Assert::assertArrayHasKey(LeadEvents::LEAD_LIST_STAT, SegmentStatsSubscriber::getSubscribedEvents());
+        Assert::assertArrayHasKey(GetStatDataEvent::class, SegmentStatsSubscriber::getSubscribedEvents());
     }
 
     public function testGetCampaignEntryPoints(): void
@@ -51,9 +47,7 @@ class SegmentStatsSubscriberTest extends MauticMysqlTestCase
         $this->assertTrue(
             in_array(
                 $event->getResults()[0]['item_id'],
-                array_map(function ($list) {
-                    return $list->getId();
-                }, $campaign->getLists()->toArray())
+                $campaign->getLists()->map(fn ($list) => $list->getId())->toArray()
             )
         );
 

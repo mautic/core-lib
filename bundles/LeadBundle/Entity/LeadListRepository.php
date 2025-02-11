@@ -706,9 +706,7 @@ SQL;
             $segmentIds     = array_merge($property['addToLists'], $property['removeFromLists'], $segmentIds);
         }
 
-        return array_map(function ($segment) {
-            return ['item_id' => (string) $segment];
-        }, $segmentIds);
+        return array_map(fn ($segment) => ['item_id' => (string) $segment], $segmentIds);
     }
 
     /**
@@ -728,9 +726,7 @@ SQL;
         foreach ($query->getResult() as $rowFilters) {
             $segmentMembershipFilters = array_filter(
                 unserialize($rowFilters['filters']),
-                function (array $filter) {
-                    return 'leadlist' === $filter['type'];
-                }
+                fn (array $filter) => 'leadlist' === $filter['type']
             );
 
             foreach ($segmentMembershipFilters as $filter) {
@@ -810,8 +806,6 @@ SQL;
             $segmentIds     = array_merge($property['addToLists'], $property['removeFromLists'], $segmentIds);
         }
 
-        return array_map(function ($segment) {
-            return ['item_id' => (string) $segment];
-        }, $segmentIds);
+        return array_map(fn ($segment) => ['item_id' => (string) $segment], $segmentIds);
     }
 }

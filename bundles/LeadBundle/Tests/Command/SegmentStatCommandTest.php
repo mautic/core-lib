@@ -8,7 +8,7 @@ use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\LeadList;
 
-class SegmentStatCommandTest extends MauticMysqlTestCase
+final class SegmentStatCommandTest extends MauticMysqlTestCase
 {
     /**
      * @throws \Exception
