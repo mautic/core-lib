@@ -92,7 +92,7 @@
         {% endif %}
     {% else %}
         <!-- Show when value exists -->
-        {% if field.showWhenValueExists is defined and field.showWhenValueExists == 0 %}
+        {% if field.showWhenValueExists is defined and field.showWhenValueExists == 0 and field.type != 'button' %}
             {% include '@MauticCore/Helper/_tag.html.twig' with {
                 tags: [
                     {
