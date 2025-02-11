@@ -3,9 +3,8 @@
 /* Panel Styles */
 .panel2 {
     --layout-density-padding-inline-local: 3px 6px;
-    border: 1px solid #ebedf0;
-    -webkit-box-shadow: 0px 1px 1px #f3f3f3;
-    box-shadow: 0px 1px 1px #f3f3f3;
+    -webkit-box-shadow: 0px 1px 1px #00000012;
+    box-shadow: 0px 1px 1px #00000012;
     zoom: 0.9;
 }
 .panel2 label {
