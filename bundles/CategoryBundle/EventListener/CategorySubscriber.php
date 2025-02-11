@@ -3,7 +3,7 @@
 namespace Mautic\CategoryBundle\EventListener;
 
 use Mautic\CategoryBundle\CategoryEvents;
-use Mautic\CategoryBundle\Event as Events;
+use Mautic\CategoryBundle\Event\CategoryEvent;
 use Mautic\CategoryBundle\Event\CategoryTypeEntityEvent;
 use Mautic\CategoryBundle\Event\CategoryTypesEvent;
 use Mautic\CategoryBundle\Model\CategoryModel;
@@ -55,7 +55,7 @@ class CategorySubscriber implements EventSubscriberInterface
     /**
      * Add an entry to the audit log.
      */
-    public function onCategoryPostSave(Events\CategoryEvent $event): void
+    public function onCategoryPostSave(CategoryEvent $event): void
     {
         $category = $event->getCategory();
         if ($details = $event->getChanges()) {
@@ -74,7 +74,7 @@ class CategorySubscriber implements EventSubscriberInterface
     /**
      * Add a delete entry to the audit log.
      */
-    public function onCategoryDelete(Events\CategoryEvent $event): void
+    public function onCategoryDelete(CategoryEvent $event): void
     {
         $category = $event->getCategory();
         $log      = [
@@ -88,7 +88,7 @@ class CategorySubscriber implements EventSubscriberInterface
         $this->auditLogModel->writeToLog($log);
     }
 
-    public function onCategoryPreDelete(Events\CategoryEvent $event): void
+    public function onCategoryPreDelete(CategoryEvent $event): void
     {
         if ($usage = $this->categoryModel->getUsage($event->getCategory())) {
             $message = $this->translator->trans(
@@ -102,7 +102,7 @@ class CategorySubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onCategoryTypeEntity(Events\CategoryTypeEntityEvent $event): void
+    public function onCategoryTypeEntity(CategoryTypeEntityEvent $event): void
     {
         $bundles = $this->bundleHelper->getMauticBundles(true);
 
