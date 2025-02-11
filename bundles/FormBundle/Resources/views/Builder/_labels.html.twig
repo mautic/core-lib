@@ -88,15 +88,15 @@
         } %}
         {% endif %}
     {% else %}
-        {% if field.showWhenValueExists is defined and field.showWhenValueExists == 0 and field.type != 'button' and field.type != 'captcha' and not isConditional %}
+        {% if field.showWhenValueExists is defined and field.showWhenValueExists == 0 and field.type is not defined or (field.type not in ['button', 'captcha', 'freehtml', 'freetext', 'pagebreak', 'file']) and not isConditional %}
         <!-- Show when value exists -->
             {% include '@MauticCore/Helper/_tag.html.twig' with {
             tags: [
                 {
-                label: 'mautic.form.field.form.hide_when_value_exists',
-                icon: 'ri-eye-close-fill',
-                icon_only: true,
-                color: 'blue'
+                    label: 'mautic.form.field.form.hide_when_value_exists',
+                    icon: 'ri-eye-close-fill',
+                    icon_only: true,
+                    color: 'blue'
                 }
             ]
             } %}
