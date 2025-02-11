@@ -92,14 +92,14 @@
         {% endif %}
     {% else %}
         <!-- Show when value exists -->
-        {% if field.showWhenValueExists is defined and field.showWhenValueExists == 0 and field.type != 'button' %}
+        {% if field.showWhenValueExists is defined and field.showWhenValueExists == 0 and field.type != 'button' and not isConditional %}
             {% include '@MauticCore/Helper/_tag.html.twig' with {
                 tags: [
                     {
-                        label: 'mautic.form.field.form.hide_when_value_exists',
-                        icon: 'ri-eye-close-fill',
-                        icon_only: true,
-                        color: 'blue'
+                    label: 'mautic.form.field.form.hide_when_value_exists',
+                    icon: 'ri-eye-close-fill',
+                    icon_only: true,
+                    color: 'blue'
                     }
                 ]
             } %}
