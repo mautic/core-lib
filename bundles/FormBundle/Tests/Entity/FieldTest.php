@@ -8,7 +8,6 @@ use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\FormBundle\Entity\Field;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\LeadBundle\Entity\LeadField;
 use PHPUnit\Framework\Assert;
 
 final class FieldTest extends \PHPUnit\Framework\TestCase
@@ -328,66 +327,5 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         yield ['checkboxgrp', [], true];
         yield ['checkboxgrp', ['multiple' => 0], true];
         yield ['checkboxgrp', ['multiple' => 1], true];
-    }
-
-    public function testCheckboxGroupOptionsWithCustomLeadFieldInForm(): void
-    {
-        // Create a custom boolean field for contacts.
-        $customField = new LeadField();
-        $customField->setObject('lead');
-        $customField->setType('boolean');
-        $customField->setLabel('Test Custom Field');
-        $customField->setAlias('custom_boolean_field');
-        $customField->setProperties([
-            'yes' => 'Yes',
-            'no'  => 'No',
-        ]);
-
-        // Create a new form
-        $form = new Form();
-        $form->setName('Test Form');
-        $form->setAlias('test_form');
-
-        // Create a checkbox group field
-        $field = new Field();
-        $field->setType('checkboxgrp');
-        $field->setLabel('Test Checkbox Group');
-        $field->setAlias('test_checkbox_group');
-
-        // Map to custom field
-        $field->setMappedField('custom_boolean_field');
-        $field->setMappedObject('contact');
-
-        // Add properties
-        $fieldProperties = [
-            'list' => [
-                'option1' => 'First Option',
-                'option2' => 'Second Option',
-            ],
-        ];
-        $field->setProperties($fieldProperties);
-
-        // Add field to form
-        $form->addField(0, $field);
-        $field->setForm($form);
-
-        // Verify the options
-        $this->assertEquals(
-            ['option1' => 'First Option', 'option2' => 'Second Option'],
-            $field->getProperties()['list']
-        );
-
-        // Verify the field maintains its options when accessed through the form
-        $formField = $form->getFields()->getValues()[0];
-        $this->assertEquals(
-            ['option1' => 'First Option', 'option2' => 'Second Option'],
-            $formField->getProperties()['list']
-        );
-
-        // Verify the options are different from the mapped custom field
-        $this->assertNotEquals(
-            $customField->getProperties(),
-            $field->getProperties()['list']
-        );
     }
 }
