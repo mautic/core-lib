@@ -90,7 +90,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         UserHelper $userHelper,
         LoggerInterface $mauticLogger,
         private StatRepository $statRepository,
-        private BotRatioHelper $botRatioHelper
+        private BotRatioHelper $botRatioHelper,
     ) {
         $this->dateTimeHelper       = new DateTimeHelper();
 
@@ -376,7 +376,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
      *
      * @throws \Exception
      */
-    public function hitPage(Redirect|Page|null $page, Request $request, $code = '200', Lead $lead = null, $query = [], , Datetime $dateTime = null): bool
+    public function hitPage(Redirect|Page|null $page, Request $request, $code = '200', Lead $lead = null, $query = [], \DateTime $dateTime = null): bool
     {
         // Don't skew results with user hits
         if (!$this->security->isAnonymous() || $request->cookies->get('Blocked-Tracking')) {
@@ -393,7 +393,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
             $query = $this->getHitQuery($request, $page);
         }
 
-        $dateTime  = $dateTime ?: new Datetime();
+        $dateTime  = $dateTime ?: new \DateTime();
         $userAgent = $request->server->get('HTTP_USER_AGENT');
         if (array_key_exists('ct', $query) && array_key_exists('email', $query['ct']) && array_key_exists('stat', $query['ct'])) {
             /** @var Stat $stat */
@@ -592,22 +592,23 @@ class PageModel extends FormModel implements GlobalSearchInterface
         // Check if this is a unique page hit
         $isUnique = $this->getHitRepository()->isUniquePageHit($page, $trackingId, $lead);
 
-        if ($page instanceof Page) {
-            $hit->setPageLanguage($page->getLanguage());
+        if (!empty($page)) {
+            if ($page instanceof Page) {
+                $hit->setPageLanguage($page->getLanguage());
 
-            $isVariant = ($isUnique) ? $page->getVariantStartDate() : false;
+                $isVariant = ($isUnique) ? $page->getVariantStartDate() : false;
 
-            try {
-                $this->getRepository()->upHitCount($page->getId(), 1, $isUnique, !empty($isVariant));
-            } catch (\Exception $exception) {
-                $this->logger->error(
-                    $exception->getMessage(),
-                    ['exception' => $exception]
-                );
-            }
-        } elseif ($page instanceof Redirect) {
-            try {
-                $this->pageRedirectModel->getRepository()->upHitCount($page->getId(), 1, $isUnique);
+                try {
+                    $this->getRepository()->upHitCount($page->getId(), 1, $isUnique, !empty($isVariant));
+                } catch (\Exception $exception) {
+                    $this->logger->error(
+                        $exception->getMessage(),
+                        ['exception' => $exception]
+                    );
+                }
+            } elseif ($page instanceof Redirect) {
+                try {
+                    $this->pageRedirectModel->getRepository()->upHitCount($page->getId(), 1, $isUnique);
 
                     // If this is a trackable, up the trackable counts as well
                     if ($hit->getSource() && $hit->getSourceId()) {
