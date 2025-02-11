@@ -229,12 +229,13 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
+        // Verify form creation
         $crawler = $this->client->request('GET', sprintf('/s/forms/edit/%d', $form->getId()));
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         // Visit the form preview page
         $crawler = $this->client->request('GET', sprintf('/s/forms/preview/%d', $form->getId()));
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('First Option', $this->client->getResponse()->getContent());
         $this->assertStringContainsString('Second Option', $this->client->getResponse()->getContent());
     }
