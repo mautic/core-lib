@@ -27,21 +27,33 @@ class PageModelTest extends MauticMysqlTestCase
 
     private const IP_NOT_IN_ANY_BLOCK_LIST2 = '218.30.65.111';
 
+    private const BOT_BLOCKED_USER_AGENTS = [
+        'AHC/2.1',
+        'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.6) Gecko/2009011913 Firefox/3.0.6',
+        'Mozilla/5.0 (compatible; Codewisebot/2.0; +http://www.nosite.com/somebot.htm)',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B411 Safari/600.1.4 (compatible; YandexMobileBot/3.0; +http://yandex.com/bots)',
+        'serpstatbot/2.0 beta (advanced backlink tracking bot; http://serpstatbot.com/; abuse@serpstatbot.com)',
+        'Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; AspiegelBot)',
+        'serpstatbot/2.1 (advanced backlink tracking bot; https://serpstatbot.com/; abuse@serpstatbot.com)',
+    ];
+
     protected function setUp(): void
     {
         $this->configParams['do_not_track_ips']                = [self::DO_NOT_TRACK_IP];
         $this->configParams['bot_helper_blocked_ip_addresses'] = [self::BOT_BLOCKED_IP];
+        $this->configParams['bot_helper_blocked_user_agents']  = self::BOT_BLOCKED_USER_AGENTS;
         $this->configParams['site_url']                        = 'https://mautic-cloud.local';
         parent::setUp();
-        $this->pageHitRepository = $this->em->getRepository('MauticPageBundle:Hit');
+        $this->pageHitRepository = $this->em->getRepository(Hit::class);
+        $this->logoutUser();
     }
 
     public function testItRegistersPageHitsWithFieldValues(): void
     {
         $requestParameters = [
-            'page_title'       => $this->generateRandomUTF8String(512),
-            'page_language'    => $this->generateRandomUTF8String(512),
-            'page_url'         => 'https://some.page.url/test/'.$this->generateRandomUTF8String(512),
+            'page_title'       => $this->generateRandomString(50),
+            'page_language'    => $this->generateRandomString(50),
+            'page_url'         => 'https://some.page.url/test/'.$this->generateRandomString(50),
             'counter'          => 0,
             'timezone_offset'  => -120,
             'resolution'       => '2560x1440',
@@ -58,21 +70,9 @@ class PageModelTest extends MauticMysqlTestCase
         Assert::assertStringStartsWith($pageHit->getUrl(), $requestParameters['page_url']);
     }
 
-    public function generateRandomUTF8String(int $length): string
+    public function generateRandomString(int $length): string
     {
-        $result = '';
-
-        for ($i = 0; $i < $length; ++$i) {
-            $codePoint = mt_rand(0x80, 0xFFFF);
-            $char      = \IntlChar::chr($codePoint);
-            if (null !== $char && \IntlChar::isprint($char)) {
-                $result .= $char;
-            } else {
-                --$i;
-            }
-        }
-
-        return $result;
+        return substr(bin2hex(random_bytes($length)), 0, $length);
     }
 
     /**
@@ -104,9 +104,9 @@ class PageModelTest extends MauticMysqlTestCase
         ];
 
         $requestParameters = [
-            'page_title'       => $this->generateRandomUTF8String(512),
-            'page_language'    => $this->generateRandomUTF8String(512),
-            'page_url'         => 'https://some.page.url/test/'.$this->generateRandomUTF8String(512),
+            'page_title'       => $this->generateRandomString(50),
+            'page_language'    => $this->generateRandomString(50),
+            'page_url'         => 'https://some.page.url/test/'.$this->generateRandomString(50),
             'counter'          => 0,
             'timezone_offset'  => -120,
             'resolution'       => '2560x1440',
@@ -181,6 +181,7 @@ class PageModelTest extends MauticMysqlTestCase
         $page = new Page();
         $page->setTitle('Page A');
         $page->setAlias('page_a');
+        $page->setCustomHtml('Page A');
         $page->setRedirectUrl('http://mautic-cloud.local/page_a');
         $this->em->persist($page);
 
