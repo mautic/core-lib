@@ -531,8 +531,6 @@ class PublicController extends AbstractFormController
                     $isHitTrackable = $pageModel->hitPage($redirect, $request, 200, $lead);
                 }
 
-                /** @var PrimaryCompanyHelper $primaryCompanyHelper */
-                $primaryCompanyHelper = $this->get('mautic.lead.helper.primary_company');
                 $leadArray            = ($lead) ? $primaryCompanyHelper->getProfileFieldsWithPrimaryCompany($lead) : [];
 
                 $url = TokenHelper::findLeadTokens($url, $leadArray, true);

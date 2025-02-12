@@ -27,7 +27,6 @@ use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Entity\StatRepository;
-use Mautic\EmailBundle\Helper\BotRatioHelper;
 use Mautic\EmailBundle\Helper\EmailValidator;
 use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Entity\Company;
@@ -136,8 +135,6 @@ class LeadModel extends FormModel
         Translator $translator,
         UserHelper $userHelper,
         LoggerInterface $mauticLogger,
-        private StatRepository $statRepository,
-        private BotRatioHelper $botRatioHelper,
     ) {
         $this->leadFieldModel       = $leadFieldModel;
 

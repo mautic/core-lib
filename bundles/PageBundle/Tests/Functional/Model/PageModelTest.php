@@ -17,10 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageModelTest extends MauticMysqlTestCase
 {
-    /**
-     * @var HitRepository
-     */
-    private $pageHitRepository;
+    private HitRepository $pageHitRepository;
 
     private const DO_NOT_TRACK_IP = '218.30.65.10';
 

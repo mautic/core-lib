@@ -66,7 +66,7 @@ class BotRatioHelper
     private function isUserAgentInIgnoreList(string $userAgent): bool
     {
         foreach ($this->blockedUserAgents as $blockedUserAgent) {
-            if (false !== strpos($userAgent, $blockedUserAgent)) {
+            if (str_contains($userAgent, $blockedUserAgent)) {
                 return true;
             }
         }

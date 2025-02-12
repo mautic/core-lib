@@ -153,7 +153,6 @@ class PageTestAbstract extends TestCase
                 ->willReturn($transliterationEnabled);
 
         $deviceTrackerMock           = $this->createMock(DeviceTracker::class);
-        $variantConverterServiceMock = $this->createMock(VariantConverterService::class);
         $statRepositoryMock          = $this->createMock(StatRepository::class);
         $botRatioHelperMock          = $this->createMock(BotRatioHelper::class);
 
