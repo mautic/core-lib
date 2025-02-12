@@ -205,7 +205,7 @@ class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
 
         $this->leadModel->expects($this->once())
             ->method('checkForDuplicateContact')
-            ->with($queryWithEmail, null, true, true)
+            ->with($queryWithEmail, true, true)
             ->willReturn([$lead, ['email' => 'test@test.com']]);
 
         $helper = $this->getContactRequestHelper();
@@ -237,7 +237,7 @@ class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
 
         $this->leadModel->expects($this->once())
             ->method('checkForDuplicateContact')
-            ->with($query, null, true, true)
+            ->with($query, true, true)
             ->willReturn([$this->trackedContact, []]);
 
         $helper = $this->getContactRequestHelper();

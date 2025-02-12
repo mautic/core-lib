@@ -438,8 +438,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             ]
         );
 
-        // check for existing IP
-        $ipAddress = $this->ipLookupHelper->getIpAddress();
         $stat->setIpAddress($ipAddress);
 
         if ($this->dispatcher->hasListeners(EmailEvents::EMAIL_ON_OPEN)) {
