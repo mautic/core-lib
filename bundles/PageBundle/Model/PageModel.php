@@ -624,7 +624,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
                     if (MAUTIC_ENV !== 'prod') {
                         throw $exception;
                     } else {
-                        $this->logger->addError(
+                        $this->logger->error(
                             $exception->getMessage(),
                             ['exception' => $exception]
                         );
