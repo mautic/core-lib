@@ -10,18 +10,29 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class BotRatioHelperFunctionalTest extends MauticMysqlTestCase
 {
-    private const DO_NOT_TRACK_IP = '218.30.65.10';
+    private const string DO_NOT_TRACK_IP = '218.30.65.10';
 
-    private const BOT_BLOCKED_IP = '218.30.65.11';
+    private const string BOT_BLOCKED_IP = '218.30.65.11';
 
-    private const IP_NOT_IN_ANY_BLOCK_LIST = '218.30.65.12';
+    private const string IP_NOT_IN_ANY_BLOCK_LIST = '218.30.65.12';
 
-    private const IP_NOT_IN_ANY_BLOCK_LIST2 = '218.30.65.111';
+    private const string IP_NOT_IN_ANY_BLOCK_LIST2 = '218.30.65.111';
+
+    private const array BOT_BLOCKED_USER_AGENTS = [
+        'AHC/2.1',
+        'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.6) Gecko/2009011913 Firefox/3.0.6',
+        'Mozilla/5.0 (compatible; Codewisebot/2.0; +http://www.nosite.com/somebot.htm)',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B411 Safari/600.1.4 (compatible; YandexMobileBot/3.0; +http://yandex.com/bots)',
+        'serpstatbot/2.0 beta (advanced backlink tracking bot; http://serpstatbot.com/; abuse@serpstatbot.com)',
+        'Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; AspiegelBot)',
+        'serpstatbot/2.1 (advanced backlink tracking bot; https://serpstatbot.com/; abuse@serpstatbot.com)',
+    ];
 
     protected function setUp(): void
     {
         $this->configParams['do_not_track_ips']                = [self::DO_NOT_TRACK_IP];
         $this->configParams['bot_helper_blocked_ip_addresses'] = [self::BOT_BLOCKED_IP];
+        $this->configParams['bot_helper_blocked_user_agents']  = self::BOT_BLOCKED_USER_AGENTS;
         parent::setUp();
     }
 

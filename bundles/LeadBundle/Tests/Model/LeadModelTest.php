@@ -45,15 +45,13 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LeadModelTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var MockObject|RequestStack
-     */
-    private MockObject $requestStackMock;
+    private MockObject|RequestStack $requestStack;
 
     /**
      * @var MockObject|IpLookupHelper
@@ -178,7 +176,8 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->requestStackMock                 = $this->createMock(RequestStack::class);
+        $this->requestStack             = new RequestStack();
+        $this->requestStack->push(new Request());
         $this->ipLookupHelperMock               = $this->createMock(IpLookupHelper::class);
         $this->pathsHelperMock                  = $this->createMock(PathsHelper::class);
         $this->integrationHelperkMock           = $this->createMock(IntegrationHelper::class);
@@ -205,7 +204,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $this->botRatioHelper                   = $this->createMock(BotRatioHelper::class);
 
         $this->leadModel                        = new LeadModel(
-            $this->requestStackMock,
+            $this->requestStack,
             $this->ipLookupHelperMock,
             $this->pathsHelperMock,
             $this->integrationHelperkMock,
@@ -729,7 +728,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         }
 
         // Lead Model that provides access to dispatchBatchEvent
-        $leadModel = new class($this->requestStack, $this->cookieHelperMock, $this->ipLookupHelperMock, $this->pathsHelperMock, $this->integrationHelperkMock, $this->fieldModelMock, $this->listModelMock, $this->formFactoryMock, $this->companyModelMock, $this->categoryModelMock, $this->channelListHelperMock, $this->coreParametersHelperMock, $this->emailValidatorMock, $this->userProviderMock, $this->contactTrackerMock, $this->deviceTrackerMock, $this->legacyLeadModelMock, $this->ipAddressModelMock, $this->statRepository, $this->botRatioHelper) extends LeadModel {
+        $leadModel = new class($this->requestStack, $this->ipLookupHelperMock, $this->pathsHelperMock, $this->integrationHelperkMock, $this->fieldModelMock, $this->fieldsWithUniqueIdentifier, $this->listModelMock, $this->formFactoryMock, $this->companyModelMock, $this->categoryModelMock, $this->channelListHelperMock, $this->coreParametersHelperMock, $this->emailValidatorMock, $this->userProviderMock, $this->contactTrackerMock, $this->deviceTrackerMock, $this->ipAddressModelMock, $this->entityManagerMock, $this->createMock(CorePermissions::class), $this->dispatcherMock, $this->createMock(UrlGeneratorInterface::class), $this->translator, $this->userHelperMock, $this->createMock(LoggerInterface::class), $this->statRepository, $this->botRatioHelper) extends LeadModel {
             /**
              * @param mixed[] $leads
              */

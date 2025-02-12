@@ -58,9 +58,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class EmailModelTest extends \PHPUnit\Framework\TestCase
 {
-    public const SEGMENT_A = 'segment A';
+    public const string SEGMENT_A = 'segment A';
 
-    public const SEGMENT_B = 'segment B';
+    public const string SEGMENT_B = 'segment B';
 
     /**
      * @var MockObject|LeadDeviceRepository
@@ -754,6 +754,10 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->method('getRepository')
             ->with(LeadDevice::class)
             ->willReturn($this->leadDeviceRepository);
+
+        $this->botRatioHelperMock->expects($this->once())
+            ->method('isHitByBot')
+            ->willReturn(false);
 
         $this->emailModel->hitEmail($stat, $request);
     }

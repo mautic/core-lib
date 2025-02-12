@@ -47,10 +47,7 @@ class ContactRequestHelper
     ) {
     }
 
-    /**
-     * @return Lead|null
-     */
-    public function getContactFromQuery(array $queryFields = [])
+    public function getContactFromQuery(array $queryFields = []): ?Lead
     {
         $request = $this->getCurrentRequest();
         if ($request && $request->cookies->get('Blocked-Tracking')) {
@@ -100,11 +97,9 @@ class ContactRequestHelper
     }
 
     /**
-     * @return Lead
-     *
      * @throws ContactNotFoundException
      */
-    private function getContactFromUrl()
+    private function getContactFromUrl(): Lead
     {
         $request = $this->getCurrentRequest();
 

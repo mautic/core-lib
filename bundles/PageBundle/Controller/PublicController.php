@@ -517,8 +517,8 @@ class PublicController extends AbstractFormController
                 $pageModel = $this->getModel('page');
 
                 try {
-                    $lead           = $leadModel->getContactFromRequest(['ct' => $ct]);
-                    $isHitTrackable = $pageModel->hitPage($redirect, $this->request, 200, $lead);
+                    $lead           = $contactRequestHelper->getContactFromQuery(['ct' => $ct]);
+                    $isHitTrackable = $pageModel->hitPage($redirect, $request, 200, $lead);
                 } catch (InvalidDecodedStringException $e) {
                     // Invalid ct value so we must unset it
                     // and process the request without it
@@ -528,7 +528,7 @@ class PublicController extends AbstractFormController
                     $request->request->set('ct', '');
                     $request->query->set('ct', '');
                     $lead           = $contactRequestHelper->getContactFromQuery();
-                    $isHitTrackable = $pageModel->hitPage($redirect, $this->request, 200, $lead);
+                    $isHitTrackable = $pageModel->hitPage($redirect, $request, 200, $lead);
                 }
 
                 /** @var PrimaryCompanyHelper $primaryCompanyHelper */
