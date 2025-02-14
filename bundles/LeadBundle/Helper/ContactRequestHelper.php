@@ -17,7 +17,7 @@ use Mautic\LeadBundle\Exception\ContactNotFoundException;
 use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Tracker\ContactTracker;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -39,7 +39,7 @@ class ContactRequestHelper
         private CoreParametersHelper $coreParametersHelper,
         private IpLookupHelper $ipLookupHelper,
         private RequestStack $requestStack,
-        private Logger $logger,
+        private LoggerInterface $logger,
         private EventDispatcherInterface $eventDispatcher,
         private ContactMerger $contactMerger,
         private StatRepository $statRepository,

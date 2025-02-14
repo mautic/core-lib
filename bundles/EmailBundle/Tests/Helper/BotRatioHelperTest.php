@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mautic\EmailBundle\Tests\Helper;
 
 use Mautic\CoreBundle\Entity\IpAddress;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Helper\BotRatioHelper;
 use PHPUnit\Framework\TestCase;
@@ -28,22 +27,6 @@ final class BotRatioHelperTest extends TestCase
         float $botHelperBotRatioThreshold,
         bool $isBot,
     ): void {
-        // Threshold
-        $coreParametersHelperMock = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelperMock->expects($this->exactly(4))
-            ->method('get')
-            ->withConsecutive(
-                ['bot_helper_bot_ratio_threshold', 0.6],
-                ['bot_helper_time_email_threshold', 2],
-                ['bot_helper_blocked_user_agents', []],
-                ['bot_helper_blocked_ip_addresses', []]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $botHelperBotRatioThreshold,
-                $botHelperTimeEmailThreshold,
-                $blockedUserAgents,
-                $ipDoNotTrackList
-            );
         // Time
         $emailHitDateTime = new \DateTime();
         $emailSent        = clone $emailHitDateTime;
@@ -54,7 +37,7 @@ final class BotRatioHelperTest extends TestCase
             ->willReturn($emailSent);
         // IP
         $ipAddress        = new IpAddress($ipAddressString);
-        $botRatioHelper   = new BotRatioHelper($coreParametersHelperMock);
+        $botRatioHelper   = new BotRatioHelper($botHelperBotRatioThreshold, $botHelperTimeEmailThreshold, $blockedUserAgents, $ipDoNotTrackList);
         $isEvaluatedAsBot = $botRatioHelper->isHitByBot($emailStatMock, $emailHitDateTime, $ipAddress, $userAgent);
         $this->assertSame($isBot, $isEvaluatedAsBot);
     }

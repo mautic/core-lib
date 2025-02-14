@@ -5,37 +5,28 @@ declare(strict_types=1);
 namespace Mautic\EmailBundle\Helper;
 
 use Mautic\CoreBundle\Entity\IpAddress;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\EmailBundle\Entity\Stat;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class BotRatioHelper
 {
     /**
-     * @var float
+     * @param string[] $blockedUserAgents
+     * @param string[] $blockedIPAddresses
      */
-    private $botRatioThreshold;
+    public function __construct(
+        #[Autowire(env: 'float:MAUTIC_BOT_HELPER_BOT_RATIO_THRESHOLD')]
+        private float $botRatioThreshold = 0.6,
 
-    /**
-     * @var int
-     */
-    private $timeFromEmailThreshold;
+        #[Autowire(env: 'int:MAUTIC_BOT_HELPER_TIME_EMAIL_THRESHOLD')]
+        private int $timeFromEmailThreshold = 2,
 
-    /**
-     * @var array<string>
-     */
-    private $blockedUserAgents;
+        #[Autowire(env: 'json:MAUTIC_BOT_HELPER_BLOCKED_USER_AGENTS')]
+        private array $blockedUserAgents = [],
 
-    /**
-     * @var array<string>
-     */
-    private $blockedIPAddresses;
-
-    public function __construct(CoreParametersHelper $coreParametersHelper)
-    {
-        $this->botRatioThreshold      = $coreParametersHelper->get('bot_helper_bot_ratio_threshold', 0.6);
-        $this->timeFromEmailThreshold = $coreParametersHelper->get('bot_helper_time_email_threshold', 2);
-        $this->blockedUserAgents      = $coreParametersHelper->get('bot_helper_blocked_user_agents', []);
-        $this->blockedIPAddresses     = $coreParametersHelper->get('bot_helper_blocked_ip_addresses', []);
+        #[Autowire(env: 'json:MAUTIC_BOT_HELPER_BLOCKED_IP_ADDRESSES')]
+        private array $blockedIPAddresses = [],
+    ) {
     }
 
     public function isHitByBot(Stat $emailStat, \DateTimeInterface $emailHitDateTime, IpAddress $ipAddress, string $userAgent): bool

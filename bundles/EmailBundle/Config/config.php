@@ -230,12 +230,6 @@ return [
                 ],
                 'tag' => 'mautic.email_stat_helper',
             ],
-            'mautic.helper.bot_ratio' => [
-                'class'     => Mautic\EmailBundle\Helper\BotRatioHelper::class,
-                'arguments' => [
-                    'mautic.helper.core_parameters',
-                ],
-            ],
         ],
         'validator' => [
             'mautic.email.validator.multiple_emails_valid_validator' => [
