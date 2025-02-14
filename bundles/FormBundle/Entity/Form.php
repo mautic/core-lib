@@ -8,7 +8,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
-use Mautic\CoreBundle\Entity\ExportableInterface;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
@@ -41,6 +40,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 class Form extends FormEntity implements UuidInterface
 {
     use UuidTrait;
+
     use ProjectTrait;
 
     /**
@@ -170,11 +170,6 @@ class Form extends FormEntity implements UuidInterface
         $this->actions     = new ArrayCollection();
         $this->submissions = new ArrayCollection();
         $this->initializeProjects();
-    }
-
-    public function getExportKey(): string
-    {
-        return 'form';
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
