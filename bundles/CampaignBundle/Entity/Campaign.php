@@ -51,6 +51,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     use ProjectTrait;
 
     public const TABLE_NAME = 'campaigns';
+    public const ENTITY_NAME = 'campaign';
     /**
      * @var int
      */
