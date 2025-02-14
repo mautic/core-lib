@@ -33,10 +33,10 @@ class ConfigSubscriberTest extends MauticMysqlTestCase
     public function testFailConfigMediaPathWithSystemDirectories(): void
     {
         $crawler = $this->setImagePathRequest('app/');
-        Assert::assertStringContainsString('The image path is invalid. It must begin with media', $crawler->text());
+        Assert::assertStringContainsString('The image path is invalid.', $crawler->text());
 
         $crawler = $this->setImagePathRequest('app\\');
-        Assert::assertStringContainsString('The image path is invalid. It must begin with media', $crawler->text());
+        Assert::assertStringContainsString('The image path is invalid.', $crawler->text());
 
         $crawler = $this->setImagePathRequest('app\\..');
         Assert::assertStringContainsString('The image path is invalid.', $crawler->text());
@@ -51,13 +51,13 @@ class ConfigSubscriberTest extends MauticMysqlTestCase
         Assert::assertStringContainsString('The image path is invalid.', $crawler->text());
 
         $crawler = $this->setImagePathRequest('bin');
-        Assert::assertStringContainsString('The image path is invalid. It must begin with media', $crawler->text());
+        Assert::assertStringContainsString('The image path is invalid.', $crawler->text());
 
         $crawler = $this->setImagePathRequest('bin/');
-        Assert::assertStringContainsString('The image path is invalid. It must begin with media', $crawler->text());
+        Assert::assertStringContainsString('The image path is invalid.', $crawler->text());
 
         $crawler = $this->setImagePathRequest('themes');
-        Assert::assertStringContainsString('The image path is invalid. It must begin with media', $crawler->text());
+        Assert::assertStringContainsString('The image path is invalid.', $crawler->text());
     }
 
     public function testFoldersThatDontExist(): void
@@ -90,7 +90,7 @@ class ConfigSubscriberTest extends MauticMysqlTestCase
         }
 
         $crawler = $this->setImagePathRequest('media/newFolder');
-        Assert::assertStringNotContainsString('The image path is invalid. It must begin with media', $crawler->text());
+        Assert::assertStringNotContainsString('The image path is invalid.', $crawler->text());
         if (is_dir($newFolder)) {
             rmdir($newFolder);
         }

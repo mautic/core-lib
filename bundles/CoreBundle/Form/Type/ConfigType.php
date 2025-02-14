@@ -700,18 +700,23 @@ class ConfigType extends AbstractType
     // Validate $value to check ../ and denied system folders
     public function validateImagePath(?string $value, ExecutionContextInterface $context): void
     {
+        $isValid = true;
         if (empty($value) || str_contains($value, '..') || str_contains($value, './') || '/' === $value) {
-            $context->buildViolation('mautic.core.config.form.image.path.invalid')->atPath('image_path')->addViolation();
+            $isValid = false;
         }
 
         $mediaFile = substr($value, 0, 6);
 
         if ('media/' !== $mediaFile) {
-            $context->buildViolation('mautic.core.config.form.image.path.invalid.not.media')->atPath('image_path')->addViolation();
+            $isValid = false;
         }
 
         if (!is_dir($value)) {
-            $context->buildViolation('mautic.core.config.form.image.path.invalid.folder.not.exists')->atPath('image_path')->addViolation();
+            $isValid = false;
+        }
+
+        if (!$isValid) {
+            $context->buildViolation('mautic.core.config.form.image.path.invalid')->atPath('image_path')->addViolation();
         }
     }
 
