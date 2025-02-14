@@ -8,7 +8,7 @@ use Mautic\LeadBundle\Entity\LeadListRepository;
 use Mautic\LeadBundle\Event\GetStatDataEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SegmentStatsSubscriber implements EventSubscriberInterface
+final class SegmentStatsSubscriber implements EventSubscriberInterface
 {
     public function __construct(private LeadListRepository $leadListRepository)
     {
@@ -40,9 +40,7 @@ class SegmentStatsSubscriber implements EventSubscriberInterface
         $allSegments = $this->leadListRepository->getAllSegments();
 
         $stats = array_map(function ($data) use ($result) {
-            if (array_filter($result, function ($res) use ($data) {
-                return $res['item_id'] === $data['item_id'];
-            })) {
+            if (in_array($data['item_id'], array_column($result, 'item_id'))) {
                 $data['is_used'] = 1;
             }
 
