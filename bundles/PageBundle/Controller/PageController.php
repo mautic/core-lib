@@ -352,7 +352,7 @@ class PageController extends FormController
                 'draftPreviewUrl' => $draftPreviewUrl,
                 'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId], true),
                 'logs'            => $logs,
-                'dateRangeForm' => $dateRangeForm->createView(), 'previewSettingsForm' => $this->createForm(
+                'dateRangeForm'   => $dateRangeForm->createView(), 'previewSettingsForm' => $this->createForm(
                     ContentPreviewSettingsType::class,
                     null,
                     [
@@ -657,7 +657,7 @@ class PageController extends FormController
                 'isVariant'       => $entity->isVariant(true),
                 'tokens'          => $model->getBuilderComponents($entity, 'tokens'),
                 'activePage'      => $entity,
-                'themes'        => $themeHelper->getInstalledThemes('page', true),
+                'themes'          => $themeHelper->getInstalledThemes('page', true),
                 'slots'           => $this->buildSlotForms($slotTypes),
                 'sections'        => $this->buildSlotForms($sections),
                 'builderAssets'   => trim(preg_replace('/\s+/', ' ', $this->getAssetsForBuilder($assetsHelper, $translator, $request, $routerHelper, $coreParametersHelper))), // strip new lines

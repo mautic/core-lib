@@ -49,7 +49,7 @@ class PageType extends AbstractType
         CorePermissions $corePermissions,
         UserHelper $userHelper,
         private ThemeHelperInterface $themeHelper,
-        private PageConfigInterface $pageConfig
+        private PageConfigInterface $pageConfig,
     ) {
         $this->canViewOther = $corePermissions->isGranted('page:pages:viewother');
         $this->user         = $userHelper->getUser();

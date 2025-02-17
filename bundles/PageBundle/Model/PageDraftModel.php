@@ -31,7 +31,7 @@ class PageDraftModel
     public function __construct(
         EntityManagerInterface $entityManager,
         PageDraftRepository $pageDraftRepository,
-        PageRepository $pageRepository
+        PageRepository $pageRepository,
     ) {
         $this->entityManager       = $entityManager;
         $this->pageDraftRepository = $pageDraftRepository;

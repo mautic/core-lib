@@ -48,7 +48,7 @@ class PageEditSubmitEvent extends CommonEvent
         bool $apply,
         bool $saveAsDraft,
         bool $applyDraft,
-        bool $discardDraft
+        bool $discardDraft,
     ) {
         $this->previousPage  = $previousPage;
         $this->currentPage   = $currentPage;

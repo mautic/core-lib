@@ -1,9 +1,6 @@
 <?php
 
-use Doctrine\ORM\EntityRepository;
-use Mautic\PageBundle\Entity\PageDraft;
 use Mautic\PageBundle\Helper\PageConfig;
-use Mautic\PageBundle\Model\PageDraftModel;
 
 return [
     'routes' => [
