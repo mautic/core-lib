@@ -717,7 +717,7 @@ class ListController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function viewAction(Request $request, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $listModel, AuditLogModel $auditLogModel, $objectId)
+    public function viewAction(Request $request, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $listModel, $objectId)
     {
         /** @var LeadList $list */
         $list = $listModel->getEntity($objectId);
@@ -781,8 +781,10 @@ class ListController extends FormController
 
         $permissions = [LeadPermissions::LISTS_CREATE, LeadPermissions::LISTS_VIEW_OWN, LeadPermissions::LISTS_VIEW_OTHER, LeadPermissions::LISTS_EDIT_OWN, LeadPermissions::LISTS_EDIT_OTHER, LeadPermissions::LISTS_DELETE_OWN, LeadPermissions::LISTS_DELETE_OTHER];
 
-        // Get the audit log for this segment.
-        $logs = $auditLogModel->getLogForObject('segment', $list->getId(), $list->getDateAdded());
+        // Audit Log
+        $auditLogModel = $this->getModel('core.auditlog');
+        \assert($auditLogModel instanceof AuditLogModel);
+        $logs          = $auditLogModel->getLogForObject('segment', $list->getId(), $list->getDateAdded());
 
         return $this->delegateView([
             'returnUrl'      => $this->generateUrl('mautic_segment_action', ['objectAction' => 'view', 'objectId' => $list->getId()]),
