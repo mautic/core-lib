@@ -348,7 +348,7 @@ class PageController extends FormController
                 ],
                 'abTestResults'   => $abTestResults,
                 'security'        => $security,
-                'pageUrl'         => $model->generateUrl($activePage, true),
+                'pageUrl'         => $model->generateUrl($activePage, UrlGeneratorInterface::ABSOLUTE_URL),
                 'draftPreviewUrl' => $draftPreviewUrl,
                 'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId], true),
                 'logs'            => $logs,

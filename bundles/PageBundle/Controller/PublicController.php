@@ -349,8 +349,6 @@ class PublicController extends AbstractFormController
         $BCcontent = $page->getContent();
         $content   = $page->getCustomHtml();
 
-        $BCcontent = $entity->getContent();
-        $content   = $entity->getCustomHtml();
         if ('draft' === $objectType && $draftEnabled && $entity->hasDraft()) {
             $content = $entity->getDraftContent();
         }

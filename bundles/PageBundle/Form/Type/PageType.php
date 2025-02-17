@@ -36,22 +36,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PageType extends AbstractType
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @var PageModel
-     */
-    private $model;
-
     private ?\Mautic\UserBundle\Entity\User $user;
-
-    /**
-     * @var PageConfigInterface
-     */
-    private $pageConfig;
 
     /**
      * @var bool
@@ -61,8 +46,8 @@ class PageType extends AbstractType
     public function __construct(
         private EntityManager $em,
         private PageModel $model,
-        private CorePermissions $corePermissions,
-        private UserHelper $userHelper,
+        CorePermissions $corePermissions,
+        UserHelper $userHelper,
         private ThemeHelperInterface $themeHelper,
         private PageConfigInterface $pageConfig
     ) {
