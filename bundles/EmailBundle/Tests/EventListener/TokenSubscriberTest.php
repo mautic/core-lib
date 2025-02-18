@@ -2,6 +2,7 @@
 
 namespace Mautic\EmailBundle\Tests\EventListener;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
@@ -66,6 +67,10 @@ class TokenSubscriberTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
+            ->method('getReference');
+
         $tokens = ['{test}' => 'value'];
 
         $mailHelper = new MailHelper(
@@ -82,6 +87,7 @@ class TokenSubscriberTest extends \PHPUnit\Framework\TestCase
             $this->createMock(PathsHelper::class),
             $this->createMock(EventDispatcherInterface::class),
             $requestStack,
+            $entityManager,
         );
         $mailHelper->setTokens($tokens);
 
