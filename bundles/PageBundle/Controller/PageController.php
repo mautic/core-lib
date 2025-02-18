@@ -156,7 +156,7 @@ class PageController extends FormController
                 'model'       => $model,
                 'tmpl'        => $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index',
                 'security'    => $this->security,
-                'pageConfig'  => $this->get('mautic.helper.page_config'),
+                'pageConfig'  => $this->coreParametersHelper->get('mautic.helper.page_config'),
             ],
             'contentTemplate' => '@MauticPage/Page/list.html.twig',
             'passthroughVars' => [
@@ -180,7 +180,7 @@ class PageController extends FormController
         $model = $this->getModel('page.page');
         // set some permissions
         $security   = $this->security;
-        $pageConfig = $this->get('mautic.helper.page_config');
+        $pageConfig = $this->coreParametersHelper->get('mautic.helper.page_config');
         $activePage = $model->getEntity($objectId);
         // set the page we came from
         $page = $request->getSession()->get('mautic.page.page', 1);
@@ -301,7 +301,6 @@ class PageController extends FormController
                     'id'         => $activePage->getId(),
                     'objectType' => 'draft',
                 ],
-                true
             );
         }
 
@@ -348,9 +347,9 @@ class PageController extends FormController
                 ],
                 'abTestResults'   => $abTestResults,
                 'security'        => $security,
-                'pageUrl'         => $model->generateUrl($activePage, UrlGeneratorInterface::ABSOLUTE_URL),
+                'pageUrl'         => $model->generateUrl($activePage),
                 'draftPreviewUrl' => $draftPreviewUrl,
-                'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId], true),
+                'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId], UrlGeneratorInterface::ABSOLUTE_URL),
                 'logs'            => $logs,
                 'dateRangeForm'   => $dateRangeForm->createView(), 'previewSettingsForm' => $this->createForm(
                     ContentPreviewSettingsType::class,
@@ -506,7 +505,7 @@ class PageController extends FormController
         /** @var PageModel $model */
         $model      = $this->getModel('page.page');
         $security   = $this->security;
-        $pageConfig = $this->get('mautic.helper.page_config');
+        $pageConfig = $this->coreParametersHelper->get('mautic.helper.page_config');
         $entity     = $model->getEntity($objectId);
         $session    = $request->getSession();
         $page       = $request->getSession()->get('mautic.page.page', 1);
@@ -566,15 +565,15 @@ class PageController extends FormController
                     $model->saveEntity($entity, $this->getFormButton($form, ['buttons', 'save'])->isClicked());
 
                     if ($pageConfig->isDraftEnabled() && !empty($entity->getId())) {
-                        $this->dispatcher->dispatch(PageEvents::ON_PAGE_EDIT_SUBMIT, new PageEditSubmitEvent(
+                        $this->dispatcher->dispatch(new PageEditSubmitEvent(
                             $existingPage,
                             $entity,
-                            $form->get('buttons')->get('save')->isClicked(),
-                            $form->get('buttons')->get('apply')->isClicked(),
-                            $form->get('buttons')->has('save_draft') && $form->get('buttons')->get('save_draft')->isClicked(),
-                            $form->get('buttons')->has('apply_draft') && $form->get('buttons')->get('apply_draft')->isClicked(),
-                            $form->get('buttons')->has('discard_draft') && $form->get('buttons')->get('discard_draft')->isClicked()
-                        ));
+                            $this->getFormButton($form, ['buttons', 'save'])->isClicked(),
+                            $this->getFormButton($form, ['buttons', 'apply'])->isClicked(),
+                            $form->get('buttons')->has('save_draft') && $this->getFormButton($form, ['buttons', 'save_draft'])->isClicked(),
+                            $form->get('buttons')->has('apply_draft') && $this->getFormButton($form, ['buttons', 'apply_draft'])->isClicked(),
+                            $form->get('buttons')->has('discard_draft') && $this->getFormButton($form, ['buttons', 'discard_draft'])->isClicked()
+                        ), PageEvents::ON_PAGE_EDIT_SUBMIT);
                     }
 
                     $this->addFlashMessage('mautic.core.notice.updated', [
@@ -595,9 +594,9 @@ class PageController extends FormController
 
             if ($cancelled
                 || ($valid && ($this->getFormButton($form, ['buttons', 'save'])->isClicked()
-                    || ($form->get('buttons')->has('save_draft') && $form->get('buttons')->get('save_draft')->isClicked())
-                    || ($form->get('buttons')->has('apply_draft') && $form->get('buttons')->get('apply_draft')->isClicked())
-                    || ($form->get('buttons')->has('discard_draft') && $form->get('buttons')->get('discard_draft')->isClicked())))
+                    || ($form->get('buttons')->has('save_draft') && $this->getFormButton($form, ['buttons', 'save_draft'])->isClicked())
+                    || ($form->get('buttons')->has('apply_draft') && $this->getFormButton($form, ['buttons', 'apply_draft'])->isClicked())
+                    || ($form->get('buttons')->has('discard_draft') && $this->getFormButton($form, ['buttons', 'discard_draft'])->isClicked())))
             ) {
                 $viewParameters = [
                     'objectAction' => 'view',
@@ -611,9 +610,9 @@ class PageController extends FormController
                         'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::viewAction',
                     ])
                 );
-            } elseif ($valid && $form->get('buttons')->get('apply')->isClicked()) {
+            } elseif ($valid && $this->getFormButton($form, ['buttons', 'apply'])->isClicked()) {
                 // Rebuild the form in the case apply is clicked so that DEC content is properly populated if all were removed
-                $form = $model->createForm($entity, $this->get('form.factory'), $action);
+                $form = $model->createForm($entity, $this->coreParametersHelper->get('form.factory'), $action);
             }
         } else {
             // lock the entity
@@ -636,9 +635,6 @@ class PageController extends FormController
             }
         }
 
-        $slotTypes       = $model->getBuilderComponents($entity, 'slotTypes');
-        $sections        = $model->getBuilderComponents($entity, 'sections');
-        $sectionForm     = $this->formFactory->create(BuilderSectionType::class);
         $draftEnabled    = $pageConfig->isDraftEnabled() && !empty($entity->getId());
         $draftPreviewUrl = null;
         if ($draftEnabled && $entity->hasDraft()) {
@@ -647,7 +643,6 @@ class PageController extends FormController
                 ['id'             => $entity->getId(),
                     'objectType'  => 'draft',
                 ],
-                true
             );
         }
 
@@ -658,10 +653,6 @@ class PageController extends FormController
                 'tokens'          => $model->getBuilderComponents($entity, 'tokens'),
                 'activePage'      => $entity,
                 'themes'          => $themeHelper->getInstalledThemes('page', true),
-                'slots'           => $this->buildSlotForms($slotTypes),
-                'sections'        => $this->buildSlotForms($sections),
-                'builderAssets'   => trim(preg_replace('/\s+/', ' ', $this->getAssetsForBuilder($assetsHelper, $translator, $request, $routerHelper, $coreParametersHelper))), // strip new lines
-                'sectionForm'     => $sectionForm->createView(),
                 'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId], UrlGeneratorInterface::ABSOLUTE_URL),
                 'draftPreviewUrl' => $draftPreviewUrl,
                 'permissions'     => $security->isGranted(

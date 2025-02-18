@@ -12,14 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageDraftFunctionalTest extends MauticMysqlTestCase
 {
-    protected function setUp(): void
-    {
-        // Don't automatically load symfony because these tests need to set custom config parameters
-    }
-
     public function testPageDraftNotConfigured(): void
     {
-        $page    = $this->createNewPage('blank', 'Test html', false);
+        $page    = $this->createNewPage(false);
         $crawler = $this->client->request(Request::METHOD_GET, "/s/pages/edit/{$page->getId()}");
         Assert::assertEquals(0, $crawler->selectButton('Save as Draft')->count());
         Assert::assertEquals(0, $crawler->selectButton('Apply Draft')->count());
@@ -28,7 +23,7 @@ class PageDraftFunctionalTest extends MauticMysqlTestCase
 
     public function testPageDraftConfigured(): void
     {
-        $page    = $this->createNewPage('blank', 'Test html', true);
+        $page    = $this->createNewPage(true);
         $crawler = $this->client->request(Request::METHOD_GET, "/s/pages/edit/{$page->getId()}");
 
         Assert::assertEquals(1, $crawler->selectButton('Save as Draft')->count());
@@ -38,7 +33,7 @@ class PageDraftFunctionalTest extends MauticMysqlTestCase
 
     public function testCheckDraftInList(): void
     {
-        $page    = $this->createNewPage('blank', 'Test html', true);
+        $page    = $this->createNewPage(true);
         $crawler = $this->client->request(Request::METHOD_GET, '/s/pages');
         $this->assertStringNotContainsString('Has draft', $crawler->filter('#app-content a[href="/s/pages/view/'.$page->getId().'"]')->html());
         $this->saveDraft($page);
@@ -48,7 +43,7 @@ class PageDraftFunctionalTest extends MauticMysqlTestCase
 
     public function testPreviewDraft(): void
     {
-        $page = $this->createNewPage('blank', 'Test html', true);
+        $page = $this->createNewPage(true);
         $this->saveDraft($page);
         $crawler = $this->client->request(Request::METHOD_GET, "/page/preview/{$page->getId()}");
         $this->assertEquals('Test html', $crawler->text());
@@ -59,14 +54,14 @@ class PageDraftFunctionalTest extends MauticMysqlTestCase
 
     public function testSaveDraftAndApplyDraft(): void
     {
-        $page = $this->createNewPage('blank', 'Test html', true);
+        $page = $this->createNewPage(true);
         $this->saveDraft($page);
         $this->applyDraft($page);
     }
 
     public function testDiscardDraft(): void
     {
-        $page = $this->createNewPage('blank', 'Test html', true);
+        $page = $this->createNewPage(true);
         $this->saveDraft($page);
         $this->discardDraft($page);
     }
@@ -111,17 +106,17 @@ class PageDraftFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame('Test html', $page->getCustomHtml());
     }
 
-    private function createNewPage($templateName, $templateContent, $isDraftEnabled): Page
+    private function createNewPage(bool $isDraftEnabled): Page
     {
         $this->setConfig($isDraftEnabled);
-        $date       = (new \DateTime())->format('Y-m-d H:i:s');
+        $date       = \DateTime::createFromFormat('Y-m-d H:i:s', '2023-10-15 14:30:00');
         $pageObject = new Page();
         $pageObject->setIsPublished(true);
         $pageObject->setDateAdded($date);
         $pageObject->setTitle('Page Test');
         $pageObject->setAlias('Page Test');
-        $pageObject->setTemplate($templateName);
-        $pageObject->setCustomHtml($templateContent);
+        $pageObject->setTemplate('blank');
+        $pageObject->setCustomHtml('Test html');
         $pageObject->setLanguage('en');
         $this->em->persist($pageObject);
         $this->em->flush();
@@ -129,7 +124,7 @@ class PageDraftFunctionalTest extends MauticMysqlTestCase
         return $pageObject;
     }
 
-    private function setConfig($isDraftEnabled): void
+    private function setConfig(bool $isDraftEnabled): void
     {
         $this->setUpSymfony(
             [

@@ -30,16 +30,8 @@ class PageDraft
      * @var Page
      */
     private $page;
-
-    /**
-     * @var string
-     */
-    private $html;
-
-    /**
-     * @var string
-     */
-    private $template;
+    private ?string $html;
+    private ?string $template;
 
     /**
      * @var bool
@@ -82,7 +74,7 @@ class PageDraft
      * Check all links in content and decode &amp;
      * This even works with double encoded ampersands.
      */
-    private function decodeAmpersands(&$content): void
+    private function decodeAmpersands(mixed &$content): void
     {
         if (!preg_match_all(self::REGEX_DECODE_AMPERSAND, $content, $matches)) {
             return;

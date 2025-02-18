@@ -8,34 +8,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Entity\PageDraft;
 use Mautic\PageBundle\Entity\PageDraftRepository;
-use Mautic\PageBundle\Entity\PageRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PageDraftModel
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var PageRepository
-     */
-    private $pageRepository;
-
-    /**
-     * @var PageDraftRepository
-     */
-    private $pageDraftRepository;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
-        PageDraftRepository $pageDraftRepository,
-        PageRepository $pageRepository,
+        private EntityManagerInterface $entityManager,
+        private PageDraftRepository $pageDraftRepository,
     ) {
-        $this->entityManager       = $entityManager;
-        $this->pageDraftRepository = $pageDraftRepository;
-        $this->pageRepository      = $pageRepository;
     }
 
     /**

@@ -12,7 +12,6 @@ use Mautic\CoreBundle\Form\Type\PublishDownDateType;
 use Mautic\CoreBundle\Form\Type\PublishUpDateType;
 use Mautic\CoreBundle\Form\Type\ThemeListType;
 use Mautic\CoreBundle\Form\Type\YesNoButtonGroupType;
-use Mautic\CoreBundle\Helper\ThemeHelperInterface;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\PageBundle\Entity\Page;
@@ -48,7 +47,6 @@ class PageType extends AbstractType
         private PageModel $model,
         CorePermissions $corePermissions,
         UserHelper $userHelper,
-        private ThemeHelperInterface $themeHelper,
         private PageConfigInterface $pageConfig,
     ) {
         $this->canViewOther = $corePermissions->isGranted('page:pages:viewother');
@@ -352,6 +350,9 @@ class PageType extends AbstractType
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function getDraftActionButtons(Page $page): array
     {
         $draftActionButtons = [];

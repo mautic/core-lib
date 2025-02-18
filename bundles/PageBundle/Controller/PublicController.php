@@ -320,9 +320,9 @@ class PublicController extends AbstractFormController
      * @throws \Exception
      * @throws \Mautic\CoreBundle\Exception\FileNotFoundException
      */
-    public function previewAction(Request $request, CorePermissions $security, AnalyticsHelper $analyticsHelper, AssetsHelper $assetsHelper, ThemeHelper $themeHelper, int $id, $objectType = null)
+    public function previewAction(Request $request, CorePermissions $security, AnalyticsHelper $analyticsHelper, AssetsHelper $assetsHelper, ThemeHelper $themeHelper, int $id, string $objectType = null)
     {
-        $pageConfig   = $this->get('mautic.helper.page_config');
+        $pageConfig   = $this->coreParametersHelper->get('mautic.helper.page_config');
         $model        = $this->getModel('page');
         $entity       = $model->getEntity($id);
         $draftEnabled = $pageConfig->isDraftEnabled();
