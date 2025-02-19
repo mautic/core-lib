@@ -364,10 +364,9 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
     private function invokeCallback($event, Lead $lead, array $settings): mixed
     {
         $args = [
-            'event'   => $event,
-            'lead'    => $lead,
-            'factory' => $this->mauticFactory,
-            'config'  => $event['properties'],
+            'event'  => $event,
+            'lead'   => $lead,
+            'config' => $event['properties'],
         ];
 
         if (is_array($settings['callback'])) {
@@ -381,10 +380,6 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
 
         $pass = [];
         foreach ($reflection->getParameters() as $param) {
-            if ('factory' === $param->getName()) {
-                @\trigger_error('Using "factory" parameter is deprecated. Use dependency injection instead. Usage of "factory" parameter will be removed in 6.0.', \E_USER_DEPRECATED);
-            }
-
             if (isset($args[$param->getName()])) {
                 $pass[] = $args[$param->getName()];
             } else {

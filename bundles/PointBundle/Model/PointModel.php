@@ -237,7 +237,6 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
                     'points'     => $action->getDelta(),
                 ],
                 'lead'         => $lead,
-                'factory'      => $this->mauticFactory, // WHAT?
                 'eventDetails' => $eventDetails,
             ];
 

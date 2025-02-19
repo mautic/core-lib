@@ -5,7 +5,7 @@ namespace Mautic\EmailBundle\Helper;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Mautic\AssetBundle\Entity\Asset;
-use Mautic\CoreBundle\Factory\MauticFactory;
+use Mautic\AssetBundle\Model\AssetModel;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
@@ -24,6 +24,8 @@ use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\EmailBundle\Mailer\Transport\TokenTransportInterface;
 use Mautic\EmailBundle\MonitoredEmail\Mailbox;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\PageBundle\Model\RedirectModel;
+use Mautic\PageBundle\Model\TrackableModel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -230,7 +232,6 @@ class MailHelper
     private array $embedImagesReplaces = [];
 
     public function __construct(
-        private MauticFactory $factory,
         private MailerInterface $mailer,
         private FromEmailHelper $fromEmailHelper,
         private CoreParametersHelper $coreParametersHelper,
@@ -244,6 +245,9 @@ class MailHelper
         private EventDispatcherInterface $dispatcher,
         private RequestStack $requestStack,
         private EntityManagerInterface $entityManager,
+        private AssetModel $assetModel,
+        private TrackableModel $trackableModel,
+        private RedirectModel $redirectModel,
     ) {
         $this->transport  = $this->getTransport();
         $this->returnPath = $coreParametersHelper->get('mailer_return_path');
@@ -696,10 +700,8 @@ class MailHelper
      */
     public function attachAsset($asset): void
     {
-        $model = $this->factory->getModel('asset');
-
         if (!$asset instanceof Asset) {
-            $asset = $model->getEntity($asset);
+            $asset = $this->assetModel->getEntity($asset);
 
             if (null == $asset) {
                 return;
@@ -1580,11 +1582,9 @@ class MailHelper
 
         // Create a download entry if there is an Asset attachment
         if (!empty($this->assetStats)) {
-            /** @var \Mautic\AssetBundle\Model\AssetModel $assetModel */
-            $assetModel = $this->factory->getModel('asset');
             foreach ($this->assets as $asset) {
                 foreach ($this->assetStats as $stat) {
-                    $assetModel->trackDownload(
+                    $this->assetModel->trackDownload(
                         $asset,
                         null,
                         200,
@@ -1592,7 +1592,7 @@ class MailHelper
                     );
                 }
 
-                $assetModel->upDownloadCount($asset, count($this->assetStats), true);
+                $this->assetModel->upDownloadCount($asset, count($this->assetStats), true);
             }
         }
 
@@ -1654,17 +1654,12 @@ class MailHelper
 
         if ($this->email) {
             // Get a Trackable which is channel aware
-            /** @var \Mautic\PageBundle\Model\TrackableModel $trackableModel */
-            $trackableModel = $this->factory->getModel('page.trackable');
-            $trackable      = $trackableModel->getTrackableByUrl($url, 'email', $this->email->getId());
+            $trackable = $this->trackableModel->getTrackableByUrl($url, 'email', $this->email->getId());
 
             return $trackable->getRedirect();
         }
 
-        /** @var \Mautic\PageBundle\Model\RedirectModel $redirectModel */
-        $redirectModel = $this->factory->getModel('page.redirect');
-
-        return $redirectModel->getRedirectByUrl($url);
+        return $this->redirectModel->getRedirectByUrl($url);
     }
 
     /**
