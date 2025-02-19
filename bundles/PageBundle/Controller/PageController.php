@@ -156,7 +156,7 @@ class PageController extends FormController
                 'model'       => $model,
                 'tmpl'        => $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index',
                 'security'    => $this->security,
-                'pageConfig'  => $this->pageConfig,
+                'pageConfig'  => $this->coreParametersHelper->get('mautic.helper.page_config'),
             ],
             'contentTemplate' => '@MauticPage/Page/list.html.twig',
             'passthroughVars' => [
@@ -180,7 +180,7 @@ class PageController extends FormController
         $model = $this->getModel('page.page');
         // set some permissions
         $security   = $this->security;
-        $pageConfig = $this->pageConfig;
+        $pageConfig = $this->coreParametersHelper->get('mautic.helper.page_config');
         $activePage = $model->getEntity($objectId);
         // set the page we came from
         $page = $request->getSession()->get('mautic.page.page', 1);
@@ -505,7 +505,7 @@ class PageController extends FormController
         /** @var PageModel $model */
         $model      = $this->getModel('page.page');
         $security   = $this->security;
-        $pageConfig = $this->pageConfig;
+        $pageConfig = $this->coreParametersHelper->get('mautic.helper.page_config');
         $entity     = $model->getEntity($objectId);
         $session    = $request->getSession();
         $page       = $request->getSession()->get('mautic.page.page', 1);
