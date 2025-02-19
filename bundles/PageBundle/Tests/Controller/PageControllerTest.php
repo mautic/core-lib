@@ -32,13 +32,13 @@ class PageControllerTest extends MauticMysqlTestCase
      */
     protected function setUp(): void
     {
-        //        parent::setUp();
-        //        $this->prefix = static::getContainer()->getParameter('mautic.db_table_prefix');
-        //
-        //        $pageData = [
-        //            'title'    => 'Test Page',
-        //            'template' => 'blank',
-        //        ];
+        parent::setUp();
+        $this->prefix = static::getContainer()->getParameter('mautic.db_table_prefix');
+
+        $pageData = [
+            'title'    => 'Test Page',
+            'template' => 'blank',
+        ];
 
         $model = static::getContainer()->get('mautic.page.model.page');
         $page  = new Page();

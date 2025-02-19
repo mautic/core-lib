@@ -14,6 +14,7 @@ class PageDraftFunctionalTest extends MauticMysqlTestCase
 {
     protected function setUp(): void
     {
+        parent::setUp();
         $this->configParams['page_draft_enabled'] = !('testPageDraftNotConfigured' == $this->getName());
     }
 
