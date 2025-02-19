@@ -2,6 +2,7 @@
 
 namespace Mautic\PageBundle\Tests\Controller;
 
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Traits\ControllerTrait;
 use Mautic\LeadBundle\Entity\UtmTag;
@@ -48,6 +49,8 @@ class PageControllerTest extends MauticMysqlTestCase
         $model->saveEntity($page);
 
         $this->id = $page->getId();
+
+        $this->pageConfig = static::getContainer()->get(CoreParametersHelper::class);
     }
 
     /**

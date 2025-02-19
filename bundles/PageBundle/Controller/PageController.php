@@ -653,7 +653,7 @@ class PageController extends FormController
                 'tokens'          => $model->getBuilderComponents($entity, 'tokens'),
                 'activePage'      => $entity,
                 'themes'          => $themeHelper->getInstalledThemes('page', true),
-                'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId], UrlGeneratorInterface::ABSOLUTE_URL),
+                'previewUrl'      => $this->generateUrl('mautic_page_preview', ['id' => $objectId]),
                 'draftPreviewUrl' => $draftPreviewUrl,
                 'permissions'     => $security->isGranted(
                     [
