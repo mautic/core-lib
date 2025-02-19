@@ -8,14 +8,8 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 
 final class PageConfig implements PageConfigInterface
 {
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    public function __construct(CoreParametersHelper $coreParametersHelper)
+    public function __construct(private CoreParametersHelper $coreParametersHelper)
     {
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
     public function isDraftEnabled(): bool

@@ -187,7 +187,7 @@ class PageSubscriber implements EventSubscriberInterface
     {
         try {
             $this->pageDraftModel->deleteDraft($event->getPage());
-        } catch (NotFoundHttpException $exception) {
+        } catch (NotFoundHttpException) {
             // No associated draft found for deletion. We have nothing to do here. Return.
             return;
         }

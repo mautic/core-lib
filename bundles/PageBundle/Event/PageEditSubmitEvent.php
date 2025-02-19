@@ -12,51 +12,15 @@ use Mautic\PageBundle\Entity\Page;
  */
 class PageEditSubmitEvent extends CommonEvent
 {
-    /**
-     * @var Page
-     */
-    private $previousPage;
-    /**
-     * @var Page
-     */
-    private $currentPage;
-    /**
-     * @var bool
-     */
-    private $saveAndClose;
-    /**
-     * @var bool
-     */
-    private $apply;
-    /**
-     * @var bool
-     */
-    private $saveAsDraft;
-    /**
-     * @var bool
-     */
-    private $applyDraft;
-    /**
-     * @var bool
-     */
-    private $discardDraft;
-
     public function __construct(
-        Page $previousPage,
-        Page $currentPage,
-        bool $saveAndClose,
-        bool $apply,
-        bool $saveAsDraft,
-        bool $applyDraft,
-        bool $discardDraft,
+        private Page $previousPage,
+        private Page $currentPage,
+        private bool $saveAndClose,
+        private bool $apply,
+        private bool $saveAsDraft,
+        private bool $applyDraft,
+        private bool $discardDraft,
     ) {
-        $this->previousPage  = $previousPage;
-        $this->currentPage   = $currentPage;
-        $this->saveAndClose  = $saveAndClose;
-        $this->apply         = $apply;
-        $this->saveAsDraft   = $saveAsDraft;
-        $this->applyDraft    = $applyDraft;
-        $this->discardDraft  = $discardDraft;
     }
 
     public function getPreviousPage(): Page

@@ -21,22 +21,7 @@ class PageDraft
      */
     public const REGEX_DECODE_AMPERSAND = '/((https?|ftps?):\/\/)([a-zA-Z0-9-\.{}]*[a-zA-Z0-9=}]*)(\??)([^\s\"\]]+)?/i';
 
-    /**
-     * @var int
-     */
-    private $id;
-
-    /**
-     * @var Page
-     */
-    private $page;
-    private ?string $html;
-    private ?string $template;
-
-    /**
-     * @var bool
-     */
-    private $publicPreview;
+    private int $id;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
@@ -82,24 +67,29 @@ class PageDraft
 
         foreach ($matches[0] as $url) {
             $newUrl = $url;
-            while (false !== strpos($newUrl, '&amp;')) {
+            while (str_contains($newUrl, '&amp;')) {
                 $newUrl = str_replace('&amp;', '&', $newUrl);
             }
             $content = str_replace($url, $newUrl, $content);
         }
     }
 
-    public function __construct(Page $page, string $html, string $template, bool $publicPreview = true)
+    public function __construct(
+        private Page $page,
+        private ?string $html,
+        private ?string $template,
+        private bool $publicPreview = true)
     {
-        $this->page          = $page;
-        $this->html          = $html;
-        $this->template      = $template;
-        $this->publicPreview = $publicPreview;
     }
 
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
     }
 
     public function getPage(): Page

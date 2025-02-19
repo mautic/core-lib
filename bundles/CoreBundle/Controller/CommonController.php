@@ -16,6 +16,7 @@ use Mautic\CoreBundle\Model\AbstractCommonModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Service\FlashBag;
 use Mautic\CoreBundle\Translation\Translator;
+use Mautic\PageBundle\Helper\PageConfig;
 use Mautic\PageBundle\Model\PageModel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -49,6 +50,7 @@ class CommonController extends AbstractController implements MauticController
         private FlashBag $flashBag,
         private ?RequestStack $requestStack,
         protected ?CorePermissions $security,
+        protected ?PageConfig $pageConfig,
     ) {
         $this->user = $userHelper->getUser();
     }

@@ -156,7 +156,7 @@ class PageController extends FormController
                 'model'       => $model,
                 'tmpl'        => $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index',
                 'security'    => $this->security,
-                'pageConfig'  => $this->coreParametersHelper->get('mautic.helper.page_config'),
+                'pageConfig'  => $this->pageConfig,
             ],
             'contentTemplate' => '@MauticPage/Page/list.html.twig',
             'passthroughVars' => [
@@ -180,7 +180,7 @@ class PageController extends FormController
         $model = $this->getModel('page.page');
         // set some permissions
         $security   = $this->security;
-        $pageConfig = $this->coreParametersHelper->get('mautic.helper.page_config');
+        $pageConfig = $this->pageConfig;
         $activePage = $model->getEntity($objectId);
         // set the page we came from
         $page = $request->getSession()->get('mautic.page.page', 1);
@@ -294,7 +294,7 @@ class PageController extends FormController
         // get related translations
         [$translationParent, $translationChildren] = $activePage->getTranslations();
         $draftPreviewUrl                           = null;
-        if ($pageConfig->isDraftEnabled() && $activePage->hasDraft()) {
+        if (!is_null($pageConfig) && $pageConfig->isDraftEnabled() && $activePage->hasDraft()) {
             $draftPreviewUrl = $this->generateUrl(
                 'mautic_page_preview',
                 [
@@ -505,7 +505,7 @@ class PageController extends FormController
         /** @var PageModel $model */
         $model      = $this->getModel('page.page');
         $security   = $this->security;
-        $pageConfig = $this->coreParametersHelper->get('mautic.helper.page_config');
+        $pageConfig = $this->pageConfig;
         $entity     = $model->getEntity($objectId);
         $session    = $request->getSession();
         $page       = $request->getSession()->get('mautic.page.page', 1);
@@ -564,7 +564,7 @@ class PageController extends FormController
                     // form is valid so process the data
                     $model->saveEntity($entity, $this->getFormButton($form, ['buttons', 'save'])->isClicked());
 
-                    if ($pageConfig->isDraftEnabled() && !empty($entity->getId())) {
+                    if (!is_null($pageConfig) && $pageConfig->isDraftEnabled() && !empty($entity->getId())) {
                         $this->dispatcher->dispatch(new PageEditSubmitEvent(
                             $existingPage,
                             $entity,
@@ -635,7 +635,7 @@ class PageController extends FormController
             }
         }
 
-        $draftEnabled    = $pageConfig->isDraftEnabled() && !empty($entity->getId());
+        $draftEnabled    = !is_null($pageConfig) && $pageConfig->isDraftEnabled() && !empty($entity->getId());
         $draftPreviewUrl = null;
         if ($draftEnabled && $entity->hasDraft()) {
             $draftPreviewUrl = $this->generateUrl(
