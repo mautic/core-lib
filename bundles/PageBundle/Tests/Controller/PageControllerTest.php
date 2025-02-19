@@ -2,7 +2,6 @@
 
 namespace Mautic\PageBundle\Tests\Controller;
 
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Traits\ControllerTrait;
 use Mautic\LeadBundle\Entity\UtmTag;
@@ -33,13 +32,13 @@ class PageControllerTest extends MauticMysqlTestCase
      */
     protected function setUp(): void
     {
-        parent::setUp();
-        $this->prefix = static::getContainer()->getParameter('mautic.db_table_prefix');
-
-        $pageData = [
-            'title'    => 'Test Page',
-            'template' => 'blank',
-        ];
+        //        parent::setUp();
+        //        $this->prefix = static::getContainer()->getParameter('mautic.db_table_prefix');
+        //
+        //        $pageData = [
+        //            'title'    => 'Test Page',
+        //            'template' => 'blank',
+        //        ];
 
         $model = static::getContainer()->get('mautic.page.model.page');
         $page  = new Page();
@@ -49,8 +48,6 @@ class PageControllerTest extends MauticMysqlTestCase
         $model->saveEntity($page);
 
         $this->id = $page->getId();
-
-        $this->pageConfig = static::getContainer()->get(CoreParametersHelper::class);
     }
 
     /**

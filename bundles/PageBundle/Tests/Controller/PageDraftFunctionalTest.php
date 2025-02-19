@@ -12,6 +12,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageDraftFunctionalTest extends MauticMysqlTestCase
 {
+    protected function setUp(): void
+    {
+        $this->configParams['page_draft_enabled'] = !('testPageDraftNotConfigured' == $this->getName());
+    }
+
     public function testPageDraftNotConfigured(): void
     {
         $page    = $this->createNewPage(false);
@@ -108,7 +113,6 @@ class PageDraftFunctionalTest extends MauticMysqlTestCase
 
     private function createNewPage(bool $isDraftEnabled): Page
     {
-        $this->setConfig($isDraftEnabled);
         $date       = \DateTime::createFromFormat('Y-m-d H:i:s', '2023-10-15 14:30:00');
         $pageObject = new Page();
         $pageObject->setIsPublished(true);
@@ -122,14 +126,5 @@ class PageDraftFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         return $pageObject;
-    }
-
-    private function setConfig(bool $isDraftEnabled): void
-    {
-        $this->setUpSymfony(
-            [
-                'page_draft_enabled' => $isDraftEnabled,
-            ]
-        );
     }
 }
