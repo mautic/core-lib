@@ -366,7 +366,7 @@ class PageType extends AbstractType
                 'label' => 'mautic.core.applydraft',
                 'type'  => SubmitType::class,
                 'attr'  => [
-                    'class'   => 'btn btn-default text-primary btn-apply-draft',
+                    'class'   => 'btn btn-primary btn-apply-draft btn-copy',
                     'icon'    => 'fa fa-files-o text-success',
                 ],
             ];
@@ -375,7 +375,7 @@ class PageType extends AbstractType
                 'label' => 'mautic.core.discarddraft',
                 'type'  => SubmitType::class,
                 'attr'  => [
-                    'class'   => 'btn btn-default text-primary btn-discard-draft',
+                    'class'   => 'btn btn-primary btn-apply-draft btn-copy',
                     'icon'    => 'fa fa-trash text-danger',
                 ],
             ];
@@ -385,7 +385,7 @@ class PageType extends AbstractType
                 'label' => 'mautic.core.saveasdraft',
                 'type'  => SubmitType::class,
                 'attr'  => [
-                    'class'   => 'btn btn-default text-primary btn-save-draft',
+                    'class'   => 'btn btn-primary btn-default text-primary btn-save-draft',
                     'icon'    => 'fa fa-file text-success',
                 ],
             ];
