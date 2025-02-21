@@ -16,6 +16,7 @@ use Mautic\CoreBundle\Translation\Translator;
 use Mautic\CoreBundle\Twig\Helper\AssetsHelper;
 use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Event\PageEditSubmitEvent;
+use Mautic\PageBundle\Helper\PageConfig;
 use Mautic\PageBundle\Model\PageModel;
 use Mautic\PageBundle\PageEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,7 +34,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, $page = 1)
+    public function indexAction(Request $request, PageConfig $pageConfig, PageHelperFactoryInterface $pageHelperFactory, $page = 1)
     {
         $pageModel = $this->getModel('page.page');
         \assert($pageModel instanceof PageModel);
@@ -156,7 +157,7 @@ class PageController extends FormController
                 'model'       => $model,
                 'tmpl'        => $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index',
                 'security'    => $this->security,
-                'pageConfig'  => $this->coreParametersHelper->get('mautic.helper.page_config'),
+                'pageConfig'  => $pageConfig,
             ],
             'contentTemplate' => '@MauticPage/Page/list.html.twig',
             'passthroughVars' => [
@@ -174,13 +175,12 @@ class PageController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function viewAction(Request $request, $objectId)
+    public function viewAction(Request $request, PageConfig $pageConfig, $objectId)
     {
         /** @var PageModel $model */
         $model = $this->getModel('page.page');
         // set some permissions
         $security   = $this->security;
-        $pageConfig = $this->coreParametersHelper->get('mautic.helper.page_config');
         $activePage = $model->getEntity($objectId);
         // set the page we came from
         $page = $request->getSession()->get('mautic.page.page', 1);
@@ -294,7 +294,7 @@ class PageController extends FormController
         // get related translations
         [$translationParent, $translationChildren] = $activePage->getTranslations();
         $draftPreviewUrl                           = null;
-        if (!is_null($pageConfig) && $pageConfig->isDraftEnabled() && $activePage->hasDraft()) {
+        if ($pageConfig->isDraftEnabled() && $activePage->hasDraft()) {
             $draftPreviewUrl = $this->generateUrl(
                 'mautic_page_preview',
                 [
@@ -377,7 +377,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function newAction(Request $request, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, ThemeHelper $themeHelper, $entity = null)
+    public function newAction(Request $request, PageConfig $pageConfig, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, ThemeHelper $themeHelper, $entity = null)
     {
         /** @var PageModel $model */
         $model = $this->getModel('page.page');
@@ -430,7 +430,7 @@ class PageController extends FormController
                         $template  = 'Mautic\PageBundle\Controller\PageController::viewAction';
                     } else {
                         // return edit view so that all the session stuff is loaded
-                        return $this->editAction($request, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $themeHelper, $entity->getId(), true);
+                        return $this->editAction($request, $pageConfig, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $themeHelper, $entity->getId(), true);
                     }
                 }
             } else {
@@ -487,25 +487,22 @@ class PageController extends FormController
     /**
      * Generates edit form and processes post data.
      *
-     * @param int  $objectId
-     * @param bool $ignorePost
-     *
      * @return JsonResponse|Response
      */
     public function editAction(
         Request $request,
+        PageConfig $pageConfig,
         AssetsHelper $assetsHelper,
         Translator $translator,
         RouterInterface $routerHelper,
         CoreParametersHelper $coreParametersHelper,
         ThemeHelper $themeHelper,
-        $objectId,
-        $ignorePost = false,
+        int $objectId,
+        bool $ignorePost = false,
     ) {
         /** @var PageModel $model */
         $model      = $this->getModel('page.page');
         $security   = $this->security;
-        $pageConfig = $this->coreParametersHelper->get('mautic.helper.page_config');
         $entity     = $model->getEntity($objectId);
         $session    = $request->getSession();
         $page       = $request->getSession()->get('mautic.page.page', 1);
@@ -564,7 +561,7 @@ class PageController extends FormController
                     // form is valid so process the data
                     $model->saveEntity($entity, $this->getFormButton($form, ['buttons', 'save'])->isClicked());
 
-                    if (!is_null($pageConfig) && $pageConfig->isDraftEnabled() && !empty($entity->getId())) {
+                    if ($pageConfig->isDraftEnabled() && !empty($entity->getId())) {
                         $this->dispatcher->dispatch(new PageEditSubmitEvent(
                             $existingPage,
                             $entity,
@@ -635,7 +632,7 @@ class PageController extends FormController
             }
         }
 
-        $draftEnabled    = !is_null($pageConfig) && $pageConfig->isDraftEnabled() && !empty($entity->getId());
+        $draftEnabled    = $pageConfig->isDraftEnabled() && !empty($entity->getId());
         $draftPreviewUrl = null;
         if ($draftEnabled && $entity->hasDraft()) {
             $draftPreviewUrl = $this->generateUrl(
@@ -684,7 +681,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function cloneAction(Request $request, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, ThemeHelper $themeHelper, $objectId)
+    public function cloneAction(Request $request, PageConfig $pageConfig, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, ThemeHelper $themeHelper, $objectId)
     {
         /** @var PageModel $model */
         $model  = $this->getModel('page.page');
@@ -713,7 +710,7 @@ class PageController extends FormController
             $session->set($contentName, $entity->getCustomHtml());
         }
 
-        return $this->newAction($request, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $themeHelper, $entity);
+        return $this->newAction($request, $pageConfig, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $themeHelper, $entity);
     }
 
     /**
@@ -896,7 +893,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function abtestAction(Request $request, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, ThemeHelper $themeHelper, $objectId)
+    public function abtestAction(Request $request, PageConfig $pageConfig, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, ThemeHelper $themeHelper, $objectId)
     {
         /** @var PageModel $model */
         $model  = $this->getModel('page.page');
@@ -927,7 +924,7 @@ class PageController extends FormController
         $clone->setIsPublished(false);
         $clone->setVariantParent($entity);
 
-        return $this->newAction($request, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $themeHelper, $clone);
+        return $this->newAction($request, $pageConfig, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $themeHelper, $clone);
     }
 
     /**
