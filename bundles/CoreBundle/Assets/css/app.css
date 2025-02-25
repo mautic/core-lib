@@ -3863,6 +3863,9 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
 .modal-footer .modal-form-buttons:has(.btn:nth-child(3)) .btn {
   min-width: 25%;
 }
+.modal-footer .modal-form-buttons:has(.btn:nth-child(3)) .btn:first-child {
+  border-radius: calc(var(--border-radius-md) + 3px) 0 0 0;
+}
 .footer-buttons {
   margin-bottom: -15px;
 }
