@@ -23,8 +23,10 @@ class ThemeListType extends AbstractType
         $resolver->setDefaults(
             [
                 'choices'           => function (Options $options): array {
-                    $themes                     = $this->themeHelper->getInstalledThemes($options['feature']);
-                    $themes['mautic_code_mode'] = 'Code Mode';
+                    $themes = $this->themeHelper->getInstalledThemes($options['feature']);
+                    if ('form' !== $options['feature']) {
+                        $themes['mautic_code_mode'] = 'Code Mode';
+                    }
 
                     return array_flip($themes);
                 },
