@@ -12,6 +12,7 @@ use Mautic\UserBundle\Entity\Permission;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Model\RoleModel;
 use PHPUnit\Framework\Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -200,6 +201,67 @@ class AssetControllerFunctionalTest extends AbstractAssetTest
             'expectedStatusCode' => Response::HTTP_OK,
             'userCreatorUN'      => self::SALES_USER,
         ];
+    }
+
+    public function testAssetUploadPathTraversal(): void
+    {
+        $client    = $this->client;
+        $container = $this->getContainer();
+
+        // Get CSRF token
+        $csrfToken = $container->get('security.csrf.token_manager')->getToken('mautic_ajax_post')->getValue();
+
+        // Create a temporary file
+        $tempFile = tempnam(sys_get_temp_dir(), 'test_');
+        file_put_contents($tempFile, '111');
+
+        // Prepare the file for upload
+        $uploadedFile = new UploadedFile(
+            $tempFile,
+            'test.txt',
+            'text/plain',
+            null,
+            true
+        );
+
+        $tmpDir = 'tmp_'.substr(md5(uniqid()), 0, 13);
+        $client->request(
+            'POST',
+            '/s/_uploader/asset/upload',
+            ['tempId' => '../../'.$tmpDir],
+            ['file'   => $uploadedFile],
+            [
+                'HTTP_X-Requested-With' => 'XMLHttpRequest',
+                'HTTP_X-CSRF-Token'     => $csrfToken,
+            ]
+        );
+
+        $response = $client->getResponse();
+
+        // Assert response is successful
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+
+        // Decode JSON response
+        $responseData = json_decode($response->getContent(), true);
+
+        // Assert the response contains expected keys
+        $this->assertArrayHasKey('tmpFileName', $responseData);
+
+        // Assert file was created in the correct directory
+        $expectedDir      = $container->getParameter('mautic.upload_dir').join('/', ['', 'tmp', $tmpDir]);
+        $expectedFilePath = join('/', [$expectedDir, $responseData['tmpFileName']]);
+        $this->assertFileExists($expectedFilePath);
+
+        // Clean up
+        if (file_exists($expectedFilePath)) {
+            unlink($expectedFilePath);
+        }
+        if (is_dir($expectedDir)) {
+            rmdir($expectedDir);
+        }
+        if (file_exists($tempFile)) {
+            unlink($tempFile);
+        }
     }
 
     private function getUser(string $username): User
