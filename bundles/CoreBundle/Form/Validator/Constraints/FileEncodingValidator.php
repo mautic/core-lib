@@ -25,17 +25,17 @@ class FileEncodingValidator extends ConstraintValidator
             return;
         }
 
-        //Open the file in "reading only" mode
+        // Open the file in "reading only" mode
         $fileHandle = fopen($field->getPathname(), 'rb');
 
-        //Handler is valid or not
+        // Handler is valid or not
         if (false === $fileHandle) {
             return;
         }
 
-        //While we are not yet at the end of the file
+        // While we are not yet at the end of the file
         while (!feof($fileHandle)) {
-            //Read the current line
+            // Read the current line
             $line = fgets($fileHandle);
 
             // Check for UTF-8 encoding
@@ -44,7 +44,7 @@ class FileEncodingValidator extends ConstraintValidator
             }
         }
 
-        //Finally, close the file handle.
+        // Finally, close the file handle.
         fclose($fileHandle);
     }
 }
