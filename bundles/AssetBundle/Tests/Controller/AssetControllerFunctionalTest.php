@@ -233,4 +233,63 @@ class AssetControllerFunctionalTest extends AbstractAssetTest
         $this->em->persist($role);
         $this->em->flush();
     }
+
+    public function testPostRequestWithWrongTempNameAndOriginalFileNameFileExtension(): void
+    {
+        $response = $this->client->request(
+            Request::METHOD_GET,
+            '/s/assets/new',
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $form                              = $response->filter('form[name="asset"]')->form();
+        $data                              = $form->getPhpValues();
+        $data['asset']['tempName']         = 'image2.php';
+        $data['asset']['originalFileName'] = 'originalImage2.php';
+        $data['asset']['storageLocation']  = 'local';
+        $data['asset']['title']            = 'title';
+        $data['asset']['description']      = 'description';
+        $this->client->submit($form, $data);
+        preg_match_all('/Upload failed as the file extension, php/', $this->client->getResponse()->getContent(), $matches);
+        $this->assertCount(2, $matches[0]);
+        $this->assertStringContainsString('Upload failed as the file extension, php', $this->client->getResponse()->getContent());
+    }
+
+    public function testPostRequestWithWrongTempNameFileExtension(): void
+    {
+        $response = $this->client->request(
+            Request::METHOD_GET,
+            '/s/assets/new',
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $form                              = $response->filter('form[name="asset"]')->form();
+        $data                              = $form->getPhpValues();
+        $data['asset']['tempName']         = 'image2.php';
+        $data['asset']['originalFileName'] = 'originalImage2.png';
+        $data['asset']['storageLocation']  = 'local';
+        $data['asset']['title']            = 'title';
+        $data['asset']['description']      = 'description';
+        $this->client->submit($form, $data);
+        preg_match_all('/Upload failed as the file extension, php/', $this->client->getResponse()->getContent(), $matches);
+        $this->assertCount(1, $matches[0]);
+        $this->assertStringContainsString('Upload failed as the file extension, php', $this->client->getResponse()->getContent());
+    }
+
+    public function testPostResquetSuccessWithCorrectFileExtension(): void
+    {
+        $response = $this->client->request(
+            Request::METHOD_GET,
+            '/s/assets/new',
+        );
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $form                              = $response->filter('form[name="asset"]')->form();
+        $data                              = $form->getPhpValues();
+        $data['asset']['tempName']         = 'image.png';
+        $data['asset']['originalFileName'] = 'originalImage.png';
+        $data['asset']['storageLocation']  = 'local';
+        $data['asset']['title']            = 'title';
+        $data['asset']['description']      = 'description';
+        $this->client->submit($form, $data);
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertStringNotContainsString('Upload failed as the file extension, php', $this->client->getResponse()->getContent());
+    }
 }
