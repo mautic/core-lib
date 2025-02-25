@@ -19,11 +19,11 @@ final class Version20231205094436 extends PreUpAssertionMigration
 
     public function up(Schema $schema): void
     {
-        $query = sprintf(
+        $this->addSql(sprintf(
             'ALTER TABLE %s ADD INDEX %s (lead_id, leadlist_id, manually_removed)',
             $this->getTableName(),
             $this->getIndexName()
-        );
+        ));
     }
 
     public function down(Schema $schema): void
