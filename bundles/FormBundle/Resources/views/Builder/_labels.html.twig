@@ -121,7 +121,7 @@
         {% endif %}
     {% endif %}
 
-    {% if field.isAutoFill == 1 %}
+    {% if field.isAutoFill is defined and field.isAutoFill == 1 %}
     <!-- Auto fill -->
     {% include '@MauticCore/Helper/_tag.html.twig' with {
         tags: [
