@@ -1135,7 +1135,7 @@ class MailHelperTest extends TestCase
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router);
+        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->createMock(PathsHelper::class), $this->createMock(EventDispatcherInterface::class), $this->requestStack);
 
         $longName = 'This is a very long name that exceeds the length limit';
         $email    = 'test@example.com';

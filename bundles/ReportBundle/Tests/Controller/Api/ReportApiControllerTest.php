@@ -9,6 +9,7 @@ use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Model\RoleModel;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 class ReportApiControllerTest extends MauticMysqlTestCase
 {
@@ -108,8 +109,9 @@ class ReportApiControllerTest extends MauticMysqlTestCase
         $user->setLastName('Doe');
         $user->setUsername('john.doe');
         $user->setEmail('john.doe@email.com');
-        $encoder = static::getContainer()->get('security.password_hasher_factory')->getEncoder($user);
-        $user->setPassword($encoder->encodePassword($password, null));
+        $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
+        \assert($hasher instanceof PasswordHasherInterface);
+        $user->setPassword($hasher->hash($password));
         $user->setRole($role);
 
         $this->em->persist($user);
