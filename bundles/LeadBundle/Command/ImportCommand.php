@@ -9,7 +9,7 @@ use Mautic\LeadBundle\Exception\ImportFailedException;
 use Mautic\LeadBundle\Helper\Progress;
 use Mautic\LeadBundle\Model\ImportModel;
 use Mautic\UserBundle\Security\UserTokenSetter;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,7 +28,7 @@ class ImportCommand extends Command
         private ImportModel $importModel,
         private ProcessSignalService $processSignalService,
         private UserTokenSetter $userTokenSetter,
-        private Logger $logger,
+        private LoggerInterface $logger,
     ) {
         parent::__construct();
     }
