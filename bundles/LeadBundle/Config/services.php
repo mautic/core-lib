@@ -13,7 +13,7 @@ return function (ContainerConfigurator $configurator): void {
         ->public();
 
     $excludes = [
-        'Command',
+        'Command/ImportCommand.php',
         'Deduplicate/Exception',
         'Field/DTO',
         'Field/Event',
