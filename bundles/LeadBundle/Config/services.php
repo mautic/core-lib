@@ -13,6 +13,7 @@ return function (ContainerConfigurator $configurator): void {
         ->public();
 
     $excludes = [
+        'Command',
         'Deduplicate/Exception',
         'Field/DTO',
         'Field/Event',

@@ -28,11 +28,12 @@ class ImportCommand extends Command
         private ImportModel $importModel,
         private ProcessSignalService $processSignalService,
         private UserTokenSetter $userTokenSetter,
+        private Logger $logger,
     ) {
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName(self::COMMAND_NAME)
             ->addOption('--id', '-i', InputOption::VALUE_OPTIONAL, 'Specific ID to import. Defaults to next in the queue.', false)
@@ -128,14 +129,11 @@ EOT
 
     private function logError(Import $import, \Exception $exception): void
     {
-        /** @var Logger $logger */
-        $logger = $this->getContainer()->get('monolog.logger.mautic');
-
         $message = ' Import id: '.$import->getId();
         $message .= ' Import Status: '.$import->getStatus();
         $message .= ' Reason: '.$import->getStatusInfo();
         $message .= ' Exception: '.$exception;
 
-        $logger->warning($message);
+        $this->logger->warning($message);
     }
 }
