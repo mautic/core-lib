@@ -68,7 +68,7 @@ class ReportApiControllerTest extends MauticMysqlTestCase
         // Disable the default logging in via username and password.
         $this->clientServer = [];
         $this->setUpSymfony($this->configParams);
-        $this->loginUser($user->getUserIdentifier());
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
         $this->client->setServerParameter('PHP_AUTH_PW', $password);
 
@@ -108,7 +108,7 @@ class ReportApiControllerTest extends MauticMysqlTestCase
         $user->setLastName('Doe');
         $user->setUsername('john.doe');
         $user->setEmail('john.doe@email.com');
-        $encoder = static::getContainer()->get('security.encoder_factory')->getEncoder($user);
+        $encoder = static::getContainer()->get('security.password_hasher_factory')->getEncoder($user);
         $user->setPassword($encoder->encodePassword($password, null));
         $user->setRole($role);
 
