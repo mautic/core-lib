@@ -20,6 +20,7 @@ class UploadSubscriber implements EventSubscriberInterface
         private AssetModel $assetModel,
         private FileUploadValidator $fileUploadValidator,
         protected Translator $translator,
+        private FileUploadValidator $fileUploadValidator,
     ) {
     }
 

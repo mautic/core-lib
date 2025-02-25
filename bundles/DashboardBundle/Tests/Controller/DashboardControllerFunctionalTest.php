@@ -41,7 +41,10 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->xmlHttpRequest('GET', sprintf('/s/dashboard/widget/%s', $widget->getId()));
         $this->assertResponseIsSuccessful();
 
-        $content = $this->client->getResponse()->getContent();
+        $response = $this->client->getResponse();
+        self::assertResponseIsSuccessful();
+
+        $content = $response->getContent();
         Assert::assertJson($content);
 
         $data = json_decode($content, true);
@@ -117,7 +120,10 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->xmlHttpRequest('GET', sprintf('/s/dashboard/widget/%s', $widget->getId()));
         $this->assertResponseIsSuccessful();
 
-        $content = $this->client->getResponse()->getContent();
+        $response = $this->client->getResponse();
+        self::assertResponseIsSuccessful();
+
+        $content = $response->getContent();
         Assert::assertJson($content);
 
         $data = json_decode($content, true);
