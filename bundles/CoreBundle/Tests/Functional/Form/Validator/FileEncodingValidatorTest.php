@@ -17,8 +17,7 @@ class FileEncodingValidatorTest extends MauticMysqlTestCase
         $uploadForm = $crawler->selectButton('Upload')->form();
         $file       = new UploadedFile(__DIR__.'/../../../Fixtures/non_utf_8.csv', 'contacts.csv', 'itext/csv');
 
-        $uploadForm['lead_import[file]']->setValue($file); // @phpstan-ignore-line
-        // ignoring as setValue is expected parameter set as string|array|bool|null
+        $uploadForm['lead_import[file]']->setValue($file->getPathname());
 
         $crawler = $this->client->submit($uploadForm);
 
