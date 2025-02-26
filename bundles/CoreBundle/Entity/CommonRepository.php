@@ -35,7 +35,7 @@ class CommonRepository extends ServiceEntityRepository
     /**
      * @phpstan-param class-string<T>|null $entityFQCN
      */
-    public function __construct(ManagerRegistry $registry, string $entityFQCN = null)
+    public function __construct(ManagerRegistry $registry, ?string $entityFQCN = null)
     {
         parent::__construct($registry, $entityFQCN ?? str_replace('Repository', '', static::class));
     }
@@ -607,7 +607,7 @@ class CommonRepository extends ServiceEntityRepository
      * @param int $start
      * @param int $limit
      */
-    public function getRows($start = 0, $limit = 100, array $order = [], array $where = [], array $select = null, array $allowedJoins = []): array
+    public function getRows($start = 0, $limit = 100, array $order = [], array $where = [], ?array $select = null, array $allowedJoins = []): array
     {
         $alias    = $this->getTableAlias();
         $metadata = $this->getClassMetadata();
@@ -692,7 +692,7 @@ class CommonRepository extends ServiceEntityRepository
      *
      * @return mixed[]
      */
-    public function getSimpleList(CompositeExpression $expr = null, array $parameters = [], $labelColumn = null, $valueColumn = 'id', $extraColumns = null, $limit = 0): array
+    public function getSimpleList(?CompositeExpression $expr = null, array $parameters = [], $labelColumn = null, $valueColumn = 'id', $extraColumns = null, $limit = 0): array
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
 

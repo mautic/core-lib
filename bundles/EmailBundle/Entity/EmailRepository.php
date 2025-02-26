@@ -169,8 +169,8 @@ class EmailRepository extends CommonRepository
         $maxContactId = null,
         $countWithMaxMin = false,
         $maxDate = null,
-        int $maxThreads = null,
-        int $threadId = null,
+        ?int $maxThreads = null,
+        ?int $threadId = null,
     ) {
         // Do not include leads in the do not contact table
         $dncQb = $this->getEntityManager()->getConnection()->createQueryBuilder();
@@ -318,8 +318,8 @@ class EmailRepository extends CommonRepository
         $minContactId = null,
         $maxContactId = null,
         $countWithMaxMin = false,
-        int $maxThreads = null,
-        int $threadId = null,
+        ?int $maxThreads = null,
+        ?int $threadId = null,
     ) {
         $q = $this->getEmailPendingQuery(
             $emailId,

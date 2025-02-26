@@ -66,7 +66,7 @@ abstract class AbstractMauticMigration extends AbstractMigration implements Cont
     /**
      * @throws \Doctrine\DBAL\Exception
      */
-    public function setContainer(ContainerInterface $container = null): void
+    public function setContainer(?ContainerInterface $container = null): void
     {
         $this->container     = $container;
         $this->prefix        = $container->getParameter('mautic.db_table_prefix');
@@ -191,7 +191,7 @@ abstract class AbstractMauticMigration extends AbstractMigration implements Cont
      * This method will remove the burden of getting prefixed table name in individual migration file.
      * Individual migration files just need to keep a protected constant TABLE_NAME.
      */
-    protected function getPrefixedTableName(string $tableName = null): string
+    protected function getPrefixedTableName(?string $tableName = null): string
     {
         if (null === $tableName) {
             $tableName = static::TABLE_NAME;

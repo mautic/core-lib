@@ -589,7 +589,7 @@ class ImportModel extends FormModel
     /**
      * @throws MethodNotAllowedHttpException
      */
-    protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
     {
         if (!$entity instanceof Import) {
             throw new MethodNotAllowedHttpException(['Import']);
@@ -634,7 +634,7 @@ class ImportModel extends FormModel
      *
      * @param string $msg
      */
-    protected function logDebug($msg, Import $import = null)
+    protected function logDebug($msg, ?Import $import = null)
     {
         if (MAUTIC_ENV === 'dev') {
             $importId = $import ? '('.$import->getId().')' : '';

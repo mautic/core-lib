@@ -55,7 +55,7 @@ class InactiveExecutioner implements ExecutionerInterface
      * @throws Exception\CannotProcessEventException
      * @throws Scheduler\Exception\NotSchedulableException
      */
-    public function execute(Campaign $campaign, ContactLimiter $limiter, OutputInterface $output = null)
+    public function execute(Campaign $campaign, ContactLimiter $limiter, ?OutputInterface $output = null)
     {
         $this->campaign = $campaign;
         $this->limiter  = $limiter;
@@ -90,7 +90,7 @@ class InactiveExecutioner implements ExecutionerInterface
      * @throws Exception\CannotProcessEventException
      * @throws Scheduler\Exception\NotSchedulableException
      */
-    public function validate($decisionId, ContactLimiter $limiter, OutputInterface $output = null)
+    public function validate($decisionId, ContactLimiter $limiter, ?OutputInterface $output = null)
     {
         $this->limiter = $limiter;
         $this->output  = $output ?: new NullOutput();

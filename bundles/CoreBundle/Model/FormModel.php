@@ -344,7 +344,7 @@ class FormModel extends AbstractCommonModel
      * @param object $entity
      * @param bool   $isNew
      */
-    protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
     {
         // ...
 

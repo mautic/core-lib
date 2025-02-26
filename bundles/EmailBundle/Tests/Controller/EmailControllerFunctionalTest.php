@@ -465,7 +465,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @param mixed[]|null $varientSetting
      */
-    private function createEmail(string $name, string $subject, string $emailType, string $template, string $customHtml, LeadList $segment = null, ?array $varientSetting = []): Email
+    private function createEmail(string $name, string $subject, string $emailType, string $template, string $customHtml, ?LeadList $segment = null, ?array $varientSetting = []): Email
     {
         $email = new Email();
         $email->setName($name);

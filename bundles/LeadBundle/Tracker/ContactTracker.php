@@ -129,7 +129,7 @@ class ContactTracker
     /**
      * System contact bypasses cookie tracking.
      */
-    public function setSystemContact(Lead $lead = null): void
+    public function setSystemContact(?Lead $lead = null): void
     {
         if (null !== $lead) {
             $this->logger->debug("LEAD: {$lead->getId()} set as system lead.");
@@ -249,7 +249,7 @@ class ContactTracker
     /**
      * @param bool $persist
      */
-    private function createNewContact(IpAddress $ip = null, $persist = true): Lead
+    private function createNewContact(?IpAddress $ip = null, $persist = true): Lead
     {
         // let's create a lead
         $lead = new Lead();
@@ -275,7 +275,7 @@ class ContactTracker
         return $lead;
     }
 
-    private function hydrateCustomFieldData(Lead $lead = null): void
+    private function hydrateCustomFieldData(?Lead $lead = null): void
     {
         if (null === $lead) {
             return;

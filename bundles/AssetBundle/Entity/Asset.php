@@ -276,7 +276,7 @@ class Asset extends FormEntity
     /**
      * Sets file.
      */
-    public function setFile(File $file = null): void
+    public function setFile(?File $file = null): void
     {
         $this->file = $file;
 
@@ -621,7 +621,7 @@ class Asset extends FormEntity
      *
      * @return Asset
      */
-    public function setCategory(\Mautic\CategoryBundle\Entity\Category $category = null)
+    public function setCategory(?\Mautic\CategoryBundle\Entity\Category $category = null)
     {
         $this->isChanged('category', $category);
         $this->category = $category;

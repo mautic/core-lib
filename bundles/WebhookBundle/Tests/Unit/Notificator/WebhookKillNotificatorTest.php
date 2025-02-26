@@ -178,7 +178,7 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
         $this->webhookKillNotificator->send($this->webhook, $this->reason);
     }
 
-    private function mockCommonMethods(int $sentToAuther, string $emailToSend = null): void
+    private function mockCommonMethods(int $sentToAuther, ?string $emailToSend = null): void
     {
         $this->coreParamHelperMock
             ->method('get')

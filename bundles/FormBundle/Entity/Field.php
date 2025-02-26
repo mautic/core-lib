@@ -817,7 +817,7 @@ class Field
      *
      * @param array|null $submissions
      */
-    public function showForContact($submissions = null, Lead $lead = null, Form $form = null, DisplayManager $displayManager = null): bool
+    public function showForContact($submissions = null, ?Lead $lead = null, ?Form $form = null, ?DisplayManager $displayManager = null): bool
     {
         // Always show in the kiosk mode
         if (null !== $form && true === $form->getInKioskMode()) {

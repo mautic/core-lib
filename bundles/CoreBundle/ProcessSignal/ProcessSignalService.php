@@ -16,7 +16,7 @@ class ProcessSignalService
     /**
      * @param int[] $signals
      */
-    public function registerSignalHandler(callable $beforeCallback = null, array $signals = self::SIGNALS): void
+    public function registerSignalHandler(?callable $beforeCallback = null, array $signals = self::SIGNALS): void
     {
         if (!function_exists('pcntl_signal')) {
             return;

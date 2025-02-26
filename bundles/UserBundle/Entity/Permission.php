@@ -124,7 +124,7 @@ class Permission implements CacheInvalidateInterface
      *
      * @return Permission
      */
-    public function setRole(Role $role = null)
+    public function setRole(?Role $role = null)
     {
         $this->role = $role;
 

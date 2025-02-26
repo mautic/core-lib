@@ -204,7 +204,7 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
     /**
      * @throws MethodNotAllowedHttpException
      */
-    protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
     {
         if (!$entity instanceof Trigger) {
             throw new MethodNotAllowedHttpException(['Trigger']);
@@ -316,7 +316,7 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
      *
      * @return bool Was event triggered
      */
-    public function triggerEvent($event, Lead $lead = null, $force = false)
+    public function triggerEvent($event, ?Lead $lead = null, $force = false)
     {
         // only trigger events for anonymous users
         if (!$force && !$this->security->isAnonymous()) {

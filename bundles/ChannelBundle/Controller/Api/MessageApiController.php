@@ -56,7 +56,7 @@ class MessageApiController extends CommonApiController
         parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
     }
 
-    protected function prepareParametersFromRequest(FormInterface $form, array &$params, object $entity = null, array $masks = [], array $fields = []): void
+    protected function prepareParametersFromRequest(FormInterface $form, array &$params, ?object $entity = null, array $masks = [], array $fields = []): void
     {
         parent::prepareParametersFromRequest($form, $params, $entity, $masks);
 

@@ -128,7 +128,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertGreaterThan(0, $crawler->filter('#leadlist_filters_0_operator option')->count());
     }
 
-    private function saveSegment(string $name, string $alias, array $filters = [], LeadList $segment = null): LeadList
+    private function saveSegment(string $name, string $alias, array $filters = [], ?LeadList $segment = null): LeadList
     {
         $segment ??= new LeadList();
         $segment->setName($name)->setAlias($alias)->setFilters($filters);
