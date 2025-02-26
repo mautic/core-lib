@@ -42,7 +42,7 @@ class PageSubscriber implements EventSubscriberInterface
             PageEvents::PAGE_POST_SAVE      => ['onPagePostSave', 0],
             PageEvents::PAGE_POST_DELETE    => ['onPageDelete', 0],
             PageEvents::PAGE_ON_DISPLAY     => ['onPageDisplay', -255], // We want this to run last
-            PageEvents::ON_PAGE_EDIT_SUBMIT => ['managePageDraft'],
+            PageEditSubmitEvent::class      => ['managePageDraft'],
         ];
     }
 

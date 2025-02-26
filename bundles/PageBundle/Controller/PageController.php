@@ -551,7 +551,7 @@ class PageController extends FormController
                             $form->get('buttons')->has('save_draft') && $this->getFormButton($form, ['buttons', 'save_draft'])->isClicked(),
                             $form->get('buttons')->has('apply_draft') && $this->getFormButton($form, ['buttons', 'apply_draft'])->isClicked(),
                             $form->get('buttons')->has('discard_draft') && $this->getFormButton($form, ['buttons', 'discard_draft'])->isClicked()
-                        ), PageEvents::ON_PAGE_EDIT_SUBMIT);
+                        ));
                     }
 
                     $this->addFlashMessage('mautic.core.notice.updated', [
