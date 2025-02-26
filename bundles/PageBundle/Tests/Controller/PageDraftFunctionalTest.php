@@ -10,7 +10,7 @@ use Mautic\PageBundle\Entity\PageDraft;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 
-class PageDraftFunctionalTest extends MauticMysqlTestCase
+final class PageDraftFunctionalTest extends MauticMysqlTestCase
 {
     protected function setUp(): void
     {
