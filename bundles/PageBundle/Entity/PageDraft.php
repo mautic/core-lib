@@ -120,7 +120,7 @@ class PageDraft
     private function decodeAmpersands(string $content): string
     {
         if (!preg_match_all(self::REGEX_DECODE_AMPERSAND, $content, $matches)) {
-            return '';
+            return $content;
         }
 
         foreach ($matches[0] as $url) {
