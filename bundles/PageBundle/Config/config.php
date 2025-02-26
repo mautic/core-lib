@@ -1,7 +1,5 @@
 <?php
 
-use Mautic\PageBundle\Helper\PageConfig;
-
 return [
     'routes' => [
         'main' => [
@@ -120,12 +118,6 @@ return [
                     'mautic.cache.provider',
                     'mautic.helper.core_parameters',
                     'request_stack',
-                ],
-            ],
-            'mautic.helper.page_config' => [
-                'class'     => PageConfig::class,
-                'arguments' => [
-                    'mautic.helper.core_parameters',
                 ],
             ],
         ],
