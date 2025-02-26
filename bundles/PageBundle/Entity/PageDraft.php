@@ -21,7 +21,16 @@ class PageDraft
      */
     public const REGEX_DECODE_AMPERSAND = '/((https?|ftps?):\/\/)([a-zA-Z0-9-\.{}]*[a-zA-Z0-9=}]*)(\??)([^\s\"\]]+)?/i';
 
-    private int $id;
+    private ?int $id = null;
+
+    public function __construct(
+        private Page $page,
+        private ?string $html = null,
+        private ?string $template = null,
+        private bool $publicPreview = true
+    )
+    {
+    }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
@@ -52,37 +61,10 @@ class PageDraft
      */
     public function cleanUrlsInContent(): void
     {
-        $this->decodeAmpersands($this->html);
+        $this->html = $this->decodeAmpersands((string) $this->html);
     }
 
-    /**
-     * Check all links in content and decode &amp;
-     * This even works with double encoded ampersands.
-     */
-    private function decodeAmpersands(mixed &$content): void
-    {
-        if (!preg_match_all(self::REGEX_DECODE_AMPERSAND, $content, $matches)) {
-            return;
-        }
-
-        foreach ($matches[0] as $url) {
-            $newUrl = $url;
-            while (str_contains($newUrl, '&amp;')) {
-                $newUrl = str_replace('&amp;', '&', $newUrl);
-            }
-            $content = str_replace($url, $newUrl, $content);
-        }
-    }
-
-    public function __construct(
-        private Page $page,
-        private ?string $html,
-        private ?string $template,
-        private bool $publicPreview = true)
-    {
-    }
-
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -97,7 +79,7 @@ class PageDraft
         return $this->page;
     }
 
-    public function getHtml(): string
+    public function getHtml(): ?string
     {
         return $this->html;
     }
@@ -107,17 +89,17 @@ class PageDraft
         $this->page = $page;
     }
 
-    public function setHtml(string $html): void
+    public function setHtml(?string $html): void
     {
         $this->html = $html;
     }
 
-    public function getTemplate(): string
+    public function getTemplate(): ?string
     {
         return $this->template;
     }
 
-    public function setTemplate(string $template): void
+    public function setTemplate(?string $template): void
     {
         $this->template = $template;
     }
@@ -130,5 +112,26 @@ class PageDraft
     public function setPublicPreview(bool $publicPreview): void
     {
         $this->publicPreview = $publicPreview;
+    }
+
+    /**
+     * Check all links in content and decode &amp;
+     * This even works with double encoded ampersands.
+     */
+    private function decodeAmpersands(string $content): string
+    {
+        if (!preg_match_all(self::REGEX_DECODE_AMPERSAND, $content, $matches)) {
+            return;
+        }
+
+        foreach ($matches[0] as $url) {
+            $newUrl = $url;
+            while (str_contains($newUrl, '&amp;')) {
+                $newUrl = str_replace('&amp;', '&', $newUrl);
+            }
+            $content = str_replace($url, $newUrl, $content);
+        }
+
+        return $content;
     }
 }

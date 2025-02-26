@@ -6,9 +6,6 @@ namespace Mautic\PageBundle\Entity;
 
 use Mautic\CoreBundle\Entity\CommonRepository;
 
-/**
- * Class PageRepository.
- */
 class PageDraftRepository extends CommonRepository
 {
 }

@@ -7,10 +7,7 @@ namespace Mautic\PageBundle\Event;
 use Mautic\CoreBundle\Event\CommonEvent;
 use Mautic\PageBundle\Entity\Page;
 
-/**
- * Class PageEditSubmitEvent.
- */
-class PageEditSubmitEvent extends CommonEvent
+final class PageEditSubmitEvent extends CommonEvent
 {
     public function __construct(
         private Page $previousPage,
