@@ -124,7 +124,7 @@ class BaseDecorator implements FilterDecoratorInterface
     /**
      * @return CompositeExpression|string|null
      */
-    public function getWhere(ContactSegmentFilterCrate $contactSegmentFilterCrate)
+    public function getWhere(ContactSegmentFilterCrate $contactSegmentFilterCrate): null
     {
         return null;
     }
