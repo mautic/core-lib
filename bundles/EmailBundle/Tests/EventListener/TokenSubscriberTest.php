@@ -4,6 +4,8 @@ namespace Mautic\EmailBundle\Tests\EventListener;
 
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\PathsHelper;
+use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\EmailBundle\EventListener\TokenSubscriber;
@@ -18,8 +20,10 @@ use Mautic\LeadBundle\Helper\PrimaryCompanyHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 
 class TokenSubscriberTest extends \PHPUnit\Framework\TestCase
@@ -47,6 +51,11 @@ class TokenSubscriberTest extends \PHPUnit\Framework\TestCase
         /** @var MockObject&Environment $twig */
         $twig = $this->createMock(Environment::class);
 
+        $requestStack = new RequestStack();
+        $themeHelper  = $this->createMock(ThemeHelper::class);
+        $themeHelper->expects(self::never())
+            ->method('checkForTwigTemplate');
+
         $mailHashHelper = new MailHashHelper($coreParametersHelper);
 
         $coreParametersHelper->method('get')
@@ -59,7 +68,21 @@ class TokenSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $tokens = ['{test}' => 'value'];
 
-        $mailHelper = new MailHelper($mockFactory, new Mailer(new SmtpTransport()), $fromEmailHelper, $coreParametersHelper, $mailbox, $logger, $mailHashHelper, $router, $twig);
+        $mailHelper = new MailHelper(
+            $mockFactory,
+            new Mailer(new SmtpTransport()),
+            $fromEmailHelper,
+            $coreParametersHelper,
+            $mailbox,
+            $logger,
+            $mailHashHelper,
+            $router,
+            $twig,
+            $themeHelper,
+            $this->createMock(PathsHelper::class),
+            $this->createMock(EventDispatcherInterface::class),
+            $requestStack,
+        );
         $mailHelper->setTokens($tokens);
 
         $email = new Email();
