@@ -8,9 +8,9 @@ use Doctrine\ORM\EntityManager;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
+use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
-use Mautic\CoreBundle\Twig\Helper\SlotsHelper;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Event\EmailSendEvent;
@@ -296,7 +296,6 @@ CONTENT,
         /** @var MockObject&Environment $twig */
         $twig = $this->createMock(Environment::class);
 
-        $slotsHelper = new SlotsHelper();
         $themeHelper = $this->createMock(ThemeHelper::class);
         $themeHelper->expects(self::never())
             ->method('checkForTwigTemplate');
@@ -322,7 +321,7 @@ CONTENT,
             $router,
             $twig,
             $themeHelper,
-            $slotsHelper,
+            $this->createMock(PathsHelper::class),
             $this->createMock(EventDispatcherInterface::class),
             $requestStack
         );
