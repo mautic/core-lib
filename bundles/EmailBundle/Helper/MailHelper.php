@@ -9,7 +9,6 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
-use Mautic\CoreBundle\Twig\Helper\SlotsHelper;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Entity\Copy;
 use Mautic\EmailBundle\Entity\Email;
@@ -32,6 +31,7 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Exception\RfcComplianceException;
 use Symfony\Component\Mime\Header\HeaderInterface;
+use Symfony\Component\Mime\Header\MailboxListHeader;
 use Symfony\Component\Mime\Header\UnstructuredHeader;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -77,6 +77,8 @@ class MailHelper
     protected ?string $replyTo = null;
 
     protected ?string $systemReplyTo = null;
+
+    protected int $addressLengthLimit;
 
     /**
      * @var string
@@ -237,7 +239,6 @@ class MailHelper
         private RouterInterface $router,
         private Environment $twig,
         private ThemeHelper $themeHelper,
-        private SlotsHelper $slotsHelper,
         private PathsHelper $pathsHelper,
         private EventDispatcherInterface $dispatcher,
         private RequestStack $requestStack,
@@ -250,6 +251,7 @@ class MailHelper
         $systemFromName     = $this->cleanName(
             $coreParametersHelper->get('mailer_from_name')
         );
+        $this->addressLengthLimit = (int) $coreParametersHelper->get('mailer_address_length_limit');
         $this->setDefaultFrom(false, new AddressDTO($systemFromEmail, $systemFromName));
         $this->setDefaultReplyTo($systemReplyToEmail, $this->from);
 
@@ -703,7 +705,7 @@ class MailHelper
         }
 
         if ($asset->isPublished()) {
-            $asset->setUploadDir($this->factory->getParameter('upload_dir'));
+            $asset->setUploadDir($this->coreParametersHelper->get('upload_dir'));
             $this->assets[$asset->getId()] = $asset;
         }
     }
@@ -905,7 +907,16 @@ class MailHelper
         $this->checkBatchMaxRecipients();
 
         try {
-            $this->message->addTo((new AddressDTO($address, $name))->toMailerAddress());
+            $fullAddress          = (new AddressDTO($address, $name))->toMailerAddress();
+            $encodedAddressLength = strlen((new MailboxListHeader('To', [$fullAddress]))->getBodyAsString());
+
+            if ($encodedAddressLength > $this->addressLengthLimit) {
+                // When encoded address with name length doesn't meet the limit, use only the email
+                $shortAddress = (new AddressDTO($address))->toMailerAddress();
+                $this->message->addTo($shortAddress);
+            } else {
+                $this->message->addTo($fullAddress);
+            }
             $this->queuedRecipients[$address] = $name;
 
             return true;
@@ -1200,13 +1211,12 @@ class MailHelper
 
     /**
      * @param bool  $allowBcc            Honor BCC if set in email
-     * @param array $slots               Slots configured in theme
      * @param array $assetAttachments    Assets to send
      * @param bool  $ignoreTrackingPixel Do not append tracking pixel HTML
      *
      * @return bool Returns false if there were errors with the email configuration
      */
-    public function setEmail(Email $email, $allowBcc = true, $slots = [], $assetAttachments = [], $ignoreTrackingPixel = false): bool
+    public function setEmail(Email $email, $allowBcc = true, $assetAttachments = [], $ignoreTrackingPixel = false): bool
     {
         if ($this->coreParametersHelper->get(ConfigType::MINIFY_EMAIL_HTML)) {
             $email->setCustomHtml(InputHelper::minifyHTML($email->getCustomHtml()));
@@ -1237,20 +1247,9 @@ class MailHelper
         $customHtml = $email->getCustomHtml();
         // Process emails created by Mautic v1
         if (empty($customHtml) && $template) {
-            if (empty($slots)) {
-                $slots    = $this->themeHelper->getTheme($template)->getSlots('email');
-            }
-
-            if (isset($slots[$template])) {
-                $slots = $slots[$template];
-            }
-
-            $this->processSlots($this->slotsHelper, $slots, $email);
-
             $logicalName = $this->themeHelper->checkForTwigTemplate('@themes/'.$template.'/html/email.html.twig');
 
             $customHtml = $this->setTemplate($logicalName, [
-                'slots'    => $slots,
                 'content'  => $email->getContent(),
                 'email'    => $email,
                 'template' => $template,
@@ -1816,24 +1815,6 @@ class MailHelper
         }
 
         return $monitoredEmail;
-    }
-
-    /**
-     * @param Email $entity
-     */
-    public function processSlots(SlotsHelper $slotsHelper, $slots, $entity): void
-    {
-        $content = $entity->getContent();
-
-        foreach ($slots as $slot => $slotConfig) {
-            if (is_numeric($slot)) {
-                $slot       = $slotConfig;
-                $slotConfig = [];
-            }
-
-            $value = $content[$slot] ?? '';
-            $slotsHelper->set($slot, $value);
-        }
     }
 
     /**
