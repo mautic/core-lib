@@ -12,6 +12,7 @@ use Mautic\CoreBundle\Form\Type\PublishDownDateType;
 use Mautic\CoreBundle\Form\Type\PublishUpDateType;
 use Mautic\CoreBundle\Form\Type\ThemeListType;
 use Mautic\CoreBundle\Form\Type\YesNoButtonGroupType;
+use Mautic\CoreBundle\Helper\ThemeHelperInterface;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\PageBundle\Entity\Page;
@@ -47,6 +48,7 @@ class PageType extends AbstractType
         private PageModel $model,
         CorePermissions $corePermissions,
         UserHelper $userHelper,
+        private ThemeHelperInterface $themeHelper,
         private PageConfigInterface $pageConfig,
     ) {
         $this->canViewOther = $corePermissions->isGranted('page:pages:viewother');
@@ -90,6 +92,8 @@ class PageType extends AbstractType
         );
 
         $template = $options['data']->getTemplate() ?? 'blank';
+        // If theme does not exist, set empty
+        $template = $this->themeHelper->getCurrentTheme($template, 'page');
         if ($this->pageConfig->isDraftEnabled() && !empty($options['data']->getId()) && $options['data']->hasDraft() && !empty($options['data']->getDraft()->getTemplate())) {
             $template = $options['data']->getDraft()->getTemplate();
         }
