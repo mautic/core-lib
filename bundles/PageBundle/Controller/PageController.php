@@ -19,7 +19,6 @@ use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Event\PageEditSubmitEvent;
 use Mautic\PageBundle\Helper\PageConfig;
 use Mautic\PageBundle\Model\PageModel;
-use Mautic\PageBundle\PageEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

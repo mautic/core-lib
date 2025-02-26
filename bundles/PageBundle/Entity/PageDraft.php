@@ -27,9 +27,8 @@ class PageDraft
         private Page $page,
         private ?string $html = null,
         private ?string $template = null,
-        private bool $publicPreview = true
-    )
-    {
+        private bool $publicPreview = true,
+    ) {
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
@@ -121,7 +120,7 @@ class PageDraft
     private function decodeAmpersands(string $content): string
     {
         if (!preg_match_all(self::REGEX_DECODE_AMPERSAND, $content, $matches)) {
-            return;
+            return '';
         }
 
         foreach ($matches[0] as $url) {
