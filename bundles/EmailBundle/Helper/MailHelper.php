@@ -358,6 +358,10 @@ class MailHelper
                     $tokens['{signature}'] = $ownerSignature;
                 }
 
+                if ($brandName = $this->coreParametersHelper->get('brand_name')) {
+                    $tokens['{brand=name}'] = $brandName;
+                }
+
                 // Set metadata if applicable
                 foreach ($this->queuedRecipients as $email => $name) {
                     $this->message->addMetadata($email, $this->buildMetadata($name, $tokens));
