@@ -57,19 +57,8 @@ final class BuilderSubscriber implements EventSubscriberInterface
      */
     private array $renderedContentCache = [];
 
-    private CoreParametersHelper $coreParametersHelper;
-
-    public function __construct(
-        private TokenHelper $tokenHelper,
-        private IntegrationHelper $integrationHelper,
-        private PageModel $pageModel,
-        private BuilderTokenHelperFactory $builderTokenHelperFactory,
-        private TranslatorInterface $translator,
-        private Connection $connection,
-        private Environment $twig,
-        CoreParametersHelper $coreParametersHelper,
-    ) {
-        $this->coreParametersHelper = $coreParametersHelper;
+    public function __construct(private TokenHelper $tokenHelper, private IntegrationHelper $integrationHelper, private PageModel $pageModel, private BuilderTokenHelperFactory $builderTokenHelperFactory, private TranslatorInterface $translator, private Connection $connection, private Environment $twig, private CoreParametersHelper $coreParametersHelper)
+    {
     }
 
     public static function getSubscribedEvents(): array
