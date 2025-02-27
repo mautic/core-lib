@@ -629,7 +629,8 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             $this->createMock(UserHelper::class),
             $this->createMock(LoggerInterface::class),
             $this->createMock(CoreParametersHelper::class),
-            $this->emailStatModel
+            $this->emailStatModel,
+            $this->botRatioHelperMock
         );
 
         $contacts = [
