@@ -39,6 +39,8 @@ use Symfony\Component\Routing\RouterInterface;
 class PublicController extends AbstractFormController
 {
     /**
+     * @param string $slug
+     *
      * @return Response
      *
      * @throws \Exception
@@ -72,7 +74,11 @@ class PublicController extends AbstractFormController
                 if (null != $entity->getRedirectType()) {
                     $model->hitPage($entity, $request, $entity->getRedirectType());
 
-                    return $this->redirect($entity->getRedirectUrl(), (int) $entity->getRedirectType());
+                    if ($entity->getRedirectUrl()) {
+                        return $this->redirect($entity->getRedirectUrl(), (int) $entity->getRedirectType());
+                    } else {
+                        return $this->notFound();
+                    }
                 } else {
                     $model->hitPage($entity, $request, 401);
 
@@ -285,11 +291,11 @@ class PublicController extends AbstractFormController
                 'mautic_js'
             );
 
-            $event = new PageDisplayEvent($content, $entity);
+            $event = new PageDisplayEvent((string) $content, $entity);
             $this->dispatcher->dispatch($event, PageEvents::PAGE_ON_DISPLAY);
             $content = $event->getContent();
 
-            $model->hitPage($entity, $request, 200, $lead, $query);
+            $model->hitPage($entity, $request, Response::HTTP_OK, $lead, $query);
 
             $response = new Response($content);
             if ($request->cookies->has('Blocked-Tracking')) {
