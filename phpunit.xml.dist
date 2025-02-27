@@ -56,7 +56,7 @@
     <server name="KERNEL_DIR" value="app"/>
     <server name="APP_DEBUG" value="0"/>
     <server name="APP_ENV" value="test" force="true" />
-    <ini name="error_reporting" value="E_ALL & ~E_DEPRECATED" />
+    <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED" />
     <ini name="date.timezone" value="UTC" />
   </php>
   <listeners>
