@@ -16,19 +16,19 @@ class ConfigThemeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add(
-            'company_name',
+            'brand_name',
             TextType::class,
             [
-                'label'      => 'mautic.core.config.form.company_name',
+                'label'      => 'mautic.core.config.form.brand_name',
                 'label_attr' => [
                     'class' => 'control-label',
                 ],
                 'attr'  => [
                     'class'   => 'form-control',
-                    'tooltip' => 'mautic.core.config.form.company_name.tooltip',
+                    'tooltip' => 'mautic.core.config.form.brand_name.tooltip',
                 ],
                 'required' => false,
-                'data'     => $options['data']['company_name'] ?? '',
+                'data'     => $options['data']['brand_name'] ?? '',
             ]
         );
 
