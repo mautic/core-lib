@@ -71,4 +71,12 @@ final class CsvHelper
     {
         return fputcsv($stream, $data, $separator, $enclosure, $escape);
     }
+
+    /**
+     * @return mixed[]
+     */
+    public static function strGetCsv(string $string, string $separator = ',', string $enclosure = '"', string $escape = '\\'): array
+    {
+        return str_getcsv($string, $separator, $enclosure, $escape);
+    }
 }

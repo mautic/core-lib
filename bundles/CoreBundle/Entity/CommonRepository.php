@@ -19,6 +19,7 @@ use Mautic\CoreBundle\Cache\ResultCacheHelper;
 use Mautic\CoreBundle\Cache\ResultCacheOptions;
 use Mautic\CoreBundle\Doctrine\Paginator\SimplePaginator;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
+use Mautic\CoreBundle\Helper\CsvHelper;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\SearchStringHelper;
@@ -1625,7 +1626,7 @@ class CommonRepository extends ServiceEntityRepository
                             break;
                         case 'in':
                         case 'notIn':
-                            $parsed = str_getcsv(html_entity_decode($clause['val']), ',', '"');
+                            $parsed = CsvHelper::strGetCsv(html_entity_decode($clause['val']), ',', '"');
 
                             $param = $this->generateRandomParameterName();
                             $arg   = count($parsed) > 1 ? $parsed : array_shift($parsed);
