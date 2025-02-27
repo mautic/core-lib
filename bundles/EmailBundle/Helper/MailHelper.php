@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Mautic\AssetBundle\Entity\Asset;
 use Mautic\AssetBundle\Model\AssetModel;
+use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
@@ -22,6 +23,7 @@ use Mautic\EmailBundle\Helper\Exception\OwnerNotFoundException;
 use Mautic\EmailBundle\Mailer\Exception\BatchQueueMaxException;
 use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\EmailBundle\Mailer\Transport\TokenTransportInterface;
+use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\EmailBundle\MonitoredEmail\Mailbox;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\PageBundle\Model\RedirectModel;
@@ -245,6 +247,7 @@ class MailHelper
         private EventDispatcherInterface $dispatcher,
         private RequestStack $requestStack,
         private EntityManagerInterface $entityManager,
+        private ModelFactory $modelFactory, // Can not inject EmailModel due to circular reference between MailHelper and EmailModel (even through other classes, like UserModel, SendEmailToContact)
         private AssetModel $assetModel,
         private TrackableModel $trackableModel,
         private RedirectModel $redirectModel,
@@ -270,8 +273,6 @@ class MailHelper
     }
 
     /**
-     * Mirrors previous MauticFactory functionality.
-     *
      * @param bool $cleanSlate
      *
      * @return $this
@@ -281,18 +282,6 @@ class MailHelper
         $this->reset($cleanSlate);
 
         return $this;
-    }
-
-    /**
-     * Mirrors previous MauticFactory functionality.
-     *
-     * @param bool $cleanSlate
-     *
-     * @return $this
-     */
-    public function getSampleMailer($cleanSlate = true)
-    {
-        return $this->getMailer($cleanSlate);
     }
 
     /**
@@ -1716,8 +1705,8 @@ class MailHelper
 
         $stat->setTokens($this->getTokens());
 
-        /** @var \Mautic\EmailBundle\Model\EmailModel $emailModel */
-        $emailModel = $this->factory->getModel('email');
+        $emailModel = $this->modelFactory->getModel(EmailModel::class);
+        \assert($emailModel instanceof EmailModel);
 
         // Save a copy of the email - use email ID if available simply to prevent from having to rehash over and over
         $id = $emailExists ? $this->email->getId() : md5($this->subject.$this->body['content']);
