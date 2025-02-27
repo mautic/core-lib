@@ -25,6 +25,7 @@ use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Entity\StatDevice;
 use Mautic\EmailBundle\Entity\StatRepository;
 use Mautic\EmailBundle\Event\EmailEvent;
+use Mautic\EmailBundle\Helper\BotRatioHelper;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\EmailBundle\Helper\StatsCollectionHelper;
 use Mautic\EmailBundle\Model\EmailModel;
@@ -207,6 +208,11 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $eventDispatcher;
 
+    /**
+     * @var MockObject|BotRatioHelper
+     */
+    private MockObject $botRatioHelperMock;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -241,6 +247,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->corePermissions          = $this->createMock(CorePermissions::class);
         $this->eventDispatcher          = $this->createMock(EventDispatcherInterface::class);
         $this->leadDeviceRepository     = $this->createMock(LeadDeviceRepository::class);
+        $this->botRatioHelperMock       = $this->createMock(BotRatioHelper::class);
 
         $this->emailModel = new EmailModel(
             $this->ipLookupHelper,
@@ -267,7 +274,8 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             $this->createMock(UserHelper::class),
             $this->createMock(LoggerInterface::class),
             $this->createMock(CoreParametersHelper::class),
-            $this->emailStatModel
+            $this->emailStatModel,
+            $this->botRatioHelperMock
         );
 
         $this->emailStatModel->method('getRepository')->willReturn($this->statRepository);
@@ -680,7 +688,8 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             $this->createMock(UserHelper::class),
             $this->createMock(LoggerInterface::class),
             $this->createMock(CoreParametersHelper::class),
-            $this->emailStatModel
+            $this->emailStatModel,
+            $this->botRatioHelperMock
         );
 
         $this->emailEntity->method('getId')
@@ -746,6 +755,10 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->with(LeadDevice::class)
             ->willReturn($this->leadDeviceRepository);
 
+        $this->botRatioHelperMock->expects($this->once())
+            ->method('isHitByBot')
+            ->willReturn(false);
+
         $this->emailModel->hitEmail($stat, $request);
     }
 
@@ -800,6 +813,10 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
 
         $this->entityManager->expects($this->exactly(2))
             ->method('flush');
+
+        $this->botRatioHelperMock->expects($this->once())
+            ->method('isHitByBot')
+            ->willReturn(false);
 
         $this->emailModel->hitEmail($stat, $request);
     }
