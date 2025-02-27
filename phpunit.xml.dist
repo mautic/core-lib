@@ -48,7 +48,7 @@
     </testsuite>
   </testsuites>
   <php>
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
     <env name="MAXMIND_LICENSE_KEY" value=""/>
     <env name="KERNEL_CLASS" value="AppTestKernel" />
     <const name="IS_PHPUNIT" value="true"/>
@@ -56,7 +56,7 @@
     <server name="KERNEL_DIR" value="app"/>
     <server name="APP_DEBUG" value="0"/>
     <server name="APP_ENV" value="test" force="true" />
-    <ini name="error_reporting" value="E_ALL" />
+    <ini name="error_reporting" value="E_ALL & ~E_DEPRECATED" />
     <ini name="date.timezone" value="UTC" />
   </php>
   <listeners>
