@@ -33,11 +33,11 @@ final class Version20231205094436 extends PreUpAssertionMigration
 
     private function getTableName(): string
     {
-        return ListLead::TABLE_NAME;
+        return $this->prefix.ListLead::TABLE_NAME;
     }
 
     private function getIndexName(): string
     {
-        return 'lead_id_lists_id_removed';
+        return "{$this->prefix}lead_id_lists_id_removed";
     }
 }
