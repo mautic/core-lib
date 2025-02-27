@@ -7,21 +7,17 @@ namespace Mautic\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\Exception\SkipMigration;
 use Mautic\CoreBundle\Doctrine\AbstractMauticMigration;
+use Mautic\PageBundle\Entity\PageDraft;
 
 final class Version20201029001005 extends AbstractMauticMigration
 {
-    /**
-     * @var string
-     */
-    protected static $tableName = 'pages_draft';
-
     /**
      * @throws SkipMigration
      */
     public function preUp(Schema $schema): void
     {
-        if ($schema->hasTable($this->getPrefixedTableName())) {
-            throw new SkipMigration(sprintf('Table %s already exists. Skipping migration', $this->getPrefixedTableName()));
+        if ($schema->hasTable($this->getPrefixedTableName(PageDraft::TABLE_NAME))) {
+            throw new SkipMigration(sprintf('Table %s already exists. Skipping migration', $this->getPrefixedTableName(PageDraft::TABLE_NAME)));
         }
     }
 
@@ -43,7 +39,7 @@ final class Version20201029001005 extends AbstractMauticMigration
                   UNIQUE KEY `%s` (`page_id`),
                   CONSTRAINT `%s` FOREIGN KEY (`page_id`) REFERENCES `%s` (`id`)
                 )DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB ROW_FORMAT = DYNAMIC;',
-                $this->getPrefixedTableName(),
+                $this->getPrefixedTableName(PageDraft::TABLE_NAME),
                 $idDataType,
                 $ukName,
                 $fkName,
@@ -54,6 +50,6 @@ final class Version20201029001005 extends AbstractMauticMigration
 
     public function down(Schema $schema): void
     {
-        $schema->dropTable($this->getPrefixedTableName());
+        $schema->dropTable($this->getPrefixedTableName(PageDraft::TABLE_NAME));
     }
 }
