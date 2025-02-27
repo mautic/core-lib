@@ -26,7 +26,6 @@ class CacheController extends CommonController
         private Config $config,
         private Allowlist $allowlist,
         ManagerRegistry $doctrine,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -36,7 +35,7 @@ class CacheController extends CommonController
         RequestStack $requestStack,
         CorePermissions $security,
     ) {
-        parent::__construct($doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     public function clearAction(): Response

@@ -34,7 +34,6 @@ class MessageController extends AbstractStandardFormController
         FormFactoryInterface $formFactory,
         FormFieldHelper $fieldHelper,
         ManagerRegistry $doctrine,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -44,7 +43,7 @@ class MessageController extends AbstractStandardFormController
         private RequestStack $requestStack,
         CorePermissions $security,
     ) {
-        parent::__construct($formFactory, $fieldHelper, $doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($formFactory, $fieldHelper, $doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     /**

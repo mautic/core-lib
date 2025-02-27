@@ -68,7 +68,6 @@ class LeadApiController extends CommonApiController
         ModelFactory $modelFactory,
         EventDispatcherInterface $dispatcher,
         CoreParametersHelper $coreParametersHelper,
-        MauticFactory $factory,
     ) {
         $this->doNotContactModel = $doNotContactModel;
 
@@ -80,7 +79,7 @@ class LeadApiController extends CommonApiController
         $this->entityNameMulti  = 'contacts';
         $this->serializerGroups = ['leadDetails', 'frequencyRulesList', 'doNotContactList', 'userList', 'stageList', 'publishDetails', 'ipAddress', 'tagList', 'utmtagsList'];
 
-        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
+        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }
 
     /**

@@ -80,7 +80,6 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->containerMock      = $this->createMock(Container::class);
 
         $doctrine                 = $this->createMock(ManagerRegistry::class);
-        $factory                  = $this->createMock(MauticFactory::class);
         $this->modelFactoryMock   = $this->createMock(ModelFactory::class);
         $userHelper               = $this->createMock(UserHelper::class);
         $coreParametersHelper     = $this->createMock(CoreParametersHelper::class);
@@ -93,7 +92,6 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $requestStack->push($this->requestMock);
         $this->controller = new DashboardController(
             $doctrine,
-            $factory,
             $this->modelFactoryMock,
             $userHelper,
             $coreParametersHelper,

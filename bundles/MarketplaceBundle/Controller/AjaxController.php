@@ -29,7 +29,6 @@ class AjaxController extends CommonAjaxController
         private CacheHelper $cacheHelper,
         private LoggerInterface $logger,
         ManagerRegistry $doctrine,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -39,7 +38,7 @@ class AjaxController extends CommonAjaxController
         RequestStack $requestStack,
         CorePermissions $security,
     ) {
-        parent::__construct($doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     public function installPackageAction(Request $request): JsonResponse

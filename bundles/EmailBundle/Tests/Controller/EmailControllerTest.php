@@ -114,7 +114,6 @@ class EmailControllerTest extends TestCase
         $this->formFactoryMock      = $this->createMock(FormFactory::class);
         $formFieldHelper            = $this->createMock(FormFieldHelper::class);
         $doctrine                   = $this->createMock(ManagerRegistry::class);
-        $factory                    = $this->createMock(MauticFactory::class);
         $this->modelFactoryMock     = $this->createMock(ModelFactory::class);
         $helperUserMock             = $this->createMock(UserHelper::class);
         $coreParametersHelper       = $this->createMock(CoreParametersHelper::class);
@@ -131,7 +130,6 @@ class EmailControllerTest extends TestCase
             $this->formFactoryMock,
             $formFieldHelper,
             $doctrine,
-            $factory,
             $this->modelFactoryMock,
             $helperUserMock,
             $coreParametersHelper,

@@ -57,7 +57,6 @@ class ImportController extends FormController
         FormFieldHelper $fieldHelper,
         private LoggerInterface $logger,
         ManagerRegistry $doctrine,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -72,7 +71,7 @@ class ImportController extends FormController
 
         $this->importModel = $model;
 
-        parent::__construct($formFactory, $fieldHelper, $doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($formFactory, $fieldHelper, $doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     /**

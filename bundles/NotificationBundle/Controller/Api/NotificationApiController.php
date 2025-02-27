@@ -39,7 +39,6 @@ class NotificationApiController extends CommonApiController
         ModelFactory $modelFactory,
         EventDispatcherInterface $dispatcher,
         CoreParametersHelper $coreParametersHelper,
-        MauticFactory $factory,
     ) {
         $notificationModel    = $modelFactory->getModel('notification');
         \assert($notificationModel instanceof NotificationModel);
@@ -49,7 +48,7 @@ class NotificationApiController extends CommonApiController
         $this->entityNameOne   = 'notification';
         $this->entityNameMulti = 'notifications';
 
-        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
+        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }
 
     /**

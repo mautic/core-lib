@@ -59,7 +59,6 @@ final class AjaxControllerTest extends AbstractMauticTestCase
 
         $logger               = $this->createMock(LoggerInterface::class);
         $doctrine             = $this->createMock(ManagerRegistry::class);
-        $factory              = $this->createMock(MauticFactory::class);
         $modelFactory         = $this->createMock(ModelFactory::class);
         $userHelper           = $this->createMock(UserHelper::class);
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
@@ -74,7 +73,6 @@ final class AjaxControllerTest extends AbstractMauticTestCase
             $cacheHelper,
             $logger,
             $doctrine,
-            $factory,
             $modelFactory,
             $userHelper,
             $coreParametersHelper,

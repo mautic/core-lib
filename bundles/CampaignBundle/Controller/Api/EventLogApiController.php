@@ -60,7 +60,6 @@ class EventLogApiController extends FetchCommonApiController
         ModelFactory $modelFactory,
         EventDispatcherInterface $dispatcher,
         CoreParametersHelper $coreParametersHelper,
-        MauticFactory $factory,
     ) {
         $campaignEventLogModel = $modelFactory->getModel('campaign.event_log');
         \assert($campaignEventLogModel instanceof EventLogModel);
@@ -78,7 +77,7 @@ class EventLogApiController extends FetchCommonApiController
         // Only include the id of the parent
         $this->addExclusionStrategy(new FieldInclusionStrategy(['id'], 1, 'parent'));
 
-        parent::__construct($security, $translator, $entityResultHelper, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
+        parent::__construct($security, $translator, $entityResultHelper, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }
 
     /**

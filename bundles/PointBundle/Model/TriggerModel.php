@@ -3,7 +3,6 @@
 namespace Mautic\PointBundle\Model;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
@@ -46,10 +45,6 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
         protected IpLookupHelper $ipLookupHelper,
         protected LeadModel $leadModel,
         protected TriggerEventModel $pointTriggerEventModel,
-        /**
-         * @deprecated https://github.com/mautic/mautic/issues/8229
-         */
-        protected MauticFactory $mauticFactory,
         private ContactTracker $contactTracker,
         EntityManagerInterface $em,
         CorePermissions $security,

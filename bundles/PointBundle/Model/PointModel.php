@@ -47,10 +47,6 @@ class PointModel extends CommonFormModel implements GlobalSearchInterface, Reset
         protected RequestStack $requestStack,
         protected IpLookupHelper $ipLookupHelper,
         protected LeadModel $leadModel,
-        /**
-         * @deprecated https://github.com/mautic/mautic/issues/8229
-         */
-        protected MauticFactory $mauticFactory,
         private ContactTracker $contactTracker,
         EntityManager $em,
         CorePermissions $security,

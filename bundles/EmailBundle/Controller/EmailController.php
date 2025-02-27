@@ -22,6 +22,7 @@ use Mautic\EmailBundle\Event\EmailEditSubmitEvent;
 use Mautic\EmailBundle\Form\Type\BatchSendType;
 use Mautic\EmailBundle\Form\Type\ExampleSendType;
 use Mautic\EmailBundle\Helper\EmailConfig;
+use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\EmailBundle\Helper\PlainTextHelper;
 use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\LeadBundle\Controller\EntityContactsTrait;

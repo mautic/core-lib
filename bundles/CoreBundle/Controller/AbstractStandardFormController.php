@@ -34,7 +34,6 @@ abstract class AbstractStandardFormController extends AbstractFormController
         protected FormFactoryInterface $formFactory,
         protected FormFieldHelper $fieldHelper,
         ManagerRegistry $managerRegistry,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -44,7 +43,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
         RequestStack $requestStack,
         CorePermissions $security,
     ) {
-        parent::__construct($managerRegistry, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($managerRegistry, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     /**

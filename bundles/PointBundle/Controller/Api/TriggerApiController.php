@@ -43,7 +43,6 @@ class TriggerApiController extends CommonApiController
         ModelFactory $modelFactory,
         EventDispatcherInterface $dispatcher,
         CoreParametersHelper $coreParametersHelper,
-        MauticFactory $factory,
     ) {
         $triggerModel = $modelFactory->getModel('point.trigger');
         \assert($triggerModel instanceof TriggerModel);
@@ -54,7 +53,7 @@ class TriggerApiController extends CommonApiController
         $this->entityNameMulti  = 'triggers';
         $this->serializerGroups = ['triggerDetails', 'categoryList', 'publishDetails'];
 
-        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
+        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }
 
     protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')

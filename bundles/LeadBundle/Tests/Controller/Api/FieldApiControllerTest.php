@@ -80,7 +80,6 @@ class FieldApiControllerTest extends TestCase
             $modelFactory,
             $this->createMock(EventDispatcherInterface::class),
             $this->createMock(CoreParametersHelper::class),
-            $this->createMock(MauticFactory::class),
         );
 
         $controllerReflection = new \ReflectionClass(FieldApiController::class);

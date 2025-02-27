@@ -91,7 +91,6 @@ class CampaignController extends AbstractStandardFormController
         private EventCollector $eventCollector,
         private DateHelper $dateHelper,
         ManagerRegistry $managerRegistry,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -101,7 +100,7 @@ class CampaignController extends AbstractStandardFormController
         private RequestStack $requestStack,
         CorePermissions $security,
     ) {
-        parent::__construct($formFactory, $fieldHelper, $managerRegistry, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($formFactory, $fieldHelper, $managerRegistry, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     protected function getPermissions(): array

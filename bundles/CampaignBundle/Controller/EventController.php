@@ -41,7 +41,6 @@ class EventController extends CommonFormController
         private EventCollector $eventCollector,
         private DateHelper $dateHelper,
         ManagerRegistry $doctrine,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -52,7 +51,7 @@ class EventController extends CommonFormController
         CorePermissions $security,
         private CampaignModel $campaignModel,
     ) {
-        parent::__construct($formFactory, $fieldHelper, $doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($formFactory, $fieldHelper, $doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     /**

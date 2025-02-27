@@ -46,7 +46,6 @@ class UserApiController extends CommonApiController
         ModelFactory $modelFactory,
         EventDispatcherInterface $dispatcher,
         CoreParametersHelper $coreParametersHelper,
-        MauticFactory $factory,
     ) {
         $userModel     = $modelFactory->getModel('user.user');
         \assert($userModel instanceof UserModel);
@@ -58,7 +57,7 @@ class UserApiController extends CommonApiController
         $this->serializerGroups = ['userDetails', 'roleList', 'publishDetails'];
         $this->dataInputMasks   = ['signature' => 'html'];
 
-        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
+        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }
 
     /**

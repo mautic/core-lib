@@ -40,7 +40,6 @@ class WebhookApiController extends CommonApiController
         ModelFactory $modelFactory,
         EventDispatcherInterface $dispatcher,
         CoreParametersHelper $coreParametersHelper,
-        MauticFactory $factory,
     ) {
         $webhookModel = $modelFactory->getModel('webhook');
         \assert($webhookModel instanceof WebhookModel);
@@ -51,7 +50,7 @@ class WebhookApiController extends CommonApiController
         $this->entityNameMulti  = 'hooks';
         $this->serializerGroups = ['hookDetails', 'categoryList', 'publishDetails'];
 
-        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
+        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }
 
     /**

@@ -25,7 +25,6 @@ class BatchContactController extends AbstractFormController
         private ContactActionModel $actionModel,
         private CategoryModel $categoryModel,
         ManagerRegistry $doctrine,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -35,7 +34,7 @@ class BatchContactController extends AbstractFormController
         RequestStack $requestStack,
         CorePermissions $security,
     ) {
-        parent::__construct($doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     /**

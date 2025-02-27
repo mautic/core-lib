@@ -34,7 +34,6 @@ class AbstractFormControllerTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $doctrine             = $this->createMock(ManagerRegistry::class);
-        $factory              = $this->createMock(MauticFactory::class);
         $modelFactory         = $this->createMock(ModelFactory::class);
         $userHelper           = $this->createMock(UserHelper::class);
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
@@ -44,7 +43,7 @@ class AbstractFormControllerTest extends \PHPUnit\Framework\TestCase
         $this->requestStack   = new RequestStack();
         $security             = $this->createMock(CorePermissions::class);
 
-        $this->classFromAbstractFormController = new class($doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $this->requestStack, $security) extends AbstractFormController {
+        $this->classFromAbstractFormController = new class($doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $this->requestStack, $security) extends AbstractFormController {
             public function returnIsFormCancelled(Form $form): bool
             {
                 return $this->isFormCancelled($form);

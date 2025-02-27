@@ -28,7 +28,6 @@ class CategoryController extends AbstractFormController
     public function __construct(
         private FormFactoryInterface $formFactory,
         ManagerRegistry $doctrine,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -38,7 +37,7 @@ class CategoryController extends AbstractFormController
         RequestStack $requestStack,
         CorePermissions $security,
     ) {
-        parent::__construct($doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     /**

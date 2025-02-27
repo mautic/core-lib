@@ -57,7 +57,6 @@ class InstallControllerTest extends \PHPUnit\Framework\TestCase
         $this->configurator   = $this->createMock(Configurator::class);
         $this->installer      = $this->createMock(InstallService::class);
         $doctrine             = $this->createMock(ManagerRegistry::class);
-        $factory              = $this->createMock(MauticFactory::class);
         $modelFactory         = $this->createMock(ModelFactory::class);
         $userHelper           = $this->createMock(UserHelper::class);
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
@@ -71,7 +70,6 @@ class InstallControllerTest extends \PHPUnit\Framework\TestCase
             $this->configurator,
             $this->installer,
             $doctrine,
-            $factory,
             $modelFactory,
             $userHelper,
             $coreParametersHelper,

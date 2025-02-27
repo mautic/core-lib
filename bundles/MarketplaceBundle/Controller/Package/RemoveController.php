@@ -28,7 +28,6 @@ class RemoveController extends CommonController
         private RouteProvider $routeProvider,
         private Config $config,
         ManagerRegistry $doctrine,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -38,7 +37,7 @@ class RemoveController extends CommonController
         RequestStack $requestStack,
         CorePermissions $security,
     ) {
-        parent::__construct($doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     public function viewAction(string $vendor, string $package): Response

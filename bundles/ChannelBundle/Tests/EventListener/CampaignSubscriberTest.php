@@ -114,10 +114,6 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $factory = $this->getMockBuilder(MauticFactory::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $contactTracker = $this->getMockBuilder(ContactTracker::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -126,7 +122,6 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
             $this->dispatcher,
             $this->scheduler,
             new NullLogger(),
-            $factory,
             $contactTracker
         );
 

@@ -29,7 +29,6 @@ class ListController extends CommonController
         private RouteProvider $routeProvider,
         ManagerRegistry $doctrine,
         private Config $config,
-        MauticFactory $factory,
         ModelFactory $modelFactory,
         UserHelper $userHelper,
         CoreParametersHelper $coreParametersHelper,
@@ -39,7 +38,7 @@ class ListController extends CommonController
         RequestStack $requestStack,
         CorePermissions $security,
     ) {
-        parent::__construct($doctrine, $factory, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+        parent::__construct($doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
     }
 
     public function listAction(int $page = 1): Response

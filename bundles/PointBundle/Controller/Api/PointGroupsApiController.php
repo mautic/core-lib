@@ -35,8 +35,7 @@ class PointGroupsApiController extends CommonApiController
      */
     protected $model;
 
-    /** @phpstan-ignore-next-line the parent class uses the deprecated MauticFactory */
-    public function __construct(CorePermissions $security, Translator $translator, EntityResultHelper $entityResultHelper, RouterInterface $router, FormFactoryInterface $formFactory, AppVersion $appVersion, RequestStack $requestStack, ManagerRegistry $doctrine, ModelFactory $modelFactory, EventDispatcherInterface $dispatcher, CoreParametersHelper $coreParametersHelper, MauticFactory $factory, PointGroupModel $pointGroupModel, private LeadModel $leadModel)
+    public function __construct(CorePermissions $security, Translator $translator, EntityResultHelper $entityResultHelper, RouterInterface $router, FormFactoryInterface $formFactory, AppVersion $appVersion, RequestStack $requestStack, ManagerRegistry $doctrine, ModelFactory $modelFactory, EventDispatcherInterface $dispatcher, CoreParametersHelper $coreParametersHelper, PointGroupModel $pointGroupModel, private LeadModel $leadModel)
     {
         $this->model            = $pointGroupModel;
         $this->entityClass      = Group::class;
@@ -44,7 +43,7 @@ class PointGroupsApiController extends CommonApiController
         $this->entityNameMulti  = 'pointGroups';
         $this->serializerGroups = ['pointGroupDetails', 'pointGroupList', 'publishDetails'];
 
-        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper, $factory);
+        parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }
 
     public function getContactPointGroupsAction(int $contactId): Response
