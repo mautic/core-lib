@@ -63,4 +63,12 @@ final class CsvHelper
 
         return $importedFields;
     }
+
+    /**
+     * @param mixed[] $data
+     */
+    public static function putCsv($stream, array $data, string $separator = ',', string $enclosure = '"', string $escape = '\\'): int|false
+    {
+        return fputcsv($stream, $data, $separator, $enclosure, $escape);
+    }
 }

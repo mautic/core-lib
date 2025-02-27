@@ -13,6 +13,7 @@ use Mautic\CoreBundle\Exception\FileUploadException;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\Chart\LineChart;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\CsvHelper;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
@@ -654,7 +655,7 @@ class SubmissionModel extends CommonFormModel
      */
     private function putCsvExportRow($handle, array $row): bool|int
     {
-        return fputcsv($handle, $row);
+        return CsvHelper::putCsv($handle, $row);
     }
 
     /**

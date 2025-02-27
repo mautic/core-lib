@@ -174,11 +174,11 @@ class ExportHelper
 
         foreach ($data as $row) {
             if (!$headerSet) {
-                fputcsv($handler, array_keys($row));
+                CsvHelper::putCsv($handler, array_keys($row));
                 $headerSet = true;
             }
 
-            fputcsv($handler, $row);
+            CsvHelper::putCsv($handler, $row);
         }
 
         fclose($handler);
