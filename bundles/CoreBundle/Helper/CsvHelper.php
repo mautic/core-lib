@@ -7,9 +7,9 @@ namespace Mautic\CoreBundle\Helper;
 final class CsvHelper
 {
     /**
-     * @return mixed[]
+     * @return mixed[]|false
      */
-    public static function csv_to_array(string $filename = '', string $separator = ',', string $enclosure = '"', string $escape = '\\'): array
+    public static function csv_to_array(string $filename = '', string $separator = ',', string $enclosure = '"', string $escape = '\\'): array|false
     {
         if (!file_exists($filename) || !is_readable($filename)) {
             return false;
@@ -65,7 +65,8 @@ final class CsvHelper
     }
 
     /**
-     * @param mixed[] $data
+     * @param resource $stream
+     * @param mixed[]  $data
      */
     public static function putCsv($stream, array $data, string $separator = ',', string $enclosure = '"', string $escape = '\\'): int|false
     {
