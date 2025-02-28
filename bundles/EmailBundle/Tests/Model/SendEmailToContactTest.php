@@ -134,6 +134,9 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->mailHashHelper       = new MailHashHelper($this->coreParametersHelper);
         $this->translator           = $this->createMock(TranslatorInterface::class);
         $this->twig                 = $this->createMock(Environment::class);
+
+        $this->fromEmaiHelper->method('getFrom')
+            ->willReturn(new AddressDTO('someone@somewhere.com'));
     }
 
     /**
