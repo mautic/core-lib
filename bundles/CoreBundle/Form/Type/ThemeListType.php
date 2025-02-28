@@ -24,7 +24,7 @@ class ThemeListType extends AbstractType
             [
                 'choices'           => function (Options $options): array {
                     $themes = $this->themeHelper->getInstalledThemes($options['feature']);
-                    if ('form' !== $options['feature']) {
+                    if ($options['include_code_mode']) {
                         $themes['mautic_code_mode'] = 'Code Mode';
                     }
 
@@ -36,10 +36,9 @@ class ThemeListType extends AbstractType
                 'label_attr'        => ['class' => 'control-label'],
                 'placeholder'       => false,
                 'required'          => false,
-                'attr'              => [
-                    'class' => 'form-control',
-                ],
+                'attr'              => ['class' => 'form-control'],
                 'feature'           => 'all',
+                'include_code_mode' => true,
             ]
         );
     }
