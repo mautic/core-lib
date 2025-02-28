@@ -42,15 +42,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LeadModelTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var MockObject|RequestStack
-     */
-    private MockObject $requestStackMock;
+    private MockObject|RequestStack $requestStack;
 
     /**
      * @var MockObject|IpLookupHelper
@@ -165,7 +163,8 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->requestStackMock                 = $this->createMock(RequestStack::class);
+        $this->requestStack             = new RequestStack();
+        $this->requestStack->push(new Request());
         $this->ipLookupHelperMock               = $this->createMock(IpLookupHelper::class);
         $this->pathsHelperMock                  = $this->createMock(PathsHelper::class);
         $this->integrationHelperkMock           = $this->createMock(IntegrationHelper::class);
@@ -188,8 +187,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $this->dispatcherMock                   = $this->createMock(EventDispatcherInterface::class);
         $this->entityManagerMock                = $this->createMock(EntityManager::class);
         $this->translator                       = $this->createMock(Translator::class);
+
         $this->leadModel                        = new LeadModel(
-            $this->requestStackMock,
+            $this->requestStack,
             $this->ipLookupHelperMock,
             $this->pathsHelperMock,
             $this->integrationHelperkMock,
@@ -212,7 +212,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             $this->createMock(UrlGeneratorInterface::class),
             $this->translator,
             $this->userHelperMock,
-            $this->createMock(LoggerInterface::class)
+            $this->createMock(LoggerInterface::class),
         );
 
         $this->companyModelMock->method('getCompanyLeadRepository')->willReturn($this->companyLeadRepositoryMock);
