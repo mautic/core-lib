@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\CoreBundle\Tests\Unit\Model;
 
 use Doctrine\ORM\EntityManager;
@@ -21,44 +23,44 @@ use Symfony\Contracts\EventDispatcher\Event;
 final class FormModelTest extends TestCase
 {
     /**
-     * @var MockObject|EntityManager
+     * @var MockObject&EntityManager
      */
-    private $entityManagerMock;
+    private MockObject $entityManagerMock;
 
     /**
-     * @var MockObject|UserHelper
+     * @var MockObject&UserHelper
      */
-    private $userHelperMock;
+    private MockObject $userHelperMock;
 
     /**
-     * @var MockObject|CorePermissions
+     * @var MockObject&CorePermissions
      */
-    private $corePermissionsMock;
+    private MockObject $corePermissionsMock;
 
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
-    private $dispatcherMock;
+    private MockObject $dispatcherMock;
 
     /**
-     * @var MockObject|UrlGeneratorInterface
+     * @var MockObject&UrlGeneratorInterface
      */
-    private $routerMock;
+    private MockObject $routerMock;
 
     /**
-     * @var MockObject|Translator
+     * @var MockObject&Translator
      */
-    private $translatorMock;
+    private MockObject $translatorMock;
 
     /**
-     * @var MockObject|LoggerInterface
+     * @var MockObject&LoggerInterface
      */
-    private $loggerMock;
+    private MockObject $loggerMock;
 
     /**
-     * @var MockObject|CoreParametersHelper
+     * @var MockObject&CoreParametersHelper
      */
-    private $coreParametersHelperMock;
+    private MockObject $coreParametersHelperMock;
 
     protected function setUp(): void
     {
@@ -94,7 +96,7 @@ final class FormModelTest extends TestCase
             ->method('getRepository')
             ->willReturn($this->createMock(FormRepository::class));
 
-        $formModel           = new class($this->entityManagerMock, $this->corePermissionsMock, $this->dispatcherMock, $this->routerMock, $this->translatorMock, $this->userHelperMock, $this->loggerMock, $this->coreParametersHelperMock) extends FormModel {
+        $formModel = new class($this->entityManagerMock, $this->corePermissionsMock, $this->dispatcherMock, $this->routerMock, $this->translatorMock, $this->userHelperMock, $this->loggerMock, $this->coreParametersHelperMock) extends FormModel {
             /**
              * @var array<string>
              */

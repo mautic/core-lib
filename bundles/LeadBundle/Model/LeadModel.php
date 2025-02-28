@@ -365,7 +365,7 @@ class LeadModel extends FormModel
     /**
      * {@inheritdoc}
      */
-    protected function dispatchEventFromBatch(string $action, &$entity, bool $isNew = false, Event $event = null): ?Event
+    protected function dispatchEventFromBatch(string $action, object &$entity, bool $isNew = false, Event $event = null): ?Event
     {
         if (empty($event)) {
             $event = new LeadEvent($entity, $isNew);
