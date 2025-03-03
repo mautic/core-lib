@@ -47,8 +47,6 @@ input[style] {
 
 .form-control, .chosen-container .chosen-single, .form-control.search.tt-input {
   background-color: var(--field);
-  border-width: var(--border-bottom);
-  border-color: var(--border-strong);
   transition: var(--transition-all-productive);
   border-radius: var(--border-radius-sm);
   .outline();
@@ -66,6 +64,13 @@ input[style] {
     box-shadow: none;
   }
 }
+
+.form-control, .chosen-container .chosen-single {
+  border-width: var(--border-bottom);
+  border-color: var(--border-strong);
+}
+
+.form-control.search.tt-input { border: var(--border-no-width); }
 
 .form-control {
   &:not(select) {
