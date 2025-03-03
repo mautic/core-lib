@@ -260,17 +260,16 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
                 $type = $page->getRedirectType();
                 if (!is_null($type)) {
                     $validator  = $context->getValidator();
-                    $violations = $validator->validate($page->getRedirectUrl(), [
-                        new Assert\Url(
-                            [
-                                'message' => 'mautic.core.value.required',
-                            ]
-                        ),
-                    ]);
+                    $violations = $validator->validate(
+                        $page->getRedirectUrl(),
+                        [
+                            new Assert\Url(),
+                            new NotBlank(['message' => 'mautic.core.value.required']),
+                        ],
+                    );
 
-                    if (count($violations) > 0) {
-                        $string = (string) $violations;
-                        $context->buildViolation($string)
+                    foreach ($violations as $violation) {
+                        $context->buildViolation($violation->getMessage())
                             ->atPath('redirectUrl')
                             ->addViolation();
                     }
@@ -603,9 +602,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     }
 
     /**
-     * Set redirectType.
-     *
-     * @param string $redirectType
+     * @param ?string $redirectType
      *
      * @return Page
      */
@@ -618,9 +615,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     }
 
     /**
-     * Get redirectType.
-     *
-     * @return string
+     * @return ?string
      */
     public function getRedirectType()
     {

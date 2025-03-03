@@ -231,13 +231,13 @@ class PublicControllerTest extends MauticMysqlTestCase
         /** @var CoreParametersHelper&MockObject $coreParametersHelper */
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
 
-        $assetHelper = new AssetsHelper($packagesMock, $coreParametersHelper);
+        $assetHelper = new AssetsHelper($packagesMock);
 
         $mauticSecurity = $this->createMock(CorePermissions::class);
         $mauticSecurity->method('hasEntityAccess')
             ->will($this->returnValue(false));
 
-        $analyticsHelper = new AnalyticsHelper($this->createMock(CoreParametersHelper::class));
+        $analyticsHelper = new AnalyticsHelper($coreParametersHelper);
 
         $pageModel = $this->createMock(PageModel::class);
         $pageModel->method('getHitQuery')
@@ -325,10 +325,10 @@ class PublicControllerTest extends MauticMysqlTestCase
             ->with($redirectId)
             ->willReturn($this->redirect);
 
-        $this->modelFactory->expects(self::exactly(2))
+        $this->modelFactory->expects(self::exactly(3))
             ->method('getModel')
-            ->withConsecutive(['page.redirect'], ['page'])
-            ->willReturnOnConsecutiveCalls($this->redirectModel, $this->pageModel);
+            ->withConsecutive(['page.redirect'], ['lead'], ['page'])
+            ->willReturnOnConsecutiveCalls($this->redirectModel, $this->leadModel, $this->pageModel);
 
         $this->redirect->expects(self::once())
             ->method('isPublished')
@@ -423,10 +423,10 @@ class PublicControllerTest extends MauticMysqlTestCase
             ->with($redirectId)
             ->willReturn($this->redirect);
 
-        $this->modelFactory->expects(self::exactly(2))
+        $this->modelFactory->expects(self::exactly(3))
             ->method('getModel')
-            ->withConsecutive(['page.redirect'], ['page'])
-            ->willReturnOnConsecutiveCalls($this->redirectModel, $this->pageModel);
+            ->withConsecutive(['page.redirect'], ['lead'], ['page'])
+            ->willReturnOnConsecutiveCalls($this->redirectModel, $this->leadModel, $this->pageModel);
 
         $this->redirect->expects(self::once())
             ->method('isPublished')

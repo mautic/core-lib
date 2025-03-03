@@ -11,6 +11,7 @@ use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\FileHelper;
+use Mautic\CoreBundle\Loader\ParameterLoader;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
@@ -1227,6 +1228,29 @@ class Asset extends FormEntity implements UuidInterface
             if (null === $object->getTitle()) {
                 $context->buildViolation('mautic.asset.asset.error.missing.title')
                     ->atPath('title')
+                    ->setTranslationDomain('validators')
+                    ->addViolation();
+            }
+            $loader           = new ParameterLoader();
+            $parameters       = $loader->getParameterBag();
+            $mimeTypesAllowed = $parameters->get('allowed_mimetypes');
+
+            if (!empty($object->getFileMimeType()) && !in_array($object->getFileMimeType(), $mimeTypesAllowed)) {
+                $context->buildViolation('mautic.asset.asset.error.invalid.mimetype', [
+                    '%fileMimetype%'=> $object->getFileMimeType(),
+                    '%mimetypes%'   => implode(', ', $mimeTypesAllowed),
+                ])->atPath('file')
+                    ->setTranslationDomain('validators')
+                    ->addViolation();
+            }
+
+            $extensionsAllowed = array_keys($mimeTypesAllowed);
+            $fileType          = $object->getExtension();
+            if (null !== $object->getExtension() && !in_array($fileType, $extensionsAllowed)) {
+                $context->buildViolation('mautic.asset.asset.error.file.extension', [
+                    '%fileExtension%'=> $object->getExtension(),
+                    '%extensions%'   => implode(', ', $extensionsAllowed),
+                ])->atPath('file')
                     ->setTranslationDomain('validators')
                     ->addViolation();
             }

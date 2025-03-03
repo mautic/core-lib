@@ -129,7 +129,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      */
     private $properties = [];
 
-    private ?bool $isIndex = false;
+    private bool $isIndex = false;
 
     /**
      * The column in lead_fields table was not created yet if this property is true.
@@ -215,7 +215,12 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
             ->build();
 
         $builder->addNullableField('isUniqueIdentifer', 'boolean', 'is_unique_identifer');
-        $builder->addNullableField('isIndex', 'boolean', 'is_index');
+
+        $builder->createField('isIndex', 'boolean')
+            ->columnName('is_index')
+            ->option('default', false)
+            ->nullable(false)
+            ->build();
 
         $builder->createField('charLengthLimit', 'integer')
             ->columnName('char_length_limit')
@@ -850,8 +855,8 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
         return $this->isIndex;
     }
 
-    public function setIsIndex(bool $indexable): void
+    public function setIsIndex(?bool $indexable): void
     {
-        $this->isIndex = $indexable;
+        $this->isIndex = $indexable ?? false;
     }
 }
