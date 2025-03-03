@@ -6692,7 +6692,6 @@ ul.line-legend li {
   padding: 5px 8px;
 }
 .input-group .input-group-btn .btn.btn-ghost {
-  height: 32px;
   width: 100%;
   background-color: var(--field);
   border-width: var(--border-bottom);
