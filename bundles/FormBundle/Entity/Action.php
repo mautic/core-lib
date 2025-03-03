@@ -12,8 +12,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class Action.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

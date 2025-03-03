@@ -21,8 +21,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class Asset.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

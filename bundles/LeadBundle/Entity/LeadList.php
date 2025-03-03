@@ -18,8 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class LeadList.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

@@ -17,8 +17,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class LeadField.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

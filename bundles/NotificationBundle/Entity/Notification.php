@@ -17,8 +17,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class Notification.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

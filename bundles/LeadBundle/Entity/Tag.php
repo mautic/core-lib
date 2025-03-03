@@ -11,8 +11,6 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
 
 /**
- * Class Tag.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

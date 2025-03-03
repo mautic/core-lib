@@ -12,8 +12,6 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Class Channel.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

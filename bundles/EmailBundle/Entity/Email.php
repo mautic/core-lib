@@ -35,8 +35,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class Email.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

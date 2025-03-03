@@ -18,8 +18,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class Sms.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

@@ -15,8 +15,6 @@ use Mautic\LeadBundle\Entity\Lead as Contact;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class Event.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

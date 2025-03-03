@@ -21,8 +21,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class Campaign.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

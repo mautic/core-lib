@@ -11,8 +11,6 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Class Trigger.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

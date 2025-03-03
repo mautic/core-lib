@@ -20,8 +20,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Class Report.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

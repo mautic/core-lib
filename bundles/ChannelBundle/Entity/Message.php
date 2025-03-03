@@ -15,8 +15,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 /**
- * Class Message.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",

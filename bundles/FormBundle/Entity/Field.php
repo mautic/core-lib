@@ -13,8 +13,6 @@ use Mautic\FormBundle\ProgressiveProfiling\DisplayManager;
 use Mautic\LeadBundle\Entity\Lead;
 
 /**
- * Class Field.
- *
  * @ApiResource(
  *   attributes={
  *     "security"="false",
