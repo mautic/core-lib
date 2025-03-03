@@ -325,10 +325,10 @@ class PublicControllerTest extends MauticMysqlTestCase
             ->with($redirectId)
             ->willReturn($this->redirect);
 
-        $this->modelFactory->expects(self::exactly(2))
+        $this->modelFactory->expects(self::exactly(3))
             ->method('getModel')
-            ->withConsecutive(['page.redirect'], ['page'])
-            ->willReturnOnConsecutiveCalls($this->redirectModel, $this->pageModel);
+            ->withConsecutive(['page.redirect'], ['lead'], ['page'])
+            ->willReturnOnConsecutiveCalls($this->redirectModel, $this->leadModel, $this->pageModel);
 
         $this->redirect->expects(self::once())
             ->method('isPublished')
@@ -423,10 +423,10 @@ class PublicControllerTest extends MauticMysqlTestCase
             ->with($redirectId)
             ->willReturn($this->redirect);
 
-        $this->modelFactory->expects(self::exactly(2))
+        $this->modelFactory->expects(self::exactly(3))
             ->method('getModel')
-            ->withConsecutive(['page.redirect'], ['page'])
-            ->willReturnOnConsecutiveCalls($this->redirectModel, $this->pageModel);
+            ->withConsecutive(['page.redirect'], ['lead'], ['page'])
+            ->willReturnOnConsecutiveCalls($this->redirectModel, $this->leadModel, $this->pageModel);
 
         $this->redirect->expects(self::once())
             ->method('isPublished')
