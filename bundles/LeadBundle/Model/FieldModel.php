@@ -27,7 +27,6 @@ use Mautic\LeadBundle\Field\Exception\AbortColumnCreateException;
 use Mautic\LeadBundle\Field\Exception\AbortColumnUpdateException;
 use Mautic\LeadBundle\Field\Exception\CustomFieldLimitException;
 use Mautic\LeadBundle\Field\FieldList;
-use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
 use Mautic\LeadBundle\Field\LeadFieldDeleter;
 use Mautic\LeadBundle\Field\LeadFieldSaver;
 use Mautic\LeadBundle\Field\SchemaDefinition;
@@ -484,7 +483,6 @@ class FieldModel extends FormModel
         private CustomFieldColumn $customFieldColumn,
         private FieldSaveDispatcher $fieldSaveDispatcher,
         private LeadFieldRepository $leadFieldRepository,
-        private FieldsWithUniqueIdentifier $fieldsWithUniqueIdentifier,
         private FieldList $fieldList,
         private LeadFieldSaver $leadFieldSaver,
         private LeadFieldDeleter $leadFieldDeleter,

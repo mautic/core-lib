@@ -1,12 +1,6 @@
 <?php
 
-/*
- * @package     Mautic
- * @copyright   2020 Mautic Contributors. All rights reserved.
- * @author      Mautic
- * @link        http://mautic.org
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
+declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Field\Command;
 
@@ -15,29 +9,17 @@ use Doctrine\DBAL\Schema\SchemaException;
 use Mautic\LeadBundle\Field\BackgroundService;
 use Mautic\LeadBundle\Field\Exception\AbortColumnUpdateException;
 use Mautic\LeadBundle\Field\Exception\LeadFieldWasNotFoundException;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class DeleteCustomFieldCommand extends ContainerAwareCommand
+final class DeleteCustomFieldCommand extends Command
 {
-    /**
-     * @var BackgroundService
-     */
-    private $backgroundService;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(BackgroundService $backgroundService, TranslatorInterface $translator)
+    public function __construct(private BackgroundService $backgroundService, private TranslatorInterface $translator)
     {
         parent::__construct();
-        $this->backgroundService = $backgroundService;
-        $this->translator        = $translator;
     }
 
     public function configure()
