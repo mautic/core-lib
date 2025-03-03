@@ -166,7 +166,7 @@ class ObjectChangeGenerator
             }
 
             return; // Empty required field for existing contact is skipped
-        } catch (InvalidValueException $e) {
+        } catch (InvalidValueException) {
             return; // Field has to be skipped
         }
 
@@ -349,7 +349,7 @@ class ObjectChangeGenerator
             $integrationInformationChangeRequest->getNewValue()->getOriginalValue()
         );
 
-        $deduplicateValue = get_class($this).'-'.
+        $deduplicateValue = static::class.'-'.
             $integrationInformationChangeRequest->getIntegration().'-'.
             $fieldMappingDAO->getInternalObject().'-'.
             $integrationInformationChangeRequest->getField();
