@@ -1,12 +1,6 @@
 <?php
 
-/*
- * @package     Mautic
- * @copyright   2020 Mautic Contributors. All rights reserved.
- * @author      Mautic
- * @link        http://mautic.org
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
+declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Field\Command;
 
@@ -15,26 +9,23 @@ use Mautic\LeadBundle\Field\Command\DeleteCustomFieldCommand;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class DeleteCustomFieldCommandTest extends TestCase
+final class DeleteCustomFieldCommandTest extends TestCase
 {
     /**
-     * @var MockObject|BackgroundService
+     * @var MockObject&BackgroundService
      */
-    private $backgroundServiceMock;
+    private MockObject $backgroundServiceMock;
 
     /**
-     * @var MockObject|TranslatorInterface
+     * @var MockObject&TranslatorInterface
      */
-    private $translatorInterfaceMock;
+    private MockObject $translatorInterfaceMock;
 
-    /**
-     * @var DeleteCustomFieldCommand
-     */
-    private $deleteCustomFieldCommand;
+    private DeleteCustomFieldCommand $deleteCustomFieldCommand;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->backgroundServiceMock    = $this->createMock(BackgroundService::class);
         $this->translatorInterfaceMock  = $this->createMock(TranslatorInterface::class);
@@ -44,7 +35,7 @@ class DeleteCustomFieldCommandTest extends TestCase
         );
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $this->backgroundServiceMock
             ->expects($this->once())

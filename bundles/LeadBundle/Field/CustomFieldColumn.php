@@ -8,6 +8,7 @@ use Doctrine\DBAL\Exception\DriverException;
 use Mautic\CoreBundle\Doctrine\Helper\ColumnSchemaHelper;
 use Mautic\CoreBundle\Exception\SchemaException;
 use Mautic\LeadBundle\Entity\LeadField;
+use Mautic\LeadBundle\Exception\NoListenerException;
 use Mautic\LeadBundle\Field\Dispatcher\FieldColumnDispatcher;
 use Mautic\LeadBundle\Field\Exception\AbortColumnCreateException;
 use Mautic\LeadBundle\Field\Exception\AbortColumnUpdateException;
@@ -148,7 +149,7 @@ class CustomFieldColumn
      * @throws DriverException
      * @throws \Doctrine\DBAL\Schema\SchemaException
      */
-    public function deleteLeadColumn(LeadField $leadField)
+    public function deleteLeadColumn(LeadField $leadField): void
     {
         try {
             $this->fieldColumnDispatcher->dispatchPreDeleteColumnEvent($leadField);
@@ -167,7 +168,7 @@ class CustomFieldColumn
      * @throws \Doctrine\DBAL\Schema\SchemaException
      * @throws \Mautic\CoreBundle\Exception\SchemaException
      */
-    public function processDeleteLeadColumn(LeadField $leadField)
+    public function processDeleteLeadColumn(LeadField $leadField): void
     {
         $leadField->deletedId = $leadField->getId();
         switch ($leadField->getObject()) {

@@ -2,6 +2,7 @@
 
 namespace Mautic\LeadBundle\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -246,7 +247,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
             ->option('default', false)
             ->build();
 
-        $builder->createField('columnIsNotRemoved', 'boolean')
+        $builder->createField('columnIsNotRemoved', Types::BOOLEAN)
             ->columnName('column_is_not_removed')
             ->option('default', false)
             ->build();

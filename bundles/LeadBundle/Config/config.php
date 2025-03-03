@@ -718,14 +718,6 @@ return [
                     'doctrine.orm.entity_manager',
                 ],
             ],
-            'mautic.lead.field.dispatcher.field_delete_dispatcher' => [
-                'class'     => Mautic\LeadBundle\Field\Dispatcher\FieldDeleteDispatcher::class,
-                'arguments' => [
-                    'event_dispatcher',
-                    'doctrine.orm.entity_manager',
-                    'mautic.lead.field.settings.background_settings',
-                ],
-            ],
             'mautic.lead.field.dispatcher.field_column_dispatcher' => [
                 'class'     => Mautic\LeadBundle\Field\Dispatcher\FieldColumnDispatcher::class,
                 'arguments' => [
@@ -766,28 +758,10 @@ return [
                     'mautic.lead.field.dispatcher.field_save_dispatcher',
                 ],
             ],
-            'mautic.lead.field.lead_field_deleter' => [
-                'class'     => Mautic\LeadBundle\Field\LeadFieldDeleter::class,
-                'arguments' => [
-                    'mautic.lead.repository.field',
-                    'mautic.lead.field.dispatcher.field_delete_dispatcher',
-                ],
-            ],
             'mautic.lead.field.settings.background_settings' => [
                 'class'     => Mautic\LeadBundle\Field\Settings\BackgroundSettings::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
-                ],
-            ],
-            'mautic.lead.field.settings.background_service' => [
-                'class'     => Mautic\LeadBundle\Field\BackgroundService::class,
-                'arguments' => [
-                    'mautic.lead.model.field',
-                    'mautic.lead.field.custom_field_column',
-                    'mautic.lead.field.lead_field_saver',
-                    'mautic.lead.field.lead_field_deleter',
-                    'mautic.lead.field.dispatcher.field_column_background_dispatcher',
-                    'mautic.lead.field.notification.custom_field',
                 ],
             ],
             'mautic.lead.field.notification.custom_field' => [
@@ -876,14 +850,6 @@ return [
             'mautic.helper.segment.count.cache' => [
                 'class'     => Mautic\LeadBundle\Helper\SegmentCountCacheHelper::class,
                 'arguments' => ['mautic.helper.cache_storage'],
-            ],
-            'mautic.lead.command.delete_custom_field' => [
-                'class'     => \Mautic\LeadBundle\Field\Command\DeleteCustomFieldCommand::class,
-                'arguments' => [
-                    'mautic.lead.field.settings.background_service',
-                    'translator',
-                ],
-                'tag' => 'console.command',
             ],
         ],
         'fixtures' => [

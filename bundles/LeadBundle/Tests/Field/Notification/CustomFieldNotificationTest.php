@@ -85,7 +85,7 @@ class CustomFieldNotificationTest extends \PHPUnit\Framework\TestCase
         $customFieldNotification->customFieldWasCreated($leadField, $userId);
     }
 
-    public function testCustomFieldWasDeleted()
+    public function testCustomFieldWasDeleted(): void
     {
         $notificationModel   = $this->createMock(NotificationModel::class);
         $userModel           = $this->createMock(UserModel::class);

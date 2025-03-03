@@ -231,7 +231,7 @@ class BackgroundServiceTest extends \PHPUnit\Framework\TestCase
         $this->backgroundService->updateColumn(1, $userId);
     }
 
-    public function testDeleteColumnWithNoError()
+    public function testDeleteColumnWithNoError(): void
     {
         $leadField = new LeadField();
 

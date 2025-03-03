@@ -210,7 +210,7 @@ class FieldColumnBackgroundJobDispatcherTest extends \PHPUnit\Framework\TestCase
         $fieldColumnBackgroundJobDispatcher->dispatchPreUpdateColumnEvent($leadField);
     }
 
-    public function testStopPropagationDelete()
+    public function testStopPropagationDelete(): void
     {
         $leadField = new LeadField();
 

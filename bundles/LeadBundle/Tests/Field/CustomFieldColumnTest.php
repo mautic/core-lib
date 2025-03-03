@@ -414,7 +414,7 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
         $this->customFieldColumn->processCreateLeadColumn($leadField);
     }
 
-    public function testDeleteLeadColumnInBacground()
+    public function testDeleteLeadColumnInBacground(): void
     {
         $columnSchemaHelper    = $this->createMock(ColumnSchemaHelper::class);
         $schemaDefinition      = $this->createMock(SchemaDefinition::class);
@@ -441,7 +441,7 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
         $customFieldColumn->deleteLeadColumn($leadField);
     }
 
-    public function testDeleteLeadColumnNow()
+    public function testDeleteLeadColumnNow(): void
     {
         $columnSchemaHelper    = $this->createMock(ColumnSchemaHelper::class);
         $schemaDefinition      = $this->createMock(SchemaDefinition::class);

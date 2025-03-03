@@ -95,16 +95,13 @@ class BackgroundService
     }
 
     /**
-     * @param $leadFieldId
-     * @param $userId
-     *
      * @throws AbortColumnUpdateException
      * @throws DriverException
      * @throws LeadFieldWasNotFoundException
      * @throws SchemaException
      * @throws \Mautic\CoreBundle\Exception\SchemaException
      */
-    public function deleteColumn($leadFieldId, $userId)
+    public function deleteColumn(int $leadFieldId, int $userId): void
     {
         $leadField = $this->fieldModel->getEntity($leadFieldId);
         if (null === $leadField) {

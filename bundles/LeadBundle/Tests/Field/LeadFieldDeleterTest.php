@@ -1,12 +1,6 @@
 <?php
 
-/*
- * @package     Mautic
- * @copyright   2020 Mautic Contributors. All rights reserved.
- * @author      Mautic
- * @link        http://mautic.org
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
+declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Field;
 
@@ -19,24 +13,21 @@ use Mautic\LeadBundle\Field\LeadFieldDeleter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class LeadFieldDeleterTest extends TestCase
+final class LeadFieldDeleterTest extends TestCase
 {
     /**
-     * @var MockObject|LeadFieldRepository
+     * @var MockObject&LeadFieldRepository
      */
-    private $leadFieldRepositoryMock;
+    private MockObject $leadFieldRepositoryMock;
 
     /**
-     * @var MockObject|FieldDeleteDispatcher
+     * @var MockObject&FieldDeleteDispatcher
      */
-    private $fieldDeleteDispatcherMock;
+    private MockObject $fieldDeleteDispatcherMock;
 
-    /**
-     * @var LeadFieldDeleter
-     */
-    private $leadFieldDeleter;
+    private LeadFieldDeleter $leadFieldDeleter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->leadFieldRepositoryMock   = $this->createMock(LeadFieldRepository::class);
         $this->fieldDeleteDispatcherMock = $this->createMock(FieldDeleteDispatcher::class);
@@ -46,7 +37,7 @@ class LeadFieldDeleterTest extends TestCase
         );
     }
 
-    public function testDeleteLeadFieldEntityNoBackground()
+    public function testDeleteLeadFieldEntityNoBackground(): void
     {
         $leadField = new LeadField();
         $this->fieldDeleteDispatcherMock
@@ -60,7 +51,7 @@ class LeadFieldDeleterTest extends TestCase
         $this->leadFieldDeleter->deleteLeadFieldEntity($leadField, false);
     }
 
-    public function testDeleteLeadFieldEntityInBackground()
+    public function testDeleteLeadFieldEntityInBackground(): void
     {
         $leadField = new LeadField();
         $this->fieldDeleteDispatcherMock

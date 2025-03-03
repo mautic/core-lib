@@ -54,7 +54,7 @@ class CustomFieldNotification
         $this->addToNotificationCenter($user, $message, $header);
     }
 
-    public function customFieldWasDeleted(LeadField $leadField, int $userId)
+    public function customFieldWasDeleted(LeadField $leadField, int $userId): void
     {
         try {
             $user = $this->getUser($userId);

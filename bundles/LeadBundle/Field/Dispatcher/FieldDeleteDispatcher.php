@@ -1,12 +1,6 @@
 <?php
 
-/*
- * @package     Mautic
- * @copyright   2020 Mautic Contributors. All rights reserved.
- * @author      Mautic
- * @link        http://mautic.org
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
+declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Field\Dispatcher;
 
@@ -21,26 +15,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class FieldDeleteDispatcher
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    /**
-     * @var BackgroundSettings
-     */
-    private $backgroundSettings;
-
-    public function __construct(EventDispatcherInterface $dispatcher, EntityManager $entityManager, BackgroundSettings $backgroundSettings)
-    {
-        $this->dispatcher         = $dispatcher;
-        $this->entityManager      = $entityManager;
-        $this->backgroundSettings = $backgroundSettings;
+    public function __construct(
+        private EventDispatcherInterface $dispatcher,
+        private EntityManager $entityManager,
+        private BackgroundSettings $backgroundSettings
+    ) {
     }
 
     /**
@@ -81,7 +60,7 @@ class FieldDeleteDispatcher
             $event->setEntityManager($this->entityManager);
         }
 
-        $this->dispatcher->dispatch($action, $event);
+        $this->dispatcher->dispatch($event, $action);
 
         return $event;
     }

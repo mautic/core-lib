@@ -1,12 +1,6 @@
 <?php
 
-/*
- * @package     Mautic
- * @copyright   2020 Mautic Contributors. All rights reserved.
- * @author      Mautic
- * @link        http://mautic.org
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
+declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Field;
 
@@ -18,20 +12,8 @@ use Mautic\LeadBundle\Field\Exception\AbortColumnUpdateException;
 
 class LeadFieldDeleter
 {
-    /**
-     * @var LeadFieldRepository
-     */
-    private $leadFieldRepository;
-
-    /**
-     * @var FieldDeleteDispatcher
-     */
-    private $fieldDeleteDispatcher;
-
-    public function __construct(LeadFieldRepository $leadFieldRepository, FieldDeleteDispatcher $fieldDeleteDispatcher)
+    public function __construct(private LeadFieldRepository $leadFieldRepository, private FieldDeleteDispatcher $fieldDeleteDispatcher)
     {
-        $this->leadFieldRepository   = $leadFieldRepository;
-        $this->fieldDeleteDispatcher = $fieldDeleteDispatcher;
     }
 
     public function saveLeadFieldEntity(LeadField $leadField)
@@ -42,12 +24,12 @@ class LeadFieldDeleter
     /**
      * @param bool $isBackground - if processing in background
      */
-    public function deleteLeadFieldEntity(LeadField $leadField, bool $isBackground = false)
+    public function deleteLeadFieldEntity(LeadField $leadField, bool $isBackground = false): void
     {
         try {
             $this->fieldDeleteDispatcher->dispatchPreDeleteEvent($leadField);
-        } catch (NoListenerException $e) {
-        } catch (AbortColumnUpdateException $e) { //if processing in background
+        } catch (NoListenerException) {
+        } catch (AbortColumnUpdateException) { //if processing in background
             if (!$isBackground) {
                 return;
             }
@@ -58,11 +40,11 @@ class LeadFieldDeleter
 
         try {
             $this->fieldDeleteDispatcher->dispatchPostDeleteEvent($leadField);
-        } catch (NoListenerException $e) {
+        } catch (NoListenerException) {
         }
     }
 
-    public function deleteLeadFieldEntityWithoutColumnRemoved(LeadField $leadField)
+    public function deleteLeadFieldEntityWithoutColumnRemoved(LeadField $leadField): void
     {
         $leadField->setColumnIsNotRemoved();
 

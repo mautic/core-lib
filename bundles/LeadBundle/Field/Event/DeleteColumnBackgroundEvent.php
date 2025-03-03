@@ -1,28 +1,16 @@
 <?php
 
-/*
- * @package     Mautic
- * @copyright   2020 Mautic Contributors. All rights reserved.
- * @author      Mautic
- * @link        http://mautic.org
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
+declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Field\Event;
 
 use Mautic\LeadBundle\Entity\LeadField;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class DeleteColumnBackgroundEvent extends Event
+final class DeleteColumnBackgroundEvent extends Event
 {
-    /**
-     * @var LeadField
-     */
-    private $leadField;
-
-    public function __construct(LeadField $leadField)
+    public function __construct(private LeadField $leadField)
     {
-        $this->leadField = $leadField;
     }
 
     public function getLeadField(): LeadField

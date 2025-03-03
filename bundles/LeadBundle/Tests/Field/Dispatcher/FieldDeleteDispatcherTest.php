@@ -1,12 +1,6 @@
 <?php
 
-/*
- * @package     Mautic
- * @copyright   2020 Mautic Contributors. All rights reserved.
- * @author      Mautic
- * @link        http://mautic.org
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
+declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Field\Dispatcher;
 
@@ -20,29 +14,26 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class FieldDeleteDispatcherTest extends TestCase
+final class FieldDeleteDispatcherTest extends TestCase
 {
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
-    private $dispatcherMock;
+    private MockObject $dispatcherMock;
 
     /**
-     * @var MockObject|EntityManager
+     * @var MockObject&EntityManager
      */
-    private $entityManagerMock;
+    private MockObject $entityManagerMock;
 
     /**
-     * @var MockObject|BackgroundSettings
+     * @var MockObject&BackgroundSettings
      */
     private $backgroundSettingsMock;
 
-    /**
-     * @var FieldDeleteDispatcher
-     */
-    private $fieldDeleteDispatcher;
+    private FieldDeleteDispatcher $fieldDeleteDispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->dispatcherMock         = $this->createMock(EventDispatcherInterface::class);
         $this->entityManagerMock      = $this->createMock(EntityManager::class);
@@ -54,7 +45,7 @@ class FieldDeleteDispatcherTest extends TestCase
         );
     }
 
-    public function testDispatchPreDeleteEventInBackground()
+    public function testDispatchPreDeleteEventInBackground(): void
     {
         $this->backgroundSettingsMock
             ->expects($this->once())
@@ -68,7 +59,7 @@ class FieldDeleteDispatcherTest extends TestCase
         $this->fieldDeleteDispatcher->dispatchPreDeleteEvent($leadField);
     }
 
-    public function testDispatchPreDeleteEventNow()
+    public function testDispatchPreDeleteEventNow(): void
     {
         $this->backgroundSettingsMock
             ->expects($this->once())
