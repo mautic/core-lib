@@ -337,7 +337,7 @@ class ObjectChangeGenerator
         InvalidValueException $e,
         FieldMappingDAO $fieldMappingDAO,
         InformationChangeRequestDAO $integrationInformationChangeRequest,
-        bool $isNewObject
+        bool $isNewObject,
     ): void {
         $newObjectSkippedMessagePart = ($isNewObject) ? ' New object sync skipped.' : '';
 

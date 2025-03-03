@@ -389,7 +389,7 @@ class ObjectChangeGeneratorTest extends TestCase
                     return ['email' => []];
                 }
             },
-            new class() extends BulkNotification {
+            new class extends BulkNotification {
                 public function __construct()
                 {
                 }
