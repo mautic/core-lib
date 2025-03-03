@@ -6062,9 +6062,6 @@ input[style]:hover {
   border-width: var(--border-bottom);
   border-color: var(--border-strong);
 }
-.form-control.search.tt-input {
-  border: var(--border-no-width);
-}
 .form-control {
   color: var(--text-primary);
 }
@@ -10230,6 +10227,13 @@ code:hover > .copy-icon {
   height: 48px;
   border-radius: unset;
   margin: 0;
+}
+.toolbar--toolbar-content .input-group .twitter-typeahead:last-child .tt-input,
+.toolbar--toolbar-content .input-group .twitter-typeahead:last-child .tt-hint,
+.toolbar--toolbar-content .form-control.search,
+.toolbar--toolbar-content .input-group .input-group-btn button,
+.toolbar--toolbar-content .btn-ghost {
+  border: var(--border-no-width);
 }
 .toolbar--toolbar-content .input-group .twitter-typeahead:last-child .tt-input:hover,
 .toolbar--toolbar-content .input-group .twitter-typeahead:last-child .tt-hint:hover,
