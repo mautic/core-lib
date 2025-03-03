@@ -9,8 +9,6 @@ use Mautic\IntegrationsBundle\Sync\DAO\Mapping\ObjectMappingDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\InputOptionsDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Order\FieldDAO as OrderFieldDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Order\ObjectChangeDAO;
-use Mautic\IntegrationsBundle\Sync\DAO\Sync\Order\OrderDAO;
-use Mautic\IntegrationsBundle\Sync\DAO\Sync\Order\OrderDAOFactory;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Report\FieldDAO as ReportFieldDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Report\ObjectDAO as ReportObjectDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Report\ReportDAO;
@@ -18,8 +16,6 @@ use Mautic\IntegrationsBundle\Sync\DAO\Sync\Request\ObjectDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Request\ObjectDAO as RequestObjectDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Request\RequestDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Value\NormalizedValueDAO;
-use Mautic\IntegrationsBundle\Sync\Exception\ObjectDeletedException;
-use Mautic\IntegrationsBundle\Sync\Exception\ObjectSyncSkippedException;
 use Mautic\IntegrationsBundle\Sync\Helper\SyncDateHelper;
 use Mautic\IntegrationsBundle\Sync\SyncDataExchange\Internal\Object\Company;
 use Mautic\IntegrationsBundle\Sync\SyncDataExchange\Internal\Object\Contact;
@@ -53,10 +49,6 @@ class MauticSyncProcessTest extends TestCase
      */
     private $inputOptionsDAO;
 
-    /**
-     * @var OrderDAOFactory|MockObject
-     */
-    private $orderDAOFactory;
 
     protected function setUp(): void
     {
@@ -64,7 +56,6 @@ class MauticSyncProcessTest extends TestCase
         $this->objectChangeGenerator = $this->createMock(ObjectChangeGenerator::class);
         $this->syncDataExchange      = $this->createMock(MauticSyncDataExchange::class);
         $this->inputOptionsDAO       = new InputOptionsDAO(['integration' => self::INTEGRATION_NAME]);
-        $this->orderDAOFactory       = $this->createMock(OrderDAOFactory::class);
     }
 
     public function testThatMauticGetSyncReportIsCalledBasedOnRequest(): void
@@ -161,12 +152,6 @@ class MauticSyncProcessTest extends TestCase
             ->method('getSyncObjectChange')
             ->willReturn($objectChangeDAO);
 
-        $orderDAO = new OrderDAO(new \DateTimeImmutable(), false, self::INTEGRATION_NAME);
-
-        $this->orderDAOFactory->expects(self::once())
-            ->method('create')
-            ->willReturn($orderDAO);
-
         $syncOrder = $this->createMauticSyncProcess($mappingManual)->getSyncOrder($syncReport);
 
         // The change should have been added to the order as an identified object
@@ -208,15 +193,6 @@ class MauticSyncProcessTest extends TestCase
             ->method('getSyncObjectChange')
             ->willReturn($objectChangeDAO);
 
-        $orderDAO = $this->createMock(OrderDAO::class);
-        $orderDAO->expects(self::once())
-            ->method('addObjectChange')
-            ->willThrowException(new ObjectDeletedException());
-
-        $this->orderDAOFactory->expects(self::once())
-            ->method('create')
-            ->willReturn($orderDAO);
-
         $syncOrder = $this->createMauticSyncProcess($mappingManual)->getSyncOrder($syncReport);
         self::assertEquals([], $syncOrder->getIdentifiedObjects());
     }
@@ -255,15 +231,6 @@ class MauticSyncProcessTest extends TestCase
         $this->objectChangeGenerator->expects($this->once())
             ->method('getSyncObjectChange')
             ->willReturn($objectChangeDAO);
-
-        $orderDAO = $this->createMock(OrderDAO::class);
-        $orderDAO->expects(self::once())
-            ->method('addObjectChange')
-            ->willThrowException(new ObjectSyncSkippedException());
-
-        $this->orderDAOFactory->expects(self::once())
-            ->method('create')
-            ->willReturn($orderDAO);
 
         $syncOrder = $this->createMauticSyncProcess($mappingManual)->getSyncOrder($syncReport);
 
@@ -321,12 +288,11 @@ class MauticSyncProcessTest extends TestCase
         $this->assertEquals(self::INTEGRATION_NAME, $syncReport->getIntegration());
     }
 
-    private function createMauticSyncProcess(MappingManualDAO $mappingManualDAO, $useFakedFactory = true): MauticSyncProcess
+    private function createMauticSyncProcess(MappingManualDAO $mappingManualDAO): MauticSyncProcess
     {
         $mauticSyncProcess = new MauticSyncProcess(
             $this->syncDateHelper,
             $this->objectChangeGenerator,
-            $useFakedFactory ? $this->orderDAOFactory : new OrderDAOFactory()
         );
 
         $mauticSyncProcess->setupSync(

@@ -356,9 +356,6 @@ return [
                     'translator',
                 ],
             ],
-            'mautic.integrations.sync.dao.sync.order.order_sync_factory' => [
-                'class'     => \Mautic\IntegrationsBundle\Sync\DAO\Sync\Order\OrderDAOFactory::class,
-            ],
         ],
     ],
 ];

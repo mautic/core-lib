@@ -7,7 +7,6 @@ namespace Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Internal;
 use Mautic\IntegrationsBundle\Sync\DAO\Mapping\MappingManualDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\InputOptionsDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Order\OrderDAO;
-use Mautic\IntegrationsBundle\Sync\DAO\Sync\Order\OrderDAOFactory;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Report\ReportDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Request\ObjectDAO as RequestObjectDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Request\RequestDAO;
@@ -30,7 +29,6 @@ class MauticSyncProcess
     public function __construct(
         private SyncDateHelper $syncDateHelper,
         private ObjectChangeGenerator $objectChangeGenerator,
-        private OrderDAOFactory $orderDAOFactory,
     ) {
     }
 

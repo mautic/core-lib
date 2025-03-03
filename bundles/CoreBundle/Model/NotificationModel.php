@@ -2,7 +2,6 @@
 
 namespace Mautic\CoreBundle\Model;
 
-use DateTime;
 use Doctrine\ORM\EntityManager;
 use Mautic\CoreBundle\Entity\Notification;
 use Mautic\CoreBundle\Entity\NotificationRepository;
@@ -121,7 +120,7 @@ class NotificationModel extends FormModel
         $notification->setIconClass($iconClass);
         $notification->setUser($user);
         if (null == $datetime) {
-            $datetime = new DateTime();
+            $datetime = new \DateTime();
         }
         $notification->setDateAdded($datetime);
         $notification->setDeduplicate($deduplicateValue);
