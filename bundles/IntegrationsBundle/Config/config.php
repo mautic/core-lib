@@ -232,7 +232,6 @@ return [
                 'arguments' => [
                     'mautic.integrations.helper.sync_date',
                     'mautic.integrations.sync.internal_process.object_change_generator',
-                    'mautic.integrations.sync.dao.sync.order.order_sync_factory',
                 ],
             ],
             'mautic.integrations.sync.service' => [
