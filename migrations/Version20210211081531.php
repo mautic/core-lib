@@ -35,6 +35,7 @@ final class Version20210211081531 extends AbstractMauticMigration
         'point_triggers',
         'points',
         'push_notifications',
+        'reports',
         'stages',
         'sms_messages',
         'monitoring',
@@ -55,7 +56,7 @@ final class Version20210211081531 extends AbstractMauticMigration
             return;
         }
 
-        $statements = $triggers = [];
+        $statements = [];
         foreach ($this->tableList as $table) {
             // When we migrate to MySql 8.0.13+,
             // the below commented statement would suffice for settings default values using expression
