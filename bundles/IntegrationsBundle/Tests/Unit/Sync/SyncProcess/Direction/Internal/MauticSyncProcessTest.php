@@ -16,6 +16,8 @@ use Mautic\IntegrationsBundle\Sync\DAO\Sync\Request\ObjectDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Request\ObjectDAO as RequestObjectDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Sync\Request\RequestDAO;
 use Mautic\IntegrationsBundle\Sync\DAO\Value\NormalizedValueDAO;
+use Mautic\IntegrationsBundle\Sync\Exception\ObjectDeletedException;
+use Mautic\IntegrationsBundle\Sync\Exception\ObjectSyncSkippedException;
 use Mautic\IntegrationsBundle\Sync\Helper\SyncDateHelper;
 use Mautic\IntegrationsBundle\Sync\SyncDataExchange\Internal\Object\Company;
 use Mautic\IntegrationsBundle\Sync\SyncDataExchange\Internal\Object\Contact;
@@ -181,16 +183,7 @@ class MauticSyncProcessTest extends TestCase
         $this->syncDataExchange->expects($this->once())
             ->method('getConflictedInternalObject')
             ->with($mappingManual, Contact::NAME, $reportObjectDAO)
-            ->willReturn(
-                new ReportObjectDAO(Contact::NAME, 1)
-            );
-
-        $objectChangeDAO = new ObjectChangeDAO(MauticSyncDataExchange::NAME, Contact::NAME, 1, $objectName, 2);
-        $objectChangeDAO->addField(new OrderFieldDAO('email', new NormalizedValueDAO(NormalizedValueDAO::EMAIL_TYPE, 'test@test.com')));
-        $objectChangeDAO->addField(new OrderFieldDAO('firstname', new NormalizedValueDAO(NormalizedValueDAO::TEXT_TYPE, 'Bob')));
-        $this->objectChangeGenerator->expects($this->once())
-            ->method('getSyncObjectChange')
-            ->willReturn($objectChangeDAO);
+            ->willThrowException(new ObjectDeletedException());
 
         $syncOrder = $this->createMauticSyncProcess($mappingManual)->getSyncOrder($syncReport);
         self::assertEquals([], $syncOrder->getIdentifiedObjects());
@@ -229,7 +222,7 @@ class MauticSyncProcessTest extends TestCase
         $objectChangeDAO->addField(new OrderFieldDAO('firstname', new NormalizedValueDAO(NormalizedValueDAO::TEXT_TYPE, 'Bob')));
         $this->objectChangeGenerator->expects($this->once())
             ->method('getSyncObjectChange')
-            ->willReturn($objectChangeDAO);
+            ->willThrowException(new ObjectSyncSkippedException());
 
         $syncOrder = $this->createMauticSyncProcess($mappingManual)->getSyncOrder($syncReport);
 
