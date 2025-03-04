@@ -429,6 +429,7 @@
 .campaign-changelog {
     overflow-x: auto;
     max-width: 100%;
+    padding: 0 25px;
 }
 
 .campaign-changelog .table-responsive {
@@ -449,7 +450,6 @@
 .campaign-changelog th:nth-child(3) {
     width: var(--medium-col-width);
 }
-
 
 .campaign-changelog pre {
     white-space: pre-wrap;
