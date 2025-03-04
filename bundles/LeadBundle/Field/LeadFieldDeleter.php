@@ -16,7 +16,7 @@ class LeadFieldDeleter
     {
     }
 
-    public function saveLeadFieldEntity(LeadField $leadField)
+    public function saveLeadFieldEntity(LeadField $leadField): void
     {
         $this->leadFieldRepository->saveEntity($leadField);
     }

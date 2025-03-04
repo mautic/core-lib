@@ -110,7 +110,7 @@ class BackgroundService
 
         try {
             $this->fieldColumnBackgroundJobDispatcher->dispatchPreDeleteColumnEvent($leadField);
-        } catch (NoListenerException $e) {
+        } catch (NoListenerException) {
         }
 
         $this->customFieldColumn->processDeleteLeadColumn($leadField);

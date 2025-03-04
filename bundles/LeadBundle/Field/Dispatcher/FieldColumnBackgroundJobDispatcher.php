@@ -67,7 +67,7 @@ class FieldColumnBackgroundJobDispatcher
      * @throws AbortColumnUpdateException
      * @throws NoListenerException
      */
-    public function dispatchPreDeleteColumnEvent(LeadField $leadField)
+    public function dispatchPreDeleteColumnEvent(LeadField $leadField): void
     {
         $action = LeadEvents::LEAD_FIELD_PRE_DELETE_COLUMN_BACKGROUND_JOB;
 

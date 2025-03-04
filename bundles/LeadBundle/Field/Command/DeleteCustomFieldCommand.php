@@ -22,7 +22,7 @@ final class DeleteCustomFieldCommand extends Command
         parent::__construct();
     }
 
-    public function configure()
+    public function configure(): void
     {
         parent::configure();
 
@@ -46,11 +46,11 @@ EOT
 
         try {
             $this->backgroundService->deleteColumn($leadFieldId, $userId);
-        } catch (LeadFieldWasNotFoundException $e) {
+        } catch (LeadFieldWasNotFoundException) {
             $output->writeln('<error>'.$this->translator->trans('mautic.lead.field.notfound').'</error>');
 
             return 1;
-        } catch (AbortColumnUpdateException $e) {
+        } catch (AbortColumnUpdateException) {
             $output->writeln('<error>'.$this->translator->trans('mautic.lead.field.column_delete_aborted').'</error>');
 
             return 0;

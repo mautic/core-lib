@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Field\Dispatcher;
 
 use Mautic\LeadBundle\Entity\LeadField;
+use Mautic\LeadBundle\Exception\NoListenerException;
 use Mautic\LeadBundle\Field\Event\AddColumnEvent;
 use Mautic\LeadBundle\Field\Event\DeleteColumnEvent;
 use Mautic\LeadBundle\Field\Event\UpdateColumnEvent;
@@ -56,7 +57,7 @@ class FieldColumnDispatcher
      * @throws AbortColumnUpdateException
      * @throws NoListenerException
      */
-    public function dispatchPreDeleteColumnEvent(LeadField $leadField)
+    public function dispatchPreDeleteColumnEvent(LeadField $leadField): void
     {
         $action = LeadEvents::LEAD_FIELD_PRE_DELETE_COLUMN;
 
