@@ -144,8 +144,7 @@ class CustomFieldColumn
     /**
      * Register a lead field to be deleted.
      *
-     * @throws AbortColumnUpdateException
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws DriverException
      * @throws \Doctrine\DBAL\Schema\SchemaException
      */

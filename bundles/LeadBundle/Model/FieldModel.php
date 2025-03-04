@@ -673,7 +673,7 @@ class FieldModel extends FormModel
      * @param LeadField $entity
      *
      * @throws AbortColumnUpdateException
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws DriverException
      * @throws SchemaException
      */

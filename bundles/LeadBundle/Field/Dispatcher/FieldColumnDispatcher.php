@@ -69,7 +69,7 @@ class FieldColumnDispatcher
 
         $event = new DeleteColumnEvent($leadField, $shouldProcessInBackground);
 
-        $this->dispatcher->dispatch($action, $event);
+        $this->dispatcher->dispatch($event, $action);
 
         if ($event->shouldProcessInBackground()) {
             throw new AbortColumnUpdateException('Column delete will be processed in background job');

@@ -77,7 +77,7 @@ class FieldColumnBackgroundJobDispatcher
 
         $event = new DeleteColumnBackgroundEvent($leadField);
 
-        $this->dispatcher->dispatch($action, $event);
+        $this->dispatcher->dispatch($event, $action);
 
         if ($event->isPropagationStopped()) {
             throw new AbortColumnUpdateException('Column cannot be deleted now');

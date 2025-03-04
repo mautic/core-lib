@@ -465,18 +465,15 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
         $columnSchemaHelper->expects($this->once())
             ->method('setName')
             ->with('leads')
-            ->willReturn($columnSchemaHelper);
+            ->willReturnSelf();
 
-        $columnSchemaHelper->expects($this->at(1))
+        $columnSchemaHelper->expects($this->exactly(2))
             ->method('dropColumn')
-            ->with('IamAlias')
-            ->willReturn($columnSchemaHelper);
+            ->withConsecutive(['IamAlias'], ['leads'])
+            ->willReturnSelf();
 
         $columnSchemaHelper->expects($this->once())
             ->method('executeChanges');
-
-        $columnSchemaHelper->expects($this->at(2))
-            ->method('dropColumn');
 
         $customFieldColumn->deleteLeadColumn($leadField);
     }
