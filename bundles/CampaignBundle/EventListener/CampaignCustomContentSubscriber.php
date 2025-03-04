@@ -46,8 +46,6 @@ class CampaignCustomContentSubscriber implements EventSubscriberInterface
             $customContentEvent->addContent($content);
         } elseif ($customContentEvent->checkContext($viewName, 'tabs.content')) {
             $logs    = $this->auditLogModel->getLogForObject('campaign', $campaign->getId());
-            $this->prepareChangeSetLogs($logs);
-
             $content = $this->twig->render(
                 '@MauticCampaign/Campaign/Tab/recent-activity-tabcontent.html.twig',
                 [
@@ -56,41 +54,6 @@ class CampaignCustomContentSubscriber implements EventSubscriberInterface
                 ]
             );
             $customContentEvent->addContent($content);
-        }
-    }
-
-    private function prepareChangeSetLogs(mixed &$logs): void
-    {
-        foreach ($logs as &$log) {
-            $changes = [];
-            if ('create' === $log['action']) {
-                continue;
-            }
-            $changeSet = $log['details']['events'];
-
-            if (isset($changeSet['removed'])) {
-                $key              = key($changeSet['removed']);
-                $changes['title'] = 'Removed: Id:'.$key.' name: '.$changeSet['removed'][$key];
-                $changes['item']  = [];
-            }
-
-            if (isset($changeSet['added'])) {
-                $key              = key($changeSet['added']);
-                $changes['title'] = 'Added/Updated: Id:'.$key;
-                $changes['item']  = [];
-                foreach ($changeSet['added'] as $key => $change) {
-                    $subChanges = $change[1];
-                    foreach ($subChanges as $subKey => $subChange) {
-                        $changes['item'][] = [
-                            'field'    => $subKey,
-                            'oldValue' => json_encode($subChange[0]),
-                            'newValue' => json_encode($subChange[1]),
-                        ];
-                    }
-                }
-            }
-
-            $log['changes'] = $changes;
         }
     }
 }
