@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Field;
 
+use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Mautic\LeadBundle\Exception\NoListenerException;
@@ -25,15 +26,22 @@ final class LeadFieldDeleterTest extends TestCase
      */
     private MockObject $fieldDeleteDispatcherMock;
 
+    /**
+     * @var MockObject&UserHelper
+     */
+    private MockObject $userHelperMock;
+
     private LeadFieldDeleter $leadFieldDeleter;
 
     protected function setUp(): void
     {
         $this->leadFieldRepositoryMock   = $this->createMock(LeadFieldRepository::class);
         $this->fieldDeleteDispatcherMock = $this->createMock(FieldDeleteDispatcher::class);
+        $this->userHelperMock            = $this->createMock(UserHelper::class);
         $this->leadFieldDeleter          = new LeadFieldDeleter(
             $this->leadFieldRepositoryMock,
-            $this->fieldDeleteDispatcherMock
+            $this->fieldDeleteDispatcherMock,
+            $this->userHelperMock,
         );
     }
 

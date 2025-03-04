@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Field\Command;
 
+use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Mautic\LeadBundle\Field\BackgroundService;
 use Mautic\LeadBundle\Field\Command\DeleteCustomFieldCommand;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -23,15 +24,22 @@ final class DeleteCustomFieldCommandTest extends TestCase
      */
     private MockObject $translatorInterfaceMock;
 
+    /**
+     * @var MockObject&LeadFieldRepository
+     */
+    private MockObject $leadFieldRepository;
+
     private DeleteCustomFieldCommand $deleteCustomFieldCommand;
 
     protected function setUp(): void
     {
         $this->backgroundServiceMock    = $this->createMock(BackgroundService::class);
         $this->translatorInterfaceMock  = $this->createMock(TranslatorInterface::class);
+        $this->leadFieldRepository      = $this->createMock(LeadFieldRepository::class);
         $this->deleteCustomFieldCommand = new DeleteCustomFieldCommand(
             $this->backgroundServiceMock,
-            $this->translatorInterfaceMock
+            $this->translatorInterfaceMock,
+            $this->leadFieldRepository,
         );
     }
 
