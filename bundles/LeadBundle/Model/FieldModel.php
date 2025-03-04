@@ -525,10 +525,7 @@ class FieldModel extends FormModel
      */
     public function getEntities(array $args = [])
     {
-        $repository = $this->em->getRepository(LeadField::class);
-        \assert($repository instanceof LeadFieldRepository);
-
-        return $repository->getEntities($args);
+        return $this->getRepository()->getEntities($args);
     }
 
     /**

@@ -28,8 +28,7 @@ class FieldDeleteDispatcher
      */
     public function dispatchPreDeleteEvent(LeadField $entity): LeadFieldEvent
     {
-        $shouldProcessInBackground = $this->backgroundSettings->shouldProcessColumnChangeInBackground();
-        if ($shouldProcessInBackground) {
+        if ($this->backgroundSettings->shouldProcessColumnChangeInBackground()) {
             throw new AbortColumnUpdateException('Column change will be processed in background job');
         }
 
