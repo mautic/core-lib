@@ -153,8 +153,8 @@ class CustomFieldColumn
     {
         try {
             $this->fieldColumnDispatcher->dispatchPreDeleteColumnEvent($leadField);
-        } catch (NoListenerException $e) {
-        } catch (AbortColumnUpdateException $e) { //if processing in background
+        } catch (NoListenerException) {
+        } catch (AbortColumnUpdateException) { // if processing in background
             return;
         }
 
@@ -166,7 +166,7 @@ class CustomFieldColumn
      *
      * @throws DriverException
      * @throws \Doctrine\DBAL\Schema\SchemaException
-     * @throws \Mautic\CoreBundle\Exception\SchemaException
+     * @throws SchemaException
      */
     public function processDeleteLeadColumn(LeadField $leadField): void
     {

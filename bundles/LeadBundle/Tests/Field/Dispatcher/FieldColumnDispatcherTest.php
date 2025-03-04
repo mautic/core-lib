@@ -7,7 +7,6 @@ namespace Mautic\LeadBundle\Tests\Field\Dispatcher;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Field\Dispatcher\FieldColumnDispatcher;
 use Mautic\LeadBundle\Field\Event\AddColumnEvent;
-use Mautic\LeadBundle\Field\Event\DeleteColumnBackgroundEvent;
 use Mautic\LeadBundle\Field\Event\DeleteColumnEvent;
 use Mautic\LeadBundle\Field\Event\UpdateColumnEvent;
 use Mautic\LeadBundle\Field\Exception\AbortColumnCreateException;

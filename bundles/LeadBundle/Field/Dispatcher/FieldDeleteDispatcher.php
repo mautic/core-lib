@@ -18,7 +18,7 @@ class FieldDeleteDispatcher
     public function __construct(
         private EventDispatcherInterface $dispatcher,
         private EntityManager $entityManager,
-        private BackgroundSettings $backgroundSettings
+        private BackgroundSettings $backgroundSettings,
     ) {
     }
 

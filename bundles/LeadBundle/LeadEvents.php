@@ -825,7 +825,7 @@ final class LeadEvents
      *
      * @var string
      */
-    const LEAD_FIELD_PRE_DELETE_COLUMN = 'mautic.lead_field_pre_delete_column';
+    public const LEAD_FIELD_PRE_DELETE_COLUMN = 'mautic.lead_field_pre_delete_column';
 
     /**
      * The mautic.lead_field_pre_delete_column_background_job event is dispatched before deleting a column in the
@@ -836,7 +836,7 @@ final class LeadEvents
      *
      * @var string
      */
-    const LEAD_FIELD_PRE_DELETE_COLUMN_BACKGROUND_JOB = 'mautic.lead_field_pre_delete_column_background_job';
+    public const LEAD_FIELD_PRE_DELETE_COLUMN_BACKGROUND_JOB = 'mautic.lead_field_pre_delete_column_background_job';
 
     /**
      * The mautic.lead_on_segments_change event is thrown to change lead's segments.

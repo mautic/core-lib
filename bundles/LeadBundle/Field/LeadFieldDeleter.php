@@ -29,7 +29,7 @@ class LeadFieldDeleter
         try {
             $this->fieldDeleteDispatcher->dispatchPreDeleteEvent($leadField);
         } catch (NoListenerException) {
-        } catch (AbortColumnUpdateException) { //if processing in background
+        } catch (AbortColumnUpdateException) { // if processing in background
             if (!$isBackground) {
                 return;
             }

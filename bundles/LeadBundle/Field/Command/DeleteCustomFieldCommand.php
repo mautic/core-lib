@@ -54,7 +54,7 @@ EOT
             $output->writeln('<error>'.$this->translator->trans('mautic.lead.field.column_delete_aborted').'</error>');
 
             return 0;
-        } catch (DriverException | SchemaException | \Mautic\CoreBundle\Exception\SchemaException $e) {
+        } catch (DriverException|SchemaException|\Mautic\CoreBundle\Exception\SchemaException $e) {
             $output->writeln('<error>'.$this->translator->trans($e->getMessage()).'</error>');
 
             return 1;

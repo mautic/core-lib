@@ -3,10 +3,10 @@
 namespace Mautic\LeadBundle\Model;
 
 use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\Schema\SchemaException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Mautic\CoreBundle\Cache\ResultCacheOptions;
-use Doctrine\DBAL\Schema\SchemaException;
 use Mautic\CoreBundle\Doctrine\Helper\ColumnSchemaHelper;
 use Mautic\CoreBundle\Doctrine\Paginator\SimplePaginator;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
@@ -618,7 +618,7 @@ class FieldModel extends FormModel
      * @throws AbortColumnUpdateException
      * @throws \Doctrine\DBAL\Exception
      * @throws DriverException
-     * @throws \Doctrine\DBAL\Schema\SchemaException
+     * @throws SchemaException
      * @throws \Mautic\CoreBundle\Exception\SchemaException
      */
     public function saveEntity($entity, $unlock = true): void
@@ -659,7 +659,7 @@ class FieldModel extends FormModel
      * @throws AbortColumnCreateException
      * @throws \Doctrine\DBAL\Exception
      * @throws DriverException
-     * @throws \Doctrine\DBAL\Schema\SchemaException
+     * @throws SchemaException
      * @throws \Mautic\CoreBundle\Exception\SchemaException
      */
     public function saveEntities($entities, $unlock = true): void
