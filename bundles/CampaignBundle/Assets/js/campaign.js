@@ -180,7 +180,10 @@ Mautic.campaignOnLoad = function (container, response) {
         if (isCampaignPreview) {
             Mautic.previewCampaignLabels();
         }
+
     }
+
+    Mautic.campaignAuditlogOnLoad(container, response);
 };
 
 Mautic.lazyLoadContactListOnCampaignDetail = function() {
@@ -2330,3 +2333,45 @@ Mautic.previewCampaignLabels = function() {
         });
     });
 }
+
+Mautic.campaignAuditlogOnLoad = function (container, response) {
+    mQuery("#campaign-auditlog a[data-activate-details='all']").on('click', function() {
+        var $icon = mQuery(this).find('span').first();
+        if ($icon.hasClass('ri-arrow-down-s-line')) {
+            mQuery("#campaign-auditlog a[data-activate-details!='all']").each(function () {
+                var detailsId = mQuery(this).data('activate-details');
+                if (detailsId && mQuery('#auditlog-details-' + detailsId).length) {
+                    mQuery('#auditlog-details-' + detailsId).removeClass('hide');
+                    mQuery(this).addClass('active');
+                }
+            });
+            $icon.removeClass('ri-arrow-down-s-line').addClass('ri-arrow-up-s-line');
+        } else {
+            mQuery("#campaign-auditlog a[data-activate-details!='all']").each(function () {
+                var detailsId = mQuery(this).data('activate-details');
+                if (detailsId && mQuery('#auditlog-details-' + detailsId).length) {
+                    mQuery('#auditlog-details-' + detailsId).addClass('hide');
+                    mQuery(this).removeClass('active');
+                }
+            });
+            $icon.removeClass('ri-arrow-up-s-line').addClass('ri-arrow-down-s-line');
+        }
+    });
+
+    mQuery("#campaign-auditlog a[data-activate-details!='all']").on('click', function() {
+        var detailsId = mQuery(this).data('activate-details');
+        var $icon = mQuery(this).find('span').first();
+        if (detailsId && mQuery('#auditlog-details-' + detailsId).length) {
+            var activateDetailsState = mQuery(this).hasClass('active');
+            if (activateDetailsState) {
+                mQuery('#auditlog-details-' + detailsId).addClass('hide');
+                mQuery(this).removeClass('active');
+                $icon.removeClass('ri-arrow-up-s-line').addClass('ri-arrow-down-s-line');
+            } else {
+                mQuery('#auditlog-details-' + detailsId).removeClass('hide');
+                mQuery(this).addClass('active');
+                $icon.removeClass('ri-arrow-down-s-line').addClass('ri-arrow-up-s-line');
+            }
+        }
+    });
+};
