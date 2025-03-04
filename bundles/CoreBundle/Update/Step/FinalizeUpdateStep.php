@@ -32,7 +32,7 @@ final class FinalizeUpdateStep implements StepInterface
 
     public function execute(ProgressBar $progressBar, InputInterface $input, OutputInterface $output): void
     {
-        $progressBar->setMessage($this->translator->trans('mautic.core.update.step.wrapping_up'));
+        $progressBar->setMessage($this->translator->trans('mautic.core.command.update.step.wrapping_up'));
         $progressBar->advance();
 
         // Clear the cached update data and the download package now that we've updated

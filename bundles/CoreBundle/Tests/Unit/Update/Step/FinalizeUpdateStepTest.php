@@ -59,7 +59,7 @@ class FinalizeUpdateStepTest extends AbstractStepTest
         file_put_contents(__DIR__.'/resources/upgrade.php', '');
         file_put_contents(__DIR__.'/resources/lastUpdateCheck.txt', '');
 
-        $wrappingUpKey       = 'mautic.core.update.step.wrapping_up';
+        $wrappingUpKey       = 'mautic.core.command.update.step.wrapping_up';
         $updateSuccessfulKey = 'mautic.core.update.update_successful';
 
         $this->translator->expects($this->exactly(2))
