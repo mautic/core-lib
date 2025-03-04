@@ -53,7 +53,7 @@ EOT
         if (!$leadFieldId) {
             /** @var ?LeadField $field */
             $field = $this->leadFieldRepository->findOneBy(['columnIsNotRemoved' => true]);
-            
+
             if ($field) {
                 $output->writeln('<info>'.$this->translator->trans(
                     'mautic.lead.field.column_was_found_for_deletion',
@@ -61,7 +61,7 @@ EOT
                 ).'</info>');
 
                 $leadFieldId = $field->getId();
-                
+
                 if (!$userId && $field->getModifiedBy()) {
                     $userId = $field->getModifiedBy();
                 }

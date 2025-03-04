@@ -57,7 +57,7 @@ class FieldController extends FormController
             'limit'      => $limit,
             'filter'     => [
                 'string' => $search,
-                'force' => [
+                'force'  => [
                     [
                         'column' => 'f.columnIsNotRemoved',
                         'value'  => false,

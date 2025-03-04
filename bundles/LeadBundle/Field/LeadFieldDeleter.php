@@ -36,7 +36,6 @@ class LeadFieldDeleter
                 return;
             }
         }
-            
 
         $leadField->deletedId = $leadField->getId();
         $this->leadFieldRepository->deleteEntity($leadField);
