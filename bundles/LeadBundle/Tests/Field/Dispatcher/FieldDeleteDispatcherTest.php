@@ -47,10 +47,7 @@ final class FieldDeleteDispatcherTest extends TestCase
 
     public function testDispatchPreDeleteEventInBackground(): void
     {
-        $this->backgroundSettingsMock
-            ->expects($this->once())
-            ->method('shouldProcessColumnChangeInBackground')
-            ->willReturn(true);
+        $this->backgroundSettingsMock->expects($this->once())->method('shouldProcessColumnChangeInBackground')->willReturn(true);
         $leadField = new LeadField();
 
         $this->expectException(AbortColumnUpdateException::class);
@@ -61,24 +58,13 @@ final class FieldDeleteDispatcherTest extends TestCase
 
     public function testDispatchPreDeleteEventNow(): void
     {
-        $this->backgroundSettingsMock
-            ->expects($this->once())
-            ->method('shouldProcessColumnChangeInBackground')
-            ->willReturn(false);
+        $this->backgroundSettingsMock->expects($this->once())->method('shouldProcessColumnChangeInBackground')->willReturn(false);
         $leadField = new LeadField();
-        $this->dispatcherMock
-            ->expects($this->once())
-            ->method('hasListeners')
-            ->willReturn(true);
-        $this->dispatcherMock
-            ->expects($this->once())
-            ->method('dispatch')
-            ->with(
-                'mautic.lead_field_pre_delete',
-                $this->callback(function ($event) {
-                    return $event instanceof LeadFieldEvent;
-                })
-            );
+        $this->dispatcherMock->expects($this->once())->method('hasListeners')->willReturn(true);
+        $this->dispatcherMock->expects($this->once())->method('dispatch')->with(
+            $this->callback(fn ($event) => $event instanceof LeadFieldEvent),
+            'mautic.lead_field_pre_delete',
+        );
         $this->fieldDeleteDispatcher->dispatchPreDeleteEvent($leadField);
     }
 }

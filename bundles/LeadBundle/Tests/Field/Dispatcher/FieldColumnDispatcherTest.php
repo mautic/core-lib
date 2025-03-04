@@ -65,18 +65,15 @@ class FieldColumnDispatcherTest extends \PHPUnit\Framework\TestCase
 
     public function testStopPropagationUpdate(): void
     {
-        $leadField = new LeadField();
-
+        $leadField          = new LeadField();
         $dispatcher         = $this->createMock(EventDispatcherInterface::class);
         $backgroundSettings = $this->createMock(BackgroundSettings::class);
 
-        $backgroundSettings
-            ->expects($this->once())
+        $backgroundSettings->expects($this->once())
             ->method('shouldProcessColumnChangeInBackground')
             ->willReturn(true);
 
-        $dispatcher
-            ->expects($this->once())
+        $dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
                 $this->isInstanceOf(UpdateColumnEvent::class),
@@ -93,29 +90,23 @@ class FieldColumnDispatcherTest extends \PHPUnit\Framework\TestCase
 
     public function testStopPropagationDelete(): void
     {
-        $leadField = new LeadField();
-
+        $leadField          = new LeadField();
         $dispatcher         = $this->createMock(EventDispatcherInterface::class);
         $backgroundSettings = $this->createMock(BackgroundSettings::class);
 
-        $dispatcher
-            ->expects($this->once())
+        $dispatcher->expects($this->once())
             ->method('hasListeners')
             ->willReturn(true);
 
-        $backgroundSettings
-            ->expects($this->once())
+        $backgroundSettings->expects($this->once())
             ->method('shouldProcessColumnChangeInBackground')
             ->willReturn(true);
 
-        $dispatcher
-            ->expects($this->once())
+        $dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
+                $this->callback(fn ($event) => $event instanceof DeleteColumnEvent),
                 'mautic.lead_field_pre_delete_column',
-                $this->callback(function ($event) {
-                    return $event instanceof DeleteColumnEvent;
-                })
             );
 
         $fieldColumnDispatcher = new FieldColumnDispatcher($dispatcher, $backgroundSettings);

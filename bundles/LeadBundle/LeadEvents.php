@@ -778,7 +778,7 @@ final class LeadEvents
     public const LEAD_FIELD_PRE_UPDATE_COLUMN = 'mautic.lead_field_pre_update_column';
 
     /**
-     * The mautic.lead_field_pre_add_column_background_job event is dispatched before updating a column in the lead_fields table.
+     * The mautic.lead_field_pre_update_column_background_job event is dispatched before updating a column in the lead_fields table.
      * in background job.
      *
      * The event listener receives a
