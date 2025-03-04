@@ -11,7 +11,7 @@ use Mautic\CoreBundle\Model\AuditLogModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Twig\Environment;
 
-class CampaignCustomContentSubscriber implements EventSubscriberInterface
+class CampaignInjectCustomContentSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private AuditLogModel $auditLogModel,
