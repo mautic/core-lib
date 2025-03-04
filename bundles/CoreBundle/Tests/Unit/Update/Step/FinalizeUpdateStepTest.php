@@ -6,6 +6,7 @@ use Mautic\CoreBundle\Helper\AppVersion;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Update\Step\FinalizeUpdateStep;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -28,6 +29,11 @@ class FinalizeUpdateStepTest extends AbstractStepTest
     private MockObject $session;
 
     /**
+     * @var MockObject&Request
+     */
+    private MockObject $request;
+
+    /**
      * @var MockObject&RequestStack
      */
     private MockObject $requestStack;
@@ -48,8 +54,12 @@ class FinalizeUpdateStepTest extends AbstractStepTest
         $this->session      = $this->createMock(Session::class);
         $this->requestStack = $this->createMock(RequestStack::class);
         $this->appVersion   = $this->createMock(AppVersion::class);
+        $this->request      = $this->createMock(Request::class);
 
+        $this->request->method('hasSession')->willReturn(true);
+        $this->request->method('getSession')->willReturn($this->session);
         $this->requestStack->method('getSession')->willReturn($this->session);
+        $this->requestStack->method('getCurrentRequest')->willReturn($this->request);
 
         $this->step = new FinalizeUpdateStep($this->translator, $this->pathsHelper, $this->requestStack, $this->appVersion);
     }
