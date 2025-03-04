@@ -57,7 +57,7 @@
                 {% if log.action != 'create' %}
                 <tr class="timeline-row {{ rowStripe }} timeline-details hide" id="auditlog-details-{{ counter }}">
                     <td colspan="5">
-                        {{- include('@MauticCampaign/Campaign/Tab/_details.html.twig', {'changeSet': log.details.events|default({})}) -}}
+                        {{- include('@MauticCampaign/Campaign/Tab/_details.html.twig', {'details': log.details|default({})}) -}}
                     </td>
                 </tr>
                 {% endif %}

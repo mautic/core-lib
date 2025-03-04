@@ -1,53 +1,94 @@
 <div class="table-responsive campaign-changelog">
     <ul class="media-list media-list-feed">
         <li class="media">
-            {% if changeSet.removed is defined %}
-                {% set key = changeSet.removed|keys|first %}
-                <div class="table-caption text-danger">
-                    <strong>{{ 'mautic.campaign.changelog.event_removed'|trans }}</strong><br>
-                    {{ 'mautic.campaign.changelog.event_removed_details'|trans({
-                        '%event_name%': changeSet.removed[key],
-                        '%event_id%': key
-                    }) }}
-                </div>
-            {% endif %}
-            {% if changeSet.added is defined %}
-                {% for key, change in changeSet.added %}
-                    {% set subChanges = change[1] %}
-                    {% if subChanges is iterable %}
-                        <div class="table-wrapper media-body">
-                            <table class="table table-striped table-bordered">
-                                <caption class="table-caption text-success">
-                                    <strong>{{ 'mautic.campaign.changelog.event_updated'|trans }}</strong><br>
-                                    {{ 'mautic.campaign.changelog.event_updated_details'|trans({
-                                        '%event_id%': key
-                                    }) }}
-                                </caption>
-                                <thead class="thead-dark">
-                                <tr>
-                                    <th>Field</th>
-                                    <th>Old Value</th>
-                                    <th>New Value</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for subKey, subChange in subChanges %}
+            {% if details.events is defined %}
+                {% set changeSet = details.events %}
+                {% if changeSet.removed is defined %}
+                    {% set key = changeSet.removed|keys|first %}
+                    <div class="table-caption text-danger">
+                        <strong>{{ 'mautic.campaign.changelog.event_removed'|trans }}</strong><br>
+                        {{ 'mautic.campaign.changelog.event_removed_details'|trans({
+                            '%event_name%': changeSet.removed[key],
+                            '%event_id%': key
+                        }) }}
+                    </div>
+                {% endif %}
+                {% if changeSet.added is defined %}
+                    {% for key, change in changeSet.added %}
+                        {% set subChanges = change[1] %}
+                        {% if subChanges is iterable %}
+                            <div class="table-wrapper media-body">
+                                <table class="table table-striped table-bordered">
+                                    <caption class="table-caption text-success">
+                                        <strong>{{ 'mautic.campaign.changelog.event_updated'|trans }}</strong><br>
+                                        {{ 'mautic.campaign.changelog.event_updated_details'|trans({
+                                            '%event_id%': key
+                                        }) }}
+                                    </caption>
+                                    <thead class="thead-dark">
                                     <tr>
-                                        <td>{{ subKey }}</td>
-                                        <td>
-                                            <pre class="text-muted">{{ subChange[0]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-                                        </td>
-                                        <td>
-                                            <pre class="text-muted">{{ subChange[1]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-                                        </td>
+                                        <th>Field</th>
+                                        <th>Old Value</th>
+                                        <th>New Value</th>
                                     </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        <hr />
-                    {% endif %}
-                {% endfor %}
+                                    </thead>
+                                    <tbody>
+                                    {% for subKey, subChange in subChanges %}
+                                        <tr>
+                                            <td>{{ subKey }}</td>
+                                            <td>
+                                                <pre
+                                                    class="text-muted">{{ subChange[0]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                            </td>
+                                            <td>
+                                                <pre
+                                                    class="text-muted">{{ subChange[1]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <hr />
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+
+            {% set filteredDetails = details|filter((value, key) => key != 'events') %}
+            {% if filteredDetails is not empty %}
+                <div class="table-wrapper media-body">
+                    <table class="table table-striped table-bordered">
+                        <caption class="table-caption text-success">
+                            <strong>{{ 'mautic.campaign.changelog.settings_updated'|trans }}</strong>
+                        </caption>
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Field</th>
+                            <th>Old Value</th>
+                            <th>New Value</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for key, value in filteredDetails %}
+                            {% if key != 'events' %}
+                                <tr>
+                                    <td>{{ key }}</td>
+                                    <td>
+                                            <pre
+                                                class="text-muted">{{ value[0]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                    </td>
+                                    <td>
+                                            <pre
+                                                class="text-muted">{{ value[1]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <hr />
             {% endif %}
         </li>
     </ul>
