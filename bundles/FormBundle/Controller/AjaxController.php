@@ -161,7 +161,9 @@ class AjaxController extends CommonAjaxController
             $type    = 'error';
         }
 
-        $data = array_merge($responseData, ['message' => $message, 'type' => $type, 'success' => $success]);
+        $data = is_array($responseData)
+            ? array_merge($responseData, ['message' => $message, 'type' => $type, 'success' => $success])
+            : [];
 
         return $this->sendJsonResponse($data);
     }
