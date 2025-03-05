@@ -19,7 +19,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     public const FIELD_ALIAS = 'company';
     public const TABLE_NAME  = 'companies';
-    public const ENTITY_NAME = 'company';
 
     /**
      * @var int
