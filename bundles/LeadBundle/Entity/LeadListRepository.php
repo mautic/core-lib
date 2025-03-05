@@ -730,8 +730,10 @@ SQL;
             );
 
             foreach ($segmentMembershipFilters as $filter) {
-                foreach ($filter['properties']['filter'] as $childSegmentId) {
-                    $childSegmentIds[] = ['item_id' => (string) $childSegmentId];
+                if (is_array($filter['properties']['filter'])) {
+                    foreach ($filter['properties']['filter'] as $childSegmentId) {
+                        $childSegmentIds[] = ['item_id' => (string) $childSegmentId];
+                    }
                 }
             }
         }

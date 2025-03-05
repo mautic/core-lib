@@ -3,6 +3,7 @@
 namespace Mautic\EmailBundle\Tests\Model;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
@@ -263,8 +264,12 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $themeHelper->expects(self::never())
             ->method('checkForTwigTemplate');
 
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
+            ->method('getReference');
+
         $mailHelper = $this->getMockBuilder(MailHelper::class)
-            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $this->twig, $themeHelper, $this->createMock(PathsHelper::class), $this->createMock(EventDispatcherInterface::class), $requestStack])
+            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $this->twig, $themeHelper, $this->createMock(PathsHelper::class), $this->createMock(EventDispatcherInterface::class), $requestStack, $entityManager])
             ->onlyMethods(['createEmailStat'])
             ->getMock();
 
@@ -345,8 +350,6 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             );
 
         $mockEm = $this->createMock(EntityManager::class);
-        $factoryMock->method('getEntityManager')
-            ->willReturn($mockEm);
 
         $mockDispatcher = $this->getMockBuilder(EventDispatcher::class)
             ->getMock();
@@ -386,7 +389,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $requestStack = new RequestStack();
 
         $mailHelper = $this->getMockBuilder(MailHelper::class)
-            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $this->twig, $themeHelper, $this->createMock(PathsHelper::class), $mockDispatcher, $requestStack])
+            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $this->twig, $themeHelper, $this->createMock(PathsHelper::class), $mockDispatcher, $requestStack, $mockEm])
             ->onlyMethods([])
             ->getMock();
 
@@ -453,10 +456,14 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $themeHelper->expects(self::never())
             ->method('checkForTwigTemplate');
 
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
+            ->method('getReference');
+
         $requestStack = new RequestStack();
 
         $mailHelper = $this->getMockBuilder(MailHelper::class)
-            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $this->twig, $themeHelper, $this->createMock(PathsHelper::class), $this->createMock(EventDispatcherInterface::class), $requestStack])
+            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $this->twig, $themeHelper, $this->createMock(PathsHelper::class), $this->createMock(EventDispatcherInterface::class), $requestStack, $entityManager])
             ->onlyMethods(['createEmailStat'])
             ->getMock();
 
@@ -555,11 +562,15 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $themeHelper->expects(self::never())
             ->method('checkForTwigTemplate');
 
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
+            ->method('getReference');
+
         $requestStack = new RequestStack();
 
         /** @var MockObject&MailHelper $mailHelper */
         $mailHelper = $this->getMockBuilder(MailHelper::class)
-            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $twig, $themeHelper, $this->createMock(PathsHelper::class), $this->createMock(EventDispatcherInterface::class), $requestStack])
+            ->setConstructorArgs([$factoryMock, $mailer, $this->fromEmaiHelper, $this->coreParametersHelper, $this->mailbox, $this->loggerMock, $this->mailHashHelper, $routerMock, $twig, $themeHelper, $this->createMock(PathsHelper::class), $this->createMock(EventDispatcherInterface::class), $requestStack, $entityManager])
             ->onlyMethods(['createEmailStat'])
             ->getMock();
 
@@ -651,10 +662,14 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
+            ->method('getReference');
+
         $requestStack = new RequestStack();
 
         $mailer         = new Mailer(new BatchTransport());
-        $mailHelper     = new MailHelper($mockFactory, $mailer, $fromEmailHelper, $coreParametersHelper, $mailbox, $logger, $this->mailHashHelper, $router, $twig, $themeHelper, $this->createMock(PathsHelper::class), $this->createMock(EventDispatcherInterface::class), $requestStack);
+        $mailHelper     = new MailHelper($mockFactory, $mailer, $fromEmailHelper, $coreParametersHelper, $mailbox, $logger, $this->mailHashHelper, $router, $twig, $themeHelper, $this->createMock(PathsHelper::class), $this->createMock(EventDispatcherInterface::class), $requestStack, $entityManager);
         $dncModel       = $this->createMock(DoNotContact::class);
         $translator     = $this->createMock(TranslatorInterface::class);
         $model          = new SendEmailToContact($mailHelper, $this->statHelper, $dncModel, $translator);
