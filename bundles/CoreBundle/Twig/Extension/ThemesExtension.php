@@ -19,18 +19,18 @@ final class ThemesExtension extends AbstractExtension
         return [
             new TwigFunction('theme_text_on_color', [$this, 'theme_text_on_color']),
             new TwigFunction('theme_text_on_color__helper', [$this, 'theme_text_on_color__helper']),
-            new TwigFunction('theme_primary_color', [$this, 'theme_primary_color']),
+            new TwigFunction('getBrandPrimaryColor', [$this, 'getBrandPrimaryColor']),
         ];
     }
 
-    public function theme_primary_color(): string
+    public function getBrandPrimaryColor(): string
     {
         return $this->coreParametersHelper->get('primary_brand_color', '000000');
     }
 
     public function theme_text_on_color(): string
     {
-        $primaryColor = $this->theme_primary_color();
+        $primaryColor = $this->getBrandPrimaryColor();
 
         $r = hexdec(substr($primaryColor, 0, 2));
         $g = hexdec(substr($primaryColor, 2, 2));
