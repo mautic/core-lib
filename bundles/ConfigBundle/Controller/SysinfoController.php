@@ -5,7 +5,6 @@ namespace Mautic\ConfigBundle\Controller;
 use Doctrine\Persistence\ManagerRegistry;
 use Mautic\ConfigBundle\Model\SysinfoModel;
 use Mautic\CoreBundle\Controller\FormController;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;

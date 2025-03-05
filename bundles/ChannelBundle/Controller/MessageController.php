@@ -6,7 +6,6 @@ use Doctrine\Persistence\ManagerRegistry;
 use Mautic\ChannelBundle\Entity\Channel;
 use Mautic\ChannelBundle\Model\MessageModel;
 use Mautic\CoreBundle\Controller\AbstractStandardFormController;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Factory\PageHelperFactoryInterface;
 use Mautic\CoreBundle\Helper\Chart\LineChart;

@@ -6,7 +6,6 @@ namespace Mautic\MarketplaceBundle\Controller\Package;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Mautic\CoreBundle\Controller\CommonController;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\ComposerHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;

@@ -5,7 +5,6 @@ namespace Mautic\EmailBundle\Tests\Model;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Mautic\AssetBundle\Model\AssetModel;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
@@ -690,7 +689,6 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
     public function testThatInvalidBccFailureIsHandled(): void
     {
         defined('MAUTIC_ENV') or define('MAUTIC_ENV', 'test');
-
 
         /** @var MockObject&FromEmailHelper $fromEmailHelper */
         $fromEmailHelper = $this->createMock(FromEmailHelper::class);

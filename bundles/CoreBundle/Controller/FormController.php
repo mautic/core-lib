@@ -3,7 +3,6 @@
 namespace Mautic\CoreBundle\Controller;
 
 use Doctrine\Persistence\ManagerRegistry;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;

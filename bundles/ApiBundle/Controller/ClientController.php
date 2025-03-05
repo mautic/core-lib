@@ -5,7 +5,6 @@ namespace Mautic\ApiBundle\Controller;
 use Doctrine\Persistence\ManagerRegistry;
 use Mautic\ApiBundle\Model\ClientModel;
 use Mautic\CoreBundle\Controller\AbstractStandardFormController;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Factory\PageHelperFactoryInterface;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;

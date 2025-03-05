@@ -6,7 +6,6 @@ use Doctrine\Persistence\ManagerRegistry;
 use Mautic\ChannelBundle\Model\ChannelActionModel;
 use Mautic\ChannelBundle\Model\FrequencyActionModel;
 use Mautic\CoreBundle\Controller\AbstractFormController;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;

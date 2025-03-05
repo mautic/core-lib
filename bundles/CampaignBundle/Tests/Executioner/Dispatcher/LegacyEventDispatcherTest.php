@@ -55,11 +55,11 @@ class LegacyEventDispatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->dispatcher   = $this->createMock(EventDispatcherInterface::class);
-        $this->scheduler   = $this->createMock(EventScheduler::class);
+        $this->dispatcher     = $this->createMock(EventDispatcherInterface::class);
+        $this->scheduler      = $this->createMock(EventScheduler::class);
         $this->contactTracker = $this->createMock(ContactTracker::class);
-        $this->config     = $this->createMock(AbstractEventAccessor::class);
-        $this->pendingEvent = $this->createMock(PendingEvent::class);
+        $this->config         = $this->createMock(AbstractEventAccessor::class);
+        $this->pendingEvent   = $this->createMock(PendingEvent::class);
     }
 
     public function testAllEventsAreFailedWithBadConfig(): void

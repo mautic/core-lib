@@ -17,7 +17,6 @@ use Mautic\ChannelBundle\ChannelEvents;
 use Mautic\ChannelBundle\EventListener\CampaignSubscriber;
 use Mautic\ChannelBundle\Form\Type\MessageSendType;
 use Mautic\ChannelBundle\Model\MessageModel;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Form\Type\EmailListType;

@@ -5,7 +5,6 @@ namespace Mautic\PageBundle\Tests\Controller;
 use Doctrine\Persistence\ManagerRegistry;
 use Mautic\CoreBundle\Entity\IpAddress;
 use Mautic\CoreBundle\Exception\InvalidDecodedStringException;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CookieHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;

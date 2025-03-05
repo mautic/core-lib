@@ -3,7 +3,6 @@
 namespace Mautic\PluginBundle\Tests\Helper;
 
 use Doctrine\DBAL\Schema\Schema;
-use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\PluginBundle\Entity\Plugin;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
