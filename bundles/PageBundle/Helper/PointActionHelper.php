@@ -2,12 +2,17 @@
 
 namespace Mautic\PageBundle\Helper;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\PageBundle\Entity\Hit;
 use Mautic\PageBundle\Entity\Page;
 
 class PointActionHelper
 {
+    public function __construct(private EntityManagerInterface $entityManager)
+    {
+    }
+
     /**
      * @param MauticFactory $factory
      */
@@ -38,10 +43,7 @@ class PointActionHelper
         return true;
     }
 
-    /**
-     * @param MauticFactory $factory
-     */
-    public static function validateUrlHit($factory, $eventDetails, $action): bool
+    public function validateUrlHit($eventDetails, $action): bool
     {
         $changePoints = [];
         $url          = $eventDetails->getUrl();
@@ -52,7 +54,7 @@ class PointActionHelper
             return false;
         }
 
-        $hitRepository = $factory->getEntityManager()->getRepository(Hit::class);
+        $hitRepository = $this->entityManager->getRepository(Hit::class);
         $lead          = $eventDetails->getLead();
         $urlWithSqlWC  = str_replace('*', '%', $limitToUrl);
 
@@ -64,7 +66,7 @@ class PointActionHelper
                 $changePoints['first_time'] = true;
             }
         }
-        $now       = new \DateTime();
+        $now = new \DateTime();
 
         if ($action['properties']['returns_within'] || $action['properties']['returns_after']) {
             // get the latest hit only when it's needed
