@@ -353,6 +353,10 @@ class MailHelper
                     $tokens['{signature}'] = $ownerSignature;
                 }
 
+                if ($brandName = $this->coreParametersHelper->get('brand_name')) {
+                    $tokens['{brand=name}'] = $brandName;
+                }
+
                 // Set metadata if applicable
                 foreach ($this->queuedRecipients as $email => $name) {
                     $this->message->addMetadata($email, $this->buildMetadata($name, $tokens));
@@ -531,7 +535,7 @@ class MailHelper
                     $this->setFrom($metadatum['from']->getEmail(), $metadatum['from']->getName());
                     $this->setMessageFrom(new AddressDTO($metadatum['from']->getEmail(), $metadatum['from']->getName()));
                 } else {
-                    $this->setMessageFrom($this->getFrom());
+                    $this->setMessageFrom($this->fromEmailHelper->getFrom($email));
                 }
 
                 foreach ($metadatum['contacts'] as $email => $contact) {
