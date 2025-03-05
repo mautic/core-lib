@@ -18,7 +18,7 @@ final class ThemesExtension extends AbstractExtension
     {
         return [
             new TwigFunction('theme_text_on_color', [$this, 'theme_text_on_color']),
-            new TwigFunction('theme_text_on_color__helper', [$this, 'theme_text_on_color__helper']),
+            new TwigFunction('getTextOnBrandHelperColor', [$this, 'getTextOnBrandHelperColor']),
             new TwigFunction('getBrandPrimaryColor', [$this, 'getBrandPrimaryColor']),
         ];
     }
@@ -43,7 +43,7 @@ final class ThemesExtension extends AbstractExtension
         return $brightness > 125 ? '000000' : 'ffffff';
     }
 
-    public function theme_text_on_color__helper(): string
+    public function getTextOnBrandHelperColor(): string
     {
         return '000000' === $this->theme_text_on_color() ? '6d6d6d' : 'b3b3b3';
     }
