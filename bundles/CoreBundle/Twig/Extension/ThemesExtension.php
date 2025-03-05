@@ -17,7 +17,7 @@ final class ThemesExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('theme_text_on_color', [$this, 'theme_text_on_color']),
+            new TwigFunction('getTextOnBrandColor', [$this, 'getTextOnBrandColor']),
             new TwigFunction('getTextOnBrandHelperColor', [$this, 'getTextOnBrandHelperColor']),
             new TwigFunction('getBrandPrimaryColor', [$this, 'getBrandPrimaryColor']),
         ];
@@ -28,7 +28,7 @@ final class ThemesExtension extends AbstractExtension
         return $this->coreParametersHelper->get('primary_brand_color', '000000');
     }
 
-    public function theme_text_on_color(): string
+    public function getTextOnBrandColor(): string
     {
         $primaryColor = $this->getBrandPrimaryColor();
 
@@ -45,6 +45,6 @@ final class ThemesExtension extends AbstractExtension
 
     public function getTextOnBrandHelperColor(): string
     {
-        return '000000' === $this->theme_text_on_color() ? '6d6d6d' : 'b3b3b3';
+        return '000000' === $this->getTextOnBrandColor() ? '6d6d6d' : 'b3b3b3';
     }
 }
