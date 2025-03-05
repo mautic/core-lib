@@ -2,6 +2,7 @@
 
 namespace Mautic\LeadBundle\Tests\EventListener;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CoreBundle\Event\TokenReplacementEvent;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
@@ -224,14 +225,12 @@ class OwnerSubscriberTest extends TestCase
             ->getMock();
 
         $mockLeadRepository->method('getLeadOwner')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        [1, ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 1']],
-                        [2, ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 2']],
-                        [3, ['id' => 3, 'email' => 'owner3@owner.com', 'first_name' => 'John', 'last_name' => 'S&#39;mith', 'signature' => 'owner 2']],
-                    ]
-                )
+            ->willReturnMap(
+                [
+                    [1, ['id' => 1, 'email' => 'owner1@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 1']],
+                    [2, ['id' => 2, 'email' => 'owner2@owner.com', 'first_name' => '', 'last_name' => '', 'signature' => 'owner 2']],
+                    [3, ['id' => 3, 'email' => 'owner3@owner.com', 'first_name' => 'John', 'last_name' => 'S&#39;mith', 'signature' => 'owner 2']],
+                ]
             );
 
         $mockLeadModel = $this->getMockBuilder(LeadModel::class)
@@ -247,12 +246,10 @@ class OwnerSubscriberTest extends TestCase
             ->getMock();
 
         $mockFactory->method('getModel')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        ['lead', $mockLeadModel],
-                    ]
-                )
+            ->willReturnMap(
+                [
+                    ['lead', $mockLeadModel],
+                ]
             );
 
         $mockMailboxHelper = $this->getMockBuilder(Mailbox::class)
@@ -315,6 +312,10 @@ class OwnerSubscriberTest extends TestCase
         $themeHelper->expects(self::never())
             ->method('checkForTwigTemplate');
 
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
+            ->method('getReference');
+
         $transport    = new SmtpTransport();
         $mailer       = new Mailer($transport);
         $requestStack = new RequestStack();
@@ -332,6 +333,7 @@ class OwnerSubscriberTest extends TestCase
             $this->createMock(PathsHelper::class),
             $this->createMock(EventDispatcherInterface::class),
             $requestStack,
+            $entityManager,
         );
         $mailerHelper->setLead($lead);
 

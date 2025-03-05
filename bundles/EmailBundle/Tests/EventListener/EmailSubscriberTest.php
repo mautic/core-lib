@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\EmailBundle\Tests\EventListener;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
@@ -307,7 +308,11 @@ CONTENT,
                     ['mailer_from_name', null, 'No Body'],
                 ]
             );
-        $mockFactory  = $this->createMock(MauticFactory::class); /** @phpstan-ignore-line MauticFactory is deprecated */
+        $mockFactory   = $this->createMock(MauticFactory::class); /** @phpstan-ignore-line MauticFactory is deprecated */
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
+            ->method('getReference');
+
         $mailer       = new Mailer(new BatchTransport());
         $requestStack = new RequestStack();
         $mailHelper   = new MailHelper(
@@ -323,7 +328,8 @@ CONTENT,
             $themeHelper,
             $this->createMock(PathsHelper::class),
             $this->createMock(EventDispatcherInterface::class),
-            $requestStack
+            $requestStack,
+            $entityManager,
         );
 
         $email = new Email();
