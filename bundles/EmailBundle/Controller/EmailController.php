@@ -1519,7 +1519,7 @@ class EmailController extends FormController
                 if ($form->get('buttons')->has('apply') && $this->getFormButton($form, ['buttons', 'apply'])->isClicked()) {
                     $entity->setPublishUp(null);
                     $entity->setPublishDown(null);
-                    $entity->setContinueSending(null);
+                    $entity->setContinueSending(false);
 
                     $this->addFlashMessage('mautic.email.notice.schedule.cancel');
                 } else {
