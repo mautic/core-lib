@@ -15,11 +15,20 @@ final class Version20241212090146 extends PreUpAssertionMigration
 
     protected function preUpAssertions(): void
     {
+        $this->skipAssertion(
+            fn (Schema $schema) => !$schema->hasTable($this->getPrefixedTableName(self::TABLE_NAME)),
+            "Table {$this->getPrefixedTableName(self::TABLE_NAME)} does not exist"
+        );
+
+        $this->skipAssertion(
+            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName(self::TABLE_NAME))->hasIndex($this->indexName),
+            "Index {$this->indexName} already exists"
+        );
     }
 
     public function up(Schema $schema): void
     {
-        // $this->addSql("CREATE INDEX {$this->indexName} ON {$this->getPrefixedTableName(self::TABLE_NAME)} (internal_object_id);");
+        $this->addSql("CREATE INDEX {$this->indexName} ON {$this->getPrefixedTableName(self::TABLE_NAME)} (internal_object_id);");
     }
 
     public function down(Schema $schema): void
