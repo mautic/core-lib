@@ -567,17 +567,22 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
         $this->em->persist($email);
+        $this->em->flush();
 
-        // request for email clone
+        // Schedule the email to be sent
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $buttonCrawler = $crawler->selectButton('Update schedule');
+        $form = $buttonCrawler->form();
+        
+        // Set publish up date to 1 hour ago
+        $publishUpDate = (new \DateTime('now -1 hour'))->format('Y-m-d H:i');
+        $form['schedule_send[publishUp]']->setValue($publishUpDate);
+        $form['schedule_send[continueSending]']->setValue('0');
+        
+        $this->client->submit($form);
+        $this->em->clear();
 
-
-        $crawler        = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
-        $form['emailform[subject]']->setValue('Email B Subject var 2');
-        $form['emailform[name]']->setValue('Email B var 2');
-        $form['emailform[variantSettings][weight]']->setValue((string) $varientSetting['totalWeight']);
-        $form['emailform[variantSettings][winnerCriteria]']->setValue($varientSetting['winnerCriteria']);
-        $form['emailform[isPublished]']->setValue('1');
-
+        // Create test contacts and add them to the segment
         foreach (['test@one.email', 'test@two.email', 'test@three.email'] as $emailAddress) {
             $contact = new Lead();
             $contact->setEmail($emailAddress);
@@ -596,6 +601,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         }
 
         $this->em->flush();
+        $this->em->clear();
 
         $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
         $this->assertStringContainsString('Email: Email A | 2', $commandTester->getDisplay());
