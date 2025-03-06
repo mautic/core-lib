@@ -566,9 +566,17 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $segment = $this->createSegment('Segment A', 'segment-a');
 
         $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
-        $email->setPublishUp(new \DateTime('-15 minutes'));
-        $email->setContinueSending(null);
         $this->em->persist($email);
+
+        // request for email clone
+
+
+        $crawler        = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $form['emailform[subject]']->setValue('Email B Subject var 2');
+        $form['emailform[name]']->setValue('Email B var 2');
+        $form['emailform[variantSettings][weight]']->setValue((string) $varientSetting['totalWeight']);
+        $form['emailform[variantSettings][winnerCriteria]']->setValue($varientSetting['winnerCriteria']);
+        $form['emailform[isPublished]']->setValue('1');
 
         foreach (['test@one.email', 'test@two.email', 'test@three.email'] as $emailAddress) {
             $contact = new Lead();
