@@ -410,14 +410,14 @@ class EmailController extends FormController
                     ]
                 ),
                 'viewParameters' => [
-                    'email'          => $email,
-                    'emailPreview'   => $emailPreview,
-                    'trackables'     => $trackableLinks,
-                    'logs'           => $logs,
-                    'isEmbedded'     => $request->get('isEmbedded') ?: false,
-                    'variants'       => $variants,
-                    'translations'   => $translations,
-                    'permissions'    => $security->isGranted(
+                    'email'        => $email,
+                    'emailPreview' => $emailPreview,
+                    'trackables'   => $trackableLinks,
+                    'logs'         => $logs,
+                    'isEmbedded'   => $request->get('isEmbedded') ?: false,
+                    'variants'     => $variants,
+                    'translations' => $translations,
+                    'permissions'  => $security->isGranted(
                         [
                             'email:emails:viewown',
                             'email:emails:viewother',
