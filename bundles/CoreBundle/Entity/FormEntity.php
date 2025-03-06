@@ -188,7 +188,7 @@ class FormEntity extends CommonEntity
                 }
             }
 
-            return $isPublished;
+            return 'published' == $status;
         }
 
         return $this->getIsPublished();
