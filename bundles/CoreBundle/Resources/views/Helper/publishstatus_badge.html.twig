@@ -13,7 +13,7 @@
         'pending': 'mautic.core.form.not_yet_available',
         'expired': 'mautic.core.form.no_longer_available',
         'unpublished': 'mautic.core.form.unavailable',
-        'sent': 'mautic.email.stat.sent2',
+        'sent': 'mautic.email.stat.sent',
     },
     'sending': {
         'published': 'mautic.core.form.sending',
@@ -27,15 +27,8 @@
         'pending': 'mautic.core.form.pending',
         'expired': 'mautic.core.form.expired',
         'unpublished': 'mautic.core.form.inactive',
-        'sent': 'mautic.email.stat.sent1',
-    },
-    'sent': {
-        'published': 'mautic.core.form.sending',
-        'pending': 'mautic.core.form.scheduled_to_send',
-        'expired': 'mautic.core.form.sending_expired',
-        'unpublished': 'mautic.core.form.unavailable',
-        'sent': 'mautic.email.stat.sent'
-    },
+        'sent': 'mautic.email.stat.sent',
+    }
 } %}
 
 {% set labelTextKey = (labelMappings[status|default('active')][entity.getPublishStatus()]) %}
