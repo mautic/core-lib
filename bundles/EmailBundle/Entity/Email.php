@@ -372,7 +372,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         $builder->addNullableField('customHtml', Types::TEXT, 'custom_html');
         $builder->addNullableField('emailType', Types::TEXT, 'email_type');
         $builder->addPublishDates();
-        $builder->addNullableField('continueSending', Types::BOOLEAN, 'continue_sending');
+        $builder->addNamedField('continueSending', Types::BOOLEAN, 'continue_sending');
         $builder->addNamedField('readCount', Types::INTEGER, 'read_count');
         $builder->addNamedField('sentCount', Types::INTEGER, 'sent_count');
         $builder->addNamedField('variantSentCount', Types::INTEGER, 'variant_sent_count');
@@ -1449,7 +1449,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         return $publishStatus;
     }
 
-    private function shouldCheckForUnpublishEmail(): bool
+    public function shouldCheckForUnpublishEmail(): bool
     {
         if ($this->isContinueSending()) {
             return false;
