@@ -571,16 +571,14 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         // Schedule the email to be sent
         $crawler       = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
-        $buttonCrawler = $crawler->selectButton('Update schedule');
-        $form          = $buttonCrawler->form();
+        $form          = $crawler->selectButton('schedule_send[buttons][save]')->form();
 
         // Set publish up date to 1 hour ago
-        $publishUpDate = (new \DateTime('now -1 hour'))->format('Y-m-d H:i');
+        $publishUpDate = (new \DateTime('now -30 minutes'))->format('Y-m-d H:i');
         $form['schedule_send[publishUp]']->setValue($publishUpDate);
         $form['schedule_send[continueSending]']->setValue('0');
 
         $this->client->submit($form);
-        $this->em->clear();
 
         // Create test contacts and add them to the segment
         foreach (['test@one.email', 'test@two.email', 'test@three.email'] as $emailAddress) {
@@ -600,7 +598,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             $this->em->persist($contact);
         }
 
-        $this->em->flush();
         $this->em->clear();
 
         $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
@@ -618,19 +615,18 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
         $this->em->persist($email);
+        $this->em->flush($email);
 
         // Schedule the email to be sent
         $crawler       = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
-        $buttonCrawler = $crawler->selectButton('Update schedule');
-        $form          = $buttonCrawler->form();
+        $form          = $crawler->selectButton('schedule_send[buttons][save]')->form();
 
         // Set publish up date to 1 hour ago
         $publishUpDate = (new \DateTime('now -1 hour'))->format('Y-m-d H:i');
         $form['schedule_send[publishUp]']->setValue($publishUpDate);
-        $form['schedule_send[continu+eSending]']->setValue('1');
+        $form['schedule_send[continueSending]']->setValue('1');
 
         $this->client->submit($form);
-        $this->em->clear();
 
         foreach (['test@one.email', 'test@two.email', 'test@three.email'] as $emailAddress) {
             $contact = new Lead();
