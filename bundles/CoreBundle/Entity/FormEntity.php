@@ -177,9 +177,8 @@ class FormEntity extends CommonEntity
     public function isPublished($checkPublishStatus = true, $checkCategoryStatus = true)
     {
         if ($checkPublishStatus && method_exists($this, 'getPublishUp')) {
-            $status      = $this->getPublishStatus();
-            $isPublished = in_array($status, ['published', 'running']);
-            if ($isPublished) {
+            $status = $this->getPublishStatus();
+            if ('published' == $status) {
                 // check to see if there is a category to check
                 if ($checkCategoryStatus && method_exists($this, 'getCategory')) {
                     $category = $this->getCategory();
