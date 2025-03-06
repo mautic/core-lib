@@ -655,4 +655,31 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $email = $this->em->getRepository(Email::class)->find($email->getId());
         $this->assertTrue($email->getIsPublished(), $commandTester->getDisplay());
     }
+
+    public function testSegmentEmailCancelScheduling(): void
+    {
+        $segment = $this->createSegment('Segment A', 'segment-a');
+
+        $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
+        $this->em->persist($email);
+        $this->em->flush($email);
+
+        // Schedule the email to be sent
+        $crawler       = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $form          = $crawler->selectButton('schedule_send[buttons][save]')->form();
+
+        // Set publish up date to 1 hour ago
+        $publishUpDate = (new \DateTime('now'))->format('Y-m-d H:i');
+        $form['schedule_send[publishUp]']->setValue($publishUpDate);
+
+        $this->client->submit($form);
+
+        // Schedule the email to be sent
+        $crawler       = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $form          = $crawler->selectButton('schedule_send[buttons][apply]')->form();
+        $this->client->submit($form);
+
+        $email = $this->em->getRepository(Email::class)->find($email->getId());
+        $this->assertNull($email->getPublishUp());
+    }
 }
