@@ -1448,4 +1448,17 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
         return $publishStatus;
     }
+
+    private function shouldCheckForUnpublishEmail(): bool
+    {
+        if ($this->isContinueSending()) {
+            return false;
+        }
+
+        if (empty($this->getSentCount(true))) {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -5,7 +5,6 @@ namespace Mautic\EmailBundle\EventListener;
 use Doctrine\ORM\EntityManager;
 use Mautic\ChannelBundle\ChannelEvents;
 use Mautic\ChannelBundle\Event\ChannelBroadcastEvent;
-use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Model\EmailModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -49,7 +48,7 @@ class BroadcastSubscriber implements EventSubscriberInterface
                 $event->getThreadId()
             );
 
-            if ($this->shouldCheckForUnpublishEmail($emailEntity)) {
+            if ($emailEntity->shouldCheckForUnpublishEmail()) {
                 $isNotParallelSending = !$event->getThreadId() || 1 === $event->getThreadId();
                 $totalPendingCount ??= $this->model->getPendingLeads($emailEntity, null, true);
                 // only If no pending and nothing was sent
@@ -68,18 +67,5 @@ class BroadcastSubscriber implements EventSubscriberInterface
             );
             $this->em->detach($emailEntity);
         }
-    }
-
-    private function shouldCheckForUnpublishEmail(Email $email): bool
-    {
-        if ($email->isContinueSending()) {
-            return false;
-        }
-
-        if (empty($email->getSentCount(true))) {
-            return false;
-        }
-
-        return true;
     }
 }
