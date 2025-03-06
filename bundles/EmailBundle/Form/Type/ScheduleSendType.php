@@ -17,7 +17,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @extends AbstractType<ScheduleSendType>
  */
-class ScheduleSendType extends AbstractType
+final class ScheduleSendType extends AbstractType
 {
     public function __construct(private TranslatorInterface $translator)
     {
