@@ -415,17 +415,9 @@ class EmailController extends FormController
                     'trackables'     => $trackableLinks,
                     'logs'           => $logs,
                     'isEmbedded'     => $request->get('isEmbedded') ?: false,
-                    'variants'       => [
-                        'parent'     => $parent,
-                        'children'   => $children,
-                        'properties' => $properties,
-                        'criteria'   => $criteria['criteria'],
-                    ],
-                    'translations' => [
-                        'parent'   => $translationParent,
-                        'children' => $translationChildren,
-                    ],
-                    'permissions' => $security->isGranted(
+                    'variants'       => $variants,
+                    'translations'   => $translations,
+                    'permissions'    => $security->isGranted(
                         [
                             'email:emails:viewown',
                             'email:emails:viewother',
