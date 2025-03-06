@@ -598,7 +598,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             $this->em->persist($contact);
         }
 
-        $this->em->clear();
+        $this->em->flush();
 
         $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
         $this->assertStringContainsString('Email: Email A | 2', $commandTester->getDisplay());
