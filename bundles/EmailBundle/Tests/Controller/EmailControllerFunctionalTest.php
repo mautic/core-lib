@@ -570,15 +570,15 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         // Schedule the email to be sent
-        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $crawler       = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
         $buttonCrawler = $crawler->selectButton('Update schedule');
-        $form = $buttonCrawler->form();
-        
+        $form          = $buttonCrawler->form();
+
         // Set publish up date to 1 hour ago
         $publishUpDate = (new \DateTime('now -1 hour'))->format('Y-m-d H:i');
         $form['schedule_send[publishUp]']->setValue($publishUpDate);
         $form['schedule_send[continueSending]']->setValue('0');
-        
+
         $this->client->submit($form);
         $this->em->clear();
 
@@ -617,9 +617,20 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $segment = $this->createSegment('Segment A', 'segment-a');
 
         $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
-        $email->setPublishUp(new \DateTime('-15 minutes'));
-        $email->setContinueSending(true);
         $this->em->persist($email);
+
+        // Schedule the email to be sent
+        $crawler       = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $buttonCrawler = $crawler->selectButton('Update schedule');
+        $form          = $buttonCrawler->form();
+
+        // Set publish up date to 1 hour ago
+        $publishUpDate = (new \DateTime('now -1 hour'))->format('Y-m-d H:i');
+        $form['schedule_send[publishUp]']->setValue($publishUpDate);
+        $form['schedule_send[continu+eSending]']->setValue('1');
+
+        $this->client->submit($form);
+        $this->em->clear();
 
         foreach (['test@one.email', 'test@two.email', 'test@three.email'] as $emailAddress) {
             $contact = new Lead();
