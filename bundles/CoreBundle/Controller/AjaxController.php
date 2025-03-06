@@ -292,7 +292,7 @@ class AjaxController extends CommonController
                                 'onclick'       => $onclickMethod,
                                 'attributes'    => $dataAttr,
                                 'transKeys'     => $attrTransKeys,
-                                'status'        => method_exists($model, 'getPublishStatus') ? $model->getPublishStatus($entity) : null,
+                                'status'        => method_exists($entity, 'getPublishStatus') ? $entity->getPublishStatus() : null,
                             ]
                         );
                         $dataArray['statusHtml'] = $html;

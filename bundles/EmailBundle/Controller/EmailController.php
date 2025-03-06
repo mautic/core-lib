@@ -415,7 +415,6 @@ class EmailController extends FormController
                     'trackables'     => $trackableLinks,
                     'logs'           => $logs,
                     'isEmbedded'     => $request->get('isEmbedded') ?: false,
-                    'publishStatus'  => $model->getPublishStatus($email),
                     'variants'       => [
                         'parent'     => $parent,
                         'children'   => $children,

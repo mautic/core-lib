@@ -113,7 +113,7 @@
                             {{- include('@MauticCore/Helper/publishstatus_icon.html.twig', {
                                 'item'  : item,
                                 'model' : 'email',
-                                'status': model.getPublishStatus(item)
+                                'status': item.getPublishStatus()
                             }) -}}
                             <a href="{{ path('mautic_email_action', {'objectAction' : 'view', 'objectId' : item.getId()}) }}"
                                data-toggle="ajax">

@@ -2,7 +2,8 @@
     'published': {'icon': 'success', 'text': 'green'},
     'unpublished': {'icon': 'danger', 'text': 'red'},
     'expired': {'icon': 'info', 'text': 'blue'},
-    'pending': {'icon': 'info', 'text': 'blue'}
+    'pending': {'icon': 'info', 'text': 'blue'},
+    'sent': {'icon': 'info', 'text': 'blue'},
 } %}
 
 {# Define the labels based on the combination of status and publishStatus #}
@@ -11,20 +12,30 @@
         'published': 'mautic.core.form.available',
         'pending': 'mautic.core.form.not_yet_available',
         'expired': 'mautic.core.form.no_longer_available',
-        'unpublished': 'mautic.core.form.unavailable'
+        'unpublished': 'mautic.core.form.unavailable',
+        'sent': 'mautic.email.stat.sent2',
     },
     'sending': {
         'published': 'mautic.core.form.sending',
         'pending': 'mautic.core.form.scheduled_to_send',
         'expired': 'mautic.core.form.sending_expired',
-        'unpublished': 'mautic.core.form.unavailable'
+        'unpublished': 'mautic.core.form.unavailable',
+        'sent': 'mautic.email.stat.sent'
     },
     'active': {
         'published': 'mautic.core.form.active',
         'pending': 'mautic.core.form.pending',
         'expired': 'mautic.core.form.expired',
-        'unpublished': 'mautic.core.form.inactive'
-    }
+        'unpublished': 'mautic.core.form.inactive',
+        'sent': 'mautic.email.stat.sent1',
+    },
+    'sent': {
+        'published': 'mautic.core.form.sending',
+        'pending': 'mautic.core.form.scheduled_to_send',
+        'expired': 'mautic.core.form.sending_expired',
+        'unpublished': 'mautic.core.form.unavailable',
+        'sent': 'mautic.email.stat.sent'
+    },
 } %}
 
 {% set labelTextKey = (labelMappings[status|default('active')][entity.getPublishStatus()]) %}

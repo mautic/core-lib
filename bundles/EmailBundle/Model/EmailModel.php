@@ -293,6 +293,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             }
         }
 
+        $this->setCachedCount($entity);
+
         return $entity;
     }
 
@@ -308,16 +310,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $entities = parent::getEntities($args);
 
         foreach ($entities as $entity) {
-            $queued  = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'queued'));
-            $pending = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'pending'));
-
-            if (false !== $queued) {
-                $entity->setQueuedCount($queued);
-            }
-
-            if (false !== $pending) {
-                $entity->setPendingCount($pending);
-            }
+            $this->setCachedCount($entity);
         }
 
         return $entities;
@@ -2317,21 +2310,20 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         return $url;
     }
 
-    public function getPublishStatus(Email $email): string
+    /**
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    protected function setCachedCount(mixed $entity): void
     {
-        $publishStatus = $email->getPublishStatus();
-        if ($email->isSegmentEmail() && $email->getPublishUp()) {
-            if ('published' == $publishStatus) {
-                if ($email->isContinueSending()) {
-                    $publishStatus = 'running';
-                } elseif ($email->getPendingCount()) {
-                    $publishStatus = 'running';
-                } else {
-                    $publishStatus = 'sent';
-                }
-            }
+        $queued  = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'queued'));
+        $pending = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'pending'));
+
+        if (false !== $queued) {
+            $entity->setQueuedCount($queued);
         }
 
-        return $publishStatus;
+        if (false !== $pending) {
+            $entity->setPendingCount($pending);
+        }
     }
 }
