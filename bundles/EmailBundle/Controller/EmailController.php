@@ -582,8 +582,6 @@ class EmailController extends FormController
             }
 
             if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
-                $entityManager->clear();
-
                 return $this->postActionRedirect(
                     [
                         'returnUrl'       => $returnUrl,
