@@ -6,11 +6,7 @@ use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\LanguageHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\CoreBundle\Twig\Helper\AssetsHelper;
-use Mautic\LeadBundle\Entity\LeadRepository;
-use Mautic\PageBundle\Entity\HitRepository;
 use Mautic\PageBundle\Entity\Page;
-use Mautic\PageBundle\Entity\PageRepository;
-use Mautic\PageBundle\Entity\RedirectRepository;
 use Mautic\PageBundle\Event as Events;
 use Mautic\PageBundle\Event\PageEditSubmitEvent;
 use Mautic\PageBundle\Event\PageEvent;
@@ -28,11 +24,7 @@ class PageSubscriber implements EventSubscriberInterface
         private AuditLogModel $auditLogModel,
         private LanguageHelper $languageHelper,
         private PageModel $pageModel,
-        private HitRepository $hitRepository,
-        private PageRepository $pageRepository,
-        private RedirectRepository $redirectRepository,
-        private LeadRepository $contactRepository,
-        private PageDraftModel $pageDraftModel
+        private PageDraftModel $pageDraftModel,
     ) {
     }
 
