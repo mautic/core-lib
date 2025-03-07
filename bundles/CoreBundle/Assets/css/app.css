@@ -10109,20 +10109,23 @@ code:hover > .copy-icon {
 .gsearch--toolbar {
   border: 2px solid var(--interactive);
   overflow: hidden;
-  box-shadow: rgb(from var(--background-brand) r g b / 25%) 0px 20px 20px -20px, rgba(0, 0, 0, 0.3) 0px 20px 60px -30px, rgb(from var(--background-brand) r g b / 35%) 0px -2px 6px 0px inset;
-  border-radius: var(--border-radius-md);
+  border-radius: 12px;
   outline: 3px solid rgb(from var(--background-brand) r g b / 35%);
+  box-shadow: rgb(from var(--background-brand) r g b / 15%) 0px 0px 20px 10px, #ffffff 1px 0px 40px 50px;
+  z-index: 1;
 }
 .gsearch--field {
   display: flex;
   align-items: center;
   gap: 3px;
+  box-shadow: rgb(from var(--background-brand) r g b / 25%) 0px 20px 20px -20px, rgba(0, 0, 0, 0.3) 0px 20px 60px -30px, rgb(from var(--background-brand) r g b / 35%) 0px -2px 6px 0px inset;
 }
 .gsearch--search-magnifier {
   color: var(--interactive);
 }
 .gsearch--field__input {
   background-color: transparent;
+  border-width: 0;
 }
 .gsearch--field__input:focus {
   outline-color: transparent;
@@ -10135,14 +10138,33 @@ code:hover > .copy-icon {
 }
 .gsearch--results {
   overflow: hidden;
-  box-shadow: rgba(100, 100, 111, 0.24) 0px 7px 20px 0px;
-  border-radius: var(--border-radius-md);
+  box-shadow: rgba(100, 100, 111, 0.33) 0px 7px 50px 0px;
+  border: 1px solid var(--primary-20);
+  border-radius: 12px;
+  z-index: 1;
+}
+.gsearch--results:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  /* Places the pseudo-element behind the main element */
+  background: inherit;
+  /* Matches the background of the parent */
+  filter: blur(10px);
+  /* Applies the blur effect */
 }
 .gsearch--results-scroll {
   max-height: 70vh;
 }
 .gsearch--results-scroll:has(.content-overlay) {
   max-height: 55px;
+}
+.gsearch--results-scroll hr {
+  border-color: var(--primary-20);
 }
 .gsearch--results-common__icon {
   padding: 6px;
@@ -10162,8 +10184,7 @@ code:hover > .copy-icon {
 }
 .gsearch--results-item {
   border: 0;
-  border-radius: var(--border-radius-sm);
-  padding: 6px 12px;
+  padding: 8px 16px;
 }
 .gsearch--results-item,
 .gsearch--results-item a {
@@ -10175,6 +10196,7 @@ code:hover > .copy-icon {
 }
 .gsearch--results-item:has(a:focus) {
   outline: 2px solid var(--focus);
+  outline-offset: -2px;
 }
 .marketplace-header {
   overflow: hidden;
