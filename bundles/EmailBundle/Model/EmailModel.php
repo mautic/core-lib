@@ -290,10 +290,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $entity = parent::getEntity($id);
             if (null !== $entity) {
                 $entity->setSessionId($entity->getId());
+                $this->setCachedCount($entity);
             }
         }
-
-        $this->setCachedCount($entity);
 
         return $entity;
     }

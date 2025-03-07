@@ -374,8 +374,8 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         $builder->addPublishDates();
         $builder->addField('continueSending', Types::BOOLEAN, [
             'columnName' => 'continue_sending',
-            'nullable' => false,
-            'options' => [
+            'nullable'   => false,
+            'options'    => [
                 'default' => false,
             ],
         ]);
