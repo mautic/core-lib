@@ -2,7 +2,6 @@
 
 namespace Mautic\LeadBundle\Segment\Decorator;
 
-use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Mautic\LeadBundle\Exception\FilterNotFoundException;
 use Mautic\LeadBundle\Segment\ContactSegmentFilterCrate;
 use Mautic\LeadBundle\Segment\ContactSegmentFilterOperator;
@@ -64,7 +63,10 @@ class CustomMappedDecorator extends BaseDecorator implements ContactDecoratorFor
         }
     }
 
-    public function getWhere(ContactSegmentFilterCrate $contactSegmentFilterCrate): CompositeExpression|string|null
+    /**
+     * @return \Doctrine\DBAL\Query\Expression\CompositeExpression|string|null
+     */
+    public function getWhere(ContactSegmentFilterCrate $contactSegmentFilterCrate)
     {
         $originalField = $contactSegmentFilterCrate->getField();
 
