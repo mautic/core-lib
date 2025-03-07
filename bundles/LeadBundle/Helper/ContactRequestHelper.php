@@ -65,7 +65,7 @@ class ContactRequestHelper
             $queryFields['ct'] = (is_array($queryFields['ct'])) ? $queryFields['ct'] : ClickthroughHelper::decodeArrayFromUrl($queryFields['ct']);
         }
 
-        if (array_key_exists('ct', $queryFields) && array_key_exists('email', $queryFields['ct']) && array_key_exists('stat', $queryFields['ct'])) {
+        if (isset($queryFields['ct']['stat'])) {
             /** @var Stat $stat */
             $stat = $this->statRepository->findOneBy(['trackingHash' => $queryFields['ct']['stat']]);
             if (null !== $stat && $this->botRatioHelper->isHitByBot($stat, $dateTime, $ipAddress, (string) $userAgent)) {
