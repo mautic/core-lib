@@ -372,7 +372,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         $builder->addNullableField('customHtml', Types::TEXT, 'custom_html');
         $builder->addNullableField('emailType', Types::TEXT, 'email_type');
         $builder->addPublishDates();
-        // add continueSending default value to false AI!
+        // add continueSending default value to false AI! 
         $builder->addNullableField('continueSending', Types::BOOLEAN, 'continue_sending');
         $builder->addNamedField('readCount', Types::INTEGER, 'read_count');
         $builder->addNamedField('sentCount', Types::INTEGER, 'sent_count');
