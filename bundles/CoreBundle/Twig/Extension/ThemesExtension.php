@@ -20,6 +20,7 @@ final class ThemesExtension extends AbstractExtension
             new TwigFunction('getTextOnBrandColor', [$this, 'getTextOnBrandColor']),
             new TwigFunction('getTextOnBrandHelperColor', [$this, 'getTextOnBrandHelperColor']),
             new TwigFunction('getBrandPrimaryColor', [$this, 'getBrandPrimaryColor']),
+            new TwigFunction('getRoundedCorners', [$this, 'getRoundedCorners']),
         ];
     }
 
@@ -46,5 +47,27 @@ final class ThemesExtension extends AbstractExtension
     public function getTextOnBrandHelperColor(): string
     {
         return '000000' === $this->getTextOnBrandColor() ? '6d6d6d' : 'b3b3b3';
+    }
+
+    public function getRoundedCorners(string $size = 'lg'): int
+    {
+        $roundedCorners = [
+            'lg' => (int) $this->coreParametersHelper->get('rounded_corners', 0),
+            'md' => 0,
+            'sm' => 0,
+        ];
+
+        if (8 === $roundedCorners['lg']) {
+            $roundedCorners['md'] = 4;
+            $roundedCorners['sm'] = 3;
+        } elseif (16 === $roundedCorners['lg']) {
+            $roundedCorners['md'] = 6;
+            $roundedCorners['sm'] = 4;
+        } elseif (32 === $roundedCorners['lg']) {
+            $roundedCorners['md'] = 8;
+            $roundedCorners['sm'] = 5;
+        }
+
+        return $roundedCorners[$size] ?? 0;
     }
 }
