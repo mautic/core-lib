@@ -545,11 +545,11 @@ class PageController extends FormController
                         $this->dispatcher->dispatch(new PageEditSubmitEvent(
                             $existingPage,
                             $entity,
-                            $this->getFormButton($form, ['buttons', 'save'])->isClicked(),
-                            $this->getFormButton($form, ['buttons', 'apply'])->isClicked(),
-                            $form->get('buttons')->has('save_draft') && $this->getFormButton($form, ['buttons', 'save_draft'])->isClicked(),
-                            $form->get('buttons')->has('apply_draft') && $this->getFormButton($form, ['buttons', 'apply_draft'])->isClicked(),
-                            $form->get('buttons')->has('discard_draft') && $this->getFormButton($form, ['buttons', 'discard_draft'])->isClicked()
+                            $this->isButtonClicked($form, 'save'),
+                            $this->isButtonClicked($form, 'apply'),
+                            $this->isButtonClicked($form, 'save_draft'),
+                            $this->isButtonClicked($form, 'apply_draft'),
+                            $this->isButtonClicked($form, 'discard_draft'),
                         ));
                     }
 
@@ -569,12 +569,7 @@ class PageController extends FormController
                 $model->unlockEntity($entity);
             }
 
-            if ($cancelled
-                || ($valid && ($this->getFormButton($form, ['buttons', 'save'])->isClicked()
-                    || ($form->get('buttons')->has('save_draft') && $this->getFormButton($form, ['buttons', 'save_draft'])->isClicked())
-                    || ($form->get('buttons')->has('apply_draft') && $this->getFormButton($form, ['buttons', 'apply_draft'])->isClicked())
-                    || ($form->get('buttons')->has('discard_draft') && $this->getFormButton($form, ['buttons', 'discard_draft'])->isClicked())))
-            ) {
+            if ($cancelled || ($valid && $this->isAnyOfButtonsClicked($form, ['save', 'save_draft', 'apply_draft', 'discard_draft']))) {
                 $viewParameters = [
                     'objectAction' => 'view',
                     'objectId'     => $entity->getId(),
