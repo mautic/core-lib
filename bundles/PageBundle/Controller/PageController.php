@@ -407,7 +407,7 @@ class PageController extends FormController
                         ]),
                     ]);
 
-                    if ($this->getFormButton($form, ['buttons', 'save'])->isClicked()) {
+                    if ($this->isButtonClicked($form, 'save')) {
                         $viewParameters = [
                             'objectAction' => 'view',
                             'objectId'     => $entity->getId(),
@@ -427,7 +427,7 @@ class PageController extends FormController
                 $session->remove('mautic.pagebuilder.'.$entity->getSessionId().'.content');
             }
 
-            if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
+            if ($cancelled || ($valid && $this->isButtonClicked($form, 'save'))) {
                 return $this->postActionRedirect([
                     'returnUrl'       => $returnUrl,
                     'viewParameters'  => $viewParameters,
@@ -539,7 +539,7 @@ class PageController extends FormController
                     $entity->setCustomHtml($content);
 
                     // form is valid so process the data
-                    $model->saveEntity($entity, $this->getFormButton($form, ['buttons', 'save'])->isClicked());
+                    $model->saveEntity($entity, $this->isButtonClicked($form, 'save'));
 
                     if ($pageConfig->isDraftEnabled() && !empty($entity->getId())) {
                         $this->dispatcher->dispatch(new PageEditSubmitEvent(
@@ -582,7 +582,7 @@ class PageController extends FormController
                         'contentTemplate' => 'Mautic\PageBundle\Controller\PageController::viewAction',
                     ])
                 );
-            } elseif ($valid && $this->getFormButton($form, ['buttons', 'apply'])->isClicked()) {
+            } elseif ($valid && $this->isButtonClicked($form, 'apply')) {
                 // Rebuild the form in the case apply is clicked so that DEC content is properly populated if all were removed
                 $form = $model->createForm($entity, $this->coreParametersHelper->get('form.factory'), $action);
             }
