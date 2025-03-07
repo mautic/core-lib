@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CampaignAuditLogTest extends MauticMysqlTestCase
+final class CampaignAuditLogTest extends MauticMysqlTestCase
 {
     use CreateTestEntitiesTrait;
 

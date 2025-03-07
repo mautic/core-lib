@@ -75,12 +75,10 @@
                                 <tr>
                                     <td>{{ key }}</td>
                                     <td>
-                                            <pre
-                                                class="text-muted">{{ value[0]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                            <pre class="text-muted">{{ value[0]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
                                     </td>
                                     <td>
-                                            <pre
-                                                class="text-muted">{{ value[1]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                            <pre class="text-muted">{{ value[1]|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
                                     </td>
                                 </tr>
                             {% endif %}
