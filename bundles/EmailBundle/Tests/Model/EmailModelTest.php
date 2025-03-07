@@ -599,6 +599,99 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @dataProvider dataStatRecordExistance
+     */
+    public function testSendSegmentEmailToContact(bool $recordExist): void
+    {
+        $sendToContactModelMock  = $this->createMock(SendEmailToContact::class);
+        $emailModel              = new EmailModel(
+            $this->ipLookupHelper,
+            $this->themeHelper,
+            $this->mailboxHelper,
+            $this->mailHelper,
+            $this->leadModel,
+            $this->companyModel,
+            $this->trackableModel,
+            $this->userModel,
+            $this->messageModel,
+            $sendToContactModelMock,
+            $this->deviceTrackerMock,
+            $this->redirectRepositoryMock,
+            $this->cacheStorageHelperMock,
+            $this->contactTracker,
+            $this->doNotContact,
+            $this->statsCollectionHelper,
+            $this->corePermissions,
+            $this->entityManager,
+            $this->eventDispatcher,
+            $this->createMock(UrlGeneratorInterface::class),
+            $this->translator,
+            $this->createMock(UserHelper::class),
+            $this->createMock(LoggerInterface::class),
+            $this->createMock(CoreParametersHelper::class),
+            $this->emailStatModel,
+            $this->botRatioHelperMock
+        );
+
+        $contacts = [
+            1 => ['id' => 1, 'email' => 'someone@domain.com', 'stateExists' => $recordExist],
+            2 => ['id' => 2, 'email' => 'someone2@domain.com', 'stateExists' => false],
+        ];
+
+        $sendToContactModelMock
+            ->method('setEmail')
+            ->will($this->returnValue($sendToContactModelMock));
+
+        $this->companyRepository->method('getCompaniesForContacts')
+            ->will($this->returnValue([]));
+
+        $this->statRepository->method('checkContactSentEmail')
+            ->will($this->returnCallback(function () use ($contacts) {
+                $args = func_get_args();
+
+                return $contacts[$args[0]]['stateExists'];
+            }));
+
+        $this->companyModel->method('getRepository')
+            ->willReturn($this->companyRepository);
+
+        $this->entityManager->expects($this->any())
+            ->method('getRepository')
+            ->will(
+                $this->returnValueMap(
+                    [
+                        [\Mautic\LeadBundle\Entity\FrequencyRule::class, $this->frequencyRepository],
+                        [Email::class, $this->emailRepository],
+                        [Stat::class, $this->statRepository],
+                    ]
+                )
+            );
+
+        $email = new class extends Email {
+            public function getId(): int
+            {
+                return 1;
+            }
+        };
+
+        $email->setEmailType('list');
+
+        $sendToContactModelMock->expects($this->exactly($recordExist ? 1 : 2))
+            ->method('setContact')
+            ->willReturn($sendToContactModelMock);
+
+        $sendToContactModelMock->expects($this->once())
+            ->method('getErrors')
+            ->willReturn(['Mailer error abc because of xyz']);
+
+        $sendToContactModelMock->expects($this->once())
+            ->method('getSentCounts')
+            ->willReturn([]);
+
+        $emailModel->sendEmail($email, $contacts);
+    }
+
+    /**
      * Test that DoNotContact works just with lead.
      */
     public function testDoNotContactLead(): void
@@ -997,5 +1090,14 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->entityManager->method('getRepository')->willReturn($emailRepository);
         $this->emailModel->saveEntity($email);
         $this->assertFalse($this->emailModel->isUpdatingTranslationChildren());
+    }
+
+    /**
+     * @return iterable<int, bool[]>
+     */
+    public function dataStatRecordExistance(): iterable
+    {
+        yield [true];
+        yield [false];
     }
 }

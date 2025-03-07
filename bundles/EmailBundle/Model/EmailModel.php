@@ -1438,6 +1438,15 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
                 foreach ($contacts as $contact) {
                     try {
+                        if ('list' === $email->getEmailType()
+                            && $this->getStatRepository()->checkContactSentEmail(
+                                $contact['id'],
+                                $email->getId(),
+                            )) {
+                            // This segment email is already sent to this contact
+                            continue;
+                        }
+
                         $this->sendModel->setContact($contact, $tokens)
                             ->send();
 
@@ -2191,7 +2200,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         );
         $this->dispatcher->dispatch($event, EmailEvents::EMAIL_ON_DISPLAY);
 
-        $mailer = $this->mailHelper->getSampleMailer();
+        $mailer = $this->mailHelper->getMailer(true);
         $mailer->setLead($leadFields, true);
         $mailer->setTokens($tokens);
         $mailer->setEmail($email, false, $assetAttachments, !$saveStat);
