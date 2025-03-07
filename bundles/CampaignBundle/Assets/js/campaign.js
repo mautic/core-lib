@@ -2339,7 +2339,7 @@ Mautic.campaignAuditlogOnLoad = function (container, response) {
         let $icon = mQuery(this).find('span').first();
         if ($icon.hasClass('ri-arrow-down-s-line')) {
             mQuery("#campaign-auditlog a[data-activate-details!='all']").each(function () {
-                let detailsId = mQuery(this).data('activate-details');
+                const detailsId = mQuery(this).data('activate-details');
                 if (detailsId && mQuery('#auditlog-details-' + detailsId).length) {
                     mQuery('#auditlog-details-' + detailsId).removeClass('hide');
                     mQuery(this).addClass('active');
@@ -2348,7 +2348,7 @@ Mautic.campaignAuditlogOnLoad = function (container, response) {
             $icon.removeClass('ri-arrow-down-s-line').addClass('ri-arrow-up-s-line');
         } else {
             mQuery("#campaign-auditlog a[data-activate-details!='all']").each(function () {
-                let detailsId = mQuery(this).data('activate-details');
+                const detailsId = mQuery(this).data('activate-details');
                 if (detailsId && mQuery('#auditlog-details-' + detailsId).length) {
                     mQuery('#auditlog-details-' + detailsId).addClass('hide');
                     mQuery(this).removeClass('active');
@@ -2359,10 +2359,10 @@ Mautic.campaignAuditlogOnLoad = function (container, response) {
     });
 
     mQuery("#campaign-auditlog a[data-activate-details!='all']").on('click', function() {
-        let detailsId = mQuery(this).data('activate-details');
+        const detailsId = mQuery(this).data('activate-details');
         let $icon = mQuery(this).find('span').first();
         if (detailsId && mQuery('#auditlog-details-' + detailsId).length) {
-            let activateDetailsState = mQuery(this).hasClass('active');
+            const activateDetailsState = mQuery(this).hasClass('active');
             if (activateDetailsState) {
                 mQuery('#auditlog-details-' + detailsId).addClass('hide');
                 mQuery(this).removeClass('active');
