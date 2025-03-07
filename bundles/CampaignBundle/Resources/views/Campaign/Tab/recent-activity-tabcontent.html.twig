@@ -5,7 +5,7 @@
             <tr>
                 <th class="timeline-icon np"></th>
                 <th class="table-expand np">
-                    <a class="table-expand-button" data-activate-details="all" data-toggle="tooltip" title="{{ 'mautic.lead.timeline.toggle_all_details'|trans }}">
+                    <a class="table-expand-button" data-activate-details="all" data-toggle="tooltip" title="{{ 'mautic.lead.timeline.toggle_details'|trans }}">
                         <span class="ri-arrow-down-s-line"></span>
                     </a>
                 </th>
@@ -15,12 +15,12 @@
                     'target': '#recent-activity-container',
                 }) }}
                 {{ include('@MauticCore/Helper/tableheader.html.twig', {
-                    'text': 'mautic.campaign.timeline.event_type',
+                    'text': 'mautic.audit_log.report.action',
                     'class': 'visible-md visible-lg timeline-type',
                     'target': '#recent-activity-container',
                 }) }}
                 {{ include('@MauticCore/Helper/tableheader.html.twig', {
-                    'text': 'mautic.campaign.timeline.event_timestamp',
+                    'text': 'mautic.lead.timeline.event_timestamp',
                     'class': 'visible-md visible-lg timeline-timestamp',
                     'target': '#recent-activity-container',
                 }) }}
@@ -44,7 +44,7 @@
                            data-activate-details="{{ counter }}"
                            class="table-expand-button"
                            data-toggle="tooltip"
-                           title="{{ 'mautic.campaign.timeline.toggle_details'|trans }}">
+                           title="{{ 'mautic.lead.timeline.toggle_details'|trans }}">
                             <span class="ri-arrow-down-s-line"></span>
                         </a>
                         {% endif %}
