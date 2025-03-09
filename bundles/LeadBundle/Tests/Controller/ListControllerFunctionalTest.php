@@ -509,4 +509,27 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
             ['\b\d{4}-(10|11|12)-\d{2}\b', false, 'regexp'],
         ];
     }
+
+    public function testRecentActivityFeedOnSegmentDetailsPage(): void
+    {
+        // Create segment
+        $segment = $this->saveSegment('Date Segment', 'ds');
+        $this->em->clear();
+
+        // Update segment
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/edit/'.$segment->getId());
+        $this->assertResponseIsSuccessful();
+        $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
+        $form['leadlist[isPublished]']->setValue('0');
+        $this->client->submit($form);
+
+        // View segment
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/view/'.$segment->getId());
+        $this->assertResponseIsSuccessful();
+
+        $translator = self::getContainer()->get('translator');
+
+        $this->assertStringContainsString($translator->trans('mautic.core.recent.activity'), $this->client->getResponse()->getContent());
+        $this->assertCount(2, $crawler->filterXPath('//ul[contains(@class, "media-list-feed")]/li'));
+    }
 }
