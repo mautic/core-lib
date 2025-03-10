@@ -18,6 +18,34 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ImportCommandTest extends TestCase
 {
+    public function testExecuteFailsIfModifiedByIsNotSet(): void
+    {
+        $translatorMock   = $this->createMock(TranslatorInterface::class);
+        $importMock       = $this->createMock(Import::class);
+        $importModelMock  = $this->createMock(ImportModel::class);
+        $loggerMock       = $this->createMock(Logger::class);
+        $userModelMock    = $this->createMock(UserModel::class);
+        $tokenStorageMock = $this->createMock(TokenStorage::class);
+        $userTokenSetter  = new UserTokenSetter($userModelMock, $tokenStorageMock);
+
+        $importModelMock->expects($this->once())
+            ->method('getImportToProcess')
+            ->willReturn($importMock);
+
+        $importCommand =  new class($translatorMock, $importModelMock, new ProcessSignalService(), $userTokenSetter, $loggerMock) extends ImportCommand {
+            public function getExecute(InputInterface $input, OutputInterface $output): int
+            {
+                return $this->execute($input, $output);
+            }
+        };
+        $inputInterfaceMock  = $this->createMock(InputInterface::class);
+        $outputInterfaceMock = $this->createMock(OutputInterface::class);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Import does not have "modifiedBy" property set.');
+        $importCommand->getExecute($inputInterfaceMock, $outputInterfaceMock);
+    }
+
     public function testExecute(): void
     {
         // Translator
