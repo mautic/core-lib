@@ -7,7 +7,13 @@
             {% endif %}
         </div>
         {% if n.header %}
-            <div class="notification-header fs-b-e fw-b mb-3 mt-sm">{{ format(n.header)|trans }}</div>
+            <div class="notification-header fs-b-e fw-b mb-3 mt-sm">
+                {% if 'mautic.' in n.header %}
+                    {{ n.header | trans }}
+                {% else %}
+                    {{ format(n.header, 'html') }}
+                {% endif %}
+            </div>
         {% endif %}
         <div class="text-muted">{{ format(n.message, 'html') }}</div>
     </div>
