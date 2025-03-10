@@ -1011,8 +1011,11 @@ class FormModel extends CommonFormModel
         switch ($contactField->getType()) {
             case 'select':
             case 'multiselect':
+                $list = $contactFieldProps['list'] ?? [];
+                break;
             case 'lookup':
                 $list = $contactFieldProps['list'] ?? [];
+                $list = array_combine(array_flip($list), $list);
                 break;
             case 'boolean':
                 $list = [$contactFieldProps['no'], $contactFieldProps['yes']];
