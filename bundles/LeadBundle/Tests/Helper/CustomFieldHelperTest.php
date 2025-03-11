@@ -174,24 +174,6 @@ class CustomFieldHelperTest extends TestCase
         $this->assertSame($values, CustomFieldHelper::fieldsValuesTransformer($fields, $values));
     }
 
-    public function testFieldValueTransformerWithTokenizedTextField(): void
-    {
-        $mockDateTimeHelper = $this->createMock(DateTimeHelper::class);
-        $mockDateTimeHelper->method('toLocalString')->willReturn('2023-05-20 00:00:00');
-
-        $reflectionClass    = new \ReflectionClass(CustomFieldHelper::class);
-        $customFieldHelper  = $reflectionClass->newInstanceWithoutConstructor();
-        $reflectionProperty = $reflectionClass->getProperty('dateTimeHelper');
-        $reflectionProperty->setValue($customFieldHelper, $mockDateTimeHelper);
-
-        $field = ['type' => 'text'];
-        $value = 'Hello %TODAY%';
-
-        $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
-
-        $this->assertEquals('Hello 2023-05-20 00:00:00', $result);
-    }
-
     public function testFieldValueTransformerWithDateTimeFields(): void
     {
         $mockDateTimeHelper = $this->createMock(DateTimeHelper::class);

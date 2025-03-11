@@ -88,19 +88,6 @@ class CustomFieldHelper
                         break;
                 }
                 break;
-            case 'text':
-            case 'textarea':
-                if (!is_string($value)) {
-                    throw new \InvalidArgumentException('Wrong type given. String or DateTimeInterface expected.');
-                }
-
-                // Looking for text inbetween % characters and treating it as datetime
-                $value = preg_replace_callback('/%([A-Z]+(?:[\+\-]\d+[A-Z]+)?)%/', function ($matches) {
-                    $dtHelper = self::getDateTimeHelper($matches[1]);
-
-                    return $dtHelper->toLocalString('Y-m-d H:i:s');
-                }, $value);
-                break;
         }
 
         return $value;

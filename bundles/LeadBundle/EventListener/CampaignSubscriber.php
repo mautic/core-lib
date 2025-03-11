@@ -324,7 +324,6 @@ class CampaignSubscriber implements EventSubscriberInterface
         $values = $event->getConfig();
         $fields = $lead->getFields(true);
 
-        // Token replacement
         $tokenizedValues = [];
         foreach ($values as $field => $value) {
             if (is_string($value)) {
