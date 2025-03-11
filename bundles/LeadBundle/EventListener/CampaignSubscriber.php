@@ -340,24 +340,22 @@ class CampaignSubscriber implements EventSubscriberInterface
     {
         $lead   = $log->getLead();
         $fields = $lead->getFields(true);
+
         try {
-            $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $values), false);
+            $tokenizedValues = [];
+            foreach ($values as $field => $value) {
+                if (is_string($value)) {
+                    $tokenizedValues[$field] = TokenHelper::findLeadTokens($value, $lead->getProfileFields(), true);
+                } else {
+                    $tokenizedValues[$field] = $value;
+                }
+            }
+            $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $tokenizedValues), false);
         } catch (ImportFailedException $e) {
             $event->fail($log, $e->getMessage());
         }
 
-        $tokenizedValues = [];
-        foreach ($values as $field => $value) {
-            if (is_string($value)) {
-                $tokenizedValues[$field] = TokenHelper::findLeadTokens($value, $lead->getProfileFields(), true);
-            } else {
-                $tokenizedValues[$field] = $value;
-            }
-        }
-        $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $tokenizedValues), false);
-
         $this->leadModel->saveEntity($lead);
-
         $event->pass($log);
     }
 
