@@ -3,8 +3,10 @@
 namespace Mautic\LeadBundle\EventListener;
 
 use Mautic\CampaignBundle\CampaignEvents;
+use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CampaignBundle\Event\CampaignBuilderEvent;
 use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
+use Mautic\CampaignBundle\Event\PendingEvent;
 use Mautic\CampaignBundle\Model\CampaignModel;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
@@ -12,6 +14,7 @@ use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\PointsChangeLog;
+use Mautic\LeadBundle\Exception\ImportFailedException;
 use Mautic\LeadBundle\Form\Type\AddToCompanyActionType;
 use Mautic\LeadBundle\Form\Type\CampaignConditionLeadPageHitType;
 use Mautic\LeadBundle\Form\Type\CampaignEventLeadCampaignsType;
@@ -71,13 +74,15 @@ class CampaignSubscriber implements EventSubscriberInterface
             LeadEvents::ON_CAMPAIGN_TRIGGER_ACTION => [
                 ['onCampaignTriggerActionChangePoints', 0],
                 ['onCampaignTriggerActionChangeLists', 1],
-                ['onCampaignTriggerActionUpdateLead', 2],
                 ['onCampaignTriggerActionUpdateTags', 3],
                 ['onCampaignTriggerActionAddToCompany', 4],
                 ['onCampaignTriggerActionChangeCompanyScore', 4],
                 ['onCampaignTriggerActionChangeOwner', 7],
                 ['onCampaignTriggerActionUpdateCompany', 8],
                 ['onCampaignTriggerActionSetManipulator', 100],
+            ],
+            LeadEvents::ON_CAMPAIGN_BATCH_ACTION => [
+                ['onCampaignTriggerActionUpdateLead', 0],
             ],
             LeadEvents::ON_CAMPAIGN_TRIGGER_CONDITION => ['onCampaignTriggerCondition', 0],
         ];
@@ -106,11 +111,11 @@ class CampaignSubscriber implements EventSubscriberInterface
         $event->addAction('lead.changelist', $action);
 
         $action = [
-            'label'       => 'mautic.lead.lead.events.updatelead',
-            'description' => 'mautic.lead.lead.events.updatelead_descr',
-            'formType'    => UpdateLeadActionType::class,
-            'formTheme'   => '@MauticLead/FormTheme/ActionUpdateLead/_updatelead_action_widget.html.twig',
-            'eventName'   => LeadEvents::ON_CAMPAIGN_TRIGGER_ACTION,
+            'label'          => 'mautic.lead.lead.events.updatelead',
+            'description'    => 'mautic.lead.lead.events.updatelead_descr',
+            'formType'       => UpdateLeadActionType::class,
+            'formTheme'      => '@MauticLead/FormTheme/ActionUpdateLead/_updatelead_action_widget.html.twig',
+            'batchEventName' => LeadEvents::ON_CAMPAIGN_BATCH_ACTION,
         ];
         $event->addAction('lead.updatelead', $action);
 
@@ -314,15 +319,32 @@ class CampaignSubscriber implements EventSubscriberInterface
         return $event->setResult($somethingHappened);
     }
 
-    public function onCampaignTriggerActionUpdateLead(CampaignExecutionEvent $event)
+    public function onCampaignTriggerActionUpdateLead(PendingEvent $event): void
     {
+        $values = $event->getEvent()->getProperties();
         if (!$event->checkContext('lead.updatelead')) {
             return;
         }
 
-        $lead   = $event->getLead();
-        $values = $event->getConfig();
+        $logs = $event->getPending();
+
+        foreach ($logs as $log) {
+            $this->updateLead($log, $values, $event);
+        }
+    }
+
+    /**
+     * @param array<mixed> $values
+     */
+    private function updateLead(LeadEventLog $log, array $values, PendingEvent $event): void
+    {
+        $lead   = $log->getLead();
         $fields = $lead->getFields(true);
+        try {
+            $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $values), false);
+        } catch (ImportFailedException $e) {
+            $event->fail($log, $e->getMessage());
+        }
 
         $tokenizedValues = [];
         foreach ($values as $field => $value) {
@@ -336,7 +358,7 @@ class CampaignSubscriber implements EventSubscriberInterface
 
         $this->leadModel->saveEntity($lead);
 
-        return $event->setResult(true);
+        $event->pass($log);
     }
 
     public function onCampaignTriggerActionChangeOwner(CampaignExecutionEvent $event)
