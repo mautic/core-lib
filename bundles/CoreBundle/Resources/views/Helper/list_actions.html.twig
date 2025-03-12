@@ -76,7 +76,7 @@
                     message: (translationBase ~ '.form.confirmdelete')|trans({'%name%': (name ~ ' (' ~ id ~ ')')}),
                     confirmAction: path(
                         actionRoute,
-                        {objectAction: 'delete', objectId: id}
+                        query|merge({objectAction: 'delete', objectId: id})
                     ),
                     template: 'delete'
                 },

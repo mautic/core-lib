@@ -24,7 +24,7 @@
                     message: translatorHasId(translationBase ~ '.form.confirmbatchdelete')
                         ? (translationBase ~ '.form.confirmbatchdelete')|trans
                         : 'mautic.core.form.confirmbatchdelete'|trans,
-                    confirmAction: path(actionRoute, {objectAction: 'batchDelete'}),
+                    confirmAction: path(actionRoute, query|merge({objectAction: 'batchDelete'})),
                     template: 'batchdelete'
                 },
                 priority: -1
