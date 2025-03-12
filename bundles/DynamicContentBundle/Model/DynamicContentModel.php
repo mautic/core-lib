@@ -3,6 +3,7 @@
 namespace Mautic\DynamicContentBundle\Model;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use InvalidArgumentException;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\Chart\LineChart;
 use Mautic\CoreBundle\Model\AjaxLookupModelInterface;
@@ -79,6 +80,28 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
         }
 
         return parent::getEntity($id);
+    }
+
+    public function checkEntityBySlotName(string $slotName, ?string $type = null, string $typeCondition = '='): bool
+    {
+        $qb = $this->em->getConnection()->createQueryBuilder();
+
+        $qb->select('1')
+            ->from(MAUTIC_TABLE_PREFIX.'dynamic_content')
+            ->where($qb->expr()->eq('slot_name', ':slot_name'))
+            ->setParameter('slot_name', $slotName)
+            ->setMaxResults(1);
+
+        if (!empty($type)) {
+            if (!in_array($typeCondition, ['=', '<>', '!='], true)) {
+                throw new InvalidArgumentException("Invalid operator '$typeCondition'");
+            }
+
+            $qb->andWhere("type {$typeCondition} :type");
+            $qb->setParameter('type', $type);
+        }
+
+        return (bool) $qb->execute()->fetchOne();
     }
 
     /**
