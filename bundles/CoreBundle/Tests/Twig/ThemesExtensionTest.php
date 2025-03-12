@@ -30,14 +30,12 @@ class ThemesExtensionTest extends TestCase
     {
         $this->coreParametersHelper->method('get')
             ->with('primary_brand_color', '000000')
-            ->willReturn('000000');
+            ->willReturnOnConsecutiveCalls('000000', 'ffffff');
 
+        // First assertion: primary color is '000000', text color should be 'ffffff'
         $this->assertEquals('ffffff', $this->themesExtension->getTextOnBrandColor());
 
-        $this->coreParametersHelper->method('get')
-            ->with('primary_brand_color', '000000')
-            ->willReturn('ffffff');
-
+        // Second assertion: primary color is 'ffffff', text color should be '000000'
         $this->assertEquals('000000', $this->themesExtension->getTextOnBrandColor());
     }
 
@@ -57,14 +55,7 @@ class ThemesExtensionTest extends TestCase
 
     public function testGetRoundedCorners(): void
     {
-        $this->coreParametersHelper->method('get')
-            ->with('rounded_corners', 0)
-            ->willReturn(16);
-
-        $this->assertEquals(16, $this->themesExtension->getRoundedCorners('lg'));
-        $this->assertEquals(6, $this->themesExtension->getRoundedCorners('md'));
-        $this->assertEquals(4, $this->themesExtension->getRoundedCorners('sm'));
-
+        // First set of assertions: rounded corners set to 8
         $this->coreParametersHelper->method('get')
             ->with('rounded_corners', 0)
             ->willReturn(8);
@@ -73,6 +64,24 @@ class ThemesExtensionTest extends TestCase
         $this->assertEquals(4, $this->themesExtension->getRoundedCorners('md'));
         $this->assertEquals(3, $this->themesExtension->getRoundedCorners('sm'));
 
+        // Reset the mock for the next set of assertions
+        $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+        $this->themesExtension      = new ThemesExtension($this->coreParametersHelper);
+
+        // Second set of assertions: rounded corners set to 16
+        $this->coreParametersHelper->method('get')
+            ->with('rounded_corners', 0)
+            ->willReturn(16);
+
+        $this->assertEquals(16, $this->themesExtension->getRoundedCorners('lg'));
+        $this->assertEquals(6, $this->themesExtension->getRoundedCorners('md'));
+        $this->assertEquals(4, $this->themesExtension->getRoundedCorners('sm'));
+
+        // Reset the mock for the next set of assertions
+        $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+        $this->themesExtension      = new ThemesExtension($this->coreParametersHelper);
+
+        // Third set of assertions: rounded corners set to 32
         $this->coreParametersHelper->method('get')
             ->with('rounded_corners', 0)
             ->willReturn(32);
