@@ -8,7 +8,6 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\CacheItem;
-use Symfony\Component\Cache\Exception\InvalidArgumentException;
 use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -82,22 +81,11 @@ abstract class AbstractCacheProvider implements CacheProviderInterface
         return $this->getCacheAdapter()->commit();
     }
 
-    protected function cacheAdapterFactory(string $parameter, string $interface): AdapterInterface
+    protected function cacheAdapterFactory(string $parameter): AdapterInterface
     {
         if (null === $this->adapter) {
-            $service = $this->coreParametersHelper->get($parameter);
-
-            if (!$service || !$this->container->has($service)) {
-                throw new InvalidArgumentException('Requested cache adapter "'.$service.'" is not available');
-            }
-
-            $adapter = $this->container->get($service);
-
-            if (!$adapter instanceof $interface) {
-                throw new InvalidArgumentException(sprintf('Requested cache adapter "%s" is not a %s', $service, $interface));
-            }
-
-            $this->adapter = $adapter;
+            $service       = $this->coreParametersHelper->get($parameter);
+            $this->adapter = $this->container->get($service);
         }
 
         return $this->adapter;

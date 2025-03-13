@@ -10,6 +10,6 @@ final class CacheProvider extends AbstractCacheProvider
 {
     public function getCacheAdapter(): AdapterInterface
     {
-        return $this->cacheAdapterFactory('cache_adapter', AdapterInterface::class);
+        return $this->cacheAdapterFactory('cache_adapter');
     }
 }

@@ -10,7 +10,7 @@ final class CacheProviderTagAware extends AbstractCacheProvider implements Cache
 {
     public function getCacheAdapter(): TagAwareAdapterInterface
     {
-        $adapter = $this->cacheAdapterFactory('cache_adapter_tag_aware', TagAwareAdapterInterface::class);
+        $adapter = $this->cacheAdapterFactory('cache_adapter_tag_aware');
         \assert($adapter instanceof TagAwareAdapterInterface);
 
         return $adapter;
