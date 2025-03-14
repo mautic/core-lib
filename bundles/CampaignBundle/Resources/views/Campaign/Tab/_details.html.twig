@@ -1,6 +1,7 @@
 <div class="table-responsive campaign-changelog">
     <ul class="media-list media-list-feed">
         <li class="media">
+            <!-- Changelog : Events -->
             {% if details.events is defined %}
                 {% set changeSet = details.events %}
                 {% if changeSet.removed is defined %}
@@ -27,9 +28,9 @@
                                     </caption>
                                     <thead class="thead-dark">
                                     <tr>
-                                        <th>Field</th>
-                                        <th>Old Value</th>
-                                        <th>New Value</th>
+                                        <th>{{ 'mautic.lead.audit.log.field'|trans }}</th>
+                                        <th>{{ 'mautic.lead.audit.log.old_value'|trans }}</th>
+                                        <th>{{ 'mautic.lead.audit.log.new_value'|trans }}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -54,8 +55,41 @@
                     {% endfor %}
                 {% endif %}
             {% endif %}
-
-            {% set filteredDetails = details|filter((value, key) => key != 'events') %}
+            <!-- Changelog : Events Ends -->
+            
+            <!-- Changelog : Source list -->
+            {% set sourceDetails = details|filter((value, key) => key == 'lists') %}
+            {% if sourceDetails is not empty and sourceDetails.lists is defined %}
+                <div class="table-wrapper media-body">
+                    <table class="table table-striped table-bordered">
+                        <caption class="table-caption text-success">
+                            <strong>{{ 'mautic.campaign.changelog.source.updated'|trans }}</strong>
+                        </caption>
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>{{ 'mautic.lead.audit.log.field'|trans }}</th>
+                            <th>{{ 'mautic.lead.audit.log.new_value'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set listsUpdates = sourceDetails.lists %}
+                        {% for key, value in listsUpdates %}
+                            <tr>
+                                <td>{{ 'mautic.campaign.leadsource.header'|trans }} - {{ key|capitalize }}</td>
+                                <td>
+                                    {{ value|json_encode(constant('JSON_PRETTY_PRINT')) }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <hr />
+            {% endif %}
+            <!-- Changelog : Source list end -->
+            
+            <!-- Changelog : Rest of the meta -->
+            {% set filteredDetails = details|filter((value, key) => key != 'events' and key != 'lists') %}
             {% if filteredDetails is not empty %}
                 <div class="table-wrapper media-body">
                     <table class="table table-striped table-bordered">
@@ -88,6 +122,7 @@
                 </div>
                 <hr />
             {% endif %}
+            <!-- Changelog : Rest of the meta End-->
         </li>
     </ul>
 </div>
