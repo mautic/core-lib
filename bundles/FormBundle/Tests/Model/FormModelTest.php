@@ -461,7 +461,7 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
 
         $this->formModel->getEntity(5);
 
-        if ($type === 'lookup') {
+        if ('lookup' === $type) {
             $expectedList = [];
             foreach ($options as $option) {
                 $expectedList[$option['value']] = $option['label'];
