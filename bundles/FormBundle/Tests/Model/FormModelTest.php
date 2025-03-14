@@ -461,7 +461,15 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
 
         $this->formModel->getEntity(5);
 
-        $this->assertSame($options, $formField->getProperties()['list']['list']);
+        if ($type === 'lookup') {
+            $expectedList = [];
+            foreach ($options as $option) {
+                $expectedList[$option['value']] = $option['label'];
+            }
+            $this->assertSame($expectedList, $formField->getProperties()['list']['list']);
+        } else {
+            $this->assertSame($options, $formField->getProperties()['list']['list']);
+        }
     }
 
     private function standardSyncListStaticFieldTest(string $type): Field
