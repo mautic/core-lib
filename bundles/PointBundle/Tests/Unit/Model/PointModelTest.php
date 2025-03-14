@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Mautic\PointBundle\Tests\Unit\Model;
 
 use Doctrine\ORM\EntityManager;
+/**
+ * @deprecated to be removed in 3.0
+ */
 use Mautic\CoreBundle\Factory\MauticFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
@@ -26,7 +29,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class PointModelTest extends TestCase
 {
     private PointModel $pointModel;
+    /**
+     * @var PointRepository&\PHPUnit\Framework\MockObject\MockObject
+     */
     private PointRepository $pointRepository;
+    /**
+     * @var IpLookupHelper&\PHPUnit\Framework\MockObject\MockObject
+     */
     private IpLookupHelper $ipLookupHelper;
 
     protected function setUp(): void
@@ -107,6 +116,9 @@ class PointModelTest extends TestCase
         // Arrange
         $type  = 'email.send';
         $lead  = new Lead();
+        /**
+         * @var Point&\PHPUnit\Framework\MockObject\MockObject
+         */
         $point = $this->createMock(Point::class);
 
         // Configure repository to return a point for getPublishedByType
