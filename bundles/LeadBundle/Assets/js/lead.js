@@ -783,6 +783,9 @@ Mautic.segmentFilter = function() {
             $glueWrapper.removeClass('hide');
         }
 
+        // Hide the "When" text in the cloned filter
+        $clone.find('.filter--condition-when').addClass('hide');
+
         const $filters = $origin.closest('.selected-filters');
 
         $filters.append($clone);
