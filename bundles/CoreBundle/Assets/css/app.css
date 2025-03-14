@@ -1664,8 +1664,8 @@ body > #app-wrapper {
 }
 #app-header.navbar .navbar-nocollapse .navbar-form .form-group,
 #app-header.navbar .navbar-nocollapse .navbar-form .input-group {
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 #app-header.navbar .navbar-nocollapse .navbar-form .form-group i,
 #app-header.navbar .navbar-nocollapse .navbar-form .input-group i {
@@ -2642,24 +2642,24 @@ kbd {
   margin-top: -1px;
 }
 .btn.btn-rounded {
-  border-radius: 32px;
+  border-radius: 40px;
   padding-left: 16px;
   padding-right: 16px;
 }
 .btn.btn-circle {
-  width: 32px;
+  width: 40px;
   padding-left: 0;
   padding-right: 0;
   border-radius: 50%;
 }
 .btn.btn-circle.btn-lg {
-  width: 43px;
+  width: 49px;
 }
 .btn.btn-circle.btn-sm {
-  width: 28px;
+  width: 31px;
 }
 .btn.btn-circle.btn-xs {
-  width: 20px;
+  width: 23px;
 }
 .btn.btn-outline {
   background-color: transparent;
@@ -6045,7 +6045,7 @@ input[style]:hover {
 .form-control.form-control-rounded,
 .chosen-container .chosen-single.form-control-rounded,
 .form-control.search.tt-input.form-control-rounded {
-  border-radius: 32px;
+  border-radius: 40px;
 }
 .form-control:hover,
 .chosen-container .chosen-single:hover,
@@ -6137,32 +6137,32 @@ fieldset[disabled] .form-control {
   position: relative;
 }
 .form-control-icon .form-control {
-  padding-left: 32px;
+  padding-left: 40px;
 }
 .form-control-icon .form-control.input-lg {
-  padding-left: 42px;
+  padding-left: 48px;
 }
 .form-control-icon .form-control.input-lg + .the-icon {
   font-size: 16px;
-  line-height: 42px;
-  width: 42px;
+  line-height: 48px;
+  width: 48px;
 }
 .form-control-icon .form-control.input-sm {
-  padding-left: 29px;
+  padding-left: 32px;
 }
 .form-control-icon .form-control.input-sm + .the-icon {
   font-size: 12px;
-  line-height: 29px;
-  width: 29px;
+  line-height: 32px;
+  width: 32px;
 }
 .form-control-icon .the-icon {
   position: absolute;
   z-index: 2;
   top: 50%;
   transform: translate(-50%, -50%);
-  left: 32px;
-  line-height: 31px;
-  width: 32px;
+  left: 40px;
+  line-height: 39px;
+  width: 40px;
   text-align: center;
 }
 .form-control-icon.form-control-icon-right .the-icon {
@@ -6171,15 +6171,15 @@ fieldset[disabled] .form-control {
 }
 .form-control-icon.form-control-icon-right .form-control {
   padding-left: 12px;
-  padding-right: 32px;
+  padding-right: 40px;
 }
 .form-control-icon.form-control-icon-right .form-control.input-lg {
   padding-left: 16px;
-  padding-right: 42px;
+  padding-right: 48px;
 }
 .form-control-icon.form-control-icon-right .form-control.input-sm {
   padding-left: 10px;
-  padding-right: 29px;
+  padding-right: 32px;
 }
 input[type=file].form-control {
   padding: 6px;
@@ -7220,7 +7220,7 @@ ul.line-legend li {
 .step > li + li .steps:after {
   content: "";
   position: absolute;
-  left: 32px / 2;
+  left: 40px / 2;
   top: -15px;
   height: 15px;
   width: 1px;
@@ -7255,11 +7255,11 @@ ul.line-legend li {
 }
 .step .steps > .steps-figure {
   display: inline-block;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   text-align: center;
   font-size: 14px;
-  line-height: 28px;
+  line-height: 36px;
   border-radius: 50%;
   border: 2px solid #a0acb8;
 }
@@ -7284,7 +7284,7 @@ ul.line-legend li {
   content: "";
   position: absolute;
   left: -18px;
-  top: 32px / 2;
+  top: 40px / 2;
   height: 1px;
   width: 18px;
   background-color: #a0acb8;
@@ -7331,11 +7331,11 @@ ul.line-legend li {
 }
 .horizontal-step .steps > .steps-figure {
   display: inline-block;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   text-align: center;
   font-size: 14px;
-  line-height: 28px;
+  line-height: 36px;
   border-radius: 50%;
   border: 2px solid #a0acb8;
 }
