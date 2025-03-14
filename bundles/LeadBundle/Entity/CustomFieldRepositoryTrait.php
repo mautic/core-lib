@@ -2,6 +2,7 @@
 
 namespace Mautic\LeadBundle\Entity;
 
+use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -145,7 +146,7 @@ trait CustomFieldRepositoryTrait
                     $q = $this->getEntitiesOrmQueryBuilder($order, $args);
                     $this->buildSelectClause($dq, $args);
 
-                    $q->orderBy('ORD', \Doctrine\Common\Collections\Criteria::ASC);
+                    $q->orderBy('ORD', Order::Ascending->value);
                 }
 
                 // only pull the leads as filtered via DBAL
@@ -359,6 +360,16 @@ trait CustomFieldRepositoryTrait
         }
 
         return $fieldValues;
+    }
+
+    /**
+     * Retrieves the aliases of searchable fields that are indexed and published.
+     *
+     * @return array<int, string>
+     */
+    public function getSearchableFieldAliases(LeadFieldRepository $leadFieldRepository, string $object): array
+    {
+        return $leadFieldRepository->getSearchableFieldAliases($object);
     }
 
     /**

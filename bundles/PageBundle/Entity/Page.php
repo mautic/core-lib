@@ -9,6 +9,8 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\TranslationEntityInterface;
 use Mautic\CoreBundle\Entity\TranslationEntityTrait;
+use Mautic\CoreBundle\Entity\UuidInterface;
+use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Entity\VariantEntityInterface;
 use Mautic\CoreBundle\Entity\VariantEntityTrait;
 use Mautic\CoreBundle\Validator\EntityEvent;
@@ -18,10 +20,31 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-class Page extends FormEntity implements TranslationEntityInterface, VariantEntityInterface
+/**
+ * @ApiResource(
+ *   attributes={
+ *     "security"="false",
+ *     "normalization_context"={
+ *       "groups"={
+ *         "page:read"
+ *        },
+ *       "swagger_definition_name"="Read",
+ *       "api_included"={"category", "translationChildren"}
+ *     },
+ *     "denormalization_context"={
+ *       "groups"={
+ *         "page:write"
+ *       },
+ *       "swagger_definition_name"="Write"
+ *     }
+ *   }
+ * )
+ */
+class Page extends FormEntity implements TranslationEntityInterface, VariantEntityInterface, UuidInterface
 {
     use TranslationEntityTrait;
     use VariantEntityTrait;
+    use UuidTrait;
 
     /**
      * @var int
@@ -128,11 +151,14 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      */
     private $sessionId;
 
+    private ?PageDraft $draft = null;
+
     public function __clone()
     {
         $this->id = null;
         $this->clearTranslations();
         $this->clearVariants();
+        $this->setDraft(null);
 
         parent::__clone();
     }
@@ -221,8 +247,15 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
             ->nullable()
             ->build();
 
+        $builder->createOneToOne('draft', PageDraft::class)
+            ->mappedBy('page')
+            ->fetchExtraLazy()
+            ->cascadeAll()
+            ->build();
+
         self::addTranslationMetadata($builder, self::class);
         self::addVariantMetadata($builder, self::class);
+        static::addUuidField($builder);
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
@@ -236,17 +269,16 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
                 $type = $page->getRedirectType();
                 if (!is_null($type)) {
                     $validator  = $context->getValidator();
-                    $violations = $validator->validate($page->getRedirectUrl(), [
-                        new Assert\Url(
-                            [
-                                'message' => 'mautic.core.value.required',
-                            ]
-                        ),
-                    ]);
+                    $violations = $validator->validate(
+                        $page->getRedirectUrl(),
+                        [
+                            new Assert\Url(),
+                            new NotBlank(['message' => 'mautic.core.value.required']),
+                        ],
+                    );
 
-                    if (count($violations) > 0) {
-                        $string = (string) $violations;
-                        $context->buildViolation($string)
+                    foreach ($violations as $violation) {
+                        $context->buildViolation($violation->getMessage())
                             ->atPath('redirectUrl')
                             ->addViolation();
                     }
@@ -579,9 +611,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     }
 
     /**
-     * Set redirectType.
-     *
-     * @param string $redirectType
+     * @param ?string $redirectType
      *
      * @return Page
      */
@@ -594,9 +624,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     }
 
     /**
-     * Get redirectType.
-     *
-     * @return string
+     * @return ?string
      */
     public function getRedirectType()
     {
@@ -812,5 +840,25 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     public function setCustomHtml($customHtml): void
     {
         $this->customHtml = $customHtml;
+    }
+
+    public function hasDraft(): bool
+    {
+        return !is_null($this->getDraft());
+    }
+
+    public function getDraftContent(): ?string
+    {
+        return $this->hasDraft() ? $this->getDraft()->getHtml() : null;
+    }
+
+    public function getDraft(): ?PageDraft
+    {
+        return $this->draft;
+    }
+
+    public function setDraft(?PageDraft $draft): void
+    {
+        $this->draft = $draft;
     }
 }

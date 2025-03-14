@@ -7,6 +7,7 @@ namespace Mautic\LeadBundle\Tests\Field\Dispatcher;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Field\Dispatcher\FieldColumnDispatcher;
 use Mautic\LeadBundle\Field\Event\AddColumnEvent;
+use Mautic\LeadBundle\Field\Event\DeleteColumnEvent;
 use Mautic\LeadBundle\Field\Event\UpdateColumnEvent;
 use Mautic\LeadBundle\Field\Exception\AbortColumnCreateException;
 use Mautic\LeadBundle\Field\Exception\AbortColumnUpdateException;
@@ -50,7 +51,7 @@ class FieldColumnDispatcherTest extends \PHPUnit\Framework\TestCase
         $dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(fn (AddColumnEvent $event) => $event instanceof AddColumnEvent),
+                $this->isInstanceOf(AddColumnEvent::class),
                 'mautic.lead_field_pre_add_column'
             );
 
@@ -64,21 +65,18 @@ class FieldColumnDispatcherTest extends \PHPUnit\Framework\TestCase
 
     public function testStopPropagationUpdate(): void
     {
-        $leadField = new LeadField();
-
+        $leadField          = new LeadField();
         $dispatcher         = $this->createMock(EventDispatcherInterface::class);
         $backgroundSettings = $this->createMock(BackgroundSettings::class);
 
-        $backgroundSettings
-            ->expects($this->once())
+        $backgroundSettings->expects($this->once())
             ->method('shouldProcessColumnChangeInBackground')
             ->willReturn(true);
 
-        $dispatcher
-            ->expects($this->once())
+        $dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(fn (UpdateColumnEvent $event) => $event instanceof UpdateColumnEvent),
+                $this->isInstanceOf(UpdateColumnEvent::class),
                 'mautic.lead_field_pre_update_column',
             );
 
@@ -88,5 +86,34 @@ class FieldColumnDispatcherTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Column change will be processed in background job');
 
         $fieldColumnDispatcher->dispatchPreUpdateColumnEvent($leadField);
+    }
+
+    public function testStopPropagationDelete(): void
+    {
+        $leadField          = new LeadField();
+        $dispatcher         = $this->createMock(EventDispatcherInterface::class);
+        $backgroundSettings = $this->createMock(BackgroundSettings::class);
+
+        $dispatcher->expects($this->once())
+            ->method('hasListeners')
+            ->willReturn(true);
+
+        $backgroundSettings->expects($this->once())
+            ->method('shouldProcessColumnChangeInBackground')
+            ->willReturn(true);
+
+        $dispatcher->expects($this->once())
+            ->method('dispatch')
+            ->with(
+                $this->callback(fn ($event) => $event instanceof DeleteColumnEvent),
+                'mautic.lead_field_pre_delete_column',
+            );
+
+        $fieldColumnDispatcher = new FieldColumnDispatcher($dispatcher, $backgroundSettings);
+
+        $this->expectException(AbortColumnUpdateException::class);
+        $this->expectExceptionMessage('Column delete will be processed in background job');
+
+        $fieldColumnDispatcher->dispatchPreDeleteColumnEvent($leadField);
     }
 }

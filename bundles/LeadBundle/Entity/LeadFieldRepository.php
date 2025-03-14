@@ -3,7 +3,9 @@
 namespace Mautic\LeadBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\ParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\InputHelper;
 
@@ -102,8 +104,27 @@ class LeadFieldRepository extends CommonRepository
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieves the aliases of searchable fields that are indexed and published.
+     *
+     * @return string[]
      */
+    public function getSearchableFieldAliases(string $object = null): array
+    {
+        $fq = $this->createQueryBuilder($this->getTableAlias());
+        $fq->select($this->getTableAlias().'.alias')
+            ->andWhere($fq->expr()->eq($this->getTableAlias().'.isIndex', true))
+            ->andWhere($fq->expr()->eq($this->getTableAlias().'.isPublished', true));
+
+        if (!empty($object)) {
+            $fq->andWhere($fq->expr()->eq($this->getTableAlias().'.object', ':object'))
+                ->setParameter('object', $object, ParameterType::STRING);
+        }
+
+        $results = $fq->getQuery()->getResult();
+
+        return array_column($results, 'alias');
+    }
+
     public function getTableAlias(): string
     {
         return 'f';
@@ -412,7 +433,7 @@ class LeadFieldRepository extends CommonRepository
     {
         $qb = $this->createQueryBuilder($this->getTableAlias());
         $qb->where($qb->expr()->eq("{$this->getTableAlias()}.columnIsNotCreated", 1));
-        $qb->orderBy("{$this->getTableAlias()}.dateAdded", \Doctrine\Common\Collections\Criteria::ASC);
+        $qb->orderBy("{$this->getTableAlias()}.dateAdded", Order::Ascending->value);
         $qb->setMaxResults(1);
 
         return $qb->getQuery()->getOneOrNullResult();
