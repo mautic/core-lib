@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Mautic\CacheBundle\Cache\Adapter;
 
-use Symfony\Component\Cache\Adapter\RedisAdapter;
-use Symfony\Component\Cache\Adapter\TagAwareAdapter;
+use Symfony\Component\Cache\Adapter\RedisAdapter as SymfonyRedisAdapter;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-class RedisTagAwareAdapter extends TagAwareAdapter
+class RedisAdapter extends SymfonyRedisAdapter
 {
     use RedisAdapterTrait;
 
@@ -28,11 +27,6 @@ class RedisTagAwareAdapter extends TagAwareAdapter
         #[Autowire(env: 'bool:MAUTIC_REDIS_PRIMARY_ONLY')]
         bool $primaryOnly)
     {
-        $client = $this->createClient($servers, $primaryOnly);
-
-        parent::__construct(
-            new RedisAdapter($client, $namespace, $lifetime),
-            new RedisAdapter($client, $namespace.'.tags.', $lifetime)
-        );
+        parent::__construct($this->createClient($servers, $primaryOnly), $namespace, $lifetime);
     }
 }
