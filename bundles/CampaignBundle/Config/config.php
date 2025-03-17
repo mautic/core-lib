@@ -239,16 +239,6 @@ return [
                     'mautic.campaign.helper.removed_contact_tracker',
                 ],
             ],
-            'mautic.campaign.executioner.kickoff'     => [
-                'class'     => Mautic\CampaignBundle\Executioner\KickoffExecutioner::class,
-                'arguments' => [
-                    'monolog.logger.mautic',
-                    'mautic.campaign.contact_finder.kickoff',
-                    'translator',
-                    'mautic.campaign.event_executioner',
-                    'mautic.campaign.scheduler',
-                ],
-            ],
             'mautic.campaign.executioner.realtime'     => [
                 'class'     => Mautic\CampaignBundle\Executioner\RealTimeExecutioner::class,
                 'arguments' => [
