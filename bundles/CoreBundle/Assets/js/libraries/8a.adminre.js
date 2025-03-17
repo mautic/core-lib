@@ -367,6 +367,48 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                 });
                 updateToolbarState();
 
+                // Allow clicking on table rows to toggle checkbox
+                $(document).on("click", "tbody tr", function(e) {
+                    // Ignore clicks on links, buttons, inputs, and other interactive elements
+                    if ($(e.target).is('a, button, input, textarea, select, .dropdown-toggle, i') || $(e.target).closest('a, button, .dropdown-toggle').length) {
+                        return;
+                    }
+
+                    // Find checkbox in this row
+                    var checkbox = $(this).find(toggler);
+                    if (checkbox.length > 0) {
+                        // Handle shift-click range selection
+                        if (e.shiftKey && lastCheckedBox !== null) {
+                            var checkboxes = $(toggler);
+                            var startIndex = checkboxes.index(lastCheckedBox);
+                            var endIndex = checkboxes.index(checkbox);
+
+                            // Determine the range of checkboxes to check/uncheck
+                            var start = Math.min(startIndex, endIndex);
+                            var end = Math.max(startIndex, endIndex);
+
+                            // Get the checked state from the clicked checkbox
+                            var isChecked = !checkbox.is(":checked"); // Toggle state
+
+                            // Apply the same state to all checkboxes in range
+                            checkboxes.slice(start, end + 1).each(function() {
+                                // Only change if the current state is different
+                                if ($(this).prop("checked") !== isChecked) {
+                                    $(this).prop("checked", isChecked).trigger("change");
+                                }
+                            });
+                        } else {
+                            // Toggle single checkbox
+                            checkbox.prop("checked", !checkbox.prop("checked")).trigger("change");
+                            lastCheckedBox = checkbox[0];
+                        }
+
+                        // Prevent default behavior and stop propagation
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+
                 // clicker
                 $(document).on("change", toggler, function () {
                     target = $(toggler).data("target");
@@ -400,6 +442,9 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                                 $(this).prop("checked", isChecked).trigger("change");
                             }
                         });
+
+                        // Stop propagation to prevent the row click handler from being triggered
+                        e.stopPropagation();
                     }
 
                     // Update the last checked box reference
