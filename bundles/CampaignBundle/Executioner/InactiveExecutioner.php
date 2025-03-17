@@ -45,7 +45,7 @@ class InactiveExecutioner implements ExecutionerInterface
         private EventScheduler $scheduler,
         private InactiveHelper $helper,
         private EventExecutioner $executioner,
-        private ProcessSignalService $processSignalService
+        private ProcessSignalService $processSignalService,
     ) {
     }
 

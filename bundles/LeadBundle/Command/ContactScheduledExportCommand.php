@@ -27,7 +27,7 @@ class ContactScheduledExportCommand extends Command
         private ContactExportSchedulerModel $contactExportSchedulerModel,
         private EventDispatcherInterface $eventDispatcher,
         private FormatterHelper $formatterHelper,
-        private ProcessSignalService $processSignalService
+        private ProcessSignalService $processSignalService,
     ) {
         parent::__construct();
     }
@@ -75,7 +75,7 @@ class ContactScheduledExportCommand extends Command
             $output->writeln('Contact export email(s) sent: '.$count);
 
             return ExitCode::SUCCESS;
-        } catch (SignalCaughtException $e) {
+        } catch (SignalCaughtException) {
             $output->writeln('touch job');
 
             return ExitCode::TERMINATED;

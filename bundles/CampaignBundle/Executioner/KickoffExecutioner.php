@@ -38,7 +38,7 @@ class KickoffExecutioner implements ExecutionerInterface
         private TranslatorInterface $translator,
         private EventExecutioner $executioner,
         private EventScheduler $scheduler,
-        private ProcessSignalService $processSignalService
+        private ProcessSignalService $processSignalService,
     ) {
     }
 

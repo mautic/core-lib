@@ -29,7 +29,7 @@ class ExportHelper
         private TranslatorInterface $translator,
         private CoreParametersHelper $coreParametersHelper,
         private FilePathResolver $filePathResolver,
-        private ProcessSignalService $processSignalService
+        private ProcessSignalService $processSignalService,
     ) {
     }
 

@@ -2,10 +2,12 @@
 
 namespace Mautic\LeadBundle\Tests\Command;
 
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\ExitCode;
 use Mautic\CoreBundle\ProcessSignal\Exception\SignalCaughtException;
 use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
-use Mautic\CoreBundle\Templating\Helper\FormatterHelper;
+use Mautic\CoreBundle\Twig\Helper\DateHelper;
+use Mautic\CoreBundle\Twig\Helper\FormatterHelper;
 use Mautic\LeadBundle\Command\ContactScheduledExportCommand;
 use Mautic\LeadBundle\Entity\ContactExportScheduler;
 use Mautic\LeadBundle\Entity\ContactExportSchedulerRepository;
@@ -14,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContactScheduledExportCommandTest extends TestCase
 {
@@ -21,7 +24,19 @@ class ContactScheduledExportCommandTest extends TestCase
     {
         $contactExportScheduledModel = $this->createMock(ContactExportSchedulerModel::class);
         $eventDispatcher             = $this->createMock(EventDispatcherInterface::class);
-        $formatterHelper             = $this->createMock(FormatterHelper::class);
+
+        $translator           = $this->createMock(TranslatorInterface::class);
+        $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+        $dateHelper           = new DateHelper(
+            'F j, Y g:i a T',
+            'D, M d',
+            'F j, Y',
+            'g:i a',
+            $translator,
+            $coreParametersHelper
+        );
+
+        $formatterHelper             = new FormatterHelper($dateHelper, $translator);
         $processSignalService        = $this->createMock(ProcessSignalService::class);
 
         $contactExportSchedulerRepository = $this->createMock(ContactExportSchedulerRepository::class);

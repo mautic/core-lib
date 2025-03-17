@@ -60,7 +60,7 @@ class TriggerCampaignCommand extends ModeratedCommand
         private SegmentCountCacheHelper $segmentCountCacheHelper,
         PathsHelper $pathsHelper,
         CoreParametersHelper $coreParametersHelper,
-        private ProcessSignalService $processSignalService
+        private ProcessSignalService $processSignalService,
     ) {
         parent::__construct($pathsHelper, $coreParametersHelper);
     }
