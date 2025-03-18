@@ -48,6 +48,10 @@ class ContactScheduledExportCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->processSignalService->registerSignalHandler(
+            fn (int $signal) => $output->writeln(sprintf('Signal %d caught.', $signal))
+        );
+
         $ids = $this->formatterHelper->simpleCsvToArray($input->getOption('ids'), 'int');
 
         if ($ids) {
@@ -58,10 +62,6 @@ class ContactScheduledExportCommand extends Command
         }
 
         $count = 0;
-
-        $this->processSignalService->registerSignalHandler(
-            fn (int $signal) => $output->writeln(sprintf('Signal %d caught.', $signal))
-        );
 
         try {
             foreach ($contactExportSchedulers as $contactExportScheduler) {
