@@ -12,12 +12,12 @@ use Mautic\FormBundle\Entity\Field;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadList;
+use PHPUnit\Framework\Assert;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use PHPUnit\Framework\Assert;
 
 class FormControllerFunctionalTest extends MauticMysqlTestCase
 {
@@ -639,6 +639,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $form = new Form();
         $form->setName($name);
         $form->setAlias($alias);
+        $form->setPostActionProperty('Success');
         $this->em->persist($form);
 
         return $form;
@@ -654,9 +655,9 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $field->setLabel($data['label'] ?? 'Field 1');
         $field->setAlias('field_'.$aliasSlug);
         $field->setType($data['type'] ?? 'text');
-        $field->setMappedObject($data['mappedObject']);
-        $field->setMappedField($data['mappedField']);
-        $field->setConditions($data['conditions']);
+        $field->setMappedObject($data['mappedObject'] ?? '');
+        $field->setMappedField($data['mappedField'] ?? '');
+        $field->setConditions($data['conditions'] ?? []);
         $this->em->persist($field);
 
         return $field;
