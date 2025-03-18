@@ -3,18 +3,15 @@
 namespace Mautic\CoreBundle\Twig\Extension;
 
 use Mautic\UserBundle\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Intl\Languages;
-use Symfony\Component\Security\Core\Security;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class LanguageExtension extends AbstractExtension
 {
-    private $security;
-
-    public function __construct(Security $security)
+    public function __construct(private Security $security)
     {
-        $this->security = $security;
     }
 
     public function getFilters()
@@ -40,7 +37,7 @@ class LanguageExtension extends AbstractExtension
 
         try {
             return Languages::getName($code, $displayLocale) ?: $code;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $code;
         }
     }

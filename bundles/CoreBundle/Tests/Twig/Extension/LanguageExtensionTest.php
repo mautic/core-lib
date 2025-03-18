@@ -5,11 +5,11 @@ namespace Mautic\CoreBundle\Tests\Twig\Extension;
 use Mautic\CoreBundle\Twig\Extension\LanguageExtension;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class LanguageExtensionTest extends TestCase
 {
-    public function testGetLanguageNameReturnsEnglishForEn()
+    public function testGetLanguageNameReturnsEnglishForEn(): void
     {
         $security = $this->createMock(Security::class);
         $security->method('getUser')->willReturn(null);
@@ -17,7 +17,7 @@ class LanguageExtensionTest extends TestCase
         $this->assertEquals('English', $extension->getLanguageName('en'));
     }
 
-    public function testGetLanguageNameReturnsCodeOnException()
+    public function testGetLanguageNameReturnsCodeOnException(): void
     {
         $security = $this->createMock(Security::class);
         $security->method('getUser')->willReturn(null);
@@ -25,7 +25,7 @@ class LanguageExtensionTest extends TestCase
         $this->assertEquals('xx', $extension->getLanguageName('xx'));
     }
 
-    public function testGetLanguageNameUsesUserLocale()
+    public function testGetLanguageNameUsesUserLocale(): void
     {
         $user = $this->createMock(User::class);
         $user->method('getLocale')->willReturn('fr');
