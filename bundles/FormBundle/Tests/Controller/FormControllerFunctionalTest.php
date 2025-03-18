@@ -613,7 +613,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $crawler        = $this->client->request(Request::METHOD_GET, "/s/forms/clone/{$form->getId()}");
         $mauticform     = $crawler->filterXPath('//form[@name="mauticform"]')->form();
         $mauticform['mauticform[name]']->setValue('Clone Conditional Form');
-        $mauticform['mauticform[isPublished]']->setValue(true);
+        $mauticform['mauticform[isPublished]']->setValue('1');
 
         $this->client->submit($mauticform);
 
