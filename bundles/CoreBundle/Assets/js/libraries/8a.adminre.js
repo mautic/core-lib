@@ -358,6 +358,25 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
 
                 // Track the last clicked checkbox for shift-click functionality
                 var lastCheckedBox = null;
+                // Variable to track if shift key is pressed
+                var shiftKeyPressed = false;
+
+                // Monitor shift key state
+                $(document).on("keydown", function(e) {
+                    if (e.shiftKey) {
+                        shiftKeyPressed = true;
+                        // Add a class to prevent text selection while shift is pressed
+                        $('body').addClass('no-text-select');
+                    }
+                });
+
+                $(document).on("keyup", function(e) {
+                    if (!e.shiftKey && shiftKeyPressed) {
+                        shiftKeyPressed = false;
+                        // Remove the no-text-select class when shift is released
+                        $('body').removeClass('no-text-select');
+                    }
+                });
 
                 // check on DOM ready
                 $(toggler).each(function () {
@@ -379,6 +398,9 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                     if (checkbox.length > 0) {
                         // Handle shift-click range selection
                         if (e.shiftKey && lastCheckedBox !== null) {
+                            // Prevent text selection
+                            e.preventDefault();
+                            
                             var checkboxes = $(toggler);
                             var startIndex = checkboxes.index(lastCheckedBox);
                             var endIndex = checkboxes.index(checkbox);
@@ -424,6 +446,9 @@ if (typeof jQuery === "undefined") { throw new Error("This application requires 
                 // Add shift-click functionality for range selection
                 $(document).on("click", toggler, function(e) {
                     if (e.shiftKey && lastCheckedBox !== null) {
+                        // Prevent text selection
+                        e.preventDefault();
+                        
                         var checkboxes = $(toggler);
                         var startIndex = checkboxes.index(lastCheckedBox);
                         var endIndex = checkboxes.index(this);
