@@ -54,11 +54,11 @@ class UUIDListener implements EventSubscriber
      */
     private function updateDuplicateUUID(object $object): void
     {
-        if (empty($object->getUuid()) || (method_exists(get_class($object), 'getId') && null !== $object->getId())) {
+        if (empty($object->getUuid()) || (method_exists($object::class, 'getId') && null !== $object->getId())) {
             return;
         }
 
-        $entityExists = $this->em->getRepository(get_class($object))->findBy([
+        $entityExists = $this->em->getRepository($object::class)->findBy([
             'uuid' => $object->getUuid(),
         ]);
 
