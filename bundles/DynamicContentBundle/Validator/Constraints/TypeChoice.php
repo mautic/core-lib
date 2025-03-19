@@ -19,7 +19,10 @@ final class TypeChoice extends Choice
      */
     public $message;
 
-    public function __construct($options = null)
+    /**
+     * @param string|array<string> $options
+     */
+    public function __construct(string|array $options = [])
     {
         parent::__construct($options);
         $this->message = sprintf(self::ERROR_MESSAGE, TypeList::HTML, TypeList::TEXT);

@@ -141,12 +141,14 @@ Mautic.dwcGenerator = (function() {
 Mautic.toggleContentEditor = function () {
     const typeField = mQuery('#dwc_type').val();
     const contentField = mQuery('#dwc_content');
-
     if (typeField === 'html') {
         Mautic.ConvertFieldToCkeditor(contentField, MauticVars.maxButtons);
     } else if (typeField === 'text') {
-        if (typeof CKEDITOR !== 'undefined' && CKEDITOR.instances[contentField.attr('id')]) {
-            CKEDITOR.instances[contentField.attr('id')].destroy();
+        if (ckEditors.size > 0) {
+            ckEditors.forEach(function(value, key, map){
+                map.get(key).destroy()
+            })
+            ckEditors.clear();
         }
     }
 };

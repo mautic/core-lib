@@ -100,7 +100,7 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
             $qb->setParameter('type', $type);
         }
 
-        return (bool) $qb->execute()->fetchOne();
+        return (bool) $qb->executeQuery()->fetchOne();
     }
 
     /**
