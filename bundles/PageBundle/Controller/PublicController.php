@@ -23,6 +23,7 @@ use Mautic\LeadBundle\Tracker\Service\DeviceTrackingService\DeviceTrackingServic
 use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Event\PageDisplayEvent;
 use Mautic\PageBundle\Event\TrackingEvent;
+use Mautic\PageBundle\Helper\PageConfig;
 use Mautic\PageBundle\Helper\TrackingHelper;
 use Mautic\PageBundle\Model\PageModel;
 use Mautic\PageBundle\Model\Tracking404Model;
@@ -320,9 +321,12 @@ class PublicController extends AbstractFormController
      * @throws \Exception
      * @throws \Mautic\CoreBundle\Exception\FileNotFoundException
      */
-    public function previewAction(Request $request, CorePermissions $security, AnalyticsHelper $analyticsHelper, AssetsHelper $assetsHelper, ThemeHelper $themeHelper, int $id)
+    public function previewAction(Request $request, PageConfig $pageConfig, CorePermissions $security, AnalyticsHelper $analyticsHelper, AssetsHelper $assetsHelper, ThemeHelper $themeHelper, int $id, string $objectType = null)
     {
-        $contactId = (int) $request->query->get('contactId');
+        $model        = $this->getModel('page');
+        $entity       = $model->getEntity($id);
+        $draftEnabled = $pageConfig->isDraftEnabled();
+        $contactId    = (int) $request->query->get('contactId');
 
         if ($contactId) {
             /** @var LeadModel $leadModel */
@@ -345,6 +349,9 @@ class PublicController extends AbstractFormController
         $BCcontent = $page->getContent();
         $content   = $page->getCustomHtml();
 
+        if ('draft' === $objectType && $draftEnabled && $entity->hasDraft()) {
+            $content = $entity->getDraftContent();
+        }
         if (!$security->isAdmin()
             && (
                 (!$page->isPublished())

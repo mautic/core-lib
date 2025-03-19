@@ -7,14 +7,6 @@ return [
                 'path'       => '/ajax',
                 'controller' => 'Mautic\CoreBundle\Controller\AjaxController::delegateAjaxAction',
             ],
-            'mautic_core_update' => [
-                'path'       => '/update',
-                'controller' => 'Mautic\CoreBundle\Controller\UpdateController::indexAction',
-            ],
-            'mautic_core_update_schema' => [
-                'path'       => '/update/schema',
-                'controller' => 'Mautic\CoreBundle\Controller\UpdateController::schemaAction',
-            ],
             'mautic_core_form_action' => [
                 'path'       => '/action/{objectAction}/{objectModel}/{objectId}',
                 'controller' => 'Mautic\CoreBundle\Controller\FormController::executeAction',
