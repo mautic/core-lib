@@ -60,14 +60,14 @@ return [
         ],
         'validators' => [
             'mautic.dynamicContent.type_choice.validator' => [
-                'class'     => \Mautic\DynamicContentBundle\Validator\Constraints\TypeChoiceValidator::class,
+                'class'     => Mautic\DynamicContentBundle\Validator\Constraints\TypeChoiceValidator::class,
                 'arguments' => [
                     'mautic.dynamicContent.type_list',
                 ],
                 'tag'   => 'validator.constraint_validator',
             ],
             'mautic.dynamicContent.slot_name_type.validator' => [
-                'class'     => \Mautic\DynamicContentBundle\Validator\Constraints\SlotNameTypeValidator::class,
+                'class'     => Mautic\DynamicContentBundle\Validator\Constraints\SlotNameTypeValidator::class,
                 'arguments' => [
                     'mautic.dynamicContent.model.dynamicContent',
                 ],
@@ -85,7 +85,7 @@ return [
                 ],
             ],
             'mautic.dynamicContent.type_list' => [
-                'class' => \Mautic\DynamicContentBundle\DynamicContent\TypeList::class,
+                'class' => Mautic\DynamicContentBundle\DynamicContent\TypeList::class,
             ],
         ],
     ],

@@ -3,7 +3,6 @@
 namespace Mautic\DynamicContentBundle\Model;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use InvalidArgumentException;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\Chart\LineChart;
 use Mautic\CoreBundle\Model\AjaxLookupModelInterface;
@@ -94,7 +93,7 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
 
         if (!empty($type)) {
             if (!in_array($typeCondition, ['=', '<>', '!='], true)) {
-                throw new InvalidArgumentException("Invalid operator '$typeCondition'");
+                throw new \InvalidArgumentException("Invalid operator '$typeCondition'");
             }
 
             $qb->andWhere("type {$typeCondition} :type");
