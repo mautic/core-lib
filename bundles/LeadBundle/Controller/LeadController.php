@@ -2061,11 +2061,12 @@ class LeadController extends FormController
         $contactExportLimit = $this->coreParametersHelper->get('contact_export_limit', 0);
         // Check if export limit is exceeded
         if ($contactExportLimit > 0 && $totalContacts > $contactExportLimit) {
-            $this->addFlashMessage('mautic.lead.export.limit.exceeded', [
+            $messageVars = [
                 '%limit%' => number_format($contactExportLimit),
                 '%total%' => number_format($totalContacts),
-            ], FlashBag::LEVEL_ERROR);
-            $response['message'] = 'Contact export limit exceeded.';
+            ];
+            $this->addFlashMessage('mautic.lead.export.limit.exceeded', $messageVars, FlashBag::LEVEL_ERROR);
+            $response['message'] = $this->translator->trans('mautic.lead.export.limit.exceeded', $messageVars, 'flashes');
             $response['flashes'] = $this->getFlashContent();
 
             return new JsonResponse($response, Response::HTTP_BAD_REQUEST);
