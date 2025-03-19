@@ -158,8 +158,6 @@ class ColumnSchemaHelper
     /**
      * Update a column length.
      *
-     * @return $this
-     *
      * @throws SchemaException
      * @throws \OutOfRangeException
      */
