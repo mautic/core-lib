@@ -11,11 +11,17 @@
 
         {% for stat in stats %}
         <div class="col-lg-3 col-xs-12">
-            <div class="lead-stats-el tile h-144 jc-space-between ">
-                <i class="tile-icon {{ stat.icon }}"></i>
-                <span class="lead-stats-name fw-b ellipsis">{{ stat.name|trans }}</span>
-                <span class="lead-stats-val lh-1 fs-40">{{ stat.value }}{{ stat.suffix|default('') }}</span>
-            </div>
+            {% set tileContent %}
+                <div class="d-flex fd-column lead-stats-el h-144 jc-space-between">
+                    <i class="tile-icon {{ stat.icon }}" aria-hidden="true"></i>
+                    <span class="lead-stats-name fw-b ellipsis">{{ stat.name|trans }}</span>
+                    <span class="lead-stats-val lh-1 fs-40">{{ stat.value }}{{ stat.suffix|default('') }}</span>
+                </div>
+            {% endset %}
+
+            {% include '@MauticCore/Components/tile--base.html.twig' with {
+                'tiles': [{'content': tileContent}]
+            } %}
         </div>
         {% endfor %}
     </div>
