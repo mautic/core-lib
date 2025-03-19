@@ -16,7 +16,7 @@ final class ModifyCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
     /**
      * @var string[]
      */
-    private $csvFiles = [];
+    private array $csvFiles = [];
 
     protected function beforeTearDown(): void
     {

@@ -12,15 +12,8 @@ use Mautic\LeadBundle\Model\FieldModel;
 
 class ColumnSchemaHelperFunctionalTest extends MauticMysqlTestCase
 {
-    /**
-     * @var LeadField
-     */
-    private $field;
-
-    /**
-     * @var ColumnSchemaHelper
-     */
-    private $schemaHelper;
+    private LeadField $field;
+    private ColumnSchemaHelper $schemaHelper;
 
     protected $useCleanupRollback = false;
 
