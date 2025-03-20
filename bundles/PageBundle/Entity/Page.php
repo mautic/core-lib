@@ -49,6 +49,8 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     use VariantEntityTrait;
     use UuidTrait;
 
+    public const TABLE_NAME = 'pages';
+
     /**
      * @var int
      */
@@ -193,7 +195,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     {
         $builder = new ClassMetadataBuilder($metadata);
 
-        $builder->setTable('pages')
+        $builder->setTable(self::TABLE_NAME)
             ->setCustomRepositoryClass(PageRepository::class)
             ->addIndex(['alias'], 'page_alias_search');
 
