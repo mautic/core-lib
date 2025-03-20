@@ -267,6 +267,7 @@
                                 {
                                     label: 'mautic.core.open_link',
                                     variant: 'ghost',
+                                    size: 'sm',
                                     icon_only: true,
                                     icon: 'ri-external-link-line',
                                     onclick: 'window.open("' ~ pageUrl ~ '", "_blank");',
@@ -326,6 +327,7 @@
                                         {
                                             label: 'mautic.core.open_link',
                                             variant: 'ghost',
+                                            size: 'sm',
                                             icon_only: true,
                                             icon: 'ri-external-link-line',
                                             onclick: 'window.open("' ~ previewUrl ~ '", "_blank");',
@@ -344,6 +346,26 @@
                   </div>
               </div>
           </div>
+          {% if draftPreviewUrl is not empty %}
+              <div class="panel bg-transparent shd-none bdr-rds-0 bdr-w-0 mt-sm mb-0">
+                  <div class="panel-heading">
+                      <div class="panel-title">{{ 'mautic.email.draft.preview.url'|trans }}</div>
+                  </div>
+                  <div class="panel-body pt-xs">
+                      <div class="input-group">
+                          <input onclick="this.setSelectionRange(0, this.value.length);" type="text" class="form-control"
+                                 readonly
+                                 value="{{ draftPreviewUrl|e }}"/>
+                          <span class="input-group-btn">
+                    <button class="btn btn-default btn-nospin"
+                            onclick="window.open('{{ draftPreviewUrl }}', '_blank');">
+                        <i class="fa fa-external-link"></i>
+                    </button>
+                </span>
+                      </div>
+                  </div>
+              </div>
+          {% endif %}
           <!--/ preview URL -->
           <hr class="hr-w-2" style="width:50%">
           <!-- recent activity -->
