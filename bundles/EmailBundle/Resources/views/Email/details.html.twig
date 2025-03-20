@@ -511,6 +511,7 @@
           {{- include('@MauticCore/Helper/recentactivity.html.twig', {'logs': logs}) -}}
 
           <div class="mt-lg mb-lg">
+            {% if securityIsGranted('lead:leads:viewown') %}
             {% include '@MauticCore/Components/contained-list--interactive.html.twig' with {
               title: 'mautic.core.useful_links',
               items: [
@@ -536,6 +537,7 @@
                   }
               ]
           } %}
+          {% endif %}
         </div>
 
       </div>
