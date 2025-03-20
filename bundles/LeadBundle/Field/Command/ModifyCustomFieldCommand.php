@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ModifyCustomFieldCommand extends Command
+final class ModifyCustomFieldCommand extends Command
 {
     public function __construct(private FieldModel $fieldModel, private TranslatorInterface $translator)
     {
@@ -160,8 +160,6 @@ class ModifyCustomFieldCommand extends Command
             'isIndexed'         => $this->translator->trans('mautic.lead.field.analyse.header.indexed'),
         ];
 
-        return array_map(function ($val) use ($headers) {
-            return array_search($val, $headers);
-        }, $row);
+        return array_map(fn ($val) => array_search($val, $headers), $row);
     }
 }

@@ -156,8 +156,6 @@ class ColumnSchemaHelper
     }
 
     /**
-     * Update a column length.
-     *
      * @throws SchemaException
      * @throws \OutOfRangeException
      */

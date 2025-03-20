@@ -30,8 +30,8 @@ class ColumnSchemaHelperFunctionalTest extends MauticMysqlTestCase
         $newLength = 100;
         $this->schemaHelper->updateColumnLength($this->field->getAlias(), $newLength);
 
-        /** @var Column $column */
         $column = $this->schemaHelper->getColumns()[$this->field->getAlias()];
+        \assert($column instanceof Column);
 
         $this->assertEquals($newLength, $column->getLength(), 'Column length updated.');
     }
@@ -51,17 +51,10 @@ class ColumnSchemaHelperFunctionalTest extends MauticMysqlTestCase
     public function dataUpdateColumnExceptionCheck(): iterable
     {
         // name, length, exception msg.
-        // Column name missing.
-        yield ['', 10, '/The column name is should not be empty\/missing./'];
-
-        // Column name does not exist.
-        yield ['does_not_exists', 10, '/There is no column with name "does_not_exists" on table/'];
-
-        // Out of range, when length is 0.
-        yield ['custom_field_test', 0, '/Column length should be between 1 and 191./'];
-
-        // Out of range, when length greater than 191.
-        yield ['custom_field_test', 195, '/Column length should be between 1 and 191./'];
+        yield 'Column name missing.' => ['', 10, '/The column name is should not be empty\/missing./'];
+        yield 'Column name does not exist.' => ['does_not_exists', 10, '/There is no column with name "does_not_exists" on table/'];
+        yield 'Out of range, when length is 0.' => ['custom_field_test', 0, '/Column length should be between 1 and 191./'];
+        yield 'Out of range, when length greater than 191.' => ['custom_field_test', 195, '/Column length should be between 1 and 191./'];
     }
 
     private function createCustomField(): LeadField
@@ -74,8 +67,8 @@ class ColumnSchemaHelperFunctionalTest extends MauticMysqlTestCase
         $field->setAlias('custom_field_test');
         $field->setCharLengthLimit(64);
 
-        /** @var FieldModel $fieldModel */
         $fieldModel = $this->getContainer()->get('mautic.lead.model.field');
+        \assert($fieldModel instanceof FieldModel);
         $fieldModel->saveEntity($field);
         $fieldModel->getRepository()->detachEntity($field);
 
