@@ -37,4 +37,18 @@ class FieldControllerTest extends MauticMysqlTestCase
         $field = $this->em->getRepository(LeadField::class)->findOneBy(['label' => $label]);
         $this->assertNotNull($field);
     }
+
+    public function testCloneFieldRedirectToNewRoute() {
+        $field = new LeadField();
+        $field->setLabel('Test value for custom field 4');
+        $field->setAlias('test_value_for_custom_field_4');
+
+        $this->em->getRepository(LeadField::class)->saveEntity($field);
+        $field = $this->em->getRepository(LeadField::class)->findOneBy(['label' => 'Test value for custom field 4']);
+        $this->assertNotNull($field);
+
+        $this->client->request(Request::METHOD_GET, '/s/contacts/fields/clone/' . $field->getId());
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertSelectorTextContains('h1', 'New Custom Field');
+    }
 }
