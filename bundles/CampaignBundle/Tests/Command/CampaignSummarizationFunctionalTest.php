@@ -1,14 +1,5 @@
 <?php
 
-/*
- * @copyright   2017 Mautic Contributors. All rights reserved
- * @author      Mautic, Inc.
- *
- * @link        https://mautic.org
- *
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 namespace Mautic\CampaignBundle\Tests\Command;
 
 use Mautic\CampaignBundle\Entity\Campaign;
@@ -17,12 +8,13 @@ use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CampaignBundle\Entity\Summary;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\Lead;
 use PHPUnit\Framework\Assert;
 
 class CampaignSummarizationFunctionalTest extends MauticMysqlTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->configParams['campaign_use_summary'] = 'testExecuteCampaignEventWithSummarization' === $this->getName();
         parent::setUp();
@@ -46,13 +38,45 @@ class CampaignSummarizationFunctionalTest extends MauticMysqlTestCase
     {
         $lead              = $this->createLead();
         $campaign          = $this->createCampaign();
-        $event             = $this->createEvent('Event 1', $campaign);
+        $email             = $this->createEmail('Email 1');
+        $properties        = [
+            'canvasSettings' => [
+                'droppedX' => '549',
+                'droppedY' => '155',
+            ],
+            'name'                       => '',
+            'triggerMode'                => 'immediate',
+            'triggerDate'                => null,
+            'triggerInterval'            => '1',
+            'triggerIntervalUnit'        => 'd',
+            'triggerHour'                => '',
+            'triggerRestrictedStartHour' => '',
+            'triggerRestrictedStopHour'  => '',
+            'anchor'                     => 'leadsource',
+            'properties'                 => [
+                'email'      => $email->getId(),
+                'email_type' => 'transactional',
+                'priority'   => '2',
+                'attempts'   => '3',
+            ],
+            'type'            => 'email.send',
+            'eventType'       => 'action',
+            'anchorEventType' => 'source',
+            'buttons'         => [
+                'save' => '',
+            ],
+            'email'      => $email->getId(),
+            'email_type' => 'transactional',
+            'priority'   => 2,
+            'attempts'   => 3.0,
+        ];
+        $event             = $this->createEvent('Event 1', $campaign, $properties);
         $this->createCampaignLead($campaign, $lead);
         $this->createEventLog($lead, $event, $campaign);
         $this->em->flush();
         $this->em->clear();
 
-        $this->runCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId(), '--kickoff-only' => true]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId(), '--kickoff-only' => true]);
     }
 
     private function createLead(): Lead
@@ -85,18 +109,34 @@ class CampaignSummarizationFunctionalTest extends MauticMysqlTestCase
         return $campaignLead;
     }
 
-    private function createEvent(string $name, Campaign $campaign): Event
+    /**
+     * @param mixed[] $properties
+     */
+    private function createEvent(string $name, Campaign $campaign, array $properties = []): Event
     {
         $event = new Event();
         $event->setName($name);
         $event->setCampaign($campaign);
         $event->setType('email.send');
+        $event->setProperties($properties);
         $event->setEventType('action');
         $event->setTriggerInterval(1);
         $event->setTriggerMode('immediate');
         $this->em->persist($event);
 
         return $event;
+    }
+
+    private function createEmail(string $name): Email
+    {
+        $email = new Email();
+        $email->setName($name);
+        $email->setSubject('Test Subject');
+        $email->setIsPublished(true);
+
+        $this->em->persist($email);
+
+        return $email;
     }
 
     private function createEventLog(Lead $lead, Event $event, Campaign $campaign): LeadEventLog
