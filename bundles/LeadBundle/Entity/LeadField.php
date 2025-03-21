@@ -23,9 +23,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface
      */
     private $id;
 
-    /**
-     * @var bool
-     */
     private bool $isCloned = false;
 
     /**

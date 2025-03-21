@@ -22,7 +22,7 @@ class FieldController extends FormController
      *
      * @param int $page
      *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return array|JsonResponse|RedirectResponse|Response
      */
     public function indexAction(Request $request, $page = 1)
     {
@@ -112,7 +112,7 @@ class FieldController extends FormController
     /**
      * Generate's new form and processes post data.
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return JsonResponse|RedirectResponse|Response
      */
     public function newAction(Request $request, $entity = null)
     {
@@ -214,8 +214,8 @@ class FieldController extends FormController
         return $this->delegateView(
             [
                 'viewParameters' => [
-                    'form' => $form->createView(),
-                    'leadField' => $entity
+                    'form'      => $form->createView(),
+                    'leadField' => $entity,
                 ],
                 'contentTemplate' => '@MauticLead/Field/form.html.twig',
                 'passthroughVars' => [
@@ -232,7 +232,7 @@ class FieldController extends FormController
      *
      * @param bool|false $ignorePost
      *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return array|JsonResponse|RedirectResponse|Response
      */
     public function editAction(Request $request, $objectId, $ignorePost = false)
     {
@@ -361,12 +361,6 @@ class FieldController extends FormController
 
     /**
      * Clone an entity.
-     *
-     * @param Request $request
-     * @param FieldAliasHelper $fieldAliasHelper
-     * @param $objectId
-     *
-     * @return RedirectResponse|JsonResponse|array|Response
      */
     public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId): RedirectResponse|JsonResponse|array|Response
     {
