@@ -8,6 +8,7 @@ use Mautic\DynamicContentBundle\DynamicContent\TypeList;
 use Mautic\DynamicContentBundle\Model\DynamicContentModel;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 final class TextOnlyDynamicContentValidator extends ConstraintValidator
 {
@@ -18,7 +19,11 @@ final class TextOnlyDynamicContentValidator extends ConstraintValidator
     public function validate(mixed $value, Constraint $constraint): void
     {
         if (!is_string($value)) {
-            return;
+            throw new UnexpectedTypeException($value, 'string');
+        }
+
+        if (!$constraint instanceof TextOnlyDynamicContent) {
+            throw new UnexpectedTypeException($constraint, TextOnlyDynamicContent::class);
         }
 
         // Pattern to match DWC tokens in the format {dwc=slotname}
@@ -31,7 +36,7 @@ final class TextOnlyDynamicContentValidator extends ConstraintValidator
             // Perform the validation against the type
             if ($dwcItem) {
                 $this->context->buildViolation(
-                    'mautic.email.subject.dynamic_content.text_only', ['%slotName%' => $slotName])
+                    $constraint->message, ['%slotName%' => $slotName])
                     ->addViolation();
             }
         }

@@ -8,4 +8,5 @@ use Symfony\Component\Validator\Constraint;
 
 final class TextOnlyDynamicContent extends Constraint
 {
+    public string $message = 'mautic.email.subject.dynamic_content.text_only';
 }

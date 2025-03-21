@@ -19,9 +19,9 @@ use Mautic\CoreBundle\Entity\VariantEntityTrait;
 use Mautic\DynamicContentBundle\DynamicContent\TypeList;
 use Mautic\DynamicContentBundle\Validator\Constraints\NoNesting;
 use Mautic\DynamicContentBundle\Validator\Constraints\SlotNameType;
-use Mautic\DynamicContentBundle\Validator\Constraints\TypeChoice;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Choice;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -222,8 +222,8 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
         $metadata->addPropertyConstraint('name', new NotBlank(['message' => 'mautic.core.name.required']));
         $metadata->addPropertyConstraint('content', new NoNesting());
 
-        $metadata->addPropertyConstraint('type', new NotBlank(['message' => 'mautic.core.name.required']));
-        $metadata->addPropertyConstraint('type', new TypeChoice());
+        $metadata->addPropertyConstraint('type', new NotBlank(['message' => 'mautic.core.type.required']));
+        $metadata->addPropertyConstraint('type', new Choice(['choices' => (new TypeList())->getChoices()]));
 
         $metadata->addConstraint(new SlotNameType());
 
@@ -362,7 +362,7 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
     {
         $type = strtolower($type);
         $this->isChanged('type', $type);
-        $this->type = $type; // Handle direct entry through API
+        $this->type = $type;
     }
 
     public function getType(): string
