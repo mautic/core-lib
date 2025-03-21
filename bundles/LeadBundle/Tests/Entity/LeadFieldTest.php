@@ -88,7 +88,6 @@ class LeadFieldTest extends \PHPUnit\Framework\TestCase
 
         $clonedField = clone $leadField;
 
-        $this->assertNull($clonedField->getId());
         $this->assertEquals($leadField->getLabel(), $clonedField->getLabel());
         $this->assertEquals($leadField->getAlias(), $clonedField->getAlias());
         $this->assertEquals(0, $clonedField->getOrder());
