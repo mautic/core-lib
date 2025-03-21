@@ -114,7 +114,7 @@ class FieldController extends FormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function newAction(Request $request, $entity = null)
+    public function newAction(Request $request, ?LeadField $entity = null)
     {
         if (!$this->security->isGranted('lead:fields:full')) {
             return $this->accessDenied();
@@ -361,13 +361,15 @@ class FieldController extends FormController
 
     /**
      * Clone an entity.
+     *
+     * @return JsonResponse|RedirectResponse|Response
      */
-    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId): RedirectResponse|JsonResponse|array|Response
+    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId)
     {
         /** @var LeadField $entity */
         $entity  = $this->getModel('lead.field')->getEntity($objectId);
 
-        if (null === $entity) {
+        if (null == $entity) {
             return $this->notFound();
         }
 
