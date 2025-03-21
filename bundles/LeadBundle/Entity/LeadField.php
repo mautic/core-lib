@@ -24,6 +24,11 @@ class LeadField extends FormEntity implements CacheInvalidateInterface
     private $id;
 
     /**
+     * @var bool
+     */
+    private bool $isCloned = false;
+
+    /**
      * @var string
      */
     private $label;
@@ -132,7 +137,9 @@ class LeadField extends FormEntity implements CacheInvalidateInterface
 
     public function __clone()
     {
-        $this->id = null;
+        $this->id         = null;
+        $this->isCloned   = true;
+        $this->order      =  0;
 
         parent::__clone();
     }
@@ -300,6 +307,11 @@ class LeadField extends FormEntity implements CacheInvalidateInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getIsCloned(): bool
+    {
+        return $this->isCloned;
     }
 
     /**

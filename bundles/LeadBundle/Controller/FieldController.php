@@ -10,6 +10,8 @@ use Mautic\LeadBundle\Field\Exception\AbortColumnUpdateException;
 use Mautic\LeadBundle\Helper\FieldAliasHelper;
 use Mautic\LeadBundle\Model\FieldModel;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -112,14 +114,15 @@ class FieldController extends FormController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, $entity = null)
     {
         if (!$this->security->isGranted('lead:fields:full')) {
             return $this->accessDenied();
         }
 
         // retrieve the entity
-        $field = new LeadField();
+        $field = $entity instanceof LeadField ? $entity : new LeadField();
+
         /** @var FieldModel $model */
         $model = $this->getModel('lead.field');
         // set the return URL for post actions
@@ -212,6 +215,7 @@ class FieldController extends FormController
             [
                 'viewParameters' => [
                     'form' => $form->createView(),
+                    'leadField' => $entity
                 ],
                 'contentTemplate' => '@MauticLead/Field/form.html.twig',
                 'passthroughVars' => [
@@ -358,29 +362,30 @@ class FieldController extends FormController
     /**
      * Clone an entity.
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @param Request $request
+     * @param FieldAliasHelper $fieldAliasHelper
+     * @param $objectId
+     *
+     * @return RedirectResponse|JsonResponse|array|Response
      */
-    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId)
+    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId): RedirectResponse|JsonResponse|array|Response
     {
-        $model = $this->getModel('lead.field');
-        \assert($model instanceof FieldModel);
-        $entity = $model->getEntity($objectId);
+        /** @var LeadField $entity */
+        $entity  = $this->getModel('lead.field')->getEntity($objectId);
 
-        if (null != $entity) {
-            if (!$this->security->isGranted('lead:fields:full')) {
-                return $this->accessDenied();
-            }
-
-            $clone = clone $entity;
-            $clone->setId(null);
-            $clone->setIsPublished(false);
-            $clone->setIsFixed(false);
-            $fieldAliasHelper->makeAliasUnique($clone);
-            $model->saveEntity($clone);
-            $objectId = $clone->getId();
+        if (null === $entity) {
+            return $this->notFound();
         }
 
-        return $this->editAction($request, $objectId);
+        if (!$this->security->isGranted('lead:fields:full')) {
+            return $this->accessDenied();
+        }
+
+        $clone = clone $entity;
+
+        $fieldAliasHelper->makeAliasUnique($clone);
+
+        return $this->newAction($request, $clone);
     }
 
     /**
