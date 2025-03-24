@@ -34,7 +34,7 @@ class SearchSubscriber implements EventSubscriberInterface
 
     public function onGlobalSearchUser(MauticEvents\GlobalSearchEvent $event): void
     {
-        $filterDTO = new GlobalSearchFilterDTO($event->getSearchString());
+        $filterDTO = new GlobalSearchFilterDTO(htmlspecialchars_decode($event->getSearchString()));
         $results   = $this->globalSearch->performSearch(
             $filterDTO,
             $this->userModel,

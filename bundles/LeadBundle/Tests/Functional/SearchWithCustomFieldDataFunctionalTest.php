@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Functional;
 
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Company;
-use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Model\CompanyModel;
-use Mautic\LeadBundle\Model\LeadModel;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
-class SearchWithCustomFieldDataFunctionalTest extends MauticMysqlTestCase
+class SearchWithCustomFieldDataFunctionalTest extends SearchTestHelper
 {
     protected $useCleanupRollback = false;
 
@@ -162,27 +158,6 @@ class SearchWithCustomFieldDataFunctionalTest extends MauticMysqlTestCase
     /**
      * @param array<string, string|array<string, string>> $data
      */
-    private function createContact(array $data): void
-    {
-        /** @var LeadModel $leadModel */
-        $leadModel = static::getContainer()->get('mautic.lead.model.lead');
-
-        $contact = (new Lead())
-            ->setFirstname($data['firstname'])
-            ->setLastname($data['lastname'])
-            ->setEmail($data['email'])
-            ->setCompany($data['company']);
-
-        foreach ($data['customFields'] ?? [] as $key => $value) {
-            $contact->addUpdatedField($key, $value);
-        }
-
-        $leadModel->saveEntity($contact);
-    }
-
-    /**
-     * @param array<string, string|array<string, string>> $data
-     */
     private function createCompany(array $data): void
     {
         /** @var CompanyModel $companyModel */
@@ -199,14 +174,5 @@ class SearchWithCustomFieldDataFunctionalTest extends MauticMysqlTestCase
         $companyModel->saveEntity($company);
 
         $this->em->clear();
-    }
-
-    private function performSearch(string $url): Response
-    {
-        $this->client->xmlHttpRequest(Request::METHOD_GET, $url);
-        $response = $this->client->getResponse();
-        $this->assertResponseIsSuccessful();
-
-        return $response;
     }
 }

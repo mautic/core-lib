@@ -53,7 +53,7 @@ class SearchSubscriber implements EventSubscriberInterface
 
     public function onGlobalSearchForContacts(GlobalSearchEvent $event): void
     {
-        $str = $event->getSearchString();
+        $str = htmlspecialchars_decode($event->getSearchString());
         if (empty($str)) {
             return;
         }
