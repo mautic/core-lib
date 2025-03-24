@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Helper;
 
+use Symfony\Component\Console\Command\Command;
+
 /**
  * Holds exit code constants for commands.
  */
@@ -12,12 +14,12 @@ final class ExitCode
     /**
      * The command completed successfully.
      */
-    public const SUCCESS = 0;
+    public const SUCCESS = Command::SUCCESS;
 
     /**
      * The command exited with some kind of error.
      */
-    public const FAILURE = 1;
+    public const FAILURE = Command::FAILURE;
 
     /**
      * Indicating something that is not really an error. This means that a mailer

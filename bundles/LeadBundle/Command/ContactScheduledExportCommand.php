@@ -76,8 +76,6 @@ class ContactScheduledExportCommand extends Command
 
             return ExitCode::SUCCESS;
         } catch (SignalCaughtException) {
-            $output->writeln('touch job');
-
             return ExitCode::TERMINATED;
         }
     }
