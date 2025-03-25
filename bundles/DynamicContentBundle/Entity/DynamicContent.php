@@ -16,6 +16,7 @@ use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Entity\VariantEntityInterface;
 use Mautic\CoreBundle\Entity\VariantEntityTrait;
+use Mautic\DynamicContentBundle\Validator\Constraints\NoNesting;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -102,7 +103,7 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
     /**
      * @var bool
      */
-    private $isCampaignBased = true;
+    private $isCampaignBased = false;
 
     /**
      * @var string|null
@@ -201,6 +202,7 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
     public static function loadValidatorMetaData(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint('name', new NotBlank(['message' => 'mautic.core.name.required']));
+        $metadata->addPropertyConstraint('content', new NoNesting());
 
         $metadata->addConstraint(new Callback([
             'callback' => function (self $dwc, ExecutionContextInterface $context): void {
