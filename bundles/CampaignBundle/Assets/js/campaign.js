@@ -126,8 +126,9 @@ Mautic.campaignOnLoad = function (container, response) {
             $builder.addClass('hide').removeClass('builder-active');
             $flashes.removeClass('alert-offset');
         });
-
-        Mautic.prepareCampaignCanvas();
+        if (!isCampaignPreview) {
+            Mautic.prepareCampaignCanvas();
+        }
 
         // Open the builder directly when saved from the builder
         if (response && response.inBuilder) {
@@ -177,10 +178,6 @@ Mautic.campaignOnLoad = function (container, response) {
                 Mautic.campaignEventInsertOnError(event, jqxhr);
             }
         });
-
-        if (isCampaignPreview) {
-            Mautic.previewCampaignLabels();
-        }
     }
 };
 
@@ -235,6 +232,7 @@ Mautic.lazyLoadEventStatsOnCampaignDetail = function()  {
         {
             mQuery('#preview-container').html(response.preview);
             Mautic.prepareCampaignCanvas();
+            Mautic.previewCampaignLabels();
         }
         else
         {
