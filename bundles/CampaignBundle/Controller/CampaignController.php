@@ -214,7 +214,7 @@ class CampaignController extends AbstractStandardFormController
         $sortedEvents           = $this->processCampaignEventsFromParentCondition($events);
 
         $sourcesList     = $this->getCampaignModel()->getSourceLists();
-        $campaign = $this->getCampaignModel()->getEntity($objectId);
+        $campaign        = $this->getCampaignModel()->getEntity($objectId);
         $this->prepareCampaignSourcesForEdit($objectId, $sourcesList, true);
 
         $response['preview']    = trim(
@@ -237,7 +237,7 @@ class CampaignController extends AbstractStandardFormController
         return new JsonResponse(array_filter($response));
     }
 
-    public function GraphAction(Request $request, int $objectId, string $dateFrom, string $dateTo): JsonResponse
+    public function GraphAction(Request $request, int $objectId, string $dateFrom, string $dateTo): Response
     {
         $dateRangeValues = ['date_from' => $dateFrom, 'date_to' => $dateTo];
         $action          = $this->generateUrl('mautic_campaign_action', ['objectAction' => 'view', 'objectId' => $objectId]);
@@ -969,9 +969,9 @@ class CampaignController extends AbstractStandardFormController
                 $entity   = $args['entity'];
                 $objectId = $args['objectId'];
                 // Init the date range filter form
-                $dateRangeValues = $this->requestStack->getCurrentRequest()->get('daterange', []);
-                $action          = $this->generateUrl('mautic_campaign_action', ['objectAction' => 'view', 'objectId' => $objectId]);
-                $dateRangeForm   = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
+                $dateRangeValues     = $this->requestStack->getCurrentRequest()->get('daterange', []);
+                $action              = $this->generateUrl('mautic_campaign_action', ['objectAction' => 'view', 'objectId' => $objectId]);
+                $dateRangeForm       = $this->formFactory->create(DateRangeType::class, $dateRangeValues, ['action' => $action]);
                 $isEmailStatsEnabled = (bool) $this->coreParametersHelper->get('campaign_email_stats_enabled', true);
                 $showEmailStats      = $isEmailStatsEnabled && $entity->isEmailCampaign();
 

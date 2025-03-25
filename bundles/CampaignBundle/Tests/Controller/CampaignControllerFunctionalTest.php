@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Controller;
 
-use function GuzzleHttp\json_decode;
 use Mautic\CampaignBundle\Command\SummarizeCommand;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
@@ -200,7 +199,7 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTest
     {
         $from = date('Y-m-d', strtotime('-2 months'));
         $to   = date('Y-m-d', strtotime('-1 month'));
-        $url = sprintf('s/campaigns/event/stats/%d/%s/%s', $campaignId, $from, $to);
+        $url  = sprintf('s/campaigns/event/stats/%d/%s/%s', $campaignId, $from, $to);
         $this->client->request('GET', $url);
         $response = $this->client->getResponse();
         $body     = json_decode($response->getContent(), true);
@@ -340,8 +339,8 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTest
 
     public function testCampaignViewEvents(): void
     {
-        $from = date('Y-m-d', strtotime('-2 months'));
-        $to   = date('Y-m-d', strtotime('-1 month'));
+        $from     = date('Y-m-d', strtotime('-2 months'));
+        $to       = date('Y-m-d', strtotime('-1 month'));
         $campaign = $this->saveSomeCampaignLeadEventLogs();
         $this->client->request('GET', sprintf('s/campaigns/event/stats/%d/%s/%s', $campaign->getId(), $from, $to));
         $response = $this->client->getResponse();
