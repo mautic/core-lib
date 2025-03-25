@@ -56,19 +56,6 @@
     width: 25%;
 }
 
-/* Make fields display inline when using width classes */
-.mauticform-innerform .row {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-}
-
-/* Ensure field containers respect width classes */
-.mauticform-row {
-    box-sizing: border-box;
-    padding: 0 10px;
-    margin-bottom: 15px;
-}
 
 /* Responsive adjustment for mobile */
 @media (max-width: 767px) {
