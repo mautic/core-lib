@@ -46,9 +46,9 @@ class EventLoggerTest extends TestCase
     private MockObject $summaryModel;
 
     /**
-     * @var CoreParametersHelper|MockObject
+     * @var CoreParametersHelper&MockObject
      */
-    private $coreParametersHelper;
+    private MockObject $coreParametersHelper;
 
     protected function setUp(): void
     {

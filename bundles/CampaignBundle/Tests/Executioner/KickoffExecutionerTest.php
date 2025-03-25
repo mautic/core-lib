@@ -44,9 +44,9 @@ class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
     private MockObject $scheduler;
 
     /**
-     * @var CoreParametersHelper|MockObject
+     * @var CoreParametersHelper&MockObject
      */
-    private $coreParametersHelper;
+    private MockObject $coreParametersHelper;
 
     protected function setUp(): void
     {
