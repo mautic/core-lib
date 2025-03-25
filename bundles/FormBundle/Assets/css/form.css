@@ -32,27 +32,27 @@
 }
 
 /* Field Width Classes */
-.mautic-form-full-width {
+.mauticform-full-width {
     width: 100%;
 }
 
-.mautic-form-three-quarters-width {
+.mauticform-three-quarters-width {
     width: 75%;
 }
 
-.mautic-form-two-thirds-width {
+.mauticform-two-thirds-width {
     width: 66.66%;
 }
 
-.mautic-form-half-width {
+.mauticform-half-width {
     width: 50%;
 }
 
-.mautic-form-one-third-width {
+.mauticform-one-third-width {
     width: 33.33%;
 }
 
-.mautic-form-one-quarter-width {
+.mauticform-one-quarter-width {
     width: 25%;
 }
 
@@ -72,11 +72,11 @@
 
 /* Responsive adjustment for mobile */
 @media (max-width: 767px) {
-    .mautic-form-three-quarters-width,
-    .mautic-form-two-thirds-width,
-    .mautic-form-half-width,
-    .mautic-form-one-third-width,
-    .mautic-form-one-quarter-width {
+    .mauticform-three-quarters-width,
+    .mauticform-two-thirds-width,
+    .mauticform-half-width,
+    .mauticform-one-third-width,
+    .mauticform-one-quarter-width {
         width: 100%;
     }
 }
