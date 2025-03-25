@@ -37,7 +37,7 @@ class LanguageExtension extends AbstractExtension
 
         try {
             return Languages::getName($code, $displayLocale) ?: $code;
-        } catch (MissingResourceException) {
+        } catch (\Exception) {
             return $code;
         }
     }
