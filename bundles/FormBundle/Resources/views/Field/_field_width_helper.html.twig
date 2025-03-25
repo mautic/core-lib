@@ -1,0 +1,14 @@
+{#
+  This helper adds field width classes to the container attributes based on the field's fieldWidth property
+  Variables:
+    - field: The form field entity
+    - containerAttributes: The container attributes array
+#}
+
+{% if field.fieldWidth is defined and field.fieldWidth is not empty %}
+  {% set containerAttributes = containerAttributes|merge({
+    'class': containerAttributes.class|default([])|merge([
+      'mautic-form-' ~ field.fieldWidth ~ '-width',
+    ]),
+  }) %}
+{% endif %}

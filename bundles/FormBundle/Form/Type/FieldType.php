@@ -57,7 +57,8 @@ class FieldType extends AbstractType
         $addMappedFieldList     =
         $addSaveResult          =
         $addBehaviorFields      =
-        $addIsRequired          = true;
+        $addIsRequired          =
+        $addFieldWidth          = true;
 
         if (!empty($options['customParameters'])) {
             $type = 'custom';
@@ -87,6 +88,7 @@ class FieldType extends AbstractType
                 'addSaveResult',
                 'addBehaviorFields',
                 'addIsRequired',
+                'addFieldWidth',
                 'addHtml',
             ];
 
@@ -127,7 +129,7 @@ class FieldType extends AbstractType
                     $addShowLabel = $addIsRequired = $addDefaultValue = $addMappedFieldList = $addSaveResult = $addBehaviorFields = false;
                     break;
                 case 'pagebreak':
-                    $addShowLabel = $allowCustomAlias = $addHelpMessage = $addIsRequired = $addDefaultValue = $addMappedFieldList = $addSaveResult = $addBehaviorFields = false;
+                    $addShowLabel = $allowCustomAlias = $addHelpMessage = $addIsRequired = $addDefaultValue = $addMappedFieldList = $addSaveResult = $addBehaviorFields = $addFieldWidth = false;
                     break;
                 case 'select':
                     $cleanMasks['properties']['list']['list']['label'] = 'strict_html';
@@ -311,6 +313,30 @@ class FieldType extends AbstractType
                         'class'     => 'form-control',
                         'tooltip'   => 'mautic.form.field.help.container_attr',
                         'maxlength' => '191',
+                    ],
+                    'required' => false,
+                ]
+            );
+        }
+
+        if ($addFieldWidth) {
+            $builder->add(
+                'fieldWidth',
+                ChoiceType::class,
+                [
+                    'label'      => 'mautic.form.field.form.field_width',
+                    'label_attr' => ['class' => 'control-label'],
+                    'attr'       => [
+                        'class'   => 'form-control',
+                        'tooltip' => 'mautic.form.field.help.field_width',
+                    ],
+                    'choices' => [
+                        'mautic.form.field.form.field_width.full'           => 'full',
+                        'mautic.form.field.form.field_width.three_quarters' => 'three-quarters',
+                        'mautic.form.field.form.field_width.two_thirds'     => 'two-thirds',
+                        'mautic.form.field.form.field_width.half'           => 'half',
+                        'mautic.form.field.form.field_width.one_third'      => 'one-third',
+                        'mautic.form.field.form.field_width.one_quarter'    => 'one-quarter',
                     ],
                     'required' => false,
                 ]

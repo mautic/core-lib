@@ -71,7 +71,11 @@
           'mauticform-' ~ containerClass,
           'mauticform-field-' ~ order,
         ]),
-}) %}
+    }) %}
+
+{# Include field width helper #}
+{% include '@MauticForm/Field/_field_width_helper.html.twig' with {'field': field, 'containerAttributes': containerAttributes} %}
+
 {% if field.parent and fields[field.parent] is defined %}
   {% set values = field.conditions.values|join('|') %}
 
