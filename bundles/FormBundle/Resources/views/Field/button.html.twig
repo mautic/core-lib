@@ -73,8 +73,13 @@
         ]),
     }) %}
 
-{# Include field width helper #}
-{% include '@MauticForm/Field/_field_width_helper.html.twig' with {'field': field, 'containerAttributes': containerAttributes} %}
+{% if field.fieldWidth is defined and field.fieldWidth is not empty %}
+  {% set containerAttributes = containerAttributes|merge({
+    'class': containerAttributes.class|default([])|merge([
+      'mautic-form-' ~ field.fieldWidth ~ '-width',
+    ]),
+  }) %}
+{% endif %}
 
 {% if field.parent and fields[field.parent] is defined %}
   {% set values = field.conditions.values|join('|') %}

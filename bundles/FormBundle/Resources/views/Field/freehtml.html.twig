@@ -63,8 +63,13 @@
 {% endif %}
 {% set containerAttributes = containerAttributes|merge({
 
-{# Include field width helper #}
-{% include '@MauticForm/Field/_field_width_helper.html.twig' with {'field': field, 'containerAttributes': containerAttributes} %}
+{% if field.fieldWidth is defined and field.fieldWidth is not empty %}
+  {% set containerAttributes = containerAttributes|merge({
+    'class': containerAttributes.class|default([])|merge([
+      'mautic-form-' ~ field.fieldWidth ~ '-width',
+    ]),
+  }) %}
+{% endif %}
         'id': 'mauticform' ~ formName|default('') ~ '_' ~ id,
         'class': containerAttributes.class|default([])|merge([
           'mauticform-row',
@@ -81,8 +86,13 @@
 
   {% set containerAttributes = containerAttributes|merge({
 
-{# Include field width helper #}
-{% include '@MauticForm/Field/_field_width_helper.html.twig' with {'field': field, 'containerAttributes': containerAttributes} %}
+{% if field.fieldWidth is defined and field.fieldWidth is not empty %}
+  {% set containerAttributes = containerAttributes|merge({
+    'class': containerAttributes.class|default([])|merge([
+      'mautic-form-' ~ field.fieldWidth ~ '-width',
+    ]),
+  }) %}
+{% endif %}
           'data-mautic-form-show-on': fields[field.parent].alias ~ ':' ~ values,
           'data-mautic-form-expr': field.conditions.expr,
           'class': containerAttributes.class|merge([
@@ -98,8 +108,13 @@
   {% endif %}
   {% set containerAttributes = containerAttributes|merge({
 
-{# Include field width helper #}
-{% include '@MauticForm/Field/_field_width_helper.html.twig' with {'field': field, 'containerAttributes': containerAttributes} %}
+{% if field.fieldWidth is defined and field.fieldWidth is not empty %}
+  {% set containerAttributes = containerAttributes|merge({
+    'class': containerAttributes.class|default([])|merge([
+      'mautic-form-' ~ field.fieldWidth ~ '-width',
+    ]),
+  }) %}
+{% endif %}
           'class': containerAttributes.class|default([])|merge([
             'mauticform-required',
           ]),
@@ -109,8 +124,13 @@
   {% if field.properties.multiple is not empty %}
     {% set containerAttributes = containerAttributes|merge({
 
-{# Include field width helper #}
-{% include '@MauticForm/Field/_field_width_helper.html.twig' with {'field': field, 'containerAttributes': containerAttributes} %}
+{% if field.fieldWidth is defined and field.fieldWidth is not empty %}
+  {% set containerAttributes = containerAttributes|merge({
+    'class': containerAttributes.class|default([])|merge([
+      'mautic-form-' ~ field.fieldWidth ~ '-width',
+    ]),
+  }) %}
+{% endif %}
             'data-validate-multiple': 'true',
     }) %}
   {% endif %}
@@ -118,8 +138,13 @@
   {# Forced to be required #}
   {% set containerAttributes = containerAttributes|merge({
 
-{# Include field width helper #}
-{% include '@MauticForm/Field/_field_width_helper.html.twig' with {'field': field, 'containerAttributes': containerAttributes} %}
+{% if field.fieldWidth is defined and field.fieldWidth is not empty %}
+  {% set containerAttributes = containerAttributes|merge({
+    'class': containerAttributes.class|default([])|merge([
+      'mautic-form-' ~ field.fieldWidth ~ '-width',
+    ]),
+  }) %}
+{% endif %}
           'class': containerAttributes.class|default([])|merge([
             'mauticform-required',
           ]),
