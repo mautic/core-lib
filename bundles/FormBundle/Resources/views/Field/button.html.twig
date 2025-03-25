@@ -73,13 +73,11 @@
         ]),
     }) %}
 
-{% if field.fieldWidth is defined and field.fieldWidth is not empty %}
-  {% set containerAttributes = containerAttributes|merge({
-    'class': containerAttributes.class|default([])|merge([
-      'mauticform-' ~ field.fieldWidth ~ '-width',
-    ]),
-  }) %}
-{% endif %}
+{% set containerAttributes = containerAttributes|merge({
+  'class': containerAttributes.class|default([])|merge([
+    'mauticform-' ~ (field.fieldWidth|default('full')) ~ '-width',
+  ]),
+}) %}
 
 {% if field.parent and fields[field.parent] is defined %}
   {% set values = field.conditions.values|join('|') %}
