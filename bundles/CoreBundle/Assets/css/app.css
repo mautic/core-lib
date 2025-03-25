@@ -9628,7 +9628,7 @@ form[name="lead"] .contact-avatar {
   margin: 10% auto;
   padding: 8px;
   border-radius: 8px;
-  background: var(--background-active);
+  background: var(--background);
   text-align: center;
 }
 .content-overlay {
