@@ -19,7 +19,7 @@
 {% if field.fieldWidth is defined and field.fieldWidth is not empty %}
     {% set fieldWidthClass = 'mautic-form-' ~ field.fieldWidth ~ '-width' %}
 {% endif %}
-<div class="form-field-wrapper {{ fieldWidthClass }}" data-sortable-id="mauticform_{{ field.id }}">
+<div class="form-field-wrapper" data-sortable-id="mauticform_{{ field.id }}">
     <div class="{% if isConditional is not defined or (isConditional is defined and false == isConditional) %}panel mt-40{% else %}panel2 tile ml-sm mt-sm{% endif %} mb-0">
             {{ include('@MauticForm/Builder/_actions.html.twig', {
                     'id': field.id,

@@ -38,7 +38,6 @@
             <div class="mauticform-message" id="mauticform{{ formName }}_message"></div>
         {%- endif -%}
         <div class="mauticform-innerform">
-            <div class="row">
             {# @var \Mautic\FormBundle\Entity\Field $f #}
             {%- for fieldId, f in fields -%}
               {%- if formPages['open'][fieldId] is defined -%}
@@ -122,7 +121,6 @@
                   {%- set pageCount = pageCount + 1 -%}
               {%- endif -%}
             {%- endfor -%}
-            </div>
         </div>
 
         {%- if successfulSubmitAction == 'bottom' -%}
