@@ -70,14 +70,9 @@
           'mauticform-row',
           'mauticform-' ~ containerClass,
           'mauticform-field-' ~ order,
+          'mauticform-' ~ (field.fieldWidth|default('full')) ~ '-width',
         ]),
     }) %}
-
-{% set containerAttributes = containerAttributes|merge({
-  'class': containerAttributes.class|default([])|merge([
-    'mauticform-' ~ (field.fieldWidth|default('full')) ~ '-width',
-  ]),
-}) %}
 
 {% if field.parent and fields[field.parent] is defined %}
   {% set values = field.conditions.values|join('|') %}

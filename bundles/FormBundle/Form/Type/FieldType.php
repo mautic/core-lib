@@ -123,7 +123,7 @@ class FieldType extends AbstractType
                     $addHelpMessage = $addShowLabel = $addDefaultValue = $addLabelAttributes = $addIsRequired = $addMappedFieldList = $addSaveResult = $addBehaviorFields = false;
                     break;
                 case 'hidden':
-                    $addHelpMessage = $addShowLabel = $addLabelAttributes = $addIsRequired = false;
+                    $addHelpMessage = $addShowLabel = $addLabelAttributes = $addIsRequired = $addFieldWidth = false;
                     break;
                 case 'captcha':
                     $addShowLabel = $addIsRequired = $addDefaultValue = $addMappedFieldList = $addSaveResult = $addBehaviorFields = false;

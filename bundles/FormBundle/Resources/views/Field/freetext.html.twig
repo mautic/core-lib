@@ -66,16 +66,12 @@
 {% endif %}
 {% set containerAttributes = containerAttributes|merge({
 
-{% set containerAttributes = containerAttributes|merge({
-  'class': containerAttributes.class|default([])|merge([
-    'mauticform-' ~ (field.fieldWidth|default('full')) ~ '-width',
-  ]),
-}) %}
         'id': 'mauticform' ~ formName|default('') ~ '_' ~ id,
         'class': containerAttributes.class|default([])|merge([
           'mauticform-row',
           'mauticform-' ~ containerClass,
           'mauticform-field-' ~ order,
+          'mauticform-' ~ (field.fieldWidth|default('full')) ~ '-width',
         ]),
 }) %}
 {% if field.parent and fields[field.parent] is defined %}
@@ -86,12 +82,6 @@
   {% endif %}
 
   {% set containerAttributes = containerAttributes|merge({
-
-{% set containerAttributes = containerAttributes|merge({
-  'class': containerAttributes.class|default([])|merge([
-    'mauticform-' ~ (field.fieldWidth|default('full')) ~ '-width',
-  ]),
-}) %}
           'data-mautic-form-show-on': fields[field.parent].alias ~ ':' ~ values,
           'data-mautic-form-expr': field.conditions.expr,
           'class': containerAttributes.class|merge([
@@ -106,12 +96,6 @@
         {% set validationMessage = 'mautic.form.field.generic.required'|trans([], 'validators', language|default(null)) %}
   {% endif %}
   {% set containerAttributes = containerAttributes|merge({
-
-{% set containerAttributes = containerAttributes|merge({
-  'class': containerAttributes.class|default([])|merge([
-    'mauticform-' ~ (field.fieldWidth|default('full')) ~ '-width',
-  ]),
-}) %}
           'class': containerAttributes.class|default([])|merge([
             'mauticform-required',
           ]),
@@ -120,24 +104,12 @@
   }) %}
   {% if field.properties.multiple is not empty %}
     {% set containerAttributes = containerAttributes|merge({
-
-{% set containerAttributes = containerAttributes|merge({
-  'class': containerAttributes.class|default([])|merge([
-    'mauticform-' ~ (field.fieldWidth|default('full')) ~ '-width',
-  ]),
-}) %}
             'data-validate-multiple': 'true',
     }) %}
   {% endif %}
 {% elseif required is defined and true == required %}
   {# Forced to be required #}
   {% set containerAttributes = containerAttributes|merge({
-
-{% set containerAttributes = containerAttributes|merge({
-  'class': containerAttributes.class|default([])|merge([
-    'mauticform-' ~ (field.fieldWidth|default('full')) ~ '-width',
-  ]),
-}) %}
           'class': containerAttributes.class|default([])|merge([
             'mauticform-required',
           ]),
