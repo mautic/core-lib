@@ -225,7 +225,7 @@ class LeadEventLogRepository extends CommonRepository
             'o',
             MAUTIC_TABLE_PREFIX.'campaign_leads',
             'l',
-            'l.campaign_id = '.(int) $campaignId.' and l.manually_removed = 0 and o.lead_id = l.lead_id and l.rotation = o.rotation'
+            'l.campaign_id = '.(int) $campaignId.' and o.lead_id = l.lead_id'
         );
 
         $expr = $q->expr()->and(
@@ -289,7 +289,7 @@ class LeadEventLogRepository extends CommonRepository
                 $q->getSQL(),
                 $q->getParameters(),
                 $q->getParameterTypes(),
-                new QueryCacheProfile(600)
+                new QueryCacheProfile(2)
             )->fetchAllAssociative();
         } else {
             $results = $q->executeQuery()->fetchAllAssociative();
