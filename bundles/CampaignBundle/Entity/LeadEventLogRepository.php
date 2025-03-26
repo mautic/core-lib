@@ -225,7 +225,7 @@ class LeadEventLogRepository extends CommonRepository
             'o',
             MAUTIC_TABLE_PREFIX.'campaign_leads',
             'l',
-            'l.campaign_id = '.(int) $campaignId.' and o.lead_id = l.lead_id'
+            'l.campaign_id = '.(int) $campaignId.' and o.lead_id = l.lead_id and o.is_scheduled = 0'
         );
 
         $expr = $q->expr()->and(
