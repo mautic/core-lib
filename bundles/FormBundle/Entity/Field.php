@@ -149,10 +149,7 @@ class Field implements UuidInterface
 
     private bool $isReadOnly = false;
 
-    /**
-     * @var string|null
-     */
-    private $fieldWidth;
+    private ?string $fieldWidth = null;
 
     /**
      * @var array
@@ -1057,17 +1054,11 @@ class Field implements UuidInterface
         return $this->isAutoFill && $this->isReadOnly;
     }
 
-    /**
-     * Get field width.
-     */
     public function getFieldWidth(): ?string
     {
         return $this->fieldWidth;
     }
 
-    /**
-     * Set field width.
-     */
     public function setFieldWidth(?string $fieldWidth): Field
     {
         $this->isChanged('fieldWidth', $fieldWidth);
