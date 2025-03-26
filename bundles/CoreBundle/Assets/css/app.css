@@ -6076,9 +6076,13 @@ input[style]:hover {
   padding: var(--spacing-01) var(--spacing-04);
 }
 .form-control[disabled],
-.form-control[readonly],
 fieldset[disabled] .form-control {
   color: var(--text-disabled);
+}
+.form-control[readonly]{
+  color: var(--text-primary);
+  background-color: var(--field);
+  border-color: var(--border-subtle);
 }
 .form-control[disabled] {
   cursor: not-allowed;
@@ -6548,6 +6552,30 @@ input[type=file]:focus-visible {
 .radio-group input[type="radio"]:hover {
   cursor: pointer;
   opacity: 0.7;
+}
+.radio-group--inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.radio-group--inline input[type="radio"],
+.radio-group--inline input[type="radio"]:hover {
+  opacity: 0;
+  position: absolute;
+  z-index: 1;
+}
+.radio-group--inline label {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  display: block;
+  transition: var(--transition-all-productive);
+}
+.radio-group--inline input[type="radio"]:checked + label,
+.radio-group--inline input[type="radio"]:focus + label {
+  outline: 2px solid var(--focus);
 }
 .radio-cards svg,
 .radio-cards img {
@@ -9613,7 +9641,7 @@ form[name="lead"] .contact-avatar {
   margin: 10% auto;
   padding: 8px;
   border-radius: 8px;
-  background: #fff;
+  background: var(--background);
   text-align: center;
 }
 .content-overlay {
@@ -9959,6 +9987,25 @@ code:hover > .copy-icon {
   .builder .builder-tokens {
     margin-top: 10px;
   }
+}
+.rounded-corners-preview {
+  --preview-width: 28px;
+  width: var(--preview-width);
+  height: calc(var(--preview-width) / 1.4);
+  background-color: var(--text-placeholder);
+  margin: 3px 4px;
+}
+.rounded-corners-preview--0 {
+  border-radius: 0;
+}
+.rounded-corners-preview--8 {
+  border-radius: 3px;
+}
+.rounded-corners-preview--16 {
+  border-radius: 6px;
+}
+.rounded-corners-preview--32 {
+  border-radius: 32px;
 }
 .toggle {
   display: inline-block;
