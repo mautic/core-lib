@@ -158,15 +158,9 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
 
     private ?PageDraft $draft = null;
 
-    /**
-     * @var bool
-     */
-    private $isCloned = false;
+    private bool $isCloned = false;
 
-    /**
-     * @var int|null
-     */
-    private $cloneObjectId;
+    private ?int $cloneObjectId;
 
     /**
      * @Groups({"page:read", "page:write", "download:read", "email:read"})

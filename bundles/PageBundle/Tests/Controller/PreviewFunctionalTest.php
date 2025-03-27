@@ -18,11 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PreviewFunctionalTest extends MauticMysqlTestCase
 {
-    /**
-     * @throws MappingException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function testPreviewPageWithContact(): void
     {
         $user           = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
