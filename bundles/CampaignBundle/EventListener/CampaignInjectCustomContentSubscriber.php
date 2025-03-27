@@ -45,7 +45,7 @@ final class CampaignInjectCustomContentSubscriber implements EventSubscriberInte
             );
             $customContentEvent->addContent($content);
         } elseif ($customContentEvent->checkContext($viewName, 'tabs.content')) {
-            $logs    = $this->auditLogModel->getLogForObject('campaign', $campaign->getId());
+            $logs    = $this->auditLogModel->getLogForObject('campaign', $campaign->getId(), null, '100');
             $content = $this->twig->render(
                 '@MauticCampaign/Campaign/Tab/recent-activity-tabcontent.html.twig',
                 [
