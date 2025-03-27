@@ -337,7 +337,7 @@ class PublicController extends AbstractFormController
         if ($contactId) {
             /** @var LeadModel $leadModel */
             $leadModel = $this->getModel('lead.lead');
-            $contact = $leadModel->getEntity($contactId);
+            $contact   = $leadModel->getEntity($contactId);
         }
         $draftEnabled = $pageConfig->isDraftEnabled();
         $analytics    = $analyticsHelper->getCode();
