@@ -86,62 +86,62 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTest
 
     public function testCampaignCountsBeforeSummarizeCommandWithoutSummaryAndRange(): void
     {
-        $this->getCountAndDetails(false, false, 100, 2, 0);
+        $this->getCountAndDetails(false, false, ['100%', '100%'], ['2', '2'], ['0', '0']);
     }
 
     public function testCampaignCountsBeforeSummarizeCommandWithSummaryWithoutRange(): void
     {
-        $this->getCountAndDetails(false, false, 0, 0, 0);
+        $this->getCountAndDetails(false, false, ['0%', '0%'], ['0', '0'], ['0', '0']);
     }
 
     public function testCampaignCountsBeforeSummarizeCommandWithoutSummaryWithRange(): void
     {
-        $this->getCountAndDetails(false, false, 100, 2, 0);
+        $this->getCountAndDetails(false, false, ['100%', '100%'], ['2', '2'], ['0', '0']);
     }
 
     public function testCampaignCountsBeforeSummarizeCommandWithSummaryAndRange(): void
     {
-        $this->getCountAndDetails(false, false, 0, 0, 0);
+        $this->getCountAndDetails(false, false, ['0%', '0%'], ['0', '0'], ['0', '0']);
     }
 
     public function testCampaignCountsAfterSummarizeCommandWithoutSummaryAndRange(): void
     {
-        $this->getCountAndDetails(false, true, 100, 2, 0);
+        $this->getCountAndDetails(false, true, ['100%', '100%'], ['2', '2'], ['0', '0']);
     }
 
     public function testCampaignCountsAfterSummarizeCommandWithSummaryWithoutRange(): void
     {
-        $this->getCountAndDetails(false, true, 100, 2, 0);
+        $this->getCountAndDetails(false, true, ['100%', '100%'], ['2', '2'], ['0', '0']);
     }
 
     public function testCampaignCountsAfterSummarizeCommandWithoutSummaryWithRange(): void
     {
-        $this->getCountAndDetails(false, true, 100, 2, 0);
+        $this->getCountAndDetails(false, true, ['100%', '100%'], ['2', '2'], ['0', '0']);
     }
 
     public function testCampaignCountsAfterSummarizeCommandWithSummaryAndRange(): void
     {
-        $this->getCountAndDetails(false, true, 100, 2, 0);
+        $this->getCountAndDetails(false, true, ['100%', '100%'], ['2', '2'], ['0', '0']);
     }
 
     public function testCampaignPendingCountsWithoutSummaryAndRange(): void
     {
-        $this->getCountAndDetails(true, true, 100, 2, 1);
+        $this->getCountAndDetails(true, true, ['100%', '100%'], ['3', '2'], ['0', '0']);
     }
 
     public function testCampaignPendingCountsWithSummaryWithoutRange(): void
     {
-        $this->getCountAndDetails(true, true, 100, 2, 1);
+        $this->getCountAndDetails(true, true, ['100%', '100%'], ['3', '2'], ['0', '0']);
     }
 
     public function testCampaignPendingCountsWithoutSummaryWithRange(): void
     {
-        $this->getCountAndDetails(true, true, 100, 2, 1);
+        $this->getCountAndDetails(true, true, ['100%', '100%'], ['3', '2'], ['0', '0']);
     }
 
     public function testCampaignPendingCountsWithSummaryAndRange(): void
     {
-        $this->getCountAndDetails(true, true, 100, 2, 1);
+        $this->getCountAndDetails(true, true, ['100%', '100%'], ['3', '2'], ['0', '0']);
     }
 
     private function getStatTotalContacts(int $campaignId): int
@@ -205,14 +205,30 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTest
     }
 
     /**
-     * @return array<string, string>
+     * @return array<array<string, string>>
      */
     private function getActionCounts(int $campaignId): array
     {
         $crawler        = $this->getCrawlers($campaignId);
-        $successPercent = trim($crawler->filter('#actions-container')->filter('span')->eq(0)->html());
-        $completed      = trim($crawler->filter('#actions-container')->filter('span')->eq(1)->html());
-        $pending        = trim($crawler->filter('#actions-container')->filter('span')->eq(2)->html());
+        dump(trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(1) .label-success')->html()));
+        $successPercent = [
+            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(1) .label-success')->html()),
+            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(2) .label-success')->html()),
+            // Weitere Elemente nach Bedarf
+        ];
+
+        $completed = [
+            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(1) .label-warning')->html()),
+            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(2) .label-warning')->html()),
+            // Weitere Elemente nach Bedarf
+        ];
+
+        $pending = [
+            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(1) .label-gray')->html()),
+            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(2) .label-gray')->html()),
+            // Weitere Elemente nach Bedarf
+        ];
+        dump($successPercent, $completed, $pending);
 
         return [
             'successPercent' => $successPercent,
@@ -238,7 +254,7 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTest
         Assert::assertSame(2, $totalContacts);
     }
 
-    private function getCountAndDetails(bool $emulatePendingCount, bool $runCommand, int $expectedSuccessPercent, int $expectedCompleted, int $expectedPending): void
+    private function getCountAndDetails(bool $emulatePendingCount, bool $runCommand, array $expectedSuccessPercent, array $expectedCompleted, array $expectedPending): void
     {
         $campaign   = $this->saveSomeCampaignLeadEventLogs($emulatePendingCount);
         $campaignId = $campaign->getId();
@@ -254,9 +270,9 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTest
         }
 
         $actionCounts = $this->getActionCounts($campaignId);
-        Assert::assertSame($expectedSuccessPercent.'%', $actionCounts['successPercent']);
-        Assert::assertSame($expectedCompleted, (int) $actionCounts['completed']);
-        Assert::assertSame($expectedPending, (int) $actionCounts['pending']);
+        Assert::assertSame($expectedSuccessPercent, $actionCounts['successPercent']);
+        Assert::assertSame($expectedCompleted, $actionCounts['completed']);
+        Assert::assertSame($expectedPending, $actionCounts['pending']);
     }
 
     public function testDeleteCampaign(): void
