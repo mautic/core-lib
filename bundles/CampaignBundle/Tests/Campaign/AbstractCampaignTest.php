@@ -17,7 +17,7 @@ use Mautic\LeadBundle\Entity\LeadRepository;
 
 abstract class AbstractCampaignTest extends MauticMysqlTestCase
 {
-    protected function saveSomeCampaignLeadEventLogs(bool $emulatePendingCount = false): Campaign
+    protected function saveSomeCampaignLeadEventLogs(bool $emulatePendingCount = false, bool $addEventsOfRemovedLead = false): Campaign
     {
         $relativeDate = date('Y-m-d', strtotime('-1 month'));
 
@@ -105,7 +105,7 @@ abstract class AbstractCampaignTest extends MauticMysqlTestCase
 
         $campaignLeadsRepo->saveEntities([$campaignLeadsA, $campaignLeadsB]);
 
-        if ($emulatePendingCount) {
+        if ($addEventsOfRemovedLead) {
             $contactC = new Lead();
             $contactRepo->saveEntity($contactC);
 
@@ -123,6 +123,27 @@ abstract class AbstractCampaignTest extends MauticMysqlTestCase
             $campaignLeadsC->setDateAdded(new \DateTime($relativeDate));
             $campaignLeadsC->setRotation(0);
             $campaignLeadsC->setManuallyRemoved(true);
+            $campaignLeadsRepo->saveEntity($campaignLeadsC);
+        }
+
+        if ($emulatePendingCount) {
+            $contactD = new Lead();
+            $contactRepo->saveEntity($contactD);
+
+            $leadEventLogD = new LeadEventLog();
+            $leadEventLogD->setCampaign($campaign);
+            $leadEventLogD->setEvent($eventA);
+            $leadEventLogD->setLead($contactD);
+            $leadEventLogD->setDateTriggered(new \DateTime($relativeDate.' 16:34:00', new \DateTimeZone('UTC')));
+            $leadEventLogD->setRotation(0);
+            $leadEventLogRepo->saveEntity($leadEventLogD);
+
+            $campaignLeadsC = new CampaignLeads();
+            $campaignLeadsC->setLead($contactD);
+            $campaignLeadsC->setCampaign($campaign);
+            $campaignLeadsC->setDateAdded(new \DateTime($relativeDate));
+            $campaignLeadsC->setRotation(0);
+            $campaignLeadsC->setManuallyRemoved(false);
             $campaignLeadsRepo->saveEntity($campaignLeadsC);
         }
 
