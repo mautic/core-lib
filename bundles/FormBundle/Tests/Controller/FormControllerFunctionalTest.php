@@ -27,7 +27,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
     {
         parent::setUp();
 
-        if ('testLabelsForFormAction' === $this->getName(false)) {
+        if ('testLabelsForFormAction' === $this->name()) {
             $this->truncateTables('assets', 'categories', 'emails', 'lead_lists');
         }
     }

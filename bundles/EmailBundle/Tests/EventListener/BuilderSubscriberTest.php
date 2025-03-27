@@ -202,18 +202,9 @@ class BuilderSubscriberTest extends TestCase
                     return 'ACME';
                 }
             });
-        $matcher = $this->never();
 
-        $this->translator->expects($matcher)
-            ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher, $unsubscribeTokenizedText) {
-                if (1 === $matcher->getInvocationCount()) {
-                    $this->assertSame($unsubscribeTokenizedText, $parameters[0]);
-                }
-                if (2 === $matcher->getInvocationCount()) {
-                }
-
-                return $unsubscribeTokenizedText;
-            });
+        $this->translator->expects($this->never())
+            ->method('trans');
 
         $this->builderSubscriber->onEmailGenerate($event);
         $this->assertEquals(

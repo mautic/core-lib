@@ -431,19 +431,10 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
-        $matcher = $this->exactly(1);
 
-        $this->dispatcher->expects($matcher)->method('dispatch')
-            ->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->getInvocationCount()) {
-                    $this->assertInstanceof(CampaignExecutionEvent::class, $parameters[0]);
-                    $this->assertSame('something', $parameters[1]);
-
-                    return $this->returnCallback(
-                        fn (CampaignExecutionEvent $event) => $event->setResult(true)
-                    );
-                }
-            });
+        $this->dispatcher->method('dispatch')
+            ->with($this->isInstanceOf(CampaignExecutionEvent::class), 'something')
+            ->willReturnCallback(fn (CampaignExecutionEvent $event) => $event->setResult(true));
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, true, $this->pendingEvent);
     }

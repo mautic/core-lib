@@ -14,31 +14,17 @@ use PHPUnit\Framework\Assert;
 
 class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends MauticMysqlTestCase
 {
-    private string $originalTimezone;
-
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-
-        $timezone = 'UTC';
-        $nowUTC   = new \DateTime('now', new \DateTimeZone($timezone));
-        if ($nowUTC->format('G') < 4) {
-            $timezone = 'Asia/Bangkok'; // +07:00
-        } elseif ($nowUTC->format('G') > 20) {
-            $timezone = 'America/Phoenix'; // -07:00
-        }
-
-        $this->originalTimezone = date_default_timezone_get();
-
-        $this->configParams += [
-            'default_timezone' => $timezone,
-        ];
-    }
+    private static string $originalTimezone;
+    private static string $timezone;
 
     protected function setUp(): void
     {
         // Tear down of the base class will restore timezone to UTC.
-        date_default_timezone_set($this->configParams['default_timezone']);
+        date_default_timezone_set(self::$timezone);
+
+        $this->configParams += [
+            'default_timezone' => self::$timezone,
+        ];
 
         parent::setUp();
     }
@@ -131,9 +117,20 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
     /**
      * @return iterable<mixed>
      */
-    public function dataForCampaignWithJumpToEventWithIntervalTriggerMode(): iterable
+    public static function dataForCampaignWithJumpToEventWithIntervalTriggerMode(): iterable
     {
-        date_default_timezone_set($this->configParams['default_timezone']);
+        $timezone = 'UTC';
+        $nowUTC   = new \DateTime('now', new \DateTimeZone($timezone));
+        if ($nowUTC->format('G') < 4) {
+            $timezone = 'Asia/Bangkok'; // +07:00
+        } elseif ($nowUTC->format('G') > 20) {
+            $timezone = 'America/Phoenix'; // -07:00
+        }
+
+        self::$originalTimezone = date_default_timezone_get();
+        self::$timezone         = $timezone;
+
+        date_default_timezone_set(self::$timezone);
         // Event times starts when the PHPUNIT suite starts. The closures can run minutes later
         // which breaks the test in the CI. Use this time in the closures to avoid flaky tests.
         $testNow = new \DateTime();
@@ -168,7 +165,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog) use ($testNow): void {
                 Assert::assertFalse($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+                self::assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             },
         ];
 
@@ -197,7 +194,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             function (LeadEventLog $eventLog) use ($testNow): void {
                 $testNow = clone $testNow;
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($testNow->modify('+1 day')->modify('+2 hours')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+                self::assertPlusMinusOneMinuteOf($testNow->modify('+1 day')->modify('+2 hours')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
             },
         ];
 
@@ -222,7 +219,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             function (LeadEventLog $eventLog) use ($testNow): void {
                 $testNow = clone $testNow;
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($testNow->modify('+3 hour')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+                self::assertPlusMinusOneMinuteOf($testNow->modify('+3 hour')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
             },
         ];
 
@@ -234,7 +231,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog): void {
                 Assert::assertFalse($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf((new \DateTime())->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+                self::assertPlusMinusOneMinuteOf((new \DateTime())->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
             },
         ];
 
@@ -275,7 +272,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog) use ($triggerHourDate): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($triggerHourDate->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+                self::assertPlusMinusOneMinuteOf($triggerHourDate->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             },
         ];
 
@@ -307,18 +304,18 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog) use ($testNow): void {
                 Assert::assertFalse($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+                self::assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             },
         ];
 
         // Need to reset timezone for next date providers call
-        date_default_timezone_set($this->originalTimezone);
+        date_default_timezone_set(self::$originalTimezone);
     }
 
     /**
      * Avoid flaky test when executing the test right whe the minute is increasing.
      */
-    private function assertPlusMinusOneMinuteOf(string $expectedDateString, string $actualDateString): void
+    private static function assertPlusMinusOneMinuteOf(string $expectedDateString, string $actualDateString): void
     {
         $expectedDate = new \DateTime($expectedDateString);
         $actualDate   = new \DateTime($actualDateString);

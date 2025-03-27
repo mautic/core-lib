@@ -208,21 +208,11 @@ SQL;
             ->method('eq')
             ->with('l.manually_removed', ':false')
             ->willReturnSelf();
-        $matcher = self::once();
 
-        $this->queryBuilderMock->expects($matcher)
+        $this->queryBuilderMock->expects(self::once())
             ->method('setParameter')
-            ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
-                    if (1 === $matcher->getInvocationCount()) {
-                        $this->assertSame('false', $parameters[0]);
-                        $this->assertFalse($parameters[1]);
-                        $this->assertSame('boolean', $parameters[2]);
-                    }
-
-                    return $this->queryBuilderMock;
-                }
-            );
+            ->with('false', false, 'boolean')
+            ->willReturnSelf();
 
         self::assertSame(array_combine($listIds, $counts), $this->repository->getLeadCount($listIds));
     }

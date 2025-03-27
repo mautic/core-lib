@@ -17,11 +17,11 @@ class BuilderSubscriberFunctionalTest extends MauticMysqlTestCase
     protected function setUp(): void
     {
         $this->configParams['disable_trackable_urls'] = false;
-        if (str_contains($this->getDataSetAsString(false), 'Invalid unsubscribe_text configured')) {
+        if (str_contains($this->dataSetAsString(), 'Invalid unsubscribe_text configured')) {
             $this->configParams['unsubscribe_text']  = '<a href="|some|">Unsubscribe</a> with invalid token within the href attribute.';
         }
 
-        if (str_contains($this->getDataSetAsString(false), 'No unsubscribe_text configured')) {
+        if (str_contains($this->dataName(), 'No unsubscribe_text configured')) {
             $this->configParams['unsubscribe_text']  = '';
         }
 

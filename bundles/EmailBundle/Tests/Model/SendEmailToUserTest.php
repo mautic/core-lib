@@ -209,7 +209,7 @@ class SendEmailToUserTest extends \PHPUnit\Framework\TestCase
         $this->emailModel
             ->expects($this->once())
             ->method('sendEmailToUser')
-            ->will($this->returnCallback(function ($email, $users, $leadCredentials, $tokens, $assetAttachments, $saveStat, $to, $cc, $bcc): void {
+            ->willReturnCallback(function ($email, $users, $leadCredentials, $tokens, $assetAttachments, $saveStat, $to, $cc, $bcc): void {
                 $expectedUsers = [
                     ['id' => 6],
                     ['id' => 7],
@@ -221,7 +221,7 @@ class SendEmailToUserTest extends \PHPUnit\Framework\TestCase
                 $this->assertEquals(['hello@there.com', 'bob@bobek.cz', 'default@email.com'], $to);
                 $this->assertEquals([], $cc);
                 $this->assertEquals([0 => 'hidden@translation.in', 2 => 'replaced.token@email.address'], $bcc);
-            }));
+            });
 
         $config = [
             'useremail' => [

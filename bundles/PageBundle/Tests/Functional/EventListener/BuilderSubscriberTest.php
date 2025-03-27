@@ -46,7 +46,7 @@ class BuilderSubscriberTest extends MauticMysqlTestCase
     protected function setUp(): void
     {
         $this->configParams['show_contact_preferences'] = 1;
-        $data                                           = $this->getProvidedData();
+        $data                                           = $this->providedData();
         $this->configParams                             = array_merge($data[0], $this->configParams);
 
         parent::setUp();

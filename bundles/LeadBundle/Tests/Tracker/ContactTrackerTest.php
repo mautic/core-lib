@@ -242,7 +242,7 @@ class ContactTrackerTest extends \PHPUnit\Framework\TestCase
         $leadDevice2->setTrackingId('def456');
 
         $this->deviceTrackerMock->method('getTrackedDevice')
-            ->willReturnOnConsecutiveCalls($leadDevice1, $leadDevice2);
+            ->willReturnOnConsecutiveCalls($leadDevice1, $leadDevice2, null);
 
         $this->dispatcherMock->expects($this->once())
             ->method('hasListeners')

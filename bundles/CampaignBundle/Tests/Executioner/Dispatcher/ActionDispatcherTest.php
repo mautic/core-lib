@@ -118,6 +118,17 @@ class ActionDispatcherTest extends \PHPUnit\Framework\TestCase
                         \assert($event instanceof PendingEvent);
                         $event->pass($logs->get(1));
                         $event->fail($logs->get(2), 'just because');
+                    } elseif (2 === $dispatcCounter) {
+                        self::assertInstanceOf(ExecutedEvent::class, $event);
+                        self::assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
+                    } elseif (3 === $dispatcCounter) {
+                        self::assertInstanceOf(ExecutedBatchEvent::class, $event);
+                        self::assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
+                    } elseif (4 === $dispatcCounter) {
+                        self::assertInstanceOf(FailedEvent::class, $event);
+                        self::assertSame(CampaignEvents::ON_EVENT_FAILED, $eventName);
+                    } else {
+                        self::fail('Unknown event called.');
                     }
 
                     return $event;
