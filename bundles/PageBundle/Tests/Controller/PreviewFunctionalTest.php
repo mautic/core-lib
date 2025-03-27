@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\PageBundle\Tests\Controller;
 
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
-use Doctrine\Persistence\Mapping\MappingException;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\DynamicContentBundle\Entity\DynamicContent;
@@ -55,11 +52,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         self::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
-    /**
-     * @throws MappingException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function testPreviewPageUrlIsValid(): void
     {
         $page = $this->createPage();
@@ -74,11 +66,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         self::assertStringContainsString('/page/preview/'.$pageId, $crawler->filter('#content_preview_url')->attr('value'));
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws MappingException
-     */
     public function testPreviewPagePublicToggle(): void
     {
         $page = $this->createPage();
@@ -129,11 +116,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         self::assertEquals(1, $toggleElem->count());
     }
 
-    /**
-     * @throws MappingException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function testPreviewPageWithPublishAndPublicOptions(): void
     {
         $page = $this->createPage();
@@ -207,11 +189,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         self::assertStringContainsString('404 Not Found', $crawler->text());
     }
 
-    /**
-     * @throws MappingException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function testPreviewPageAccess(): void
     {
         // Create non published, non public landing page.
@@ -262,9 +239,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         self::assertSame($expectedContent, $crawler->text());
     }
 
-    /**
-     * @throws ORMException
-     */
     private function createPage(
         DynamicContent $dynamicContent = null,
         string $defaultContent = '',
@@ -290,9 +264,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         return $page;
     }
 
-    /**
-     * @throws ORMException
-     */
     private function createLead(): Lead
     {
         $lead = new Lead();
@@ -302,9 +273,6 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         return $lead;
     }
 
-    /**
-     * @throws ORMException
-     */
     private function createDynamicContent(Lead $lead): DynamicContent
     {
         $dynamicContent = new DynamicContent();
