@@ -45,15 +45,23 @@ class FilePathResolverTest extends \PHPUnit\Framework\TestCase
         $uploadDir     = 'my/upload/dir';
         $extension     = 'jpg';
         $dirtyFileName = 'fileName_x./-u'.$extension;
+        $matcher = $this->exactly(3);
 
-        $this->filesystemMock->expects($this->exactly(3))
-            ->method('exists')
-            ->withConsecutive(
-                ['my/upload/dir/filename_x.jpg'],
-                ['my/upload/dir/filename_x-1.jpg'],
-                ['my/upload/dir/filename_x-2.jpg']
-            )
-            ->willReturnOnConsecutiveCalls(true, true, false);
+        $this->filesystemMock->expects($matcher)
+            ->method('exists')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('my/upload/dir/filename_x.jpg', $parameters[0]);
+                return true;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('my/upload/dir/filename_x-1.jpg', $parameters[0]);
+                return true;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('my/upload/dir/filename_x-2.jpg', $parameters[0]);
+                return false;
+            }
+        });
 
         $this->fileMock->expects($this->once())
             ->method('getClientOriginalName')

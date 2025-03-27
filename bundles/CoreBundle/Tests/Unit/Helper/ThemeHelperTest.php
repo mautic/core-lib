@@ -503,15 +503,21 @@ class ThemeHelperTest extends TestCase
     {
         $this->builderIntegrationsHelper->method('getBuilder')
             ->willThrowException(new IntegrationNotFoundException());
+        $matcher = $this->exactly(2);
 
         $this->pathsHelper
-            ->expects($this->exactly(2))
-            ->method('getSystemPath')
-            ->withConsecutive(
-                ['themes', true],
-                ['themes', false]
-            )
-            ->willReturn(__DIR__.'/resource/themes');
+            ->expects($matcher)
+            ->method('getSystemPath')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('themes', $parameters[0]);
+                $this->assertSame(true, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('themes', $parameters[0]);
+                $this->assertSame(false, $parameters[1]);
+            }
+            return __DIR__.'/resource/themes';
+        });
 
         $themes = $this->themeHelper->getInstalledThemes('all', true, false, false);
         Assert::assertCount(4, $themes);

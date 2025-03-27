@@ -142,11 +142,20 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
             ->expects($this->exactly(3))
             ->method('getModifiedBy')
             ->willReturn($this->modifiedBy);
+        $matcher = $this->exactly(2);
 
-        $this->entityManagerMock
-            ->method('getReference')
-            ->withConsecutive([User::class, $this->createdBy], [User::class, $this->modifiedBy])
-            ->willReturn($this->owner, $modifier);
+        $this->entityManagerMock->expects($matcher)
+            ->method('getReference')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(User::class, $parameters[0]);
+                $this->assertSame($this->createdBy, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(User::class, $parameters[0]);
+                $this->assertSame($this->modifiedBy, $parameters[1]);
+            }
+            return $this->owner;
+        });
 
         $this->notificationModelMock
             ->expects($this->once())
@@ -180,20 +189,41 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
 
     private function mockCommonMethods(int $sentToAuther, string $emailToSend = null): void
     {
-        $this->coreParamHelperMock
-            ->method('get')
-            ->withConsecutive(['webhook_send_notification_to_author'], ['webhook_notification_email_addresses'])
-            ->willReturnOnConsecutiveCalls($sentToAuther, $emailToSend);
+        $matcher = $this->exactly(2);
+        $this->coreParamHelperMock->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('webhook_send_notification_to_author', $parameters[0]);
+                return $sentToAuther;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('webhook_notification_email_addresses', $parameters[0]);
+                return $emailToSend;
+            }
+        });
 
         $this->webhookKillNotificator = new WebhookKillNotificator($this->translatorMock, $this->routerMock, $this->notificationModelMock, $this->entityManagerMock, $this->mailHelperMock, $this->coreParamHelperMock);
 
         $this->owner          = $this->createMock(User::class);
 
         $htmlUrl = '<a href="'.$this->generatedRoute.'" data-toggle="ajax">'.$this->webhookName.'</a>';
-        $this->translatorMock
-            ->method('trans')
-            ->withConsecutive(['mautic.webhook.stopped'], [$this->reason], ['mautic.webhook.stopped.details', ['%reason%'  => $this->reason, '%webhook%' => $htmlUrl]])
-            ->willReturnOnConsecutiveCalls($this->subject, $this->reason, $this->details);
+        $matcher = $this->exactly(3);
+        $this->translatorMock->expects($matcher)
+            ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher, $htmlUrl) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('mautic.webhook.stopped', $parameters[0]);
+                return $this->subject;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame($this->reason, $parameters[0]);
+                return $this->reason;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('mautic.webhook.stopped.details', $parameters[0]);
+                $this->assertSame(['%reason%'  => $this->reason, '%webhook%' => $htmlUrl], $parameters[1]);
+                return $this->details;
+            }
+        });
 
         $this->webhook->expects($this->once())
             ->method('getId')

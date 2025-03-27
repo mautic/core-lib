@@ -60,23 +60,34 @@ class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
                 'readRate'   => 50,
             ],
         ];
+        $matcher = $this->exactly(6);
 
-        $this->translator->method('trans')
-            ->withConsecutive(
-                ['mautic.email.abtest.label.opened'],
-                ['mautic.email.abtest.label.sent'],
-                ['mautic.email.abtest.label.opened'],
-                ['mautic.email.abtest.label.sent'],
-                ['mautic.email.abtest.label.opened'],
-                ['mautic.email.abtest.label.sent'])
-            ->willReturnOnConsecutiveCalls(
-                'opened',
-                'sent',
-                'opened',
-                'sent',
-                'opened',
-                'sent'
-            );
+        $this->translator->expects($matcher)->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
+                return 'opened';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('mautic.email.abtest.label.sent', $parameters[0]);
+                return 'sent';
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
+                return 'opened';
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('mautic.email.abtest.label.sent', $parameters[0]);
+                return 'sent';
+            }
+            if ($matcher->getInvocationCount() === 5) {
+                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
+                return 'opened';
+            }
+            if ($matcher->getInvocationCount() === 6) {
+                $this->assertSame('mautic.email.abtest.label.sent', $parameters[0]);
+                return 'sent';
+            }
+        });
 
         $this->em->expects($this->once())
             ->method('getRepository')
@@ -132,27 +143,46 @@ class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
             1 => 168,
             2 => 153,
         ];
+        $matcher = $this->exactly(6);
 
-        $this->translator->method('trans')
-            ->withConsecutive(
-                ['mautic.email.abtest.label.clickthrough'],
-                ['mautic.email.abtest.label.opened'],
-                ['mautic.email.abtest.label.clickthrough'],
-                ['mautic.email.abtest.label.opened'],
-                ['mautic.email.abtest.label.clickthrough'],
-                ['mautic.email.abtest.label.opened'])
-            ->willReturnOnConsecutiveCalls(
-                'clickthrough',
-                'opened',
-                'clickthrough',
-                'opened',
-                'clickthrough',
-                'opened'
-            );
+        $this->translator->expects($matcher)->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('mautic.email.abtest.label.clickthrough', $parameters[0]);
+                return 'clickthrough';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
+                return 'opened';
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('mautic.email.abtest.label.clickthrough', $parameters[0]);
+                return 'clickthrough';
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
+                return 'opened';
+            }
+            if ($matcher->getInvocationCount() === 5) {
+                $this->assertSame('mautic.email.abtest.label.clickthrough', $parameters[0]);
+                return 'clickthrough';
+            }
+            if ($matcher->getInvocationCount() === 6) {
+                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
+                return 'opened';
+            }
+        });
+        $matcher = $this->exactly(2);
 
-        $this->em->method('getRepository')
-            ->withConsecutive([Hit::class], [Stat::class])
-            ->willReturnOnConsecutiveCalls($pageRepoMock, $emailRepoMock);
+        $this->em->expects($matcher)->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(Hit::class, $parameters[0]);
+                return $pageRepoMock;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(Stat::class, $parameters[0]);
+                return $emailRepoMock;
+            }
+        });
 
         $parentMock->expects($this->once())
             ->method('getRelatedEntityIds')

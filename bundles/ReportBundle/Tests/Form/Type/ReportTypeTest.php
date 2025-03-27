@@ -76,21 +76,23 @@ final class ReportTypeTest extends \PHPUnit\Framework\TestCase
 
         $this->reportModel->method('getGraphList')
             ->willReturn($graphList);
+        $matcher = $this->exactly(1);
 
-        $this->formBuilder->method('addEventListener')
-            ->withConsecutive(
-                [
-                    FormEvents::PRE_SET_DATA,
-                    $this->callback(
-                        function (callable $listener) use ($report) {
+        $this->formBuilder->expects($matcher)->method('addEventListener')
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher) {
+                    if ($matcher->getInvocationCount() === 1) {
+                        $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
+                        $callback = function (callable $listener) use ($report) {
                             $form      = $this->createMock(FormInterface::class);
                             $formEvent = new FormEvent($form, $report);
                             $listener($formEvent);
 
                             return true;
-                        }
-                    ),
-                ]
+                        };
+                        $this->assertTrue($callback($parameters[1]));
+                    }
+                }
             );
 
         $this->reportType->buildForm($this->formBuilder, $data);

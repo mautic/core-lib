@@ -156,19 +156,23 @@ class UpdateHelperTest extends TestCase
             'checkedTime'  => time() - 100,
         ];
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
+        $matcher = $this->exactly(3);
 
-        $this->coreParametersHelper->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'alpha',
-                null,
-                null
-            );
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'alpha';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return null;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return null;
+            }
+        });
 
         $this->helper->fetchData();
     }
@@ -185,19 +189,23 @@ class UpdateHelperTest extends TestCase
             'checkedTime'  => time() - 10800,
         ];
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
+        $matcher = $this->exactly(3);
 
-        $this->coreParametersHelper->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                null,
-                null
-            );
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return null;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return null;
+            }
+        });
 
         $this->helper->fetchData();
     }
@@ -214,19 +222,23 @@ class UpdateHelperTest extends TestCase
             'checkedTime'  => time(),
         ];
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
+        $matcher = $this->exactly(3);
 
-        $this->coreParametersHelper->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                null,
-                null
-            );
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return null;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return null;
+            }
+        });
 
         $this->helper->fetchData(true);
     }
@@ -245,24 +257,35 @@ class UpdateHelperTest extends TestCase
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
         $statsUrl = 'https://mautic.org/stats';
-        $this->coreParametersHelper->expects($this->exactly(6))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['secret_key'],
-                ['db_driver'],
-                ['install_source', 'Mautic'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                $statsUrl,
-                'abc123',
-                'mysql',
-                'Mautic',
-                null
-            );
+        $matcher = $this->exactly(6);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return $statsUrl;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('secret_key', $parameters[0]);
+                return 'abc123';
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('db_driver', $parameters[0]);
+                return 'mysql';
+            }
+            if ($matcher->getInvocationCount() === 5) {
+                $this->assertSame('install_source', $parameters[0]);
+                $this->assertSame('Mautic', $parameters[1]);
+                return 'Mautic';
+            }
+            if ($matcher->getInvocationCount() === 6) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return null;
+            }
+        });
 
         $this->client->expects($this->once())
             ->method('request')
@@ -299,18 +322,22 @@ class UpdateHelperTest extends TestCase
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
         $statsUrl = '';
-        $this->coreParametersHelper->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                $statsUrl,
-                null
-            );
+        $matcher = $this->exactly(3);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return $statsUrl;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return null;
+            }
+        });
 
         $this->client->expects($this->never())
             ->method('request');
@@ -332,24 +359,35 @@ class UpdateHelperTest extends TestCase
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
         $statsUrl = 'https://mautic.org/stats';
-        $this->coreParametersHelper->expects($this->exactly(6))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['secret_key'],
-                ['db_driver'],
-                ['install_source', 'Mautic'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                $statsUrl,
-                'abc123',
-                'mysql',
-                'Mautic',
-                null
-            );
+        $matcher = $this->exactly(6);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return $statsUrl;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('secret_key', $parameters[0]);
+                return 'abc123';
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('db_driver', $parameters[0]);
+                return 'mysql';
+            }
+            if ($matcher->getInvocationCount() === 5) {
+                $this->assertSame('install_source', $parameters[0]);
+                $this->assertSame('Mautic', $parameters[1]);
+                return 'Mautic';
+            }
+            if ($matcher->getInvocationCount() === 6) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return null;
+            }
+        });
 
         $this->client->expects($this->once())
             ->method('request')
@@ -384,24 +422,35 @@ class UpdateHelperTest extends TestCase
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
         $statsUrl = 'https://mautic.org/stats';
-        $this->coreParametersHelper->expects($this->exactly(6))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['secret_key'],
-                ['db_driver'],
-                ['install_source', 'Mautic'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                $statsUrl,
-                'abc123',
-                'mysql',
-                'Mautic',
-                null
-            );
+        $matcher = $this->exactly(6);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return $statsUrl;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('secret_key', $parameters[0]);
+                return 'abc123';
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('db_driver', $parameters[0]);
+                return 'mysql';
+            }
+            if ($matcher->getInvocationCount() === 5) {
+                $this->assertSame('install_source', $parameters[0]);
+                $this->assertSame('Mautic', $parameters[1]);
+                return 'Mautic';
+            }
+            if ($matcher->getInvocationCount() === 6) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return null;
+            }
+        });
 
         $this->client->expects($this->once())
             ->method('request')
@@ -434,24 +483,35 @@ class UpdateHelperTest extends TestCase
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
         $statsUrl = 'https://mautic.org/stats';
-        $this->coreParametersHelper->expects($this->exactly(6))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['secret_key'],
-                ['db_driver'],
-                ['install_source', 'Mautic'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                $statsUrl,
-                'abc123',
-                'mysql',
-                'Mautic',
-                null
-            );
+        $matcher = $this->exactly(6);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return $statsUrl;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('secret_key', $parameters[0]);
+                return 'abc123';
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('db_driver', $parameters[0]);
+                return 'mysql';
+            }
+            if ($matcher->getInvocationCount() === 5) {
+                $this->assertSame('install_source', $parameters[0]);
+                $this->assertSame('Mautic', $parameters[1]);
+                return 'Mautic';
+            }
+            if ($matcher->getInvocationCount() === 6) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return null;
+            }
+        });
 
         $this->client->expects($this->once())
             ->method('request')
@@ -484,18 +544,22 @@ class UpdateHelperTest extends TestCase
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
         $updateUrl = 'https://mautic.org/update';
-        $this->coreParametersHelper->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                null,
-                $updateUrl
-            );
+        $matcher = $this->exactly(3);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return null;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return $updateUrl;
+            }
+        });
 
         $this->client->expects($this->once())
             ->method('request')
@@ -533,18 +597,22 @@ class UpdateHelperTest extends TestCase
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
         $updateUrl = 'https://mautic.org/update';
-        $this->coreParametersHelper->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                null,
-                $updateUrl
-            );
+        $matcher = $this->exactly(3);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return null;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return $updateUrl;
+            }
+        });
 
         $this->client->expects($this->once())
             ->method('request')
@@ -582,18 +650,22 @@ class UpdateHelperTest extends TestCase
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
         $updateUrl = 'https://mautic.org/update';
-        $this->coreParametersHelper->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                null,
-                $updateUrl
-            );
+        $matcher = $this->exactly(3);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return null;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return $updateUrl;
+            }
+        });
 
         $this->client->expects($this->once())
             ->method('request')
@@ -625,18 +697,22 @@ class UpdateHelperTest extends TestCase
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
 
         $updateUrl = 'https://mautic.org/update';
-        $this->coreParametersHelper->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                null,
-                $updateUrl
-            );
+        $matcher = $this->exactly(3);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return null;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return $updateUrl;
+            }
+        });
 
         $this->client->expects($this->once())
             ->method('request')
@@ -669,19 +745,23 @@ class UpdateHelperTest extends TestCase
             'checkedTime'  => time() - 10800,
         ];
         file_put_contents(__DIR__.'/resource/update/tmp/lastUpdateCheck.txt', json_encode($cache));
+        $matcher = $this->exactly(3);
 
-        $this->coreParametersHelper->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(
-                ['update_stability'],
-                ['stats_update_url'],
-                ['system_update_url']
-            )
-            ->willReturnOnConsecutiveCalls(
-                'stable',
-                null,
-                null
-            );
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('update_stability', $parameters[0]);
+                return 'stable';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('stats_update_url', $parameters[0]);
+                return null;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('system_update_url', $parameters[0]);
+                return null;
+            }
+        });
 
         $this->client->expects($this->never())
             ->method('request');

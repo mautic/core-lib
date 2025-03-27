@@ -250,14 +250,20 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $ipAddress->setIpDetails(['organization' => 'Doctors Without Borders']);
 
         $entity->addIpAddress($ipAddress);
+        $matcher = $this->exactly(2);
 
-        $this->coreParametersHelperMock->expects($this->exactly(2))
-            ->method('get')
-            ->withConsecutive(
-                ['anonymize_ip', false],
-                ['ip_lookup_create_organization', false]
-            )
-            ->willReturn(false);
+        $this->coreParametersHelperMock->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('anonymize_ip', $parameters[0]);
+                $this->assertSame(false, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('ip_lookup_create_organization', $parameters[0]);
+                $this->assertSame(false, $parameters[1]);
+            }
+            return false;
+        });
 
         $this->fieldModelMock->method('getFieldListWithProperties')->willReturn([]);
         $this->fieldModelMock->method('getFieldList')->willReturn([]);
@@ -281,14 +287,21 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $ipAddress->setIpDetails(['organization' => $companyFromIpLookup]);
 
         $entity->addIpAddress($ipAddress);
+        $matcher = $this->exactly(2);
 
-        $this->coreParametersHelperMock->expects($this->exactly(2))
-            ->method('get')
-            ->withConsecutive(
-                ['anonymize_ip', false],
-                ['ip_lookup_create_organization', false]
-            )
-            ->willReturnOnConsecutiveCalls(false, true);
+        $this->coreParametersHelperMock->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('anonymize_ip', $parameters[0]);
+                $this->assertSame(false, $parameters[1]);
+                return false;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('ip_lookup_create_organization', $parameters[0]);
+                $this->assertSame(false, $parameters[1]);
+                return true;
+            }
+        });
 
         $this->fieldModelMock->method('getFieldListWithProperties')->willReturn([]);
         $this->fieldModelMock->method('getFieldList')->willReturn([]);
@@ -593,17 +606,19 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->method('findByIdOrName')
             ->with(1)
             ->willReturn($stageMock);
+        $matcher = $this->exactly(2);
 
-        $this->entityManagerMock->expects($this->exactly(2))
-            ->method('getRepository')
-            ->withConsecutive(
-                [StagesChangeLog::class],
-                [Stage::class]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $stagesChangeLogRepo,
-                $stageRepositoryMock
-            );
+        $this->entityManagerMock->expects($matcher)
+            ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(StagesChangeLog::class, $parameters[0]);
+                return $stagesChangeLogRepo;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(Stage::class, $parameters[0]);
+                return $stageRepositoryMock;
+            }
+        });
 
         $this->translator->expects($this->once())
             ->method('trans')
@@ -629,17 +644,19 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->method('findByIdOrName')
             ->with($data['stage'])
             ->willReturn(null);
+        $matcher = $this->exactly(2);
 
-        $this->entityManagerMock->expects($this->exactly(2))
-            ->method('getRepository')
-            ->withConsecutive(
-                [StagesChangeLog::class],
-                [Stage::class]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $stagesChangeLogRepo,
-                $stageRepositoryMock
-            );
+        $this->entityManagerMock->expects($matcher)
+            ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(StagesChangeLog::class, $parameters[0]);
+                return $stagesChangeLogRepo;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(Stage::class, $parameters[0]);
+                return $stageRepositoryMock;
+            }
+        });
 
         $this->translator->expects($this->once())
             ->method('trans')

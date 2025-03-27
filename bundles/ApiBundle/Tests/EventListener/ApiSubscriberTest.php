@@ -107,11 +107,19 @@ class ApiSubscriberTest extends CommonMocks
         $this->request->expects($this->once())
             ->method('getRequestUri')
             ->willReturn('/api/endpoint');
+        $matcher = $this->exactly(2);
 
-        $this->coreParametersHelper->expects($this->exactly(2))
-            ->method('get')
-            ->withConsecutive(['api_enabled'], ['api_enable_basic_auth'])
-            ->willReturnOnConsecutiveCalls(true, true);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('api_enabled', $parameters[0]);
+                return true;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('api_enable_basic_auth', $parameters[0]);
+                return true;
+            }
+        });
 
         $this->subscriber->onKernelRequest($this->event);
     }

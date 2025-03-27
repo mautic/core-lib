@@ -36,6 +36,22 @@ class ContentPreviewSettingsTypeTest extends TestCase
      */
     private MockObject $userHelperMock;
 
+    private array $contactFieldDefinition = [
+        'contact',
+        LookupType::class,
+        [
+            'attr' => [
+                'class'                   => 'form-control',
+                'data-callback'           => 'activatePreviewContactLookupField',
+                'data-toggle'             => 'field-lookup',
+                'data-lookup-callback'    => 'updatePreviewContactLookupListFilter',
+                'data-chosen-lookup'      => 'lead:contactList',
+                'placeholder'             => 'startTyping',
+                'data-no-record-message'  => 'nomatches',
+            ],
+        ],
+    ];
+
     protected function setUp(): void
     {
         $this->translator     = $this->createMock(TranslatorInterface::class);
@@ -107,7 +123,7 @@ class ContentPreviewSettingsTypeTest extends TestCase
         $builder->expects(self::once())
             ->method('add')
             ->withConsecutive(
-                $this->getContactFieldDefinition()
+                $this->contactFieldDefinition
             );
 
         $this->security->expects(self::once())
@@ -190,7 +206,7 @@ class ContentPreviewSettingsTypeTest extends TestCase
         $builder->expects(self::once())
             ->method('add')
             ->withConsecutive(
-                $this->getContactFieldDefinition()
+                $this->contactFieldDefinition
             );
 
         $this->form->buildForm($builder, $options);
@@ -242,7 +258,7 @@ class ContentPreviewSettingsTypeTest extends TestCase
         $builder->expects(self::once())
             ->method('add')
             ->withConsecutive(
-                $this->getContactFieldDefinition()
+                $this->contactFieldDefinition
             );
 
         $this->form->buildForm($builder, $options);
@@ -352,7 +368,7 @@ class ContentPreviewSettingsTypeTest extends TestCase
                         'data'         => (string) $parentEmailId,
                     ],
                 ],
-                $this->getContactFieldDefinition()
+                $this->contactFieldDefinition
             );
 
         $this->form->buildForm($formBuilder, $formOptions);

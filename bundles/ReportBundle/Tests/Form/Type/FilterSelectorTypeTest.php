@@ -42,14 +42,15 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
         ];
+        $matcher = $this->exactly(2);
 
         $this->formBuilder
             ->method('addEventListener')
-            ->withConsecutive(
-                [
-                    FormEvents::PRE_SET_DATA,
-                    $this->callback(
-                        function (callable $formModifier) {
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher) {
+                    if ($matcher->getInvocationCount() === 1) {
+                        $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
+                        $callback = function (callable $formModifier) {
                             /** @var FormInterface<FormBuilderInterface>|MockObject $form */
                             $form = $this->createMock(FormInterface::class);
                             $data = [
@@ -59,13 +60,14 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
                                 'condition' => 'in',
                                 'value'     => ['1', '2'],
                             ];
+                            $matcher = $this->exactly(2);
 
-                            $form->expects($this->exactly(2))
-                                ->method('add')
-                                ->withConsecutive([
-                                    'condition',
-                                    ChoiceType::class,
-                                    [
+                            $form->expects($matcher)->expects($matcher)
+                                ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+                                if ($matcher->getInvocationCount() === 1) {
+                                    $this->assertSame('condition', $parameters[0]);
+                                    $this->assertSame(ChoiceType::class, $parameters[1]);
+                                    $this->assertSame([
                                         'choices'           => [
                                             'including' => 'in',
                                             'excluding' => 'notIn',
@@ -79,9 +81,12 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
                                         'attr'              => [
                                             'class' => 'form-control not-chosen',
                                         ],
-                                    ],
-                                ], [
-                                    'value', CollectionType::class, [
+                                    ], $parameters[2]);
+                                }
+                                if ($matcher->getInvocationCount() === 2) {
+                                    $this->assertSame('value', $parameters[0]);
+                                    $this->assertSame(CollectionType::class, $parameters[1]);
+                                    $this->assertSame([
                                         'entry_type'    => TextType::class,
                                         'allow_add'     => true,
                                         'allow_delete'  => true,
@@ -89,15 +94,17 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
                                         'label_attr'    => ['class' => 'control-label'],
                                         'attr'          => ['class' => 'form-control filter-value'],
                                         'required'      => false,
-                                    ],
-                                ]);
+                                    ], $parameters[2]);
+                                }
+                            });
 
                             $formModifier(new FormEvent($form, $data));
 
                             return true;
-                        }
-                    ),
-                ],
+                        };
+                        $this->assertTrue($callback($parameters[1]));
+                    }
+                },
             );
 
         $this->FilterSelectorType->buildForm($this->formBuilder, $options);

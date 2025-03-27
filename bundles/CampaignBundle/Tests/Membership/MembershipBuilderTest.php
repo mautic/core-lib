@@ -104,16 +104,35 @@ final class MembershipBuilderTest extends \PHPUnit\Framework\TestCase
         };
 
         $contactLimiter = new ContactLimiter(1);
+        $matcher = $this->exactly(4);
 
-        $this->campaignMemberRepository->expects($this->exactly(4))
-            ->method('getCampaignContactsBySegments')
-            ->withConsecutive(
-                [111, $contactLimiter, false],
-                [111, $contactLimiter, false],
-                [111, $contactLimiter, false],
-                [111, $contactLimiter, false]
-            )
-            ->willReturnOnConsecutiveCalls([20], [21], [22], []);
+        $this->campaignMemberRepository->expects($matcher)
+            ->method('getCampaignContactsBySegments')->willReturnCallback(function (...$parameters) use ($matcher, $contactLimiter) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(111, $parameters[0]);
+                $this->assertSame($contactLimiter, $parameters[1]);
+                $this->assertSame(false, $parameters[2]);
+                return [20];
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(111, $parameters[0]);
+                $this->assertSame($contactLimiter, $parameters[1]);
+                $this->assertSame(false, $parameters[2]);
+                return [21];
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame(111, $parameters[0]);
+                $this->assertSame($contactLimiter, $parameters[1]);
+                $this->assertSame(false, $parameters[2]);
+                return [22];
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame(111, $parameters[0]);
+                $this->assertSame($contactLimiter, $parameters[1]);
+                $this->assertSame(false, $parameters[2]);
+                return [];
+            }
+        });
 
         $this->manager->expects($this->exactly(3))
             ->method('addContacts');
@@ -144,16 +163,35 @@ final class MembershipBuilderTest extends \PHPUnit\Framework\TestCase
         $campaign->setAllowRestart(true);
 
         $contactLimiter = new ContactLimiter(1);
+        $matcher = $this->exactly(4);
 
-        $this->campaignMemberRepository->expects($this->exactly(4))
-            ->method('getCampaignContactsBySegments')
-            ->withConsecutive(
-                [111, $contactLimiter, true],
-                [111, $contactLimiter, true],
-                [111, $contactLimiter, true],
-                [111, $contactLimiter, true]
-            )
-            ->willReturnOnConsecutiveCalls([20], [21], [22], []);
+        $this->campaignMemberRepository->expects($matcher)
+            ->method('getCampaignContactsBySegments')->willReturnCallback(function (...$parameters) use ($matcher, $contactLimiter) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(111, $parameters[0]);
+                $this->assertSame($contactLimiter, $parameters[1]);
+                $this->assertSame(true, $parameters[2]);
+                return [20];
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(111, $parameters[0]);
+                $this->assertSame($contactLimiter, $parameters[1]);
+                $this->assertSame(true, $parameters[2]);
+                return [21];
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame(111, $parameters[0]);
+                $this->assertSame($contactLimiter, $parameters[1]);
+                $this->assertSame(true, $parameters[2]);
+                return [22];
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame(111, $parameters[0]);
+                $this->assertSame($contactLimiter, $parameters[1]);
+                $this->assertSame(true, $parameters[2]);
+                return [];
+            }
+        });
 
         $this->manager->expects($this->exactly(3))
             ->method('addContacts');

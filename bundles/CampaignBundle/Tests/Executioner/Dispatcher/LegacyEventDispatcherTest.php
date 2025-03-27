@@ -96,17 +96,27 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
+        $matcher = $this->exactly(4);
 
-        $this->dispatcher->expects($this->exactly(4))
-            ->method('dispatch')
-            ->withConsecutive(
-                // Legacy custom event should dispatch
-                [$this->isInstanceOf(CampaignExecutionEvent::class), 'something'],
-                // Legacy execution event should dispatch
-                [$this->isInstanceOf(CampaignExecutionEvent::class), CampaignEvents::ON_EVENT_EXECUTION], // @phpstan-ignore classConstant.deprecated
-                [$this->isInstanceOf(ExecutedEvent::class), CampaignEvents::ON_EVENT_EXECUTED],
-                [$this->isInstanceOf(ExecutedBatchEvent::class), CampaignEvents::ON_EVENT_EXECUTED_BATCH]
-            );
+        $this->dispatcher->expects($matcher)
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                $this->assertSame('something', $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame($this->isInstanceOf(ExecutedEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame($this->isInstanceOf(ExecutedBatchEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $parameters[1]);
+            }
+        });
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, false, $this->pendingEvent);
     }
@@ -131,15 +141,25 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
+        // Legacy execution event should dispatch
+        $matcher = $this->exactly(3);
 
         // Legacy execution event should dispatch
-        $this->dispatcher->expects($this->exactly(3))
-            ->method('dispatch')
-            ->withConsecutive(
-                [$this->isInstanceOf(CampaignExecutionEvent::class), CampaignEvents::ON_EVENT_EXECUTION], // @phpstan-ignore classConstant.deprecated
-                [$this->isInstanceOf(ExecutedEvent::class), CampaignEvents::ON_EVENT_EXECUTED],
-                [$this->isInstanceOf(ExecutedBatchEvent::class), CampaignEvents::ON_EVENT_EXECUTED_BATCH]
-            );
+        $this->dispatcher->expects($matcher)
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame($this->isInstanceOf(ExecutedEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame($this->isInstanceOf(ExecutedBatchEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $parameters[1]);
+            }
+        });
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, false, $this->pendingEvent);
     }
@@ -166,28 +186,39 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
+        // Legacy custom event should dispatch
+        $matcher = $this->exactly(4);
 
         // Legacy custom event should dispatch
-        $this->dispatcher->expects($this->exactly(4))
-            ->method('dispatch')
-            ->withConsecutive(
-                [$this->isInstanceOf(CampaignExecutionEvent::class), 'something'],
-                [$this->isInstanceOf(CampaignExecutionEvent::class), CampaignEvents::ON_EVENT_EXECUTION], // @phpstan-ignore classConstant.deprecated
-                [$this->isInstanceOf(ExecutedEvent::class), CampaignEvents::ON_EVENT_EXECUTED],
-                [$this->isInstanceOf(ExecutedBatchEvent::class), CampaignEvents::ON_EVENT_EXECUTED_BATCH]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $this->returnCallback(
+        $this->dispatcher->expects($matcher)
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                $this->assertSame('something', $parameters[1]);
+                return $this->returnCallback(
                     function (CampaignExecutionEvent $event, string $eventName) {
                         $event->setResult(['foo' => 'bar']);
 
                         return $event;
                     }
-                ),
-                $this->returnCallback(fn (CampaignExecutionEvent $event) => $event),
-                $this->returnCallback(fn (ExecutedEvent $event) => $event),
-                $this->returnCallback(fn (ExecutedBatchEvent $event) => $event),
-            );
+                );
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $parameters[1]);
+                return $this->returnCallback(fn (CampaignExecutionEvent $event) => $event);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame($this->isInstanceOf(ExecutedEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $parameters[1]);
+                return $this->returnCallback(fn (ExecutedEvent $event) => $event);
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame($this->isInstanceOf(ExecutedBatchEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $parameters[1]);
+                return $this->returnCallback(fn (ExecutedBatchEvent $event) => $event);
+            }
+        });
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, false, $this->pendingEvent);
 
@@ -217,26 +248,34 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
+        // Legacy custom event should dispatch
+        $matcher = $this->exactly(3);
 
         // Legacy custom event should dispatch
-        $this->dispatcher->expects($this->exactly(3))
-            ->method('dispatch')
-            ->withConsecutive(
-                [$this->isInstanceOf(CampaignExecutionEvent::class), 'something'],
-                [$this->isInstanceOf(CampaignExecutionEvent::class), CampaignEvents::ON_EVENT_EXECUTION], // @phpstan-ignore classConstant.deprecated
-                [$this->isInstanceOf(FailedEvent::class), CampaignEvents::ON_EVENT_FAILED]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $this->returnCallback(
+        $this->dispatcher->expects($matcher)
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                $this->assertSame('something', $parameters[1]);
+                return $this->returnCallback(
                     function (CampaignExecutionEvent $event, string $eventName) {
                         $event->setResult(false);
 
                         return $event;
                     }
-                ),
-                $this->returnCallback(fn (CampaignExecutionEvent $event) => $event),
-                $this->returnCallback(fn (FailedEvent $event) => $event),
-            );
+                );
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $parameters[1]);
+                return $this->returnCallback(fn (CampaignExecutionEvent $event) => $event);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame($this->isInstanceOf(FailedEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $parameters[1]);
+                return $this->returnCallback(fn (FailedEvent $event) => $event);
+            }
+        });
 
         $this->scheduler->expects($this->once())
             ->method('rescheduleFailures');
@@ -265,26 +304,34 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
+        // Legacy custom event should dispatch
+        $matcher = $this->exactly(3);
 
         // Legacy custom event should dispatch
-        $this->dispatcher->expects($this->exactly(3))
-            ->method('dispatch')
-            ->withConsecutive(
-                [$this->isInstanceOf(CampaignExecutionEvent::class), 'something'],
-                [$this->isInstanceOf(CampaignExecutionEvent::class), CampaignEvents::ON_EVENT_EXECUTION], // @phpstan-ignore classConstant.deprecated
-                [$this->isInstanceOf(FailedEvent::class), CampaignEvents::ON_EVENT_FAILED]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $this->returnCallback(
+        $this->dispatcher->expects($matcher)
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                $this->assertSame('something', $parameters[1]);
+                return $this->returnCallback(
                     function (CampaignExecutionEvent $event, string $eventName) {
                         $event->setResult(['result' => false, 'foo' => 'bar']);
 
                         return $event;
                     }
-                ),
-                $this->returnCallback(fn (CampaignExecutionEvent $event) => $event),
-                $this->returnCallback(fn (FailedEvent $event) => $event),
-            );
+                );
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $parameters[1]);
+                return $this->returnCallback(fn (CampaignExecutionEvent $event) => $event);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame($this->isInstanceOf(FailedEvent::class), $parameters[0]);
+                $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $parameters[1]);
+                return $this->returnCallback(fn (FailedEvent $event) => $event);
+            }
+        });
 
         $this->scheduler->expects($this->once())
             ->method('rescheduleFailures');
@@ -314,20 +361,22 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
+        // Legacy custom event should dispatch
+        $matcher = $this->exactly(1);
 
         // Legacy custom event should dispatch
-        $this->dispatcher->method('dispatch')
-            ->withConsecutive([$this->isInstanceOf(CampaignExecutionEvent::class), 'something'])
-            ->willReturnOnConsecutiveCalls(
-                $this->returnCallback(function (CampaignExecutionEvent $event, string $eventName): object {
-                    $event->setResult(['failed' => 1, 'reason' => 'because']);
-
-                    return $event;
-                }),
-                $this->returnCallback(fn (CampaignExecutionEvent $event) => $event),
-                $this->returnCallback(fn (ExecutedEvent $event) => $event),
-                $this->returnCallback(fn (ExecutedBatchEvent $event) => $event),
-            );
+        $this->dispatcher->expects($matcher)->method('dispatch')
+            ->willReturnCallback(function (...$parameters) use ($matcher) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                    $this->assertSame('something', $parameters[1]);
+                    return $this->returnCallback(function (CampaignExecutionEvent $event, string $eventName): object {
+                        $event->setResult(['failed' => 1, 'reason' => 'because']);
+    
+                        return $event;
+                    });
+                }
+            });
 
         $this->scheduler->expects($this->never())
             ->method('rescheduleFailure');
@@ -357,21 +406,23 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
+        // Should pass
+        $matcher = $this->exactly(1);
 
         // Should pass
-        $this->dispatcher->method('dispatch')
-            ->withConsecutive([$this->isInstanceOf(CampaignExecutionEvent::class), 'something'])
-            ->willReturnOnConsecutiveCalls(
-                $this->returnCallback(
-                    function (CampaignExecutionEvent $event, $eventName) {
-                        $event->setResult(true);
-
-                        return $event;
-                    }),
-                $this->returnCallback(fn (CampaignExecutionEvent $event) => $event),
-                $this->returnCallback(fn (ExecutedEvent $event) => $event),
-                $this->returnCallback(fn (ExecutedBatchEvent $event) => $event),
-            );
+        $this->dispatcher->expects($matcher)->method('dispatch')
+            ->willReturnCallback(function (...$parameters) use ($matcher) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                    $this->assertSame('something', $parameters[1]);
+                    return $this->returnCallback(
+                        function (CampaignExecutionEvent $event, $eventName) {
+                            $event->setResult(true);
+    
+                            return $event;
+                        });
+                }
+            });
 
         $this->scheduler->expects($this->never())
             ->method('rescheduleFailure');
@@ -401,14 +452,18 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->contactTracker->expects($this->exactly(2))
             ->method('setSystemContact');
+        $matcher = $this->exactly(1);
 
-        $this->dispatcher->method('dispatch')
-            ->withConsecutive([$this->isInstanceOf(CampaignExecutionEvent::class), 'something'])
-            ->willReturnOnConsecutiveCalls(
-                $this->returnCallback(
-                    fn (CampaignExecutionEvent $event) => $event->setResult(true)
-                )
-            );
+        $this->dispatcher->expects($matcher)->method('dispatch')
+            ->willReturnCallback(function (...$parameters) use ($matcher) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame($this->isInstanceOf(CampaignExecutionEvent::class), $parameters[0]);
+                    $this->assertSame('something', $parameters[1]);
+                    return $this->returnCallback(
+                        fn (CampaignExecutionEvent $event) => $event->setResult(true)
+                    );
+                }
+            });
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, true, $this->pendingEvent);
     }

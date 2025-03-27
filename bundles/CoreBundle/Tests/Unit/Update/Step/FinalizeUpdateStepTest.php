@@ -71,17 +71,20 @@ class FinalizeUpdateStepTest extends AbstractStepTest
 
         $wrappingUpKey       = 'mautic.core.command.update.step.wrapping_up';
         $updateSuccessfulKey = 'mautic.core.update.update_successful';
+        $matcher = $this->exactly(2);
 
-        $this->translator->expects($this->exactly(2))
-            ->method('trans')
-            ->withConsecutive(
-                [$wrappingUpKey],
-                [$updateSuccessfulKey, ['%version%' => '10.0.0']]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $wrappingUpKey,
-                $updateSuccessfulKey
-            );
+        $this->translator->expects($matcher)
+            ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher, $wrappingUpKey, $updateSuccessfulKey) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame($wrappingUpKey, $parameters[0]);
+                return $wrappingUpKey;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame($updateSuccessfulKey, $parameters[0]);
+                $this->assertSame(['%version%' => '10.0.0'], $parameters[1]);
+                return $updateSuccessfulKey;
+            }
+        });
 
         $this->pathsHelper->expects($this->once())
             ->method('getRootPath')

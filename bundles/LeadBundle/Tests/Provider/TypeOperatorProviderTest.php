@@ -154,38 +154,40 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
                     'negagte_expr' => 'notStartsWith',
                 ],
             ]);
+        $matcher = $this->exactly(2);
 
-        $this->dispatcher->expects($this->exactly(2))
-            ->method('dispatch')
-            ->withConsecutive(
-                [
-                    $this->callback(function (TypeOperatorsEvent $event) {
-                        // Emulate a subscriber.
-                        $event->setOperatorsForFieldType('text', [
-                            'include' => [
-                                OperatorOptions::EQUAL_TO,
-                                OperatorOptions::NOT_EQUAL_TO,
-                            ],
-                        ]);
+        $this->dispatcher->expects($matcher)
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $callback = function (TypeOperatorsEvent $event) {
+                    // Emulate a subscriber.
+                    $event->setOperatorsForFieldType('text', [
+                        'include' => [
+                            OperatorOptions::EQUAL_TO,
+                            OperatorOptions::NOT_EQUAL_TO,
+                        ],
+                    ]);
 
-                        return true;
-                    }),
-                    LeadEvents::COLLECT_OPERATORS_FOR_FIELD_TYPE,
-                ],
-                [
-                    $this->callback(function (FieldOperatorsEvent $event) {
-                        // Emulate a subscriber.
-                        $this->assertSame('text', $event->getType());
-                        $this->assertSame('email', $event->getField());
+                    return true;
+                };
+                $this->assertTrue($callback($parameters[0]));
+                $this->assertSame(LeadEvents::COLLECT_OPERATORS_FOR_FIELD_TYPE, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $callback = function (FieldOperatorsEvent $event) {
+                    // Emulate a subscriber.
+                    $this->assertSame('text', $event->getType());
+                    $this->assertSame('email', $event->getField());
 
-                        // This is the important stuff. The Starts with opearator will be added.
-                        $event->addOperator(OperatorOptions::STARTS_WITH);
+                    // This is the important stuff. The Starts with opearator will be added.
+                    $event->addOperator(OperatorOptions::STARTS_WITH);
 
-                        return true;
-                    }),
-                    LeadEvents::COLLECT_OPERATORS_FOR_FIELD,
-                ]
-            );
+                    return true;
+                };
+                $this->assertTrue($callback($parameters[0]));
+                $this->assertSame(LeadEvents::COLLECT_OPERATORS_FOR_FIELD, $parameters[1]);
+            }
+        });
 
         $this->assertSame(
             [

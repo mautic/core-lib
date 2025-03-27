@@ -70,27 +70,39 @@ class PeakInteractionTimerTest extends TestCase
         $this->hitRepositoryMock        = $this->createMock(HitRepository::class);
         $this->submissionRepositoryMock = $this->createMock(SubmissionRepository::class);
         $this->cacheProviderMock        = $this->createMock(CacheProviderInterface::class);
+        $matcher = $this->exactly(7);
 
-        $this->coreParametersHelperMock
-            ->method('get')
-            ->withConsecutive(
-                ['peak_interaction_timer_cache_timeout'],
-                ['peak_interaction_timer_best_default_hour_start'],
-                ['peak_interaction_timer_best_default_hour_end'],
-                ['peak_interaction_timer_best_default_days'],
-                ['peak_interaction_timer_fetch_interactions_from'],
-                ['peak_interaction_timer_fetch_limit'],
-                ['default_timezone'],
-            )
-            ->willReturnOnConsecutiveCalls(
-                $this->peakInteractionTimerCacheTimeout,
-                $this->peakInteractionTimerBestDefaultHourStart,
-                $this->peakInteractionTimerBestDefaultHourEnd,
-                $this->peakInteractionTimerBestDefaultDays,
-                $this->peakInteractionTimerFetchInteractionsFrom,
-                $this->peakInteractionTimerFetchLimit,
-                $this->defaultTimezone,
-            );
+        $this->coreParametersHelperMock->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('peak_interaction_timer_cache_timeout', $parameters[0]);
+                return $this->peakInteractionTimerCacheTimeout;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('peak_interaction_timer_best_default_hour_start', $parameters[0]);
+                return $this->peakInteractionTimerBestDefaultHourStart;
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('peak_interaction_timer_best_default_hour_end', $parameters[0]);
+                return $this->peakInteractionTimerBestDefaultHourEnd;
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('peak_interaction_timer_best_default_days', $parameters[0]);
+                return $this->peakInteractionTimerBestDefaultDays;
+            }
+            if ($matcher->getInvocationCount() === 5) {
+                $this->assertSame('peak_interaction_timer_fetch_interactions_from', $parameters[0]);
+                return $this->peakInteractionTimerFetchInteractionsFrom;
+            }
+            if ($matcher->getInvocationCount() === 6) {
+                $this->assertSame('peak_interaction_timer_fetch_limit', $parameters[0]);
+                return $this->peakInteractionTimerFetchLimit;
+            }
+            if ($matcher->getInvocationCount() === 7) {
+                $this->assertSame('default_timezone', $parameters[0]);
+                return $this->defaultTimezone;
+            }
+        });
 
         $createCacheItem = \Closure::bind(
             function ($key) {

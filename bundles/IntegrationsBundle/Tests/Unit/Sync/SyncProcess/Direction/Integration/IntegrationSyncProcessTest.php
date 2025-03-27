@@ -197,10 +197,19 @@ class IntegrationSyncProcessTest extends TestCase
         $mappingManual->addObjectMapping($companyMapping);
 
         $fromSyncDateTime = new \DateTimeImmutable();
-        $this->syncDateHelper->expects($this->exactly(2))
-            ->method('getSyncFromDateTime')
-            ->withConsecutive([self::INTEGRATION_NAME, 'Contact'], [self::INTEGRATION_NAME, 'Lead'])
-            ->willReturn($fromSyncDateTime);
+        $matcher = $this->exactly(2);
+        $this->syncDateHelper->expects($matcher)
+            ->method('getSyncFromDateTime')->willReturnCallback(function (...$parameters) use ($matcher, $fromSyncDateTime) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(self::INTEGRATION_NAME, $parameters[0]);
+                $this->assertSame('Contact', $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(self::INTEGRATION_NAME, $parameters[0]);
+                $this->assertSame('Lead', $parameters[1]);
+            }
+            return $fromSyncDateTime;
+        });
 
         $toSyncDateTime   = new \DateTimeImmutable();
         $this->syncDateHelper->expects($this->exactly(2))

@@ -94,16 +94,24 @@ class ActionDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $dispatcCounter = 0;
 
-        $this->dispatcher->expects($this->exactly(4))
+        $this->dispatcher->expects($matcher)
             ->method('dispatch')
-            ->withConsecutive(
-                [],
-                [$this->isInstanceOf(ExecutedEvent::class), CampaignEvents::ON_EVENT_EXECUTED],
-                [$this->isInstanceOf(ExecutedBatchEvent::class), CampaignEvents::ON_EVENT_EXECUTED_BATCH],
-                [$this->isInstanceOf(FailedEvent::class), CampaignEvents::ON_EVENT_FAILED]
-            )
             ->willReturnCallback(
-                function (\Symfony\Contracts\EventDispatcher\Event $event, string $eventName) use ($logs, &$dispatcCounter) {
+                function (\Symfony\Contracts\EventDispatcher\Event $event, string $eventName, $parameters) use ($logs, &$dispatcCounter) {
+                    if ($matcher->getInvocationCount() === 1) {
+                    }
+                    if ($matcher->getInvocationCount() === 2) {
+                        $this->assertSame($this->isInstanceOf(ExecutedEvent::class), $parameters[0]);
+                        $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $parameters[1]);
+                    }
+                    if ($matcher->getInvocationCount() === 3) {
+                        $this->assertSame($this->isInstanceOf(ExecutedBatchEvent::class), $parameters[0]);
+                        $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $parameters[1]);
+                    }
+                    if ($matcher->getInvocationCount() === 4) {
+                        $this->assertSame($this->isInstanceOf(FailedEvent::class), $parameters[0]);
+                        $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $parameters[1]);
+                    }
                     ++$dispatcCounter;
                     if (1 === $dispatcCounter) {
                         Assert::assertInstanceOf(PendingEvent::class, $event);

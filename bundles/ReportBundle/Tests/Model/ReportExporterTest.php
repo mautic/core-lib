@@ -91,14 +91,23 @@ class ReportExporterTest extends \PHPUnit\Framework\TestCase
         $reportFileWriter->expects($this->exactly(3))
             ->method('getFilePath')
             ->willReturn('my-path');
+        $matcher = $this->exactly(3);
 
-        $eventDispatcher->expects($this->exactly(3))
-            ->method('dispatch')
-            ->withConsecutive(
-                [new ReportScheduleSendEvent($scheduler1, 'my-path'), ReportEvents::REPORT_SCHEDULE_SEND],
-                [new ReportScheduleSendEvent($scheduler2, 'my-path'), ReportEvents::REPORT_SCHEDULE_SEND],
-                [new ReportScheduleSendEvent($schedulerNow, 'my-path'), ReportEvents::REPORT_SCHEDULE_SEND]
-            );
+        $eventDispatcher->expects($matcher)
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $scheduler1, $scheduler2, $schedulerNow) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(new ReportScheduleSendEvent($scheduler1, 'my-path'), $parameters[0]);
+                $this->assertSame(ReportEvents::REPORT_SCHEDULE_SEND, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(new ReportScheduleSendEvent($scheduler2, 'my-path'), $parameters[0]);
+                $this->assertSame(ReportEvents::REPORT_SCHEDULE_SEND, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame(new ReportScheduleSendEvent($schedulerNow, 'my-path'), $parameters[0]);
+                $this->assertSame(ReportEvents::REPORT_SCHEDULE_SEND, $parameters[1]);
+            }
+        });
 
         $schedulerModel->expects($this->exactly(4))
             ->method('reportWasScheduled');

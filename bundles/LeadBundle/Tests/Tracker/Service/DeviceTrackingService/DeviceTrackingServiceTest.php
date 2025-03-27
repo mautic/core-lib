@@ -241,10 +241,15 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
         $this->security->expects($this->once())
             ->method('isAnonymous')
             ->willReturn(true);
+        $matcher = $this->exactly(1);
 
-        $this->leadDeviceRepositoryMock->method('getByTrackingId')
-            ->withConsecutive([$trackingId])
-            ->willReturnOnConsecutiveCalls($trackedLeadDeviceMock);
+        $this->leadDeviceRepositoryMock->expects($matcher)->method('getByTrackingId')
+            ->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame($trackingId, $parameters[0]);
+                    return $trackedLeadDeviceMock;
+                }
+            });
 
         $this->randomHelperMock->expects($this->once())
             ->method('generate')
@@ -267,9 +272,16 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
         $leadDeviceMock->expects($this->exactly(2))
             ->method('getLead')
             ->willReturn(new Lead());
+        $matcher = $this->exactly(1);
 
-        $this->cookieHelperMock->method('setCookie')
-            ->withConsecutive(['mautic_device_id', $uniqueTrackingIdentifier, 31_536_000]);
+        $this->cookieHelperMock->expects($matcher)->method('setCookie')
+            ->willReturnCallback(function (...$parameters) use ($matcher, $uniqueTrackingIdentifier) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame('mautic_device_id', $parameters[0]);
+                    $this->assertSame($uniqueTrackingIdentifier, $parameters[1]);
+                    $this->assertSame(31_536_000, $parameters[2]);
+                }
+            });
 
         $deviceTrackingService = $this->getDeviceTrackingService();
         $deviceTrackingService->trackCurrentDevice($leadDeviceMock, true);
@@ -319,9 +331,16 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
         $leadDeviceMock->expects($this->exactly(2))
             ->method('getLead')
             ->willReturn(new Lead());
+        $matcher = $this->exactly(1);
 
-        $this->cookieHelperMock->method('setCookie')
-            ->withConsecutive(['mautic_device_id', $uniqueTrackingIdentifier, 31_536_000]);
+        $this->cookieHelperMock->expects($matcher)->method('setCookie')
+            ->willReturnCallback(function (...$parameters) use ($matcher, $uniqueTrackingIdentifier) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame('mautic_device_id', $parameters[0]);
+                    $this->assertSame($uniqueTrackingIdentifier, $parameters[1]);
+                    $this->assertSame(31_536_000, $parameters[2]);
+                }
+            });
 
         $this->entityManagerMock->expects($this->once())
             ->method('persist')

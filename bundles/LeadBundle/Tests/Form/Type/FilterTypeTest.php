@@ -65,69 +65,66 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]
             );
+        // Adding a filter with an existing field:
+        $matcher = $this->never();
 
         // Adding a filter with an existing field:
-        $builder->expects($this->exactly(2))
-            ->method('addEventListener')
-            ->withConsecutive(
-                [
-                    FormEvents::PRE_SET_DATA,
-                    $this->callback(
-                        function (callable $formModifier) {
-                            /** @var FormInterface<FormBuilderInterface>|MockObject $form */
-                            $form = $this->createMock(FormInterface::class);
-                            $data = [
-                                'field'    => 'address1',
-                                'object'   => 'lead',
-                                'operator' => 'eq',
-                            ];
+        $builder->expects($matcher)
+            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $form) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
+                $callback = function (callable $formModifier) {
+                    /** @var FormInterface<FormBuilderInterface>|MockObject $form */
+                    $form = $this->createMock(FormInterface::class);
+                    $data = [
+                        'field'    => 'address1',
+                        'object'   => 'lead',
+                        'operator' => 'eq',
+                    ];
 
-                            $form->expects($this->exactly(2))
-                                ->method('add');
+                    $form->expects($matcher)
+                        ->method('add');
 
-                            $form->expects($this->once())
-                                ->method('get')
-                                ->willReturnSelf();
+                    $form->expects($matcher)
+                        ->method('get');
 
-                            $this->formAdjustmentsProvider->expects($this->once())
-                                ->method('adjustForm');
+                    $this->formAdjustmentsProvider->expects($matcher)
+                        ->method('adjustForm');
 
-                            $formModifier(new FormEvent($form, $data));
+                    $formModifier(new FormEvent($form, $data));
 
-                            return true;
-                        }
-                    ),
-                ],
-                // Adding a filter with a deleted field:
-                [
-                    FormEvents::PRE_SUBMIT,
-                    $this->callback(
-                        function (callable $formModifier) {
-                            /** @var FormInterface<FormBuilderInterface>|MockObject $form */
-                            $form = $this->createMock(FormInterface::class);
-                            $data = [
-                                'field'    => 'deleted',
-                                'object'   => 'lead',
-                                'operator' => 'eq',
-                            ];
+                    return true;
+                };
+                $this->assertTrue($callback($parameters[1]));
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
+                $callback = function (callable $formModifier) {
+                    /** @var FormInterface<FormBuilderInterface>|MockObject $form */
+                    $form = $this->createMock(FormInterface::class);
+                    $data = [
+                        'field'    => 'deleted',
+                        'object'   => 'lead',
+                        'operator' => 'eq',
+                    ];
 
-                            $form->expects($this->exactly(2))
-                                ->method('add');
+                    $form->expects($matcher)
+                        ->method('add');
 
-                            $form->expects($this->never())
-                                ->method('get')
-                                ->willReturnSelf();
+                    $form->expects($matcher)
+                        ->method('get');
 
-                            $this->formAdjustmentsProvider->expects($this->never())
-                                ->method('adjustForm');
+                    $this->formAdjustmentsProvider->expects($matcher)
+                        ->method('adjustForm');
 
-                            $formModifier(new FormEvent($form, $data));
+                    $formModifier(new FormEvent($form, $data));
 
-                            return true;
-                        }
-                    ),
-                ]
-            );
+                    return true;
+                };
+                $this->assertTrue($callback($parameters[1]));
+            }
+            return $form;
+        });
 
         $this->form->buildForm($builder, $options);
     }
@@ -159,86 +156,86 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]
             );
+        // Adding a filter with an existing field:
+        $matcher = $this->once();
 
         // Adding a filter with an existing field:
-        $builder->expects($this->exactly(2))
-            ->method('addEventListener')
-            ->withConsecutive(
-                [
-                    FormEvents::PRE_SET_DATA,
-                    $this->callback(
-                        function (callable $formModifier) {
-                            $form = new class extends Form {
-                                public int $addMethodCallCounter = 0;
+        $builder->expects($matcher)
+            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
+                $callback = function (callable $formModifier) {
+                    $form = new class extends Form {
+                        public int $addMethodCallCounter = 0;
 
+                        public function __construct()
+                        {
+                        }
+
+                        /**
+                         * @return FormInterface<FormInterface<mixed>>
+                         */
+                        public function get(string $name): FormInterface
+                        {
+                            Assert::assertSame('properties', $name);
+
+                            return new class extends Form {
                                 public function __construct()
                                 {
                                 }
 
-                                /**
-                                 * @return FormInterface<FormInterface<mixed>>
-                                 */
-                                public function get(string $name): FormInterface
+                                public function setData($modelData): static
                                 {
-                                    Assert::assertSame('properties', $name);
-
-                                    return new class extends Form {
-                                        public function __construct()
-                                        {
-                                        }
-
-                                        public function setData($modelData): static
-                                        {
-                                            Assert::assertSame(
-                                                [
-                                                    'filter'  => '0',
-                                                    'display' => null,
-                                                ],
-                                                $modelData
-                                            );
-
-                                            return $this;
-                                        }
-                                    };
-                                }
-
-                                /**
-                                 * @param FormInterface<FormInterface<mixed>>|string $child
-                                 * @param mixed[]                                    $options
-                                 */
-                                public function add($child, string $type = null, array $options = []): static
-                                {
-                                    ++$this->addMethodCallCounter;
+                                    Assert::assertSame(
+                                        [
+                                            'filter'  => '0',
+                                            'display' => null,
+                                        ],
+                                        $modelData
+                                    );
 
                                     return $this;
                                 }
                             };
-
-                            $this->formAdjustmentsProvider->expects($this->once())
-                                ->method('adjustForm');
-
-                            $data = [
-                                'field'    => 'number1',
-                                'object'   => 'lead',
-                                'filter'   => '0',
-                                'operator' => 'eq',
-                            ];
-
-                            $formModifier(new FormEvent($form, $data));
-
-                            Assert::assertSame(2, $form->addMethodCallCounter);
-
-                            return true;
                         }
-                    ),
-                ],
-                [
-                    FormEvents::PRE_SUBMIT,
-                    function (callable $formModifier): void {
-                        // don't do anything for this test
-                    },
-                ]
-            );
+
+                        /**
+                         * @param FormInterface<FormInterface<mixed>>|string $child
+                         * @param mixed[]                                    $options
+                         */
+                        public function add($child, string $type = null, array $options = []): static
+                        {
+                            ++$this->addMethodCallCounter;
+
+                            return $this;
+                        }
+                    };
+
+                    $this->formAdjustmentsProvider->expects($matcher)
+                        ->method('adjustForm');
+
+                    $data = [
+                        'field'    => 'number1',
+                        'object'   => 'lead',
+                        'filter'   => '0',
+                        'operator' => 'eq',
+                    ];
+
+                    $formModifier(new FormEvent($form, $data));
+
+                    Assert::assertSame(2, $form->addMethodCallCounter);
+
+                    return true;
+                };
+                $this->assertTrue($callback($parameters[1]));
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
+                $this->assertSame(function (callable $formModifier): void {
+                    // don't do anything for this test
+                }, $parameters[1]);
+            }
+        });
 
         $this->form->buildForm($builder, $options);
     }

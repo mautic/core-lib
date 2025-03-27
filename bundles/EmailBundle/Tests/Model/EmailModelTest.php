@@ -825,19 +825,23 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->emailStatModel->expects($this->once())
             ->method('saveEntity')
             ->with($this->isInstanceOf(Stat::class));
+        $matcher = $this->once();
 
-        $this->entityManager->expects($this->once())
+        $this->entityManager->expects($matcher)
             ->method('persist')
-            ->withConsecutive(
-                [
-                    $this->callback(function ($statDevice) use ($stat, $ipAddress) {
-                        $this->assertInstanceOf(StatDevice::class, $statDevice);
-                        $this->assertSame($stat, $statDevice->getStat());
-                        $this->assertSame($ipAddress, $statDevice->getIpAddress());
-
-                        return true;
-                    }),
-                ]
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher) {
+                    if ($matcher->getInvocationCount() === 1) {
+                        $callback = function ($statDevice) use ($stat, $ipAddress) {
+                            $this->assertInstanceOf(StatDevice::class, $statDevice);
+                            $this->assertSame($stat, $statDevice->getStat());
+                            $this->assertSame($ipAddress, $statDevice->getIpAddress());
+    
+                            return true;
+                        };
+                        $this->assertTrue($callback($parameters[0]));
+                    }
+                }
             );
 
         $this->entityManager->expects($this->exactly(2))
@@ -884,19 +888,23 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->method('find')
             ->with($contactDevice->getId())
             ->willReturn($contactDevice);
+        $matcher = $this->exactly(1);
 
-        $this->entityManager->expects($this->exactly(1))
+        $this->entityManager->expects($matcher)
             ->method('persist')
-            ->withConsecutive(
-                [
-                    $this->callback(function ($statDevice) use ($stat, $ipAddress) {
-                        $this->assertInstanceOf(StatDevice::class, $statDevice);
-                        $this->assertSame($stat, $statDevice->getStat());
-                        $this->assertSame($ipAddress, $statDevice->getIpAddress());
-
-                        return true;
-                    }),
-                ]
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher) {
+                    if ($matcher->getInvocationCount() === 1) {
+                        $callback = function ($statDevice) use ($stat, $ipAddress) {
+                            $this->assertInstanceOf(StatDevice::class, $statDevice);
+                            $this->assertSame($stat, $statDevice->getStat());
+                            $this->assertSame($ipAddress, $statDevice->getIpAddress());
+    
+                            return true;
+                        };
+                        $this->assertTrue($callback($parameters[0]));
+                    }
+                }
             );
 
         $this->entityManager->expects($this->exactly(1))

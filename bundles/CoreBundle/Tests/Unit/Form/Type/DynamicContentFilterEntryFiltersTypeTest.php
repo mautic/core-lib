@@ -42,54 +42,54 @@ class DynamicContentFilterEntryFiltersTypeTest extends TestCase
     public function testBuildForm(): void
     {
         $builder = $this->createMock(FormBuilderInterface::class);
-        $builder->expects(self::exactly(4))
-            ->method('add')
-            ->withConsecutive(
-                [
-                    'glue',
-                    ChoiceType::class,
-                    [
-                        'label'   => false,
-                        'choices' => [
-                            'mautic.lead.list.form.glue.and' => 'and',
-                            'mautic.lead.list.form.glue.or'  => 'or',
-                        ],
-                        'attr' => [
-                            'class'    => 'form-control not-chosen glue-select',
-                            'onchange' => 'Mautic.updateFilterPositioning(this)',
-                        ],
+        $matcher = self::exactly(4);
+        $builder->expects($matcher)
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('glue', $parameters[0]);
+                $this->assertSame(ChoiceType::class, $parameters[1]);
+                $this->assertSame([
+                    'label'   => false,
+                    'choices' => [
+                        'mautic.lead.list.form.glue.and' => 'and',
+                        'mautic.lead.list.form.glue.or'  => 'or',
                     ],
-                ],
-                [
-                    'field',
-                    HiddenType::class,
-                ],
-                [
-                    'object',
-                    HiddenType::class,
-                ],
-                [
-                    'type',
-                    HiddenType::class,
-                ]
-            );
+                    'attr' => [
+                        'class'    => 'form-control not-chosen glue-select',
+                        'onchange' => 'Mautic.updateFilterPositioning(this)',
+                    ],
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('field', $parameters[0]);
+                $this->assertSame(HiddenType::class, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('object', $parameters[0]);
+                $this->assertSame(HiddenType::class, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('type', $parameters[0]);
+                $this->assertSame(HiddenType::class, $parameters[1]);
+            }
+        });
+        $matcher = $this->exactly(2);
 
-        $builder->expects($this->exactly(2))
-            ->method('addEventListener')
-            ->withConsecutive(
-                [
-                    FormEvents::PRE_SET_DATA,
-                    function ($event) {
-                        self::assertInstanceOf(FormEvent::class, $event);
-                    },
-                ],
-                [
-                    FormEvents::PRE_SUBMIT,
-                    function ($event) {
-                        self::assertInstanceOf(FormEvent::class, $event);
-                    },
-                ]
-            );
+        $builder->expects($matcher)
+            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
+                $this->assertSame(function ($event) {
+                    self::assertInstanceOf(FormEvent::class, $event);
+                }, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
+                $this->assertSame(function ($event) {
+                    self::assertInstanceOf(FormEvent::class, $event);
+                }, $parameters[1]);
+            }
+        });
 
         $this->form->buildForm($builder, []);
     }

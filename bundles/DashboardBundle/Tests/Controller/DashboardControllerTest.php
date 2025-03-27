@@ -142,21 +142,28 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
 
         $this->requestMock->method('isXmlHttpRequest')
             ->willReturn(true);
+        $matcher = $this->exactly(1);
 
-        $this->requestMock->method('get')
-            ->withConsecutive(['name'])
-            ->willReturnOnConsecutiveCalls('mockName');
+        $this->requestMock->expects($matcher)->method('get')
+            ->willReturnCallback(function (...$parameters) use ($matcher) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame('name', $parameters[0]);
+                    return 'mockName';
+                }
+            });
+        $matcher = $this->exactly(2);
 
-        $this->containerMock->expects($this->exactly(2))
-            ->method('get')
-            ->withConsecutive(
-                ['router'],
-                ['router']
-            )
-            ->willReturnOnConsecutiveCalls(
-                $this->routerMock,
-                $this->routerMock
-            );
+        $this->containerMock->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('router', $parameters[0]);
+                return $this->routerMock;
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('router', $parameters[0]);
+                return $this->routerMock;
+            }
+        });
 
         $this->routerMock->expects($this->any())
             ->method('generate')
@@ -192,10 +199,15 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->routerMock->expects($this->any())
             ->method('generate')
             ->willReturn('https://some.url');
+        $matcher = $this->exactly(1);
 
-        $this->requestMock->method('get')
-            ->withConsecutive(['name'])
-            ->willReturnOnConsecutiveCalls('mockName');
+        $this->requestMock->expects($matcher)->method('get')
+            ->willReturnCallback(function (...$parameters) use ($matcher) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame('name', $parameters[0]);
+                    return 'mockName';
+                }
+            });
 
         $this->containerMock->expects($this->once())
             ->method('get')

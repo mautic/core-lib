@@ -236,10 +236,17 @@ class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $this->prepareCommonMocks($event, $user);
 
         $emails = 'a@test.co, b@test.co';
-        $this->coreParametersHelper
-            ->method('get')
-            ->withConsecutive(['campaign_send_notification_to_author'], ['campaign_notification_email_addresses'])
-            ->willReturn(0, $emails);
+        $matcher = $this->exactly(2);
+        $this->coreParametersHelper->expects($matcher)
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('campaign_send_notification_to_author', $parameters[0]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('campaign_notification_email_addresses', $parameters[0]);
+            }
+            return 0;
+        });
 
         $this->userModel->expects($this->once())
             ->method('sendMailToEmailAddresses')

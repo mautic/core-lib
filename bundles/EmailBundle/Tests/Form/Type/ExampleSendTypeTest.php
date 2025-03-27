@@ -51,29 +51,29 @@ class ExampleSendTypeTest extends TestCase
     {
         $userId  = 37;
         $builder = $this->createMock(FormBuilderInterface::class);
-        $builder->expects(self::exactly(2))
-            ->method('add')
-            ->withConsecutive(
-                [
-                    'emails',
-                    SortableListType::class,
-                    [
-                        'entry_type'       => EmailType::class,
-                        'label'            => 'mautic.email.example_recipients',
-                        'add_value_button' => 'mautic.email.add_recipient',
-                        'option_notblank'  => false,
-                    ],
-                ],
-                [
-                    'buttons',
-                    FormButtonsType::class,
-                    [
-                        'apply_text' => false,
-                        'save_text'  => 'mautic.email.send',
-                        'save_icon'  => 'ri-send-plane-line',
-                    ],
-                ]
-            );
+        $matcher = self::exactly(2);
+        $builder->expects($matcher)
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('emails', $parameters[0]);
+                $this->assertSame(SortableListType::class, $parameters[1]);
+                $this->assertSame([
+                    'entry_type'       => EmailType::class,
+                    'label'            => 'mautic.email.example_recipients',
+                    'add_value_button' => 'mautic.email.add_recipient',
+                    'option_notblank'  => false,
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('buttons', $parameters[0]);
+                $this->assertSame(FormButtonsType::class, $parameters[1]);
+                $this->assertSame([
+                    'apply_text' => false,
+                    'save_text'  => 'mautic.email.send',
+                    'save_icon'  => 'ri-send-plane-line',
+                ], $parameters[2]);
+            }
+        });
 
         $this->security->expects(self::once())
             ->method('isAdmin')
@@ -99,59 +99,62 @@ class ExampleSendTypeTest extends TestCase
     public function testBuildFormWithContact(): void
     {
         $userId = 37;
-        $this->translator->expects(self::exactly(2))
-            ->method('trans')
-            ->withConsecutive(
-                ['mautic.lead.list.form.startTyping'],
-                ['mautic.core.form.nomatches']
-            )->willReturnOnConsecutiveCalls(
-                'startTyping',
-                'nomatches'
-            );
+        $matcher = self::exactly(2);
+        $this->translator->expects($matcher)
+            ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('mautic.lead.list.form.startTyping', $parameters[0]);
+                return 'startTyping';
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('mautic.core.form.nomatches', $parameters[0]);
+                return 'nomatches';
+            }
+        });
 
         $builder = $this->createMock(FormBuilderInterface::class);
-        $builder->expects(self::exactly(4))
-            ->method('add')
-            ->withConsecutive(
-                [
-                    'emails',
-                    SortableListType::class,
-                    [
-                        'entry_type'       => EmailType::class,
-                        'label'            => 'mautic.email.example_recipients',
-                        'add_value_button' => 'mautic.email.add_recipient',
-                        'option_notblank'  => false,
+        $matcher = self::exactly(4);
+        $builder->expects($matcher)
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('emails', $parameters[0]);
+                $this->assertSame(SortableListType::class, $parameters[1]);
+                $this->assertSame([
+                    'entry_type'       => EmailType::class,
+                    'label'            => 'mautic.email.example_recipients',
+                    'add_value_button' => 'mautic.email.add_recipient',
+                    'option_notblank'  => false,
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('contact', $parameters[0]);
+                $this->assertSame(LookupType::class, $parameters[1]);
+                $this->assertSame([
+                    'attr' => [
+                        'class'                  => 'form-control',
+                        'data-callback'          => 'activateExampleContactLookupField',
+                        'data-toggle'            => 'field-lookup',
+                        'data-lookup-callback'   => 'updateExampleContactLookupListFilter',
+                        'data-chosen-lookup'     => 'lead:contactList',
+                        'placeholder'            => 'startTyping',
+                        'data-no-record-message' => 'nomatches',
                     ],
-                ],
-                [
-                    'contact',
-                    LookupType::class,
-                    [
-                        'attr' => [
-                            'class'                  => 'form-control',
-                            'data-callback'          => 'activateExampleContactLookupField',
-                            'data-toggle'            => 'field-lookup',
-                            'data-lookup-callback'   => 'updateExampleContactLookupListFilter',
-                            'data-chosen-lookup'     => 'lead:contactList',
-                            'placeholder'            => 'startTyping',
-                            'data-no-record-message' => 'nomatches',
-                        ],
-                    ],
-                ],
-                [
-                    'contact_id',
-                    HiddenType::class,
-                ],
-                [
-                    'buttons',
-                    FormButtonsType::class,
-                    [
-                        'apply_text' => false,
-                        'save_text'  => 'mautic.email.send',
-                        'save_icon'  => 'ri-send-plane-line',
-                    ],
-                ]
-            );
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('contact_id', $parameters[0]);
+                $this->assertSame(HiddenType::class, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('buttons', $parameters[0]);
+                $this->assertSame(FormButtonsType::class, $parameters[1]);
+                $this->assertSame([
+                    'apply_text' => false,
+                    'save_text'  => 'mautic.email.send',
+                    'save_icon'  => 'ri-send-plane-line',
+                ], $parameters[2]);
+            }
+        });
 
         $this->security->expects(self::once())
             ->method('isAdmin')

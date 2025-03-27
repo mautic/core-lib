@@ -426,14 +426,20 @@ New line',
             ->method('reset');
         $this->mailer->expects(self::exactly(3))
             ->method('send');
+        $matcher = self::exactly(3);
 
-        $this->mailer->expects(self::exactly(3))
-            ->method('setTo')
-            ->withConsecutive(
-                [[$to => null]],
-                [[$leadEmail => null]],
-                [[$ownerEmail => null]]
-            );
+        $this->mailer->expects($matcher)
+            ->method('setTo')->willReturnCallback(function (...$parameters) use ($matcher, $to, $leadEmail, $ownerEmail) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame([$to => null], $parameters[0]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame([$leadEmail => null], $parameters[0]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame([$ownerEmail => null], $parameters[0]);
+            }
+        });
         $this->mailer->expects(self::once())
             ->method('setCc')
             ->with(array_fill_keys(array_map('trim', explode(',', $cc)), null));

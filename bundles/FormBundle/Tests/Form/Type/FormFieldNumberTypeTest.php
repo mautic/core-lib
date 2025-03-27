@@ -39,35 +39,35 @@ final class FormFieldNumberTypeTest extends TypeTestCase
                 'precision' => 0,
             ],
         ];
+        $matcher = $this->exactly(2);
 
-        $this->formBuilder->expects($this->exactly(2))
-            ->method('add')
-            ->withConsecutive(
-                [
-                    'placeholder',
-                    TextType::class,
-                    [
-                        'label'      => 'mautic.form.field.form.property_placeholder',
-                        'label_attr' => ['class' => 'control-label'],
-                        'attr'       => ['class' => 'form-control'],
-                        'required'   => false,
+        $this->formBuilder->expects($matcher)
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('placeholder', $parameters[0]);
+                $this->assertSame(TextType::class, $parameters[1]);
+                $this->assertSame([
+                    'label'      => 'mautic.form.field.form.property_placeholder',
+                    'label_attr' => ['class' => 'control-label'],
+                    'attr'       => ['class' => 'form-control'],
+                    'required'   => false,
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('precision', $parameters[0]);
+                $this->assertSame(IntegerType::class, $parameters[1]);
+                $this->assertSame([
+                    'label'      => 'mautic.form.field.form.number_precision',
+                    'label_attr' => ['class' => 'control-label'],
+                    'data'       => 0,
+                    'required'   => false,
+                    'attr'       => [
+                        'class'   => 'form-control',
+                        'tooltip' => 'mautic.form.field.form.number_precision.tooltip',
                     ],
-                ],
-                [
-                    'precision',
-                    IntegerType::class,
-                    [
-                        'label'      => 'mautic.form.field.form.number_precision',
-                        'label_attr' => ['class' => 'control-label'],
-                        'data'       => 0,
-                        'required'   => false,
-                        'attr'       => [
-                            'class'   => 'form-control',
-                            'tooltip' => 'mautic.form.field.form.number_precision.tooltip',
-                        ],
-                    ],
-                ]
-            );
+                ], $parameters[2]);
+            }
+        });
 
         $this->form->buildForm($this->formBuilder, $options);
     }

@@ -494,14 +494,23 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
                 'is_fixed'      => true,
                 'default_value' => 0,
             ]));
+        $matcher = $this->exactly(3);
 
-        $winner->expects($this->exactly(3))
-            ->method('addUpdatedField')
-            ->withConsecutive(
-                ['email', 'winner@test.com'],
-                ['consent', 'Yes'],
-                ['boolean', 1]
-            );
+        $winner->expects($matcher)
+            ->method('addUpdatedField')->willReturnCallback(function (...$parameters) use ($matcher) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('email', $parameters[0]);
+                $this->assertSame('winner@test.com', $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('consent', $parameters[0]);
+                $this->assertSame('Yes', $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('boolean', $parameters[0]);
+                $this->assertSame(1, $parameters[1]);
+            }
+        });
 
         $merger->mergeFieldData($winner, $loser);
     }
