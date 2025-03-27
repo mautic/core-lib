@@ -205,7 +205,7 @@ class LeadSubscriberTest extends CommonMocks
         $matcher = $this->exactly(2);
 
         $repo->expects($matcher)
-            ->method('getEvents')->willReturnCallback(function (...$parameters) use ($matcher, $lead, $leadEvent) {
+            ->method('getEvents')->willReturnCallback(function (...$parameters) use ($matcher, $lead, $leadEvent, $logs) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame($lead, $parameters[0]);
                 $this->assertSame('lead', $parameters[1]);
@@ -320,10 +320,10 @@ class LeadSubscriberTest extends CommonMocks
                     'objectId'  => $lead3->getId(),
                     'action'    => 'update',
                     'details'   => [
+                        'lastname' => [null, 'Somebody'],
                         'fields'   => [
                             'lastname' => [null, 'Somebody'],
                         ],
-                        'lastname' => [null, 'Somebody'],
                     ],
                     'ipAddress' => null,
                 ], $parameters[0]);

@@ -93,24 +93,24 @@ class ActionDispatcherTest extends \PHPUnit\Framework\TestCase
             ->willReturn('something');
 
         $dispatcCounter = 0;
-
+        $matcher = $this->exactly(4);
         $this->dispatcher->expects($matcher)
             ->method('dispatch')
             ->willReturnCallback(
-                function (\Symfony\Contracts\EventDispatcher\Event $event, string $eventName, $parameters) use ($logs, &$dispatcCounter) {
+                function (\Symfony\Contracts\EventDispatcher\Event $event, string $eventName) use ($logs, &$dispatcCounter, $matcher) {
                     if ($matcher->getInvocationCount() === 1) {
                     }
                     if ($matcher->getInvocationCount() === 2) {
-                        $this->assertSame($this->isInstanceOf(ExecutedEvent::class), $parameters[0]);
-                        $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $parameters[1]);
+                        $this->assertTrue($event instanceof ExecutedEvent);
+                        $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
                     }
                     if ($matcher->getInvocationCount() === 3) {
-                        $this->assertSame($this->isInstanceOf(ExecutedBatchEvent::class), $parameters[0]);
-                        $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $parameters[1]);
+                        $this->assertTrue($event instanceof ExecutedBatchEvent);
+                        $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
                     }
                     if ($matcher->getInvocationCount() === 4) {
-                        $this->assertSame($this->isInstanceOf(FailedEvent::class), $parameters[0]);
-                        $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $parameters[1]);
+                        $this->assertTrue($event instanceof FailedEvent);
+                        $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $eventName);
                     }
                     ++$dispatcCounter;
                     if (1 === $dispatcCounter) {

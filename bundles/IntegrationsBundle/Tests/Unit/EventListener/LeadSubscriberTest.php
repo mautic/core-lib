@@ -435,7 +435,7 @@ class LeadSubscriberTest extends TestCase
         $this->variableExpresserHelper->expects($matcher)->method('encodeVariable')
                 ->willReturnCallback(function (...$parameters) use ($matcher, $values, $valueDAOs) {
                     $this->assertSame($values[$matcher->getInvocationCount() - 1], $parameters);
-                    return $valueDAOs;
+                    return $valueDAOs[0];
                 });
 
         $this->fieldChangeRepository->expects($this->once())
