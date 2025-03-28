@@ -331,13 +331,14 @@ class FieldType extends AbstractType
                         'tooltip' => 'mautic.form.field.help.field_width',
                     ],
                     'choices' => [
-                        'mautic.form.field.form.field_width.full'           => 'full',
-                        'mautic.form.field.form.field_width.three_quarters' => 'three-quarters',
-                        'mautic.form.field.form.field_width.two_thirds'     => 'two-thirds',
-                        'mautic.form.field.form.field_width.half'           => 'half',
-                        'mautic.form.field.form.field_width.one_third'      => 'one-third',
-                        'mautic.form.field.form.field_width.one_quarter'    => 'one-quarter',
+                        'mautic.form.field.form.field_width.one_hundred'    => '100%',
+                        'mautic.form.field.form.field_width.seventy_five'   => '75%',
+                        'mautic.form.field.form.field_width.sixty_six'      => '66.66%',
+                        'mautic.form.field.form.field_width.fifty'          => '50%',
+                        'mautic.form.field.form.field_width.thirty_three'   => '33.33%',
+                        'mautic.form.field.form.field_width.twenty_five'    => '25%',
                     ],
+                    'data'     => $options['data']['fieldWidth'] ?? '100%',
                     'required' => false,
                 ]
             );
