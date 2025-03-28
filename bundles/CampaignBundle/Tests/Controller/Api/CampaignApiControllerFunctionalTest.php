@@ -238,7 +238,7 @@ class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
         // This contact does have an owner so it uses FROM and Rply-to from the owner.
         Assert::assertSame('Ahoy contact@two.email', $email2->getSubject());
-        Assert::assertMatchesRegularExpression('#Your email is <b>contact@two\.email<\/b><img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif" alt="" \/>#', $email2->getHtmlBody());
+        Assert::assertMatchesRegularExpression('#Your email is <b>contact@two\.email<\/b><img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif\?ct=[^"]*" alt="" \/>#', $email2->getHtmlBody());
         Assert::assertSame('Your email is contact@two.email', $email2->getTextBody());
         Assert::assertCount(1, $email2->getFrom());
         Assert::assertSame($user->getName(), $email2->getFrom()[0]->getName());
