@@ -48,7 +48,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
 
         $reflectionProperty = new \ReflectionProperty(LeadRepository::class, 'leadFieldRepository');
         $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($leadFieldRepository);
+        $reflectionProperty->setValue(null, $leadFieldRepository);
 
         parent::setUp();
     }
