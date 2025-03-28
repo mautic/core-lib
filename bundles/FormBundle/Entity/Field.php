@@ -245,7 +245,11 @@ class Field implements UuidInterface
         $builder->addNullableField('alwaysDisplay', Types::BOOLEAN, 'always_display');
         $builder->addNullableField('mappedObject', Types::STRING, 'mapped_object');
         $builder->addNullableField('mappedField', Types::STRING, 'mapped_field');
-        $builder->addNullableField('fieldWidth', Types::STRING, 'field_width');
+        $builder->createField('fieldWidth', Types::STRING)
+            ->columnName('field_width')
+            ->length(50)
+            ->option('default', 100)
+            ->build();
         static::addUuidField($builder);
     }
 
