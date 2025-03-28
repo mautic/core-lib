@@ -1400,7 +1400,7 @@ class MailHelper
                     'idHash' => $this->idHash,
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
-                ).'?ct='.ClickthroughHelper::encodeArrayForUrl(['sent_time' => time()]);
+            ).'?ct='.ClickthroughHelper::encodeArrayForUrl(['sent_time' => time()]);
         } else {
             $tokens['{tracking_pixel}'] = self::getBlankPixel();
         }
