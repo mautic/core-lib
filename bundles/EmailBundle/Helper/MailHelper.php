@@ -11,6 +11,7 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
+use Mautic\CoreBundle\Helper\ClickthroughHelper;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Entity\Copy;
 use Mautic\EmailBundle\Entity\Email;
@@ -1399,7 +1400,7 @@ class MailHelper
                     'idHash' => $this->idHash,
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
-            );
+                ).'?ct='.ClickthroughHelper::encodeArrayForUrl(['sent_time' => time()]);
         } else {
             $tokens['{tracking_pixel}'] = self::getBlankPixel();
         }
