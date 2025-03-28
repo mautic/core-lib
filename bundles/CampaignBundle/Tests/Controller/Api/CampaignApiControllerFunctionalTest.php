@@ -222,7 +222,7 @@ class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
         // The email is has mailer is owner ON but this contact doesn't have any owner. So it uses default FROM and Reply-To.
         Assert::assertSame('Ahoy contact@one.email', $email1->getSubject());
-        Assert::assertMatchesRegularExpression('#Your email is <b>contact@one\.email<\/b><img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif" alt="" \/>#', $email1->getHtmlBody());
+        Assert::assertMatchesRegularExpression('#Your email is <b>contact@one\.email<\/b><img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif\?ct=[^"]+" alt="" \/>#', $email1->getHtmlBody());
         Assert::assertSame('Your email is contact@one.email', $email1->getTextBody());
         Assert::assertCount(1, $email1->getFrom());
         Assert::assertSame($this->configParams['mailer_from_name'], $email1->getFrom()[0]->getName());
