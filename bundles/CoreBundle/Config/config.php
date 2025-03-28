@@ -7,14 +7,6 @@ return [
                 'path'       => '/ajax',
                 'controller' => 'Mautic\CoreBundle\Controller\AjaxController::delegateAjaxAction',
             ],
-            'mautic_core_update' => [
-                'path'       => '/update',
-                'controller' => 'Mautic\CoreBundle\Controller\UpdateController::indexAction',
-            ],
-            'mautic_core_update_schema' => [
-                'path'       => '/update/schema',
-                'controller' => 'Mautic\CoreBundle\Controller\UpdateController::schemaAction',
-            ],
             'mautic_core_form_action' => [
                 'path'       => '/action/{objectAction}/{objectModel}/{objectId}',
                 'controller' => 'Mautic\CoreBundle\Controller\FormController::executeAction',
@@ -905,6 +897,7 @@ return [
         'theme_import_allowed_extensions' => ['json', 'twig', 'css', 'js', 'htm', 'html', 'txt', 'jpg', 'jpeg', 'png', 'gif'],
         'brand_name'                      => 'Your Brand (configurable)',
         'primary_brand_color'             => '000000',
+        'rounded_corners'                 => '0',
         'db_driver'                       => 'pdo_mysql',
         'db_host'                         => '127.0.0.1',
         'db_port'                         => 3306,
