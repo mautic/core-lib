@@ -1060,7 +1060,7 @@ class Field implements UuidInterface
 
     public function getFieldWidth(): ?string
     {
-        return $this->fieldWidth;
+        return $this->fieldWidth ?? '100%';
     }
 
     public function setFieldWidth(?string $fieldWidth): Field

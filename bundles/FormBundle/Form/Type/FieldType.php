@@ -662,13 +662,11 @@ class FieldType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(
-            [
-                'customParameters' => false,
-            ]
-        );
+        $resolver->setDefaults([
+            'customParameters' => false,
+        ]);
 
-        $resolver->setDefined(['customParameters']);
+        $resolver->setRequired(['formId']);
     }
 
     public function getBlockPrefix(): string
