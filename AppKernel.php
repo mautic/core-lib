@@ -123,7 +123,7 @@ class AppKernel extends Kernel
             new Noxlogic\RateLimitBundle\NoxlogicRateLimitBundle(),
             new FM\ElfinderBundle\FMElfinderBundle(),
             new Exercise\HTMLPurifierBundle\ExerciseHTMLPurifierBundle(),
-            new ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle(),
+            new ApiPlatform\Symfony\Bundle\ApiPlatformBundle(),
 
             // Mautic Bundles
             new Mautic\ApiBundle\MauticApiBundle(),

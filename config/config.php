@@ -415,7 +415,7 @@ $container->loadFromExtension('api_platform', [
     'collection'        => [
         'pagination'    => [
             'enabled'        => true,
-            'items_per_page' => 30,
+            //          'items_per_page' => 30,
         ],
     ],
     'patch_formats'     => [

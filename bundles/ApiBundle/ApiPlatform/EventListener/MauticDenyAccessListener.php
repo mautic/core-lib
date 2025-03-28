@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Mautic\ApiBundle\ApiPlatform\EventListener;
 
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
-use ApiPlatform\Core\Util\RequestAttributesExtractor;
+use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
+use ApiPlatform\Symfony\Util\RequestAttributesExtractor;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -13,17 +13,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 final class MauticDenyAccessListener
 {
-    /**
-     * @var ResourceMetadataFactoryInterface
-     */
-    private $resourceMetadataFactory;
+    private ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory;
 
-    /**
-     * @var CorePermissions
-     */
-    private $security;
+    private CorePermissions $security;
 
-    public function __construct(CorePermissions $security, ResourceMetadataFactoryInterface $resourceMetadataFactory)
+    public function __construct(CorePermissions $security, ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory)
     {
         $this->security                = $security;
         $this->resourceMetadataFactory = $resourceMetadataFactory;

@@ -91,9 +91,10 @@ return [
                 'class' => Mautic\ApiBundle\Form\Validator\Constraints\OAuthCallbackValidator::class,
                 'tag'   => 'validator.constraint_validator',
             ],
+            /*
             'api_platform.listener.exception.validation_decorator' => [
-                'class'            => ApiPlatform\Core\Bridge\Symfony\Validator\EventListener\ValidationExceptionListener::class,
-                'decoratedService' => ['api_platform.listener.exception.validation'],
+                'class'            => ApiPlatform\Symfony\EventListener\ValidateListener::class,
+             //   'decoratedService' => ['api_platform.listener.validation'],
                 'arguments'        => ['api_platform.serializer', '%api_platform.error_formats%'],
                 'tag'              => 'kernel.event_listener',
                 'tagArguments'     => [
@@ -103,7 +104,7 @@ return [
                 ],
             ],
             'api_platform.listener.exception_decorator' => [
-                'class'            => ApiPlatform\Core\EventListener\ExceptionListener::class,
+                'class'            => ApiPlatform\Symfony\EventListener\ExceptionListener::class,
                 'decoratedService' => ['api_platform.listener.exception'],
                 'arguments'        => ['api_platform.action.exception', 'logger'],
                 'tag'              => 'kernel.event_listener',
@@ -113,6 +114,7 @@ return [
                     'priority' => 254,
                 ],
             ],
+            */
         ],
     ],
 
