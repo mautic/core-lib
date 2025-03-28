@@ -41,14 +41,14 @@ Variables
                     <div class="col-md-12 ai-start">
                         <h2 class="pb-xs text-left">{{ header|trans({'object': object}) }}</h2>
                         <div class="row-no-gutters">
-                            <span class="muted">{{ 'mautic.lead.import.inprogress'|trans }}</span>
+                            <span class="text-secondary">{{ 'mautic.lead.import.inprogress'|trans }}</span>
                         </div>
                     </div>
                     {% else %}
                     <div class="col-md-8 ai-start">
                         <h2 class="pb-xs text-left">{{ header|trans({'object': object}) }}</h2>
                         <div class="row-no-gutters">
-                            <span class="muted">{{ 'mautic.lead.leads'|trans }} • {{ 'mautic.core.now'|trans }}</span>
+                            <span class="text-secondary">{{ 'mautic.lead.leads'|trans }} • {{ 'mautic.core.now'|trans }}</span>
                         </div>
                     </div>
                     <div class="col-md-4 ai-end jc-center">
