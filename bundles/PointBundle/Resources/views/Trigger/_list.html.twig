@@ -77,11 +77,9 @@
                             {% endif %}
                             {{ customContent('trigger.name', _context) }}
                         </div>
-                        {% if item.description is not empty %}
-                            <div class="text-secondary mt-4">
-                                <small>{{ item.description|purify }}</small>
-                            </div>
-                        {% endif %}
+                        {{ include('@MauticCore/Helper/description--inline.html.twig', {
+                            'description': item.description
+                        }) }}
                     </td>
                     <td class="visible-md visible-lg">
                         {% set category = item.category %}
