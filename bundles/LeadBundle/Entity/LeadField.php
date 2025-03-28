@@ -137,6 +137,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface
         $this->id         = null;
         $this->isCloned   = true;
         $this->order      =  0;
+        $this->isFixed    = false;
 
         parent::__clone();
     }
