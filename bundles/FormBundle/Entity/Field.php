@@ -248,7 +248,7 @@ class Field implements UuidInterface
         $builder->createField('fieldWidth', Types::STRING)
             ->columnName('field_width')
             ->length(50)
-            ->option('default', 100)
+            ->option('default', '100%')
             ->build();
         static::addUuidField($builder);
     }
