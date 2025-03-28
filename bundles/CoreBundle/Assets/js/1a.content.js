@@ -919,7 +919,7 @@ Mautic.ajaxifyLink = function (el, event) {
 
     var link = mQuery(el).attr('data-menu-link');
     if (link !== undefined && link.charAt(0) != '#') {
-        link = "#" + link;
+        link = "#" + CSS.escape(link);
     }
 
     var method = mQuery(el).attr('data-method');
