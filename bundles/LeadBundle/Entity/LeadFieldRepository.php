@@ -17,7 +17,7 @@ class LeadFieldRepository extends CommonRepository
     /**
      * @var array<int|string, array<string,mixed>>|null
      */
-    private static ?array $fields;
+    private ?array $fields = null;
 
     /**
      * Retrieves array of aliases used to ensure unique alias for new fields.
