@@ -183,7 +183,7 @@
                                 </div>
                                 {% if attribute(item, 'getDescription') is defined and item.getDescription() %}
                                     {{ include('@MauticCore/Helper/description--inline.html.twig', {
-                                        'description': item.getDescription()|purify
+                                        'description': item.getDescription()
                                     }) }}
                                 {% endif %}
                             </td>

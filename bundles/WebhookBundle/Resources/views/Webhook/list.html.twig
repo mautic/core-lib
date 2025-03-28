@@ -131,11 +131,9 @@
                             ) }}">
                                 {{ item.getName() }}
                             </a>
-                            {% if item.getDescription() is defined and item.getDescription() is not empty %}
-                                {{ include('@MauticCore/Helper/description--inline.html.twig', {
-                                    'description': item.getDescription()|purify
-                                }) }}
-                            {% endif %}
+                            {{ include('@MauticCore/Helper/description--inline.html.twig', {
+                                'description': item.getDescription()
+                            }) }}
                         </div>
                     </td>
                     <td class="visible-md visible-lg">{{ item.getWebhookUrl() }}</td>

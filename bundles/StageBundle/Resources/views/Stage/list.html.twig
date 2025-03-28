@@ -130,7 +130,7 @@
                         </div>
                         {% set description = item.getDescription() %}
                         {{ include('@MauticCore/Helper/description--inline.html.twig', {
-                            'description': description|purify
+                            'description': description
                         }) }}
                     </td>
                     <td class="visible-md visible-lg">

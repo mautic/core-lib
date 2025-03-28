@@ -115,7 +115,7 @@
                             </a>
                         </div>
                         {{ include('@MauticCore/Helper/description--inline.html.twig', {
-                            'description': item.description|purify
+                            'description': item.description
                         }) }}
                     </td>
                     <td class="vendor-name">{{ item.getVendorName()|escape }}</td>
