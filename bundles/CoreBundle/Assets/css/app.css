@@ -3822,8 +3822,9 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
 .btn-link {
   font-weight: normal;
   height: auto;
-  line-height: normal;
-  padding: 0;
+  line-height: var(--btn-line-height);
+  color: var(--link-primary);
+  padding: 0 var(--spacing-05);
 }
 .btn-link:hover,
 .btn-link:focus {
@@ -6088,13 +6089,9 @@ input[style]:hover {
   padding: var(--spacing-01) var(--spacing-04);
 }
 .form-control[disabled],
+.form-control[readonly],
 fieldset[disabled] .form-control {
   color: var(--text-disabled);
-}
-.form-control[readonly]{
-  color: var(--text-primary);
-  background-color: var(--field);
-  border-color: var(--border-subtle);
 }
 .form-control[disabled] {
   cursor: not-allowed;
