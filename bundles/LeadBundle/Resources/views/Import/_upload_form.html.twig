@@ -8,12 +8,12 @@
         <div class="pt-40">
             <div class="panel">
                 <div class="panel-heading">
-                    <h2 class="mt-lg">Choose your file</h2>
-                    <div class="muted">{{ 'mautic.lead.import.start.instructions.upload_size'|trans({'%size%': uploadMaxFilesize}) }}</div>
+                    <h2 class="mt-lg mb-xs">Choose your file</h2>
+                    <div class="text-secondary mb-lg">{{ 'mautic.lead.import.start.instructions.upload_size'|trans({'%size%': uploadMaxFilesize}) }}</div>
                 </div>
                 <div class="panel-body">
                     {{ form_start(form) }}
-                    <div class="small muted"> {{ 'mautic.lead.import.start.instructions.format'|trans }}: CSV</div>
+                    <div class="small text-secondary"> {{ 'mautic.lead.import.start.instructions.format'|trans }}: CSV</div>
                     <div class="input-group well mt-xs">
                         {{ form_widget(form.file, {'label': 'mautic.lead.import.csv.parser.config'}) }}
 
@@ -22,24 +22,52 @@
                         </span>
                     </div>
 
-                    <div class="d-flex fd-row-md fd-column fw-wrap fw-nowrap-md gap-md">
-                        {{ form_row(form.batchlimit) }}
-                        {{ form_row(form.delimiter) }}
-                        {{ form_row(form.enclosure) }}
-                        {{ form_row(form.escape) }}
+                    <div class="row">
+
+                        {% set sampleContent %}
+                            <div class="d-flex fd-row-md fd-column fw-wrap fw-nowrap-md gap-md">
+                                {{ form_row(form.batchlimit) }}
+                                {{ form_row(form.delimiter) }}
+                                {{ form_row(form.enclosure) }}
+                                {{ form_row(form.escape) }}
+                            </div>
+                            <div class="tile mt-lg">
+                                <div class="row-no-gutters gap-sm fw-nowrap-md">
+                                    <div class="col-md-8 gap-xs">
+                                        <h5 class="fw-b"> {{'mautic.lead.import.start.instructions.sample'|trans }}</h5>
+                                        <span> {{ 'mautic.lead.import.start.instructions.sample.description'|trans }}</span>
+                                    </div>
+                                    <div class="col-md-4 ai-end jc-center">
+                                        {% include '@MauticCore/Helper/button.html.twig' with {
+                                            'buttons': [
+                                                {
+                                                    'label': 'mautic.core.download',
+                                                    'icon': 'ri-download-line',
+                                                    'variant': 'tertiary',
+                                                    'size': 'sm',
+                                                    'href': '/app/bundles/LeadBundle/Assets/contacts_sample.csv',
+                                                    'attributes': {
+                                                        'download': ''
+                                                    }
+                                                }
+                                            ]
+                                        } %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endset %}
+
+                        {% include '@MauticCore/Helper/accordion.html.twig' with {
+                            'items': [
+                                {
+                                    'title': 'mautic.lead.import.csv_settings',
+                                    'content': sampleContent
+                                }
+                            ]
+                        } %}
                     </div>
+
                     {{ form_end(form) }}
-                    <div class="tile mt-lg">
-                        <div class="row gap-sm fw-nowrap-md">
-                            <div class="col-md-6 gap-xs">
-                                <h5 class="fw-b"> {{'mautic.lead.import.start.instructions.sample'|trans }}</h5>
-                                <span> {{ 'mautic.lead.import.start.instructions.sample.description'|trans }}</span>
-                            </div>
-                            <div class="col-md-6 ai-end jc-center">
-                                <a class="btn btn-tertiary btn-small" href="/app/bundles/LeadBundle/Assets/contacts_sample.csv" download>{{ 'mautic.core.download'|trans }} <i class="ri-download-line"></i></a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
