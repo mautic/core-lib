@@ -256,11 +256,11 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('anonymize_ip', $parameters[0]);
-                $this->assertSame(false, $parameters[1]);
+                $this->assertFalse($parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame('ip_lookup_create_organization', $parameters[0]);
-                $this->assertSame(false, $parameters[1]);
+                $this->assertFalse($parameters[1]);
             }
             return false;
         });
@@ -293,12 +293,12 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('anonymize_ip', $parameters[0]);
-                $this->assertSame(false, $parameters[1]);
+                $this->assertFalse($parameters[1]);
                 return false;
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame('ip_lookup_create_organization', $parameters[0]);
-                $this->assertSame(false, $parameters[1]);
+                $this->assertFalse($parameters[1]);
                 return true;
             }
         });

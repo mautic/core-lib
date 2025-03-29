@@ -510,11 +510,11 @@ class ThemeHelperTest extends TestCase
             ->method('getSystemPath')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('themes', $parameters[0]);
-                $this->assertSame(true, $parameters[1]);
+                $this->assertTrue($parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame('themes', $parameters[0]);
-                $this->assertSame(false, $parameters[1]);
+                $this->assertFalse($parameters[1]);
             }
             return __DIR__.'/resource/themes';
         });

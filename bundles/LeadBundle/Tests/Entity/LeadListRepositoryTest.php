@@ -216,7 +216,7 @@ SQL;
                 function (...$parameters) use ($matcher) {
                     if ($matcher->getInvocationCount() === 1) {
                         $this->assertSame('false', $parameters[0]);
-                        $this->assertSame(false, $parameters[1]);
+                        $this->assertFalse($parameters[1]);
                         $this->assertSame('boolean', $parameters[2]);
                     }
                     return $this->queryBuilderMock;

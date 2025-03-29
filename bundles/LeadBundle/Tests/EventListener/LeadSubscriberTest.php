@@ -210,7 +210,7 @@ class LeadSubscriberTest extends CommonMocks
                 $this->assertSame($lead, $parameters[0]);
                 $this->assertSame('lead', $parameters[1]);
                 $this->assertSame('api-single', $parameters[2]);
-                $this->assertSame(null, $parameters[3]);
+                $this->assertNull($parameters[3]);
                 $this->assertSame($leadEvent->getQueryOptions(), $parameters[4]);
                 return $logs;
             }
@@ -218,7 +218,7 @@ class LeadSubscriberTest extends CommonMocks
                 $this->assertSame($lead, $parameters[0]);
                 $this->assertSame('lead', $parameters[1]);
                 $this->assertSame('api-batch', $parameters[2]);
-                $this->assertSame(null, $parameters[3]);
+                $this->assertNull($parameters[3]);
                 $this->assertSame($leadEvent->getQueryOptions(), $parameters[4]);
                 return ['total' => 0, 'results' => []];
             }

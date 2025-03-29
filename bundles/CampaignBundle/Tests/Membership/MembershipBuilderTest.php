@@ -111,25 +111,25 @@ final class MembershipBuilderTest extends \PHPUnit\Framework\TestCase
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(111, $parameters[0]);
                 $this->assertSame($contactLimiter, $parameters[1]);
-                $this->assertSame(false, $parameters[2]);
+                $this->assertFalse($parameters[2]);
                 return [20];
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame(111, $parameters[0]);
                 $this->assertSame($contactLimiter, $parameters[1]);
-                $this->assertSame(false, $parameters[2]);
+                $this->assertFalse($parameters[2]);
                 return [21];
             }
             if ($matcher->getInvocationCount() === 3) {
                 $this->assertSame(111, $parameters[0]);
                 $this->assertSame($contactLimiter, $parameters[1]);
-                $this->assertSame(false, $parameters[2]);
+                $this->assertFalse($parameters[2]);
                 return [22];
             }
             if ($matcher->getInvocationCount() === 4) {
                 $this->assertSame(111, $parameters[0]);
                 $this->assertSame($contactLimiter, $parameters[1]);
-                $this->assertSame(false, $parameters[2]);
+                $this->assertFalse($parameters[2]);
                 return [];
             }
         });
@@ -170,25 +170,25 @@ final class MembershipBuilderTest extends \PHPUnit\Framework\TestCase
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(111, $parameters[0]);
                 $this->assertSame($contactLimiter, $parameters[1]);
-                $this->assertSame(true, $parameters[2]);
+                $this->assertTrue($parameters[2]);
                 return [20];
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame(111, $parameters[0]);
                 $this->assertSame($contactLimiter, $parameters[1]);
-                $this->assertSame(true, $parameters[2]);
+                $this->assertTrue($parameters[2]);
                 return [21];
             }
             if ($matcher->getInvocationCount() === 3) {
                 $this->assertSame(111, $parameters[0]);
                 $this->assertSame($contactLimiter, $parameters[1]);
-                $this->assertSame(true, $parameters[2]);
+                $this->assertTrue($parameters[2]);
                 return [22];
             }
             if ($matcher->getInvocationCount() === 4) {
                 $this->assertSame(111, $parameters[0]);
                 $this->assertSame($contactLimiter, $parameters[1]);
-                $this->assertSame(true, $parameters[2]);
+                $this->assertTrue($parameters[2]);
                 return [];
             }
         });
