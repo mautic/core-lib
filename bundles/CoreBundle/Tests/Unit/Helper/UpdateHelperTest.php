@@ -259,7 +259,7 @@ class UpdateHelperTest extends TestCase
         $statsUrl = 'https://mautic.org/stats';
         $matcher = $this->exactly(6);
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('update_stability', $parameters[0]);
                 return 'stable';
@@ -324,7 +324,7 @@ class UpdateHelperTest extends TestCase
         $statsUrl = '';
         $matcher = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('update_stability', $parameters[0]);
                 return 'stable';
@@ -361,7 +361,7 @@ class UpdateHelperTest extends TestCase
         $statsUrl = 'https://mautic.org/stats';
         $matcher = $this->exactly(6);
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('update_stability', $parameters[0]);
                 return 'stable';
@@ -424,7 +424,7 @@ class UpdateHelperTest extends TestCase
         $statsUrl = 'https://mautic.org/stats';
         $matcher = $this->exactly(6);
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('update_stability', $parameters[0]);
                 return 'stable';
@@ -485,7 +485,7 @@ class UpdateHelperTest extends TestCase
         $statsUrl = 'https://mautic.org/stats';
         $matcher = $this->exactly(6);
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $statsUrl) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('update_stability', $parameters[0]);
                 return 'stable';
@@ -546,7 +546,7 @@ class UpdateHelperTest extends TestCase
         $updateUrl = 'https://mautic.org/update';
         $matcher = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $updateUrl) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('update_stability', $parameters[0]);
                 return 'stable';
@@ -599,7 +599,7 @@ class UpdateHelperTest extends TestCase
         $updateUrl = 'https://mautic.org/update';
         $matcher = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $updateUrl) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('update_stability', $parameters[0]);
                 return 'stable';
@@ -652,7 +652,7 @@ class UpdateHelperTest extends TestCase
         $updateUrl = 'https://mautic.org/update';
         $matcher = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $updateUrl) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('update_stability', $parameters[0]);
                 return 'stable';
@@ -699,7 +699,7 @@ class UpdateHelperTest extends TestCase
         $updateUrl = 'https://mautic.org/update';
         $matcher = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $updateUrl) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('update_stability', $parameters[0]);
                 return 'stable';

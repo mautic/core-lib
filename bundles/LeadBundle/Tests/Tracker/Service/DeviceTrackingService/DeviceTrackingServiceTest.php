@@ -244,7 +244,7 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(1);
 
         $this->leadDeviceRepositoryMock->expects($matcher)->method('getByTrackingId')
-            ->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
+            ->willReturnCallback(function (...$parameters) use ($matcher, $trackingId, $trackedLeadDeviceMock) {
                 if ($matcher->getInvocationCount() === 1) {
                     $this->assertSame($trackingId, $parameters[0]);
                     return $trackedLeadDeviceMock;

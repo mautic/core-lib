@@ -130,7 +130,7 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
         $this->mockDispatcher->method('hasListeners')->willReturn(true);
         $matcher = $this->exactly(2);
         $this->mockDispatcher->expects($matcher)
-            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $contact, $slot) {
             if ($matcher->getInvocationCount() === 1) {
                 $callback = function (ContactFiltersEvaluateEvent $event) use ($contact, $slot) {
                     $this->assertSame($contact, $event->getContact());
@@ -138,20 +138,16 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
 
                     $event->setIsEvaluated(true);
                     $event->setIsMatched(true); // Match found in a subscriber.
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(DynamicContentEvents::ON_CONTACTS_FILTER_EVALUATE, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $callback = function (TokenReplacementEvent $event) use ($contact, $slot) {
                     $this->assertSame($contact, $event->getLead());
                     $this->assertSame($slot->getContent(), $event->getContent());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(DynamicContentEvents::TOKEN_REPLACEMENT, $parameters[1]);
             }
         });
@@ -190,17 +186,15 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
         $this->mockDispatcher->expects($matcher)
             ->method('dispatch')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher, $contact, $slot) {
                     if ($matcher->getInvocationCount() === 1) {
                         $callback = function (ContactFiltersEvaluateEvent $event) use ($contact, $slot) {
                             $this->assertSame($contact, $event->getContact());
                             $this->assertSame($slot->getFilters(), $event->getFilters());
 
                             // Match not found in any subscriber.
-
-                            return true;
                         };
-                        $this->assertTrue($callback($parameters[0]));
+                        $callback($parameters[0]);
                         $this->assertSame(DynamicContentEvents::ON_CONTACTS_FILTER_EVALUATE, $parameters[1]);
                     }
                 }
@@ -239,15 +233,13 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
         $this->mockDispatcher->expects($matcher)
             ->method('dispatch')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher, $contact, $slot) {
                     if ($matcher->getInvocationCount() === 1) {
                         $callback = function (TokenReplacementEvent $event) use ($contact, $slot) {
                             $this->assertSame($contact, $event->getLead());
                             $this->assertSame($slot->getContent(), $event->getContent());
-
-                            return true;
                         };
-                        $this->assertTrue($callback($parameters[0]));
+                        $callback($parameters[0]);
                         $this->assertSame(DynamicContentEvents::TOKEN_REPLACEMENT, $parameters[1]);
                     }
                 }

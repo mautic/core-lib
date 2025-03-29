@@ -107,12 +107,12 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return $trackingId;
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame($trackingId, $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return null;
             }
         });
@@ -144,12 +144,12 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return $trackingId;
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame($trackingId, $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return null;
             }
         });
@@ -187,12 +187,12 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return $trackingId;
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame($trackingId, $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return null;
             }
         });
@@ -235,12 +235,12 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return $trackingId;
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame($trackingId, $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return null;
             }
         });
@@ -280,15 +280,15 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $this->cookieHelperMock->expects($matcher)
-            ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
+            ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId, $leadId) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return $trackingId;
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame($trackingId, $parameters[0]);
-                $this->assertSame(null, $parameters[1]);
+                $this->assertNull($parameters[1]);
                 return $leadId;
             }
         });

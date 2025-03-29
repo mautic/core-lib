@@ -121,12 +121,12 @@ class TriggerModelTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $this->dispatcher->expects($matcher)
-            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $contact, $triggerEvent) {
             if ($matcher->getInvocationCount() === 1) {
                 $callback = function (TriggerBuilderEvent $event) {
                     // PHPUNIT calls this callback twice for unknown reason. We need to set it only once.
                     if (array_key_exists('email.send_to_user', $event->getEvents())) {
-                        return true;
+                        return;
                     }
 
                     $event->addEvent(
@@ -140,20 +140,16 @@ class TriggerModelTest extends \PHPUnit\Framework\TestCase
                             'eventName'       => EmailEvents::ON_SENT_EMAIL_TO_USER,
                         ]
                     );
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(PointEvents::TRIGGER_ON_BUILD, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $callback = function (TriggerExecutedEvent $event) use ($contact, $triggerEvent) {
                     $this->assertSame($contact, $event->getLead());
                     $this->assertSame($triggerEvent, $event->getTriggerEvent());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(EmailEvents::ON_SENT_EMAIL_TO_USER, $parameters[1]);
             }
         });

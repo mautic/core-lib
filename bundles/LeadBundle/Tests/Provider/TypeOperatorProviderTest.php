@@ -167,10 +167,8 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
                             OperatorOptions::NOT_EQUAL_TO,
                         ],
                     ]);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(LeadEvents::COLLECT_OPERATORS_FOR_FIELD_TYPE, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
@@ -181,10 +179,8 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
                     // This is the important stuff. The Starts with opearator will be added.
                     $event->addOperator(OperatorOptions::STARTS_WITH);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(LeadEvents::COLLECT_OPERATORS_FOR_FIELD, $parameters[1]);
             }
         });

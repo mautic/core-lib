@@ -87,20 +87,16 @@ class OrderExecutionerTest extends TestCase
                     Assert::assertSame(Contact::NAME, $event->getObject()->getName());
                     Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
                     Assert::assertCount(2, $event->getUpdateObjects());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $callback = function (InternalObjectCreateEvent $event) {
                     Assert::assertSame(Contact::NAME, $event->getObject()->getName());
                     Assert::assertCount(1, $event->getCreateObjects());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
             }
         });
@@ -158,20 +154,16 @@ class OrderExecutionerTest extends TestCase
                     }
 
                     $event->setUpdatedObjectMappings($updatedObjectMappings);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $callback = function (InternalObjectCreateEvent $event) {
                     Assert::assertSame(Contact::NAME, $event->getObject()->getName());
                     Assert::assertCount(1, $event->getCreateObjects());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
             }
         });
@@ -206,20 +198,16 @@ class OrderExecutionerTest extends TestCase
                     Assert::assertSame(Company::NAME, $event->getObject()->getName());
                     Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
                     Assert::assertCount(2, $event->getUpdateObjects());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $callback = function (InternalObjectCreateEvent $event) {
                     Assert::assertSame(Company::NAME, $event->getObject()->getName());
                     Assert::assertCount(1, $event->getCreateObjects());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
             }
         });
@@ -286,10 +274,8 @@ class OrderExecutionerTest extends TestCase
                         $updatedObjectMapping->setObjectMapping($objectMapping);
                     }
                     $event->setUpdatedObjectMappings($updatedObjectMappings);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
@@ -313,10 +299,8 @@ class OrderExecutionerTest extends TestCase
                     }
 
                     $event->setUpdatedObjectMappings($updatedObjectMappings);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 3) {
@@ -333,10 +317,8 @@ class OrderExecutionerTest extends TestCase
                         $createdObjectMappings[] = $objectMapping;
                     }
                     $event->setObjectMappings($createdObjectMappings);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 4) {
@@ -353,10 +335,8 @@ class OrderExecutionerTest extends TestCase
                         $createdObjectMappings[] = $objectMapping;
                     }
                     $event->setObjectMappings($createdObjectMappings);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
             }
         });

@@ -175,7 +175,7 @@ class BuilderSubscriberTest extends TestCase
         $matcher = $this->exactly(5);
 
         $this->coreParametersHelper->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $unsubscribeTokenizedText) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('unsubscribe_text', $parameters[0]);
                 return $unsubscribeTokenizedText;

@@ -42,16 +42,16 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
         ];
-        $matcher = $this->exactly(2);
+        $matcher1 = $this->exactly(2);
 
         $this->formBuilder
             ->method('addEventListener')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
-                    if ($matcher->getInvocationCount() === 1) {
+                function (...$parameters) use ($matcher1) {
+                    if ($matcher1->getInvocationCount() === 1) {
                         $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
                         $callback = function (callable $formModifier) {
-                            /** @var FormInterface<FormBuilderInterface>|MockObject $form */
+                            /** @var FormInterface<FormBuilderInterface>&MockObject $form */
                             $form = $this->createMock(FormInterface::class);
                             $data = [
                                 'column'    => 'tag',
@@ -60,11 +60,11 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
                                 'condition' => 'in',
                                 'value'     => ['1', '2'],
                             ];
-                            $matcher = $this->exactly(2);
+                            $matcher2 = $this->exactly(2);
 
-                            $form->expects($matcher)->expects($matcher)
-                                ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
-                                if ($matcher->getInvocationCount() === 1) {
+                            $form->expects($matcher2)
+                                ->method('add')->willReturnCallback(function (...$parameters) use ($matcher2) {
+                                if ($matcher2->getInvocationCount() === 1) {
                                     $this->assertSame('condition', $parameters[0]);
                                     $this->assertSame(ChoiceType::class, $parameters[1]);
                                     $this->assertSame([
@@ -83,7 +83,7 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
                                         ],
                                     ], $parameters[2]);
                                 }
-                                if ($matcher->getInvocationCount() === 2) {
+                                if ($matcher2->getInvocationCount() === 2) {
                                     $this->assertSame('value', $parameters[0]);
                                     $this->assertSame(CollectionType::class, $parameters[1]);
                                     $this->assertSame([
@@ -99,10 +99,8 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
                             });
 
                             $formModifier(new FormEvent($form, $data));
-
-                            return true;
                         };
-                        $this->assertTrue($callback($parameters[1]));
+                        $callback($parameters[1]);
                     }
                 },
             );

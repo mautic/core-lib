@@ -16,12 +16,12 @@ use Symfony\Component\Form\FormInterface;
 final class ReportTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|ReportModel
+     * @var MockObject&ReportModel
      */
     private MockObject $reportModel;
 
     /**
-     * @var MockObject|FormBuilderInterface
+     * @var MockObject&FormBuilderInterface
      */
     private MockObject $formBuilder;
 
@@ -80,17 +80,16 @@ final class ReportTypeTest extends \PHPUnit\Framework\TestCase
 
         $this->formBuilder->expects($matcher)->method('addEventListener')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher, $report) {
                     if ($matcher->getInvocationCount() === 1) {
                         $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
                         $callback = function (callable $listener) use ($report) {
                             $form      = $this->createMock(FormInterface::class);
                             $formEvent = new FormEvent($form, $report);
                             $listener($formEvent);
-
-                            return true;
                         };
-                        $this->assertTrue($callback($parameters[1]));
+                        
+                        $callback($parameters[1]);
                     }
                 }
             );

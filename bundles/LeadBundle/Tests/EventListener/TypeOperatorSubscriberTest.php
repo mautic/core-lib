@@ -296,10 +296,8 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                         ],
                         $options['attr']
                     );
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[2]));
+                $callback($parameters[2]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame('filter', $parameters[0]);
@@ -307,10 +305,8 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 $callback = function (array $options) {
                     $this->assertSame('', $options['data']);
                     $this->assertSame(['class' => 'form-control'], $options['attr']);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[2]));
+                $callback($parameters[2]);
             }
         });
 
@@ -351,10 +347,8 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                         ],
                         $options['attr']
                     );
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[2]));
+                $callback($parameters[2]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame('filter', $parameters[0]);
@@ -362,10 +356,8 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 $callback = function (array $options) {
                     $this->assertSame('', $options['data']);
                     $this->assertSame(['class' => 'form-control'], $options['attr']);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[2]));
+                $callback($parameters[2]);
             }
         });
 

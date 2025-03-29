@@ -458,14 +458,36 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
         $loser->method('getId')->willReturn(2);
         $loser->method('isAnonymous')->willReturn(true);
 
-        $winner->expects($this->exactly(3))
+        $matcher = $this->exactly(3);
+        $winner->expects($matcher)
             ->method('getFieldValue')
-            ->withConsecutive(['email'], ['consent'], ['boolean'])
+            ->with(function($parameter) use ($matcher) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame('email', $parameter);
+                }
+                if ($matcher->getInvocationCount() === 2) {
+                    $this->assertSame('consent', $parameter);
+                }
+                if ($matcher->getInvocationCount() === 3) {
+                    $this->assertSame('boolean', $parameter);
+                }
+            })
             ->will($this->onConsecutiveCalls('winner@test.com', 'Yes', 1));
 
+        $matcher = $this->exactly(3);
         $winner->expects($this->exactly(3))
             ->method('getField')
-            ->withConsecutive(['email'], ['consent'], ['boolean'])
+            ->with(function($parameter) use ($matcher) {
+                if ($matcher->getInvocationCount() === 1) {
+                    $this->assertSame('email', $parameter);
+                }
+                if ($matcher->getInvocationCount() === 2) {
+                    $this->assertSame('consent', $parameter);
+                }
+                if ($matcher->getInvocationCount() === 3) {
+                    $this->assertSame('boolean', $parameter);
+                }
+            })
             ->will($this->onConsecutiveCalls([
                 'id'            => 22,
                 'label'         => 'Email',

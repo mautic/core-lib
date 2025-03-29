@@ -347,16 +347,14 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(3);
 
         $this->dispatcher->expects($matcher)
-            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $now) {
             if ($matcher->getInvocationCount() === 1) {
                 $callback = function (ScheduledEvent $event) use ($now) {
                     // The first log was scheduled to 10 minutes.
                     Assert::assertGreaterThan($now->modify('+9 minutes'), $event->getLog()->getTriggerDate());
                     Assert::assertLessThan($now->modify('+11 minutes'), $event->getLog()->getTriggerDate());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(CampaignEvents::ON_EVENT_SCHEDULED, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
@@ -364,19 +362,15 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
                     // The second log was not scheduled so the default interval is used.
                     Assert::assertGreaterThan($now->modify('+59 minutes'), $event->getLog()->getTriggerDate());
                     Assert::assertLessThan($now->modify('+61 minutes'), $event->getLog()->getTriggerDate());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(CampaignEvents::ON_EVENT_SCHEDULED, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 3) {
                 $callback = function (ScheduledBatchEvent $event) {
                     Assert::assertCount(2, $event->getScheduled());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(CampaignEvents::ON_EVENT_SCHEDULED_BATCH, $parameters[1]);
             }
         });

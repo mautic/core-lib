@@ -830,16 +830,14 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->entityManager->expects($matcher)
             ->method('persist')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher, $stat, $ipAddress) {
                     if ($matcher->getInvocationCount() === 1) {
                         $callback = function ($statDevice) use ($stat, $ipAddress) {
                             $this->assertInstanceOf(StatDevice::class, $statDevice);
                             $this->assertSame($stat, $statDevice->getStat());
                             $this->assertSame($ipAddress, $statDevice->getIpAddress());
-    
-                            return true;
                         };
-                        $this->assertTrue($callback($parameters[0]));
+                        $callback($parameters[0]);
                     }
                 }
             );
@@ -893,16 +891,14 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->entityManager->expects($matcher)
             ->method('persist')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher, $stat, $ipAddress) {
                     if ($matcher->getInvocationCount() === 1) {
                         $callback = function ($statDevice) use ($stat, $ipAddress) {
                             $this->assertInstanceOf(StatDevice::class, $statDevice);
                             $this->assertSame($stat, $statDevice->getStat());
                             $this->assertSame($ipAddress, $statDevice->getIpAddress());
-    
-                            return true;
                         };
-                        $this->assertTrue($callback($parameters[0]));
+                        $callback($parameters[0]);
                     }
                 }
             );

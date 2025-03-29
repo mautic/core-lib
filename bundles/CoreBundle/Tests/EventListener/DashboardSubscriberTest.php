@@ -228,7 +228,7 @@ class DashboardSubscriberTest extends TestCase
         $routeCollection = $this->createMock(RouteCollection::class);
         $matcher = self::exactly(5);
         $routeCollection->expects($matcher) // no null object and  exception object
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $route) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('mautic_model_action', $parameters[0]);
                 return null;

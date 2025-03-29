@@ -260,7 +260,7 @@ class FromEmailHelperTest extends TestCase
         $matcher = $this->exactly(2);
 
         $this->leadRepository->expects($matcher)
-            ->method('getLeadOwner')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('getLeadOwner')->willReturnCallback(function (...$parameters) use ($matcher, $users) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(1, $parameters[0]);
                 return $users[0];
@@ -698,7 +698,7 @@ class FromEmailHelperTest extends TestCase
         $matcher = $this->exactly(2);
 
         $this->leadRepository->expects($matcher)
-            ->method('getLeadOwner')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('getLeadOwner')->willReturnCallback(function (...$parameters) use ($matcher, $user, $user2) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(1, $parameters[0]);
                 return $user;

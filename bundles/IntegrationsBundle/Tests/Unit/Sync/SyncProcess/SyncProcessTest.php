@@ -195,10 +195,8 @@ class SyncProcessTest extends TestCase
                     Assert::assertCount(1, $orderResult->getNewObjectMappings('foo'));
                     Assert::assertCount(1, $orderResult->getDeletedObjects('foo'));
                     Assert::assertCount(1, $orderResult->getRemappedObjects('bar'));
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BATCH_SYNC_COMPLETED_INTEGRATION_TO_MAUTIC, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
@@ -206,10 +204,8 @@ class SyncProcessTest extends TestCase
                     $orderResult = $event->getOrderResults();
                     Assert::assertCount(1, $orderResult->getNewObjectMappings('bar'));
                     Assert::assertCount(1, $orderResult->getUpdatedObjectMappings('foo'));
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BATCH_SYNC_COMPLETED_MAUTIC_TO_INTEGRATION, $parameters[1]);
             }
         });

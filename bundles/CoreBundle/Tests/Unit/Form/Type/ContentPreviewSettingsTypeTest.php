@@ -36,6 +36,9 @@ class ContentPreviewSettingsTypeTest extends TestCase
      */
     private MockObject $userHelperMock;
 
+    /**
+     * @var mixed[]
+     */
     private array $contactFieldDefinition = [
         'contact',
         LookupType::class,

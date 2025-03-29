@@ -139,7 +139,7 @@ class RouteHelperTest extends TestCase
         $matcher = $this->exactly(2);
 
         $this->dispatcher->expects($matcher)
-            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $internalObject) {
             if ($matcher->getInvocationCount() === 1) {
                 $callback = function (InternalObjectRouteEvent $event) use ($internalObject) {
                     $this->assertSame($internalObject, $event->getObject());
@@ -147,10 +147,8 @@ class RouteHelperTest extends TestCase
 
                     // Mock a subscriber.
                     $event->setRoute('route/for/id/1');
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BUILD_INTERNAL_OBJECT_ROUTE, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
@@ -160,10 +158,8 @@ class RouteHelperTest extends TestCase
 
                     // Mock a subscriber.
                     $event->setRoute('route/for/id/2');
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BUILD_INTERNAL_OBJECT_ROUTE, $parameters[1]);
             }
         });

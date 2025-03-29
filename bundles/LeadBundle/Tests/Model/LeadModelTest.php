@@ -609,7 +609,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $this->entityManagerMock->expects($matcher)
-            ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher, $stagesChangeLogRepo, $stageRepositoryMock) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(StagesChangeLog::class, $parameters[0]);
                 return $stagesChangeLogRepo;
@@ -647,7 +647,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $this->entityManagerMock->expects($matcher)
-            ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher, $stagesChangeLogRepo, $stageRepositoryMock) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(StagesChangeLog::class, $parameters[0]);
                 return $stagesChangeLogRepo;

@@ -218,7 +218,7 @@ class FullObjectReportBuilderTest extends TestCase
         $matcher = $this->exactly(3);
 
         $this->dispatcher->expects($matcher)
-            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $internalObject, $fromDateTime, $toDateTime, $contactEntity) {
             if ($matcher->getInvocationCount() === 1) {
                 $callback = function (InternalObjectFindEvent $event) use (
                     $internalObject,
@@ -241,10 +241,8 @@ class FullObjectReportBuilderTest extends TestCase
                             ],
                         ]
                     );
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORDS, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
@@ -252,19 +250,15 @@ class FullObjectReportBuilderTest extends TestCase
                     $this->assertSame($internalObject, $event->getObject());
                     $event->setId($contactEntity->getId());
                     $event->setEntity($contactEntity);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 3) {
                 $callback = function (InternalContactEvent $event) use ($contactEntity) {
                     $this->assertSame($contactEntity, $event->getContact());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_CONTACT_REPORT_BUILD, $parameters[1]);
             }
         });
@@ -324,7 +318,10 @@ class FullObjectReportBuilderTest extends TestCase
         $matcher = $this->exactly(3);
 
         $this->dispatcher->expects($matcher)
-            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $internalObject,
+            $fromDateTime,
+            $toDateTime,
+            $companyEntity) {
             if ($matcher->getInvocationCount() === 1) {
                 $callback = function (InternalObjectFindEvent $event) use (
                     $internalObject,
@@ -347,10 +344,8 @@ class FullObjectReportBuilderTest extends TestCase
                             ],
                         ]
                     );
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORDS, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
@@ -358,19 +353,15 @@ class FullObjectReportBuilderTest extends TestCase
                     $this->assertSame($internalObject, $event->getObject());
                     $event->setId($companyEntity->getId());
                     $event->setEntity($companyEntity);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 3) {
                 $callback = function (InternalCompanyEvent $event) use ($companyEntity) {
                     $this->assertSame($companyEntity, $event->getCompany());
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[0]));
+                $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_COMPANY_REPORT_BUILD, $parameters[1]);
             }
         });

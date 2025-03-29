@@ -70,12 +70,12 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
 
         // Adding a filter with an existing field:
         $builder->expects($matcher)
-            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $form) {
+            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher) {
+            /** @var FormInterface<FormBuilderInterface>&MockObject $form */
+            $form = $this->createMock(FormInterface::class);
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
-                $callback = function (callable $formModifier) {
-                    /** @var FormInterface<FormBuilderInterface>|MockObject $form */
-                    $form = $this->createMock(FormInterface::class);
+                $callback = function (callable $formModifier) use ($matcher, $form) {
                     $data = [
                         'field'    => 'address1',
                         'object'   => 'lead',
@@ -92,16 +92,12 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                         ->method('adjustForm');
 
                     $formModifier(new FormEvent($form, $data));
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[1]));
+                $callback($parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
-                $callback = function (callable $formModifier) {
-                    /** @var FormInterface<FormBuilderInterface>|MockObject $form */
-                    $form = $this->createMock(FormInterface::class);
+                $callback = function (callable $formModifier) use ($matcher, $form) {
                     $data = [
                         'field'    => 'deleted',
                         'object'   => 'lead',
@@ -118,10 +114,8 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                         ->method('adjustForm');
 
                     $formModifier(new FormEvent($form, $data));
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[1]));
+                $callback($parameters[1]);
             }
             return $form;
         });
@@ -156,7 +150,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                     ],
                 ]
             );
-        // Adding a filter with an existing field:
+
         $matcher = $this->once();
 
         // Adding a filter with an existing field:
@@ -164,7 +158,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
             ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
-                $callback = function (callable $formModifier) {
+                $callback = function (callable $formModifier) use ($matcher) {
                     $form = new class extends Form {
                         public int $addMethodCallCounter = 0;
 
@@ -224,10 +218,8 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                     $formModifier(new FormEvent($form, $data));
 
                     Assert::assertSame(2, $form->addMethodCallCounter);
-
-                    return true;
                 };
-                $this->assertTrue($callback($parameters[1]));
+                $callback($parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
