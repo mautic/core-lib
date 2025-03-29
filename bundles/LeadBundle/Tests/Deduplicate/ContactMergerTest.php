@@ -461,74 +461,78 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(3);
         $winner->expects($matcher)
             ->method('getFieldValue')
-            ->with(function($parameter) use ($matcher) {
+            ->willReturnCallback(function($parameter) use ($matcher) {
                 if ($matcher->getInvocationCount() === 1) {
                     $this->assertSame('email', $parameter);
+                    return 'winner@test.com';
                 }
                 if ($matcher->getInvocationCount() === 2) {
                     $this->assertSame('consent', $parameter);
+                    return 'Yes';
                 }
                 if ($matcher->getInvocationCount() === 3) {
                     $this->assertSame('boolean', $parameter);
+                    return 1;
                 }
-            })
-            ->will($this->onConsecutiveCalls('winner@test.com', 'Yes', 1));
+            });
 
-        $matcher = $this->exactly(3);
-        $winner->expects($this->exactly(3))
+        $matcher2 = $this->exactly(3);
+        $winner->expects($matcher2)
             ->method('getField')
-            ->with(function($parameter) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+            ->willReturnCallback(function($parameter) use ($matcher2) {
+                if ($matcher2->getInvocationCount() === 1) {
                     $this->assertSame('email', $parameter);
+                    return [
+                        'id'            => 22,
+                        'label'         => 'Email',
+                        'alias'         => 'email',
+                        'type'          => 'email',
+                        'group'         => 'core',
+                        'object'        => 'lead',
+                        'is_fixed'      => true,
+                        'default_value' => null,
+                    ];
                 }
-                if ($matcher->getInvocationCount() === 2) {
+                if ($matcher2->getInvocationCount() === 2) {
                     $this->assertSame('consent', $parameter);
+                    return [
+                        'id'            => 44,
+                        'label'         => 'Email Consent',
+                        'alias'         => 'consent',
+                        'type'          => 'select',
+                        'group'         => 'core',
+                        'object'        => 'lead',
+                        'is_fixed'      => true,
+                        'default_value' => 'No',
+                    ];
                 }
-                if ($matcher->getInvocationCount() === 3) {
+                if ($matcher2->getInvocationCount() === 3) {
                     $this->assertSame('boolean', $parameter);
+                    return [
+                        'id'            => 45,
+                        'label'         => 'Boolean Field',
+                        'alias'         => 'boolean',
+                        'type'          => 'boolean',
+                        'group'         => 'core',
+                        'object'        => 'lead',
+                        'is_fixed'      => true,
+                        'default_value' => 0,
+                    ];
                 }
-            })
-            ->will($this->onConsecutiveCalls([
-                'id'            => 22,
-                'label'         => 'Email',
-                'alias'         => 'email',
-                'type'          => 'email',
-                'group'         => 'core',
-                'object'        => 'lead',
-                'is_fixed'      => true,
-                'default_value' => null,
-            ], [
-                'id'            => 44,
-                'label'         => 'Email Consent',
-                'alias'         => 'consent',
-                'type'          => 'select',
-                'group'         => 'core',
-                'object'        => 'lead',
-                'is_fixed'      => true,
-                'default_value' => 'No',
-            ], [
-                'id'            => 45,
-                'label'         => 'Boolean Field',
-                'alias'         => 'boolean',
-                'type'          => 'boolean',
-                'group'         => 'core',
-                'object'        => 'lead',
-                'is_fixed'      => true,
-                'default_value' => 0,
-            ]));
-        $matcher = $this->exactly(3);
+            });
+        $matcher3 = $this->exactly(3);
 
-        $winner->expects($matcher)
-            ->method('addUpdatedField')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
+        $winner->expects($matcher3)
+            ->method('addUpdatedField')->willReturnCallback(function (...$parameters) use ($matcher3) {
+            if ($matcher3->getInvocationCount() === 1) {
                 $this->assertSame('email', $parameters[0]);
                 $this->assertSame('winner@test.com', $parameters[1]);
             }
-            if ($matcher->getInvocationCount() === 2) {
+            if ($matcher3->getInvocationCount() === 2) {
                 $this->assertSame('consent', $parameters[0]);
                 $this->assertSame('Yes', $parameters[1]);
             }
-            if ($matcher->getInvocationCount() === 3) {
+            if ($matcher3->getInvocationCount() === 3) {
                 $this->assertSame('boolean', $parameters[0]);
                 $this->assertSame(1, $parameters[1]);
             }

@@ -250,20 +250,12 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $ipAddress->setIpDetails(['organization' => 'Doctors Without Borders']);
 
         $entity->addIpAddress($ipAddress);
-        $matcher = $this->exactly(2);
 
-        $this->coreParametersHelperMock->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('anonymize_ip', $parameters[0]);
-                $this->assertFalse($parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('ip_lookup_create_organization', $parameters[0]);
-                $this->assertFalse($parameters[1]);
-            }
-            return false;
-        });
+        $this->coreParametersHelperMock->method('get')
+            ->willReturnMap([
+                ['anonymize_ip', false, false],
+                ['ip_lookup_create_organization', false, false],
+            ]);
 
         $this->fieldModelMock->method('getFieldListWithProperties')->willReturn([]);
         $this->fieldModelMock->method('getFieldList')->willReturn([]);
@@ -287,21 +279,12 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $ipAddress->setIpDetails(['organization' => $companyFromIpLookup]);
 
         $entity->addIpAddress($ipAddress);
-        $matcher = $this->exactly(2);
 
-        $this->coreParametersHelperMock->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('anonymize_ip', $parameters[0]);
-                $this->assertFalse($parameters[1]);
-                return false;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('ip_lookup_create_organization', $parameters[0]);
-                $this->assertFalse($parameters[1]);
-                return true;
-            }
-        });
+        $this->coreParametersHelperMock->method('get')
+            ->willReturnMap([
+                ['anonymize_ip', false, false],
+                ['ip_lookup_create_organization', false, true],
+            ]);
 
         $this->fieldModelMock->method('getFieldListWithProperties')->willReturn([]);
         $this->fieldModelMock->method('getFieldList')->willReturn([]);

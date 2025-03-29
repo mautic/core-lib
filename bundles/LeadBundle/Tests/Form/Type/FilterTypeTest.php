@@ -66,31 +66,23 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                 ]
             );
         // Adding a filter with an existing field:
-        $matcher = $this->never();
-
-        // Adding a filter with an existing field:
+        $matcher = $this->exactly(2);
         $builder->expects($matcher)
             ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher) {
             /** @var FormInterface<FormBuilderInterface>&MockObject $form */
             $form = $this->createMock(FormInterface::class);
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
-                $callback = function (callable $formModifier) use ($matcher, $form) {
+                $callback = function (callable $formModifier) use ($form) {
                     $data = [
                         'field'    => 'address1',
                         'object'   => 'lead',
                         'operator' => 'eq',
                     ];
 
-                    $form->expects($matcher)
-                        ->method('add');
-
-                    $form->expects($matcher)
-                        ->method('get');
-
-                    $this->formAdjustmentsProvider->expects($matcher)
-                        ->method('adjustForm');
-
+                    $form->expects($this->exactly(2))->method('add');
+                    $form->expects($this->once())->method('get');
+                    $this->formAdjustmentsProvider->expects($this->once())->method('adjustForm');
                     $formModifier(new FormEvent($form, $data));
                 };
                 $callback($parameters[1]);
@@ -104,21 +96,15 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                         'operator' => 'eq',
                     ];
 
-                    $form->expects($matcher)
-                        ->method('add');
-
-                    $form->expects($matcher)
-                        ->method('get');
-
-                    $this->formAdjustmentsProvider->expects($matcher)
-                        ->method('adjustForm');
-
+                    $form->expects($this->exactly(2))->method('add');
+                    $form->expects($this->never())->method('get');
+                    $this->formAdjustmentsProvider->expects($this->never())->method('adjustForm');
                     $formModifier(new FormEvent($form, $data));
                 };
                 $callback($parameters[1]);
             }
             return $form;
-        });
+        })->willReturnSelf();
 
         $this->form->buildForm($builder, $options);
     }
@@ -151,14 +137,14 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $matcher = $this->once();
+        $matcher = $this->exactly(2);
 
         // Adding a filter with an existing field:
         $builder->expects($matcher)
             ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
-                $callback = function (callable $formModifier) use ($matcher) {
+                $callback = function (callable $formModifier) {
                     $form = new class extends Form {
                         public int $addMethodCallCounter = 0;
 
@@ -205,7 +191,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                         }
                     };
 
-                    $this->formAdjustmentsProvider->expects($matcher)
+                    $this->formAdjustmentsProvider->expects($this->once())
                         ->method('adjustForm');
 
                     $data = [
@@ -223,11 +209,11 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
-                $this->assertSame(function (callable $formModifier): void {
+                $this->assertSame(function (): void {
                     // don't do anything for this test
                 }, $parameters[1]);
             }
-        });
+        })->willReturnSelf();
 
         $this->form->buildForm($builder, $options);
     }

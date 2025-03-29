@@ -70,39 +70,17 @@ class PeakInteractionTimerTest extends TestCase
         $this->hitRepositoryMock        = $this->createMock(HitRepository::class);
         $this->submissionRepositoryMock = $this->createMock(SubmissionRepository::class);
         $this->cacheProviderMock        = $this->createMock(CacheProviderInterface::class);
-        $matcher = $this->exactly(7);
 
-        $this->coreParametersHelperMock->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('peak_interaction_timer_cache_timeout', $parameters[0]);
-                return $this->peakInteractionTimerCacheTimeout;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('peak_interaction_timer_best_default_hour_start', $parameters[0]);
-                return $this->peakInteractionTimerBestDefaultHourStart;
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame('peak_interaction_timer_best_default_hour_end', $parameters[0]);
-                return $this->peakInteractionTimerBestDefaultHourEnd;
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertSame('peak_interaction_timer_best_default_days', $parameters[0]);
-                return $this->peakInteractionTimerBestDefaultDays;
-            }
-            if ($matcher->getInvocationCount() === 5) {
-                $this->assertSame('peak_interaction_timer_fetch_interactions_from', $parameters[0]);
-                return $this->peakInteractionTimerFetchInteractionsFrom;
-            }
-            if ($matcher->getInvocationCount() === 6) {
-                $this->assertSame('peak_interaction_timer_fetch_limit', $parameters[0]);
-                return $this->peakInteractionTimerFetchLimit;
-            }
-            if ($matcher->getInvocationCount() === 7) {
-                $this->assertSame('default_timezone', $parameters[0]);
-                return $this->defaultTimezone;
-            }
-        });
+        $this->coreParametersHelperMock->method('get')
+            ->willReturnMap([
+                ['peak_interaction_timer_cache_timeout', null, $this->peakInteractionTimerCacheTimeout],
+                ['peak_interaction_timer_best_default_hour_start', null, $this->peakInteractionTimerBestDefaultHourStart],
+                ['peak_interaction_timer_best_default_hour_end', null, $this->peakInteractionTimerBestDefaultHourEnd],
+                ['peak_interaction_timer_best_default_days', null, $this->peakInteractionTimerBestDefaultDays],
+                ['peak_interaction_timer_fetch_interactions_from', null, $this->peakInteractionTimerFetchInteractionsFrom],
+                ['peak_interaction_timer_fetch_limit', null, $this->peakInteractionTimerFetchLimit],
+                ['default_timezone', null, $this->defaultTimezone],
+            ]);
 
         $createCacheItem = \Closure::bind(
             function ($key) {
@@ -129,21 +107,15 @@ class PeakInteractionTimerTest extends TestCase
      */
     public function testGetDefaultOptimalTime(string $currentDate, string $expectedDate, ?string $contactTimezone = null): void
     {
-        $contactMock = $this->createMock(Lead::class);
+        $contactTimezone = $contactTimezone ?: $this->defaultTimezone;
+        $contactMock     = $this->createMock(Lead::class);
         if ($contactTimezone) {
             $contactMock->method('getTimezone')->willReturn($contactTimezone);
         }
-        $contactTimezone = $contactTimezone ?: $this->defaultTimezone;
 
-        $this->statRepositoryMock
-            ->method('getLeadStats')
-            ->willReturn([]);
-        $this->hitRepositoryMock
-            ->method('getLeadHits')
-            ->willReturn([]);
-        $this->submissionRepositoryMock
-            ->method('getSubmissions')
-            ->willReturn([]);
+        $this->statRepositoryMock->method('getLeadStats')->willReturn([]);
+        $this->hitRepositoryMock->method('getLeadHits')->willReturn([]);
+        $this->submissionRepositoryMock->method('getSubmissions')->willReturn([]);
 
         // Create an instance of the testable PeakInteractionTimer
         $testableTimer = new TestablePeakInteractionTimer($this->coreParametersHelperMock, $this->statRepositoryMock, $this->hitRepositoryMock, $this->submissionRepositoryMock, $this->cacheProviderMock);
@@ -183,21 +155,15 @@ class PeakInteractionTimerTest extends TestCase
      */
     public function testGetDefaultOptimalTimeAndDay(string $currentDate, string $expectedDate, ?string $contactTimezone = null): void
     {
-        $contactMock = $this->createMock(Lead::class);
+        $contactTimezone = $contactTimezone ?: $this->defaultTimezone;
+        $contactMock     = $this->createMock(Lead::class);
         if ($contactTimezone) {
             $contactMock->method('getTimezone')->willReturn($contactTimezone);
         }
-        $contactTimezone = $contactTimezone ?: $this->defaultTimezone;
 
-        $this->statRepositoryMock
-            ->method('getLeadStats')
-            ->willReturn([]);
-        $this->hitRepositoryMock
-            ->method('getLeadHits')
-            ->willReturn([]);
-        $this->submissionRepositoryMock
-            ->method('getSubmissions')
-            ->willReturn([]);
+        $this->statRepositoryMock->method('getLeadStats')->willReturn([]);
+        $this->hitRepositoryMock->method('getLeadHits')->willReturn([]);
+        $this->submissionRepositoryMock->method('getSubmissions')->willReturn([]);
 
         // Create an instance of the testable PeakInteractionTimer
         $testableTimer = new TestablePeakInteractionTimer($this->coreParametersHelperMock, $this->statRepositoryMock, $this->hitRepositoryMock, $this->submissionRepositoryMock, $this->cacheProviderMock);

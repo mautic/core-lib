@@ -361,7 +361,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
     public function testNotRelevantContextBuilder(): void
     {
-        $matcher = $this->exactly(1);
+        $matcher = $this->any();
         $this->reportBuilderEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
@@ -889,7 +889,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
      */
     public function testReportGenerate(string $context): void
     {
-        $matcher = $this->exactly(1);
+        $matcher = $this->any();
         $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {

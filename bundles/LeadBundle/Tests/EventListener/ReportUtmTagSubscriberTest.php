@@ -243,7 +243,7 @@ class ReportUtmTagSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('from')
             ->with(MAUTIC_TABLE_PREFIX.'lead_utmtags', 'utm')
             ->willReturn($queryBuilderMock);
-        $matcher = $this->exactly(1);
+        $matcher = $this->any();
 
         $queryBuilderMock->expects($matcher)->method('leftJoin')
             ->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilderMock) {

@@ -2,21 +2,22 @@
 
 namespace Mautic\ReportBundle\Tests\Model;
 
+use PHPUnit\Framework\Assert;
+use Mautic\ReportBundle\ReportEvents;
+use Mautic\ReportBundle\Entity\Report;
+use Mautic\ReportBundle\Tests\Fixtures;
+use Mautic\ReportBundle\Entity\Scheduler;
+use Mautic\ReportBundle\Model\ScheduleModel;
+use PHPUnit\Framework\MockObject\MockObject;
+use Mautic\ReportBundle\Model\ReportExporter;
+use Mautic\ReportBundle\Crate\ReportDataResult;
+use Mautic\ReportBundle\Model\ReportFileWriter;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\ReportBundle\Adapter\ReportDataAdapter;
-use Mautic\ReportBundle\Crate\ReportDataResult;
-use Mautic\ReportBundle\Entity\Report;
-use Mautic\ReportBundle\Entity\Scheduler;
-use Mautic\ReportBundle\Event\ReportScheduleSendEvent;
-use Mautic\ReportBundle\Model\ReportExporter;
 use Mautic\ReportBundle\Model\ReportExportOptions;
-use Mautic\ReportBundle\Model\ReportFileWriter;
-use Mautic\ReportBundle\Model\ScheduleModel;
-use Mautic\ReportBundle\ReportEvents;
 use Mautic\ReportBundle\Scheduler\Enum\SchedulerEnum;
+use Mautic\ReportBundle\Event\ReportScheduleSendEvent;
 use Mautic\ReportBundle\Scheduler\Option\ExportOption;
-use Mautic\ReportBundle\Tests\Fixtures;
-use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ReportExporterTest extends \PHPUnit\Framework\TestCase
@@ -94,20 +95,20 @@ class ReportExporterTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(3);
 
         $eventDispatcher->expects($matcher)
-            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $scheduler1, $scheduler2, $schedulerNow) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(new ReportScheduleSendEvent($scheduler1, 'my-path'), $parameters[0]);
-                $this->assertSame(ReportEvents::REPORT_SCHEDULE_SEND, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(new ReportScheduleSendEvent($scheduler2, 'my-path'), $parameters[0]);
-                $this->assertSame(ReportEvents::REPORT_SCHEDULE_SEND, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame(new ReportScheduleSendEvent($schedulerNow, 'my-path'), $parameters[0]);
-                $this->assertSame(ReportEvents::REPORT_SCHEDULE_SEND, $parameters[1]);
-            }
-        });
+            ->method('dispatch')->willReturnCallback(function (ReportScheduleSendEvent $event, string $eventName) use ($matcher, $scheduler1, $scheduler2, $schedulerNow) {
+                $this->assertSame(ReportEvents::REPORT_SCHEDULE_SEND, $eventName);
+                Assert::assertSame($event->getFile(), 'my-path');
+                if ($matcher->getInvocationCount() === 1) {
+                    Assert::assertSame($event->getScheduler(), $scheduler1);
+                }
+                if ($matcher->getInvocationCount() === 2) {
+                    Assert::assertSame($event->getScheduler(), $scheduler2);
+                }
+                if ($matcher->getInvocationCount() === 3) {
+                    Assert::assertSame($event->getScheduler(), $schedulerNow);
+                }
+                return $event;
+            });
 
         $schedulerModel->expects($this->exactly(4))
             ->method('reportWasScheduled');

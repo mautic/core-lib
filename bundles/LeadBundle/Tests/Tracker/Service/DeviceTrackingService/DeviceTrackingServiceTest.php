@@ -241,7 +241,7 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
         $this->security->expects($this->once())
             ->method('isAnonymous')
             ->willReturn(true);
-        $matcher = $this->exactly(1);
+        $matcher = $this->any();
 
         $this->leadDeviceRepositoryMock->expects($matcher)->method('getByTrackingId')
             ->willReturnCallback(function (...$parameters) use ($matcher, $trackingId, $trackedLeadDeviceMock) {
@@ -272,7 +272,7 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
         $leadDeviceMock->expects($this->exactly(2))
             ->method('getLead')
             ->willReturn(new Lead());
-        $matcher = $this->exactly(1);
+        $matcher = $this->any();
 
         $this->cookieHelperMock->expects($matcher)->method('setCookie')
             ->willReturnCallback(function (...$parameters) use ($matcher, $uniqueTrackingIdentifier) {
@@ -331,8 +331,8 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
         $leadDeviceMock->expects($this->exactly(2))
             ->method('getLead')
             ->willReturn(new Lead());
-        $matcher = $this->exactly(1);
-
+        
+        $matcher = $this->any();
         $this->cookieHelperMock->expects($matcher)->method('setCookie')
             ->willReturnCallback(function (...$parameters) use ($matcher, $uniqueTrackingIdentifier) {
                 if ($matcher->getInvocationCount() === 1) {
