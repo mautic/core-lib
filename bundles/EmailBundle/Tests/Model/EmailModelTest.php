@@ -831,7 +831,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->method('persist')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher, $stat, $ipAddress) {
-                    if ($matcher->getInvocationCount() === 1) {
+                    if (1 === $matcher->getInvocationCount()) {
                         $callback = function ($statDevice) use ($stat, $ipAddress) {
                             $this->assertInstanceOf(StatDevice::class, $statDevice);
                             $this->assertSame($stat, $statDevice->getStat());
@@ -892,7 +892,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->method('persist')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher, $stat, $ipAddress) {
-                    if ($matcher->getInvocationCount() === 1) {
+                    if (1 === $matcher->getInvocationCount()) {
                         $callback = function ($statDevice) use ($stat, $ipAddress) {
                             $this->assertInstanceOf(StatDevice::class, $statDevice);
                             $this->assertSame($stat, $statDevice->getStat());

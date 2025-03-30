@@ -81,12 +81,13 @@ final class ReportTypeTest extends \PHPUnit\Framework\TestCase
         $this->formBuilder->expects($matcher)->method('addEventListener')
             ->willReturnCallback(
                 function (string $eventName, callable $listener) use ($matcher, $report) {
-                    if ($matcher->getInvocationCount() === 1) {
+                    if (1 === $matcher->getInvocationCount()) {
                         $this->assertSame(FormEvents::PRE_SET_DATA, $eventName);
                         $form      = $this->createMock(FormInterface::class);
                         $formEvent = new FormEvent($form, $report);
                         $listener($formEvent);
                     }
+
                     return $this->formBuilder;
                 }
             );

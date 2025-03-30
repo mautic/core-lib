@@ -67,25 +67,25 @@ class CampaignAuditServiceTest extends TestCase
 
         $this->flashBag->expects($matcher)
             ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.core.notice.campaign.unpublished.email', $parameters[0]);
-                $this->assertSame([
-                    '%name%'      => null,
-                    '%menu_link%' => 'mautic_email_index',
-                    '%url%'       => '/s/emails/edit/1',
-                ], $parameters[1]);
-                $this->assertSame(FlashBag::LEVEL_WARNING, $parameters[2]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mautic.core.notice.campaign.unpublished.email', $parameters[0]);
-                $this->assertSame([
-                    '%name%'      => null,
-                    '%menu_link%' => 'mautic_email_index',
-                    '%url%'       => '/s/emails/edit/2',
-                ], $parameters[1]);
-                $this->assertSame(FlashBag::LEVEL_WARNING, $parameters[2]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.core.notice.campaign.unpublished.email', $parameters[0]);
+                    $this->assertSame([
+                        '%name%'      => null,
+                        '%menu_link%' => 'mautic_email_index',
+                        '%url%'       => '/s/emails/edit/1',
+                    ], $parameters[1]);
+                    $this->assertSame(FlashBag::LEVEL_WARNING, $parameters[2]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.core.notice.campaign.unpublished.email', $parameters[0]);
+                    $this->assertSame([
+                        '%name%'      => null,
+                        '%menu_link%' => 'mautic_email_index',
+                        '%url%'       => '/s/emails/edit/2',
+                    ], $parameters[1]);
+                    $this->assertSame(FlashBag::LEVEL_WARNING, $parameters[2]);
+                }
+            });
 
         $this->campaignAuditService->addWarningForUnpublishedEmails($campaign);
     }

@@ -64,15 +64,17 @@ class FormatterHelperTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.core.yes', $parameters[0]);
-                return 'yes';
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mautic.core.no', $parameters[0]);
-                return 'no';
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.core.yes', $parameters[0]);
+
+                    return 'yes';
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.core.no', $parameters[0]);
+
+                    return 'no';
+                }
+            });
 
         $result = $this->formatterHelper->_(1, 'bool');
         $this->assertEquals('yes', $result);

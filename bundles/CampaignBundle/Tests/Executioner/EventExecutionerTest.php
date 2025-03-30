@@ -210,12 +210,13 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $this->actionExecutioner->expects($matcher)
             ->method('execute')->willReturnCallback(function (...$parameters) use ($matcher, $otherConfig, $jumpConfig) {
                 $this->assertInstanceOf(ArrayCollection::class, $parameters[1]);
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertEquals($otherConfig, $parameters[0]);
                 }
-                if ($matcher->getInvocationCount() === 2) {
+                if (2 === $matcher->getInvocationCount()) {
                     $this->assertEquals($jumpConfig, $parameters[0]);
                 }
+
                 return new EvaluatedContacts();
             });
 

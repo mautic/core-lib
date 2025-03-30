@@ -241,12 +241,13 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->any();
 
         $eventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
+            if (1 === $matcher->getInvocationCount()) {
                 $this->assertSame(['email.stats', 'emails'], $parameters[0]);
             }
-            if ($matcher->getInvocationCount() === 2) {
+            if (2 === $matcher->getInvocationCount()) {
                 $this->assertSame('emails', $parameters[0]);
             }
+
             return true;
         });
 
@@ -289,18 +290,19 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $eventMock         = $this->createMock(ReportGraphEvent::class);
         $chartQueryMock    = $this->createMock(ChartQuery::class);
         $translatorMock    = $this->createMock(TranslatorInterface::class);
-        $matcher = $this->any();
+        $matcher           = $this->any();
 
         $eventMock->expects($matcher)
             ->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(['email.stats', 'emails'], $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('emails', $parameters[0]);
-            }
-            return true;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(['email.stats', 'emails'], $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('emails', $parameters[0]);
+                }
+
+                return true;
+            });
 
         $eventMock->expects($this->once())
             ->method('getRequestedGraphs')
@@ -350,12 +352,14 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->any();
 
         $eventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
+            if (1 === $matcher->getInvocationCount()) {
                 $this->assertSame(['email.stats', 'emails'], $parameters[0]);
+
                 return true;
             }
-            if ($matcher->getInvocationCount() === 2) {
+            if (2 === $matcher->getInvocationCount()) {
                 $this->assertSame('emails', $parameters[0]);
+
                 return false;
             }
         });

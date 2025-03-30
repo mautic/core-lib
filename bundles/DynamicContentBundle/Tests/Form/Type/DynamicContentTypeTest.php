@@ -71,90 +71,91 @@ class DynamicContentTypeTest extends TestCase
 
         $formBuilderInterfaceMock->expects($matcher)
             ->method('create')->willReturnCallback(function (...$parameters) use ($matcher, $tagChoices, $formBuilderInterfaceMock) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('translationParent', $parameters[0]);
-                $this->assertSame(DynamicContentListType::class, $parameters[1]);
-                $this->assertSame([
-                    'label'       => 'mautic.core.form.translation_parent',
-                    'label_attr'  => ['class' => 'control-label'],
-                    'attr'        => [
-                        'class'   => 'form-control',
-                        'tooltip' => 'mautic.core.form.translation_parent.help',
-                    ],
-                    'required'    => false,
-                    'multiple'    => false,
-                    'placeholder' => 'mautic.core.form.translation_parent.empty',
-                    'top_level'   => 'translation',
-                    'ignore_ids'  => [0 => 0],
-                ], $parameters[2]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('filters', $parameters[0]);
-                $this->assertSame(CollectionType::class, $parameters[1]);
-                $this->assertSame([
-                    'entry_type'     => \Mautic\DynamicContentBundle\Form\Type\DwcEntryFiltersType::class,
-                    'entry_options'  => [
-                        'countries'    => FormFieldHelper::getCountryChoices(),
-                        'regions'      => FormFieldHelper::getRegionChoices(),
-                        'timezones'    => FormFieldHelper::getTimezonesChoices(),
-                        'locales'      => FormFieldHelper::getLocaleChoices(),
-                        'fields'       => $this->getMockChoiceFields(),
-                        'deviceTypes'  => array_combine(
-                            DeviceParser::getAvailableDeviceTypeNames(),
-                            DeviceParser::getAvailableDeviceTypeNames()
-                        ),
-                        'deviceBrands' => DeviceParser::$deviceBrands,
-                        'deviceOs'     => array_combine(
-                            array_keys(OperatingSystem::getAvailableOperatingSystemFamilies()),
-                            array_keys(OperatingSystem::getAvailableOperatingSystemFamilies())
-                        ),
-                        'tags'         => $tagChoices,
-                    ],
-                    'error_bubbling' => false,
-                    'mapped'         => true,
-                    'allow_add'      => true,
-                    'allow_delete'   => true,
-                ], $parameters[2]);
-            }
-            return $formBuilderInterfaceMock;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('translationParent', $parameters[0]);
+                    $this->assertSame(DynamicContentListType::class, $parameters[1]);
+                    $this->assertSame([
+                        'label'       => 'mautic.core.form.translation_parent',
+                        'label_attr'  => ['class' => 'control-label'],
+                        'attr'        => [
+                            'class'   => 'form-control',
+                            'tooltip' => 'mautic.core.form.translation_parent.help',
+                        ],
+                        'required'    => false,
+                        'multiple'    => false,
+                        'placeholder' => 'mautic.core.form.translation_parent.empty',
+                        'top_level'   => 'translation',
+                        'ignore_ids'  => [0 => 0],
+                    ], $parameters[2]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('filters', $parameters[0]);
+                    $this->assertSame(CollectionType::class, $parameters[1]);
+                    $this->assertSame([
+                        'entry_type'     => \Mautic\DynamicContentBundle\Form\Type\DwcEntryFiltersType::class,
+                        'entry_options'  => [
+                            'countries'    => FormFieldHelper::getCountryChoices(),
+                            'regions'      => FormFieldHelper::getRegionChoices(),
+                            'timezones'    => FormFieldHelper::getTimezonesChoices(),
+                            'locales'      => FormFieldHelper::getLocaleChoices(),
+                            'fields'       => $this->getMockChoiceFields(),
+                            'deviceTypes'  => array_combine(
+                                DeviceParser::getAvailableDeviceTypeNames(),
+                                DeviceParser::getAvailableDeviceTypeNames()
+                            ),
+                            'deviceBrands' => DeviceParser::$deviceBrands,
+                            'deviceOs'     => array_combine(
+                                array_keys(OperatingSystem::getAvailableOperatingSystemFamilies()),
+                                array_keys(OperatingSystem::getAvailableOperatingSystemFamilies())
+                            ),
+                            'tags'         => $tagChoices,
+                        ],
+                        'error_bubbling' => false,
+                        'mapped'         => true,
+                        'allow_add'      => true,
+                        'allow_delete'   => true,
+                    ], $parameters[2]);
+                }
+
+                return $formBuilderInterfaceMock;
+            });
         $matcher = $this->exactly(3);
 
         $formBuilderInterfaceMock->expects($matcher)
             ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $formBuilderInterfaceMock) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
-                $callback = function ($listener) {
-                    $reflection = new \ReflectionFunction($listener);
-                    $parameters = $reflection->getParameters();
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
+                    $callback = function ($listener) {
+                        $reflection = new \ReflectionFunction($listener);
+                        $parameters = $reflection->getParameters();
 
-                    return FormEvent::class === (string) $parameters[0]->getType();
-                };
-                $this->assertTrue($callback($parameters[1]));
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
-                $callback = function ($listener) {
-                    $reflection = new \ReflectionFunction($listener);
-                    $parameters = $reflection->getParameters();
+                        return FormEvent::class === (string) $parameters[0]->getType();
+                    };
+                    $this->assertTrue($callback($parameters[1]));
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
+                    $callback = function ($listener) {
+                        $reflection = new \ReflectionFunction($listener);
+                        $parameters = $reflection->getParameters();
 
-                    return FormEvent::class === (string) $parameters[0]->getType();
-                };
-                $this->assertTrue($callback($parameters[1]));
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame(FormEvents::POST_SUBMIT, $parameters[0]);
-                $callback = function ($listener) {
-                    $reflection = new \ReflectionFunction($listener);
-                    $parameters = $reflection->getParameters();
+                        return FormEvent::class === (string) $parameters[0]->getType();
+                    };
+                    $this->assertTrue($callback($parameters[1]));
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame(FormEvents::POST_SUBMIT, $parameters[0]);
+                    $callback = function ($listener) {
+                        $reflection = new \ReflectionFunction($listener);
+                        $parameters = $reflection->getParameters();
 
-                    return FormEvent::class === (string) $parameters[0]->getType();
-                };
-                $this->assertTrue($callback($parameters[1]));
-            }
+                        return FormEvent::class === (string) $parameters[0]->getType();
+                    };
+                    $this->assertTrue($callback($parameters[1]));
+                }
 
-            return $formBuilderInterfaceMock;
-        });
+                return $formBuilderInterfaceMock;
+            });
 
         $formBuilderInterfaceMock->expects($this->once())
             ->method('get')

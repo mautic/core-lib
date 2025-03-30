@@ -73,14 +73,15 @@ class UserNotificationHelperTest extends TestCase
 
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mautic.integration.sync.user_notification.sync_error', $parameters[0]);
-            }
-            return 'test';
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.integration.sync.user_notification.sync_error', $parameters[0]);
+                }
+
+                return 'test';
+            });
 
         $this->writer->expects($this->once())
             ->method('writeUserNotification');
@@ -105,14 +106,15 @@ class UserNotificationHelperTest extends TestCase
 
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mautic.integration.sync.user_notification.sync_error', $parameters[0]);
-            }
-            return 'test';
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.integration.sync.user_notification.sync_error', $parameters[0]);
+                }
+
+                return 'test';
+            });
 
         $this->writer->expects($this->once())
             ->method('writeUserNotification');

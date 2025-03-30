@@ -252,19 +252,19 @@ class ReportGeneratorEventTest extends TestCase
 
         $this->queryBuilder->expects($matcher)
             ->method('leftJoin')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('l', $parameters[0]);
-                $this->assertSame(MAUTIC_TABLE_PREFIX.'companies_leads', $parameters[1]);
-                $this->assertSame('companies_lead', $parameters[2]);
-                $this->assertSame(ReportGeneratorEvent::CONTACT_PREFIX.'.id =companies_lead.lead_id', $parameters[3]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('companies_lead', $parameters[0]);
-                $this->assertSame(MAUTIC_TABLE_PREFIX.'companies', $parameters[1]);
-                $this->assertSame(ReportGeneratorEvent::COMPANY_PREFIX, $parameters[2]);
-                $this->assertSame('companies_lead.company_id = '.ReportGeneratorEvent::COMPANY_PREFIX.'.id', $parameters[3]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('l', $parameters[0]);
+                    $this->assertSame(MAUTIC_TABLE_PREFIX.'companies_leads', $parameters[1]);
+                    $this->assertSame('companies_lead', $parameters[2]);
+                    $this->assertSame(ReportGeneratorEvent::CONTACT_PREFIX.'.id =companies_lead.lead_id', $parameters[3]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('companies_lead', $parameters[0]);
+                    $this->assertSame(MAUTIC_TABLE_PREFIX.'companies', $parameters[1]);
+                    $this->assertSame(ReportGeneratorEvent::COMPANY_PREFIX, $parameters[2]);
+                    $this->assertSame('companies_lead.company_id = '.ReportGeneratorEvent::COMPANY_PREFIX.'.id', $parameters[3]);
+                }
+            });
         $this->reportGeneratorEvent->addCompanyLeftJoin($this->queryBuilder, ReportGeneratorEvent::COMPANY_PREFIX);
     }
 
@@ -314,17 +314,19 @@ class ReportGeneratorEventTest extends TestCase
             ->queryBuilder
             ->expects($matcher)
             ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $dateFormat) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('dateFrom', $parameters[0]);
-                $this->assertSame($this->reportGeneratorEvent->getOptions()['dateFrom']->format($dateFormat), $parameters[1]);
-                return $this->queryBuilder;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('dateTo', $parameters[0]);
-                $this->assertSame($this->reportGeneratorEvent->getOptions()['dateTo']->format($dateFormat), $parameters[1]);
-                return $this->queryBuilder;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('dateFrom', $parameters[0]);
+                    $this->assertSame($this->reportGeneratorEvent->getOptions()['dateFrom']->format($dateFormat), $parameters[1]);
+
+                    return $this->queryBuilder;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('dateTo', $parameters[0]);
+                    $this->assertSame($this->reportGeneratorEvent->getOptions()['dateTo']->format($dateFormat), $parameters[1]);
+
+                    return $this->queryBuilder;
+                }
+            });
 
         $this->reportGeneratorEvent->applyDateFilters($this->queryBuilder, $dateColumn, $tablePrefix, $dateOnly);
     }
@@ -366,17 +368,19 @@ class ReportGeneratorEventTest extends TestCase
             ->queryBuilder
             ->expects($matcher)
             ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $dateFormat) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('dateFrom', $parameters[0]);
-                $this->assertSame($this->reportGeneratorEvent->getOptions()['dateFrom']->format($dateFormat), $parameters[1]);
-                return $this->queryBuilder;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('dateTo', $parameters[0]);
-                $this->assertSame($this->reportGeneratorEvent->getOptions()['dateTo']->format($dateFormat), $parameters[1]);
-                return $this->queryBuilder;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('dateFrom', $parameters[0]);
+                    $this->assertSame($this->reportGeneratorEvent->getOptions()['dateFrom']->format($dateFormat), $parameters[1]);
+
+                    return $this->queryBuilder;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('dateTo', $parameters[0]);
+                    $this->assertSame($this->reportGeneratorEvent->getOptions()['dateTo']->format($dateFormat), $parameters[1]);
+
+                    return $this->queryBuilder;
+                }
+            });
 
         $this->reportGeneratorEvent->applyDateFiltersWithoutNullValues($this->queryBuilder, $dateColumn, $tablePrefix, $dateOnly);
     }

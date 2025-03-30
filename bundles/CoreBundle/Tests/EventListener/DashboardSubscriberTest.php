@@ -226,30 +226,35 @@ class DashboardSubscriberTest extends TestCase
 
         $route           = $this->createMock(Route::class);
         $routeCollection = $this->createMock(RouteCollection::class);
-        $matcher = self::exactly(5);
+        $matcher         = self::exactly(5);
         $routeCollection->expects($matcher) // no null object and  exception object
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $route) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic_model_action', $parameters[0]);
-                return null;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mautic_model_action', $parameters[0]);
-                return $route;
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame('mautic_item_action', $parameters[0]);
-                return $route;
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertSame('mautic_lead_action', $parameters[0]);
-                return $route;
-            }
-            if ($matcher->getInvocationCount() === 5) {
-                $this->assertSame('mautic_lead_action', $parameters[0]);
-                return null;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_model_action', $parameters[0]);
+
+                    return null;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_model_action', $parameters[0]);
+
+                    return $route;
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_item_action', $parameters[0]);
+
+                    return $route;
+                }
+                if (4 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_lead_action', $parameters[0]);
+
+                    return $route;
+                }
+                if (5 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_lead_action', $parameters[0]);
+
+                    return null;
+                }
+            });
 
         $this->router->expects(self::exactly(5))
             ->method('getRouteCollection')

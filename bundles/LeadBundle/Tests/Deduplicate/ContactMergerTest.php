@@ -461,17 +461,20 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(3);
         $winner->expects($matcher)
             ->method('getFieldValue')
-            ->willReturnCallback(function($parameter) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+            ->willReturnCallback(function ($parameter) use ($matcher) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame('email', $parameter);
+
                     return 'winner@test.com';
                 }
-                if ($matcher->getInvocationCount() === 2) {
+                if (2 === $matcher->getInvocationCount()) {
                     $this->assertSame('consent', $parameter);
+
                     return 'Yes';
                 }
-                if ($matcher->getInvocationCount() === 3) {
+                if (3 === $matcher->getInvocationCount()) {
                     $this->assertSame('boolean', $parameter);
+
                     return 1;
                 }
             });
@@ -479,9 +482,10 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
         $matcher2 = $this->exactly(3);
         $winner->expects($matcher2)
             ->method('getField')
-            ->willReturnCallback(function($parameter) use ($matcher2) {
-                if ($matcher2->getInvocationCount() === 1) {
+            ->willReturnCallback(function ($parameter) use ($matcher2) {
+                if (1 === $matcher2->getInvocationCount()) {
                     $this->assertSame('email', $parameter);
+
                     return [
                         'id'            => 22,
                         'label'         => 'Email',
@@ -493,8 +497,9 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
                         'default_value' => null,
                     ];
                 }
-                if ($matcher2->getInvocationCount() === 2) {
+                if (2 === $matcher2->getInvocationCount()) {
                     $this->assertSame('consent', $parameter);
+
                     return [
                         'id'            => 44,
                         'label'         => 'Email Consent',
@@ -506,8 +511,9 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
                         'default_value' => 'No',
                     ];
                 }
-                if ($matcher2->getInvocationCount() === 3) {
+                if (3 === $matcher2->getInvocationCount()) {
                     $this->assertSame('boolean', $parameter);
+
                     return [
                         'id'            => 45,
                         'label'         => 'Boolean Field',
@@ -524,19 +530,19 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
 
         $winner->expects($matcher3)
             ->method('addUpdatedField')->willReturnCallback(function (...$parameters) use ($matcher3) {
-            if ($matcher3->getInvocationCount() === 1) {
-                $this->assertSame('email', $parameters[0]);
-                $this->assertSame('winner@test.com', $parameters[1]);
-            }
-            if ($matcher3->getInvocationCount() === 2) {
-                $this->assertSame('consent', $parameters[0]);
-                $this->assertSame('Yes', $parameters[1]);
-            }
-            if ($matcher3->getInvocationCount() === 3) {
-                $this->assertSame('boolean', $parameters[0]);
-                $this->assertSame(1, $parameters[1]);
-            }
-        });
+                if (1 === $matcher3->getInvocationCount()) {
+                    $this->assertSame('email', $parameters[0]);
+                    $this->assertSame('winner@test.com', $parameters[1]);
+                }
+                if (2 === $matcher3->getInvocationCount()) {
+                    $this->assertSame('consent', $parameters[0]);
+                    $this->assertSame('Yes', $parameters[1]);
+                }
+                if (3 === $matcher3->getInvocationCount()) {
+                    $this->assertSame('boolean', $parameters[0]);
+                    $this->assertSame(1, $parameters[1]);
+                }
+            });
 
         $merger->mergeFieldData($winner, $loser);
     }

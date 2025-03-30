@@ -593,15 +593,17 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->entityManagerMock->expects($matcher)
             ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher, $stagesChangeLogRepo, $stageRepositoryMock) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(StagesChangeLog::class, $parameters[0]);
-                return $stagesChangeLogRepo;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(Stage::class, $parameters[0]);
-                return $stageRepositoryMock;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(StagesChangeLog::class, $parameters[0]);
+
+                    return $stagesChangeLogRepo;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Stage::class, $parameters[0]);
+
+                    return $stageRepositoryMock;
+                }
+            });
 
         $this->translator->expects($this->once())
             ->method('trans')
@@ -631,15 +633,17 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $this->entityManagerMock->expects($matcher)
             ->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher, $stagesChangeLogRepo, $stageRepositoryMock) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(StagesChangeLog::class, $parameters[0]);
-                return $stagesChangeLogRepo;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(Stage::class, $parameters[0]);
-                return $stageRepositoryMock;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(StagesChangeLog::class, $parameters[0]);
+
+                    return $stagesChangeLogRepo;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Stage::class, $parameters[0]);
+
+                    return $stageRepositoryMock;
+                }
+            });
 
         $this->translator->expects($this->once())
             ->method('trans')

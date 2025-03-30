@@ -105,17 +105,19 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return $trackingId;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($trackingId, $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return null;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_session_id', $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return $trackingId;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($trackingId, $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return null;
+                }
+            });
 
         $requestMock->expects($this->once())
             ->method('get')
@@ -142,17 +144,19 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return $trackingId;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($trackingId, $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return null;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_session_id', $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return $trackingId;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($trackingId, $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return null;
+                }
+            });
 
         $requestMock->expects($this->once())
             ->method('get')
@@ -185,17 +189,19 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return $trackingId;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($trackingId, $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return null;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_session_id', $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return $trackingId;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($trackingId, $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return null;
+                }
+            });
 
         $requestMock->expects($this->once())
             ->method('get')
@@ -233,17 +239,19 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return $trackingId;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($trackingId, $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return null;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_session_id', $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return $trackingId;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($trackingId, $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return null;
+                }
+            });
 
         $requestMock->expects($this->once())
             ->method('get')
@@ -281,17 +289,19 @@ final class ContactTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)
             ->method('getCookie')->willReturnCallback(function (...$parameters) use ($matcher, $trackingId, $leadId) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic_session_id', $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return $trackingId;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($trackingId, $parameters[0]);
-                $this->assertNull($parameters[1]);
-                return $leadId;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic_session_id', $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return $trackingId;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($trackingId, $parameters[0]);
+                    $this->assertNull($parameters[1]);
+
+                    return $leadId;
+                }
+            });
 
         $this->leadRepositoryMock->expects($this->once())
             ->method('getEntity')

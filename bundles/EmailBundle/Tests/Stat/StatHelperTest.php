@@ -23,7 +23,7 @@ class StatHelperTest extends \PHPUnit\Framework\TestCase
         $mockStatRepository->expects($matcher)
             ->method('deleteStats')
             ->willReturnCallback(function (...$parameters) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame(['1', '2', '3', '4', '5'], $parameters[0]);
                 }
             });

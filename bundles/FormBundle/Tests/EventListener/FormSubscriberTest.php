@@ -430,18 +430,18 @@ New line',
 
         $this->mailer->expects($matcher)
             ->method('setTo')->willReturnCallback(function (...$parameters) use ($matcher, $to, $leadEmail, $ownerEmail) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame([$to => null], $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame([$leadEmail => null], $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame([$ownerEmail => null], $parameters[0]);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame([$to => null], $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame([$leadEmail => null], $parameters[0]);
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame([$ownerEmail => null], $parameters[0]);
+                }
 
-            return true;
-        });
+                return true;
+            });
         $this->mailer->expects(self::once())
             ->method('setCc')
             ->with(array_fill_keys(array_map('trim', explode(',', $cc)), null));

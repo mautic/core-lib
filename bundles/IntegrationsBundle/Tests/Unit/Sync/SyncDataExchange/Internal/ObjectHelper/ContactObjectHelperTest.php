@@ -236,15 +236,15 @@ class ContactObjectHelperTest extends TestCase
 
         $contact1->expects($matcher)
             ->method('addUpdatedField')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('email', $parameters[0]);
-                $this->assertSame('john@doe.com', $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(MauticSyncDataExchange::OBJECT_COMPANY, $parameters[0]);
-                $this->assertSame('Company A', $parameters[1]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('email', $parameters[0]);
+                    $this->assertSame('john@doe.com', $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(MauticSyncDataExchange::OBJECT_COMPANY, $parameters[0]);
+                    $this->assertSame('Company A', $parameters[1]);
+                }
+            });
 
         $objectMappings = $this->getObjectHelper()->update([3, 4], $objects);
 

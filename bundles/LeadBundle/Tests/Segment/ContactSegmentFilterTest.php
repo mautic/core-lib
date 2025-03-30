@@ -142,16 +142,18 @@ class ContactSegmentFilterTest extends TestCase
 
     public function testIsContactSegmentReference(): void
     {
-        $filter = $this->createContactSegmentFilter();
+        $filter  = $this->createContactSegmentFilter();
         $matcher = $this->exactly(2);
 
         $this->filterDecorator->expects($matcher)->method('getField')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
+            if (1 === $matcher->getInvocationCount()) {
                 $this->assertSame($this->contactSegmentFilterCrate, $parameters[0]);
+
                 return 'leadlist';
             }
-            if ($matcher->getInvocationCount() === 2) {
+            if (2 === $matcher->getInvocationCount()) {
                 $this->assertSame($this->contactSegmentFilterCrate, $parameters[0]);
+
                 return 'something';
             }
         });

@@ -111,15 +111,17 @@ class ApiSubscriberTest extends CommonMocks
 
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('api_enabled', $parameters[0]);
-                return true;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('api_enable_basic_auth', $parameters[0]);
-                return true;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('api_enabled', $parameters[0]);
+
+                    return true;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('api_enable_basic_auth', $parameters[0]);
+
+                    return true;
+                }
+            });
 
         $this->subscriber->onKernelRequest($this->event);
     }

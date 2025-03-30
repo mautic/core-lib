@@ -202,27 +202,29 @@ class LeadSubscriberTest extends CommonMocks
 
         $leadEvent = new LeadTimelineEvent($lead);
         $repo      = $this->createMock(LeadEventLogRepository::class);
-        $matcher = $this->exactly(2);
+        $matcher   = $this->exactly(2);
 
         $repo->expects($matcher)
             ->method('getEvents')->willReturnCallback(function (...$parameters) use ($matcher, $lead, $leadEvent, $logs) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($lead, $parameters[0]);
-                $this->assertSame('lead', $parameters[1]);
-                $this->assertSame('api-single', $parameters[2]);
-                $this->assertNull($parameters[3]);
-                $this->assertSame($leadEvent->getQueryOptions(), $parameters[4]);
-                return $logs;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($lead, $parameters[0]);
-                $this->assertSame('lead', $parameters[1]);
-                $this->assertSame('api-batch', $parameters[2]);
-                $this->assertNull($parameters[3]);
-                $this->assertSame($leadEvent->getQueryOptions(), $parameters[4]);
-                return ['total' => 0, 'results' => []];
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($lead, $parameters[0]);
+                    $this->assertSame('lead', $parameters[1]);
+                    $this->assertSame('api-single', $parameters[2]);
+                    $this->assertNull($parameters[3]);
+                    $this->assertSame($leadEvent->getQueryOptions(), $parameters[4]);
+
+                    return $logs;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($lead, $parameters[0]);
+                    $this->assertSame('lead', $parameters[1]);
+                    $this->assertSame('api-batch', $parameters[2]);
+                    $this->assertNull($parameters[3]);
+                    $this->assertSame($leadEvent->getQueryOptions(), $parameters[4]);
+
+                    return ['total' => 0, 'results' => []];
+                }
+            });
 
         $this->entityManager->method('getRepository')
             ->with(LeadEventLog::class)
@@ -275,60 +277,60 @@ class LeadSubscriberTest extends CommonMocks
         // This method will be called exactly once per set of changes
         $this->auditLogModel->expects($matcher)
             ->method('writeToLog')->willReturnCallback(function (...$parameters) use ($matcher, $lead, $lead2, $lead3) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame([
-                    'bundle'    => 'lead',
-                    'object'    => 'lead',
-                    'objectId'  => $lead->getId(),
-                    'action'    => 'update',
-                    'details'   => [
-                        'title'     => [null, 'Mr'],
-                        'fields'    => [
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame([
+                        'bundle'    => 'lead',
+                        'object'    => 'lead',
+                        'objectId'  => $lead->getId(),
+                        'action'    => 'update',
+                        'details'   => [
                             'title'     => [null, 'Mr'],
+                            'fields'    => [
+                                'title'     => [null, 'Mr'],
+                                'firstname' => [null, 'John'],
+                                'lastname'  => [null, 'Doe'],
+                            ],
                             'firstname' => [null, 'John'],
                             'lastname'  => [null, 'Doe'],
                         ],
-                        'firstname' => [null, 'John'],
-                        'lastname'  => [null, 'Doe'],
-                    ],
-                    'ipAddress' => null,
-                ], $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame([
-                    'bundle'    => 'lead',
-                    'object'    => 'lead',
-                    'objectId'  => $lead2->getId(),
-                    'action'    => 'update',
-                    'details'   => [
-                        'title'     => [null, 'Mrs'],
-                        'fields'    => [
+                        'ipAddress' => null,
+                    ], $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame([
+                        'bundle'    => 'lead',
+                        'object'    => 'lead',
+                        'objectId'  => $lead2->getId(),
+                        'action'    => 'update',
+                        'details'   => [
                             'title'     => [null, 'Mrs'],
+                            'fields'    => [
+                                'title'     => [null, 'Mrs'],
+                                'firstname' => [null, 'Jane'],
+                                'lastname'  => [null, 'Doe'],
+                            ],
                             'firstname' => [null, 'Jane'],
                             'lastname'  => [null, 'Doe'],
                         ],
-                        'firstname' => [null, 'Jane'],
-                        'lastname'  => [null, 'Doe'],
-                    ],
-                    'ipAddress' => null,
-                ], $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame([
-                    'bundle'    => 'lead',
-                    'object'    => 'lead',
-                    'objectId'  => $lead3->getId(),
-                    'action'    => 'update',
-                    'details'   => [
-                        'lastname' => [null, 'Somebody'],
-                        'fields'   => [
+                        'ipAddress' => null,
+                    ], $parameters[0]);
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame([
+                        'bundle'    => 'lead',
+                        'object'    => 'lead',
+                        'objectId'  => $lead3->getId(),
+                        'action'    => 'update',
+                        'details'   => [
                             'lastname' => [null, 'Somebody'],
+                            'fields'   => [
+                                'lastname' => [null, 'Somebody'],
+                            ],
                         ],
-                    ],
-                    'ipAddress' => null,
-                ], $parameters[0]);
-            }
-        });
+                        'ipAddress' => null,
+                    ], $parameters[0]);
+                }
+            });
 
         $subscriber = new LeadSubscriber(
             $this->ipLookupHelper,

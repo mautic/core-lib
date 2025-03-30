@@ -77,14 +77,15 @@ class DeleteFormTest extends \PHPUnit\Framework\TestCase
 
         $dispatcher->expects($matcher)
             ->method('hasListeners')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.form_pre_delete', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mautic.form_post_delete', $parameters[0]);
-            }
-            return false;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.form_pre_delete', $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.form_post_delete', $parameters[0]);
+                }
+
+                return false;
+            });
 
         $entityManager->expects($this->once())
             ->method('getRepository')

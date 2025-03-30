@@ -67,17 +67,19 @@ class UserSummaryNotificationHelperTest extends TestCase
 
         $this->ownerProvider->expects($matcher)
             ->method('getOwnersForObjectIds')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(Contact::NAME, $parameters[0]);
-                $this->assertSame([1 => 1], $parameters[1]);
-                return [['owner_id' => 1, 'id' => 1]];
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(Contact::NAME, $parameters[0]);
-                $this->assertSame([2 => 2], $parameters[1]);
-                return [['owner_id' => 2, 'id' => 2]];
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Contact::NAME, $parameters[0]);
+                    $this->assertSame([1 => 1], $parameters[1]);
+
+                    return [['owner_id' => 1, 'id' => 1]];
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Contact::NAME, $parameters[0]);
+                    $this->assertSame([2 => 2], $parameters[1]);
+
+                    return [['owner_id' => 2, 'id' => 2]];
+                }
+            });
 
         $this->userHelper->expects($this->never())
             ->method('getAdminUsers');
@@ -85,20 +87,21 @@ class UserSummaryNotificationHelperTest extends TestCase
 
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('test', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertSame('test', $parameters[0]);
-            }
-            return 'test';
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('test', $parameters[0]);
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
+                }
+                if (4 === $matcher->getInvocationCount()) {
+                    $this->assertSame('test', $parameters[0]);
+                }
+
+                return 'test';
+            });
 
         $this->writer->expects($this->exactly(2))
             ->method('writeUserNotification');
@@ -117,17 +120,19 @@ class UserSummaryNotificationHelperTest extends TestCase
 
         $this->ownerProvider->expects($matcher)
             ->method('getOwnersForObjectIds')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(Contact::NAME, $parameters[0]);
-                $this->assertSame([1 => 1], $parameters[1]);
-                return [];
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(Contact::NAME, $parameters[0]);
-                $this->assertSame([2 => 2], $parameters[1]);
-                return [];
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Contact::NAME, $parameters[0]);
+                    $this->assertSame([1 => 1], $parameters[1]);
+
+                    return [];
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Contact::NAME, $parameters[0]);
+                    $this->assertSame([2 => 2], $parameters[1]);
+
+                    return [];
+                }
+            });
 
         $this->userHelper->expects($this->exactly(2))
             ->method('getAdminUsers')
@@ -136,20 +141,21 @@ class UserSummaryNotificationHelperTest extends TestCase
 
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('test', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertSame('test', $parameters[0]);
-            }
-            return 'test';
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('test', $parameters[0]);
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
+                }
+                if (4 === $matcher->getInvocationCount()) {
+                    $this->assertSame('test', $parameters[0]);
+                }
+
+                return 'test';
+            });
 
         $this->writer->expects($this->exactly(2))
             ->method('writeUserNotification');

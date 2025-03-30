@@ -150,24 +150,24 @@ class FrequencyActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->contactMock5->expects($matcher)
             ->method('addFrequencyRule')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertEquals($this->frequencyRuleEmailMock, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertEquals($this->frequencyRuleEmailMock, $parameters[0]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertEquals($this->frequencyRuleEmailMock, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertEquals($this->frequencyRuleEmailMock, $parameters[0]);
+                }
+            });
         $matcher = $this->exactly(2);
 
         $this->frequencyRepoMock->expects($matcher)
             ->method('saveEntity')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->frequencyRuleEmailMock, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->frequencyRuleSmsMock, $parameters[0]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->frequencyRuleEmailMock, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->frequencyRuleSmsMock, $parameters[0]);
+                }
+            });
 
         $this->frequencyRuleSmsMock->expects($this->once())
             ->method('setChannel')

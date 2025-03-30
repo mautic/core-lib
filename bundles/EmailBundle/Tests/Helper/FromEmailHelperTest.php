@@ -176,19 +176,22 @@ class FromEmailHelperTest extends TestCase
         $matcher = $this->exactly(3);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mailer_is_owner', $parameters[0]);
-                return false;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mailer_from_email', $parameters[0]);
-                return 'default@somewhere.com';
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame('mailer_from_name', $parameters[0]);
-                return 'Default';
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_is_owner', $parameters[0]);
+
+                    return false;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_from_email', $parameters[0]);
+
+                    return 'default@somewhere.com';
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_from_name', $parameters[0]);
+
+                    return 'Default';
+                }
+            });
 
         $this->leadRepository->expects($this->never())
             ->method('getLeadOwner');
@@ -261,15 +264,17 @@ class FromEmailHelperTest extends TestCase
 
         $this->leadRepository->expects($matcher)
             ->method('getLeadOwner')->willReturnCallback(function (...$parameters) use ($matcher, $users) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(1, $parameters[0]);
-                return $users[0];
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(2, $parameters[0]);
-                return $users[1];
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(1, $parameters[0]);
+
+                    return $users[0];
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(2, $parameters[0]);
+
+                    return $users[1];
+                }
+            });
 
         $helper = $this->getHelper();
         foreach ($contacts as $key => $contact) {
@@ -336,15 +341,17 @@ class FromEmailHelperTest extends TestCase
         $matcher = $this->exactly(2);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mailer_from_email', $parameters[0]);
-                return 'default@somewhere.com';
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mailer_from_name', $parameters[0]);
-                return 'Default';
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_from_email', $parameters[0]);
+
+                    return 'default@somewhere.com';
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_from_name', $parameters[0]);
+
+                    return 'Default';
+                }
+            });
 
         $this->leadRepository->expects($this->never())
             ->method('getLeadOwner');
@@ -365,15 +372,17 @@ class FromEmailHelperTest extends TestCase
         $matcher = $this->exactly(2);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mailer_from_email', $parameters[0]);
-                return 'default@somewhere.com';
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mailer_from_name', $parameters[0]);
-                return 'Default';
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_from_email', $parameters[0]);
+
+                    return 'default@somewhere.com';
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_from_name', $parameters[0]);
+
+                    return 'Default';
+                }
+            });
 
         $this->leadRepository->expects($this->never())
             ->method('getLeadOwner');
@@ -437,15 +446,17 @@ class FromEmailHelperTest extends TestCase
         $matcher = $this->exactly(2);
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mailer_from_email', $parameters[0]);
-                return 'default@somewhere.com';
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mailer_from_name', $parameters[0]);
-                return 'Default Name';
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_from_email', $parameters[0]);
+
+                    return 'default@somewhere.com';
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_from_name', $parameters[0]);
+
+                    return 'Default Name';
+                }
+            });
 
         $this->leadRepository->expects($this->never())
             ->method('getLeadOwner');
@@ -699,15 +710,17 @@ class FromEmailHelperTest extends TestCase
 
         $this->leadRepository->expects($matcher)
             ->method('getLeadOwner')->willReturnCallback(function (...$parameters) use ($matcher, $user, $user2) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(1, $parameters[0]);
-                return $user;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(2, $parameters[0]);
-                return $user2;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(1, $parameters[0]);
+
+                    return $user;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(2, $parameters[0]);
+
+                    return $user2;
+                }
+            });
 
         $helper = $this->getHelper();
         $helper->getFromAddressConsideringOwner(

@@ -100,25 +100,25 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (object $event, string $eventName) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
-                $this->assertSame('something', $eventName);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated  
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertInstanceOf(ExecutedEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertInstanceOf(ExecutedBatchEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
+                    $this->assertSame('something', $eventName);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(ExecutedEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
+                }
+                if (4 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(ExecutedBatchEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
+                }
 
-            return $event;
-        });
+                return $event;
+            });
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, false, $this->pendingEvent);
     }
@@ -149,21 +149,21 @@ class LegacyEventDispatcherTest extends TestCase
         // Legacy execution event should dispatch
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (object $event, string $eventName) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated  
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertInstanceOf(ExecutedEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertInstanceOf(ExecutedBatchEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(ExecutedEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(ExecutedBatchEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
+                }
 
-            return $event;
-        });
+                return $event;
+            });
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, false, $this->pendingEvent);
     }
@@ -196,25 +196,26 @@ class LegacyEventDispatcherTest extends TestCase
         // Legacy custom event should dispatch
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (object $event, string $eventName) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
-                $this->assertSame('something', $eventName);
-                $event->setResult(['foo' => 'bar']);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated  
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertInstanceOf(ExecutedEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertInstanceOf(ExecutedBatchEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
-            }
-            return $event;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
+                    $this->assertSame('something', $eventName);
+                    $event->setResult(['foo' => 'bar']);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(ExecutedEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
+                }
+                if (4 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(ExecutedBatchEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
+                }
+
+                return $event;
+            });
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, false, $this->pendingEvent);
 
@@ -250,21 +251,22 @@ class LegacyEventDispatcherTest extends TestCase
         // Legacy custom event should dispatch
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (object $event, string $eventName) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
-                $this->assertSame('something', $eventName);
-                $event->setResult(false);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated  
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertInstanceOf(FailedEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $eventName);
-            }
-            return $event;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
+                    $this->assertSame('something', $eventName);
+                    $event->setResult(false);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(FailedEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $eventName);
+                }
+
+                return $event;
+            });
 
         $this->scheduler->expects($this->once())
             ->method('rescheduleFailures');
@@ -299,22 +301,22 @@ class LegacyEventDispatcherTest extends TestCase
         // Legacy custom event should dispatch
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (object $event, string $eventName) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
-                $this->assertSame('something', $eventName);
-                $event->setResult(['result' => false, 'foo' => 'bar']);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated  
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertInstanceOf(FailedEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $eventName);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
+                    $this->assertSame('something', $eventName);
+                    $event->setResult(['result' => false, 'foo' => 'bar']);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_EXECUTION, $eventName); // @phpstan-ignore-line classConstant.deprecated
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(FailedEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $eventName);
+                }
 
-            return $event;
-        });
+                return $event;
+            });
 
         $this->scheduler->expects($this->once())
             ->method('rescheduleFailures');
@@ -350,11 +352,12 @@ class LegacyEventDispatcherTest extends TestCase
         // Legacy custom event should dispatch
         $this->dispatcher->expects($matcher)->method('dispatch')
             ->willReturnCallback(function (object $event, string $eventName) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
                     $this->assertSame('something', $eventName);
                     $event->setResult(['failed' => 1, 'reason' => 'because']);
                 }
+
                 return $event;
             });
 
@@ -391,11 +394,12 @@ class LegacyEventDispatcherTest extends TestCase
         // Should pass
         $this->dispatcher->expects($matcher)->method('dispatch')
             ->willReturnCallback(function (object $event, string $eventName) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertInstanceOf(CampaignExecutionEvent::class, $event);
                     $this->assertSame('something', $eventName);
                     $event->setResult(true);
                 }
+
                 return $event;
             });
 
@@ -431,9 +435,10 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->dispatcher->expects($matcher)->method('dispatch')
             ->willReturnCallback(function (...$parameters) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertInstanceof(CampaignExecutionEvent::class, $parameters[0]);
                     $this->assertSame('something', $parameters[1]);
+
                     return $this->returnCallback(
                         fn (CampaignExecutionEvent $event) => $event->setResult(true)
                     );

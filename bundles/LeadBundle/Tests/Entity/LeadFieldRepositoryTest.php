@@ -82,15 +82,15 @@ final class LeadFieldRepositoryTest extends TestCase
 
         $exprCompare->expects($matcher)
             ->method('eq')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('l.id', $parameters[0]);
-                $this->assertSame(':lead', $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('l.date_field', $parameters[0]);
-                $this->assertSame(':value', $parameters[1]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('l.id', $parameters[0]);
+                    $this->assertSame(':lead', $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('l.date_field', $parameters[0]);
+                    $this->assertSame(':value', $parameters[1]);
+                }
+            });
 
         $builderCompare->expects($this->once())
             ->method('select')
@@ -109,16 +109,17 @@ final class LeadFieldRepositoryTest extends TestCase
 
         $builderCompare->expects($matcher)
             ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $contactId, $value, $builderCompare) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('lead', $parameters[0]);
-                $this->assertSame($contactId, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('value', $parameters[0]);
-                $this->assertSame($value, $parameters[1]);
-            }
-            return $builderCompare;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead', $parameters[0]);
+                    $this->assertSame($contactId, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('value', $parameters[0]);
+                    $this->assertSame($value, $parameters[1]);
+                }
+
+                return $builderCompare;
+            });
 
         $builderCompare->expects($this->once())
             ->method('executeQuery')
@@ -187,32 +188,32 @@ final class LeadFieldRepositoryTest extends TestCase
 
         $exprCompare->expects($matcher)
             ->method('eq')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('l.id', $parameters[0]);
-                $this->assertSame(':lead', $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('company.date_field', $parameters[0]);
-                $this->assertSame(':value', $parameters[1]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('l.id', $parameters[0]);
+                    $this->assertSame(':lead', $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('company.date_field', $parameters[0]);
+                    $this->assertSame(':value', $parameters[1]);
+                }
+            });
         $matcher = $this->exactly(2);
 
         $builderCompare->expects($matcher)
             ->method('leftJoin')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('l', $parameters[0]);
-                $this->assertSame(MAUTIC_TABLE_PREFIX.'companies_leads', $parameters[1]);
-                $this->assertSame('companies_lead', $parameters[2]);
-                $this->assertSame('l.id = companies_lead.lead_id', $parameters[3]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('companies_lead', $parameters[0]);
-                $this->assertSame(MAUTIC_TABLE_PREFIX.'companies', $parameters[1]);
-                $this->assertSame('company', $parameters[2]);
-                $this->assertSame('companies_lead.company_id = company.id', $parameters[3]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('l', $parameters[0]);
+                    $this->assertSame(MAUTIC_TABLE_PREFIX.'companies_leads', $parameters[1]);
+                    $this->assertSame('companies_lead', $parameters[2]);
+                    $this->assertSame('l.id = companies_lead.lead_id', $parameters[3]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('companies_lead', $parameters[0]);
+                    $this->assertSame(MAUTIC_TABLE_PREFIX.'companies', $parameters[1]);
+                    $this->assertSame('company', $parameters[2]);
+                    $this->assertSame('companies_lead.company_id = company.id', $parameters[3]);
+                }
+            });
 
         $builderCompare->expects($this->once())
             ->method('select')
@@ -231,16 +232,17 @@ final class LeadFieldRepositoryTest extends TestCase
 
         $builderCompare->expects($matcher)
             ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $contactId, $value, $builderCompare) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('lead', $parameters[0]);
-                $this->assertSame($contactId, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('value', $parameters[0]);
-                $this->assertSame($value, $parameters[1]);
-            }
-            return $builderCompare;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead', $parameters[0]);
+                    $this->assertSame($contactId, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('value', $parameters[0]);
+                    $this->assertSame($value, $parameters[1]);
+                }
+
+                return $builderCompare;
+            });
 
         $builderCompare->expects($this->once())
             ->method('executeQuery')

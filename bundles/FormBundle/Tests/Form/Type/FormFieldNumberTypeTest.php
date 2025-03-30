@@ -43,33 +43,33 @@ final class FormFieldNumberTypeTest extends TypeTestCase
 
         $this->formBuilder->expects($matcher)
             ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('placeholder', $parameters[0]);
-                $this->assertSame(TextType::class, $parameters[1]);
-                $this->assertSame([
-                    'label'      => 'mautic.form.field.form.property_placeholder',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => ['class' => 'form-control'],
-                    'required'   => false,
-                ], $parameters[2]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('precision', $parameters[0]);
-                $this->assertSame(IntegerType::class, $parameters[1]);
-                $this->assertSame([
-                    'label'      => 'mautic.form.field.form.number_precision',
-                    'label_attr' => ['class' => 'control-label'],
-                    'data'       => 0,
-                    'attr'       => [
-                        'class'   => 'form-control',
-                        'tooltip' => 'mautic.form.field.form.number_precision.tooltip',
-                    ],
-                    'required'   => false,
-                ], $parameters[2]);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('placeholder', $parameters[0]);
+                    $this->assertSame(TextType::class, $parameters[1]);
+                    $this->assertSame([
+                        'label'      => 'mautic.form.field.form.property_placeholder',
+                        'label_attr' => ['class' => 'control-label'],
+                        'attr'       => ['class' => 'form-control'],
+                        'required'   => false,
+                    ], $parameters[2]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('precision', $parameters[0]);
+                    $this->assertSame(IntegerType::class, $parameters[1]);
+                    $this->assertSame([
+                        'label'      => 'mautic.form.field.form.number_precision',
+                        'label_attr' => ['class' => 'control-label'],
+                        'data'       => 0,
+                        'attr'       => [
+                            'class'   => 'form-control',
+                            'tooltip' => 'mautic.form.field.form.number_precision.tooltip',
+                        ],
+                        'required'   => false,
+                    ], $parameters[2]);
+                }
 
-            return $this->formBuilder;
-        });
+                return $this->formBuilder;
+            });
 
         $this->form->buildForm($this->formBuilder, $options);
     }

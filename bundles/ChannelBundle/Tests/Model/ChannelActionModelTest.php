@@ -55,14 +55,15 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->contactModelMock->expects($matcher)
             ->method('canEditContact')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->contactMock5, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->contactMock6, $parameters[0]);
-            }
-            return false;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock5, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock6, $parameters[0]);
+                }
+
+                return false;
+            });
 
         $this->contactModelMock->expects($this->never())
             ->method('getContactChannels');
@@ -179,17 +180,17 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->doNotContactMock->expects($matcher)
             ->method('addDncForContact')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(5, $parameters[0]);
-                $this->assertSame('email', $parameters[1]);
-                $this->assertSame(DNC::MANUAL, $parameters[2]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(5, $parameters[0]);
-                $this->assertSame('sms', $parameters[1]);
-                $this->assertSame(DNC::MANUAL, $parameters[2]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(5, $parameters[0]);
+                    $this->assertSame('email', $parameters[1]);
+                    $this->assertSame(DNC::MANUAL, $parameters[2]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(5, $parameters[0]);
+                    $this->assertSame('sms', $parameters[1]);
+                    $this->assertSame(DNC::MANUAL, $parameters[2]);
+                }
+            });
 
         $this->actionModel->update($contacts, $subscribedChannels);
     }

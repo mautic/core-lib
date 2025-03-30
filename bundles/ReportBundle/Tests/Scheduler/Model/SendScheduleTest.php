@@ -123,10 +123,10 @@ class SendScheduleTest extends \PHPUnit\Framework\TestCase
         $this->fileHandler->expects($matcher)
             ->method('fileCanBeAttached')
             ->with($this->callback(function ($arg) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame('/path/to/report.csv', $arg);
                 }
-                if ($matcher->getInvocationCount() === 2) {
+                if (2 === $matcher->getInvocationCount()) {
                     $this->assertSame('/path/to/report.zip', $arg);
                 }
 
@@ -192,10 +192,10 @@ class SendScheduleTest extends \PHPUnit\Framework\TestCase
         $this->fileHandler->expects($matcher)
             ->method('fileCanBeAttached')
             ->with($this->callback(function ($arg) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame('path-to-a-file', $arg);
                 }
-                if ($matcher->getInvocationCount() === 2) {
+                if (2 === $matcher->getInvocationCount()) {
                     $this->assertSame('path-to-a-zip-file', $arg);
                 }
 

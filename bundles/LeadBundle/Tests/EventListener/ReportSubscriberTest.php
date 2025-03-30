@@ -365,7 +365,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportBuilderEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
-                    if ($matcher->getInvocationCount() === 1) {
+                    if (1 === $matcher->getInvocationCount()) {
                         $this->assertSame([
                             'leads',
                             'lead.pointlog',
@@ -375,6 +375,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                             'contact.frequencyrules',
                         ], $parameters[0]);
                     }
+
                     return false;
                 }
             );
@@ -389,7 +390,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $matcher = $this->exactly(2);
         $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
+            if (1 === $matcher->getInvocationCount()) {
                 $this->assertSame([
                     'leads',
                     'lead.pointlog',
@@ -399,9 +400,10 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                     'contact.frequencyrules',
                 ], $parameters[0]);
             }
-            if ($matcher->getInvocationCount() === 2) {
+            if (2 === $matcher->getInvocationCount()) {
                 $this->assertSame(['companies'], $parameters[0]);
             }
+
             return false;
         });
 
@@ -893,7 +895,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
-                    if ($matcher->getInvocationCount() === 1) {
+                    if (1 === $matcher->getInvocationCount()) {
                         $this->assertSame([
                             'leads',
                             'lead.pointlog',
@@ -903,6 +905,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                             'contact.frequencyrules',
                         ], $parameters[0]);
                     }
+
                     return true;
                 }
             );

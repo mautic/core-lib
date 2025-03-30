@@ -258,12 +258,13 @@ class ReportDevicesSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $queryBuilderMock->expects($matcher)->method('leftJoin')
             ->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilderMock) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame('dev', $parameters[0]);
                     $this->assertSame(MAUTIC_TABLE_PREFIX.'leads', $parameters[1]);
                     $this->assertSame('l', $parameters[2]);
                     $this->assertSame('l.id = dev.lead_id', $parameters[3]);
                 }
+
                 return $queryBuilderMock;
             });
 

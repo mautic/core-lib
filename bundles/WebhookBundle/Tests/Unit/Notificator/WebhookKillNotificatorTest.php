@@ -146,16 +146,18 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
 
         $this->entityManagerMock->expects($matcher)
             ->method('getReference')->willReturnCallback(function (string $entityClass, string|int $entityId) use ($matcher, $modifier) {
-            $this->assertSame(User::class, $entityClass);
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->createdBy, $entityId);
-                return $this->owner;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->modifiedBy, $entityId);
-                return $modifier;
-            }
-        });
+                $this->assertSame(User::class, $entityClass);
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->createdBy, $entityId);
+
+                    return $this->owner;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->modifiedBy, $entityId);
+
+                    return $modifier;
+                }
+            });
 
         $this->notificationModelMock
             ->expects($this->once())
@@ -201,20 +203,23 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(3);
         $this->translatorMock->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher, $htmlUrl) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.webhook.stopped', $parameters[0]);
-                return $this->subject;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->reason, $parameters[0]);
-                return $this->reason;
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame('mautic.webhook.stopped.details', $parameters[0]);
-                $this->assertSame(['%reason%'  => $this->reason, '%webhook%' => $htmlUrl], $parameters[1]);
-                return $this->details;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.webhook.stopped', $parameters[0]);
+
+                    return $this->subject;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->reason, $parameters[0]);
+
+                    return $this->reason;
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mautic.webhook.stopped.details', $parameters[0]);
+                    $this->assertSame(['%reason%'  => $this->reason, '%webhook%' => $htmlUrl], $parameters[1]);
+
+                    return $this->details;
+                }
+            });
 
         $this->webhook->expects($this->once())
             ->method('getId')

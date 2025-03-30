@@ -245,8 +245,9 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->leadDeviceRepositoryMock->expects($matcher)->method('getByTrackingId')
             ->willReturnCallback(function (...$parameters) use ($matcher, $trackingId, $trackedLeadDeviceMock) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame($trackingId, $parameters[0]);
+
                     return $trackedLeadDeviceMock;
                 }
             });
@@ -276,7 +277,7 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
 
         $this->cookieHelperMock->expects($matcher)->method('setCookie')
             ->willReturnCallback(function (...$parameters) use ($matcher, $uniqueTrackingIdentifier) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame('mautic_device_id', $parameters[0]);
                     $this->assertSame($uniqueTrackingIdentifier, $parameters[1]);
                     $this->assertSame(31_536_000, $parameters[2]);
@@ -331,11 +332,11 @@ final class DeviceTrackingServiceTest extends \PHPUnit\Framework\TestCase
         $leadDeviceMock->expects($this->exactly(2))
             ->method('getLead')
             ->willReturn(new Lead());
-        
+
         $matcher = $this->any();
         $this->cookieHelperMock->expects($matcher)->method('setCookie')
             ->willReturnCallback(function (...$parameters) use ($matcher, $uniqueTrackingIdentifier) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame('mautic_device_id', $parameters[0]);
                     $this->assertSame($uniqueTrackingIdentifier, $parameters[1]);
                     $this->assertSame(31_536_000, $parameters[2]);

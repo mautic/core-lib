@@ -43,15 +43,17 @@ class ContactActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->contactModelMock->expects($matcher)
             ->method('canEditContact')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->contactMock5, $parameters[0]);
-                return false;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->contactMock6, $parameters[0]);
-                return true;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock5, $parameters[0]);
+
+                    return false;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock6, $parameters[0]);
+
+                    return true;
+                }
+            });
 
         $this->contactModelMock->expects($this->once())
             ->method('addToCategory')
@@ -73,15 +75,17 @@ class ContactActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->contactModelMock->expects($matcher)
             ->method('canEditContact')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->contactMock5, $parameters[0]);
-                return false;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->contactMock6, $parameters[0]);
-                return true;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock5, $parameters[0]);
+
+                    return false;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock6, $parameters[0]);
+
+                    return true;
+                }
+            });
 
         $this->contactModelMock->expects($this->once())
             ->method('getLeadCategories')
@@ -108,29 +112,30 @@ class ContactActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->contactModelMock->expects($matcher)
             ->method('canEditContact')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->contactMock5, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->contactMock6, $parameters[0]);
-            }
-            return true;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock5, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock6, $parameters[0]);
+                }
+
+                return true;
+            });
         $matcher = $this->exactly(2);
 
         $this->contactModelMock->expects($matcher)
             ->method('addToCategory')->willReturnCallback(function (...$parameters) use ($matcher, $categories) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->contactMock5, $parameters[0]);
-                $this->assertSame($categories, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->contactMock6, $parameters[0]);
-                $this->assertSame($categories, $parameters[1]);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock5, $parameters[0]);
+                    $this->assertSame($categories, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock6, $parameters[0]);
+                    $this->assertSame($categories, $parameters[1]);
+                }
 
-            return $categories;
-        });
+                return $categories;
+            });
 
         $this->actionModel->addContactsToCategories($contacts, $categories);
     }
@@ -148,38 +153,41 @@ class ContactActionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->contactModelMock->expects($matcher)
             ->method('canEditContact')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->contactMock5, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->contactMock6, $parameters[0]);
-            }
-            return true;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock5, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock6, $parameters[0]);
+                }
+
+                return true;
+            });
         $matcher = $this->exactly(2);
 
         $this->contactModelMock->expects($matcher)
             ->method('getLeadCategories')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->contactMock5, $parameters[0]);
-                return [1, 2];
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->contactMock6, $parameters[0]);
-                return [2, 3];
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock5, $parameters[0]);
+
+                    return [1, 2];
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($this->contactMock6, $parameters[0]);
+
+                    return [2, 3];
+                }
+            });
         $matcher = $this->exactly(2);
 
         $this->contactModelMock->expects($matcher)
             ->method('removeFromCategories')->willReturnCallback(function (...$parameters) use ($matcher, $categories) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($categories, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame([2], $parameters[0]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($categories, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame([2], $parameters[0]);
+                }
+            });
 
         $this->actionModel->removeContactsFromCategories($contacts, $categories);
     }

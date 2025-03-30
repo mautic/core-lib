@@ -82,26 +82,26 @@ class OrderExecutionerTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $callback = function (InternalObjectUpdateEvent $event) {
-                    Assert::assertSame(Contact::NAME, $event->getObject()->getName());
-                    Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
-                    Assert::assertCount(2, $event->getUpdateObjects());
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $callback = function (InternalObjectCreateEvent $event) {
-                    Assert::assertSame(Contact::NAME, $event->getObject()->getName());
-                    Assert::assertCount(1, $event->getCreateObjects());
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectUpdateEvent $event) {
+                        Assert::assertSame(Contact::NAME, $event->getObject()->getName());
+                        Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
+                        Assert::assertCount(2, $event->getUpdateObjects());
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectCreateEvent $event) {
+                        Assert::assertSame(Contact::NAME, $event->getObject()->getName());
+                        Assert::assertCount(1, $event->getCreateObjects());
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
 
-            return $parameters[0];
-        });
+                return $parameters[0];
+            });
 
         $this->mappingHelper->expects($this->exactly(1))
             ->method('updateObjectMappings');
@@ -128,49 +128,49 @@ class OrderExecutionerTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $callback = function (InternalObjectUpdateEvent $event) {
-                    Assert::assertSame(Contact::NAME, $event->getObject()->getName());
-                    Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
-                    Assert::assertCount(2, $event->getUpdateObjects());
+                if (1 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectUpdateEvent $event) {
+                        Assert::assertSame(Contact::NAME, $event->getObject()->getName());
+                        Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
+                        Assert::assertCount(2, $event->getUpdateObjects());
 
-                    $updatedObjectMappings = [];
-                    foreach ($event->getUpdateObjects() as $key => $updateObject) {
-                        $updatedObjectMappings[] = $updatedObjectMapping = new UpdatedObjectMappingDAO(
-                            $updateObject->getIntegration(),
-                            $updateObject->getObject(),
-                            $updateObject->getObjectId(),
-                            new \DateTime()
-                        );
+                        $updatedObjectMappings = [];
+                        foreach ($event->getUpdateObjects() as $key => $updateObject) {
+                            $updatedObjectMappings[] = $updatedObjectMapping = new UpdatedObjectMappingDAO(
+                                $updateObject->getIntegration(),
+                                $updateObject->getObject(),
+                                $updateObject->getObjectId(),
+                                new \DateTime()
+                            );
 
-                        if (0 !== $key) {
-                            // Only inject an object mapping for one of the objects
-                            break;
+                            if (0 !== $key) {
+                                // Only inject an object mapping for one of the objects
+                                break;
+                            }
+
+                            $objectMapping = new ObjectMapping();
+                            $objectMapping->setIntegration($updateObject->getIntegration());
+                            $objectMapping->setIntegrationObjectName($updateObject->getObject());
+                            $objectMapping->setIntegrationObjectId($updateObject->getObjectId());
+                            $updatedObjectMapping->setObjectMapping($objectMapping);
                         }
 
-                        $objectMapping = new ObjectMapping();
-                        $objectMapping->setIntegration($updateObject->getIntegration());
-                        $objectMapping->setIntegrationObjectName($updateObject->getObject());
-                        $objectMapping->setIntegrationObjectId($updateObject->getObjectId());
-                        $updatedObjectMapping->setObjectMapping($objectMapping);
-                    }
+                        $event->setUpdatedObjectMappings($updatedObjectMappings);
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectCreateEvent $event) {
+                        Assert::assertSame(Contact::NAME, $event->getObject()->getName());
+                        Assert::assertCount(1, $event->getCreateObjects());
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
 
-                    $event->setUpdatedObjectMappings($updatedObjectMappings);
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $callback = function (InternalObjectCreateEvent $event) {
-                    Assert::assertSame(Contact::NAME, $event->getObject()->getName());
-                    Assert::assertCount(1, $event->getCreateObjects());
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
-
-            return $parameters[0];
-        });
+                return $parameters[0];
+            });
 
         $this->mappingHelper->expects($this->exactly(1))
             ->method('updateObjectMappings');
@@ -197,26 +197,26 @@ class OrderExecutionerTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $callback = function (InternalObjectUpdateEvent $event) {
-                    Assert::assertSame(Company::NAME, $event->getObject()->getName());
-                    Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
-                    Assert::assertCount(2, $event->getUpdateObjects());
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $callback = function (InternalObjectCreateEvent $event) {
-                    Assert::assertSame(Company::NAME, $event->getObject()->getName());
-                    Assert::assertCount(1, $event->getCreateObjects());
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectUpdateEvent $event) {
+                        Assert::assertSame(Company::NAME, $event->getObject()->getName());
+                        Assert::assertSame([1, 2], $event->getIdentifiedObjectIds());
+                        Assert::assertCount(2, $event->getUpdateObjects());
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectCreateEvent $event) {
+                        Assert::assertSame(Company::NAME, $event->getObject()->getName());
+                        Assert::assertCount(1, $event->getCreateObjects());
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
 
-            return $parameters[0];
-        });
+                return $parameters[0];
+            });
 
         $this->mappingHelper->expects($this->exactly(1))
             ->method('updateObjectMappings');
@@ -239,115 +239,119 @@ class OrderExecutionerTest extends TestCase
         $matcher = $this->exactly(4);
         $this->objectProvider->expects($matcher)
             ->method('getObjectByName')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(Contact::NAME, $parameters[0]);
-                return new Contact();
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(Company::NAME, $parameters[0]);
-                return new Company();
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame(Contact::NAME, $parameters[0]);
-                return new Contact();
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertSame(Company::NAME, $parameters[0]);
-                return new Company();
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Contact::NAME, $parameters[0]);
+
+                    return new Contact();
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Company::NAME, $parameters[0]);
+
+                    return new Company();
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Contact::NAME, $parameters[0]);
+
+                    return new Contact();
+                }
+                if (4 === $matcher->getInvocationCount()) {
+                    $this->assertSame(Company::NAME, $parameters[0]);
+
+                    return new Company();
+                }
+            });
         $matcher = $this->exactly(4);
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $callback = function (InternalObjectUpdateEvent $event) {
-                    Assert::assertSame(Contact::NAME, $event->getObject()->getName());
+                if (1 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectUpdateEvent $event) {
+                        Assert::assertSame(Contact::NAME, $event->getObject()->getName());
 
-                    $updatedObjectMappings = [];
-                    foreach ($event->getUpdateObjects() as $updateObject) {
-                        $updatedObjectMappings[] = $updatedObjectMapping = new UpdatedObjectMappingDAO(
-                            $updateObject->getIntegration(),
-                            $updateObject->getObject(),
-                            $updateObject->getObjectId(),
-                            new \DateTime()
-                        );
+                        $updatedObjectMappings = [];
+                        foreach ($event->getUpdateObjects() as $updateObject) {
+                            $updatedObjectMappings[] = $updatedObjectMapping = new UpdatedObjectMappingDAO(
+                                $updateObject->getIntegration(),
+                                $updateObject->getObject(),
+                                $updateObject->getObjectId(),
+                                new \DateTime()
+                            );
 
-                        $objectMapping = new ObjectMapping();
-                        $objectMapping->setIntegration($updateObject->getIntegration());
-                        $objectMapping->setIntegrationObjectName($updateObject->getObject());
-                        $objectMapping->setIntegrationObjectId($updateObject->getObjectId());
-                        $updatedObjectMapping->setObjectMapping($objectMapping);
-                    }
-                    $event->setUpdatedObjectMappings($updatedObjectMappings);
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $callback = function (InternalObjectUpdateEvent $event) {
-                    Assert::assertSame(Company::NAME, $event->getObject()->getName());
+                            $objectMapping = new ObjectMapping();
+                            $objectMapping->setIntegration($updateObject->getIntegration());
+                            $objectMapping->setIntegrationObjectName($updateObject->getObject());
+                            $objectMapping->setIntegrationObjectId($updateObject->getObjectId());
+                            $updatedObjectMapping->setObjectMapping($objectMapping);
+                        }
+                        $event->setUpdatedObjectMappings($updatedObjectMappings);
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectUpdateEvent $event) {
+                        Assert::assertSame(Company::NAME, $event->getObject()->getName());
 
-                    $updatedObjectMappings = [];
-                    foreach ($event->getUpdateObjects() as $updateObject) {
-                        $updatedObjectMappings[] = $updatedObjectMapping = new UpdatedObjectMappingDAO(
-                            $updateObject->getIntegration(),
-                            $updateObject->getObject(),
-                            $updateObject->getObjectId(),
-                            new \DateTime()
-                        );
+                        $updatedObjectMappings = [];
+                        foreach ($event->getUpdateObjects() as $updateObject) {
+                            $updatedObjectMappings[] = $updatedObjectMapping = new UpdatedObjectMappingDAO(
+                                $updateObject->getIntegration(),
+                                $updateObject->getObject(),
+                                $updateObject->getObjectId(),
+                                new \DateTime()
+                            );
 
-                        $objectMapping = new ObjectMapping();
-                        $objectMapping->setIntegration($updateObject->getIntegration());
-                        $objectMapping->setIntegrationObjectName($updateObject->getObject());
-                        $objectMapping->setIntegrationObjectId($updateObject->getObjectId());
-                        $updatedObjectMapping->setObjectMapping($objectMapping);
-                    }
+                            $objectMapping = new ObjectMapping();
+                            $objectMapping->setIntegration($updateObject->getIntegration());
+                            $objectMapping->setIntegrationObjectName($updateObject->getObject());
+                            $objectMapping->setIntegrationObjectId($updateObject->getObjectId());
+                            $updatedObjectMapping->setObjectMapping($objectMapping);
+                        }
 
-                    $event->setUpdatedObjectMappings($updatedObjectMappings);
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $callback = function (InternalObjectCreateEvent $event) {
-                    Assert::assertSame(Contact::NAME, $event->getObject()->getName());
+                        $event->setUpdatedObjectMappings($updatedObjectMappings);
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectCreateEvent $event) {
+                        Assert::assertSame(Contact::NAME, $event->getObject()->getName());
 
-                    $createdObjectMappings = [];
-                    foreach ($event->getCreateObjects() as $createObject) {
-                        $objectMapping = new ObjectMapping();
-                        $objectMapping->setIntegration($createObject->getIntegration());
-                        $objectMapping->setIntegrationObjectName($createObject->getObject());
-                        $objectMapping->setIntegrationObjectId($createObject->getObjectId());
+                        $createdObjectMappings = [];
+                        foreach ($event->getCreateObjects() as $createObject) {
+                            $objectMapping = new ObjectMapping();
+                            $objectMapping->setIntegration($createObject->getIntegration());
+                            $objectMapping->setIntegrationObjectName($createObject->getObject());
+                            $objectMapping->setIntegrationObjectId($createObject->getObjectId());
 
-                        $createdObjectMappings[] = $objectMapping;
-                    }
-                    $event->setObjectMappings($createdObjectMappings);
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $callback = function (InternalObjectCreateEvent $event) {
-                    Assert::assertSame(Company::NAME, $event->getObject()->getName());
+                            $createdObjectMappings[] = $objectMapping;
+                        }
+                        $event->setObjectMappings($createdObjectMappings);
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
+                if (4 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectCreateEvent $event) {
+                        Assert::assertSame(Company::NAME, $event->getObject()->getName());
 
-                    $createdObjectMappings = [];
-                    foreach ($event->getCreateObjects() as $createObject) {
-                        $objectMapping = new ObjectMapping();
-                        $objectMapping->setIntegration($createObject->getIntegration());
-                        $objectMapping->setIntegrationObjectName($createObject->getObject());
-                        $objectMapping->setIntegrationObjectId($createObject->getObjectId());
+                        $createdObjectMappings = [];
+                        foreach ($event->getCreateObjects() as $createObject) {
+                            $objectMapping = new ObjectMapping();
+                            $objectMapping->setIntegration($createObject->getIntegration());
+                            $objectMapping->setIntegrationObjectName($createObject->getObject());
+                            $objectMapping->setIntegrationObjectId($createObject->getObjectId());
 
-                        $createdObjectMappings[] = $objectMapping;
-                    }
-                    $event->setObjectMappings($createdObjectMappings);
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
-            }
+                            $createdObjectMappings[] = $objectMapping;
+                        }
+                        $event->setObjectMappings($createdObjectMappings);
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
+                }
 
-            return $parameters[0];
-        });
+                return $parameters[0];
+            });
 
         $this->mappingHelper->expects($this->exactly(2))
             ->method('updateObjectMappings');

@@ -508,16 +508,17 @@ class ThemeHelperTest extends TestCase
         $this->pathsHelper
             ->expects($matcher)
             ->method('getSystemPath')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('themes', $parameters[0]);
-                $this->assertTrue($parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('themes', $parameters[0]);
-                $this->assertFalse($parameters[1]);
-            }
-            return __DIR__.'/resource/themes';
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('themes', $parameters[0]);
+                    $this->assertTrue($parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('themes', $parameters[0]);
+                    $this->assertFalse($parameters[1]);
+                }
+
+                return __DIR__.'/resource/themes';
+            });
 
         $themes = $this->themeHelper->getInstalledThemes('all', true, false, false);
         Assert::assertCount(4, $themes);

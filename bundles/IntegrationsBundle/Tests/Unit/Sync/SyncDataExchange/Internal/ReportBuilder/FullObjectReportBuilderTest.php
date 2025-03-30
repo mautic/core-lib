@@ -200,14 +200,15 @@ class FullObjectReportBuilderTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('hasListeners')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_CONTACT_REPORT_BUILD, $parameters[0]);
-            }
-            return true;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_CONTACT_REPORT_BUILD, $parameters[0]);
+                }
+
+                return true;
+            });
 
         $contactEntity = new class extends Lead {
             public function getId(): int
@@ -219,51 +220,51 @@ class FullObjectReportBuilderTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $internalObject, $fromDateTime, $toDateTime, $contactEntity) {
-            if ($matcher->getInvocationCount() === 1) {
-                $callback = function (InternalObjectFindEvent $event) use (
-                    $internalObject,
-                    $fromDateTime,
-                    $toDateTime
-                ) {
-                    $this->assertSame($internalObject, $event->getObject());
-                    $this->assertSame($fromDateTime, $event->getDateRange()->getFromDate());
-                    $this->assertSame($toDateTime, $event->getDateRange()->getToDate());
-                    $this->assertSame(0, $event->getStart());
-                    $this->assertSame(200, $event->getLimit());
+                if (1 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectFindEvent $event) use (
+                        $internalObject,
+                        $fromDateTime,
+                        $toDateTime
+                    ) {
+                        $this->assertSame($internalObject, $event->getObject());
+                        $this->assertSame($fromDateTime, $event->getDateRange()->getFromDate());
+                        $this->assertSame($toDateTime, $event->getDateRange()->getToDate());
+                        $this->assertSame(0, $event->getStart());
+                        $this->assertSame(200, $event->getLimit());
 
-                    // Mock a subscriber:
-                    $event->setFoundObjects(
-                        [
+                        // Mock a subscriber:
+                        $event->setFoundObjects(
                             [
-                                'id'            => 1,
-                                'email'         => self::TEST_EMAIL,
-                                'date_modified' => '2018-10-08 00:30:00',
-                            ],
-                        ]
-                    );
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORDS, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $callback = function (InternalObjectFindByIdEvent $event) use ($internalObject, $contactEntity) {
-                    $this->assertSame($internalObject, $event->getObject());
-                    $event->setId($contactEntity->getId());
-                    $event->setEntity($contactEntity);
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $callback = function (InternalContactEvent $event) use ($contactEntity) {
-                    $this->assertSame($contactEntity, $event->getContact());
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_CONTACT_REPORT_BUILD, $parameters[1]);
-            }
+                                [
+                                    'id'            => 1,
+                                    'email'         => self::TEST_EMAIL,
+                                    'date_modified' => '2018-10-08 00:30:00',
+                                ],
+                            ]
+                        );
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORDS, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectFindByIdEvent $event) use ($internalObject, $contactEntity) {
+                        $this->assertSame($internalObject, $event->getObject());
+                        $event->setId($contactEntity->getId());
+                        $event->setEntity($contactEntity);
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[1]);
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalContactEvent $event) use ($contactEntity) {
+                        $this->assertSame($contactEntity, $event->getContact());
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_CONTACT_REPORT_BUILD, $parameters[1]);
+                }
 
-            return $parameters[0];
-        });
+                return $parameters[0];
+            });
 
         $report  = $this->reportBuilder->buildReport($requestDAO);
         $objects = $report->getObjects(Contact::NAME);
@@ -302,14 +303,15 @@ class FullObjectReportBuilderTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('hasListeners')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_COMPANY_REPORT_BUILD, $parameters[0]);
-            }
-            return true;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_COMPANY_REPORT_BUILD, $parameters[0]);
+                }
+
+                return true;
+            });
 
         $companyEntity = new class extends CompanyEntity {
             public function getId(): int
@@ -321,54 +323,54 @@ class FullObjectReportBuilderTest extends TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher, $internalObject,
-            $fromDateTime,
-            $toDateTime,
-            $companyEntity) {
-            if ($matcher->getInvocationCount() === 1) {
-                $callback = function (InternalObjectFindEvent $event) use (
-                    $internalObject,
-                    $fromDateTime,
-                    $toDateTime
-                ) {
-                    $this->assertSame($internalObject, $event->getObject());
-                    $this->assertSame($fromDateTime, $event->getDateRange()->getFromDate());
-                    $this->assertSame($toDateTime, $event->getDateRange()->getToDate());
-                    $this->assertSame(0, $event->getStart());
-                    $this->assertSame(200, $event->getLimit());
+                $fromDateTime,
+                $toDateTime,
+                $companyEntity) {
+                if (1 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectFindEvent $event) use (
+                        $internalObject,
+                        $fromDateTime,
+                        $toDateTime
+                    ) {
+                        $this->assertSame($internalObject, $event->getObject());
+                        $this->assertSame($fromDateTime, $event->getDateRange()->getFromDate());
+                        $this->assertSame($toDateTime, $event->getDateRange()->getToDate());
+                        $this->assertSame(0, $event->getStart());
+                        $this->assertSame(200, $event->getLimit());
 
-                    // Mock a subscriber:
-                    $event->setFoundObjects(
-                        [
+                        // Mock a subscriber:
+                        $event->setFoundObjects(
                             [
-                                'id'            => 1,
-                                'email'         => self::TEST_EMAIL,
-                                'date_modified' => '2018-10-08 00:30:00',
-                            ],
-                        ]
-                    );
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORDS, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $callback = function (InternalObjectFindByIdEvent $event) use ($internalObject, $companyEntity) {
-                    $this->assertSame($internalObject, $event->getObject());
-                    $event->setId($companyEntity->getId());
-                    $event->setEntity($companyEntity);
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $callback = function (InternalCompanyEvent $event) use ($companyEntity) {
-                    $this->assertSame($companyEntity, $event->getCompany());
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_COMPANY_REPORT_BUILD, $parameters[1]);
-            }
+                                [
+                                    'id'            => 1,
+                                    'email'         => self::TEST_EMAIL,
+                                    'date_modified' => '2018-10-08 00:30:00',
+                                ],
+                            ]
+                        );
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORDS, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalObjectFindByIdEvent $event) use ($internalObject, $companyEntity) {
+                        $this->assertSame($internalObject, $event->getObject());
+                        $event->setId($companyEntity->getId());
+                        $event->setEntity($companyEntity);
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_FIND_INTERNAL_RECORD, $parameters[1]);
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $callback = function (InternalCompanyEvent $event) use ($companyEntity) {
+                        $this->assertSame($companyEntity, $event->getCompany());
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_COMPANY_REPORT_BUILD, $parameters[1]);
+                }
 
-            return $parameters[0];
-        });
+                return $parameters[0];
+            });
 
         $report  = $this->reportBuilder->buildReport($requestDAO);
         $objects = $report->getObjects(MauticSyncDataExchange::OBJECT_COMPANY);

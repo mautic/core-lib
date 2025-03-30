@@ -148,8 +148,9 @@ class EmailControllerTest extends TestCase
         $this->containerMock->expects($matcher)
             ->method('get')
             ->willReturnCallback(function (...$parameters) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame('router', $parameters[0]);
+
                     return $this->routerMock;
                 }
             });
@@ -186,8 +187,9 @@ class EmailControllerTest extends TestCase
         $this->containerMock->expects($matcher)
             ->method('get')
             ->willReturnCallback(function (...$parameters) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
+                if (1 === $matcher->getInvocationCount()) {
                     $this->assertSame('router', $parameters[0]);
+
                     return $this->routerMock;
                 }
             });

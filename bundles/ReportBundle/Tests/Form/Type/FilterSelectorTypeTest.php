@@ -48,7 +48,7 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
             ->method('addEventListener')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher1) {
-                    if ($matcher1->getInvocationCount() === 1) {
+                    if (1 === $matcher1->getInvocationCount()) {
                         $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
                         $callback = function (callable $formModifier) {
                             /** @var FormInterface<FormBuilderInterface>&MockObject $form */
@@ -64,40 +64,41 @@ final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
 
                             $form->expects($matcher2)
                                 ->method('add')->willReturnCallback(function (...$parameters) use ($matcher2, $form) {
-                                if ($matcher2->getInvocationCount() === 1) {
-                                    $this->assertSame('condition', $parameters[0]);
-                                    $this->assertSame(ChoiceType::class, $parameters[1]);
-                                    $this->assertSame([
-                                        'choices'           => [
-                                            'including' => 'in',
-                                            'excluding' => 'notIn',
-                                        ],
-                                        'expanded'          => false,
-                                        'multiple'          => false,
-                                        'label'             => 'mautic.report.report.label.filtercondition',
-                                        'label_attr'        => ['class' => 'control-label filter-condition'],
-                                        'placeholder'       => false,
-                                        'required'          => false,
-                                        'attr'              => [
-                                            'class' => 'form-control not-chosen',
-                                        ],
-                                    ], $parameters[2]);
-                                }
-                                if ($matcher2->getInvocationCount() === 2) {
-                                    $this->assertSame('value', $parameters[0]);
-                                    $this->assertSame(CollectionType::class, $parameters[1]);
-                                    $this->assertSame([
-                                        'entry_type'    => TextType::class,
-                                        'allow_add'     => true,
-                                        'allow_delete'  => true,
-                                        'label'         => 'mautic.report.report.label.filtervalue',
-                                        'label_attr'    => ['class' => 'control-label'],
-                                        'attr'          => ['class' => 'form-control filter-value'],
-                                        'required'      => false,
-                                    ], $parameters[2]);
-                                }
-                                return $form;
-                            });
+                                    if (1 === $matcher2->getInvocationCount()) {
+                                        $this->assertSame('condition', $parameters[0]);
+                                        $this->assertSame(ChoiceType::class, $parameters[1]);
+                                        $this->assertSame([
+                                            'choices'           => [
+                                                'including' => 'in',
+                                                'excluding' => 'notIn',
+                                            ],
+                                            'expanded'          => false,
+                                            'multiple'          => false,
+                                            'label'             => 'mautic.report.report.label.filtercondition',
+                                            'label_attr'        => ['class' => 'control-label filter-condition'],
+                                            'placeholder'       => false,
+                                            'required'          => false,
+                                            'attr'              => [
+                                                'class' => 'form-control not-chosen',
+                                            ],
+                                        ], $parameters[2]);
+                                    }
+                                    if (2 === $matcher2->getInvocationCount()) {
+                                        $this->assertSame('value', $parameters[0]);
+                                        $this->assertSame(CollectionType::class, $parameters[1]);
+                                        $this->assertSame([
+                                            'entry_type'    => TextType::class,
+                                            'allow_add'     => true,
+                                            'allow_delete'  => true,
+                                            'label'         => 'mautic.report.report.label.filtervalue',
+                                            'label_attr'    => ['class' => 'control-label'],
+                                            'attr'          => ['class' => 'form-control filter-value'],
+                                            'required'      => false,
+                                        ], $parameters[2]);
+                                    }
+
+                                    return $form;
+                                });
 
                             $formModifier(new FormEvent($form, $data));
                         };

@@ -122,39 +122,39 @@ class TriggerModelTest extends \PHPUnit\Framework\TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (object $event, string $eventName) use ($matcher, $contact, $triggerEvent) {
-            if ($matcher->getInvocationCount() === 1) {
-                $callback = function (TriggerBuilderEvent $event) {
-                    // PHPUNIT calls this callback twice for unknown reason. We need to set it only once.
-                    if (array_key_exists('email.send_to_user', $event->getEvents())) {
-                        return;
-                    }
+                if (1 === $matcher->getInvocationCount()) {
+                    $callback = function (TriggerBuilderEvent $event) {
+                        // PHPUNIT calls this callback twice for unknown reason. We need to set it only once.
+                        if (array_key_exists('email.send_to_user', $event->getEvents())) {
+                            return;
+                        }
 
-                    $event->addEvent(
-                        'email.send_to_user',
-                        [
-                            'group'           => 'mautic.email.point.trigger',
-                            'label'           => 'mautic.email.point.trigger.send_email_to_user',
-                            'formType'        => \Mautic\EmailBundle\Form\Type\EmailToUserType::class,
-                            'formTypeOptions' => ['update_select' => 'pointtriggerevent_properties_useremail_email'],
-                            'formTheme'       => 'MauticEmailBundle:FormTheme\EmailSendList',
-                            'eventName'       => EmailEvents::ON_SENT_EMAIL_TO_USER,
-                        ]
-                    );
-                };
-                $callback($event);
-                $this->assertSame(PointEvents::TRIGGER_ON_BUILD, $eventName);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $callback = function (TriggerExecutedEvent $event) use ($contact, $triggerEvent) {
-                    $this->assertSame($contact, $event->getLead());
-                    $this->assertSame($triggerEvent, $event->getTriggerEvent());
-                };
-                $callback($event);
-                $this->assertSame(EmailEvents::ON_SENT_EMAIL_TO_USER, $eventName);
-            }
+                        $event->addEvent(
+                            'email.send_to_user',
+                            [
+                                'group'           => 'mautic.email.point.trigger',
+                                'label'           => 'mautic.email.point.trigger.send_email_to_user',
+                                'formType'        => \Mautic\EmailBundle\Form\Type\EmailToUserType::class,
+                                'formTypeOptions' => ['update_select' => 'pointtriggerevent_properties_useremail_email'],
+                                'formTheme'       => 'MauticEmailBundle:FormTheme\EmailSendList',
+                                'eventName'       => EmailEvents::ON_SENT_EMAIL_TO_USER,
+                            ]
+                        );
+                    };
+                    $callback($event);
+                    $this->assertSame(PointEvents::TRIGGER_ON_BUILD, $eventName);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $callback = function (TriggerExecutedEvent $event) use ($contact, $triggerEvent) {
+                        $this->assertSame($contact, $event->getLead());
+                        $this->assertSame($triggerEvent, $event->getTriggerEvent());
+                    };
+                    $callback($event);
+                    $this->assertSame(EmailEvents::ON_SENT_EMAIL_TO_USER, $eventName);
+                }
 
-            return $event;
-        });
+                return $event;
+            });
 
         $this->triggerModel->triggerEvent($triggerEvent->convertToArray(), $contact, true);
     }

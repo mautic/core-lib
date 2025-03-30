@@ -148,14 +148,15 @@ class SyncProcessTest extends TestCase
         $matcher = $this->exactly(2);
         $this->integrationSyncProcess->expects($matcher)
             ->method('getSyncReport')->willReturnCallback(function (...$parameters) use ($matcher, $integrationSyncReport) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(1, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(2, $parameters[0]);
-            }
-            return $integrationSyncReport;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(1, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(2, $parameters[0]);
+                }
+
+                return $integrationSyncReport;
+            });
 
         // generate the order based on the report
         $integrationSyncOrder = $this->createMock(OrderDAO::class);
@@ -188,29 +189,29 @@ class SyncProcessTest extends TestCase
 
         $this->eventDispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $callback = function (CompletedSyncIterationEvent $event) {
-                    $orderResult = $event->getOrderResults();
-                    Assert::assertCount(1, $orderResult->getUpdatedObjectMappings('bar'));
-                    Assert::assertCount(1, $orderResult->getNewObjectMappings('foo'));
-                    Assert::assertCount(1, $orderResult->getDeletedObjects('foo'));
-                    Assert::assertCount(1, $orderResult->getRemappedObjects('bar'));
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_BATCH_SYNC_COMPLETED_INTEGRATION_TO_MAUTIC, $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $callback = function (CompletedSyncIterationEvent $event) {
-                    $orderResult = $event->getOrderResults();
-                    Assert::assertCount(1, $orderResult->getNewObjectMappings('bar'));
-                    Assert::assertCount(1, $orderResult->getUpdatedObjectMappings('foo'));
-                };
-                $callback($parameters[0]);
-                $this->assertSame(IntegrationEvents::INTEGRATION_BATCH_SYNC_COMPLETED_MAUTIC_TO_INTEGRATION, $parameters[1]);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $callback = function (CompletedSyncIterationEvent $event) {
+                        $orderResult = $event->getOrderResults();
+                        Assert::assertCount(1, $orderResult->getUpdatedObjectMappings('bar'));
+                        Assert::assertCount(1, $orderResult->getNewObjectMappings('foo'));
+                        Assert::assertCount(1, $orderResult->getDeletedObjects('foo'));
+                        Assert::assertCount(1, $orderResult->getRemappedObjects('bar'));
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_BATCH_SYNC_COMPLETED_INTEGRATION_TO_MAUTIC, $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $callback = function (CompletedSyncIterationEvent $event) {
+                        $orderResult = $event->getOrderResults();
+                        Assert::assertCount(1, $orderResult->getNewObjectMappings('bar'));
+                        Assert::assertCount(1, $orderResult->getUpdatedObjectMappings('foo'));
+                    };
+                    $callback($parameters[0]);
+                    $this->assertSame(IntegrationEvents::INTEGRATION_BATCH_SYNC_COMPLETED_MAUTIC_TO_INTEGRATION, $parameters[1]);
+                }
 
-            return $parameters[0];
-        });
+                return $parameters[0];
+            });
 
         // Mautic to integration
 
@@ -222,14 +223,15 @@ class SyncProcessTest extends TestCase
         $matcher = $this->exactly(2);
         $this->mauticSyncProcess->expects($matcher)
             ->method('getSyncReport')->willReturnCallback(function (...$parameters) use ($matcher, $internalSyncReport) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(1, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(2, $parameters[0]);
-            }
-            return $internalSyncReport;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(1, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(2, $parameters[0]);
+                }
+
+                return $internalSyncReport;
+            });
 
         // generate the order based on the report
         $internalSyncOrder = $this->createMock(OrderDAO::class);

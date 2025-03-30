@@ -172,42 +172,48 @@ class BuilderSubscriberTest extends TestCase
         $event = new EmailSendEvent(null, $args);
 
         $unsubscribeTokenizedText = '{contactfield=companyname} {contactfield=lastname}';
-        $matcher = $this->exactly(5);
+        $matcher                  = $this->exactly(5);
 
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $unsubscribeTokenizedText) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('unsubscribe_text', $parameters[0]);
-                return $unsubscribeTokenizedText;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('webview_text', $parameters[0]);
-                return 'Just a text';
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame('default_signature_text', $parameters[0]);
-                return 'Signature';
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertSame('mailer_from_name', $parameters[0]);
-                return 'jan.kozak@acquia.com';
-            }
-            if ($matcher->getInvocationCount() === 5) {
-                $this->assertSame('brand_name', $parameters[0]);
-                return 'ACME';
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('unsubscribe_text', $parameters[0]);
+
+                    return $unsubscribeTokenizedText;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('webview_text', $parameters[0]);
+
+                    return 'Just a text';
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame('default_signature_text', $parameters[0]);
+
+                    return 'Signature';
+                }
+                if (4 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mailer_from_name', $parameters[0]);
+
+                    return 'jan.kozak@acquia.com';
+                }
+                if (5 === $matcher->getInvocationCount()) {
+                    $this->assertSame('brand_name', $parameters[0]);
+
+                    return 'ACME';
+                }
+            });
         $matcher = $this->never();
 
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher, $unsubscribeTokenizedText) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($unsubscribeTokenizedText, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-            }
-            return $unsubscribeTokenizedText;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($unsubscribeTokenizedText, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                }
+
+                return $unsubscribeTokenizedText;
+            });
 
         $this->builderSubscriber->onEmailGenerate($event);
         $this->assertEquals(

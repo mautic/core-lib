@@ -40,16 +40,17 @@ class ConditionDispatcherTest extends \PHPUnit\Framework\TestCase
 
         $this->dispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (object $event, string $eventName) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertInstanceOf(ConditionEvent::class, $event);
-                $this->assertSame('something', $eventName);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertInstanceOf(ConditionEvent::class, $event);
-                $this->assertSame(CampaignEvents::ON_EVENT_CONDITION_EVALUATION, $eventName);
-            }
-            return $event;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(ConditionEvent::class, $event);
+                    $this->assertSame('something', $eventName);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertInstanceOf(ConditionEvent::class, $event);
+                    $this->assertSame(CampaignEvents::ON_EVENT_CONDITION_EVALUATION, $eventName);
+                }
+
+                return $event;
+            });
 
         (new ConditionDispatcher($this->dispatcher))->dispatchEvent($this->config, new LeadEventLog());
     }

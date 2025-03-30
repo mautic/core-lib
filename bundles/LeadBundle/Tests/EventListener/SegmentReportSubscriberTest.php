@@ -184,20 +184,21 @@ class SegmentReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $queryBuilder->expects($matcher)
             ->method('leftJoin')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('lll', $parameters[0]);
-                $this->assertSame(MAUTIC_TABLE_PREFIX.'leads', $parameters[1]);
-                $this->assertSame('l', $parameters[2]);
-                $this->assertSame('l.id = lll.lead_id', $parameters[3]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('lll', $parameters[0]);
-                $this->assertSame(MAUTIC_TABLE_PREFIX.'lead_lists', $parameters[1]);
-                $this->assertSame('s', $parameters[2]);
-                $this->assertSame('s.id = lll.leadlist_id', $parameters[3]);
-            }
-            return $queryBuilder;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lll', $parameters[0]);
+                    $this->assertSame(MAUTIC_TABLE_PREFIX.'leads', $parameters[1]);
+                    $this->assertSame('l', $parameters[2]);
+                    $this->assertSame('l.id = lll.lead_id', $parameters[3]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lll', $parameters[0]);
+                    $this->assertSame(MAUTIC_TABLE_PREFIX.'lead_lists', $parameters[1]);
+                    $this->assertSame('s', $parameters[2]);
+                    $this->assertSame('s.id = lll.leadlist_id', $parameters[3]);
+                }
+
+                return $queryBuilder;
+            });
 
         $reportGeneratorEvent = new ReportGeneratorEvent($reportMock, [], $queryBuilder, $channelListHelperMock);
         $segmentReportSubscriber->onReportGenerate($reportGeneratorEvent);

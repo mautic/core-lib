@@ -74,27 +74,30 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->security->expects($matcher)
             ->method('checkPermissionExists')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('lead:leads:view', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('lead:leads:viewother', $parameters[0]);
-            }
-            return true;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead:leads:view', $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead:leads:viewother', $parameters[0]);
+                }
+
+                return true;
+            });
         $matcher = $this->exactly(2);
 
         $this->security->expects($matcher)
             ->method('isGranted')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('lead:leads:view', $parameters[0]);
-                return false;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('lead:leads:viewother', $parameters[0]);
-                return true;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead:leads:view', $parameters[0]);
+
+                    return false;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead:leads:viewother', $parameters[0]);
+
+                    return true;
+                }
+            });
 
         $this->repository->expects($this->once())
             ->method('getTableName')
@@ -200,26 +203,28 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->security->expects($matcher)
             ->method('checkPermissionExists')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('lead:leads:view', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('lead:leads:viewother', $parameters[0]);
-            }
-            return true;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead:leads:view', $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead:leads:viewother', $parameters[0]);
+                }
+
+                return true;
+            });
         $matcher = $this->exactly(2);
 
         $this->security->expects($matcher)
             ->method('isGranted')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('lead:leads:view', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('lead:leads:viewother', $parameters[0]);
-            }
-            return false;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead:leads:view', $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('lead:leads:viewother', $parameters[0]);
+                }
+
+                return false;
+            });
 
         $this->statsEvent->expects($this->once())
             ->method('isLookingForTable')

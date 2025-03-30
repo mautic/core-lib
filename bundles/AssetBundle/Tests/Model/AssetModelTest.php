@@ -173,35 +173,41 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
             ->willReturn('http://localhost');
 
         $request->server = $serverBag;
-        $matcher = $this->exactly(6);
+        $matcher         = $this->exactly(6);
 
         $request->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertEquals('utm_campaign', $parameters[0]);
-                return 'test_utm_campaign';
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertEquals('utm_content', $parameters[0]);
-                return 'test_utm_content';
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertEquals('utm_medium', $parameters[0]);
-                return 'test_utm_medium';
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertEquals('utm_source', $parameters[0]);
-                return 'test_utm_source';
-            }
-            if ($matcher->getInvocationCount() === 5) {
-                $this->assertEquals('utm_term', $parameters[0]);
-                return 'test_utm_term';
-            }
-            if ($matcher->getInvocationCount() === 6) {
-                $this->assertEquals('ct', $parameters[0]);
-                return false;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertEquals('utm_campaign', $parameters[0]);
+
+                    return 'test_utm_campaign';
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertEquals('utm_content', $parameters[0]);
+
+                    return 'test_utm_content';
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertEquals('utm_medium', $parameters[0]);
+
+                    return 'test_utm_medium';
+                }
+                if (4 === $matcher->getInvocationCount()) {
+                    $this->assertEquals('utm_source', $parameters[0]);
+
+                    return 'test_utm_source';
+                }
+                if (5 === $matcher->getInvocationCount()) {
+                    $this->assertEquals('utm_term', $parameters[0]);
+
+                    return 'test_utm_term';
+                }
+                if (6 === $matcher->getInvocationCount()) {
+                    $this->assertEquals('ct', $parameters[0]);
+
+                    return false;
+                }
+            });
 
         $this->requestStack->expects($this->once())
             ->method('getCurrentRequest')

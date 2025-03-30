@@ -55,13 +55,13 @@ class ConfigSubscriberTest extends TestCase
         $this->configBuilderEvent
             ->expects($matcher)
             ->method('addForm')->willReturnCallback(function (...$parameters) use ($matcher, $leadConfig, $segmentConfig) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($leadConfig, $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($segmentConfig, $parameters[0]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($leadConfig, $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($segmentConfig, $parameters[0]);
+                }
+            });
 
         $this->configSubscriber->onConfigGenerate($this->configBuilderEvent);
     }

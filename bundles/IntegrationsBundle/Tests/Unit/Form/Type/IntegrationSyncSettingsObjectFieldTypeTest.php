@@ -59,48 +59,48 @@ final class IntegrationSyncSettingsObjectFieldTypeTest extends \PHPUnit\Framewor
 
         $this->formBuilder->expects($matcher)
             ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $options) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mappedField', $parameters[0]);
-                $this->assertSame(ChoiceType::class, $parameters[1]);
-                $this->assertSame([
-                    'label'          => false,
-                    'choices'        => [
-                        'Mautic Field A' => 'mautic_field_a',
-                        'Mautic Field B' => 'mautic_field_b',
-                    ],
-                    'required'       => true,
-                    'placeholder'    => '',
-                    'error_bubbling' => false,
-                    'attr'           => [
-                        'class'            => 'form-control integration-mapped-field',
-                        'data-placeholder' => $options['placeholder'],
-                        'data-object'      => $options['object'],
-                        'data-integration' => $options['integration'],
-                        'data-field'       => 'Integration Field A',
-                    ],
-                ], $parameters[2]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('syncDirection', $parameters[0]);
-                $this->assertSame(ChoiceType::class, $parameters[1]);
-                $this->assertSame([
-                    'choices' => [
-                        'mautic.integration.sync_direction_integration' => ObjectMappingDAO::SYNC_TO_INTEGRATION,
-                        'mautic.integration.sync_direction_mautic'      => ObjectMappingDAO::SYNC_TO_MAUTIC,
-                    ],
-                    'label'      => false,
-                    'empty_data' => ObjectMappingDAO::SYNC_TO_INTEGRATION,
-                    'attr'       => [
-                        'class'            => 'integration-sync-direction',
-                        'data-object'      => 'Object A',
-                        'data-integration' => 'Integration A',
-                        'data-field'       => 'Integration Field A',
-                    ],
-                ], $parameters[2]);
-            }
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('mappedField', $parameters[0]);
+                    $this->assertSame(ChoiceType::class, $parameters[1]);
+                    $this->assertSame([
+                        'label'          => false,
+                        'choices'        => [
+                            'Mautic Field A' => 'mautic_field_a',
+                            'Mautic Field B' => 'mautic_field_b',
+                        ],
+                        'required'       => true,
+                        'placeholder'    => '',
+                        'error_bubbling' => false,
+                        'attr'           => [
+                            'class'            => 'form-control integration-mapped-field',
+                            'data-placeholder' => $options['placeholder'],
+                            'data-object'      => $options['object'],
+                            'data-integration' => $options['integration'],
+                            'data-field'       => 'Integration Field A',
+                        ],
+                    ], $parameters[2]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('syncDirection', $parameters[0]);
+                    $this->assertSame(ChoiceType::class, $parameters[1]);
+                    $this->assertSame([
+                        'choices' => [
+                            'mautic.integration.sync_direction_integration' => ObjectMappingDAO::SYNC_TO_INTEGRATION,
+                            'mautic.integration.sync_direction_mautic'      => ObjectMappingDAO::SYNC_TO_MAUTIC,
+                        ],
+                        'label'      => false,
+                        'empty_data' => ObjectMappingDAO::SYNC_TO_INTEGRATION,
+                        'attr'       => [
+                            'class'            => 'integration-sync-direction',
+                            'data-object'      => 'Object A',
+                            'data-integration' => 'Integration A',
+                            'data-field'       => 'Integration Field A',
+                        ],
+                    ], $parameters[2]);
+                }
 
-            return $this->formBuilder;
-        });
+                return $this->formBuilder;
+            });
 
         $this->form->buildForm($this->formBuilder, $options);
     }

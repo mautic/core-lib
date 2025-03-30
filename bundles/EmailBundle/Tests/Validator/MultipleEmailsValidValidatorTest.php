@@ -30,17 +30,17 @@ class MultipleEmailsValidValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $emailValidatorMock = $this->createMock(EmailValidator::class);
         $constraintMock     = $this->createMock(Constraint::class);
-        $matcher = $this->exactly(2);
+        $matcher            = $this->exactly(2);
 
         $emailValidatorMock->expects($matcher)
             ->method('validate')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('john@don.com', $parameters[0]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('don@john.com', $parameters[0]);
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('john@don.com', $parameters[0]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('don@john.com', $parameters[0]);
+                }
+            });
 
         $multipleEmailsValidValidator = new MultipleEmailsValidValidator($emailValidatorMock);
 

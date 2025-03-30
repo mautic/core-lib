@@ -214,11 +214,12 @@ SQL;
             ->method('setParameter')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
-                    if ($matcher->getInvocationCount() === 1) {
+                    if (1 === $matcher->getInvocationCount()) {
                         $this->assertSame('false', $parameters[0]);
                         $this->assertFalse($parameters[1]);
                         $this->assertSame('boolean', $parameters[2]);
                     }
+
                     return $this->queryBuilderMock;
                 }
             );
@@ -253,31 +254,34 @@ SQL;
 
         $this->queryBuilderMock->expects($matcher)
             ->method('from')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame(MAUTIC_TABLE_PREFIX.'lead_lists_leads', $parameters[0]);
-                $this->assertSame('l', $parameters[1]);
-                return $this->queryBuilderMock;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame(MAUTIC_TABLE_PREFIX.'lead_lists_leads', $parameters[0]);
-                $this->assertSame('l USE INDEX ('.MAUTIC_TABLE_PREFIX.'manually_removed)', $parameters[1]);
-                return $this->queryBuilderMock;
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(MAUTIC_TABLE_PREFIX.'lead_lists_leads', $parameters[0]);
+                    $this->assertSame('l', $parameters[1]);
+
+                    return $this->queryBuilderMock;
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(MAUTIC_TABLE_PREFIX.'lead_lists_leads', $parameters[0]);
+                    $this->assertSame('l USE INDEX ('.MAUTIC_TABLE_PREFIX.'manually_removed)', $parameters[1]);
+
+                    return $this->queryBuilderMock;
+                }
+            });
         $matcher = self::exactly(2);
 
         $this->expressionMock->expects($matcher)
             ->method('eq')->willReturnCallback(function (...$parameters) use ($matcher, $listIds) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('l.leadlist_id', $parameters[0]);
-                $this->assertSame($listIds[0], $parameters[1]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('l.manually_removed', $parameters[0]);
-                $this->assertSame(':false', $parameters[1]);
-            }
-            return $this->expressionMock;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('l.leadlist_id', $parameters[0]);
+                    $this->assertSame($listIds[0], $parameters[1]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('l.manually_removed', $parameters[0]);
+                    $this->assertSame(':false', $parameters[1]);
+                }
+
+                return $this->expressionMock;
+            });
 
         self::assertSame($counts[0], $this->repository->getLeadCount($listIds));
     }

@@ -30,10 +30,10 @@ class PointSubscriberTest extends TestCase
         $pointModel        = $this->createMock(PointModel::class);
         $pointBuilderEvent = $this->createMock(PointBuilderEvent::class);
         $pointActionHelper = $this->createMock(PointActionHelper::class);
-        $matcher = self::exactly(2);
+        $matcher           = self::exactly(2);
 
         $pointBuilderEvent->expects($matcher)->method('addAction')->willReturnCallback(function (...$parameters) use ($matcher, $pointActionHelper) {
-            if ($matcher->getInvocationCount() === 1) {
+            if (1 === $matcher->getInvocationCount()) {
                 $this->assertSame('page.hit', $parameters[0]);
                 $this->assertSame([
                     'group'       => 'mautic.page.point.action',
@@ -43,7 +43,7 @@ class PointSubscriberTest extends TestCase
                     'formType'    => \Mautic\PageBundle\Form\Type\PointActionPageHitType::class,
                 ], $parameters[1]);
             }
-            if ($matcher->getInvocationCount() === 2) {
+            if (2 === $matcher->getInvocationCount()) {
                 $this->assertSame('url.hit', $parameters[0]);
                 $this->assertSame([
                     'group'       => 'mautic.page.point.action',

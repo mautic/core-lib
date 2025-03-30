@@ -89,23 +89,25 @@ class FormUploaderTest extends \PHPUnit\Framework\TestCase
         $submission = new Submission();
         $submission->setResults(['key' => 'value']);
 
-        $path1 = $this->uploadDir.'/1/fieldId1';
-        $path2 = $this->uploadDir.'/2/fieldId2';
+        $path1   = $this->uploadDir.'/1/fieldId1';
+        $path2   = $this->uploadDir.'/2/fieldId2';
         $matcher = $this->exactly(2);
 
         $fileUploaderMock->expects($matcher)
             ->method('upload')->willReturnCallback(function (...$parameters) use ($matcher, $path1, $file1Mock, $path2, $file2Mock) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($path1, $parameters[0]);
-                $this->assertSame($file1Mock, $parameters[1]);
-                return 'upload1.jpg';
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($path2, $parameters[0]);
-                $this->assertSame($file2Mock, $parameters[1]);
-                return 'upload2.txt';
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($path1, $parameters[0]);
+                    $this->assertSame($file1Mock, $parameters[1]);
+
+                    return 'upload1.jpg';
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($path2, $parameters[0]);
+                    $this->assertSame($file2Mock, $parameters[1]);
+
+                    return 'upload2.txt';
+                }
+            });
 
         $formUploader->uploadFiles($filesToUpload, $submission);
 
@@ -177,23 +179,24 @@ class FormUploaderTest extends \PHPUnit\Framework\TestCase
         $submission = new Submission();
         $submission->setResults(['key' => 'value']);
 
-        $path1 = $this->uploadDir.'/1/fieldId1';
-        $path2 = $this->uploadDir.'/2/fieldId2';
+        $path1   = $this->uploadDir.'/1/fieldId1';
+        $path2   = $this->uploadDir.'/2/fieldId2';
         $matcher = $this->exactly(2);
 
         $fileUploaderMock->expects($matcher)
             ->method('upload')->willReturnCallback(function (...$parameters) use ($matcher, $path1, $file1Mock, $path2, $file2Mock) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($path1, $parameters[0]);
-                $this->assertSame($file1Mock, $parameters[1]);
-                return 'upload1.jpg';
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($path2, $parameters[0]);
-                $this->assertSame($file2Mock, $parameters[1]);
-                throw new FileUploadException();
-            }
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame($path1, $parameters[0]);
+                    $this->assertSame($file1Mock, $parameters[1]);
+
+                    return 'upload1.jpg';
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame($path2, $parameters[0]);
+                    $this->assertSame($file2Mock, $parameters[1]);
+                    throw new FileUploadException();
+                }
+            });
 
         $fileUploaderMock->expects($this->once())
             ->method('delete')
