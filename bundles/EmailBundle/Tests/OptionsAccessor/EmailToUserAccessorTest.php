@@ -34,8 +34,7 @@ class EmailToUserAccessorTest extends \PHPUnit\Framework\TestCase
             ['id' => 6],
         ];
 
-        $mockOwner = $this->getMockBuilder(User::class)
-            ->getMock();
+        $mockOwner = $this->createMock(User::class);
 
         $mockOwner->expects($this->never()) // $config['to_owner'] is not set
             ->method('getId')
@@ -58,8 +57,7 @@ class EmailToUserAccessorTest extends \PHPUnit\Framework\TestCase
             ['id' => 5],
         ];
 
-        $mockOwner = $this->getMockBuilder(User::class)
-            ->getMock();
+        $mockOwner = $this->createMock(User::class);
 
         $mockOwner->expects($this->exactly(2))
             ->method('getId')
@@ -81,8 +79,7 @@ class EmailToUserAccessorTest extends \PHPUnit\Framework\TestCase
             ['id' => 6],
         ];
 
-        $mockOwner = $this->getMockBuilder(User::class)
-            ->getMock();
+        $mockOwner = $this->createMock(User::class);
 
         $mockOwner->expects($this->once())
             ->method('getId')

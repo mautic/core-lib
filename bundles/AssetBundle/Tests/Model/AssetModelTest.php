@@ -92,17 +92,15 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
         $this->ipLookupHelper        = $this->createMock(IpLookupHelper::class);
         $this->deviceDetectorFactory = new DeviceDetectorFactory($this->cacheProvider);
         $this->deviceCreatorService  = new DeviceCreatorService();
-        $this->deviceTrackingService = $this->getMockBuilder(DeviceTrackingServiceInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->contactTracker  = $this->createMock(ContactTracker::class);
-        $this->entityManager   = $this->createMock(EntityManager::class);
-        $this->corePermissions = $this->createMock(CorePermissions::class);
-        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
-        $this->urlGenerator    = $this->createMock(UrlGeneratorInterface::class);
-        $this->translator      = $this->createMock(Translator::class);
-        $this->userHelper      = $this->createMock(UserHelper::class);
-        $this->logger          = $this->createMock(LoggerInterface::class);
+        $this->deviceTrackingService = $this->createMock(DeviceTrackingServiceInterface::class);
+        $this->contactTracker        = $this->createMock(ContactTracker::class);
+        $this->entityManager         = $this->createMock(EntityManager::class);
+        $this->corePermissions       = $this->createMock(CorePermissions::class);
+        $this->eventDispatcher       = $this->createMock(EventDispatcherInterface::class);
+        $this->urlGenerator          = $this->createMock(UrlGeneratorInterface::class);
+        $this->translator            = $this->createMock(Translator::class);
+        $this->userHelper            = $this->createMock(UserHelper::class);
+        $this->logger                = $this->createMock(LoggerInterface::class);
 
         $this->assetModel = new AssetModel(
             $this->leadModel,

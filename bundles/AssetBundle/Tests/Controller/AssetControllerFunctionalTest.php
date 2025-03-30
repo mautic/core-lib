@@ -116,9 +116,8 @@ class AssetControllerFunctionalTest extends AbstractAssetTest
 
     /**
      * @param array<string, string[]> $permission
-     *
-     * @dataProvider getValuesProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getValuesProvider')]
     public function testEditWithPermissions(string $route, array $permission, int $expectedStatusCode, string $userCreatorUN): void
     {
         $userCreator = $this->getUser($userCreatorUN);
@@ -149,7 +148,7 @@ class AssetControllerFunctionalTest extends AbstractAssetTest
     /**
      * @return \Generator<string, mixed[]>
      */
-    public function getValuesProvider(): \Generator
+    public static function getValuesProvider(): \Generator
     {
         yield 'The sales user with edit own permission can edits its own asset' => [
             'route'              => 'edit',

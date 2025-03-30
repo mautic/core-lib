@@ -588,9 +588,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(0 === count($this->emailModel->sendEmail($this->emailEntity, [1 => ['id' => 1, 'email' => 'someone@domain.com']])));
     }
 
-    /**
-     * @dataProvider dataStatRecordExistance
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataStatRecordExistance')]
     public function testSendSegmentEmailToContact(bool $recordExist): void
     {
         $sendToContactModelMock  = $this->createMock(SendEmailToContact::class);
@@ -1083,7 +1081,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
     /**
      * @return iterable<int, bool[]>
      */
-    public function dataStatRecordExistance(): iterable
+    public static function dataStatRecordExistance(): iterable
     {
         yield [true];
         yield [false];

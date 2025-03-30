@@ -414,9 +414,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     public function testImportWillNotSetLeadToLeadEventLogWhenLeadSaveFails(): void
     {
         $leadEventLog  = new LeadEventLog();
-        $mockUserModel = $this->getMockBuilder(UserHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockUserModel = $this->createMock(UserHelper::class);
 
         $mockUserModel->method('getUser')
             ->willReturn(new User());
@@ -457,9 +455,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $leadEventLog  = new LeadEventLog();
         $lead          = new Lead();
 
-        $mockUserModel = $this->getMockBuilder(UserHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockUserModel = $this->createMock(UserHelper::class);
 
         $mockUserModel->method('getUser')
             ->willReturn(new User());
@@ -496,9 +492,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testImportWithTagsInCsvFile(): void
     {
-        $mockUserModel = $this->getMockBuilder(UserHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockUserModel = $this->createMock(UserHelper::class);
 
         $mockUserModel->method('getUser')
             ->willReturn(new User());
@@ -536,9 +530,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $lead          = new Lead();
         $lead->setId(21);
 
-        $mockUserModel = $this->getMockBuilder(UserHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockUserModel = $this->createMock(UserHelper::class);
 
         $mockUserModel->method('getUser')
             ->willReturn(new User());

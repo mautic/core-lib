@@ -121,8 +121,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
 
     public function testMergeFieldDataWithLoserAsNewlyUpdated(): void
     {
-        $winner = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $winner = $this->createMock(Lead::class);
         $winner->expects($this->once())
             ->method('getProfileFields')
             ->willReturn(
@@ -133,8 +132,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $loser = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $loser = $this->createMock(Lead::class);
         $loser->expects($this->once())
             ->method('getProfileFields')
             ->willReturn(
@@ -194,8 +192,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
 
     public function testMergeFieldDataWithWinnerAsNewlyUpdated(): void
     {
-        $winner = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $winner = $this->createMock(Lead::class);
         $winner->expects($this->once())
             ->method('getProfileFields')
             ->willReturn(
@@ -206,8 +203,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $loser = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $loser = $this->createMock(Lead::class);
         $loser->expects($this->once())
             ->method('getProfileFields')
             ->willReturn(
@@ -267,8 +263,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
 
     public function testMergeFieldDataWithLoserAsNewlyCreated(): void
     {
-        $winner = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $winner = $this->createMock(Lead::class);
         $winner->expects($this->once())
             ->method('getProfileFields')
             ->willReturn(
@@ -279,8 +274,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $loser = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $loser = $this->createMock(Lead::class);
         $loser->expects($this->once())
             ->method('getProfileFields')
             ->willReturn(
@@ -345,8 +339,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
 
     public function testMergeFieldDataWithWinnerAsNewlyCreated(): void
     {
-        $winner = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $winner = $this->createMock(Lead::class);
         $winner->expects($this->once())
             ->method('getProfileFields')
             ->willReturn(
@@ -357,8 +350,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
                 ]
             );
 
-        $loser = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $loser = $this->createMock(Lead::class);
         $loser->expects($this->once())
             ->method('getProfileFields')
             ->willReturn(
@@ -600,14 +592,12 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
 
     public function testFullMergeThrowsSameContactException(): void
     {
-        $winner = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $winner = $this->createMock(Lead::class);
         $winner->expects($this->once())
             ->method('getId')
             ->willReturn(1);
 
-        $loser = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $loser = $this->createMock(Lead::class);
         $loser->expects($this->once())
             ->method('getId')
             ->willReturn(1);
@@ -619,8 +609,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
 
     public function testFullMerge(): void
     {
-        $winner = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $winner = $this->createMock(Lead::class);
         $winner->expects($this->any())
             ->method('getId')
             ->willReturn(1);
@@ -637,8 +626,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
             ->method('getDateModified')
             ->willReturn(new \DateTime('-30 minutes'));
 
-        $loser = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $loser = $this->createMock(Lead::class);
         $loser->expects($this->any())
             ->method('getId')
             ->willReturn(2);

@@ -15,11 +15,8 @@ use Mautic\PageBundle\Entity\Page;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-/**
- * @runTestsInSeparateProcesses
- *
- * @preserveGlobalState disabled
- */
+#[\PHPUnit\Framework\Attributes\PreserveGlobalState(false)]
+#[\PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses]
 class BuilderSubscriberTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback = false;
@@ -57,9 +54,8 @@ class BuilderSubscriberTest extends MauticMysqlTestCase
      *
      * @param mixed[]           $configParams
      * @param array<string,int> $selectorsAndExpectedCounts
-     *
-     * @dataProvider frequencyFormRenderingDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('frequencyFormRenderingDataProvider')]
     public function testUnsubscribeFormRendersPreferenceCenterPageCorrectly(array $configParams, array $selectorsAndExpectedCounts, bool $hasPreferenceCenter): void
     {
         $emailStat = $this->createStat(
@@ -113,7 +109,7 @@ class BuilderSubscriberTest extends MauticMysqlTestCase
         }
     }
 
-    public function frequencyFormRenderingDataProvider(): \Generator
+    public static function frequencyFormRenderingDataProvider(): \Generator
     {
         yield 'Custom Preference Center: All preferences enabled' => [
             [

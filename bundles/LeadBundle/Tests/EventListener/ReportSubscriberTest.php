@@ -413,9 +413,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportSubscriber->onReportGenerate($this->reportGeneratorEventMock);
     }
 
-    /**
-     * @dataProvider eventDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('eventDataProvider')]
     public function testOnReportBuilder(string $event): void
     {
         if ('companies' != $event) {
@@ -886,9 +884,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $reportBuilderEvent->getTables());
     }
 
-    /**
-     * @dataProvider eventDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('eventDataProvider')]
     public function testReportGenerate(string $context): void
     {
         $matcher = $this->any();
@@ -921,9 +917,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportSubscriber->onReportGenerate($this->reportGeneratorEventMock);
     }
 
-    /**
-     * @dataProvider ReportGraphEventDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('ReportGraphEventDataProvider')]
     public function testonReportGraphGenerate(string $event): void
     {
         $this->reportGraphEventMock->expects($this->once())
@@ -1000,9 +994,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportSubscriber->onReportGraphGenerate($this->reportGraphEventMock);
     }
 
-    /**
-     * @dataProvider ReportGraphEventDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('ReportGraphEventDataProvider')]
     public function testOnReportDisplay(string $event): void
     {
         $this->reportBuilderEventMock->expects($this->any())

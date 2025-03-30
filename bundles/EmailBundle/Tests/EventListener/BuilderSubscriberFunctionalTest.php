@@ -32,16 +32,14 @@ class BuilderSubscriberFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public function dataOneTrackingLinkIsNotUsedForDifferentContacts(): iterable
+    public static function dataOneTrackingLinkIsNotUsedForDifferentContacts(): iterable
     {
         yield 'Invalid unsubscribe_text configured' => ['<!DOCTYPE html><htm><body><a href="https://localhost">link</a></body></html>'];
         yield 'No unsubscribe_text configured' => ['<!DOCTYPE html><htm><body><a href="https://localhost">link</a></body></html>'];
         yield 'Invalid tag attribute for unsubscribe_url' => ['<!DOCTYPE html><htm><body><a href="https://localhost">link</a><a id="{unsubscribe_url}">unsubscribe</a></body></html>'];
     }
 
-    /**
-     * @dataProvider dataOneTrackingLinkIsNotUsedForDifferentContacts
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataOneTrackingLinkIsNotUsedForDifferentContacts')]
     public function testOneTrackingLinkIsNotUsedForDifferentContacts(string $content): void
     {
         $numContacts = 3;

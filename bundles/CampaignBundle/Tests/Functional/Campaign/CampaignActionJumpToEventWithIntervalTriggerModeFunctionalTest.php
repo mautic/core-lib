@@ -29,9 +29,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         parent::setUp();
     }
 
-    /**
-     * @dataProvider dataForCampaignWithJumpToEventWithIntervalTriggerMode
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataForCampaignWithJumpToEventWithIntervalTriggerMode')]
     public function testCampaignWithJumpToEventWithIntervalTriggerMode(Event $adjustPointEvent, callable $assertEventLog): void
     {
         // Create Campaign

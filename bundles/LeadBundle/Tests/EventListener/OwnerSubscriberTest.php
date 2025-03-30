@@ -202,9 +202,7 @@ class OwnerSubscriberTest extends TestCase
 
     protected function getMockLeadModel(): LeadModel&MockObject
     {
-        $mockLeadRepository = $this->getMockBuilder(LeadRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockLeadRepository = $this->createMock(LeadRepository::class);
 
         $mockLeadRepository->method('getLeadOwner')
             ->willReturnMap(
@@ -215,16 +213,12 @@ class OwnerSubscriberTest extends TestCase
                 ]
             );
 
-        $mockLeadModel = $this->getMockBuilder(LeadModel::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockLeadModel = $this->createMock(LeadModel::class);
 
         $mockLeadModel->method('getRepository')
             ->willReturn($mockLeadRepository);
 
-        $mockMailboxHelper = $this->getMockBuilder(Mailbox::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $mockMailboxHelper = $this->createMock(Mailbox::class);
         $mockMailboxHelper->method('isConfigured')
             ->willReturn(false);
 
@@ -326,9 +320,7 @@ class OwnerSubscriberTest extends TestCase
         return $translator;
     }
 
-    /**
-     * @dataProvider onSmsTokenReplacementProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('onSmsTokenReplacementProvider')]
     public function testOnSmsTokenReplacement(string $content, string $expected, Lead $lead): void
     {
         $leadModel      = $this->createMock(LeadModel::class);
@@ -363,8 +355,7 @@ class OwnerSubscriberTest extends TestCase
      */
     public function onSmsTokenReplacementProvider(): array
     {
-        $lead = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $lead = $this->createMock(Lead::class);
         $lead->expects($this->any())
             ->method('getId')
             ->willReturn(1);

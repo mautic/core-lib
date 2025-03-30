@@ -10,11 +10,9 @@ use Mautic\LeadBundle\Segment\Decorator\Date\Other\DateAnniversary;
 use Mautic\LeadBundle\Segment\Decorator\Date\TimezoneResolver;
 use Mautic\LeadBundle\Segment\Decorator\DateDecorator;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(DateAnniversary::class)]
 class DateAnniversaryTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateAnniversary::getOperator
-     */
     public function testGetOperator(): void
     {
         $dateDecorator             = $this->createMock(DateDecorator::class);
@@ -33,9 +31,6 @@ class DateAnniversaryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('like', $filterDecorator->getOperator($contactSegmentFilterCrate));
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateAnniversary::getParameterValue
-     */
     public function testGetParameterValue(): void
     {
         /**
@@ -66,9 +61,6 @@ class DateAnniversaryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedResult, $filterDecorator->getParameterValue($contactSegmentFilterCrate));
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateAnniversary::getParameterValue
-     */
     public function testGetParameterValueWithRelativeDate(): void
     {
         $dateDecorator    = $this->createMock(DateDecorator::class);

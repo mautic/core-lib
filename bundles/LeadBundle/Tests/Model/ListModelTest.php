@@ -86,10 +86,9 @@ class ListModelTest extends TestCase
     }
 
     /**
-     * @dataProvider sourceTypeTestDataProvider
-     *
      * @param string|null $sourceType
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('sourceTypeTestDataProvider')]
     public function testGetSourceLists(array $getLookupResultsReturn, $sourceType, array $expected): void
     {
         $this->prepareMockForTestGetSourcesLists($getLookupResultsReturn);

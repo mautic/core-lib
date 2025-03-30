@@ -100,11 +100,10 @@ class FormatterHelperTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider stringProvider
-     *
      * @param mixed $input
      * @param mixed $expected
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('stringProvider')]
     public function testNormalizeStringValue($input, $expected): void
     {
         date_default_timezone_set('Europe/Paris');
@@ -138,9 +137,7 @@ class FormatterHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider urlFormatProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlFormatProvider')]
     public function testUrlFormat(string $url, string $expected): void
     {
         $result = $this->formatterHelper->_($url, 'url');
@@ -150,7 +147,7 @@ class FormatterHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<string, array<string>>
      */
-    public function urlFormatProvider(): array
+    public static function urlFormatProvider(): array
     {
         return [
             'normal url' => [
@@ -200,9 +197,7 @@ class FormatterHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider emailFormatProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('emailFormatProvider')]
     public function testEmailFormat(string $email, string $expected): void
     {
         $result = $this->formatterHelper->_($email, 'email');
@@ -212,7 +207,7 @@ class FormatterHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<string, array<string>>
      */
-    public function emailFormatProvider(): array
+    public static function emailFormatProvider(): array
     {
         return [
             'normal email' => [

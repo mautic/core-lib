@@ -249,7 +249,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, array{contactLocale: string|null, pageLocale: string|null, expectedLocale: string}>
      */
-    public function dataForTestUnsubscribeFormActionWithUsingLandingPage(): iterable
+    public static function dataForTestUnsubscribeFormActionWithUsingLandingPage(): iterable
     {
         yield 'No page or contact locale, default to "en"' => [
             'contactLocale'  => null,
@@ -300,9 +300,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataForTestUnsubscribeFormActionWithUsingLandingPage
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataForTestUnsubscribeFormActionWithUsingLandingPage')]
     public function testUnsubscribeFormActionWithUsingLandingPage(?string $contactLocale, ?string $pageLocale, string $expectedLocale): void
     {
         $lead = $this->createLead($contactLocale);

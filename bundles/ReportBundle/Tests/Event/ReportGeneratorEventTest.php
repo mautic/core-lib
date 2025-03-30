@@ -287,9 +287,7 @@ class ReportGeneratorEventTest extends TestCase
         $this->reportGeneratorEvent->addCompanyLeftJoin($this->queryBuilder, ReportGeneratorEvent::COMPANY_PREFIX);
     }
 
-    /**
-     * @dataProvider applyFilterProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('applyFilterProvider')]
     public function testApplyFilters(bool $dateOnly, string $condition, string $dateFormat): void
     {
         $tablePrefix = 't';
@@ -334,7 +332,7 @@ class ReportGeneratorEventTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function applyFilterProvider(): array
+    public static function applyFilterProvider(): array
     {
         return [
             [false, 't.a_date IS NULL OR (t.a_date BETWEEN :dateFrom AND :dateTo)', 'Y-m-d H:i:s'],
@@ -342,9 +340,7 @@ class ReportGeneratorEventTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider applyFilterWithoutNullValuesProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('applyFilterWithoutNullValuesProvider')]
     public function testApplyFiltersWithoutNullValues(bool $dateOnly, string $condition, string $dateFormat): void
     {
         $tablePrefix = 't';
@@ -388,7 +384,7 @@ class ReportGeneratorEventTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function applyFilterWithoutNullValuesProvider(): array
+    public static function applyFilterWithoutNullValuesProvider(): array
     {
         return [
             [false, 't.a_date BETWEEN :dateFrom AND :dateTo', 'Y-m-d H:i:s'],

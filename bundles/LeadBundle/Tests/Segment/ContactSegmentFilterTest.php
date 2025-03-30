@@ -410,9 +410,7 @@ class ContactSegmentFilterTest extends TestCase
         self::assertEquals($expectedResult, $result);
     }
 
-    /**
-     * @dataProvider dataDoesColumnSupportEmptyValue
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataDoesColumnSupportEmptyValue')]
     public function testDoesColumnSupportEmptyValue(string $type, bool $doesColumnSupportEmptyValue): void
     {
         $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate(['type' => $type]);
@@ -442,7 +440,7 @@ class ContactSegmentFilterTest extends TestCase
     /**
      * @return iterable<array<bool|string>>
      */
-    public function dataDoesColumnSupportEmptyValue(): iterable
+    public static function dataDoesColumnSupportEmptyValue(): iterable
     {
         yield ['boolean', true];
         yield ['date', false];

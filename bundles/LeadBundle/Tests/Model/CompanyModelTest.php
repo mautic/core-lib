@@ -10,6 +10,7 @@ use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\FieldModel;
 use Symfony\Component\HttpFoundation\Session\Session;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(\Mautic\CoreBundle\Helper\AbstractFormFieldHelper::class)]
 class CompanyModelTest extends \PHPUnit\Framework\TestCase
 {
     /**
@@ -40,11 +41,7 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $this->companyDeduper = $this->createMock(CompanyDeduper::class);
     }
 
-    /**
-     * @testdox Ensure that an array value is flattened before saving
-     *
-     * @covers  \Mautic\CoreBundle\Helper\AbstractFormFieldHelper::parseList
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Ensure that an array value is flattened before saving')]
     public function testArrayValueIsFlattenedBeforeSave(): void
     {
         /** @var CompanyModel $companyModel */

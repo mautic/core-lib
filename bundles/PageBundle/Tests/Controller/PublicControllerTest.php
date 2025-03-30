@@ -43,6 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(TrackingEvent::class)]
 class PublicControllerTest extends MauticMysqlTestCase
 {
     /**
@@ -532,10 +533,6 @@ class PublicControllerTest extends MauticMysqlTestCase
     }
 
     /**
-     * @covers \Mautic\PageBundle\Event\TrackingEvent::getContact
-     * @covers \Mautic\PageBundle\Event\TrackingEvent::getResponse
-     * @covers \Mautic\PageBundle\Event\TrackingEvent::getRequest
-     *
      * @throws \Exception
      */
     public function testMtcTrackingEvent(): void

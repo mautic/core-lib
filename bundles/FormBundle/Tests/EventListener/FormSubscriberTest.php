@@ -114,9 +114,7 @@ New line',
         $this->subscriber->onFormSubmitActionSendEmail($submissionEvent);
     }
 
-    /**
-     * @dataProvider toCcBccProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('toCcBccProvider')]
     public function testOnFormSubmitSendsIfOneOfEmailsEmailsWereSet(?string $to, ?string $cc, ?string $bcc): void
     {
         $subject    = 'subject';

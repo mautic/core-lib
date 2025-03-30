@@ -11,14 +11,13 @@ use Symfony\Component\DomCrawler\Crawler;
 final class VisitedPageConditionControllerFunctionalTest extends MauticMysqlTestCase
 {
     /**
-     * @dataProvider fieldAndValueProvider
-     *
      * @param array<mixed,mixed> $pageUrl
      * @param array<mixed,mixed> $startDate
      * @param array<mixed,mixed> $endDate
      * @param array<mixed,mixed> $accumulativeTime
      * @param array<mixed,mixed> $page
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('fieldAndValueProvider')]
     public function testCreatePageHitConditionForm(
         array $pageUrl,
         array $startDate,

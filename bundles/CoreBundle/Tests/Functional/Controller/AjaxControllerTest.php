@@ -40,9 +40,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         parent::setUp();
     }
 
-    /**
-     * @dataProvider dataForGlobalSearch
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataForGlobalSearch')]
     public function testGlobalSearch(string $searchString, mixed $entity, string $expectedLink): void
     {
         $this->em->persist($entity);
@@ -293,10 +291,9 @@ final class AjaxControllerTest extends MauticMysqlTestCase
     }
 
     /**
-     * @dataProvider dataForGlobalSearchForNonAdminUser
-     *
      * @param array<string, string|int> $roleData
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataForGlobalSearchForNonAdminUser')]
     public function testGlobalSearchForNonAdminUser(
         string $searchString,
         mixed $entity,

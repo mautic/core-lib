@@ -9,11 +9,9 @@ use PHPUnit\Framework\Assert;
 
 /**
  * This test is breaking other tests, so running it in a separate process.
- *
- * @runTestsInSeparateProcesses
- *
- * @preserveGlobalState disabled
  */
+#[\PHPUnit\Framework\Attributes\PreserveGlobalState(false)]
+#[\PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses]
 final class JsControllerTest extends MauticMysqlTestCase
 {
     protected function setUp(): void

@@ -105,9 +105,7 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $this->translator            = $this->createMock(Translator::class);
     }
 
-    /**
-     * @group legacy
-     */
+    #[\PHPUnit\Framework\Attributes\Group('legacy')]
     public function testDeprecatedMethodOtherwiseItLowersCodeCoverageAsItsNoLongerUsed(): void
     {
         $deprecationTriggered = false;
@@ -251,13 +249,11 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
             ->setCampaign($campaign)
             ->setProperties(['jumpToEvent' => 999]);
 
-        $lead = $this->getMockBuilder(Lead::class)
-            ->getMock();
+        $lead = $this->createMock(Lead::class);
         $lead->method('getId')
             ->willReturn(1);
 
-        $log = $this->getMockBuilder(LeadEventLog::class)
-            ->getMock();
+        $log = $this->createMock(LeadEventLog::class);
         $log->method('getLead')
             ->willReturn($lead);
         $log->method('setIsScheduled')

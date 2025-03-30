@@ -7,11 +7,9 @@ use Mautic\LeadBundle\Segment\ContactSegmentFilterCrate;
 use Mautic\LeadBundle\Segment\Decorator\Date\Other\DateDefault;
 use Mautic\LeadBundle\Segment\Decorator\DateDecorator;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(DateDefault::class)]
 class DateDefaultTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateDefault::getParameterValue
-     */
     public function testGetParameterValue(): void
     {
         $dateDecorator             = $this->createMock(DateDecorator::class);

@@ -143,9 +143,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             ->willReturn(new AddressDTO('someone@somewhere.com'));
     }
 
-    /**
-     * @testdox Tests that all contacts are temporarily failed if an Email entity happens to be incorrectly configured
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Tests that all contacts are temporarily failed if an Email entity happens to be incorrectly configured')]
     public function testContactsAreFailedIfSettingEmailEntityFails(): void
     {
         $this->mailHelper->method('setEmail')
@@ -175,13 +173,10 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(4, $failedContacts);
     }
 
-    /**
-     * @testdox Tests that bad emails are failed
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Tests that bad emails are failed')]
     public function testExceptionIsThrownIfEmailIsSentToBadContact(): void
     {
-        $emailMock = $this->getMockBuilder(Email::class)
-            ->getMock();
+        $emailMock = $this->createMock(Email::class);
         $emailMock
             ->expects($this->any())
             ->method('getId')
@@ -231,9 +226,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $failedContacts);
     }
 
-    /**
-     * @testdox Test a tokenized transport that limits batches does not throw BatchQueueMaxException on subsequent contacts when one fails
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Test a tokenized transport that limits batches does not throw BatchQueueMaxException on subsequent contacts when one fails')]
     public function testBadEmailDoesNotCauseBatchQueueMaxExceptionOnSubsequentContacts(): void
     {
         $emailMock = $this->createMock(Email::class);
@@ -298,8 +291,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                     $stat = new Stat();
                     $stat->setEmail($emailMock);
 
-                    $leadMock = $this->getMockBuilder(Lead::class)
-                        ->getMock();
+                    $leadMock = $this->createMock(Lead::class);
                     $leadMock->method('getId')
                         ->willReturn(1);
 
@@ -342,9 +334,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         // We made it this far so all of the emails were processed despite a bad email in the batch
     }
 
-    /**
-     * @testdox Test a tokenized transport that fills tokens correctly
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Test a tokenized transport that fills tokens correctly')]
     public function testBatchQueueContactsHaveTokensHydrated(): void
     {
         $this->coreParametersHelper->method('get')->will($this->returnValueMap([['mailer_from_email', null, 'nobody@nowhere.com'], ['secret_key', null, 'secret']]));
@@ -367,8 +357,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                 }
             );
 
-        $mockDispatcher = $this->getMockBuilder(EventDispatcher::class)
-            ->getMock();
+        $mockDispatcher = $this->createMock(EventDispatcher::class);
         $mockDispatcher->method('dispatch')
             ->willReturnCallback(
                 function (EmailSendEvent $event, $eventName) {
@@ -455,9 +444,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(4, $transport->getMetadatas());
     }
 
-    /**
-     * @testdox Test that stat entries are saved in batches of 20
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Test that stat entries are saved in batches of 20')]
     public function testThatStatEntriesAreCreatedAndPersistedEveryBatch(): void
     {
         $this->coreParametersHelper->method('get')->will($this->returnValueMap([['mailer_from_email', null, 'nobody@nowhere.com'], ['secret_key', null, 'secret']]));
@@ -523,8 +510,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                     $stat = new Stat();
                     $stat->setEmail($emailMock);
 
-                    $leadMock = $this->getMockBuilder(Lead::class)
-                        ->getMock();
+                    $leadMock = $this->createMock(Lead::class);
                     $leadMock->method('getId')
                         ->willReturn(1);
 
@@ -577,9 +563,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(21, $transport->getMetadatas());
     }
 
-    /**
-     * @testdox Test that a failed email from the transport is handled
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Test that a failed email from the transport is handled')]
     public function testThatAFailureFromTransportIsHandled(): void
     {
         $this->coreParametersHelper->method('get')->will($this->returnValueMap([['mailer_from_email', null, 'nobody@nowhere.com'], ['secret_key', null, 'secret']]));
@@ -686,9 +670,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $errorMessages);
     }
 
-    /**
-     * @testdox Test that sending an email with invalid Bcc address is handled
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Test that sending an email with invalid Bcc address is handled')]
     public function testThatInvalidBccFailureIsHandled(): void
     {
         defined('MAUTIC_ENV') or define('MAUTIC_ENV', 'test');

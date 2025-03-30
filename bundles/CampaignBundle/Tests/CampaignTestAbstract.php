@@ -29,26 +29,17 @@ class CampaignTestAbstract extends \PHPUnit\Framework\TestCase
      */
     protected function initCampaignModel()
     {
-        $entityManager = $this
-            ->getMockBuilder(EntityManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $entityManager = $this->createMock(EntityManager::class);
 
-        $security = $this->getMockBuilder(CorePermissions::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $security = $this->createMock(CorePermissions::class);
 
         $security->expects($this->any())
             ->method('isGranted')
             ->will($this->returnValue(true));
 
-        $userHelper = $this->getMockBuilder(UserHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userHelper = $this->createMock(UserHelper::class);
 
-        $formRepository = $this->getMockBuilder(FormRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $formRepository = $this->createMock(FormRepository::class);
 
         $formRepository->expects($this->any())
             ->method('getFormList')

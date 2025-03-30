@@ -420,9 +420,7 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider fieldTypeProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('fieldTypeProvider')]
     public function testSyncListField(string $type): void
     {
         $formEntity = $this->createMock(Form::class);

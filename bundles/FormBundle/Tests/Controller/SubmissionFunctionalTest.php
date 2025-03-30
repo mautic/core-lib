@@ -763,11 +763,10 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @dataProvider formFieldValuesMappingDataProvider
-     *
      * @param array<string, string> $submissionData
      * @param array<string, string> $expectedData
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('formFieldValuesMappingDataProvider')]
     public function testFormFieldValuesMapping(array $submissionData, array $expectedData): void
     {
         $formPayload = [
@@ -923,7 +922,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
     /**
      * @return array<string, array{input: array<string, string>, expected: array<string, string>}>
      */
-    public function formFieldValuesMappingDataProvider(): array
+    public static function formFieldValuesMappingDataProvider(): array
     {
         return [
             'normal_submission' => [
@@ -1040,11 +1039,10 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @dataProvider formCustomFieldsMappingDataProvider
-     *
      * @param array<string, string> $submissionData
      * @param array<string, string> $expectedData
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('formCustomFieldsMappingDataProvider')]
     public function testFormCustomFieldsMapping(array $submissionData, array $expectedData): void
     {
         // Create new contact custom field
@@ -1150,7 +1148,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
     /**
      * @return array<string, array{input: array<string, string>, expected: array<string, string>}>
      */
-    public function formCustomFieldsMappingDataProvider(): array
+    public static function formCustomFieldsMappingDataProvider(): array
     {
         return [
             'simple_value' => [
@@ -1236,9 +1234,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         ];
     }
 
-    /**
-     * @dataProvider htmlFieldSubmissionDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('htmlFieldSubmissionDataProvider')]
     public function testHtmlReadOnlyFieldSubmission(string $submittedHtml, string $submittedEmail): void
     {
         // Create form with freehtml and email fields
@@ -1318,7 +1314,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
     /**
      * @return array<string, array{0: string, 1: string}>
      */
-    public function htmlFieldSubmissionDataProvider(): array
+    public static function htmlFieldSubmissionDataProvider(): array
     {
         return [
             'any_text' => [

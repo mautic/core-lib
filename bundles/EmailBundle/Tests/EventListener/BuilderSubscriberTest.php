@@ -72,9 +72,7 @@ class BuilderSubscriberTest extends TestCase
         $this->translator->method('trans')->willReturn('some translation');
     }
 
-    /**
-     * @dataProvider fixEmailAccessibilityContent
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('fixEmailAccessibilityContent')]
     public function testFixEmailAccessibility(string $content, string $expectedContent, ?string $emailLocale): void
     {
         $this->coreParametersHelper->method('get')->willReturnCallback(function ($key) {
@@ -99,7 +97,7 @@ class BuilderSubscriberTest extends TestCase
     /**
      * @return iterable<array<int,string>>
      */
-    public function fixEmailAccessibilityContent(): iterable
+    public static function fixEmailAccessibilityContent(): iterable
     {
         yield [
             '<html><head></head></html>',
