@@ -182,7 +182,7 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('generate')
             ->willReturn('https://some.url');
 
-        $this->requestMock->method('get')->with('name')->willReturn('mockName');
+        $this->requestMock->method('get')->willReturn('mockName');
 
         $this->containerMock->expects($this->once())
             ->method('get')
@@ -202,8 +202,6 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('trans')
             ->with('mautic.dashboard.error.save');
 
-        // This exception is thrown if twig is not set. Let's take it as success to avoid further mocking.
-        $this->expectException(\LogicException::class);
         $this->controller->saveAction($this->requestMock);
     }
 

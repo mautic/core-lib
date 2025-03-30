@@ -162,6 +162,8 @@ class RouteHelperTest extends TestCase
                 $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BUILD_INTERNAL_OBJECT_ROUTE, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         $csv = $this->routeHelper->getLinkCsv(Contact::NAME, [1, 2]);

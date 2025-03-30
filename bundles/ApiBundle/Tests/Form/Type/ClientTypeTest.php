@@ -101,7 +101,8 @@ class ClientTypeTest extends TestCase
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertEquals($formExitSubscriber, $parameters[0]);
             }
-        })->willReturnSelf();
+            return $this->builder;
+        });
 
         $this->clientType->buildForm($this->builder, $options);
     }

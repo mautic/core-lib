@@ -60,13 +60,15 @@ final class FormFieldNumberTypeTest extends TypeTestCase
                     'label'      => 'mautic.form.field.form.number_precision',
                     'label_attr' => ['class' => 'control-label'],
                     'data'       => 0,
-                    'required'   => false,
                     'attr'       => [
                         'class'   => 'form-control',
                         'tooltip' => 'mautic.form.field.form.number_precision.tooltip',
                     ],
+                    'required'   => false,
                 ], $parameters[2]);
             }
+
+            return $this->formBuilder;
         });
 
         $this->form->buildForm($this->formBuilder, $options);

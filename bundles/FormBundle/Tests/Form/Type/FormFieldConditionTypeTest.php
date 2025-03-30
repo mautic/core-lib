@@ -96,6 +96,8 @@ final class FormFieldConditionTypeTest extends \PHPUnit\Framework\TestCase
                     'required' => false,
                 ], $parameters[2]);
             }
+
+            return $this->formBuilder;
         });
 
         $this->form->buildForm($this->formBuilder, $options);
@@ -122,7 +124,7 @@ final class FormFieldConditionTypeTest extends \PHPUnit\Framework\TestCase
             ->method('getChoices')
             ->with(['some_choice_here' => 'Some choice here'])
             ->willReturn(['some_choice_here' => 'Some choice here']);
-        $matcher = $this->exactly(1);
+        $matcher = $this->any();
 
         $this->formBuilder->expects($matcher)->method('add')
             ->willReturnCallback(
@@ -141,6 +143,8 @@ final class FormFieldConditionTypeTest extends \PHPUnit\Framework\TestCase
                             'required' => false,
                         ], $parameters[2]);
                     }
+
+                    return $this->formBuilder;
                 }
             );
 

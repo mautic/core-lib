@@ -53,7 +53,7 @@ class ExampleSendTypeTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $matcher = self::exactly(2);
         $builder->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('emails', $parameters[0]);
                 $this->assertSame(SortableListType::class, $parameters[1]);
@@ -73,6 +73,8 @@ class ExampleSendTypeTest extends TestCase
                     'save_icon'  => 'ri-send-plane-line',
                 ], $parameters[2]);
             }
+
+            return $builder;
         });
 
         $this->security->expects(self::once())
@@ -115,7 +117,7 @@ class ExampleSendTypeTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $matcher = self::exactly(4);
         $builder->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('emails', $parameters[0]);
                 $this->assertSame(SortableListType::class, $parameters[1]);
@@ -154,6 +156,8 @@ class ExampleSendTypeTest extends TestCase
                     'save_icon'  => 'ri-send-plane-line',
                 ], $parameters[2]);
             }
+
+            return $builder;
         });
 
         $this->security->expects(self::once())

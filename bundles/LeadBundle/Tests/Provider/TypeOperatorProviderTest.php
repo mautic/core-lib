@@ -183,6 +183,8 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
                 $callback($parameters[0]);
                 $this->assertSame(LeadEvents::COLLECT_OPERATORS_FOR_FIELD, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         $this->assertSame(

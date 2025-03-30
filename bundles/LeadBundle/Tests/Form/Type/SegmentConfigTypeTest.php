@@ -72,6 +72,8 @@ final class SegmentConfigTypeTest extends TestCase
                 $this->assertSame(NumberType::class, $parameters[1]);
                 $this->assertSame($buildParameters, $parameters[2]);
             }
+
+            return $this->formBuilderInterface;
         });
 
         $this->segmentConfigType->buildForm($this->formBuilderInterface, []);

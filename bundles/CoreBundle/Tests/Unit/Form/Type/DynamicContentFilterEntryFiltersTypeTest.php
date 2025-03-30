@@ -44,7 +44,7 @@ class DynamicContentFilterEntryFiltersTypeTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $matcher = self::exactly(4);
         $builder->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('glue', $parameters[0]);
                 $this->assertSame(ChoiceType::class, $parameters[1]);
@@ -72,23 +72,23 @@ class DynamicContentFilterEntryFiltersTypeTest extends TestCase
                 $this->assertSame('type', $parameters[0]);
                 $this->assertSame(HiddenType::class, $parameters[1]);
             }
+
+            return $builder;
         });
         $matcher = $this->exactly(2);
 
         $builder->expects($matcher)
-            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
-                $this->assertSame(function ($event) {
-                    self::assertInstanceOf(FormEvent::class, $event);
-                }, $parameters[1]);
+                $this->assertIsCallable($parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
-                $this->assertSame(function ($event) {
-                    self::assertInstanceOf(FormEvent::class, $event);
-                }, $parameters[1]);
+                $this->assertIsCallable($parameters[1]);
             }
+
+            return $builder;
         });
 
         $this->form->buildForm($builder, []);

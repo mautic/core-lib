@@ -98,6 +98,8 @@ final class IntegrationSyncSettingsObjectFieldTypeTest extends \PHPUnit\Framewor
                     ],
                 ], $parameters[2]);
             }
+
+            return $this->formBuilder;
         });
 
         $this->form->buildForm($this->formBuilder, $options);

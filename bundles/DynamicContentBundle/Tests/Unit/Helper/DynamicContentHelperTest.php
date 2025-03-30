@@ -150,6 +150,8 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
                 $callback($parameters[0]);
                 $this->assertSame(DynamicContentEvents::TOKEN_REPLACEMENT, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         Assert::assertSame(
@@ -197,6 +199,8 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
                         $callback($parameters[0]);
                         $this->assertSame(DynamicContentEvents::ON_CONTACTS_FILTER_EVALUATE, $parameters[1]);
                     }
+
+                    return $parameters[0];
                 }
             );
 
@@ -242,6 +246,7 @@ class DynamicContentHelperTest extends \PHPUnit\Framework\TestCase
                         $callback($parameters[0]);
                         $this->assertSame(DynamicContentEvents::TOKEN_REPLACEMENT, $parameters[1]);
                     }
+                    return $parameters[0];
                 }
             );
 

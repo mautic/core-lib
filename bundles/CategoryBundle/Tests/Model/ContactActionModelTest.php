@@ -128,6 +128,8 @@ class ContactActionModelTest extends \PHPUnit\Framework\TestCase
                 $this->assertSame($this->contactMock6, $parameters[0]);
                 $this->assertSame($categories, $parameters[1]);
             }
+
+            return $categories;
         });
 
         $this->actionModel->addContactsToCategories($contacts, $categories);

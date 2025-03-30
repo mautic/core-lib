@@ -373,6 +373,8 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
                 $callback($parameters[0]);
                 $this->assertSame(CampaignEvents::ON_EVENT_SCHEDULED_BATCH, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         $scheduler         = new EventScheduler(

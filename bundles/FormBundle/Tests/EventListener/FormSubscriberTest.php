@@ -439,6 +439,8 @@ New line',
             if ($matcher->getInvocationCount() === 3) {
                 $this->assertSame([$ownerEmail => null], $parameters[0]);
             }
+
+            return true;
         });
         $this->mailer->expects(self::once())
             ->method('setCc')

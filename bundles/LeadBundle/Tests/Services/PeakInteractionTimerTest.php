@@ -32,7 +32,7 @@ class TestablePeakInteractionTimer extends PeakInteractionTimer
 
 class PeakInteractionTimerTest extends TestCase
 {
-    private MockObject|CoreParametersHelper $coreParametersHelperMock;
+    private MockObject&CoreParametersHelper $coreParametersHelperMock;
 
     /**
      * @var StatRepository|MockObject
@@ -79,7 +79,7 @@ class PeakInteractionTimerTest extends TestCase
                 ['peak_interaction_timer_best_default_days', null, $this->peakInteractionTimerBestDefaultDays],
                 ['peak_interaction_timer_fetch_interactions_from', null, $this->peakInteractionTimerFetchInteractionsFrom],
                 ['peak_interaction_timer_fetch_limit', null, $this->peakInteractionTimerFetchLimit],
-                ['default_timezone', null, $this->defaultTimezone],
+                ['default_timezone', 'UTC', $this->defaultTimezone],
             ]);
 
         $createCacheItem = \Closure::bind(

@@ -69,7 +69,7 @@ class FormSubmitActionUserEmailTypeTest extends \PHPUnit\Framework\TestCase
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame('user_id', $parameters[0]);
                 $this->assertSame(UserListType::class, $parameters[1]);
-                $this->assertSame([
+                $this->assertEquals([
                     'label'      => 'mautic.email.form.users',
                     'label_attr' => ['class' => 'control-label'],
                     'attr'       => [
@@ -84,6 +84,8 @@ class FormSubmitActionUserEmailTypeTest extends \PHPUnit\Framework\TestCase
                     ),
                 ], $parameters[2]);
             }
+
+            return $this->formBuilder;
         });
 
         $this->form->buildForm($this->formBuilder, $options);

@@ -99,6 +99,8 @@ class OrderExecutionerTest extends TestCase
                 $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         $this->mappingHelper->expects($this->exactly(1))
@@ -166,6 +168,8 @@ class OrderExecutionerTest extends TestCase
                 $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         $this->mappingHelper->expects($this->exactly(1))
@@ -210,6 +214,8 @@ class OrderExecutionerTest extends TestCase
                 $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         $this->mappingHelper->expects($this->exactly(1))
@@ -339,6 +345,8 @@ class OrderExecutionerTest extends TestCase
                 $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_CREATE_INTERNAL_OBJECTS, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         $this->mappingHelper->expects($this->exactly(2))

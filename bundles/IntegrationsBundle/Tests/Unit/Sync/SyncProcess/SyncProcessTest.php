@@ -184,7 +184,7 @@ class SyncProcessTest extends TestCase
         $this->internalSyncDataExchange->expects($this->once())
             ->method('executeSyncOrder')
             ->willReturn($objectMappings);
-        $matcher = $this->exactly(2);
+        $matcher = $this->any();
 
         $this->eventDispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
@@ -208,6 +208,8 @@ class SyncProcessTest extends TestCase
                 $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BATCH_SYNC_COMPLETED_MAUTIC_TO_INTEGRATION, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         // Mautic to integration

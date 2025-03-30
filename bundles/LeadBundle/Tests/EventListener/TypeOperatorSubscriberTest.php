@@ -308,6 +308,8 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 };
                 $callback($parameters[2]);
             }
+
+            return $this->form;
         });
 
         $this->subscriber->onSegmentFilterFormHandleLookupId($event);
@@ -359,6 +361,8 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 };
                 $callback($parameters[2]);
             }
+
+            return $this->form;
         });
 
         $this->subscriber->onSegmentFilterFormHandleLookupId($event);

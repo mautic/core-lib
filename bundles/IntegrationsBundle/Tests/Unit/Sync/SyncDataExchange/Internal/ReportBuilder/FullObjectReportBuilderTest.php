@@ -261,6 +261,8 @@ class FullObjectReportBuilderTest extends TestCase
                 $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_CONTACT_REPORT_BUILD, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         $report  = $this->reportBuilder->buildReport($requestDAO);
@@ -364,6 +366,8 @@ class FullObjectReportBuilderTest extends TestCase
                 $callback($parameters[0]);
                 $this->assertSame(IntegrationEvents::INTEGRATION_BEFORE_FULL_COMPANY_REPORT_BUILD, $parameters[1]);
             }
+
+            return $parameters[0];
         });
 
         $report  = $this->reportBuilder->buildReport($requestDAO);

@@ -68,7 +68,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
         // Adding a filter with an existing field:
         $matcher = $this->exactly(2);
         $builder->expects($matcher)
-            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
             /** @var FormInterface<FormBuilderInterface>&MockObject $form */
             $form = $this->createMock(FormInterface::class);
             if ($matcher->getInvocationCount() === 1) {
@@ -103,8 +103,8 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
                 };
                 $callback($parameters[1]);
             }
-            return $form;
-        })->willReturnSelf();
+            return $builder;
+        });
 
         $this->form->buildForm($builder, $options);
     }
@@ -141,7 +141,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
 
         // Adding a filter with an existing field:
         $builder->expects($matcher)
-            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
                 $callback = function (callable $formModifier) {
@@ -209,11 +209,9 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
-                $this->assertSame(function (): void {
-                    // don't do anything for this test
-                }, $parameters[1]);
             }
-        })->willReturnSelf();
+            return $builder;
+        });
 
         $this->form->buildForm($builder, $options);
     }
