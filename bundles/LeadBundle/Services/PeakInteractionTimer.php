@@ -153,8 +153,6 @@ class PeakInteractionTimer
 
     private function getDefaultTimezone(): \DateTimeZone
     {
-        $a = $this->coreParametersHelper->get('default_timezone', 'UTC');
-
         return $this->defaultTimezone ??= new \DateTimeZone(
             $this->coreParametersHelper->get('default_timezone', 'UTC')
         );
