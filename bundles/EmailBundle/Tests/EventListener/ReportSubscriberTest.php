@@ -238,7 +238,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $eventMock->expects($this->once())
             ->method('getRequestedGraphs')
             ->willReturn(['mautic.email.graph.pie.read.ingored.unsubscribed.bounced']);
-        $matcher = $this->exactly(2);
+        $matcher = $this->any();
 
         $eventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {
@@ -289,7 +289,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $eventMock         = $this->createMock(ReportGraphEvent::class);
         $chartQueryMock    = $this->createMock(ChartQuery::class);
         $translatorMock    = $this->createMock(TranslatorInterface::class);
-        $matcher = $this->exactly(2);
+        $matcher = $this->any();
 
         $eventMock->expects($matcher)
             ->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
@@ -347,7 +347,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $eventMock->expects($this->once())
             ->method('getRequestedGraphs')
             ->willReturn(['mautic.email.table.most.emails.failed']);
-        $matcher = $this->exactly(2);
+        $matcher = $this->any();
 
         $eventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {

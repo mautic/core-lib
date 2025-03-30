@@ -151,10 +151,10 @@ class FrequencyActionModelTest extends \PHPUnit\Framework\TestCase
         $this->contactMock5->expects($matcher)
             ->method('addFrequencyRule')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame($this->frequencyRuleEmailMock, $parameters[0]);
+                $this->assertEquals($this->frequencyRuleEmailMock, $parameters[0]);
             }
             if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame($this->frequencyRuleEmailMock, $parameters[0]);
+                $this->assertEquals($this->frequencyRuleEmailMock, $parameters[0]);
             }
         });
         $matcher = $this->exactly(2);

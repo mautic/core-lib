@@ -60,34 +60,10 @@ class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
                 'readRate'   => 50,
             ],
         ];
-        $matcher = $this->exactly(6);
-
-        $this->translator->expects($matcher)->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
-                return 'opened';
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mautic.email.abtest.label.sent', $parameters[0]);
-                return 'sent';
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
-                return 'opened';
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertSame('mautic.email.abtest.label.sent', $parameters[0]);
-                return 'sent';
-            }
-            if ($matcher->getInvocationCount() === 5) {
-                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
-                return 'opened';
-            }
-            if ($matcher->getInvocationCount() === 6) {
-                $this->assertSame('mautic.email.abtest.label.sent', $parameters[0]);
-                return 'sent';
-            }
-        });
+        $this->translator->method('trans')->willReturnMap([
+            ['mautic.email.abtest.label.opened', [], null, null, 'opened'],
+            ['mautic.email.abtest.label.sent', [], null, null, 'sent'],
+        ]);
 
         $this->em->expects($this->once())
             ->method('getRepository')
@@ -143,34 +119,14 @@ class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
             1 => 168,
             2 => 153,
         ];
-        $matcher = $this->exactly(6);
 
-        $this->translator->expects($matcher)->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('mautic.email.abtest.label.clickthrough', $parameters[0]);
-                return 'clickthrough';
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
-                return 'opened';
-            }
-            if ($matcher->getInvocationCount() === 3) {
-                $this->assertSame('mautic.email.abtest.label.clickthrough', $parameters[0]);
-                return 'clickthrough';
-            }
-            if ($matcher->getInvocationCount() === 4) {
-                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
-                return 'opened';
-            }
-            if ($matcher->getInvocationCount() === 5) {
-                $this->assertSame('mautic.email.abtest.label.clickthrough', $parameters[0]);
-                return 'clickthrough';
-            }
-            if ($matcher->getInvocationCount() === 6) {
-                $this->assertSame('mautic.email.abtest.label.opened', $parameters[0]);
-                return 'opened';
-            }
-        });
+        $this->translator->method('trans')->willReturnMap(
+            [
+                ['mautic.email.abtest.label.clickthrough', [], null, null, 'clickthrough'],
+                ['mautic.email.abtest.label.opened', [], null, null, 'opened'],
+            ]
+        );
+
         $matcher = $this->exactly(2);
 
         $this->em->expects($matcher)->method('getRepository')->willReturnCallback(function (...$parameters) use ($matcher, $pageRepoMock, $emailRepoMock) {

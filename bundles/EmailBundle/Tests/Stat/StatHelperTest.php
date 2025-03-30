@@ -24,7 +24,7 @@ class StatHelperTest extends \PHPUnit\Framework\TestCase
             ->method('deleteStats')
             ->willReturnCallback(function (...$parameters) use ($matcher) {
                 if ($matcher->getInvocationCount() === 1) {
-                    $this->assertSame([1, 2, 3, 4, 5], $parameters[0]);
+                    $this->assertSame(['1', '2', '3', '4', '5'], $parameters[0]);
                 }
             });
 

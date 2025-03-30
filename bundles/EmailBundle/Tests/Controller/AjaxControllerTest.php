@@ -180,14 +180,16 @@ class AjaxControllerTest extends \PHPUnit\Framework\TestCase
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('mautic.email.send.progress', $parameters[0]);
+                return [0, 100];
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame('mautic.email.send.stats', $parameters[0]);
+                return ['sent' => 0, 'failed' => 0, 'failedRecipients' => []];
             }
             if ($matcher->getInvocationCount() === 3) {
                 $this->assertSame('mautic.email.send.active', $parameters[0]);
+                return false;
             }
-            return [0, 100];
         });
 
         $this->emailMock->expects($this->once())

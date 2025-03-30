@@ -140,42 +140,34 @@ class FormUploaderTest extends \PHPUnit\Framework\TestCase
 
         $form1Mock->expects($this->once())
             ->method('getId')
-            ->with()
             ->willReturn($this->formId1);
 
         $field1Mock->expects($this->once())
             ->method('getId')
-            ->with()
             ->willReturn('fieldId1');
 
         $field1Mock->expects($this->once())
             ->method('getForm')
-            ->with()
             ->willReturn($form1Mock);
 
         $field1Mock->expects($this->once())
             ->method('getAlias')
-            ->with()
             ->willReturn('file1');
 
         $form2Mock->expects($this->once())
             ->method('getId')
-            ->with()
             ->willReturn($this->formId2);
 
         $field2Mock->expects($this->once())
             ->method('getId')
-            ->with()
             ->willReturn('fieldId2');
 
         $field2Mock->expects($this->once())
             ->method('getForm')
-            ->with()
             ->willReturn($form2Mock);
 
         $field2Mock->expects($this->once())
             ->method('getAlias')
-            ->with()
             ->willReturn('file2');
 
         $filesToUpload = new UploadFileCrate();
@@ -199,7 +191,7 @@ class FormUploaderTest extends \PHPUnit\Framework\TestCase
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame($path2, $parameters[0]);
                 $this->assertSame($file2Mock, $parameters[1]);
-                return $this->throwException(new FileUploadException());
+                throw new FileUploadException();
             }
         });
 

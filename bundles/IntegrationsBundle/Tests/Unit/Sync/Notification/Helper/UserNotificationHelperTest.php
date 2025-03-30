@@ -75,11 +75,9 @@ class UserNotificationHelperTest extends TestCase
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
-                $this->assertSame($this->anything(), $parameters[1]);
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame('mautic.integration.sync.user_notification.sync_error', $parameters[0]);
-                $this->assertSame($this->anything(), $parameters[1]);
             }
             return 'test';
         });

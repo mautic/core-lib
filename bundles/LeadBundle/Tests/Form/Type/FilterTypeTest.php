@@ -89,7 +89,7 @@ final class FilterTypeTest extends \PHPUnit\Framework\TestCase
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
-                $callback = function (callable $formModifier) use ($matcher, $form) {
+                $callback = function (callable $formModifier) use ($form) {
                     $data = [
                         'field'    => 'deleted',
                         'object'   => 'lead',

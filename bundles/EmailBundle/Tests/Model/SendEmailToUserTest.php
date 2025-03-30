@@ -147,12 +147,12 @@ class SendEmailToUserTest extends \PHPUnit\Framework\TestCase
             if ($matcher->getInvocationCount() === 1) {
                 $this->assertSame('unpublished-field', $parameters[0]);
                 $this->assertSame('email', $parameters[1]);
-                return $this->throwException(new RecordNotPublishedException());
+                throw new RecordNotPublishedException();
             }
             if ($matcher->getInvocationCount() === 2) {
                 $this->assertSame('unpublished-field', $parameters[0]);
                 $this->assertSame('email', $parameters[1]);
-                return $this->throwException(new RecordNotPublishedException());
+                throw new RecordNotPublishedException();
             }
             if ($matcher->getInvocationCount() === 3) {
                 $this->assertSame('active-field', $parameters[0]);
@@ -196,7 +196,7 @@ class SendEmailToUserTest extends \PHPUnit\Framework\TestCase
             }
             if ($matcher->getInvocationCount() === 4) {
                 $this->assertSame('{invalid-token}', $parameters[0]);
-                return $this->throwException(new InvalidEmailException('{invalid-token}'));
+                return throw new InvalidEmailException('{invalid-token}');
             }
         });
         // Send email method

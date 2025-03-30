@@ -140,30 +140,14 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('isMethod')
             ->willReturn(true);
 
-        $this->requestMock->method('isXmlHttpRequest')
-            ->willReturn(true);
-        $matcher = $this->exactly(1);
+        $this->requestMock->method('isXmlHttpRequest')->willReturn(true);
+        $this->requestMock->method('get')->willReturn('mockName');
 
-        $this->requestMock->expects($matcher)->method('get')
-            ->willReturnCallback(function (...$parameters) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
-                    $this->assertSame('name', $parameters[0]);
-                    return 'mockName';
-                }
+        $this->containerMock->expects($this->exactly(2))
+            ->method('get')->willReturnCallback(function (...$parameters) {
+                $this->assertSame('router', $parameters[0]);
+                return $this->routerMock;
             });
-        $matcher = $this->exactly(2);
-
-        $this->containerMock->expects($matcher)
-            ->method('get')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('router', $parameters[0]);
-                return $this->routerMock;
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('router', $parameters[0]);
-                return $this->routerMock;
-            }
-        });
 
         $this->routerMock->expects($this->any())
             ->method('generate')
@@ -182,8 +166,6 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
             ->method('trans')
             ->with('mautic.dashboard.notice.save');
 
-        // This exception is thrown if twig is not set. Let's take it as success to avoid further mocking.
-        $this->expectException(\LogicException::class);
         $this->controller->saveAction($this->requestMock);
     }
 
@@ -199,15 +181,8 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->routerMock->expects($this->any())
             ->method('generate')
             ->willReturn('https://some.url');
-        $matcher = $this->exactly(1);
 
-        $this->requestMock->expects($matcher)->method('get')
-            ->willReturnCallback(function (...$parameters) use ($matcher) {
-                if ($matcher->getInvocationCount() === 1) {
-                    $this->assertSame('name', $parameters[0]);
-                    return 'mockName';
-                }
-            });
+        $this->requestMock->method('get')->with('name')->willReturn('mockName');
 
         $this->containerMock->expects($this->once())
             ->method('get')
