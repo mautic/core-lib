@@ -265,7 +265,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $this->leadModel->saveEntity($entity);
 
         $this->assertNull($entity->getCompany());
-        $this->assertTrue(empty($entity->getUpdatedFields()['company']));
+        $this->assertEmpty($entity->getUpdatedFields()['company']);
     }
 
     public function testIpLookupAddsCompanyIfDoesNotExistInEntity(): void
@@ -713,12 +713,10 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->entityManagerMock->expects($this->any())
             ->method('getRepository')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        [Lead::class, $this->leadRepositoryMock],
-                    ]
-                )
+            ->willReturnMap(
+                [
+                    [Lead::class, $this->leadRepositoryMock],
+                ]
             );
     }
 

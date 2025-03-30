@@ -315,7 +315,7 @@ class OwnerSubscriberTest extends TestCase
         $translator = $this->createMock(Translator::class);
         $translator->expects($this->any())
             ->method('hasId')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         return $translator;
     }

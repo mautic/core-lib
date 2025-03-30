@@ -133,11 +133,11 @@ class CampaignBuilderEventTest extends CampaignTestAbstract
 
         $translator->expects($this->any())
             ->method('trans')
-            ->will($this->returnCallback(function () {
+            ->willReturnCallback(function () {
                 $args = func_get_args();
 
                 return $args[0];
-            }));
+            });
 
         return new CampaignBuilderEvent($translator);
     }

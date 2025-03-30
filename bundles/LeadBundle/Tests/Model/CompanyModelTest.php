@@ -97,7 +97,7 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
 
         $this->setProperty($companyModel, CompanyModel::class, 'companyDeduper', $companyDeduper);
-        $duplicatedCompany->expects($this->exactly(1))->method('addUpdatedField');
+        $duplicatedCompany->expects($this->once())->method('addUpdatedField');
         $companyModel->importCompany([], [], null, false, false);
     }
 
@@ -156,11 +156,11 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
             ->getMock();
 
         $companyModel->method('fetchCompanyFields')
-            ->will($this->returnValue([
+            ->willReturn([
                 ['alias' => 'companyname'],
                 ['alias' => 'companyemail'],
                 ['alias' => 'companyindustry'],
-            ]));
+            ]);
 
         $fields = [
             'email'           => 'i_contact_email',

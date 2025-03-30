@@ -54,12 +54,12 @@ class MailboxTest extends \PHPUnit\Framework\TestCase
         $parametersHelper = $this->createMock(CoreParametersHelper::class);
         $parametersHelper->expects($this->once())
             ->method('get')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
 
         $pathsHelper = $this->createMock(PathsHelper::class);
         $pathsHelper->expects($this->once())
             ->method('getSystemPath')
-            ->will($this->returnValue(__DIR__.'/../../../../cache/'));
+            ->willReturn(__DIR__ . '/../../../../cache/');
 
         $mailbox = new \Mautic\EmailBundle\MonitoredEmail\Mailbox($parametersHelper, $pathsHelper);
 
@@ -97,12 +97,12 @@ class MailboxTest extends \PHPUnit\Framework\TestCase
         $parametersHelper = $this->createMock(CoreParametersHelper::class);
         $parametersHelper->expects($this->once())
             ->method('get')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
 
         $pathsHelper = $this->createMock(PathsHelper::class);
         $pathsHelper->expects($this->once())
             ->method('getSystemPath')
-            ->will($this->returnValue(__DIR__.'/../../../../cache/'));
+            ->willReturn(__DIR__ . '/../../../../cache/');
 
         $mailbox = new \Mautic\EmailBundle\MonitoredEmail\Mailbox($parametersHelper, $pathsHelper);
 
@@ -131,7 +131,7 @@ class MailboxTest extends \PHPUnit\Framework\TestCase
         $parametersHelper = $this->createMock(CoreParametersHelper::class);
         $parametersHelper->expects($this->once())
             ->method('get')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
 
         $pathsHelper = $this->createMock(PathsHelper::class);
 
@@ -154,13 +154,13 @@ class MailboxTest extends \PHPUnit\Framework\TestCase
         $parametersHelper = $this->createMock(CoreParametersHelper::class);
         $parametersHelper->expects($this->once())
             ->method('get')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
 
         $pathsHelper = $this->createMock(PathsHelper::class);
         $pathsHelper->expects($this->once())
             ->method('getSystemPath')
             ->with('tmp', true)
-            ->will($this->returnValue(__DIR__.'/../../../../cache/tmp'));
+            ->willReturn(__DIR__ . '/../../../../cache/tmp');
 
         new \Mautic\EmailBundle\MonitoredEmail\Mailbox($parametersHelper, $pathsHelper);
     }

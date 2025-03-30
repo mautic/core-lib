@@ -44,7 +44,7 @@ final class LeadFieldRepositoryTest extends TestCase
 
         $this->connection->expects($this->exactly(2))
             ->method('createQueryBuilder')
-            ->will($this->onConsecutiveCalls($builderCompare, $builderAlias));
+            ->willReturnOnConsecutiveCalls($builderCompare, $builderAlias);
 
         $builderAlias->expects($this->once())
             ->method('select')
@@ -150,7 +150,7 @@ final class LeadFieldRepositoryTest extends TestCase
 
         $this->connection->expects($this->exactly(2))
             ->method('createQueryBuilder')
-            ->will($this->onConsecutiveCalls($builderCompare, $builderAlias));
+            ->willReturnOnConsecutiveCalls($builderCompare, $builderAlias);
 
         $builderAlias->expects($this->once())
             ->method('select')

@@ -119,13 +119,13 @@ class FromEmailHelperTest extends TestCase
     public function testDefaultIsReturnedWhenOwnerNotFound(): void
     {
         $this->coreParametersHelper->method('get')
-            ->willReturn($this->returnValueMap(
+            ->willReturnMap(
                 [
                     ['mailer_from_email', null, 'someone@somewhere.com'],
                     ['mailer_from_name', null, 'Someone'],
                     ['mailer_is_owner', null, true],
                 ]
-            ));
+            );
 
         $defaultFrom = new AddressDTO('someone@somewhere.com', 'Someone');
         $contact     = ['owner_id' => 1];
@@ -662,13 +662,13 @@ class FromEmailHelperTest extends TestCase
     public function testEmptySignatureIsReturnedWhenOwnerIsNotFound(): void
     {
         $this->coreParametersHelper->method('get')
-            ->willReturn($this->returnValueMap(
+            ->willReturnMap(
                 [
                     ['mailer_from_email', null, 'someone@somewhere.com'],
                     ['mailer_from_name', null, 'Someone'],
                     ['mailer_is_owner', null, true],
                 ]
-            ));
+            );
 
         $this->leadRepository->expects($this->once())
             ->method('getLeadOwner')
@@ -741,7 +741,7 @@ class FromEmailHelperTest extends TestCase
         $params = [
             ['mailer_is_owner', null, true],
         ];
-        $this->coreParametersHelper->method('get')->will($this->returnValueMap($params));
+        $this->coreParametersHelper->method('get')->willReturnMap($params);
 
         $user = [
             'id'         => 1,

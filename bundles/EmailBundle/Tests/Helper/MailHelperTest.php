@@ -1557,7 +1557,7 @@ class MailHelperTest extends TestCase
             ['mailer_from_name', null, 'No Body'],
             ['mailer_address_length_limit', null, 30], // Set a small address length limit for testing
         ];
-        $this->coreParametersHelper->method('get')->will($this->returnValueMap($params));
+        $this->coreParametersHelper->method('get')->willReturnMap($params);
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);

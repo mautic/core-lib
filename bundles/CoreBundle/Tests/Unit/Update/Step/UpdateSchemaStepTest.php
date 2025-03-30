@@ -84,16 +84,16 @@ class UpdateSchemaStepTest extends AbstractStepTest
         /** @var ContainerInterface|MockObject $container */
         $container = $this->createMock(ContainerInterface::class);
         $container->method('get')
-            ->will($this->returnValueMap([
+            ->willReturnMap([
                 ['kernel', ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, $this->kernel],
                 ['event_dispatcher', ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, $this->eventDispatcher],
                 ['doctrine:migrations:migrate', ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, $this->migrateCommand],
-            ]));
+            ]);
         $container->method('hasParameter')
-            ->will($this->returnValueMap([
+            ->willReturnMap([
                 ['console.command.ids', true],
                 ['console.lazy_command.ids', false],
-            ]));
+            ]);
 
         $container->method('getParameter')
             ->with('console.command.ids')

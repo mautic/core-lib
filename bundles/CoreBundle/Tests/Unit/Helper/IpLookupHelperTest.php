@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 #[\PHPUnit\Framework\Attributes\CoversClass(IpLookupHelper::class)]
 class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
 {
-    public function __construct($name = null, array $data = [], $dataName = '')
+    public function __construct($name = null)
     {
-        parent::__construct($name, $data, $dataName);
+        parent::__construct($name);
     }
 
     protected function setUp(): void
@@ -92,7 +92,7 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
         $mockEm = $this->createMock(EntityManager::class);
         $mockEm->expects($this->any())
             ->method('getRepository')
-            ->will($this->returnValue($mockRepository));
+            ->willReturn($mockRepository);
 
         if (is_null($mockCoreParametersHelper)) {
             $mockCoreParametersHelper = $this->createMock(CoreParametersHelper::class);

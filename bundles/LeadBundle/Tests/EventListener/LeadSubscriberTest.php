@@ -165,7 +165,7 @@ class LeadSubscriberTest extends CommonMocks
 
         $this->translator->expects($this->once())
             ->method('trans')
-            ->will($this->returnValue($eventTypeName));
+            ->willReturn($eventTypeName);
 
         $lead = new Lead();
 

@@ -46,13 +46,9 @@ class BuilderSubscriberTest extends TestCase
      */
     private $translator;
 
-    /**
-     * @param array<mixed> $data
-     * @param int|string   $dataName
-     */
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    public function __construct(?string $name = null)
     {
-        parent::__construct($name, $data, $dataName);
+        parent::__construct($name);
 
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $this->emailModel           = $this->createMock(EmailModel::class);

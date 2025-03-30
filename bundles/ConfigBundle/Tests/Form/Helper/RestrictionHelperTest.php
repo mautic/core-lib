@@ -211,10 +211,10 @@ class RestrictionHelperTest extends TypeTestCase
         $validator = $this->createMock(ValidatorInterface::class);
         $validator
             ->method('validate')
-            ->will($this->returnValue(new ConstraintViolationList()));
+            ->willReturn(new ConstraintViolationList());
         $validator
             ->method('getMetadataFor')
-            ->will($this->returnValue(new ClassMetadata(Form::class)));
+            ->willReturn(new ClassMetadata(Form::class));
 
         $imapHelper = $this->createMock(Mailbox::class);
 

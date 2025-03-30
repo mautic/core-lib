@@ -66,16 +66,16 @@ class CustomFieldRepositoryTraitTest extends StandardImportTestHelper
     {
         $mockTrait = $this->getMockForTrait(CustomFieldRepositoryTrait::class, [], '', false, true, true, ['getCustomFieldList', 'getBaseColumns', 'getClassName', 'getFieldGroups']);
         $mockTrait->method('getCustomFieldList')
-            ->will($this->returnValue([$this->fields, $this->fixedFields]));
+            ->willReturn([$this->fields, $this->fixedFields]);
 
         $mockTrait->method('getBaseColumns')
-            ->will($this->returnValue($this->baseColumns));
+            ->willReturn($this->baseColumns);
 
         $mockTrait->method('getClassName')
-            ->will($this->returnValue(\Mautic\LeadBundle\Entity\Lead::class));
+            ->willReturn(\Mautic\LeadBundle\Entity\Lead::class);
 
         $mockTrait->method('getFieldGroups')
-            ->will($this->returnValue($this->fieldGroups));
+            ->willReturn($this->fieldGroups);
 
         $reflectedMockTrait = new \ReflectionObject($mockTrait);
         $method             = $reflectedMockTrait->getMethod('formatFieldValues');
@@ -128,16 +128,16 @@ class CustomFieldRepositoryTraitTest extends StandardImportTestHelper
     {
         $mockTrait = $this->getMockForTrait(CustomFieldRepositoryTrait::class, [], '', false, true, true, ['getCustomFieldList', 'getBaseColumns', 'getClassName', 'getFieldGroups']);
         $mockTrait->method('getCustomFieldList')
-            ->will($this->returnValue([$this->fields, $this->fixedFields]));
+            ->willReturn([$this->fields, $this->fixedFields]);
 
         $mockTrait->method('getBaseColumns')
-            ->will($this->returnValue($this->baseColumns));
+            ->willReturn($this->baseColumns);
 
         $mockTrait->method('getClassName')
-            ->will($this->returnValue(\Mautic\LeadBundle\Entity\Lead::class));
+            ->willReturn(\Mautic\LeadBundle\Entity\Lead::class);
 
         $mockTrait->method('getFieldGroups')
-            ->will($this->returnValue($this->fieldGroups));
+            ->willReturn($this->fieldGroups);
 
         $reflectedMockTrait = new \ReflectionObject($mockTrait);
         $method             = $reflectedMockTrait->getMethod('formatFieldValues');

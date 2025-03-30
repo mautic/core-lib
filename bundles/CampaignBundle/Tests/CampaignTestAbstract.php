@@ -35,7 +35,7 @@ class CampaignTestAbstract extends \PHPUnit\Framework\TestCase
 
         $security->expects($this->any())
             ->method('isGranted')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $userHelper = $this->createMock(UserHelper::class);
 
@@ -43,7 +43,7 @@ class CampaignTestAbstract extends \PHPUnit\Framework\TestCase
 
         $formRepository->expects($this->any())
             ->method('getFormList')
-            ->will($this->returnValue([['id' => self::$mockId, 'name' => self::$mockName]]));
+            ->willReturn([['id' => self::$mockId, 'name' => self::$mockName]]);
 
         $leadListModel = $this->getMockBuilder(ListModel::class)
             ->disableOriginalConstructor()
@@ -52,7 +52,7 @@ class CampaignTestAbstract extends \PHPUnit\Framework\TestCase
 
         $leadListModel->expects($this->any())
             ->method('getUserLists')
-            ->will($this->returnValue([['id' => self::$mockId, 'name' => self::$mockName]]));
+            ->willReturn([['id' => self::$mockId, 'name' => self::$mockName]]);
 
         $formModel = $this->getMockBuilder(FormModel::class)
             ->disableOriginalConstructor()
@@ -61,7 +61,7 @@ class CampaignTestAbstract extends \PHPUnit\Framework\TestCase
 
         $formModel->expects($this->any())
             ->method('getRepository')
-            ->will($this->returnValue($formRepository));
+            ->willReturn($formRepository);
 
         $eventCollector    = $this->createMock(EventCollector::class);
         $membershipBuilder = $this->createMock(MembershipBuilder::class);

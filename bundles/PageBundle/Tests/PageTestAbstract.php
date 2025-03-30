@@ -95,20 +95,16 @@ class PageTestAbstract extends TestCase
         $contactTracker->expects($this
             ->any())
             ->method('getContact')
-            ->willReturn($this
-                ->returnValue(['id' => self::$mockId, 'name' => self::$mockName])
-            );
+            ->willReturn(['id' => self::$mockId, 'name' => self::$mockName]);
 
         $entityManager->expects($this
             ->any())
             ->method('getRepository')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        [\Mautic\PageBundle\Entity\Page::class, $pageRepository],
-                        [\Mautic\PageBundle\Entity\Hit::class, $hitRepository],
-                    ]
-                )
+            ->willReturnMap(
+                [
+                    [\Mautic\PageBundle\Entity\Page::class, $pageRepository],
+                    [\Mautic\PageBundle\Entity\Hit::class, $hitRepository],
+                ]
             );
 
         $coreParametersHelper->expects($this->any())

@@ -146,12 +146,10 @@ class FormModelTest extends \PHPUnit\Framework\TestCase
         $this->entityManager->expects($this
             ->any())
             ->method('getRepository')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        [Form::class, $this->formRepository],
-                    ]
-                )
+            ->willReturnMap(
+                [
+                    [Form::class, $this->formRepository],
+                ]
             );
 
         $this->formModel = new FormModel(

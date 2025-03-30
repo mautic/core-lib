@@ -283,13 +283,11 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->entityManager->expects($this->any())
             ->method('getRepository')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        [Lead::class, $this->leadRepository],
-                        [Submission::class, $this->submissioRepository],
-                    ]
-                )
+            ->willReturnMap(
+                [
+                    [Lead::class, $this->leadRepository],
+                    [Submission::class, $this->submissioRepository],
+                ]
             );
 
         $this->leadRepository->expects($this->any())
@@ -467,15 +465,15 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->translator->expects($this->any())
             ->method('trans')
             ->with($this->anything())
-            ->will($this->returnCallback(fn ($text) => match ($text) {
-                'mautic.form.report.submission.id'  => $values[0],
-                'mautic.lead.report.contact_id'     => $values[1],
-                'mautic.form.result.thead.date'     => $values[2],
-                'mautic.core.ipaddress'             => $values[3],
+            ->willReturnCallback(fn($text) => match ($text) {
+                'mautic.form.report.submission.id' => $values[0],
+                'mautic.lead.report.contact_id' => $values[1],
+                'mautic.form.result.thead.date' => $values[2],
+                'mautic.core.ipaddress' => $values[3],
                 'mautic.form.result.thead.referrer' => $values[4],
-                'mautic.form.report.form_id'        => $values[5],
-                default                             => null,
-            }));
+                'mautic.form.report.form_id' => $values[5],
+                default => null,
+            });
     }
 
     /**
