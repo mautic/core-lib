@@ -2335,43 +2335,50 @@ Mautic.previewCampaignLabels = function() {
 }
 
 Mautic.campaignAuditlogOnLoad = function (container, response) {
-    mQuery("#campaign-auditlog a[data-activate-details='all']").on('click', function() {
-        let $icon = mQuery(this).find('span').first();
-        if ($icon.hasClass('ri-arrow-down-s-line')) {
-            mQuery("#campaign-auditlog a[data-activate-details!='all']").each(function () {
-                const detailsId = mQuery(this).data('activate-details');
-                if (detailsId && mQuery('#auditlog-details-' + detailsId).length) {
-                    mQuery('#auditlog-details-' + detailsId).removeClass('hide');
-                    mQuery(this).addClass('active');
-                }
-            });
-            $icon.removeClass('ri-arrow-down-s-line').addClass('ri-arrow-up-s-line');
-        } else {
-            mQuery("#campaign-auditlog a[data-activate-details!='all']").each(function () {
-                const detailsId = mQuery(this).data('activate-details');
-                if (detailsId && mQuery('#auditlog-details-' + detailsId).length) {
-                    mQuery('#auditlog-details-' + detailsId).addClass('hide');
-                    mQuery(this).removeClass('active');
-                }
-            });
-            $icon.removeClass('ri-arrow-up-s-line').addClass('ri-arrow-down-s-line');
-        }
+    document.querySelector("#campaign-auditlog a[data-activate-details='all']")?.addEventListener("click", function () {
+        let icon = this.querySelector("span:first-child");
+        let isExpanded = icon.classList.contains("ri-arrow-down-s-line");
+
+        document.querySelectorAll("#campaign-auditlog a[data-activate-details]:not([data-activate-details='all'])").forEach(element => {
+            const detailsId = element.getAttribute("data-activate-details");
+            const detailsElem = document.querySelector(`#auditlog-details-${detailsId}`);
+            const elementIcon = element.querySelector("span:first-child");
+
+            if (detailsElem) {
+                detailsElem.classList.toggle("hide", !isExpanded);
+                element.classList.toggle("active", isExpanded);
+                elementIcon.classList.replace(
+                    isExpanded ? "ri-arrow-down-s-line" : "ri-arrow-up-s-line",
+                    isExpanded ? "ri-arrow-up-s-line" : "ri-arrow-down-s-line"
+                );
+            }
+        });
+
+        icon.classList.replace(
+            isExpanded ? "ri-arrow-down-s-line" : "ri-arrow-up-s-line",
+            isExpanded ? "ri-arrow-up-s-line" : "ri-arrow-down-s-line"
+        );
     });
 
-    mQuery("#campaign-auditlog a[data-activate-details!='all']").on('click', function() {
-        const detailsId = mQuery(this).data('activate-details');
-        let $icon = mQuery(this).find('span').first();
-        if (detailsId && mQuery('#auditlog-details-' + detailsId).length) {
-            const activateDetailsState = mQuery(this).hasClass('active');
-            if (activateDetailsState) {
-                mQuery('#auditlog-details-' + detailsId).addClass('hide');
-                mQuery(this).removeClass('active');
-                $icon.removeClass('ri-arrow-up-s-line').addClass('ri-arrow-down-s-line');
-            } else {
-                mQuery('#auditlog-details-' + detailsId).removeClass('hide');
-                mQuery(this).addClass('active');
-                $icon.removeClass('ri-arrow-down-s-line').addClass('ri-arrow-up-s-line');
+    document.querySelectorAll("#campaign-auditlog a[data-activate-details]:not([data-activate-details='all'])").forEach(anchor => {
+        anchor.addEventListener("click", function () {
+            const detailsId = this.dataset.activateDetails;
+            const icon = this.querySelector("span");
+            const detailsElement = document.getElementById(`auditlog-details-${detailsId}`);
+
+            if (detailsId && detailsElement) {
+                const isActive = this.classList.contains("active");
+
+                if (isActive) {
+                    detailsElement.classList.add("hide");
+                    this.classList.remove("active");
+                    icon.classList.replace("ri-arrow-up-s-line", "ri-arrow-down-s-line");
+                } else {
+                    detailsElement.classList.remove("hide");
+                    this.classList.add("active");
+                    icon.classList.replace("ri-arrow-down-s-line", "ri-arrow-up-s-line");
+                }
             }
-        }
+        });
     });
 };
