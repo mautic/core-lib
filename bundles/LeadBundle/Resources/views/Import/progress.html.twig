@@ -25,9 +25,49 @@ Variables
 {% set id = complete ? 'leadImportProgressComplete' : 'leadImportProgress' %}
 {% set header = complete ? 'mautic.lead.import.success' : 'mautic.lead.import.donotleave' %}
 
-<div class="row ma-lg" id="{{ id }}">
+<div class="row ma-lg animation--slide-in-right" id="{{ id }}">
     <div class="col-sm-offset-3 col-sm-6 text-center">
-        <div class="panel">
+        <div class="row mb-lg">
+            {% if not complete %}
+            <div class="col-md-12 ai-start">
+                {% include '@MauticCore/Helper/_illustration.html.twig' with {
+                    illustration: 'data--processing',
+                    size: 64
+                } %}
+                <h2 class="mt-lg pb-sm text-left">{{ header|trans({'object': object}) }}</h2>
+                <div class="row-no-gutters">
+                    <span class="text-secondary">{{ 'mautic.lead.import.inprogress'|trans }}</span>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-md-8 ai-start">
+                {% include '@MauticCore/Helper/_illustration.html.twig' with {
+                    illustration: 'data--storage',
+                    size: 64
+                } %}
+                <h2 class="mt-lg pb-sm text-left">{{ header|trans({'object': object}) }}</h2>
+                <div class="row-no-gutters ai-center gap-sm">
+                    {% include '@MauticCore/Helper/_tag.html.twig' with {
+                        tags: [{
+                            label: import.object == 'lead' ? 'mautic.lead.leads'
+                                : import.object == 'company' ? 'mautic.company.company'
+                                : import.object|capitalize,
+                            icon: import.object == 'lead' ? 'ri-user-6-line'
+                                : import.object == 'company' ? 'ri-building-2-line'
+                                : 'ri-shapes',
+                            color: 'green'
+                        }]
+                    } %}
+                    <span class="text-secondary">{{ 'mautic.core.now'|trans }}</span>
+                </div>
+            </div>
+            <div class="col-md-4 ai-end jc-center">
+                
+            </div>
+            {% endif %}
+        </div>
+        <div class="row">
+                    <div class="panel">
             <div class="panel-heading mt-sm">
                 <div class="progress mt-lg" style="height:4px;">
                     <div class="progress-bar-import progress-bar {% if not complete %}active{% endif %} bg-{% if complete %}success{% endif %}"
@@ -36,78 +76,74 @@ Variables
                             class="sr-only">{{ percent }}%</span>
                     </div>
                 </div>
-                <div class="row mb-lg">
-                    {% if not complete %}
-                    <div class="col-md-12 ai-start">
-                        <h2 class="pb-xs text-left">{{ header|trans({'object': object}) }}</h2>
-                        <div class="row-no-gutters">
-                            <span class="text-secondary">{{ 'mautic.lead.import.inprogress'|trans }}</span>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="col-md-8 ai-start">
-                        <h2 class="pb-xs text-left">{{ header|trans({'object': object}) }}</h2>
-                        <div class="row-no-gutters">
-                            <span class="text-secondary">{{ 'mautic.lead.leads'|trans }} • {{ 'mautic.core.now'|trans }}</span>
-                        </div>
-                    </div>
-                    <div class="col-md-4 ai-end jc-center">
-                        {% include '@MauticCore/Helper/button.html.twig' with {
-                            buttons: [
-                                {
-                                    label: 'mautic.lead.import.import_again',
-                                    variant: 'tertiary',
-                                    icon: 'ri-import-line',
-                                    size: 'xs',
-                                    href: path('mautic_import_action', {'object': 'contacts', 'objectAction': 'new'}),
-                                    attributes: {
-                                        'data-toggle': 'ajax'
-                                    }
-                                }
-                            ]
-                        } %}
-                    </div>
-                    {% endif %}
-                </div>
+
             </div>
             <div class="panel-body">
                 {% if complete %}
-                <div class="row-no-gutters">
-                    <div class="col-md-6 mb-lg">
-                        <div class="tile">
-                        <div class="d-flex jc-space-between">
-                            <div class="row-no-gutters fw-nowrap gap-xs ai-center">
-                                <i class="ri-file-list-line ri-lg"></i>
-                                <h5>{{ import.name() }} <span class="small total-count">({{ progress.total }})</span>
-                                </h5>
-                            </div>
-                            <i class="ri-check-line text-success"></i>
-                        </div>
-                        </div>
-                    </div>
-                </div>
                 <h4 class="mb-md text-left fw-sb">{{ 'mautic.lead.segments.contacts.imported_database'|trans }}</h4>
                 <div class="row-no-gutters jc-space-between ai-center mb-sm">
-                    <span class="d-flex gap-xs"><i class="ri-user-add-line ri-lg"></i>{{'mautic.lead.import.stats.created'|trans}}</span>
-                    <span class="fw-b">{{ import.insertedCount }}</span>
+                    <span class="d-flex ai-center gap-xs"><i class="ri-add-box-fill ri-lg"></i>{{'mautic.lead.import.stats.created'|trans}}</span>
+                    {% include '@MauticCore/Helper/_tag.html.twig' with {
+                        tags: [{
+                            label: import.insertedCount,
+                            color: 'warm-gray',
+                            size: 'sm'
+                        }]
+                    } %}
                 </div>
                 <div class="row-no-gutters jc-space-between ai-center mb-sm">
-                    <span class="d-flex gap-xs"><i class="ri-exchange-2-line ri-lg"></i>{{'mautic.lead.import.stats.merged'|trans}}</span>
-                    <span class="fw-b">{{ import.updatedCount }}</span>
+                    <span class="d-flex ai-center gap-xs"><i class="ri-refresh-fill ri-lg"></i>{{'mautic.lead.import.stats.merged'|trans}}</span>
+                    {% include '@MauticCore/Helper/_tag.html.twig' with {
+                        tags: [{
+                            label: import.updatedCount,
+                            color: 'warm-gray',
+                            size: 'sm'
+                        }]
+                    } %}
                 </div>
                 <div class="row-no-gutters jc-space-between ai-center mb-sm">
-                    <span class="d-flex gap-xs"><i class="ri-user-follow-line ri-lg"></i>{{'mautic.lead.import.stats.ignored'|trans}}</span>
-                    <span class="fw-b">{{ import.ignoredCount }}</span>
+                    <span class="d-flex ai-center gap-xs"><i class="ri-checkbox-fill ri-lg"></i>{{'mautic.lead.import.stats.ignored'|trans}}</span>
+                    {% include '@MauticCore/Helper/_tag.html.twig' with {
+                        tags: [{
+                            label: import.ignoredCount,
+                            color: 'warm-gray',
+                            size: 'sm'
+                        }]
+                    } %}
                 </div>
-                <hr>
-                <div class="row-no-gutters jc-space-between fw-sb">
-                    <span>{{ 'mautic.lead.segments.contacts.total'|trans }}</span>
-                    <span class="imported-count">{{ progress.done }}</span>
+                <div class="row-no-gutters">
+                    <div class="col-xs-12 mt-lg">
+                        {% set tileContent %}
+                            <div class="d-flex jc-space-between">
+                                <div class="row-no-gutters fw-nowrap gap-xs ai-center">
+                                    <i class="ri-file-list-line ri-lg"></i>
+                                    <h5>
+                                        {% if import.name()|length > 40 %}
+                                            <span data-toggle="tooltip" title="{{ import.name() }}">
+                                                {{ import.name()|slice(0, 40) }}...
+                                            </span>
+                                        {% else %}
+                                            {{ import.name() }}
+                                        {% endif %}
+                                        <span class="small total-count">({{ progress.total }})</span>
+                                    </h5>
+                                </div>
+                                <i class="ri-check-line text-success"></i>
+                            </div>
+                        {% endset %}
+
+                        {% include '@MauticCore/Components/tile--base.html.twig' with {
+                            tiles: [{
+                                content: tileContent
+                            }]
+                        } %}
+                    </div>
                 </div>
+                <div class="row"><hr></div>
                 {% endif %}
             </div>
             {% if failedRows is not empty %}
-            <ul class="list-group mb-lg mt-lg">
+            <ul class="list-group mb-lg">
                 {% for row in failedRows %}
                 {% set lineNumber = row.properties.line|default('N/A') %}
                 {% set failure = row.properties.error|default('N/A') %}
@@ -117,13 +153,15 @@ Variables
                 {% endfor %}
             </ul>
             {% endif %}
-            <div class="panel-footer d-flex gap-1 jc-space-between pa-0">
+            <div class="d-flex gap-1 jc-space-between pa-0">
                 {% if not complete %}
                         {% include '@MauticCore/Helper/button.html.twig' with {
                             buttons: [
                                 {
                                     label: 'mautic.core.form.cancel',
-                                    variant: 'danger',
+                                    variant: 'primary',
+                                    danger: true,
+                                    size: 'xl',
                                     href: path('mautic_import_action', {'objectAction': 'cancel', 'object': object}),
                                     wide: true,
                                     attributes: {
@@ -133,10 +171,12 @@ Variables
                                 {
                                     label: 'mautic.lead.import.queue.btn',
                                     variant: 'primary',
+                                    size: 'xl',
                                     href: path('mautic_import_action', {'objectAction': 'queue', 'object': object}),
                                     wide: true,
                                     attributes: {
-                                        'data-toggle': 'ajax'
+                                        'data-toggle': 'ajax',
+                                        'class': 'ma-0'
                                     }
                                 }
                             ]
@@ -149,9 +189,9 @@ Variables
                             {% include '@MauticCore/Helper/button.html.twig' with {
                                 buttons: [
                                     {
-                                        label: 'mautic.lead.view.imports',
+                                        label: 'mautic.lead.import.import_again',
                                         variant: 'link',
-                                        href: path('mautic_import_index', {'object': object}),
+                                        href: path('mautic_import_action', {'object': 'contacts', 'objectAction': 'new'}),
                                         attributes: {
                                             'data-toggle': 'ajax'
                                         }
@@ -183,6 +223,8 @@ Variables
                 {% endif %}
             </div>
         </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}
