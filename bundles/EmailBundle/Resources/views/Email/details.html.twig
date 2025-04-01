@@ -189,20 +189,6 @@
                       <div class="col-xs-10">
                           <div>{{ email.subject }}</div>
                           <div class="text-secondary">{{ emailPreview }}</div>
-                          {% if email.isVariant(true) %}
-                            <div class="small">
-                              <a href="{{ path('mautic_email_action', {'objectAction' : 'view', 'objectId' : variants.parent.id}) }}" data-toggle="ajax">
-                                {{- 'mautic.core.variant_of'|trans ({'%parent%' : variants.parent.name}) -}}
-                              </a>
-                            </div>
-                          {% endif %}
-                          {% if email.isTranslation(true) %}
-                            <div class="small">
-                              <a href="{{ path('mautic_email_action', {'objectAction' : 'view', 'objectId' : translations.parent.id}) }}" data-toggle="ajax">
-                                {{- 'mautic.core.translation_of'|trans({'%parent%' : translations.parent.name}) -}}
-                              </a>
-                            </div>
-                          {% endif %}
                       </div>
                   </div>
               </div>
