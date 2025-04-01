@@ -149,7 +149,7 @@ class Field implements UuidInterface
 
     private bool $isReadOnly = false;
 
-    private ?string $fieldWidth = null;
+    private string $fieldWidth = '100%';
 
     /**
      * @var array
