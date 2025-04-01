@@ -466,7 +466,7 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         ];
     }
 
-    public function testDescriptionIsNotEscaped(): void
+    public function testDescriptionEscaping(): void
     {
         $report = new Report();
         $report->setName('HTML Test');
@@ -474,17 +474,19 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         $report->setSource('email');
         static::getContainer()->get('mautic.report.model.report')->saveEntity($report);
 
-        // Check the details page
+        // Check the details page - should not be escaped
         $this->client->request('GET', '/s/reports/'.$report->getId());
         $clientResponse        = $this->client->getResponse();
         $clientResponseContent = $clientResponse->getContent();
         $this->assertStringContainsString('<small><b>This is allowed HTML</b></small>', $clientResponseContent);
 
-        // Check the list
+        // Check the list - HTML should be stripped
         $this->client->request('GET', '/s/reports');
         $clientResponse        = $this->client->getResponse();
         $clientResponseContent = $clientResponse->getContent();
-        $this->assertStringContainsString('<small><b>This is allowed HTML</b></small>', $clientResponseContent);
+        $this->assertStringContainsString('This is allowed HTML', $clientResponseContent);
+        $this->assertStringNotContainsString('<b>', $clientResponseContent);
+        $this->assertStringNotContainsString('</b>', $clientResponseContent);
     }
 
     public function testXssUrlFromQuery(): void
