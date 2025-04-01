@@ -7,7 +7,7 @@
 	{{ item.getName() }}
 {% endblock %}
 
-{% block indexButton %}
+{% block preHeader %}
 {{- include('@MauticCore/Helper/page_actions.html.twig',
     {
         'item'            : item,

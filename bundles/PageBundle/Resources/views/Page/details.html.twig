@@ -21,7 +21,7 @@
 
 {% block mauticContent %}page{% endblock %}
 
-{% block indexButton %}
+{% block preHeader %}
 {{ include('@MauticCore/Helper/page_actions.html.twig', {
     'item': activePage,
     'customButtons': customButtons|default([]),

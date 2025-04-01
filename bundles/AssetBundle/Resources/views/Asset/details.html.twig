@@ -1,7 +1,7 @@
 {% extends '@MauticCore/Default/content.html.twig' %}
 {% block mauticContent %}asset{% endblock %}
 
-{% block indexButton %}
+{% block preHeader %}
 {{- include('@MauticCore/Helper/page_actions.html.twig',
         {
             'item'            : activeAsset,

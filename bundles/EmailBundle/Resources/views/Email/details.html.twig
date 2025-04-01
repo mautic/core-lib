@@ -4,7 +4,7 @@
 
 {% block mauticContent 'email' %}
 
-{% block indexButton %}
+{% block preHeader %}
     {% if not isEmbedded %}
         {{- include('@MauticCore/Helper/page_actions.html.twig', {
             'item'            : email,

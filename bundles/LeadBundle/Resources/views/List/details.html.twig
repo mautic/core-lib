@@ -18,7 +18,7 @@
 
 {% block mauticContent %}list{% endblock %}
 
-{% block indexButton %}
+{% block preHeader %}
 {{- include('@MauticCore/Helper/page_actions.html.twig', {
     'item': list,
     'customButtons': customButtons|default([]),
