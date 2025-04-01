@@ -59,11 +59,12 @@ class DashboardSubscriber extends MainDashboardSubscriber
                 $report                 = $this->reportModel->getEntity($reportId);
 
                 if ($report && $this->security->hasEntityAccess('report:reports:viewown', 'report:reports:viewother', $report->getCreatedBy())) {
+                    $graphData  = $this->reportModel->getGraphData($report->getSource());
                     $reportData = $this->reportModel->getReportData(
                         $report,
                         null,
                         [
-                            'ignoreTableData' => true,
+                            'ignoreTableData' => 'table' !== $graphData[$graph]['type'],
                             'graphName'       => $graph,
                             'dateFrom'        => $params['dateFrom'],
                             'dateTo'          => $params['dateTo'],
@@ -72,8 +73,8 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
                     if (isset($reportData['graphs'][$graph])) {
                         $graphData = $reportData['graphs'][$graph];
-                        if (!isset($graphData['data']['data'])) {
-                            $graphData['data']['data'] = $graphData['data'];
+                        if (!isset($graphData['data'])) {
+                            $graphData['data'] = $reportData['data'];
                         }
                         $event->setTemplateData(
                             [
