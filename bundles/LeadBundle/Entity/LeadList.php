@@ -19,25 +19,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "segment:read"
- *        },
- *       "swagger_definition_name"="Read"
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "segment:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
 class LeadList extends FormEntity implements UuidInterface
 {
     use UuidTrait;

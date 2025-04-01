@@ -17,26 +17,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "form:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"category", "fields", "actions"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "form:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
 class Form extends FormEntity implements UuidInterface
 {
     use UuidTrait;
