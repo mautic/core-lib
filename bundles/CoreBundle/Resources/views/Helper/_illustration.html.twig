@@ -2,6 +2,6 @@
 {% set svg_path = '@bundles/CoreBundle/Assets/illustrations/' ~ illustration ~ '.svg' %}
 {% set fill_color = color|default('var(--icon-primary)') %}
 
-<div class="illustration illustration--size-{{ size }}" style="fill: {{ fill_color }}">
+<div class="illustration animation--slide-in-up illustration--size-{{ size }}" style="fill: {{ fill_color }}">
     {{ source(svg_path) }}
 </div>
