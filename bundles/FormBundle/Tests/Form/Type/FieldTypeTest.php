@@ -46,6 +46,9 @@ class FieldTypeTest extends TypeTestCase
         parent::setUp();
     }
 
+    /**
+     * @return array<\Symfony\Component\Form\Extension\ExtensionInterface>
+     */
     protected function getExtensions(): array
     {
         $validator = Validation::createValidator();
