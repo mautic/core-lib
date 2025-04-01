@@ -149,6 +149,21 @@
                 }
             ] } %}
         {% endif %}
+        {# Language #}
+        {% if email.language is defined and email.language is not empty %}
+            {% include '@MauticCore/Helper/_tag.html.twig' with {
+                tags: [{
+                    label: email.language|language_name,
+                    icon: 'ri-translate-2',
+                    color: 'warm-gray',
+                    attributes: {
+                        'data-toggle': 'tooltip',
+                        'data-placement': 'top',
+                        'title': 'mautic.core.language'|trans
+                    }
+                }]
+            } %}
+        {% endif %}
 
     {% endif %}
 {% endblock %}
