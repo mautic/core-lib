@@ -29,7 +29,7 @@ class SearchSubscriber implements EventSubscriberInterface
     public function onGlobalSearch(GlobalSearchEvent $event): void
     {
         $results = $this->globalSearch->performSearch(
-            new GlobalSearchFilterDTO(htmlspecialchars_decode($event->getSearchString())),
+            new GlobalSearchFilterDTO($event->getSearchString()),
             $this->model,
             '@MauticChannel/SubscribedEvents/Search/global.html.twig'
         );

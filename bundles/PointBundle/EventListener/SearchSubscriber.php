@@ -39,7 +39,7 @@ class SearchSubscriber implements EventSubscriberInterface
 
     public function onGlobalSearchPointActions(MauticEvents\GlobalSearchEvent $event): void
     {
-        $filterDTO = new GlobalSearchFilterDTO(htmlspecialchars_decode($event->getSearchString()));
+        $filterDTO = new GlobalSearchFilterDTO($event->getSearchString());
         $results   = $this->globalSearch->performSearch(
             $filterDTO,
             $this->pointModel,
