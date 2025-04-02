@@ -395,7 +395,7 @@ class ListController extends FormController
                         ]),
                     ]);
 
-                    if ($this->getFormButton($form, ['buttons', 'apply'])->isClicked()) {
+                    if ($form->get('buttons')->get('apply')->isClicked()) {
                         $contentTemplate                     = '@MauticLead/List/form.html.twig';
                         $postActionVars['contentTemplate']   = $contentTemplate;
                         $postActionVars['forwardController'] = false;
