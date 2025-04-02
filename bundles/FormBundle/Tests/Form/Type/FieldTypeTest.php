@@ -51,18 +51,9 @@ class FieldTypeTest extends TypeTestCase
      */
     protected function getExtensions(): array
     {
-        $validator = Validation::createValidator();
-
-        $type = new FieldType(
-            $this->translator,
-            $this->objectCollector,
-            $this->fieldCollector,
-            $this->mappedFieldCollector
-        );
-
         return [
-            new PreloadedExtension([$type], []),
-            new ValidatorExtension($validator),
+            new ValidatorExtension(Validation::createValidator()),
+            new PreloadedExtension([], []),
         ];
     }
 
