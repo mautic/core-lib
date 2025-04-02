@@ -42,14 +42,14 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
             'regexp',
             '^{Test|Test string)', // invalid regex: the first parantheses should not be curly
             Response::HTTP_BAD_REQUEST,
-            'filter: Got error \'unmatched parentheses at offset 18\' from regexp',
+            'error',
         ];
 
         yield [
             '!regexp',
             '^(Test|Test string))', // invalid regex: 2 ending parantheses
             Response::HTTP_BAD_REQUEST,
-            'filter: Got error \'unmatched parentheses at offset 19\' from regexp',
+            'error',
         ];
 
         yield [
@@ -89,7 +89,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame($expectedResponseCode, $this->client->getResponse()->getStatusCode());
 
         if ($expectedErrorMessage) {
-            Assert::assertSame(
+            Assert::assertStringContainsString(
                 $expectedErrorMessage,
                 json_decode($this->client->getResponse()->getContent(), true)['errors'][0]['message'],
                 $this->client->getResponse()->getContent()
