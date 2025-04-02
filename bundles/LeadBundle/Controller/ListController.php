@@ -357,7 +357,7 @@ class ListController extends FormController
             'contentTemplate' => '@MauticLead/List/form.html.twig',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_segment_index',
-                'route'         => $this->generateUrl('mautic_segment_action', ['objectAction' => 'new']),
+                'route'         => $action,
                 'mauticContent' => 'leadlist',
             ],
         ]);
