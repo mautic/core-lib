@@ -222,6 +222,10 @@ Mautic.lazyLoadEventStatsOnCampaignDetail = function()  {
     }
 
     const campaignEventStatUrl = container.data('event-target-url');
+    if ('undefined' == typeof campaignEventStatUrl) {
+        // We don't have to make AJAX requests if the URL is empty
+        return;
+    }
     mQuery.get(campaignEventStatUrl, function(response) {
         if (response.errors && 'dev' == mauticEnv) {
             alert(response.errors[0].message);
