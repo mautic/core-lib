@@ -1,4 +1,4 @@
-<?php
+app/bundles/CampaignBundle/Tests/Functional/Controller/CampaignControllerTest.php<?php
 
 declare(strict_types=1);
 
@@ -8,9 +8,7 @@ use Doctrine\ORM\Exception\NotSupported;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\Mapping\MappingException;
-
-use function GuzzleHttp\json_decode;
-
+use GuzzleHttp\Utils;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
@@ -210,12 +208,15 @@ class CampaignControllerTest extends MauticMysqlTestCase
         $url    = sprintf('s/campaigns/event/stats/%d/%s/%s', $campaign->getId(), $before->format('Y-m-d'), $after->format('Y-m-d'));
         $this->client->request('GET', $url);
         $response = $this->client->getResponse();
-        $body     = json_decode($response->getContent(), true);
+        $body     = Utils::jsonDecode($response->getContent(), true);
         $this->client->restart();
 
         return new Crawler($body['actions']);
     }
 
+    /**
+     * @return array<array<string, string>>
+     */
     private function getEventsStatistics(Campaign $campaign): array
     {
         $crawler = $this->getCrawler($campaign);
