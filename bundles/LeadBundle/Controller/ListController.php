@@ -303,8 +303,10 @@ class ListController extends FormController
 
     /**
      * Create new response for segments - new/clone.
+     *
+     * @param array<string, string> $postActionVars
      */
-    private function createSegmentNewResponse(Request $request, LeadList $segment, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $segmentModel, AuditLogModel $auditLogModel, array $postActionVars, $action, $ignorePost): Response
+    private function createSegmentNewResponse(Request $request, LeadList $segment, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $segmentModel, AuditLogModel $auditLogModel, array $postActionVars, string $action, bool $ignorePost): Response
     {
         // set the page we came from
         $page = $request->getSession()->get('mautic.segment.page', 1);
@@ -333,7 +335,7 @@ class ListController extends FormController
                 }
             }
 
-            if ($cancelled || ($valid && $form->get('buttons')->get('save')->isClicked())) {
+            if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
                 return $this->postActionRedirect(array_merge($postActionVars, [
                     'returnUrl'       => $returnUrl,
                     'viewParameters'  => ['page' => $page],
@@ -393,7 +395,7 @@ class ListController extends FormController
                         ]),
                     ]);
 
-                    if ($form->get('buttons')->get('apply')->isClicked()) {
+                    if ($this->getFormButton($form, ['buttons', 'apply'])->isClicked()) {
                         $contentTemplate                     = '@MauticLead/List/form.html.twig';
                         $postActionVars['contentTemplate']   = $contentTemplate;
                         $postActionVars['forwardController'] = false;

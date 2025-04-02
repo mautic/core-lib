@@ -286,11 +286,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testSegmentClone(): void
     {
-        $segment = new LeadList();
-        $segment->setName('Test Segment');
-        $segment->setAlias('testsegment');
-        $this->em->persist($segment);
-        $this->em->flush();
+        $segment   = $this->saveSegment('Test Segment', 'testsegment');
         $segmentId = $segment->getId();
 
         // Number of segments before clone
@@ -314,11 +310,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testSegmentAliasCreation(): void
     {
-        $segment = new LeadList();
-        $segment->setName('Test Segment Alias');
-        $segment->setAlias('test-segment-alias');
-        $this->em->persist($segment);
-        $this->em->flush();
+        $segment   = $this->saveSegment('Test Segment Alias', 'test-segment-alias');
         $segmentId = $segment->getId();
 
         // Clone segment
