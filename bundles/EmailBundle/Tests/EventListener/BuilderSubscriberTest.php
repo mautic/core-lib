@@ -170,27 +170,27 @@ class BuilderSubscriberTest extends TestCase
 
         $this->coreParametersHelper->expects($matcher)
             ->method('get')->willReturnCallback(function (...$parameters) use ($matcher, $unsubscribeTokenizedText) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('unsubscribe_text', $parameters[0]);
 
                     return $unsubscribeTokenizedText;
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('webview_text', $parameters[0]);
 
                     return 'Just a text';
                 }
-                if (3 === $matcher->getInvocationCount()) {
+                if (3 === $matcher->numberOfInvocations()) {
                     $this->assertSame('default_signature_text', $parameters[0]);
 
                     return 'Signature';
                 }
-                if (4 === $matcher->getInvocationCount()) {
+                if (4 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mailer_from_name', $parameters[0]);
 
                     return 'jan.kozak@acquia.com';
                 }
-                if (5 === $matcher->getInvocationCount()) {
+                if (5 === $matcher->numberOfInvocations()) {
                     $this->assertSame('brand_name', $parameters[0]);
 
                     return 'ACME';

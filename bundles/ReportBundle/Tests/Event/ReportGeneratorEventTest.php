@@ -252,13 +252,13 @@ class ReportGeneratorEventTest extends TestCase
 
         $this->queryBuilder->expects($matcher)
             ->method('leftJoin')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('l', $parameters[0]);
                     $this->assertSame(MAUTIC_TABLE_PREFIX.'companies_leads', $parameters[1]);
                     $this->assertSame('companies_lead', $parameters[2]);
                     $this->assertSame(ReportGeneratorEvent::CONTACT_PREFIX.'.id =companies_lead.lead_id', $parameters[3]);
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('companies_lead', $parameters[0]);
                     $this->assertSame(MAUTIC_TABLE_PREFIX.'companies', $parameters[1]);
                     $this->assertSame(ReportGeneratorEvent::COMPANY_PREFIX, $parameters[2]);
@@ -312,13 +312,13 @@ class ReportGeneratorEventTest extends TestCase
             ->queryBuilder
             ->expects($matcher)
             ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $dateFormat) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('dateFrom', $parameters[0]);
                     $this->assertSame($this->reportGeneratorEvent->getOptions()['dateFrom']->format($dateFormat), $parameters[1]);
 
                     return $this->queryBuilder;
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('dateTo', $parameters[0]);
                     $this->assertSame($this->reportGeneratorEvent->getOptions()['dateTo']->format($dateFormat), $parameters[1]);
 
@@ -364,13 +364,13 @@ class ReportGeneratorEventTest extends TestCase
             ->queryBuilder
             ->expects($matcher)
             ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $dateFormat) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('dateFrom', $parameters[0]);
                     $this->assertSame($this->reportGeneratorEvent->getOptions()['dateFrom']->format($dateFormat), $parameters[1]);
 
                     return $this->queryBuilder;
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('dateTo', $parameters[0]);
                     $this->assertSame($this->reportGeneratorEvent->getOptions()['dateTo']->format($dateFormat), $parameters[1]);
 

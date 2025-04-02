@@ -208,10 +208,10 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $this->actionExecutioner->expects($matcher)
             ->method('execute')->willReturnCallback(function (...$parameters) use ($matcher, $otherConfig, $jumpConfig) {
                 $this->assertInstanceOf(ArrayCollection::class, $parameters[1]);
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertEquals($otherConfig, $parameters[0]);
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertEquals($jumpConfig, $parameters[0]);
                 }
 

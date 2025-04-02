@@ -47,17 +47,17 @@ class FilePathResolverTest extends \PHPUnit\Framework\TestCase
 
         $this->filesystemMock->expects($matcher)
             ->method('exists')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('my/upload/dir/filename_x.jpg', $parameters[0]);
 
                     return true;
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('my/upload/dir/filename_x-1.jpg', $parameters[0]);
 
                     return true;
                 }
-                if (3 === $matcher->getInvocationCount()) {
+                if (3 === $matcher->numberOfInvocations()) {
                     $this->assertSame('my/upload/dir/filename_x-2.jpg', $parameters[0]);
 
                     return false;

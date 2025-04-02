@@ -309,11 +309,11 @@ class ScheduledExecutionerTest extends \PHPUnit\Framework\TestCase
 
         $this->scheduler->expects($matcher)
             ->method('reschedule')->willReturnCallback(function (...$parameters) use ($matcher, $log1, $oneMinuteDateTime, $log2, $twoMinuteDateTime) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame($log1, $parameters[0]);
                     $this->assertSame($oneMinuteDateTime, $parameters[1]);
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame($log2, $parameters[0]);
                     $this->assertSame($twoMinuteDateTime, $parameters[1]);
                 }

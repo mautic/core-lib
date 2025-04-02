@@ -428,13 +428,13 @@ New line',
 
         $this->mailer->expects($matcher)
             ->method('setTo')->willReturnCallback(function (...$parameters) use ($matcher, $to, $leadEmail, $ownerEmail) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame([$to => null], $parameters[0]);
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame([$leadEmail => null], $parameters[0]);
                 }
-                if (3 === $matcher->getInvocationCount()) {
+                if (3 === $matcher->numberOfInvocations()) {
                     $this->assertSame([$ownerEmail => null], $parameters[0]);
                 }
 

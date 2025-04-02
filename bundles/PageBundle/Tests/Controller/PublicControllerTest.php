@@ -324,17 +324,17 @@ class PublicControllerTest extends MauticMysqlTestCase
 
         $this->modelFactory->expects($matcher)
             ->method('getModel')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('page.redirect', $parameters[0]);
 
                     return $this->redirectModel;
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('lead', $parameters[0]);
 
                     return $this->leadModel;
                 }
-                if (3 === $matcher->getInvocationCount()) {
+                if (3 === $matcher->numberOfInvocations()) {
                     $this->assertSame('page', $parameters[0]);
 
                     return $this->pageModel;
@@ -435,17 +435,17 @@ class PublicControllerTest extends MauticMysqlTestCase
 
         $this->modelFactory->expects($matcher)
             ->method('getModel')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('page.redirect', $parameters[0]);
 
                     return $this->redirectModel;
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('lead', $parameters[0]);
 
                     return $this->leadModel;
                 }
-                if (3 === $matcher->getInvocationCount()) {
+                if (3 === $matcher->numberOfInvocations()) {
                     $this->assertSame('page', $parameters[0]);
 
                     return $this->pageModel;

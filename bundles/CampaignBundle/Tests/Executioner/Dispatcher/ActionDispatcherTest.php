@@ -98,17 +98,17 @@ class ActionDispatcherTest extends \PHPUnit\Framework\TestCase
             ->method('dispatch')
             ->willReturnCallback(
                 function (\Symfony\Contracts\EventDispatcher\Event $event, string $eventName) use ($logs, &$dispatcCounter, $matcher) {
-                    if (1 === $matcher->getInvocationCount()) {
+                    if (1 === $matcher->numberOfInvocations()) {
                     }
-                    if (2 === $matcher->getInvocationCount()) {
+                    if (2 === $matcher->numberOfInvocations()) {
                         $this->assertTrue($event instanceof ExecutedEvent);
                         $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED, $eventName);
                     }
-                    if (3 === $matcher->getInvocationCount()) {
+                    if (3 === $matcher->numberOfInvocations()) {
                         $this->assertTrue($event instanceof ExecutedBatchEvent);
                         $this->assertSame(CampaignEvents::ON_EVENT_EXECUTED_BATCH, $eventName);
                     }
-                    if (4 === $matcher->getInvocationCount()) {
+                    if (4 === $matcher->numberOfInvocations()) {
                         $this->assertTrue($event instanceof FailedEvent);
                         $this->assertSame(CampaignEvents::ON_EVENT_FAILED, $eventName);
                     }

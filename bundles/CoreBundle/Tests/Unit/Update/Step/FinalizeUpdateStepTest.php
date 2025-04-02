@@ -75,12 +75,12 @@ class FinalizeUpdateStepTest extends AbstractStepTest
 
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher, $wrappingUpKey, $updateSuccessfulKey) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame($wrappingUpKey, $parameters[0]);
 
                     return $wrappingUpKey;
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame($updateSuccessfulKey, $parameters[0]);
                     $this->assertSame(['%version%' => '10.0.0'], $parameters[1]);
 

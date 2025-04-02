@@ -93,13 +93,13 @@ class FormUploaderTest extends \PHPUnit\Framework\TestCase
 
         $fileUploaderMock->expects($matcher)
             ->method('upload')->willReturnCallback(function (...$parameters) use ($matcher, $path1, $file1Mock, $path2, $file2Mock) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame($path1, $parameters[0]);
                     $this->assertSame($file1Mock, $parameters[1]);
 
                     return 'upload1.jpg';
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame($path2, $parameters[0]);
                     $this->assertSame($file2Mock, $parameters[1]);
 
@@ -181,13 +181,13 @@ class FormUploaderTest extends \PHPUnit\Framework\TestCase
 
         $fileUploaderMock->expects($matcher)
             ->method('upload')->willReturnCallback(function (...$parameters) use ($matcher, $path1, $file1Mock, $path2, $file2Mock) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame($path1, $parameters[0]);
                     $this->assertSame($file1Mock, $parameters[1]);
 
                     return 'upload1.jpg';
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame($path2, $parameters[0]);
                     $this->assertSame($file2Mock, $parameters[1]);
                     throw new FileUploadException();

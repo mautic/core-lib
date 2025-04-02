@@ -64,12 +64,12 @@ class FormatterHelperTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
         $this->translator->expects($matcher)
             ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.core.yes', $parameters[0]);
 
                     return 'yes';
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.core.no', $parameters[0]);
 
                     return 'no';
