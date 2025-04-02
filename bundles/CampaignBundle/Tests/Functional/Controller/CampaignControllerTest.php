@@ -8,7 +8,9 @@ use Doctrine\ORM\Exception\NotSupported;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\Persistence\Mapping\MappingException;
+
 use function GuzzleHttp\json_decode;
+
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
@@ -20,9 +22,9 @@ use Mautic\LeadBundle\Entity\Lead;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Entity\UserRepository;
 use PHPUnit\Framework\Assert;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DomCrawler\Crawler;
 
 class CampaignControllerTest extends MauticMysqlTestCase
 {
@@ -83,26 +85,26 @@ class CampaignControllerTest extends MauticMysqlTestCase
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->em->getRepository(User::class);
-        $adminUser = $userRepository->findOneBy(['username' => 'admin']);
+        $adminUser      = $userRepository->findOneBy(['username' => 'admin']);
 
         // create users
         $nonAdminUser = $this->createUserWithPermission([
-            'user-name' => 'non-admin',
-            'email' => 'non-admin@mautic-test.com',
+            'user-name'  => 'non-admin',
+            'email'      => 'non-admin@mautic-test.com',
             'first-name' => 'non-admin',
-            'last-name' => 'non-admin',
-            'role' => [
-                'name' => 'perm_non_admin',
+            'last-name'  => 'non-admin',
+            'role'       => [
+                'name'        => 'perm_non_admin',
                 'permissions' => [
-                    'lead:leads' => $bitwise,
+                    'lead:leads'         => $bitwise,
                     'campaign:campaigns' => 2,
                 ],
             ],
         ]);
 
         // create contacts
-        $this->contactOne = $this->createLead('John', '', '', $adminUser);
-        $this->contactTwo = $this->createLead('Alex', '', '', $adminUser);
+        $this->contactOne   = $this->createLead('John', '', '', $adminUser);
+        $this->contactTwo   = $this->createLead('Alex', '', '', $adminUser);
         $this->contactThree = $this->createLead('Gemini', '', '', $nonAdminUser);
 
         // Create Segment
@@ -186,15 +188,15 @@ class CampaignControllerTest extends MauticMysqlTestCase
         $eventsStatistics         = $this->getEventsStatistics($campaign);
         $expectedEventsStatistics = [
             0 => [
-                    'successPercent' => '100%',
-                    'completed'      => '1',
-                    'pending'        => '1',
-                ],
+                'successPercent' => '100%',
+                'completed'      => '1',
+                'pending'        => '1',
+            ],
             1 => [
-                    'successPercent' => '100%',
-                    'completed'      => '1',
-                    'pending'        => '0',
-                ],
+                'successPercent' => '100%',
+                'completed'      => '1',
+                'pending'        => '0',
+            ],
         ];
 
         Assert::assertSame($expectedEventsStatistics, $eventsStatistics, 'Events statistics doesn\'t match the actual events in the database.');
@@ -217,16 +219,16 @@ class CampaignControllerTest extends MauticMysqlTestCase
     private function getEventsStatistics(Campaign $campaign): array
     {
         $crawler = $this->getCrawler($campaign);
-        $events = [];
-        for ($eventIndex = 0; ; ++$eventIndex) {
+        $events  = [];
+        for ($eventIndex = 0;; ++$eventIndex) {
             $node = $crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3);
             if (1 > $node->count()) {
                 break;
             }
             $events[] = [
                 'successPercent' => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3)->html()),
-                'completed' => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 1)->html()),
-                'pending' => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 2)->html()),
+                'completed'      => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 1)->html()),
+                'pending'        => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 2)->html()),
             ];
         }
 
