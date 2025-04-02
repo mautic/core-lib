@@ -175,10 +175,16 @@ class ListController extends FormController
         $list = new LeadList();
 
         return $this->createSegmentNewResponse(
+            $request,
             $list,
+            $segmentDependencies,
+            $segmentCampaignShare,
+            $listModel,
+            $auditLogModel,
             [],
             $this->generateUrl('mautic_segment_action', ['objectAction' => 'new']),
-            false);
+            false
+        );
     }
 
     /**
@@ -197,6 +203,7 @@ class ListController extends FormController
             $segment = $this->getSegment($objectId, LeadPermissions::LISTS_VIEW_OWN, LeadPermissions::LISTS_VIEW_OTHER);
 
             return $this->createSegmentNewResponse(
+                $request,
                 clone $segment,
                 $segmentDependencies,
                 $segmentCampaignShare,
@@ -297,27 +304,25 @@ class ListController extends FormController
     /**
      * Create new response for segments - new/clone.
      */
-    private function createSegmentNewResponse(LeadList $segment, array $postActionVars, string $action, bool $ignorePost): Response
+    private function createSegmentNewResponse(Request $request, LeadList $segment, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $segmentModel, AuditLogModel $auditLogModel, array $postActionVars, $action, $ignorePost): Response
     {
-        /** @var ListModel $segmentModel */
-        $segmentModel = $this->getModel('lead.list');
-        //set the page we came from
-        $page = $this->get('session')->get('mautic.segment.page', 1);
-        //set the return URL for post actions
+        // set the page we came from
+        $page = $request->getSession()->get('mautic.segment.page', 1);
+        // set the return URL for post actions
         $returnUrl = $this->generateUrl('mautic_segment_index', ['page' => $page]);
 
-        //get the user form factory
-        $form = $segmentModel->createForm($segment, $this->get('form.factory'), $action);
+        // get the user form factory
+        $form = $segmentModel->createForm($segment, $this->formFactory, $action);
 
-        ///Check for a submitted form and process it
-        if (!$ignorePost && Request::METHOD_POST == $this->request->getMethod()) {
+        // Check for a submitted form and process it
+        if (!$ignorePost && Request::METHOD_POST == $request->getMethod()) {
             $valid = false;
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
-                    //form is valid so process the data
+                    // form is valid so process the data
                     $segmentModel->saveEntity($segment);
 
-                    $this->addFlash('mautic.core.notice.created', [
+                    $this->addFlashMessage('mautic.core.notice.created', [
                         '%name%'      => $segment->getName().' ('.$segment->getAlias().')',
                         '%menu_link%' => 'mautic_segment_index',
                         '%url%'       => $this->generateUrl('mautic_segment_action', [
@@ -332,26 +337,25 @@ class ListController extends FormController
                 return $this->postActionRedirect(array_merge($postActionVars, [
                     'returnUrl'       => $returnUrl,
                     'viewParameters'  => ['page' => $page],
-                    'contentTemplate' => 'MauticLeadBundle:List:index',
+                    'contentTemplate' => 'Mautic\LeadBundle\Controller\ListController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_segment_index',
                         'mauticContent' => 'leadlist',
                     ],
                 ]));
             } elseif ($valid) {
-                return $this->editAction($segment->getId(), true);
+                return $this->editAction($request, $segmentDependencies, $segmentCampaignShare, $segmentModel, $auditLogModel, $segment->getId(), true);
             }
         }
 
         return $this->delegateView([
             'viewParameters' => [
-                'form' => $this->setFormTheme($form,
-                    '@MauticLead/List/form.html.twig', 'MauticLeadBundle:FormTheme\Filter'),
+                'form' => $form->createView(),
             ],
             'contentTemplate' => '@MauticLead/List/form.html.twig',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_segment_index',
-                'route'         => $action,
+                'route'         => $this->generateUrl('mautic_segment_action', ['objectAction' => 'new']),
                 'mauticContent' => 'leadlist',
             ],
         ]);
