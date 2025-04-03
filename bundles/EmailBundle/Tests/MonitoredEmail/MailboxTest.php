@@ -59,7 +59,7 @@ class MailboxTest extends \PHPUnit\Framework\TestCase
         $pathsHelper = $this->createMock(PathsHelper::class);
         $pathsHelper->expects($this->once())
             ->method('getSystemPath')
-            ->willReturn(__DIR__ . '/../../../../cache/');
+            ->willReturn(__DIR__.'/../../../../cache/');
 
         $mailbox = new \Mautic\EmailBundle\MonitoredEmail\Mailbox($parametersHelper, $pathsHelper);
 
@@ -102,7 +102,7 @@ class MailboxTest extends \PHPUnit\Framework\TestCase
         $pathsHelper = $this->createMock(PathsHelper::class);
         $pathsHelper->expects($this->once())
             ->method('getSystemPath')
-            ->willReturn(__DIR__ . '/../../../../cache/');
+            ->willReturn(__DIR__.'/../../../../cache/');
 
         $mailbox = new \Mautic\EmailBundle\MonitoredEmail\Mailbox($parametersHelper, $pathsHelper);
 
@@ -160,7 +160,7 @@ class MailboxTest extends \PHPUnit\Framework\TestCase
         $pathsHelper->expects($this->once())
             ->method('getSystemPath')
             ->with('tmp', true)
-            ->willReturn(__DIR__ . '/../../../../cache/tmp');
+            ->willReturn(__DIR__.'/../../../../cache/tmp');
 
         new \Mautic\EmailBundle\MonitoredEmail\Mailbox($parametersHelper, $pathsHelper);
     }

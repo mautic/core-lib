@@ -127,7 +127,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
         }
 
         $originalTimezone = date_default_timezone_get();
-        self::$timezone         = $timezone;
+        self::$timezone   = $timezone;
 
         date_default_timezone_set(self::$timezone);
         // Event times starts when the PHPUNIT suite starts. The closures can run minutes later

@@ -144,7 +144,7 @@ class AssetsHelperTest extends TestCase
         $packagesMock = $this->createMock(Packages::class);
 
         $packagesMock->method('getUrl')
-            ->willReturnCallback(fn(string $path) => $path);
+            ->willReturnCallback(fn (string $path) => $path);
 
         return $packagesMock;
     }
