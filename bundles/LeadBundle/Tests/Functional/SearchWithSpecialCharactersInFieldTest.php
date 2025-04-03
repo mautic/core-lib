@@ -4,7 +4,7 @@ namespace Mautic\LeadBundle\Tests\Functional;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-class SearchWithSpecialCharactersInFieldTest extends SearchTestHelper
+class SearchWithSpecialCharactersInFieldTest extends AbstractSearchTest
 {
     public function testGlobalSearchContactWithSpecialCharacterInName(): void
     {

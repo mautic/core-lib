@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Functional;
 
-use Mautic\LeadBundle\Entity\Company;
-use Mautic\LeadBundle\Entity\LeadField;
-use Mautic\LeadBundle\Model\CompanyModel;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 
-class SearchWithCustomFieldDataFunctionalTest extends SearchTestHelper
+class SearchWithCustomFieldDataFunctionalTest extends AbstractSearchTest
 {
     protected $useCleanupRollback = false;
 
@@ -137,42 +134,5 @@ class SearchWithCustomFieldDataFunctionalTest extends SearchTestHelper
             $translator->trans('mautic.core.pagination.pages', ['%count%' => 1]),
             $crawler->html()
         );
-    }
-
-    private function createSearchableField(string $name, string $object): void
-    {
-        $field = new LeadField();
-        $field->setName($name);
-        $field->setAlias($name);
-        $field->setObject($object);
-        $field->setDateAdded(new \DateTime());
-        $field->setDateAdded(new \DateTime());
-        $field->setDateModified(new \DateTime());
-        $field->setIsIndex(true);
-        $field->setType('text');
-
-        $fieldModel = static::getContainer()->get('mautic.lead.model.field');
-        $fieldModel->saveEntity($field);
-    }
-
-    /**
-     * @param array<string, string|array<string, string>> $data
-     */
-    private function createCompany(array $data): void
-    {
-        /** @var CompanyModel $companyModel */
-        $companyModel = static::getContainer()->get('mautic.lead.model.company');
-
-        $company = (new Company())
-            ->setName($data['name'] ?? null)
-            ->setEmail($data['email'] ?? null);
-
-        foreach ($data['customFields'] ?? [] as $key => $value) {
-            $company->addUpdatedField($key, $value);
-        }
-
-        $companyModel->saveEntity($company);
-
-        $this->em->clear();
     }
 }
