@@ -44,12 +44,13 @@ class LeadDeviceRepository extends CommonRepository
                 $deviceNames = [$deviceNames];
             }
 
-            $orX = $selectQuery->expr()->orX();
+            $or = $selectQuery->expr()->or(
+                ...array_map(fn ($key, $deviceName) => $selectQuery->expr()->eq('es.device', ':device'.$key), array_keys($deviceNames), $deviceNames)
+            );
+            $selectQuery->andWhere($or);
             foreach ($deviceNames as $key => $deviceName) {
-                $orX->add($selectQuery->expr()->eq('es.device', ':device'.$key));
                 $selectQuery->setParameter('device'.$key, $deviceName);
             }
-            $selectQuery->andWhere($orX);
         }
 
         if (null !== $deviceBrands) {
@@ -57,12 +58,13 @@ class LeadDeviceRepository extends CommonRepository
                 $deviceBrands = [$deviceBrands];
             }
 
-            $orX = $selectQuery->expr()->orX();
+            $or = $selectQuery->expr()->or(
+                ...array_map(fn ($key, $deviceBrand) => $selectQuery->expr()->eq('es.device_brand', ':deviceBrand'.$key), array_keys($deviceBrands), $deviceBrands)
+            );
+            $selectQuery->andWhere($or);
             foreach ($deviceBrands as $key => $deviceBrand) {
-                $orX->add($selectQuery->expr()->eq('es.device_brand', ':deviceBrand'.$key));
                 $selectQuery->setParameter('deviceBrand'.$key, $deviceBrand);
             }
-            $selectQuery->andWhere($orX);
         }
 
         if (null !== $deviceModels) {
@@ -70,12 +72,13 @@ class LeadDeviceRepository extends CommonRepository
                 $deviceModels = [$deviceModels];
             }
 
-            $orX = $selectQuery->expr()->orX();
+            $or = $selectQuery->expr()->or(
+                ...array_map(fn ($key, $deviceModel) => $selectQuery->expr()->eq('es.device_model', ':deviceModel'.$key), array_keys($deviceModels), $deviceModels)
+            );
+            $selectQuery->andWhere($or);
             foreach ($deviceModels as $key => $deviceModel) {
-                $orX->add($selectQuery->expr()->eq('es.device_model', ':deviceModel'.$key));
                 $selectQuery->setParameter('deviceModel'.$key, $deviceModel);
             }
-            $selectQuery->andWhere($orX);
         }
 
         if (null !== $deviceOss) {
@@ -83,12 +86,13 @@ class LeadDeviceRepository extends CommonRepository
                 $deviceOss = [$deviceOss];
             }
 
-            $orX = $selectQuery->expr()->orX();
+            $or = $selectQuery->expr()->or(
+                ...array_map(fn ($key, $deviceOs) => $selectQuery->expr()->eq('es.device_os_name', ':deviceOs'.$key), array_keys($deviceOss), $deviceOss)
+            );
+            $selectQuery->andWhere($or);
             foreach ($deviceOss as $key => $deviceOs) {
-                $orX->add($selectQuery->expr()->eq('es.device_os_name', ':deviceOs'.$key));
                 $selectQuery->setParameter('deviceOs'.$key, $deviceOs);
             }
-            $selectQuery->andWhere($orX);
         }
 
         if (null !== $deviceId) {
