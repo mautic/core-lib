@@ -99,7 +99,6 @@
   --border-tile-02: #a8a8a8;
   --border-inverse: #161616;
   --border-disabled: #c6c6c6;
-  --border-transparent: transparent;
   --text-primary: #161616;
   --text-secondary: #525252;
   --text-placeholder: #a8a8a8;
@@ -9519,10 +9518,11 @@ lesshat-selector { -lh-property: 0 ;
   outline-offset: -2px;
 }
 .tile.tile--clickable,
-.tile.tile--selectable {
+.tile.tile--selectable,
+.tile.tile--expandable {
   box-sizing: border-box;
   padding: 0;
-  border: 1px solid var(--border-tile);
+  border: 1px solid var(--border-no-color);
   margin: 0;
   font-family: inherit;
   vertical-align: baseline;
@@ -9535,21 +9535,27 @@ lesshat-selector { -lh-property: 0 ;
   outline-offset: -2px;
 }
 .tile.tile--clickable:hover,
-.tile.tile--selectable:hover {
+.tile.tile--selectable:hover,
+.tile.tile--expandable:hover {
   background: var(--layer-hover);
 }
 .tile.tile--clickable:focus,
-.tile.tile--selectable:focus {
+.tile.tile--selectable:focus,
+.tile.tile--expandable:focus {
   outline-color: var(--focus, #4e5e9e);
   text-decoration: none;
 }
 .tile.tile--clickable .tile-icon,
-.tile.tile--selectable .tile-icon {
+.tile.tile--selectable .tile-icon,
+.tile.tile--expandable .tile-icon {
   inset-block-end: var(--layout-density-padding-inline-local);
 }
 .tile.tile--clickable {
   color: var(--text-primary, #161616);
   text-decoration: none;
+}
+.tile.tile--expandable {
+  padding-bottom: calc(var(--layout-density-padding-inline-local)*2 + 1rem);
 }
 .tile .tile-icon {
   position: absolute;
@@ -9563,6 +9569,22 @@ lesshat-selector { -lh-property: 0 ;
 }
 .tile * {
   box-sizing: inherit;
+}
+.tile__chevron {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  block-size: calc(var(--layout-density-padding-inline-local)*2 + 1rem);
+  inline-size: calc(var(--layout-density-padding-inline-local)*2 + 1rem);
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+.tile--expandable.collapsed .tile__chevron {
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
 }
 .nav-tabs-contained + .tab-content .tile {
   background-color: var(--layer-02);

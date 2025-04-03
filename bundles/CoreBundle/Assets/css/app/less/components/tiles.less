@@ -13,10 +13,11 @@
     outline-offset: -2px;
 
     &.tile--clickable,
-    &.tile--selectable {
+    &.tile--selectable,
+    &.tile--expandable {
         box-sizing: border-box;
         padding: 0;
-        border: 1px solid var(--border-tile);
+        border: 1px solid var(--border-no-color);
         margin: 0;
         font-family: inherit;
         vertical-align: baseline;
@@ -42,6 +43,10 @@
         text-decoration: none;
     }
 
+    &.tile--expandable {
+        padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);    
+    }
+
     .tile-icon {
         position: absolute;
         inset-block-start: var(--layout-density-padding-inline-local);
@@ -53,6 +58,24 @@
     }
 
     * { box-sizing: inherit; }
+}
+
+.tile__chevron {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    block-size: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);
+    inline-size: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);
+    inset-block-end: 0;
+    inset-inline-end: 0;
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.tile--expandable.collapsed .tile__chevron {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
 }
 
 .nav-tabs-contained + .tab-content {
