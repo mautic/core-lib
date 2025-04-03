@@ -167,4 +167,3 @@ class LeadDeviceRepository extends CommonRepository
             ->executeStatement();
     }
 }
-

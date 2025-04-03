@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * @copyright   2021 Mautic Contributors. All rights reserved
- * @author      Mautic
- *
- * @link        https://mautic.org
- *
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 namespace Mautic\LeadBundle\Tests\Functional\EventListener;
 
 use Mautic\CampaignBundle\Entity\Campaign;
@@ -24,15 +15,12 @@ use PHPUnit\Framework\Assert;
 
 class CampaignSubscriberTest extends MauticMysqlTestCase
 {
-    /**
-     * @var CampaignSubscriber
-     */
-    private $campaignSubscriber;
+    private CampaignSubscriber $campaignSubscriber;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->campaignSubscriber = $this->container->get('mautic.lead.campaignbundle.subscriber');
+        $this->campaignSubscriber = $this->getContainer()->get(CampaignSubscriber::class);
     }
 
     public function testOnCampaignTriggerConditionReturnsCorrectResultForLeadDeviceContext(): void

@@ -684,4 +684,3 @@ class CampaignSubscriber implements EventSubscriberInterface
         return !empty($leadDeviceRepository->getDevice($contact, $deviceType, $deviceBrands, null, $deviceOs));
     }
 }
-
