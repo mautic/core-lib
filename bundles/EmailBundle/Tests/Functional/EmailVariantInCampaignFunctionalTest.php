@@ -45,7 +45,6 @@ final class EmailVariantInCampaignFunctionalTest extends MauticMysqlTestCase
         /** @var StatRepository $emailStatRepository */
         $emailStatRepository = $this->em->getRepository(Stat::class);
 
-        /** @var Stat|null $emailStat */
         $countVariantSent = $emailStatRepository->count([
             'email' => $variant->getId(),
             'lead'  => $contact->getId(),
