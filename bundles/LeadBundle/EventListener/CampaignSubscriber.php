@@ -673,6 +673,8 @@ class CampaignSubscriber implements EventSubscriberInterface
      * It returns true if contact device matches
      * device specified in the
      * CampaignExecutionEvent's settings.
+     *
+     * @phpstan-ignore-next-line
      */
     private function validateContactDevice(CampaignExecutionEvent $campaignExecutionEvent, Lead $contact, LeadDeviceRepository $leadDeviceRepository): bool
     {
