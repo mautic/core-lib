@@ -366,22 +366,41 @@ class FieldController extends FormController
      */
     public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId)
     {
-        /** @var LeadField $entity */
-        $entity  = $this->getModel('lead.field')->getEntity($objectId);
+        $model = $this->getModel('lead.field');
+        $entity = $model->getEntity($objectId);
 
-        if (null == $entity) {
-            return $this->notFound();
-        }
-
-        if (!$this->security->isGranted('lead:fields:full')) {
-            return $this->accessDenied();
+        if (!$entity) {
+            throw $this->createNotFoundException('Entity not found');
         }
 
         $clone = clone $entity;
 
         $fieldAliasHelper->makeAliasUnique($clone);
 
-        return $this->newAction($request, $clone);
+        $action    = $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'new']);
+        $form = $model->createForm($clone, $this->formFactory, $action);
+
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($clone);
+            $em->flush();
+
+            return $this->redirectToRoute('mautic_contactfield_index');
+        }
+
+        return $this->delegateView([
+            'viewParameters' => [
+                'form'      => $form->createView(),
+                'leadField' => $clone,
+            ],
+            'contentTemplate' => '@MauticLead/Field/form.html.twig',
+            'passthroughVars' => [
+                'activeLink'    => '#mautic_contactfield_index',
+                'route'         =>  $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'clone', 'objectId' => $objectId]),
+                'mauticContent' => 'leadfield',
+            ],
+        ]);
     }
 
     /**
