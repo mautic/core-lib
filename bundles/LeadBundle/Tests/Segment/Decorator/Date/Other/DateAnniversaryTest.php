@@ -88,9 +88,6 @@ class DateAnniversaryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('%-03-04%', $filterDecorator->getParameterValue($contactSegmentFilterCrate));
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateAnniversary::getWhere
-     */
     public function testGetWhereReturnsCompositeExpression(): void
     {
         $dateDecorator    = $this->createMock(DateDecorator::class);
@@ -114,9 +111,6 @@ class DateAnniversaryTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateAnniversary::getWhere
-     */
     public function testGetWhereReturnsString(): void
     {
         $dateDecorator    = $this->createMock(DateDecorator::class);
@@ -135,9 +129,6 @@ class DateAnniversaryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('WHERE clause', $filterDecorator->getWhere($contactSegmentFilterCrate));
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateAnniversary::getWhere
-     */
     public function testGetWhereReturnsNull(): void
     {
         $dateDecorator    = $this->createMock(DateDecorator::class);

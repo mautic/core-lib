@@ -121,6 +121,7 @@ class ListModelTest extends TestCase
                 $this->createMock(Translator::class),
                 $this->createMock(UserHelper::class),
                 $this->createMock(LoggerInterface::class)])
+            ->onlyMethods([])
             ->getMock();
 
         $this->fixture = $mockListModel;

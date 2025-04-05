@@ -175,9 +175,6 @@ class DateRelativeIntervalTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('2018-03-07%', $filterDecorator->getParameterValue($contactSegmentFilterCrate));
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateRelativeInterval::getWhere
-     */
     public function testGetWhereReturnsCompositeExpression(): void
     {
         $dateDecorator        = $this->createMock(DateDecorator::class);
@@ -199,9 +196,6 @@ class DateRelativeIntervalTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($composite, $result);
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateRelativeInterval::getWhere
-     */
     public function testGetWhereReturnsString(): void
     {
         $dateDecorator        = $this->createMock(DateDecorator::class);
@@ -219,9 +213,6 @@ class DateRelativeIntervalTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expectedWhere, $decorator->getWhere($filterCrate));
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateRelativeInterval::getWhere
-     */
     public function testGetWhereReturnsNull(): void
     {
         $dateDecorator        = $this->createMock(DateDecorator::class);

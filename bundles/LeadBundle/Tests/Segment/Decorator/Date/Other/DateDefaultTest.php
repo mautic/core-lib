@@ -20,9 +20,6 @@ class DateDefaultTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('2018-03-02 01:02:03', $filterDecorator->getParameterValue($contactSegmentFilterCrate));
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateDefault::getWhere
-     */
     public function testGetWhereReturnsCompositeExpression(): void
     {
         $dateDecorator = $this->createMock(DateDecorator::class);
@@ -42,9 +39,6 @@ class DateDefaultTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateDefault::getWhere
-     */
     public function testGetWhereReturnsString(): void
     {
         $dateDecorator = $this->createMock(DateDecorator::class);
@@ -63,9 +57,6 @@ class DateDefaultTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @covers \Mautic\LeadBundle\Segment\Decorator\Date\Other\DateDefault::getWhere
-     */
     public function testGetWhereReturnsNull(): void
     {
         $dateDecorator = $this->createMock(DateDecorator::class);

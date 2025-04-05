@@ -453,9 +453,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertEquals($firstEmail->getId(), $secondEmail->getVariantParent()->getId());
     }
 
-    /**
-     * @dataProvider dwcTokenTypeDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dwcTokenTypeDataProvider')]
     public function testSaveEmailWithHtmlTypeDWC(string $type): void
     {
         $dwc            = $this->createDynamicContent($type);

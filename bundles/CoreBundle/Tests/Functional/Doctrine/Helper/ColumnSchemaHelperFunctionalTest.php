@@ -36,9 +36,7 @@ class ColumnSchemaHelperFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals($newLength, $column->getLength(), 'Column length updated.');
     }
 
-    /**
-     * @dataProvider dataUpdateColumnExceptionCheck
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataUpdateColumnExceptionCheck')]
     public function testUpdateColumnLengthThrowsException(string $column, int $len, string $message): void
     {
         $this->expectExceptionMessageMatches($message);
