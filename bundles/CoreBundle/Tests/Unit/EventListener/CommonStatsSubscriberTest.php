@@ -53,13 +53,15 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->user          = $this->createMock(User::class);
         $this->repository    = $this->createMock(CommonRepository::class);
         $this->statsEvent    = $this->createMock(StatsEvent::class);
-        $this->subscirber    = $this->getMockForAbstractClass(
-            CommonStatsSubscriber::class,
-            [
-                $this->security,
-                $this->entityManager,
-            ]
-        );
+        $this->subscirber    = $this->getMockBuilder(CommonStatsSubscriber::class)
+            ->setConstructorArgs(
+                [
+                    $this->security,
+                    $this->entityManager,
+                ]
+            )
+            ->onlyMethods([])
+            ->getMock();
     }
 
     public function testOnStatsFetchForRestrictedUsers(): void

@@ -10,7 +10,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\AbstractQuery;
 use Mautic\CoreBundle\Test\Doctrine\DBALMocker;
 use Mautic\CoreBundle\Test\Doctrine\RepositoryConfiguratorTrait;
-use Mautic\LeadBundle\Entity\CustomFieldRepositoryTrait;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use PHPUnit\Framework\Assert;
@@ -31,7 +30,7 @@ class LeadRepositoryTest extends \PHPUnit\Framework\TestCase
 
     public function testBooleanWithPrepareDbalFieldsForSave(): void
     {
-        $trait  = $this->getMockForTrait(CustomFieldRepositoryTrait::class);
+        $trait  = $this->createMock(LeadRepository::class);
         $fields = [
             'true'   => true,
             'false'  => false,

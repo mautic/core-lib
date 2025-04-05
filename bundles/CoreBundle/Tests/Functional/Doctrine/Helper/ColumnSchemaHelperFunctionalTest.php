@@ -48,7 +48,7 @@ class ColumnSchemaHelperFunctionalTest extends MauticMysqlTestCase
     /**
      * @return mixed[]
      */
-    public function dataUpdateColumnExceptionCheck(): iterable
+    public static function dataUpdateColumnExceptionCheck(): iterable
     {
         // name, length, exception msg.
         yield 'Column name missing.' => ['', 10, '/The column name is should not be empty\/missing./'];

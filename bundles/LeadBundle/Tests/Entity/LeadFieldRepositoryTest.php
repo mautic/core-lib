@@ -341,7 +341,7 @@ final class LeadFieldRepositoryTest extends TestCase
     private function createQueryMock(): MockObject
     {
         // This is terrible, but the Query class is final and AbstractQuery doesn't have some methods used.
-        $query = $this->getMockBuilder(AbstractQuery::class)
+        $query = $this->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->onlyMethods([
                 'setParameters',
@@ -349,8 +349,6 @@ final class LeadFieldRepositoryTest extends TestCase
                 'getSQL',
                 '_doExecute',
                 'execute',
-            ])
-            ->addMethods([
                 'setFirstResult',
                 'setMaxResults',
             ])

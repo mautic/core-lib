@@ -483,7 +483,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, string[]>
      */
-    public function dwcTokenTypeDataProvider(): iterable
+    public static function dwcTokenTypeDataProvider(): iterable
     {
         yield 'text' => [TypeList::TEXT];
         yield 'html' => [TypeList::HTML];

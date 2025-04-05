@@ -34,7 +34,6 @@ class CommonRepositoryTest extends \PHPUnit\Framework\TestCase
     {
         /** @var EntityManager&MockObject $emMock */
         $emMock = $this->getMockBuilder(EntityManager::class)
-            ->addMethods(['none'])
             ->onlyMethods(['getClassMetadata'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -47,7 +46,10 @@ class CommonRepositoryTest extends \PHPUnit\Framework\TestCase
         $classMetadata = $this->createMock(ClassMetadata::class);
         $emMock->method('getClassMetadata')->willReturn($classMetadata);
 
-        $this->repo           = $this->getMockForAbstractClass(CommonRepository::class, [$managerRegistry, Lead::class]);
+        $this->repo = $this->getMockBuilder(CommonRepository::class)
+            ->setConstructorArgs([$managerRegistry, Lead::class])
+            ->onlyMethods([])
+            ->getMock();
         $this->qb             = new QueryBuilder($emMock);
         $this->connectionMock = $this->createMock(Connection::class);
         $this->connectionMock->method('getExpressionBuilder')
