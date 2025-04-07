@@ -337,7 +337,7 @@ final class FieldTest extends \PHPUnit\Framework\TestCase
         $field->setFieldWidth('50%');
         $this->assertEquals('50%', $field->getFieldWidth(), 'Field width should be updated to 50%');
 
-        $field->setFieldWidth(null);
-        $this->assertEquals('100%', $field->getFieldWidth(), 'Field width should default to 100% when set to null');
+        $field->setFieldWidth('');
+        $this->assertEquals('100%', $field->getFieldWidth(), 'Field width should default to 100% when set to empty string');
     }
 }
