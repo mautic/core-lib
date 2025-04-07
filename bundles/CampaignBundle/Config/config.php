@@ -163,16 +163,6 @@ return [
                     'mautic.campaign.legacy_event_dispatcher',
                 ],
             ],
-            'mautic.campaign.event_logger' => [
-                'class'     => Mautic\CampaignBundle\Executioner\Logger\EventLogger::class,
-                'arguments' => [
-                    'mautic.helper.ip_lookup',
-                    'mautic.tracker.contact',
-                    'mautic.campaign.repository.lead_event_log',
-                    'mautic.campaign.repository.lead',
-                    'mautic.campaign.model.summary',
-                ],
-            ],
             'mautic.campaign.event_collector' => [
                 'class'     => Mautic\CampaignBundle\EventCollector\EventCollector::class,
                 'arguments' => [
