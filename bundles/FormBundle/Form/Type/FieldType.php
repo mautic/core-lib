@@ -666,7 +666,7 @@ class FieldType extends AbstractType
             'customParameters' => false,
         ]);
 
-        $resolver->setRequired(['formId']);
+      $resolver->setDefined(['customParameters']);
     }
 
     public function getBlockPrefix(): string
