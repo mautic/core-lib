@@ -1058,9 +1058,9 @@ class Field implements UuidInterface
         return $this->isAutoFill && $this->isReadOnly;
     }
 
-    public function getFieldWidth(): ?string
+    public function getFieldWidth(): string
     {
-        return $this->fieldWidth ?? '100%';
+        return empty($this->fieldWidth) ? '100%' : $this->fieldWidth;
     }
 
     public function setFieldWidth(?string $fieldWidth): Field
