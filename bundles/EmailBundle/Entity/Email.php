@@ -1448,7 +1448,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     {
         $publishStatus = parent::getPublishStatus();
         if ($this->isSegmentEmail() && $this->getPublishUp()) {
-            if ('published' == $publishStatus) {
+            if ('published' === $publishStatus) {
                 if (!$this->getPendingCount() && $this->getSentCount(true)) {
                     $publishStatus = 'sent';
                 }
