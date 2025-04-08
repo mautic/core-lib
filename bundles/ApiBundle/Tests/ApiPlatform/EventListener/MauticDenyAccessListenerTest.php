@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Mautic\ApiBundle\Tests\ApiPlatform\EventListener;
 
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
-use ApiPlatform\Core\Metadata\Resource\ResourceMetadata;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use Mautic\ApiBundle\ApiPlatform\EventListener\MauticDenyAccessListener;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
@@ -13,7 +13,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 final class MauticDenyAccessListenerTest extends TestCase
@@ -24,17 +24,17 @@ final class MauticDenyAccessListenerTest extends TestCase
     private $corePermissionsMock;
 
     /**
-     * @var ResourceMetadata
+     * @var ApiResource
      */
     private $resourceMetadata;
 
     /**
-     * @var MockObject|ResourceMetadataFactoryInterface
+     * @var MockObject|ResourceMetadataCollectionFactoryInterface
      */
     private $resourceMetadataFactoryMock;
 
     /**
-     * @var MockObject|ResourceMetadataFactoryInterface
+     * @var MockObject|RequestEvent
      */
     private $eventMock;
 
@@ -68,8 +68,8 @@ final class MauticDenyAccessListenerTest extends TestCase
         $requestMock                       = $this->createMock(Request::class);
         $requestMock->attributes           = $parameterBagMock;
         $this->corePermissionsMock         = $this->createMock(CorePermissions::class);
-        $this->resourceMetadataFactoryMock = $this->createMock(ResourceMetadataFactoryInterface::class);
-        $this->eventMock                   = $this->createMock(GetResponseEvent::class);
+        $this->resourceMetadataFactoryMock = $this->createMock(ResourceMetadataCollectionFactoryInterface::class);
+        $this->eventMock                   = $this->createMock(RequestEvent::class);
         $this->eventMock
             ->expects($this->exactly(1))
             ->method('getRequest')
@@ -84,7 +84,10 @@ final class MauticDenyAccessListenerTest extends TestCase
                 'security' => '"test_item:edit"',
             ],
         ];
-        $this->resourceMetadata = new ResourceMetadata(null, null, null, $operations);
+        $this->resourceMetadata = new ApiResource(operations: new \ApiPlatform\Metadata\Operations(array_map(
+            fn ($operation) => new \ApiPlatform\Metadata\Get(security: $operation['security']),
+            $operations
+        )));
         $this->resourceMetadataFactoryMock
             ->expects($this->exactly(1))
             ->method('create')
@@ -105,7 +108,10 @@ final class MauticDenyAccessListenerTest extends TestCase
                 'security' => '"test_item:write"',
             ],
         ];
-        $this->resourceMetadata = new ResourceMetadata(null, null, null, $operations);
+        $this->resourceMetadata = new ApiResource(operations: new \ApiPlatform\Metadata\Operations(array_map(
+            fn ($operation) => new \ApiPlatform\Metadata\Get(security: $operation['security']),
+            $operations
+        )));
         $this->resourceMetadataFactoryMock
             ->expects($this->exactly(1))
             ->method('create')
@@ -126,7 +132,10 @@ final class MauticDenyAccessListenerTest extends TestCase
                 'security' => '"test_item:write"',
             ],
         ];
-        $this->resourceMetadata = new ResourceMetadata(null, null, null, $operations);
+        $this->resourceMetadata = new ApiResource(operations: new \ApiPlatform\Metadata\Operations(array_map(
+            fn ($operation) => new \ApiPlatform\Metadata\Get(security: $operation['security']),
+            $operations
+        )));
         $this->resourceMetadataFactoryMock
             ->expects($this->exactly(1))
             ->method('create')

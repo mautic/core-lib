@@ -12,7 +12,8 @@ use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class MauticWriteSubscriberTest extends TestCase
 {
@@ -22,7 +23,7 @@ class MauticWriteSubscriberTest extends TestCase
     private $mauticWriteSubscriber;
 
     /**
-     * @var MockObject|GetResponseForControllerResultEvent
+     * @var MockObject|ViewEvent
      */
     private $eventMock;
 
@@ -47,7 +48,15 @@ class MauticWriteSubscriberTest extends TestCase
         $this->mauticWriteSubscriber = new MauticWriteSubscriber($this->userHelperMock);
         $this->requestMock           = $this->createMock(Request::class);
         $this->formEntityMock        = $this->createMock(FormEntity::class);
-        $this->eventMock             = $this->createMock(GetResponseForControllerResultEvent::class);
+        $kernelMock                  = $this->createMock(HttpKernelInterface::class);
+        $this->eventMock             = $this->getMockBuilder(ViewEvent::class)
+            ->setConstructorArgs([
+                $kernelMock,
+                $this->requestMock,
+                HttpKernelInterface::MAIN_REQUEST,
+                'controllerResult',
+            ])
+            ->getMock();
     }
 
     private function setMocks(): void

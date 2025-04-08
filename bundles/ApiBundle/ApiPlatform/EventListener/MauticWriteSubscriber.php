@@ -10,19 +10,13 @@ use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 final class MauticWriteSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var UserHelper
-     */
-    private $userHelper;
-
-    public function __construct(UserHelper $userHelper)
+    public function __construct(private UserHelper $userHelper)
     {
-        $this->userHelper = $userHelper;
     }
 
     public static function getSubscribedEvents()
@@ -32,7 +26,7 @@ final class MauticWriteSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function addData(GetResponseForControllerResultEvent $event): void
+    public function addData(ViewEvent $event): void
     {
         $entity = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();

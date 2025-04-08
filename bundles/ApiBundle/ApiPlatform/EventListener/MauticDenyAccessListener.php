@@ -4,32 +4,29 @@ declare(strict_types=1);
 
 namespace Mautic\ApiBundle\ApiPlatform\EventListener;
 
+use ApiPlatform\Metadata\Exception\ResourceClassNotFoundException;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
-use ApiPlatform\Symfony\Util\RequestAttributesExtractor;
+use ApiPlatform\State\Util\RequestAttributesExtractor;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 final class MauticDenyAccessListener
 {
-    private ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory;
-
-    private CorePermissions $security;
-
-    public function __construct(CorePermissions $security, ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory)
+    public function __construct(
+        private CorePermissions $security,
+        private ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory)
     {
-        $this->security                = $security;
-        $this->resourceMetadataFactory = $resourceMetadataFactory;
     }
 
-    public function onSecurity(GetResponseEvent $event): void
+    public function onSecurity(RequestEvent $event): void
     {
         $this->checkSecurity($event->getRequest());
     }
 
     /**
-     * @throws \ApiPlatform\Core\Exception\ResourceClassNotFoundException
+     * @throws ResourceClassNotFoundException
      */
     private function checkSecurity(Request $request): void
     {
@@ -38,7 +35,8 @@ final class MauticDenyAccessListener
         }
 
         $resourceMetadata = $this->resourceMetadataFactory->create($attributes['resource_class']);
-        $isGranted        = $resourceMetadata->getOperationAttribute($attributes, 'security', null, true);
+        $operation        = $resourceMetadata->getOperation($attributes['operation_name']);
+        $isGranted        = $operation->getSecurity() ?? null;
 
         if (null === $isGranted) {
             return;
@@ -60,7 +58,7 @@ final class MauticDenyAccessListener
         if (count($match) > 1) {
             $objectIdProperty = $match[1];
         }
-        if (false !== strpos($isGranted, '[') && false !== strpos($isGranted, ']')) {
+        if (str_contains($isGranted, '[') && str_contains($isGranted, ']')) {
             $startParenthesis = strpos($isGranted, '[');
             $stopParenthesis  = strpos($isGranted, ']');
             if ($request->getContent()
