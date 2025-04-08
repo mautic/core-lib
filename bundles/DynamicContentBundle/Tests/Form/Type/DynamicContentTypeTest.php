@@ -67,14 +67,14 @@ class DynamicContentTypeTest extends TestCase
         foreach ($tags as $tag) {
             $tagChoices[$tag['value']] = $tag['label'];
         }
+        $matcher = $this->exactly(2);
 
-        $formBuilderInterfaceMock->expects($this->exactly(2))
-            ->method('create')
-            ->withConsecutive(
-                [
-                    'translationParent',
-                    DynamicContentListType::class,
-                    [
+        $formBuilderInterfaceMock->expects($matcher)
+            ->method('create')->willReturnCallback(function (...$parameters) use ($matcher, $tagChoices, $formBuilderInterfaceMock) {
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('translationParent', $parameters[0]);
+                    $this->assertSame(DynamicContentListType::class, $parameters[1]);
+                    $this->assertSame([
                         'label'       => 'mautic.core.form.translation_parent',
                         'label_attr'  => ['class' => 'control-label'],
                         'attr'        => [
@@ -86,12 +86,12 @@ class DynamicContentTypeTest extends TestCase
                         'placeholder' => 'mautic.core.form.translation_parent.empty',
                         'top_level'   => 'translation',
                         'ignore_ids'  => [0 => 0],
-                    ],
-                ],
-                [
-                    'filters',
-                    CollectionType::class,
-                    [
+                    ], $parameters[2]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('filters', $parameters[0]);
+                    $this->assertSame(CollectionType::class, $parameters[1]);
+                    $this->assertSame([
                         'entry_type'     => \Mautic\DynamicContentBundle\Form\Type\DwcEntryFiltersType::class,
                         'entry_options'  => [
                             'countries'    => FormFieldHelper::getCountryChoices(),
@@ -114,41 +114,48 @@ class DynamicContentTypeTest extends TestCase
                         'mapped'         => true,
                         'allow_add'      => true,
                         'allow_delete'   => true,
-                    ],
-                ],
-            )->willReturn($formBuilderInterfaceMock);
+                    ], $parameters[2]);
+                }
 
-        $formBuilderInterfaceMock->expects($this->exactly(3))
-            ->method('addEventListener')
-            ->withConsecutive(
-                [
-                    FormEvents::PRE_SUBMIT,
-                    $this->callback(function ($listener) {
+                return $formBuilderInterfaceMock;
+            });
+        $matcher = $this->exactly(3);
+
+        $formBuilderInterfaceMock->expects($matcher)
+            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $formBuilderInterfaceMock) {
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame(FormEvents::PRE_SUBMIT, $parameters[0]);
+                    $callback = function ($listener) {
                         $reflection = new \ReflectionFunction($listener);
                         $parameters = $reflection->getParameters();
 
                         return FormEvent::class === (string) $parameters[0]->getType();
-                    }),
-                ],
-                [
-                    FormEvents::PRE_SET_DATA,
-                    $this->callback(function ($listener) {
+                    };
+                    $this->assertTrue($callback($parameters[1]));
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
+                    $callback = function ($listener) {
                         $reflection = new \ReflectionFunction($listener);
                         $parameters = $reflection->getParameters();
 
                         return FormEvent::class === (string) $parameters[0]->getType();
-                    }),
-                ],
-                [
-                    FormEvents::POST_SUBMIT,
-                    $this->callback(function ($listener) {
+                    };
+                    $this->assertTrue($callback($parameters[1]));
+                }
+                if (3 === $matcher->getInvocationCount()) {
+                    $this->assertSame(FormEvents::POST_SUBMIT, $parameters[0]);
+                    $callback = function ($listener) {
                         $reflection = new \ReflectionFunction($listener);
                         $parameters = $reflection->getParameters();
 
                         return FormEvent::class === (string) $parameters[0]->getType();
-                    }),
-                ]
-            );
+                    };
+                    $this->assertTrue($callback($parameters[1]));
+                }
+
+                return $formBuilderInterfaceMock;
+            });
 
         $formBuilderInterfaceMock->expects($this->once())
             ->method('get')
