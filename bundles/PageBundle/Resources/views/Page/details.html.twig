@@ -21,7 +21,7 @@
 
 {% block mauticContent %}page{% endblock %}
 
-{% block indexButton %}
+{% block preHeader %}
 {{ include('@MauticCore/Helper/page_actions.html.twig', {
     'item': activePage,
     'customButtons': customButtons|default([]),
@@ -31,6 +31,7 @@
     'routeBase': 'page',
     'targetLabel': 'mautic.page.pages'|trans
 }) }}
+{{ include('@MauticCore/Helper/category--inline.html.twig', {'category': activePage.category}) }}
 {% endblock %}
 
 {% block headerTitle %}{{ activePage.title }}{% endblock %}
