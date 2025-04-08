@@ -55,6 +55,8 @@ $firewalls = [
         'mautic_plugin_auth' => true,
         'http_basic'         => true,
         'context'            => 'mautic',
+        'provider'           => 'user_provider',
+        'entry_point'        => 'fos_oauth_server.security.entry_point',
     ],
     'api' => [
         'pattern'            => '^/api',
