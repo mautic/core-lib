@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Mautic\AssetBundle\Tests\Controller;
 
 use Mautic\AssetBundle\Entity\Asset;
-use Mautic\AssetBundle\Tests\Asset\AbstractAssetTest;
+use Mautic\AssetBundle\Tests\Asset\AbstractAssetTestCase;
 use Mautic\CoreBundle\Tests\Traits\ControllerTrait;
 use Mautic\PageBundle\Tests\Controller\PageControllerTest;
 use Mautic\UserBundle\Entity\Permission;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AssetControllerFunctionalTest extends AbstractAssetTest
+class AssetControllerFunctionalTest extends AbstractAssetTestCase
 {
     use ControllerTrait;
 

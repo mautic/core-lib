@@ -9,14 +9,14 @@ use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CampaignBundle\Model\CampaignModel;
-use Mautic\CampaignBundle\Tests\Campaign\AbstractCampaignTest;
+use Mautic\CampaignBundle\Tests\Campaign\AbstractCampaignTestCase;
 use Mautic\LeadBundle\Entity\Lead;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CampaignControllerFunctionalTest extends AbstractCampaignTest
+class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
 {
     private const CAMPAIGN_SUMMARY_PARAM = 'campaign_use_summary';
 
