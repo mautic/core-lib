@@ -13,6 +13,7 @@ use Mautic\FormBundle\Crate\FieldCrate;
 use Mautic\FormBundle\Crate\ObjectCrate;
 use Mautic\FormBundle\Form\Type\FieldType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
+use Symfony\Component\Form\FormExtensionInterface;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\Validator\Validation;
@@ -47,13 +48,19 @@ class FieldTypeTest extends TypeTestCase
     }
 
     /**
-     * @return array<\Symfony\Component\Form\Extension\ExtensionInterface>
-     */
-    protected function getExtensions(): array
-    {
+    * @return array<FormExtensionInterface>
+    */
+    protected function getExtensions(): array {
         return [
             new ValidatorExtension(Validation::createValidator()),
-            new PreloadedExtension([], []),
+            new PreloadedExtension([
+                FieldType::class => new FieldType(
+                    $this->translator,
+                    $this->objectCollector,
+                    $this->fieldCollector,
+                    $this->mappedFieldCollector
+                ),
+            ], []),
         ];
     }
 
@@ -65,9 +72,7 @@ class FieldTypeTest extends TypeTestCase
             'formId'        => 1,
         ];
 
-        $form = $this->factory->create(FieldType::class, $formData, [
-            'formId' => 1,
-        ]);
+        $form = $this->factory->create(FieldType::class, $formData);
         $view = $form->createView();
 
         $this->assertArrayHasKey('fieldWidth', $view);
@@ -83,9 +88,7 @@ class FieldTypeTest extends TypeTestCase
             'formId'        => 1,
         ];
 
-        $form = $this->factory->create(FieldType::class, $formData, [
-            'formId' => 1,
-        ]);
+        $form = $this->factory->create(FieldType::class, $formData);
         $view = $form->createView();
 
         $expectedChoices = [
@@ -117,9 +120,7 @@ class FieldTypeTest extends TypeTestCase
             'formId'        => 1,
         ];
 
-        $form = $this->factory->create(FieldType::class, $formData, [
-            'formId' => 1,
-        ]);
+        $form = $this->factory->create(FieldType::class, $formData);
         $fieldWidth = $form->get('fieldWidth');
         $this->assertEquals('75%', $fieldWidth->getData());
     }
