@@ -48,9 +48,10 @@ class FieldTypeTest extends TypeTestCase
     }
 
     /**
-    * @return array<FormExtensionInterface>
-    */
-    protected function getExtensions(): array {
+     * @return array<FormExtensionInterface>
+     */
+    protected function getExtensions(): array
+    {
         return [
             new ValidatorExtension(Validation::createValidator()),
             new PreloadedExtension([
@@ -120,7 +121,7 @@ class FieldTypeTest extends TypeTestCase
             'formId'        => 1,
         ];
 
-        $form = $this->factory->create(FieldType::class, $formData);
+        $form       = $this->factory->create(FieldType::class, $formData);
         $fieldWidth = $form->get('fieldWidth');
         $this->assertEquals('75%', $fieldWidth->getData());
     }
