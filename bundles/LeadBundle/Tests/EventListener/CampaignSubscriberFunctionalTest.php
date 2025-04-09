@@ -301,21 +301,14 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $contactIds = $this->createContacts();
         $campaign   = $this->createCampaignWithTokens($contactIds);
 
-        // Force Doctrine to re-fetch the entities
         $this->em->clear();
 
-        // Execute the campaign
-        $exitCode = $applicationTester->run([
-            'command'       => 'mautic:campaigns:trigger',
-            '--campaign-id' => $campaign->getId(),
-        ]);
+        $exitCode = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
 
-        Assert::assertSame(0, $exitCode, $applicationTester->getDisplay());
+        Assert::assertSame(0, $exitCode->getStatusCode());
 
-        // Force Doctrine to re-fetch the entities to ensure we're getting the latest data
         $this->em->clear();
 
-        $now   = new \DateTime();
         $today = new \DateTime('today');
 
         /** @var Lead $contact */
@@ -327,10 +320,8 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->assertNotNull($positionValue, 'Position value should not be null');
         $this->assertNotNull($cityValue, 'City value should not be null');
 
-        // Check if the position value is within 5 seconds of now
         $this->assertEquals($today->format('Y-m-d H:i:s'), $positionValue);
 
-        // Check if the city value is today's date
         $expectedCityValue = 'Hello '.$today->format('Y-m-d H:i:s').' '.$this->contacts[0]['firstname'];
         $this->assertEquals($expectedCityValue, $cityValue);
     }
@@ -959,118 +950,12 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $event->setTriggerMode('immediate');
         $event->setProperties(
             [
-                'canvasSettings'             => [
-                    'droppedX' => '696',
-                    'droppedY' => '155',
-                ],
-                'name'                       => '',
-                'triggerMode'                => 'immediate',
-                'triggerDate'                => null,
-                'triggerInterval'            => '1',
-                'triggerIntervalUnit'        => 'd',
-                'triggerHour'                => '',
-                'triggerRestrictedStartHour' => '',
-                'triggerRestrictedStopHour'  => '',
-                'anchor'                     => 'leadsource',
-                'properties'                 => [
-                    'html'                 => '',
-                    'title'                => '',
-                    'html2'                => '',
-                    'firstname'            => '',
-                    'lastname'             => '',
-                    'company'              => '',
-                    'position'             => '',
-                    'email'                => '',
-                    'mobile'               => '',
-                    'phone'                => '',
-                    'points'               => '',
-                    'fax'                  => '',
-                    'address1'             => '',
-                    'address2'             => '',
-                    'city'                 => '',
-                    'state'                => '',
-                    'zipcode'              => '',
-                    'country'              => '',
-                    'preferred_locale'     => '',
-                    'timezone'             => '',
-                    'last_active'          => '',
-                    'attribution_date'     => '',
-                    'attribution'          => '',
-                    'website'              => '',
-                    'facebook'             => '',
-                    'foursquare'           => '',
-                    'instagram'            => '',
-                    'linkedin'             => '',
-                    'skype'                => '',
-                    'twitter'              => '',
-                ],
-                'type'                       => 'lead.updatelead',
-                'eventType'                  => 'action',
-                'anchorEventType'            => 'source',
-                'campaignId'                 => 'mautic_28ac4b8a4758b8597e8d189fa97b245996e338bb',
-                '_token'                     => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
-                'buttons'                    => ['save' => ''],
-                'html'                       => null,
-                'title'                      => null,
-                'html2'                      => null,
-                'firstname'                  => null,
-                'lastname'                   => null,
-                'company'                    => null,
                 'position'                   => '{datetime=today}',
-                'email'                      => null,
-                'mobile'                     => null,
-                'phone'                      => null,
-                'points'                     => null,
-                'fax'                        => null,
-                'address1'                   => null,
-                'address2'                   => null,
                 'city'                       => 'Hello {datetime=today} {contactfield=firstname}',
-                'state'                      => null,
-                'zipcode'                    => null,
-                'country'                    => null,
-                'preferred_locale'           => null,
-                'timezone'                   => null,
-                'last_active'                => null,
-                'attribution_date'           => null,
-                'attribution'                => null,
-                'website'                    => null,
-                'facebook'                   => null,
-                'foursquare'                 => null,
-                'instagram'                  => null,
-                'linkedin'                   => null,
-                'skype'                      => null,
-                'twitter'                    => null,
             ]
         );
 
         $campaign->addEvent(1, $event);
-
-        $campaign->setCanvasSettings(
-            [
-                'nodes'       => [
-                    [
-                        'id'        => $event->getId(),
-                        'positionX' => '696',
-                        'positionY' => '155',
-                    ],
-                    [
-                        'id'        => 'lists',
-                        'positionX' => '796',
-                        'positionY' => '50',
-                    ],
-                ],
-                'connections' => [
-                    [
-                        'sourceId' => 'lists',
-                        'targetId' => $event->getId(),
-                        'anchors'  => [
-                            'source' => 'leadsource',
-                            'target' => 'top',
-                        ],
-                    ],
-                ],
-            ]
-        );
 
         $this->em->persist($campaign);
         $this->em->flush();

@@ -52,7 +52,7 @@ class TokenHelper
                 }
 
                 $dt                = new DateTimeHelper($match);
-                $tokenList[$token] = $dt->toLocalString('Y-m-d H:i:s');
+                $tokenList[$token] = $dt->toLocalString(DateTimeHelper::FORMAT_DB);
             }
 
             if ($replace) {
