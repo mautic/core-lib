@@ -11,6 +11,9 @@ class SortableListTransformerTest extends TestCase
 {
     /**
      * @dataProvider standardListProvider
+     *
+     * @param array<string, array<int|string, string>>    $input
+     * @param array<string, array<array<string, string>>> $expected
      */
     public function testTransformStandardListWithLabels(array $input, array $expected): void
     {
@@ -22,6 +25,9 @@ class SortableListTransformerTest extends TestCase
 
     /**
      * @dataProvider keyValuePairProvider
+     *
+     * @param array<string, string>                       $input
+     * @param array<string, array<array<string, string>>> $expected
      */
     public function testTransformKeyValuePairs(array $input, array $expected): void
     {
@@ -33,6 +39,9 @@ class SortableListTransformerTest extends TestCase
 
     /**
      * @dataProvider standardListWithoutLabelsProvider
+     *
+     * @param array<string, array<int|string, string>> $input
+     * @param array<string, array<string>>             $expected
      */
     public function testTransformListWithoutLabels(array $input, array $expected): void
     {
@@ -60,6 +69,9 @@ class SortableListTransformerTest extends TestCase
 
     /**
      * @dataProvider reverseKeyValuePairProvider
+     *
+     * @param array<string, array<array<string, string>>> $input
+     * @param array<string, string>                       $expected
      */
     public function testReverseTransformKeyValuePairs(array $input, array $expected): void
     {
@@ -85,6 +97,9 @@ class SortableListTransformerTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<string, array{input: array<string, array<int|string, string>>, expected: array<string, array<array<string, string>>>}>
+     */
     public function standardListProvider(): array
     {
         return [
@@ -121,6 +136,9 @@ class SortableListTransformerTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<string, array{input: array<string, array<int|string, string>>, expected: array<string, array<string>>}>
+     */
     public function standardListWithoutLabelsProvider(): array
     {
         return [
@@ -151,6 +169,9 @@ class SortableListTransformerTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<string, array{input: array<string, string>, expected: array<string, array<array<string, string>>>}>
+     */
     public function keyValuePairProvider(): array
     {
         return [
@@ -173,6 +194,9 @@ class SortableListTransformerTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<string, array{input: array<string, array<array<string, string>>>, expected: array<string, string>}>
+     */
     public function reverseKeyValuePairProvider(): array
     {
         return [
