@@ -8677,6 +8677,15 @@ lesshat-selector { -lh-property: 0 ;
 .mi-md {
   margin-inline: var(--spacing-05) !important;
 }
+.pi-neg-local {
+  padding-inline: calc(-1 * var(--layout-density-padding-inline-local)) !important;
+}
+.mi-neg-local {
+  margin-inline: calc(-1 * var(--layout-density-padding-inline-local)) !important;
+}
+.ma-neg-local {
+  margin: calc(-1 * var(--layout-density-padding-inline-local)) !important;
+}
 .w-44 {
   width: 44px;
 }
