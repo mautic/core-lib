@@ -10411,7 +10411,6 @@ code:hover > .copy-icon {
   font-weight: var(--heading-compact-01-font-weight, 600);
   line-height: var(--heading-compact-01-line-height, 1.28572);
   letter-spacing: var(--heading-compact-01-letter-spacing, 0.16px);
-  background-color: var(--background, #ffffff);
   block-size: var(--layout-size-height-local);
   -webkit-border-after: 1px solid var(--border-subtle);
   border-block-end: 1px solid var(--border-subtle);
@@ -10480,4 +10479,18 @@ code:hover > .copy-icon {
 .contained-list-item--clickable .contained-list-item__content:disabled {
   color: var(--text-disabled, rgba(22, 22, 22, 0.25));
   cursor: not-allowed;
+}
+.contained-list__action,
+.contained-list-item__action {
+  position: absolute;
+  display: flex;
+  justify-content: flex-end;
+  inset-block-start: 0;
+  inset-inline: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.contained-list__action > *,
+.contained-list-item__action > * {
+  pointer-events: all;
 }
