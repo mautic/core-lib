@@ -10,9 +10,9 @@
                     {% endif %}
                 </span>
                 <span class="d-flex lh-1 ai-center jc-space-between fs-40">
-                    <div class="fw-b {% if stat.link is defined %}text-interactive{% endif %}">{% if stat.value == 0 %}--{% else %}{{ stat.value|raw }}{% endif %}</div>
-                    {% if stat.icon is defined and stat.icon and stat.link is not defined %}
-                        <i class="{{ stat.icon }} fs-26" aria-hidden="true"></i>
+                    <div class="fw-b {% if stat.link is defined and stat.value != 0 %}text-interactive{% endif %}">{% if stat.value == 0 %}--{% else %}{{ stat.value|raw }}{% endif %}</div>
+                    {% if stat.icon is defined and stat.icon and (stat.link is not defined or stat.value == 0) %}
+                        <i class="{{ stat.icon }} fs-22" aria-hidden="true"></i>
                     {% endif %}
                 </span>
                 {% if stat.desc is defined %}
@@ -21,7 +21,7 @@
             </div>  
         {% endset %}
 
-        {% if stat.link is defined %}
+        {% if stat.link is defined and stat.value != 0 %}
             {% include '@MauticCore/Components/tile--clickable.html.twig' with {
                 'tiles': [{'content': tileContent, 'link': stat.link, 'icon': stat.icon|default('ri-arrow-right-line')}]
             } %}
