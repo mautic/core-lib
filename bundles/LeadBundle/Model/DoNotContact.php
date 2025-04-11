@@ -191,6 +191,16 @@ class DoNotContact implements MauticModelInterface
     }
 
     /**
+     * Get all available reason-channel combinations.
+     *
+     * @return array<array{reason: int, channel: string}>
+     */
+    public function getReasonChannelCombinations(): array
+    {
+        return $this->dncRepo->getReasonChannelCombinations();
+    }
+
+    /**
      * @return DoNotContactRepository
      */
     public function getDncRepo()

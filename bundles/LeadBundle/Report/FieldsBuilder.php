@@ -3,10 +3,12 @@
 namespace Mautic\LeadBundle\Report;
 
 use Mautic\LeadBundle\Entity\LeadField;
+use Mautic\LeadBundle\Model\DoNotContact;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Model\ListModel;
 use Mautic\UserBundle\Model\UserModel;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FieldsBuilder
 {
@@ -15,6 +17,8 @@ class FieldsBuilder
         private ListModel $listModel,
         private UserModel $userModel,
         private LeadModel $leadModel,
+        private DoNotContact $doNotContactModel,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -78,6 +82,9 @@ class FieldsBuilder
             ],
         ];
 
+        // DNC filter
+        $filters['dnc'] = $this->getDncFilter();
+
         $ownerPrefix           = $prefix.'owner_id';
         $ownersList            = [];
         $owners                = $this->userModel->getUserList('', 0);
@@ -91,6 +98,38 @@ class FieldsBuilder
         ];
 
         return $filters;
+    }
+
+    private function getDncFilter(): array
+    {
+        $dncOptions = $this->doNotContactModel->getReasonChannelCombinations();
+
+        $dncReasons = [
+            0 => $this->translator->trans('mautic.lead.report.dnc_contactable'),
+            1 => $this->translator->trans('mautic.lead.report.dnc_unsubscribed'),
+            2 => $this->translator->trans('mautic.lead.report.dnc_bounced'),
+            3 => $this->translator->trans('mautic.lead.report.dnc_manual'),
+        ];
+
+        $listOptions = [];
+        foreach ($dncOptions as $dncOption) {
+            $key   = "{$dncOption['channel']}:{$dncOption['reason']}";
+            $label = $dncReasons[$dncOption['reason']].': '.$dncOption['channel'];
+
+            $listOptions[$key] = $label;
+        }
+
+        return [
+            'label'     => 'DNC',
+            'type'      => 'multiselect',
+            'list'      => $listOptions,
+            'operators' => [
+                'in'       => 'mautic.core.operator.in',
+                'notIn'    => 'mautic.core.operator.notin',
+                'empty'    => 'mautic.core.operator.isempty',
+                'notEmpty' => 'mautic.core.operator.isnotempty',
+            ],
+        ];
     }
 
     /**

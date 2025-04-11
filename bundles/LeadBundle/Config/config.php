@@ -675,6 +675,8 @@ return [
                     'mautic.lead.model.list',
                     'mautic.user.model.user',
                     'mautic.lead.model.lead',
+                    'mautic.lead.model.dnc',
+                    'translator',
                 ],
             ],
             'mautic.lead.factory.device_detector_factory' => [
