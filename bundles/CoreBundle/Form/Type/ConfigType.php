@@ -701,7 +701,15 @@ class ConfigType extends AbstractType
     public function validateImagePath(?string $value, ExecutionContextInterface $context): void
     {
         $isValid = true;
-        if (empty($value) || str_contains($value, '..') || str_contains($value, './') || '/' === $value) {
+
+        $normalizedValue = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $value);
+
+        if (
+            empty($normalizedValue)
+            || str_contains($normalizedValue, '..')
+            || str_contains($normalizedValue, '.'.DIRECTORY_SEPARATOR)
+            || DIRECTORY_SEPARATOR === $normalizedValue
+        ) {
             $isValid = false;
         }
 
