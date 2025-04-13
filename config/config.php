@@ -262,6 +262,16 @@ $container->loadFromExtension('twig', [
     'exception_controller' => null,
 ]);
 
+$container->loadFromExtension('framework', [
+    'cache' => [
+        'pools' => [
+            'doctrine_result_cache'  => [
+                'adapter' => 'cache.adapter.array',
+            ],
+        ],
+    ],
+]);
+
 $container->setParameter(
     'jms_serializer.camel_case_naming_strategy.class',
     'JMS\Serializer\Naming\IdenticalPropertyNamingStrategy'
