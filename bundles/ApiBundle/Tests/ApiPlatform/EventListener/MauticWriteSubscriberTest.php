@@ -22,10 +22,7 @@ class MauticWriteSubscriberTest extends TestCase
      */
     private $mauticWriteSubscriber;
 
-    /**
-     * @var MockObject|ViewEvent
-     */
-    private $eventMock;
+    private ViewEvent $event;
 
     /**
      * @var MockObject|FormEntity
@@ -49,26 +46,12 @@ class MauticWriteSubscriberTest extends TestCase
         $this->requestMock           = $this->createMock(Request::class);
         $this->formEntityMock        = $this->createMock(FormEntity::class);
         $kernelMock                  = $this->createMock(HttpKernelInterface::class);
-        $this->eventMock             = $this->getMockBuilder(ViewEvent::class)
-            ->setConstructorArgs([
-                $kernelMock,
-                $this->requestMock,
-                HttpKernelInterface::MAIN_REQUEST,
-                'controllerResult',
-            ])
-            ->getMock();
-    }
-
-    private function setMocks(): void
-    {
-        $this->eventMock
-            ->expects($this->exactly(1))
-            ->method('getRequest')
-            ->willReturn($this->requestMock);
-        $this->eventMock
-            ->expects($this->exactly(1))
-            ->method('getControllerResult')
-            ->willReturn($this->formEntityMock);
+        $this->event                 = new ViewEvent(
+            $kernelMock,
+            $this->requestMock,
+            HttpKernelInterface::MAIN_REQUEST,
+            $this->formEntityMock,
+        );
     }
 
     public function testGetSubscribedEvents(): void
@@ -81,7 +64,6 @@ class MauticWriteSubscriberTest extends TestCase
 
     public function testAddDataWithWrongMethod(): void
     {
-        $this->setMocks();
         $this->requestMock
             ->expects($this->exactly(1))
             ->method('getMethod')
@@ -89,12 +71,11 @@ class MauticWriteSubscriberTest extends TestCase
         $this->formEntityMock
             ->expects($this->never())
             ->method('isNew');
-        $this->mauticWriteSubscriber->addData($this->eventMock);
+        $this->mauticWriteSubscriber->addData($this->event);
     }
 
     public function testAddData(): void
     {
-        $this->setMocks();
         $this->requestMock
             ->expects($this->exactly(1))
             ->method('getMethod')
@@ -124,6 +105,6 @@ class MauticWriteSubscriberTest extends TestCase
             ->expects($this->exactly(1))
             ->method('setDateModified')
             ->withAnyParameters();
-        $this->mauticWriteSubscriber->addData($this->eventMock);
+        $this->mauticWriteSubscriber->addData($this->event);
     }
 }
