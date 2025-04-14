@@ -64,7 +64,7 @@ class CustomFieldHelper
                     throw new \InvalidArgumentException('Wrong type given. String or DateTimeInterface expected.');
                 }
 
-                $dtHelper = $dateTimeHelper ?: new DateTimeHelper();
+                $dtHelper = $dateTimeHelper ?: new DateTimeHelper($value, null, 'local');
                 $dtHelper->setDateTime($value);
 
                 switch ($type) {
