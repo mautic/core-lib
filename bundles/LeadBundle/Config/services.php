@@ -64,6 +64,7 @@ return function (ContainerConfigurator $configurator): void {
     $services->alias('mautic.lead.repository.field', Mautic\LeadBundle\Entity\LeadFieldRepository::class);
     $services->alias('mautic.company.deduper', Mautic\LeadBundle\Deduplicate\CompanyDeduper::class);
     $services->alias('mautic.lead.helper.contact_request_helper', Mautic\LeadBundle\Helper\ContactRequestHelper::class);
+    $services->alias('mautic.lead.helper.dnc_formatter_helper', Mautic\LeadBundle\Helper\DncFormatterHelper::class);
     $services->alias('mautic.tracker.contact', Mautic\LeadBundle\Tracker\ContactTracker::class);
     $services->alias('mautic.lead.field.settings.background_service', Mautic\LeadBundle\Field\BackgroundService::class);
     $services->get(Mautic\LeadBundle\Validator\Constraints\SegmentDateValidator::class)->tag('validator.constraint_validator');

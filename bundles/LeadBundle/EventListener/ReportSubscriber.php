@@ -8,6 +8,7 @@ use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\Chart\LineChart;
 use Mautic\CoreBundle\Helper\Chart\PieChart;
 use Mautic\CoreBundle\Translation\Translator;
+use Mautic\LeadBundle\Helper\DncFormatterHelper;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\CompanyReportData;
 use Mautic\LeadBundle\Model\FieldModel;
@@ -73,6 +74,7 @@ class ReportSubscriber implements EventSubscriberInterface
         private CompanyReportData $companyReportData,
         private FieldsBuilder $fieldsBuilder,
         private Translator $translator,
+        private DncFormatterHelper $dncFormatterHelper,
     ) {
     }
 
@@ -157,7 +159,15 @@ class ReportSubscriber implements EventSubscriberInterface
                         'formula' => '(SELECT MAX(stage_log.date_added) FROM '.MAUTIC_TABLE_PREFIX.'lead_stages_change_log stage_log WHERE stage_log.stage_id = l.stage_id AND stage_log.lead_id = l.id)',
                     ],
                 ];
-                $columns      = array_merge($columns, $stageColumns);
+                $dncColumns = [
+                    'dnc_list' => [
+                        'alias'   => 'dnc_list',
+                        'label'   => 'mautic.lead.report.dnc_list',
+                        'type'    => 'string',
+                        'formula' => '(SELECT GROUP_CONCAT(CONCAT(dnc.reason, \':\', dnc.channel) ORDER BY dnc.date_added DESC SEPARATOR \',\') FROM '.MAUTIC_TABLE_PREFIX.'lead_donotcontact dnc WHERE dnc.lead_id = l.id)',
+                    ],
+                ];
+                $columns      = array_merge($columns, $stageColumns, $dncColumns);
             }
 
             $data = [
@@ -934,6 +944,21 @@ class ReportSubscriber implements EventSubscriberInterface
                     }
 
                     unset($row);
+                }
+            }
+        }
+
+        if ($event->checkContext([self::CONTEXT_LEADS]) && isset($data[0]['dnc_list'])) {
+            foreach ($data as &$row) {
+                if (!empty($row['dnc_list'])) {
+                    $dncEntries = explode(',', $row['dnc_list']);
+                    $dncText    = array_map(function ($entry) {
+                        list($reason, $channel) = explode(':', $entry);
+
+                        return $this->dncFormatterHelper->printReasonWithChannel($reason, $channel);
+                    }, $dncEntries);
+
+                    $row['dnc_list'] = implode(', ', $dncText);
                 }
             }
         }
