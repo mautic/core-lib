@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Mautic\ApiBundle\Tests\ApiPlatform\EventListener;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
+use ApiPlatform\Metadata\Resource\ResourceMetadataCollection;
 use Mautic\ApiBundle\ApiPlatform\EventListener\MauticDenyAccessListener;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
@@ -80,19 +82,18 @@ final class MauticDenyAccessListenerTest extends TestCase
     public function testOnSecurityEntityAccessAllowed(): void
     {
         $operations = [
-            'Test' => [
-                'security' => '"test_item:edit"',
-            ],
+            new Get(
+                security: '"test_item:edit"'
+            )
         ];
-        $this->resourceMetadata = new ApiResource(operations: new \ApiPlatform\Metadata\Operations(array_map(
-            fn ($operation) => new \ApiPlatform\Metadata\Get(security: $operation['security']),
-            $operations
-        )));
+
+        $this->resourceMetadata = new ApiResource(operations: $operations);
+        $resourceMetadataCollection = new ResourceMetadataCollection('TestClass', [$this->resourceMetadata]);
         $this->resourceMetadataFactoryMock
             ->expects($this->exactly(1))
             ->method('create')
             ->with('TestClass')
-            ->willReturn($this->resourceMetadata);
+            ->willReturn($resourceMetadataCollection);
         $this->corePermissionsMock
             ->expects($this->exactly(1))
             ->method('hasEntityAccess')
@@ -104,19 +105,17 @@ final class MauticDenyAccessListenerTest extends TestCase
     public function testOnSecurityIsGranted(): void
     {
         $operations = [
-            'Test' => [
-                'security' => '"test_item:write"',
-            ],
+            new Get(
+                security: '"test_item:write"'
+            )
         ];
-        $this->resourceMetadata = new ApiResource(operations: new \ApiPlatform\Metadata\Operations(array_map(
-            fn ($operation) => new \ApiPlatform\Metadata\Get(security: $operation['security']),
-            $operations
-        )));
+        $this->resourceMetadata = new ApiResource(operations: $operations);
+        $resourceMetadataCollection = new ResourceMetadataCollection('TestClass', [$this->resourceMetadata]);
         $this->resourceMetadataFactoryMock
             ->expects($this->exactly(1))
             ->method('create')
             ->with('TestClass')
-            ->willReturn($this->resourceMetadata);
+            ->willReturn($resourceMetadataCollection);
         $this->corePermissionsMock
             ->expects($this->exactly(1))
             ->method('isGranted')
@@ -128,19 +127,18 @@ final class MauticDenyAccessListenerTest extends TestCase
     public function testOnSecurityAccessDenied(): void
     {
         $operations = [
-            'Test' => [
-                'security' => '"test_item:write"',
-            ],
+            new Get(
+                security: '"test_item:write"'
+            )
         ];
-        $this->resourceMetadata = new ApiResource(operations: new \ApiPlatform\Metadata\Operations(array_map(
-            fn ($operation) => new \ApiPlatform\Metadata\Get(security: $operation['security']),
-            $operations
-        )));
+
+        $this->resourceMetadata = new ApiResource(operations: $operations);
+        $resourceMetadataCollection = new ResourceMetadataCollection('TestClass', [$this->resourceMetadata]);
         $this->resourceMetadataFactoryMock
             ->expects($this->exactly(1))
             ->method('create')
             ->with('TestClass')
-            ->willReturn($this->resourceMetadata);
+            ->willReturn($resourceMetadataCollection);
         $this->corePermissionsMock
             ->expects($this->exactly(1))
             ->method('isGranted')
