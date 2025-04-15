@@ -49,7 +49,7 @@ final class MauticDenyAccessListenerTest extends TestCase
     {
         $attributes = [
             '_api_resource_class'      => 'TestClass',
-            '_api_item_operation_name' => 'Test',
+            '_api_operation_name'      => 'Test',
             'item_operation_name'      => 'Test',
         ];
         $parameterBagMock = $this->createMock(ParameterBag::class);
@@ -83,11 +83,12 @@ final class MauticDenyAccessListenerTest extends TestCase
     {
         $operations = [
             new Get(
-                security: '"test_item:edit"'
-            )
+                security: '"test_item:edit"',
+                name: 'Test'
+            ),
         ];
 
-        $this->resourceMetadata = new ApiResource(operations: $operations);
+        $this->resourceMetadata     = new ApiResource(operations: $operations);
         $resourceMetadataCollection = new ResourceMetadataCollection('TestClass', [$this->resourceMetadata]);
         $this->resourceMetadataFactoryMock
             ->expects($this->exactly(1))
@@ -106,10 +107,11 @@ final class MauticDenyAccessListenerTest extends TestCase
     {
         $operations = [
             new Get(
-                security: '"test_item:write"'
-            )
+                security: '"test_item:write"',
+                name: 'Test'
+            ),
         ];
-        $this->resourceMetadata = new ApiResource(operations: $operations);
+        $this->resourceMetadata     = new ApiResource(operations: $operations);
         $resourceMetadataCollection = new ResourceMetadataCollection('TestClass', [$this->resourceMetadata]);
         $this->resourceMetadataFactoryMock
             ->expects($this->exactly(1))
@@ -128,11 +130,12 @@ final class MauticDenyAccessListenerTest extends TestCase
     {
         $operations = [
             new Get(
-                security: '"test_item:write"'
-            )
+                security: '"test_item:write"',
+                name: 'Test'
+            ),
         ];
 
-        $this->resourceMetadata = new ApiResource(operations: $operations);
+        $this->resourceMetadata     = new ApiResource(operations: $operations);
         $resourceMetadataCollection = new ResourceMetadataCollection('TestClass', [$this->resourceMetadata]);
         $this->resourceMetadataFactoryMock
             ->expects($this->exactly(1))
