@@ -17,27 +17,15 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class MauticWriteSubscriberTest extends TestCase
 {
-    /**
-     * @var MauticWriteSubscriber
-     */
-    private $mauticWriteSubscriber;
+    private MauticWriteSubscriber $mauticWriteSubscriber;
 
     private ViewEvent $event;
 
-    /**
-     * @var MockObject|FormEntity
-     */
-    private $formEntityMock;
+    private MockObject|FormEntity $formEntityMock;
 
-    /**
-     * @var MockObject|Request
-     */
-    private $requestMock;
+    private Request|MockObject $requestMock;
 
-    /**
-     * @var MockObject|UserHelper
-     */
-    private $userHelperMock;
+    private UserHelper|MockObject $userHelperMock;
 
     protected function setUp(): void
     {

@@ -16,34 +16,20 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 final class MauticDenyAccessListenerTest extends TestCase
 {
-    /**
-     * @var MockObject|CorePermissions
-     */
-    private $corePermissionsMock;
+    private MockObject|CorePermissions $corePermissionsMock;
 
-    /**
-     * @var ApiResource
-     */
-    private $resourceMetadata;
+    private ApiResource $resourceMetadata;
 
-    /**
-     * @var MockObject|ResourceMetadataCollectionFactoryInterface
-     */
-    private $resourceMetadataFactoryMock;
+    private ResourceMetadataCollectionFactoryInterface|MockObject $resourceMetadataFactoryMock;
 
-    /**
-     * @var MockObject|RequestEvent
-     */
-    private $eventMock;
+    private RequestEvent|MockObject $requestEvent;
 
-    /**
-     * @var MauticDenyAccessListener
-     */
-    private $mauticDenyAccessListener;
+    private MauticDenyAccessListener $mauticDenyAccessListener;
 
     protected function setUp(): void
     {
@@ -67,15 +53,15 @@ final class MauticDenyAccessListenerTest extends TestCase
             ->method('get')
             ->with('data')
             ->willReturn($formEntityMock);
-        $requestMock                       = $this->createMock(Request::class);
-        $requestMock->attributes           = $parameterBagMock;
-        $this->corePermissionsMock         = $this->createMock(CorePermissions::class);
-        $this->resourceMetadataFactoryMock = $this->createMock(ResourceMetadataCollectionFactoryInterface::class);
-        $this->eventMock                   = $this->createMock(RequestEvent::class);
-        $this->eventMock
-            ->expects($this->exactly(1))
-            ->method('getRequest')
-            ->willReturn($requestMock);
+        $requestMock                          = $this->createMock(Request::class);
+        $requestMock->attributes              = $parameterBagMock;
+        $this->corePermissionsMock            = $this->createMock(CorePermissions::class);
+        $this->resourceMetadataFactoryMock    = $this->createMock(ResourceMetadataCollectionFactoryInterface::class);
+        $this->requestEvent                   = new RequestEvent(
+            $this->createMock(HttpKernelInterface::class),
+            $requestMock,
+            HttpKernelInterface::MAIN_REQUEST
+        );
         $this->mauticDenyAccessListener = new MauticDenyAccessListener($this->corePermissionsMock, $this->resourceMetadataFactoryMock);
     }
 
@@ -100,7 +86,7 @@ final class MauticDenyAccessListenerTest extends TestCase
             ->method('hasEntityAccess')
             ->with('test_item:editown', 'test_item:editother', 0)
             ->willReturn(true);
-        $this->mauticDenyAccessListener->onSecurity($this->eventMock);
+        $this->mauticDenyAccessListener->onSecurity($this->requestEvent);
     }
 
     public function testOnSecurityIsGranted(): void
@@ -123,7 +109,7 @@ final class MauticDenyAccessListenerTest extends TestCase
             ->method('isGranted')
             ->with('test_item:write')
             ->willReturn(true);
-        $this->mauticDenyAccessListener->onSecurity($this->eventMock);
+        $this->mauticDenyAccessListener->onSecurity($this->requestEvent);
     }
 
     public function testOnSecurityAccessDenied(): void
@@ -148,6 +134,6 @@ final class MauticDenyAccessListenerTest extends TestCase
             ->with('test_item:write')
             ->willReturn(false);
         $this->expectException(AccessDeniedException::class);
-        $this->mauticDenyAccessListener->onSecurity($this->eventMock);
+        $this->mauticDenyAccessListener->onSecurity($this->requestEvent);
     }
 }
