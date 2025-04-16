@@ -43,6 +43,15 @@ trait EntityFieldsBuildFormTrait
         }
         $mapped = !$isObject;
 
+        $isUpdateOwnerLeadOrCompanyAction = false;
+        $traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
+        foreach ($traces as $trace) {
+            if (isset($trace['class']) && $trace['class'] === 'Mautic\LeadBundle\Form\Type\UpdateLeadActionType') {
+                $isUpdateOwnerLeadOrCompanyAction = true;
+                break;
+            }
+        }
+
         foreach ($options['fields'] as $field) {
             if (false === $field['isPublished'] || $field['object'] !== $object) {
                 continue;
@@ -204,7 +213,11 @@ trait EntityFieldsBuildFormTrait
                     ];
 
                     $emptyValue = '';
-                    if (in_array($type, [SelectType::class, MultiselectType::class]) && !empty($properties['list'])) {
+                    
+                    if ($isUpdateOwnerLeadOrCompanyAction && BooleanType::class === $type) {
+                        $type = \Mautic\LeadBundle\Form\Type\CustomYesNoButtonGroupType::class;
+                        $emptyValue = 'x';
+                    } else if (in_array($type, [SelectType::class, MultiselectType::class]) && !empty($properties['list'])) {
                         $typeProperties['choices']      = array_flip(FormFieldHelper::parseList($properties['list']));
                         $cleaningRules[$field['alias']] = 'raw';
                     }
