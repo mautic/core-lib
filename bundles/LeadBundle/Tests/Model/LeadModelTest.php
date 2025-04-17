@@ -265,7 +265,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $this->leadModel->saveEntity($entity);
 
         $this->assertNull($entity->getCompany());
-        $this->assertEmpty($entity->getUpdatedFields()['company']);
+        $this->assertArrayNotHasKey('company', $entity->getUpdatedFields());
     }
 
     public function testIpLookupAddsCompanyIfDoesNotExistInEntity(): void
