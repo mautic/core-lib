@@ -4271,6 +4271,9 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
 .btn-link:focus {
   text-decoration: none;
 }
+.btn-link i {
+  font-size: 18px;
+}
 .btn-info {
   color: #3c4650;
 }
