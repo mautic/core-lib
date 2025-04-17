@@ -3,8 +3,6 @@
 namespace Mautic\LeadBundle\Report;
 
 use Mautic\LeadBundle\Entity\LeadField;
-use Mautic\LeadBundle\Helper\DncFormatterHelper;
-use Mautic\LeadBundle\Model\DoNotContact;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Model\ListModel;
@@ -17,8 +15,7 @@ class FieldsBuilder
         private ListModel $listModel,
         private UserModel $userModel,
         private LeadModel $leadModel,
-        private DoNotContact $doNotContactModel,
-        private DncFormatterHelper $dncFormatterHelper,
+        private DncReportService $dncReportService,
     ) {
     }
 
@@ -82,8 +79,8 @@ class FieldsBuilder
             ],
         ];
 
-        // DNC filter
-        $filters['dnc'] = $this->getDncFilter();
+        // Add DNC Status filter
+        $filters = array_merge($filters, $this->dncReportService->getDncFilters());
 
         $ownerPrefix           = $prefix.'owner_id';
         $ownersList            = [];
@@ -98,30 +95,6 @@ class FieldsBuilder
         ];
 
         return $filters;
-    }
-
-    private function getDncFilter(): array
-    {
-        $dncOptions = $this->doNotContactModel->getReasonChannelCombinations();
-
-        $listOptions = [];
-        foreach ($dncOptions as $dncOption) {
-            $key               = "{$dncOption['channel']}:{$dncOption['reason']}";
-            $label             = $this->dncFormatterHelper->printReasonWithChannel($dncOption['reason'], $dncOption['channel']);
-            $listOptions[$key] = $label;
-        }
-
-        return [
-            'label'     => 'DNC',
-            'type'      => 'multiselect',
-            'list'      => $listOptions,
-            'operators' => [
-                'in'       => 'mautic.core.operator.in',
-                'notIn'    => 'mautic.core.operator.notin',
-                'empty'    => 'mautic.core.operator.isempty',
-                'notEmpty' => 'mautic.core.operator.isnotempty',
-            ],
-        ];
     }
 
     /**

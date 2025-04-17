@@ -190,7 +190,7 @@ class DoNotContactRepository extends CommonRepository
     /**
      * Get all unique combinations of reason and channel.
      *
-     * @return array Array of arrays containing 'reason' and 'channel'
+     * @return array<int, array{reason: mixed, channel: mixed}> Array of arrays containing 'reason' and 'channel'
      */
     public function getReasonChannelCombinations(): array
     {

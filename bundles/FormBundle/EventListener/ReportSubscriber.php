@@ -7,9 +7,8 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Entity\SubmissionRepository;
 use Mautic\FormBundle\Model\FormModel;
-use Mautic\LeadBundle\Helper\DncFormatterHelper;
 use Mautic\LeadBundle\Model\CompanyReportData;
-use Mautic\LeadBundle\Report\DncStatus;
+use Mautic\LeadBundle\Report\DncReportService;
 use Mautic\ReportBundle\Event\ReportBuilderEvent;
 use Mautic\ReportBundle\Event\ReportDataEvent;
 use Mautic\ReportBundle\Event\ReportGeneratorEvent;
@@ -34,8 +33,7 @@ class ReportSubscriber implements EventSubscriberInterface
         private ReportHelper $reportHelper,
         private CoreParametersHelper $coreParametersHelper,
         private TranslatorInterface $translator,
-        private DncFormatterHelper $dncFormatterHelper,
-        private DncStatus $dncStatus,
+        private DncReportService $dncReportService,
     ) {
     }
 
@@ -110,7 +108,7 @@ class ReportSubscriber implements EventSubscriberInterface
                 $event->getCampaignByChannelColumns(),
                 $event->getLeadColumns(),
                 $event->getIpColumn(),
-                $this->dncStatus->getDncColumns(),
+                $this->dncReportService->getDncColumns(),
                 $companyColumns
             );
 
@@ -120,7 +118,7 @@ class ReportSubscriber implements EventSubscriberInterface
                 $event->getCampaignByChannelColumns(),
                 $event->getLeadColumns(),
                 $event->getIpColumn(),
-                $this->dncStatus->getDncFilters(),
+                $this->dncReportService->getDncFilters(),
                 $companyColumns
             );
 
@@ -295,7 +293,7 @@ class ReportSubscriber implements EventSubscriberInterface
         $data = $event->getData();
 
         if ($event->checkContext([self::CONTEXT_FORM_SUBMISSION])) {
-            $data = $this->dncStatus->processDncStatusDisplay($data);
+            $data = $this->dncReportService->processDncStatusDisplay($data);
         }
 
         $event->setData($data);

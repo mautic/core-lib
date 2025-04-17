@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace Mautic\FormBundle\Tests\EventListener;
 
-use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\ReportBundle\Entity\Report;
+use Mautic\LeadBundle\Tests\Functional\AbstractReportSubscriberTest;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class DncStatusInFormSubmissionReportFunctionalTest extends MauticMysqlTestCase
+class DncStatusInFormSubmissionReportFunctionalTest extends AbstractReportSubscriberTest
 {
-    protected $useCleanupRollback   = false;
-    protected bool $authenticateApi = true;
-
     public function testLeadReportWithDncListColumn(): void
     {
         $leads[] = $this->createContact('test1@example.com');
@@ -40,31 +36,31 @@ class DncStatusInFormSubmissionReportFunctionalTest extends MauticMysqlTestCase
             'firstname' => 'test2',
         ]);
 
-        $report = $this->createReport();
-        $report->setFilters([
-            [
-                'column'    => 'f.id',
-                'glue'      => 'and',
-                'dynamic'   => null,
-                'condition' => 'eq',
-                'value'     => $formId,
+        $report = $this->createReport(
+            source: 'form.submissions',
+            columns: [
+                'l.id',
+                'l.firstname',
+                'dnc_list',
             ],
-        ]);
-        $this->em->persist($report);
-        $this->em->flush();
+            filters: [
+                [
+                    'column'    => 'f.id',
+                    'glue'      => 'and',
+                    'dynamic'   => null,
+                    'condition' => 'eq',
+                    'value'     => $formId,
+                ],
+            ]
+        );
 
-        $crawler            = $this->client->request(Request::METHOD_GET, "/s/reports/view/{$report->getId()}");
-        $this->assertTrue($this->client->getResponse()->isOk());
-        $crawlerReportTable = $crawler->filterXPath('//table[@id="reportTable"]')->first();
-
-        // convert html table to php array
-        $crawlerReportTable = $this->domTableToArray($crawlerReportTable);
-
-        $this->assertSame([
-            // no., id, firstname, dnc_list
-            ['1', (string) $leads[0]->getId(), 'test1', 'DNC Bounced: Email'],
-            ['2', (string) $leads[1]->getId(), 'test2', 'DNC Manually Unsubscribed: Email'],
-        ], $crawlerReportTable);
+        $expectedReport = [
+            // id, firstname, dnc_list
+            [(string) $leads[0]->getId(), 'test1', 'DNC Bounced: Email'],
+            [(string) $leads[1]->getId(), 'test2', 'DNC Manually Unsubscribed: Email'],
+        ];
+        $this->verifyReport($report->getId(), $expectedReport);
+        $this->verifyApiReport($report->getId(), $expectedReport);
     }
 
     public function testLeadReportWithDncListFilterIn(): void
@@ -94,41 +90,41 @@ class DncStatusInFormSubmissionReportFunctionalTest extends MauticMysqlTestCase
             'firstname' => 'test3',
         ]);
 
-        $report = $this->createReport();
-        $report->setFilters([
-            [
-                'column'    => 'f.id',
-                'glue'      => 'and',
-                'dynamic'   => null,
-                'condition' => 'eq',
-                'value'     => $formId,
+        $report = $this->createReport(
+            source: 'form.submissions',
+            columns: [
+                'l.id',
+                'l.firstname',
+                'dnc_list',
             ],
-            [
-                'column'    => 'dnc',
-                'glue'      => 'and',
-                'dynamic'   => null,
-                'condition' => 'in',
-                'value'     => [
-                    'email:'.DoNotContact::UNSUBSCRIBED,
-                    'email:'.DoNotContact::BOUNCED,
+            filters: [
+                [
+                    'column'    => 'f.id',
+                    'glue'      => 'and',
+                    'dynamic'   => null,
+                    'condition' => 'eq',
+                    'value'     => $formId,
                 ],
-            ],
-        ]);
-        $this->em->persist($report);
-        $this->em->flush();
+                [
+                    'column'    => 'dnc',
+                    'glue'      => 'and',
+                    'dynamic'   => null,
+                    'condition' => 'in',
+                    'value'     => [
+                        'email:'.DoNotContact::UNSUBSCRIBED,
+                        'email:'.DoNotContact::BOUNCED,
+                    ],
+                ],
+            ]
+        );
 
-        $crawler            = $this->client->request(Request::METHOD_GET, "/s/reports/view/{$report->getId()}");
-        $this->assertTrue($this->client->getResponse()->isOk());
-        $crawlerReportTable = $crawler->filterXPath('//table[@id="reportTable"]')->first();
-
-        // convert html table to php array
-        $crawlerReportTable = $this->domTableToArray($crawlerReportTable);
-
-        $this->assertSame([
-            // no., id, firstname, dnc_list
-            ['1', (string) $leads[0]->getId(), 'test1', 'DNC Bounced: Email'],
-            ['2', (string) $leads[2]->getId(), 'test3', 'DNC Manually Unsubscribed: Text Message, DNC Unsubscribed: Email'],
-        ], $crawlerReportTable);
+        $expectedReport = [
+            // id, firstname, dnc_list
+            [(string) $leads[0]->getId(), 'test1', 'DNC Bounced: Email'],
+            [(string) $leads[2]->getId(), 'test3', 'DNC Manually Unsubscribed: Text Message, DNC Unsubscribed: Email'],
+        ];
+        $this->verifyReport($report->getId(), $expectedReport);
+        $this->verifyApiReport($report->getId(), $expectedReport);
     }
 
     private function createFormThroughApi(): int
@@ -174,6 +170,9 @@ class DncStatusInFormSubmissionReportFunctionalTest extends MauticMysqlTestCase
         return $formId;
     }
 
+    /**
+     * @param array<string, mixed> $submissionData
+     */
     private function submitForm(int $formId, array $submissionData): Crawler
     {
         // Submit the form
@@ -189,22 +188,6 @@ class DncStatusInFormSubmissionReportFunctionalTest extends MauticMysqlTestCase
         $form->setValues($formData);
 
         return $this->client->submit($form);
-    }
-
-    private function createReport(): Report
-    {
-        $report = new Report();
-        $report->setName('Form submission');
-        $report->setSource('form.submissions');
-        $report->setColumns([
-            'l.id',
-            'l.firstname',
-            'dnc_list',
-        ]);
-        $this->em->persist($report);
-        $this->em->flush();
-
-        return $report;
     }
 
     public function createDnc(string $channel, Lead $contact, int $reason): DoNotContact
@@ -226,17 +209,5 @@ class DncStatusInFormSubmissionReportFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($lead);
 
         return $lead;
-    }
-
-    /**
-     * @return array<int,array<int,mixed>>
-     */
-    private function domTableToArray(Crawler $crawler): array
-    {
-        $table = $crawler->filter('tr')->each(fn ($tr) => $tr->filter('td')->each(fn ($td) => trim($td->text())));
-        array_shift($table);
-        array_pop($table);
-
-        return $table;
     }
 }

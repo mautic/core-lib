@@ -501,6 +501,15 @@ final class MauticReportBuilder implements ReportBuilderInterface
         return null;
     }
 
+    /**
+     * Get the Do Not Contact (DNC) condition for a query based on the provided filter.
+     *
+     * @param array{
+     *     column: string,
+     *     condition: string,
+     *     value: string[]
+     * } $filter The filter array containing 'column', 'condition', and 'value' keys
+     */
     public function getDncCondition(array $filter): ?string
     {
         if ('dnc' !== $filter['column']) {

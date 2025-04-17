@@ -8,11 +8,11 @@ use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\Chart\LineChart;
 use Mautic\CoreBundle\Helper\Chart\PieChart;
 use Mautic\CoreBundle\Translation\Translator;
-use Mautic\LeadBundle\Helper\DncFormatterHelper;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\CompanyReportData;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\LeadModel;
+use Mautic\LeadBundle\Report\DncReportService;
 use Mautic\LeadBundle\Report\FieldsBuilder;
 use Mautic\ReportBundle\Event\ColumnCollectEvent;
 use Mautic\ReportBundle\Event\ReportBuilderEvent;
@@ -74,7 +74,7 @@ class ReportSubscriber implements EventSubscriberInterface
         private CompanyReportData $companyReportData,
         private FieldsBuilder $fieldsBuilder,
         private Translator $translator,
-        private DncFormatterHelper $dncFormatterHelper,
+        private DncReportService $dncReportService,
     ) {
     }
 
@@ -948,19 +948,8 @@ class ReportSubscriber implements EventSubscriberInterface
             }
         }
 
-        if ($event->checkContext([self::CONTEXT_LEADS]) && isset($data[0]['dnc_list'])) {
-            foreach ($data as &$row) {
-                if (!empty($row['dnc_list'])) {
-                    $dncEntries = explode(',', $row['dnc_list']);
-                    $dncText    = array_map(function ($entry) {
-                        list($reason, $channel) = explode(':', $entry);
-
-                        return $this->dncFormatterHelper->printReasonWithChannel($reason, $channel);
-                    }, $dncEntries);
-
-                    $row['dnc_list'] = implode(', ', $dncText);
-                }
-            }
+        if ($event->checkContext([self::CONTEXT_LEADS])) {
+            $data = $this->dncReportService->processDncStatusDisplay($data);
         }
 
         $event->setData($data);
