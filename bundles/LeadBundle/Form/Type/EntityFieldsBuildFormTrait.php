@@ -46,7 +46,10 @@ trait EntityFieldsBuildFormTrait
         $isUpdateOwnerLeadOrCompanyAction = false;
         $traces                           = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
         foreach ($traces as $trace) {
-            if (isset($trace['class']) && 'Mautic\LeadBundle\Form\Type\UpdateLeadActionType' === $trace['class']) {
+            if (isset($trace['class']) && (
+                'Mautic\LeadBundle\Form\Type\UpdateLeadActionType' === $trace['class']
+                || 'Mautic\LeadBundle\Form\Type\UpdateCompanyActionType' === $trace['class']
+            )) {
                 $isUpdateOwnerLeadOrCompanyAction = true;
                 break;
             }
