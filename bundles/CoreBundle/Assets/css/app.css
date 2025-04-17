@@ -3825,6 +3825,7 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
 }
 .btn-link {
   font-weight: normal;
+  color: var(--link-primary);
   height: auto;
   line-height: normal;
   padding: 0;
