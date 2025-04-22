@@ -1,0 +1,15 @@
+<div class="col-sm-6 col-xs-12 mb-32 mt-32">
+    {% if logo is defined %}
+        <img src="{{ asset(logo.path) }}" alt="{{ logo.alt|trans }}" title="{{ logo.alt|trans }}" class="mb-32" style="height: 30px; width: fit-content;">
+    {% endif %}
+    <div class="content-item__header fw-b type-heading-02 mb-xs mt-xs">{{ heading|trans }}</div>
+    <div class="content-item__text type-body-compact-02 mb-md">{{ description|trans }}</div>
+
+    {% if cta is defined and cta %}
+        {% set cta = cta|merge({
+            'variant': 'link',
+            'icon': 'ri-arrow-right-line'
+        }) %}
+        {% include '@MauticCore/Helper/button.html.twig' with {buttons: [cta]} %}
+    {% endif %}
+</div>
