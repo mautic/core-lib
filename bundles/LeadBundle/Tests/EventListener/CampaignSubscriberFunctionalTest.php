@@ -12,6 +12,7 @@ use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\LeadEvents;
 use Mautic\PointBundle\Entity\Group;
@@ -909,5 +910,103 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         Assert::assertInstanceOf(LeadManipulator::class, $leadManipulator);
         Assert::assertSame('campaign', $leadManipulator->getBundleName());
         Assert::assertSame('trigger-action', $leadManipulator->getObjectName());
+    }
+
+    private function createUpdateContactCampaignWithBools(int $contactId, ?int $bool1, ?int $bool2, ?int $bool3): Campaign
+    {
+        $campaign = new Campaign();
+        $campaign->setName('Test Bool');
+        $this->em->persist($campaign);
+        $this->em->flush();
+
+        $campaignLead = new CampaignLead();
+        $campaignLead->setCampaign($campaign);
+        /** @var Lead $lead */
+        $lead = $this->em->getReference(Lead::class, $contactId);
+        $campaignLead->setLead($lead);
+        $campaignLead->setDateAdded(new \DateTime());
+        $this->em->persist($campaignLead);
+        $campaign->addLead(1, $campaignLead);
+
+        $this->em->flush();
+
+        $event = new Event();
+        $event->setCampaign($campaign);
+        $event->setName('Update contact bools');
+        $event->setType('lead.updatelead');
+        $event->setEventType('action');
+        $event->setTriggerMode('immediate');
+        $event->setProperties(
+            [
+                'bool1' => $bool1,
+                'bool2' => $bool2,
+                'bool3' => $bool3,
+            ]
+        );
+
+        $campaign->addEvent(1, $event);
+
+        $this->em->persist($campaign);
+        $this->em->flush();
+
+        return $campaign;
+    }
+
+    public function createBoolField(string $alias, string $label): void
+    {
+        $field = new LeadField();
+        $field->setAlias($alias);
+        $field->setLabel($label);
+        $field->setType('bool');
+        $field->setIsVisible(true);
+        $this->em->persist($field);
+        $this->em->flush();
+    }
+
+    public function testUpdateLeadActionWithBoolFields(): void
+    {
+        $contactIds = $this->createContacts();
+        $contactId1 = $contactIds[0];
+        $lead       = $this->contactRepository->getEntity($contactId1);
+
+        $this->createBoolField('bool1', 'Bool 1');
+        $this->createBoolField('bool2', 'Bool 2');
+        $this->createBoolField('bool3', 'Bool 3');
+
+        $lead->addUpdatedField('bool1', null);
+        $lead->addUpdatedField('bool2', null);
+        $lead->addUpdatedField('bool3', null);
+
+        $campaign   = $this->createUpdateContactCampaignWithBools($contactId1, null, 0, 1);
+
+        $this->em->clear();
+
+        $exitCode = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+
+        Assert::assertSame(0, $exitCode->getStatusCode());
+
+        $this->em->clear();
+
+        /** @var Lead $contact */
+        $contact = $this->contactRepository->getEntity($contactId1);
+
+        $bool1     = $contact->getFieldValue('bool1');
+        $bool2     = $contact->getFieldValue('bool2');
+        $bool3     = $contact->getFieldValue('bool3');
+
+        dump($bool1, $bool2, $bool3);
+
+        $this->assertEquals(null, $bool1);
+        $this->assertEquals(false, $bool2);
+        $this->assertEquals(true, $bool3);
+        /*
+        $lead->setFieldValue('bool1', false);
+        $lead->setFieldValue('bool2', false);
+        $lead->setFieldValue('bool3', false);
+
+        $lead->setFieldValue('bool1', true);
+        $lead->setFieldValue('bool2', true);
+        $lead->setFieldValue('bool3', true);
+        */
     }
 }
