@@ -995,46 +995,57 @@
   --heading-07-line-height: 64px;
   --heading-07-font-weight: 300;
   --heading-07-letter-spacing: 0px;
+  /* fluid heading-03 */
   --fluid-heading-03-font-size: 20px;
   --fluid-heading-03-line-height: 28px;
   --fluid-heading-03-font-weight: 400;
   --fluid-heading-03-letter-spacing: 0px;
+  /* fluid heading-04 */
   --fluid-heading-04-font-size: 28px;
   --fluid-heading-04-line-height: 36px;
   --fluid-heading-04-font-weight: 400;
   --fluid-heading-04-letter-spacing: 0px;
+  /* fluid heading-05 */
   --fluid-heading-05-font-size: 32px;
   --fluid-heading-05-line-height: 40px;
   --fluid-heading-05-font-weight: 400;
   --fluid-heading-05-letter-spacing: 0px;
+  /* fluid heading-06 */
   --fluid-heading-06-font-size: 32px;
   --fluid-heading-06-line-height: 40px;
   --fluid-heading-06-font-weight: 600;
   --fluid-heading-06-letter-spacing: 0px;
+  /* fluid paragraph-01 */
   --fluid-paragraph-01-font-size: 24px;
   --fluid-paragraph-01-line-height: 30px;
   --fluid-paragraph-01-font-weight: 300;
   --fluid-paragraph-01-letter-spacing: 0px;
+  /* fluid quotation-01 */
   --fluid-quotation-01-font-size: 20px;
   --fluid-quotation-01-line-height: 26px;
   --fluid-quotation-01-font-weight: 400;
   --fluid-quotation-01-letter-spacing: 0px;
+  /* fluid quotation-02 */
   --fluid-quotation-02-font-size: 32px;
   --fluid-quotation-02-line-height: 40px;
   --fluid-quotation-02-font-weight: 300;
   --fluid-quotation-02-letter-spacing: 0px;
+  /* fluid display-01 */
   --fluid-display-01-font-size: 42px;
   --fluid-display-01-line-height: 50px;
   --fluid-display-01-font-weight: 300;
   --fluid-display-01-letter-spacing: 0px;
+  /* fluid display-02 */
   --fluid-display-02-font-size: 42px;
   --fluid-display-02-line-height: 50px;
   --fluid-display-02-font-weight: 600;
   --fluid-display-02-letter-spacing: 0px;
+  /* fluid display-03 */
   --fluid-display-03-font-size: 42px;
   --fluid-display-03-line-height: 50px;
   --fluid-display-03-font-weight: 300;
   --fluid-display-03-letter-spacing: 0px;
+  /* fluid display-04 */
   --fluid-display-04-font-size: 42px;
   --fluid-display-04-line-height: 50px;
   --fluid-display-04-font-weight: 300;
@@ -1068,6 +1079,7 @@
   :root {
     --fluid-heading-05-font-size: 36px;
     --fluid-heading-05-line-height: 44px;
+    --fluid-heading-05-font-weight: 300;
     --fluid-heading-06-font-size: 36px;
     --fluid-heading-06-line-height: 44px;
     --fluid-quotation-02-font-size: 36px;
@@ -1131,7 +1143,6 @@
 @media (min-width: 1584px) {
   :root {
     --fluid-heading-03-font-size: 24px;
-    --fluid-heading-03-line-height: 28px;
     --fluid-heading-04-font-size: 32px;
     --fluid-heading-04-line-height: 40px;
     --fluid-heading-05-font-size: 60px;
