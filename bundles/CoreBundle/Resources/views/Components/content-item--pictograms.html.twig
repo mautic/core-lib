@@ -3,9 +3,7 @@
     <div class="row-no-gutters">
         <div class="col-sm-2">
             <div class="mb-xs">
-                {% if pictogram is defined %}
-                    {% include '@MauticCore/Helper/_illustration.html.twig' with {'illustration': pictogram, 'size': 48} %}
-                {% endif %}
+                {% include '@MauticCore/Helper/_illustration.html.twig' with {'illustration': pictogram, 'size': 48} %}
             </div>
         </div>
         <div class="col-sm-10">
@@ -25,9 +23,7 @@
 {% else %}
 <div class="col-sm-6 col-xs-12 mb-32 mt-32">
     <div class="mb-xs">
-        {% if pictogram is defined %}
-            {% include '@MauticCore/Helper/_illustration.html.twig' with {'illustration': pictogram, 'size': 48} %}
-        {% endif %}
+        {% include '@MauticCore/Helper/_illustration.html.twig' with {'illustration': pictogram, 'size': 48} %}
     </div>
     <div class="content-item__header fw-b type-heading-02 mb-xs">{{ heading|trans }}</div>
     <div class="content-item__text type-body-compact-02 mb-md">{{ description|trans }}</div>

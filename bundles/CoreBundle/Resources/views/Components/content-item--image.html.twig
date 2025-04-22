@@ -2,9 +2,7 @@
 <div class="col-sm-6 col-xs-12 mb-32 mt-32">
     <div class="row">
         <div class="col-sm-4 col-xs-12 mb-xs">
-            {% if image is defined %}
-                <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-xs">
-            {% endif %}
+            <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-xs">
         </div>
         <div class="col-sm-8 col-xs-12">
             <div class="content-item__header fw-b type-heading-02 mb-xs">{{ heading|trans }}</div>
@@ -22,9 +20,7 @@
 </div>
 {% else %}
 <div class="col-sm-6 col-xs-12 mb-32 mt-32">
-    {% if image is defined %}
-        <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-md">
-    {% endif %}
+    <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-md">
     <div class="content-item__header fw-b type-heading-02 mb-xs">{{ heading|trans }}</div>
     <div class="content-item__copy type-body-compact-02 mb-md">{{ copy|trans }}</div>
 

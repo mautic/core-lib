@@ -16,8 +16,6 @@
         {% endif %}
     </div>
     <div class="col-sm-8 col-xs-12">
-        {% if image is defined %}
-            <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-32">
-        {% endif %}
+        <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-32">
     </div>
 </div>
