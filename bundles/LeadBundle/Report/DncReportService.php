@@ -72,7 +72,7 @@ final class DncReportService
      */
     public function processDncStatusDisplay(array $data): array
     {
-        if (!isset($data[0]['dnc_list'])) {
+        if (empty($data) || !array_key_exists('dnc_list', $data[0])) {
             return $data;
         }
 
