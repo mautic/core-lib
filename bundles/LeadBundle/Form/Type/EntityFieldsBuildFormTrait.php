@@ -43,18 +43,6 @@ trait EntityFieldsBuildFormTrait
         }
         $mapped = !$isObject;
 
-        $isUpdateOwnerLeadOrCompanyAction = false;
-        $traces                           = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
-        foreach ($traces as $trace) {
-            if (isset($trace['class']) && (
-                'Mautic\LeadBundle\Form\Type\UpdateLeadActionType' === $trace['class']
-                || 'Mautic\LeadBundle\Form\Type\UpdateCompanyActionType' === $trace['class']
-            )) {
-                $isUpdateOwnerLeadOrCompanyAction = true;
-                break;
-            }
-        }
-
         foreach ($options['fields'] as $field) {
             if (false === $field['isPublished'] || $field['object'] !== $object) {
                 continue;
@@ -217,9 +205,9 @@ trait EntityFieldsBuildFormTrait
 
                     $emptyValue = '';
 
-                    if ($isUpdateOwnerLeadOrCompanyAction && BooleanType::class === $type) {
-                        $type       = CustomYesNoButtonGroupType::class;
-                        $emptyValue = 'x';
+                    if (array_key_exists('use_nullable_yes_no_type', $options) && true === $options['use_nullable_yes_no_type'] && BooleanType::class === $type) {
+                        $type       = NullableYesNoButtonGroupType::class;
+                        $emptyValue = 'No change';
                     } elseif (in_array($type, [SelectType::class, MultiselectType::class]) && !empty($properties['list'])) {
                         $typeProperties['choices']      = array_flip(FormFieldHelper::parseList($properties['list']));
                         $cleaningRules[$field['alias']] = 'raw';
