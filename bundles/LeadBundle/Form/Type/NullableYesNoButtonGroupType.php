@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\Form\Type;
 
 use Mautic\CoreBundle\Form\Type\ButtonGroupType;
@@ -7,16 +9,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CustomYesNoButtonGroupType extends AbstractType
+final class NullableYesNoButtonGroupType extends AbstractType
 {
     public function getParent()
     {
         return ButtonGroupType::class;
-    }
-
-    public function getBlockPrefix()
-    {
-        return 'custom_yesno_button_group';
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -37,8 +34,11 @@ class CustomYesNoButtonGroupType extends AbstractType
                 'expanded'          => true,
                 'multiple'          => false,
                 'label_attr'        => ['class' => 'control-label'],
+                'attr'              => [
+                    'class'           => 'form-control',
+                ],
                 'label'             => 'mautic.core.form.active',
-                'placeholder'       => 'x',
+                'placeholder'       => true,
                 'required'          => false,
                 'no_label'          => 'mautic.core.form.no',
                 'no_value'          => 0,
