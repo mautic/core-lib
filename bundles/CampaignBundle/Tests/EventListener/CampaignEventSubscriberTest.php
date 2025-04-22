@@ -295,4 +295,41 @@ class CampaignEventSubscriberTest extends TestCase
 
         $this->fixture->onEventExecuted($executedEvent);
     }
+
+    public function testOnFailedEventGeneratesOneUnPublishNotificationAndEmail(): void
+    {
+        // Set up mocks
+        $leadEventLogMock = $this->createMock(LeadEventLog::class);
+        $eventMock        = $this->createMock(Event::class);
+        $leadEventLogMock->expects($this->once())->method('getEvent')->willReturn($eventMock);
+        $leadMock = $this->createMock(Lead::class);
+        $leadEventLogMock->expects($this->once())->method('getLead')->willReturn($leadMock);
+
+        // Set up campaign mock with isPublished returning false to simulate campaign already unpublished
+        $campaignMock = $this->createMock(Campaign::class);
+        $campaignMock->expects($this->once())->method('isPublished')->willReturn(false);
+        $eventMock->expects($this->any())->method('getCampaign')->willReturn($campaignMock);
+
+        // Mock behavior for threshold calculations
+        $leadMock->expects($this->any())->method('getId')->willReturn(1);
+        $eventMock->expects($this->any())->method('getId')->willReturn(1);
+        $this->eventRepo->expects($this->once())->method('getFailedCountLeadEvent')
+            ->with(1, 1)->willReturn(101);
+        $this->leadEventLogRepositoryMock->expects($this->once())->method('isLastFailed')
+            ->with(1, 1)->willReturn(false);
+        $this->eventRepo->expects($this->once())->method('incrementFailedCount')
+            ->with($eventMock)->willReturn(35);
+
+        // Set up leads collection
+        $totalLeads = array_fill(0, 100, new Lead());
+        $campaignMock->expects($this->once())->method('getLeads')->willReturn(new ArrayCollection($totalLeads));
+
+        // Expect notifyOfFailure to be called, but notifyOfUnpublish should not
+        $this->notificationHelper->expects($this->once())->method('notifyOfFailure');
+        $this->notificationHelper->expects($this->never())->method('notifyOfUnpublish');
+
+        // Execute the test
+        $failedEvent = new FailedEvent($this->createMock(AbstractEventAccessor::class), $leadEventLogMock);
+        $this->fixture->onEventFailed($failedEvent);
+    }
 }
