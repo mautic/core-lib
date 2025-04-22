@@ -16,7 +16,7 @@ class CampaignEventSubscriber implements EventSubscriberInterface
 {
     public const LOOPS_TO_FAIL = 100;
 
-    private float $disableCampaignThreshold = 0.35;
+    private const DISABLE_CAMPAIGN_THRESHOLD = 0.35;
 
     public function __construct(private EventRepository $eventRepository, private NotificationHelper $notificationHelper, private CampaignRepository $campaignRepository, private LeadEventLogRepository $leadEventLogRepository)
     {
@@ -68,13 +68,11 @@ class CampaignEventSubscriber implements EventSubscriberInterface
         $campaign             = $failedEvent->getCampaign();
         $lead                 = $log->getLead();
         $countFailedLeadEvent = $this->eventRepository->getFailedCountLeadEvent($lead->getId(), $failedEvent->getId());
-        if ($countFailedLeadEvent < self::LOOPS_TO_FAIL) {
-            // Do not increase if under LOOPS_TO_FAIL
-            return;
-        } elseif ($countFailedLeadEvent > self::LOOPS_TO_FAIL
-            && $this->leadEventLogRepository->isLastFailed($lead->getId(), $failedEvent->getId())
-        ) {
-            // Do not increase twice
+
+        // Do not increase if under LOOPS_TO_FAIL || Do not increase twice
+        if (($countFailedLeadEvent < self::LOOPS_TO_FAIL) || ($countFailedLeadEvent > self::LOOPS_TO_FAIL
+                && $this->leadEventLogRepository->isLastFailed($lead->getId(), $failedEvent->getId())
+        )) {
             return;
         }
         // Increase if LOOPS_TO_FAIL or last success
@@ -84,7 +82,7 @@ class CampaignEventSubscriber implements EventSubscriberInterface
 
         $this->notificationHelper->notifyOfFailure($lead, $failedEvent);
 
-        if ($failedPercent >= $this->disableCampaignThreshold && $campaign->isPublished()) {
+        if ($failedPercent >= self::DISABLE_CAMPAIGN_THRESHOLD && $campaign->isPublished()) {
             $this->notificationHelper->notifyOfUnpublish($failedEvent);
             $campaign->setIsPublished(false);
             $this->campaignRepository->saveEntity($campaign);
