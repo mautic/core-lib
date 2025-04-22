@@ -1,12 +1,12 @@
-<div class="mb-64 mt-32">
-    <hr>
+<div>
+    <hr class="mt-32">
     <div class="col-sm-4 col-xs-12 mb-xs">
         {% if eyebrow is defined %}
             <div class="content-item__eyebrow type-label-01 text-secondary mb-xs">{{ eyebrow|trans }}</div>
         {% endif %}
         <div class="content-item__header type-heading-03 mb-32">{{ heading|trans }}</div>
     </div>
-    <div class="col-sm-8 col-xs-12">
+    <div class="col-sm-8 col-xs-12 mb-64">
         <div class="content-item__copy type-body-02 mb-lg">{{ copy|trans }}</div>
 
         {% if cta is defined and cta %}

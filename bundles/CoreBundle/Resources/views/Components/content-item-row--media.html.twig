@@ -1,5 +1,5 @@
-<div class="mb-64 mt-32">
-    <hr>
+<div>
+    <hr class="mt-32">
     <div class="col-sm-4 col-xs-12 mb-xs">
         {% if eyebrow is defined %}
             <div class="content-item__eyebrow type-label-01 text-secondary mb-xs">{{ eyebrow|trans }}</div>
@@ -15,7 +15,7 @@
             {% include '@MauticCore/Helper/button.html.twig' with {buttons: [cta]} %}
         {% endif %}
     </div>
-    <div class="col-sm-8 col-xs-12">
+    <div class="col-sm-8 col-xs-12 mb-64">
         <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-32">
     </div>
 </div>
