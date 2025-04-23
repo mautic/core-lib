@@ -1,24 +1,24 @@
-<div class="mt-64 {% if hasBorder is defined and hasBorder %}mb-64{% else %}mb-160{% endif %}">
+<div class="{% if hasBorder is defined and hasBorder %}mb-64{% else %}mb-160{% endif %}">
     {% if heading is defined %}
-    <div class="content-item__header type-fluid-heading-05 mb-32">{{ heading|trans }}</div>
+    <div aria-level="2" class="content-block__heading type-fluid-heading-05 mb-32">{{ heading|trans }}</div>
     {% endif %}
     
     {% if subheading is defined %}
-    <div class="content-item__subheading type-heading-03 mb-32">{{ subheading|trans }}</div>
+    <div class="content-block__subheading type-heading-03 mb-32">{{ subheading|trans }}</div>
     {% endif %}
     
     {% if copy is defined %}
         {% if copy is iterable %}
             {% for item in copy %}
-                <div class="content-item__copy type-body-01 mb-lg">{{ item|trans }}</div>
+                <div class="content-block__copy type-body-02 mb-lg">{{ item|trans }}</div>
             {% endfor %}
         {% else %}
-            <div class="content-item__copy type-body-01 mb-lg">{{ copy|trans }}</div>
+            <div class="content-block__copy type-body-02 mb-lg">{{ copy|trans }}</div>
         {% endif %}
     {% endif %}
     
     {% if childContainer is defined %}
-        {{ childContainer }}
+        {{ childContainer|raw }}
     {% endif %}
     
     <div class="mt-32">
