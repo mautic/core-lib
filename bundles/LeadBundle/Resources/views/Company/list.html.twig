@@ -183,47 +183,39 @@
           }) }}
       </div>
   {% else %}
+    {% if searchValue is not empty %}
+      {{ include('@MauticCore/Helper/noresults.html.twig') }}
+    {% else %}
+      <div class="mt-80 col-md-offset-3 col-md-6 height-auto">
+        {% set childContainer %}
+          <div class="mb-md">
+              {% include '@MauticCore/Helper/pictogram.html.twig' with {
+                  'pictogram': 'organization',
+                  'size': '64'
+              } %}
+          </div>
+          {% include '@MauticCore/Components/list-unordered--checkmark.html.twig' with {
+              'items': [
+                  'mautic.company.empty.feature.segment_contacts',
+                  'mautic.company.empty.feature.custom_fields',
+                  'mautic.company.empty.feature.adjust_scores',
+                  'mautic.company.empty.feature.identify',
+                  'mautic.company.empty.feature.assign_contacts',
+              ]
+          } %}
+        {% endset %}
 
-  <div class="mt-80 col-md-offset-3 col-md-6 height-auto">
-
-    {% set childContainer %}
-
-    <div class="mb-md">
-        {% include '@MauticCore/Helper/pictogram.html.twig' with {
-            'pictogram': 'organization',
-            'size': '64'
-        } %}
-    </div>
-
-        {% include '@MauticCore/Components/list-unordered--checkmark.html.twig' with {
-            'items': [
-                'mautic.company.empty.feature.segment_contacts',
-                'mautic.company.empty.feature.custom_fields',
-                'mautic.company.empty.feature.adjust_scores',
-                'mautic.company.empty.feature.identify',
-                'mautic.company.empty.feature.assign_contacts',
-            ]
-        } %}
-    {% endset %}
-
-    {{ include('@MauticCore/Components/content-block.html.twig', {
-        heading: 'mautic.company.empty.heading',
-        subheading: 'mautic.company.empty.subheading',
-        childContainer: childContainer,
-        cta: {
-            'label': 'mautic.company.action.add',
-            'link': path('mautic_company_action', {'objectAction': 'new'}),
-        }
-    }) }}
-
-  </div>
-
-
-
-    
-
-
-
+        {{ include('@MauticCore/Components/content-block.html.twig', {
+            heading: 'mautic.company.empty.heading',
+            subheading: 'mautic.company.empty.subheading',
+            childContainer: childContainer,
+            cta: {
+                'label': 'mautic.company.action.add',
+                'link': path('mautic_company_action', {'objectAction': 'new'}),
+            }
+        }) }}
+      </div>
+    {% endif %}
   {% endif %}
 
   {% if isIndex %}
