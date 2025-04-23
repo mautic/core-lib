@@ -61,8 +61,8 @@ class LeadSubscriber implements EventSubscriberInterface
         private SegmentCountCacheHelper $segmentCountCacheHelper,
         private CoreParametersHelper $coreParametersHelper,
         private CompanyLeadRepository $companyLeadRepository,
-        private $isTest = false,
         ModelFactory $modelFactory = null,
+        private $isTest = false,
     ) {
         $this->router = $router;
 
