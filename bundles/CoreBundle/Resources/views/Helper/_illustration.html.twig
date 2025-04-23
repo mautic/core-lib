@@ -1,6 +1,0 @@
-{# @MauticCore/Helper/_illustration.html.twig #}
-{% set svg_path = '@bundles/CoreBundle/Assets/illustrations/' ~ illustration ~ '.svg' %}
-
-<div class="illustration animation--slide-in-up illustration--size-{{ size }}" style="fill: {{ color|default('var(--icon-primary)') }}">
-    {{ source(svg_path) }}
-</div>
