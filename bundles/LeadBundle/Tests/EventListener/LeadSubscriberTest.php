@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Tests\EventListener;
 
 use Doctrine\ORM\EntityManager;
-<<<<<<< HEAD
 use Mautic\CoreBundle\Factory\ModelFactory;
-=======
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
@@ -16,33 +13,25 @@ use Mautic\CoreBundle\Tests\CommonMocks;
 use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Entity\CompanyLeadRepository;
 use Mautic\LeadBundle\Entity\Lead;
-<<<<<<< HEAD
 use Mautic\LeadBundle\Entity\LeadEventLog;
 use Mautic\LeadBundle\Entity\LeadEventLogRepository;
-=======
 use Mautic\LeadBundle\Entity\LeadListRepository;
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
 use Mautic\LeadBundle\Event\LeadEvent;
 use Mautic\LeadBundle\Event\LeadTimelineEvent;
 use Mautic\LeadBundle\EventListener\LeadSubscriber;
 use Mautic\LeadBundle\Helper\LeadChangeEventDispatcher;
-<<<<<<< HEAD
+use Mautic\LeadBundle\Helper\SegmentCountCacheHelper;
 use Mautic\LeadBundle\LeadEvents;
-use Mautic\LeadBundle\Twig\Helper\DncReasonHelper;
+use Mautic\LeadBundle\Templating\Helper\DncReasonHelper;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-=======
-use Mautic\LeadBundle\Helper\SegmentCountCacheHelper;
-use Mautic\LeadBundle\Templating\Helper\DncReasonHelper;
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LeadSubscriberTest extends CommonMocks
 {
     /**
-<<<<<<< HEAD
      * @var IpLookupHelper&MockObject
      */
     private MockObject $ipLookupHelper;
@@ -57,7 +46,10 @@ class LeadSubscriberTest extends CommonMocks
      */
     private MockObject $leadEventDispatcher;
 
-    private DncReasonHelper $dncReasonHelper;
+    /**
+     * @var DncReasonHelper
+     */
+    private $dncReasonHelper;
 
     /**
      * @var EntityManager&MockObject
@@ -80,17 +72,29 @@ class LeadSubscriberTest extends CommonMocks
     private MockObject $modelFacotry;
 
     /**
-     * @var CoreParametersHelper
+     * @var LeadListRepository&MockObject
      */
-    private $coreParametersHelper;
+    private MockObject $leadListRepository;
 
     /**
-     * @var CompanyLeadRepository
+     * @var SegmentCountCacheHelper&MockObject
      */
-    private $companyLeadRepository;
+    private MockObject $segmentCountCacheHelper;
+
+    /**
+     * @var CoreParametersHelper&MockObject
+     */
+    private MockObject $coreParametersHelper;
+
+    /**
+     * @var CompanyLeadRepository&MockObject
+     */
+    private MockObject $companyLeadRepository;
 
     protected function setUp(): void
     {
+        parent::setUp();
+        
         $this->ipLookupHelper        = $this->createMock(IpLookupHelper::class);
         $this->auditLogModel         = $this->createMock(AuditLogModel::class);
         $this->leadEventDispatcher   = $this->createMock(LeadChangeEventDispatcher::class);
@@ -99,35 +103,13 @@ class LeadSubscriberTest extends CommonMocks
         $this->translator            = $this->createMock(TranslatorInterface::class);
         $this->router                = $this->createMock(RouterInterface::class);
         $this->modelFacotry          = $this->createMock(ModelFactory::class);
+        $this->leadListRepository    = $this->createMock(LeadListRepository::class);
+        $this->segmentCountCacheHelper = $this->createMock(SegmentCountCacheHelper::class);
         $this->coreParametersHelper  = $this->createMock(CoreParametersHelper::class);
         $this->companyLeadRepository = $this->createMock(CompanyLeadRepository::class);
     }
 
     public function testOnLeadPostSaveWillNotProcessTheSameLeadTwice(): void
-=======
-     * @var LeadListRepository|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $leadListRepository;
-    /**
-     * @var SegmentCountCacheHelper|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $segmentCountCacheHelper;
-    /**
-     * @var CoreParametersHelper|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $coreParametersHelper;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->leadListRepository      = $this->createMock(LeadListRepository::class);
-        $this->segmentCountCacheHelper = $this->createMock(SegmentCountCacheHelper::class);
-        $this->coreParametersHelper    = $this->createMock(CoreParametersHelper::class);
-    }
-
-    public function testOnLeadPostSaveWillNotProcessTheSameLeadTwice()
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
     {
         $lead = new Lead();
 
@@ -174,7 +156,6 @@ class LeadSubscriberTest extends CommonMocks
             ->method('writeToLog');
 
         $subscriber = new LeadSubscriber(
-<<<<<<< HEAD
             $this->ipLookupHelper,
             $this->auditLogModel,
             $this->leadEventDispatcher,
@@ -182,21 +163,10 @@ class LeadSubscriberTest extends CommonMocks
             $this->entityManager,
             $this->translator,
             $this->router,
-            $this->modelFacotry,
-            $this->coreParametersHelper,
-            $this->companyLeadRepository
-=======
-            $ipLookupHelper,
-            $auditLogModel,
-            $leadEventDispatcher,
-            $dncReasonHelper,
-            $entityManager,
-            $translator,
-            $router,
             $this->leadListRepository,
             $this->segmentCountCacheHelper,
-            $this->coreParametersHelper
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
+            $this->coreParametersHelper,
+            $this->companyLeadRepository
         );
 
         $subscriber->onLeadPostSave(new LeadEvent($lead));
@@ -288,7 +258,8 @@ class LeadSubscriberTest extends CommonMocks
             $this->entityManager,
             $this->translator,
             $this->router,
-            $this->modelFacotry,
+            $this->leadListRepository,
+            $this->segmentCountCacheHelper,
             $this->coreParametersHelper,
             $this->companyLeadRepository,
             true
@@ -383,7 +354,6 @@ class LeadSubscriberTest extends CommonMocks
             });
 
         $subscriber = new LeadSubscriber(
-<<<<<<< HEAD
             $this->ipLookupHelper,
             $this->auditLogModel,
             $this->leadEventDispatcher,
@@ -391,22 +361,11 @@ class LeadSubscriberTest extends CommonMocks
             $this->entityManager,
             $this->translator,
             $this->router,
-            $this->modelFacotry,
+            $this->leadListRepository,
+            $this->segmentCountCacheHelper,
             $this->coreParametersHelper,
             $this->companyLeadRepository,
             true
-=======
-            $ipLookupHelper,
-            $auditLogModel,
-            $leadEventDispatcher,
-            $dncReasonHelper,
-            $entityManager,
-            $translator,
-            $router,
-            $this->leadListRepository,
-            $this->segmentCountCacheHelper,
-            $this->coreParametersHelper
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
         );
 
         $subscriber->onLeadPostSave(new LeadEvent($lead));
@@ -457,7 +416,6 @@ class LeadSubscriberTest extends CommonMocks
             );
 
         $subscriber = new LeadSubscriber(
-<<<<<<< HEAD
             $this->ipLookupHelper,
             $this->auditLogModel,
             $this->leadEventDispatcher,
@@ -465,22 +423,11 @@ class LeadSubscriberTest extends CommonMocks
             $this->entityManager,
             $this->translator,
             $this->router,
-            $this->modelFacotry,
+            $this->leadListRepository,
+            $this->segmentCountCacheHelper,
             $this->coreParametersHelper,
             $this->companyLeadRepository,
             true
-=======
-            $ipLookupHelper,
-            $auditLogModel,
-            $leadEventDispatcher,
-            $dncReasonHelper,
-            $entityManager,
-            $translator,
-            $router,
-            $this->leadListRepository,
-            $this->segmentCountCacheHelper,
-            $this->coreParametersHelper
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
         );
 
         $subscriber->onLeadPostSave(new LeadEvent($lead));

@@ -176,7 +176,6 @@ class ListModelTest extends TestCase
         $segmentId = $leadList->getId();
         $leadCount = 433;
 
-<<<<<<< HEAD
         $this->leadListRepositoryMock
             ->expects(self::once())
             ->method('getLeadCount')
@@ -210,8 +209,6 @@ class ListModelTest extends TestCase
             ->with($leadList)
             ->willReturn($orphanLeadsCount);
 
-=======
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
         self::assertSame(0, $this->model->rebuildListLeads($leadList));
 
         $this->segmentCountCacheHelper

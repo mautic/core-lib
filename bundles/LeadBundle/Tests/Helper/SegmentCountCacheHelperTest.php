@@ -25,8 +25,6 @@ class SegmentCountCacheHelperTest extends TestCase
         $this->segmentCountCacheHelper = new SegmentCountCacheHelper($this->cacheStorageHelperMock);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * @throws InvalidArgumentException
      */
@@ -113,16 +111,11 @@ class SegmentCountCacheHelperTest extends TestCase
     /**
      * @throws InvalidArgumentException
      */
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
     public function testDecrementSegmentContactCountHasNoCache(): void
     {
         $segmentId = 1;
         $this->cacheStorageHelperMock
-<<<<<<< HEAD
-            ->expects(self::once())
-=======
             ->expects(self::exactly(1))
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('has')
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn(false);
@@ -134,30 +127,18 @@ class SegmentCountCacheHelperTest extends TestCase
     {
         $segmentId = 1;
         $this->cacheStorageHelperMock
-<<<<<<< HEAD
-            ->expects(self::once())
-=======
             ->expects(self::exactly(2))
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('has')
             ->withConsecutive(['segment.'.$segmentId.'.lead'], ['segment.'.$segmentId.'.lead.recount'])
             ->willReturnOnConsecutiveCalls(true, false);
         $this->cacheStorageHelperMock
-<<<<<<< HEAD
-            ->expects(self::once())
-=======
             ->expects(self::exactly(1))
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('get')
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn('10');
         // Decrement count.
         $this->cacheStorageHelperMock
-<<<<<<< HEAD
-            ->expects(self::once())
-=======
             ->expects(self::exactly(1))
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('set')
             ->with('segment.'.$segmentId.'.lead', 9);
 
@@ -169,30 +150,18 @@ class SegmentCountCacheHelperTest extends TestCase
     {
         $segmentId = 1;
         $this->cacheStorageHelperMock
-<<<<<<< HEAD
-            ->expects(self::once())
-=======
             ->expects(self::exactly(2))
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('has')
             ->withConsecutive(['segment.'.$segmentId.'.lead'], ['segment.'.$segmentId.'.lead.recount'])
             ->willReturnOnConsecutiveCalls(true, false);
         $this->cacheStorageHelperMock
-<<<<<<< HEAD
-            ->expects(self::once())
-=======
             ->expects(self::exactly(1))
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('get')
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn('0');
         // Edge case. Should not decrement below 0.
         $this->cacheStorageHelperMock
-<<<<<<< HEAD
-            ->expects(self::once())
-=======
             ->expects(self::exactly(1))
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
             ->method('set')
             ->with('segment.'.$segmentId.'.lead', 0);
 

@@ -38,7 +38,6 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->leadRepo = $leadModel->getRepository();
     }
 
-<<<<<<< HEAD
     public function testUnpublishUsedSegment(): void
     {
         $filter = [[
@@ -143,8 +142,6 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @throws \Exception
      */
-=======
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
     public function testSegmentCount(): void
     {
         // Save segment.
@@ -186,22 +183,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $contact1Id = $contacts[0]->getId();
 
         // Rebuild segment - set current count to the cache.
-<<<<<<< HEAD
-        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId, '--env' => 'test']);
-
-        // Verify last built date is set.
-        $this->em->detach($segment);
-        $segment = $this->listRepo->find($segmentId);
-        self::assertNotNull($segment->getLastBuiltDate());
-
-        // Set last built date in the future to allow testing without waiting.
-        // (Same second built date as the modified date is shown as "Building" still in the UI).
-        $segment->setLastBuiltDate(new \DateTime('+5 seconds'));
-        $this->listModel->saveEntity($segment);
-
-=======
         $this->runCommand('mautic:segments:update', ['-i' => $segmentId, '--env' => 'test']);
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
         // Check segment count UI for 4 contacts.
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
         $html    = $this->getSegmentCountHtml($crawler, $segmentId);
@@ -232,9 +214,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $html    = $this->getSegmentCountHtml($crawler, $segmentId);
         $spClass = $this->getSegmentCountClass($crawler, $segmentId);
         self::assertSame('View 4 Contacts', $html);
-<<<<<<< HEAD
         self::assertSame('label label-gray col-count', $spClass);
-=======
     }
 
     /**
@@ -301,7 +281,6 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
         $html    = $this->getSegmentCountHtml($crawler, $segmentId);
         self::assertSame('View 4 Contacts', $html);
->>>>>>> d25f8e6375 (Merge pull request #1455 from acquia/MAUT-5921)
 
         // Check segment count AJAX for 4 contacts.
         $parameter = ['id' => $segmentId];
