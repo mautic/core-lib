@@ -46,16 +46,6 @@ class LeadSubscriber implements EventSubscriberInterface
     private ?int $lastContactId = null;
 
     /**
-     * @var LeadListRepository
-     */
-    private $leadListRepository;
-
-    /**
-     * @var SegmentCountCacheHelper
-     */
-    private $segmentCountCacheHelper;
-
-    /**
      * @param ModelFactory<object> $modelFactory
      * @param bool                 $isTest       whether or not we're running in a test environment
      */
@@ -67,21 +57,18 @@ class LeadSubscriber implements EventSubscriberInterface
         private EntityManager $entityManager,
         private TranslatorInterface $translator,
         RouterInterface $router,
-        LeadListRepository $leadListRepository,
-        SegmentCountCacheHelper $segmentCountCacheHelper,
+        private LeadListRepository $leadListRepository,
+        private SegmentCountCacheHelper $segmentCountCacheHelper,
         private CoreParametersHelper $coreParametersHelper,
         private CompanyLeadRepository $companyLeadRepository,
         private $isTest = false,
-        ModelFactory $modelFactory = null
+        ModelFactory $modelFactory = null,
     ) {
         $this->router = $router;
-        $this->leadListRepository = $leadListRepository;
-        $this->segmentCountCacheHelper = $segmentCountCacheHelper;
 
         if ($modelFactory) {
             $this->setModelFactory($modelFactory);
         }
-    
     }
 
     public static function getSubscribedEvents(): array
@@ -104,7 +91,7 @@ class LeadSubscriber implements EventSubscriberInterface
     /**
      * Add a lead entry to the audit log.
      */
-    public function onLeadPostSave(Events\LeadEvent $event): void
+    public function onLeadPostSave(LeadEvent $event): void
     {
         $lead = $event->getLead();
 
@@ -181,7 +168,7 @@ class LeadSubscriber implements EventSubscriberInterface
     /**
      * Add a lead delete entry to the audit log.
      */
-    public function onLeadDelete(Events\LeadEvent $event): void
+    public function onLeadDelete(LeadEvent $event): void
     {
         $lead = $event->getLead();
         $log  = [
