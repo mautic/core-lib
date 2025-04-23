@@ -4,11 +4,18 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Report;
 
+use Mautic\LeadBundle\Entity\DoNotContact as DNC;
 use Mautic\LeadBundle\Helper\DncFormatterHelper;
 use Mautic\LeadBundle\Model\DoNotContact;
 
 class DncReportService
 {
+    public const DEFAULT_DNC_OPTIONS = [
+        ['reason' => DNC::UNSUBSCRIBED, 'channel' => 'email'],
+        ['reason' => DNC::BOUNCED, 'channel' => 'email'],
+        ['reason' => DNC::MANUAL, 'channel' => 'email'],
+    ];
+
     public function __construct(
         private DoNotContact $doNotContactModel,
         private DncFormatterHelper $dncFormatterHelper,
@@ -39,10 +46,14 @@ class DncReportService
      */
     public function getDncFilters(): array
     {
-        $dncOptions = $this->doNotContactModel->getReasonChannelCombinations();
+        $dncOptions    = $this->doNotContactModel->getReasonChannelCombinations();
+        $mergedOptions = array_unique(
+            array_merge($dncOptions, self::DEFAULT_DNC_OPTIONS),
+            SORT_REGULAR
+        );
 
         $listOptions = [];
-        foreach ($dncOptions as $dncOption) {
+        foreach ($mergedOptions as $dncOption) {
             $key               = "{$dncOption['channel']}:{$dncOption['reason']}";
             $label             = $this->dncFormatterHelper->printReasonWithChannel($dncOption['reason'], $dncOption['channel']);
             $listOptions[$key] = $label;
