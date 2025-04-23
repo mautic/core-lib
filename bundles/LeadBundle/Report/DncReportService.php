@@ -7,7 +7,7 @@ namespace Mautic\LeadBundle\Report;
 use Mautic\LeadBundle\Helper\DncFormatterHelper;
 use Mautic\LeadBundle\Model\DoNotContact;
 
-final class DncReportService
+class DncReportService
 {
     public function __construct(
         private DoNotContact $doNotContactModel,
