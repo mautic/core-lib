@@ -32,10 +32,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
 
         $report = $this->createReport(
             source: 'asset.downloads',
-            columns: ['l.id', 'a.id', 'a.title', 'dnc_list'],
+            columns: ['l.id', 'a.id', 'a.title', 'dnc_preferences'],
             filters: [
                 [
-                    'column'    => 'dnc',
+                    'column'    => 'dnc_preferences',
                     'glue'      => 'and',
                     'dynamic'   => null,
                     'condition' => 'in',

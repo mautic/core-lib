@@ -8,7 +8,7 @@ use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Tests\Functional\AbstractReportSubscriberTest;
 
-class DncInLeadReportFunctionalTest extends AbstractReportSubscriberTest
+class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
 {
     public function testLeadReportWithDncListColumn(): void
     {
@@ -25,11 +25,11 @@ class DncInLeadReportFunctionalTest extends AbstractReportSubscriberTest
 
         $report = $this->createReport(
             source: 'leads',
-            columns: ['l.id', 'dnc_list']
+            columns: ['l.id', 'dnc_preferences']
         );
 
         $expectedReport = [
-            // id, dnc_list
+            // id, dnc_preferences
             [(string) $leads[0]->getId(), 'DNC Bounced: Email'],
             [(string) $leads[1]->getId(), 'DNC Manually Unsubscribed: Email'],
             [(string) $leads[2]->getId(), 'DNC Manually Unsubscribed: Text Message, DNC Unsubscribed: Email'],
@@ -52,10 +52,10 @@ class DncInLeadReportFunctionalTest extends AbstractReportSubscriberTest
 
         $report = $this->createReport(
             source: 'leads',
-            columns: ['l.id', 'dnc_list'],
+            columns: ['l.id', 'dnc_preferences'],
             filters: [
                 [
-                    'column'    => 'dnc',
+                    'column'    => 'dnc_preferences',
                     'glue'      => 'and',
                     'dynamic'   => null,
                     'condition' => 'in',
@@ -68,7 +68,7 @@ class DncInLeadReportFunctionalTest extends AbstractReportSubscriberTest
         );
 
         $expectedReport = [
-            // id, dnc_list
+            // id, dnc_preferences
             [(string) $leads[0]->getId(), 'DNC Bounced: Email'],
             [(string) $leads[2]->getId(), 'DNC Manually Unsubscribed: Text Message, DNC Unsubscribed: Email'],
         ];
@@ -90,10 +90,10 @@ class DncInLeadReportFunctionalTest extends AbstractReportSubscriberTest
 
         $report = $this->createReport(
             source: 'leads',
-            columns: ['l.id', 'dnc_list'],
+            columns: ['l.id', 'dnc_preferences'],
             filters: [
                 [
-                    'column'    => 'dnc',
+                    'column'    => 'dnc_preferences',
                     'glue'      => 'and',
                     'dynamic'   => null,
                     'condition' => 'notIn',
@@ -124,10 +124,10 @@ class DncInLeadReportFunctionalTest extends AbstractReportSubscriberTest
 
         $report = $this->createReport(
             source: 'leads',
-            columns: ['l.id', 'dnc_list'],
+            columns: ['l.id', 'dnc_preferences'],
             filters: [
                 [
-                    'column'    => 'dnc',
+                    'column'    => 'dnc_preferences',
                     'glue'      => 'and',
                     'dynamic'   => null,
                     'condition' => 'empty',
@@ -157,10 +157,10 @@ class DncInLeadReportFunctionalTest extends AbstractReportSubscriberTest
 
         $report = $this->createReport(
             source: 'leads',
-            columns: ['l.id', 'dnc_list'],
+            columns: ['l.id', 'dnc_preferences'],
             filters: [
                 [
-                    'column'    => 'dnc',
+                    'column'    => 'dnc_preferences',
                     'glue'      => 'and',
                     'dynamic'   => null,
                     'condition' => 'notEmpty',

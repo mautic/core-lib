@@ -23,9 +23,9 @@ class DncReportService
     public function getDncColumns(): array
     {
         return [
-            'dnc_list' => [
-                'alias'   => 'dnc_list',
-                'label'   => 'mautic.lead.report.dnc_list',
+            'dnc_preferences' => [
+                'alias'   => 'dnc_preferences',
+                'label'   => 'mautic.lead.report.dnc_preferences',
                 'type'    => 'string',
                 'formula' => '(SELECT GROUP_CONCAT(CONCAT(dnc.reason, \':\', dnc.channel) ORDER BY dnc.date_added DESC SEPARATOR \',\') FROM '.MAUTIC_TABLE_PREFIX.'lead_donotcontact dnc WHERE dnc.lead_id = l.id)',
             ],
@@ -49,8 +49,8 @@ class DncReportService
         }
 
         return [
-            'dnc' => [
-                'label'     => 'DNC',
+            'dnc_preferences' => [
+                'label'     => 'mautic.lead.report.dnc_preferences',
                 'type'      => 'multiselect',
                 'list'      => $listOptions,
                 'operators' => [
@@ -66,26 +66,26 @@ class DncReportService
     /**
      * Processes and formats the DNC status display for each entry in the data array.
      *
-     * @param array<int, array<string, mixed>> $data an array of data rows, each containing a 'dnc_list' key
+     * @param array<int, array<string, mixed>> $data an array of data rows, each containing a 'dnc_preferences' key
      *
-     * @return array<int, array<string, mixed>> the modified data array with formatted 'dnc_list' entries
+     * @return array<int, array<string, mixed>> the modified data array with formatted 'dnc_preferences' entries
      */
     public function processDncStatusDisplay(array $data): array
     {
-        if (empty($data) || !array_key_exists('dnc_list', $data[0])) {
+        if (empty($data) || !array_key_exists('dnc_preferences', $data[0])) {
             return $data;
         }
 
         foreach ($data as &$row) {
-            if (!empty($row['dnc_list'])) {
-                $dncEntries = explode(',', $row['dnc_list']);
+            if (!empty($row['dnc_preferences'])) {
+                $dncEntries = explode(',', $row['dnc_preferences']);
                 $dncText    = array_map(function ($entry) {
                     list($reason, $channel) = explode(':', $entry);
 
                     return $this->dncFormatterHelper->printReasonWithChannel((int) $reason, $channel);
                 }, $dncEntries);
 
-                $row['dnc_list'] = implode(', ', $dncText);
+                $row['dnc_preferences'] = implode(', ', $dncText);
             }
         }
 

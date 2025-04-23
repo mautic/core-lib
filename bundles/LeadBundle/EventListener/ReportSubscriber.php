@@ -159,15 +159,7 @@ class ReportSubscriber implements EventSubscriberInterface
                         'formula' => '(SELECT MAX(stage_log.date_added) FROM '.MAUTIC_TABLE_PREFIX.'lead_stages_change_log stage_log WHERE stage_log.stage_id = l.stage_id AND stage_log.lead_id = l.id)',
                     ],
                 ];
-                $dncColumns = [
-                    'dnc_list' => [
-                        'alias'   => 'dnc_list',
-                        'label'   => 'mautic.lead.report.dnc_list',
-                        'type'    => 'string',
-                        'formula' => '(SELECT GROUP_CONCAT(CONCAT(dnc.reason, \':\', dnc.channel) ORDER BY dnc.date_added DESC SEPARATOR \',\') FROM '.MAUTIC_TABLE_PREFIX.'lead_donotcontact dnc WHERE dnc.lead_id = l.id)',
-                    ],
-                ];
-                $columns      = array_merge($columns, $stageColumns, $dncColumns);
+                $columns      = array_merge($columns, $stageColumns, $this->dncReportService->getDncColumns());
             }
 
             $data = [

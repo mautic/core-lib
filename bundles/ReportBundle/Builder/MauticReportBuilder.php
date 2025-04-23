@@ -512,7 +512,7 @@ final class MauticReportBuilder implements ReportBuilderInterface
      */
     public function getDncCondition(array $filter): ?string
     {
-        if ('dnc' !== $filter['column']) {
+        if ('dnc_preferences' !== $filter['column']) {
             return null;
         }
 

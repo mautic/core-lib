@@ -193,10 +193,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
 
         $report = $this->createReport(
             source: 'email.stats',
-            columns: ['l.email', 'dnc_list'],
+            columns: ['l.email', 'dnc_preferences'],
             filters: [
                 [
-                    'column'    => 'dnc',
+                    'column'    => 'dnc_preferences',
                     'glue'      => 'and',
                     'dynamic'   => null,
                     'condition' => 'in',

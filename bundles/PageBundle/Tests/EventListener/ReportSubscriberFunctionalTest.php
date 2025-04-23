@@ -30,10 +30,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
 
         $report = $this->createReport(
             source: 'page.hits',
-            columns: ['l.id', 'ph.url', 'dnc_list'],
+            columns: ['l.id', 'ph.url', 'dnc_preferences'],
             filters: [
                 [
-                    'column'    => 'dnc',
+                    'column'    => 'dnc_preferences',
                     'glue'      => 'and',
                     'dynamic'   => null,
                     'condition' => 'in',
@@ -46,7 +46,7 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
         );
 
         $expectedReport = [
-            // id, url, dnc_list
+            // id, url, dnc_preferences
             [(string) $leads[0]->getId(), 'https://example.com', 'DNC Bounced: Email'],
             [(string) $leads[0]->getId(), 'https://example.com', 'DNC Bounced: Email'],
             [(string) $leads[2]->getId(), 'https://mautic.org', 'DNC Manually Unsubscribed: Text Message, DNC Unsubscribed: Email'],

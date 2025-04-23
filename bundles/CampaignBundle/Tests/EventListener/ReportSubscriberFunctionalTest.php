@@ -38,10 +38,10 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
 
         $report = $this->createReport(
             source: 'campaign_lead_event_log',
-            columns: ['l.id', 'e.type', 'dnc_list'],
+            columns: ['l.id', 'e.type', 'dnc_preferences'],
             filters: [
                 [
-                    'column'    => 'dnc',
+                    'column'    => 'dnc_preferences',
                     'glue'      => 'and',
                     'dynamic'   => null,
                     'condition' => 'in',
@@ -54,7 +54,7 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
         );
 
         $expectedReport = [
-            // id, event type, dnc_list
+            // id, event type, dnc_preferences
             [(string) $leads[0]->getId(), 'lead.changepoints', 'DNC Bounced: Email'],
             [(string) $leads[2]->getId(), 'lead.changepoints', 'DNC Manually Unsubscribed: Text Message, DNC Unsubscribed: Email'],
         ];

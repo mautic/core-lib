@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class DncStatusInFormSubmissionReportFunctionalTest extends AbstractReportSubscriberTest
+class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
 {
     public function testLeadReportWithDncListColumn(): void
     {
@@ -41,7 +41,7 @@ class DncStatusInFormSubmissionReportFunctionalTest extends AbstractReportSubscr
             columns: [
                 'l.id',
                 'l.firstname',
-                'dnc_list',
+                'dnc_preferences',
             ],
             filters: [
                 [
@@ -55,7 +55,7 @@ class DncStatusInFormSubmissionReportFunctionalTest extends AbstractReportSubscr
         );
 
         $expectedReport = [
-            // id, firstname, dnc_list
+            // id, firstname, dnc_preferences
             [(string) $leads[0]->getId(), 'test1', 'DNC Bounced: Email'],
             [(string) $leads[1]->getId(), 'test2', 'DNC Manually Unsubscribed: Email'],
         ];
@@ -95,7 +95,7 @@ class DncStatusInFormSubmissionReportFunctionalTest extends AbstractReportSubscr
             columns: [
                 'l.id',
                 'l.firstname',
-                'dnc_list',
+                'dnc_preferences',
             ],
             filters: [
                 [
@@ -106,7 +106,7 @@ class DncStatusInFormSubmissionReportFunctionalTest extends AbstractReportSubscr
                     'value'     => $formId,
                 ],
                 [
-                    'column'    => 'dnc',
+                    'column'    => 'dnc_preferences',
                     'glue'      => 'and',
                     'dynamic'   => null,
                     'condition' => 'in',
@@ -119,7 +119,7 @@ class DncStatusInFormSubmissionReportFunctionalTest extends AbstractReportSubscr
         );
 
         $expectedReport = [
-            // id, firstname, dnc_list
+            // id, firstname, dnc_preferences
             [(string) $leads[0]->getId(), 'test1', 'DNC Bounced: Email'],
             [(string) $leads[2]->getId(), 'test3', 'DNC Manually Unsubscribed: Text Message, DNC Unsubscribed: Email'],
         ];
