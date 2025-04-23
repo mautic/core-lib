@@ -217,7 +217,7 @@ Mautic.updateReportFilterValueInput = function (filterColumn, setup) {
 
     if (filterType == 'bool' || filterType == 'boolean') {
         if (mQuery(valueEl).attr('type') != 'radio') {
-            var template = mQuery('#filterValueYesNoTemplate .btn-group').clone(true);
+            var template = mQuery('#filterValueYesNoTemplate').clone(true);
             mQuery(template).find('input[type="radio"]').each(function () {
                 mQuery(this).attr('name', valueName);
                 var radioVal = mQuery(this).val();
