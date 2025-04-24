@@ -373,7 +373,7 @@ $container->loadFromExtension('fm_elfinder', [
 // API Platform Configuration
 $container->loadFromExtension('api_platform', [
     'title'             => 'Mautic API',
-    'description'       => 'API edpoints for Mautic',
+    'description'       => 'API endpoints for Mautic',
     'version'           => '1.0.0',
     'show_webby'        => false,
     'enable_swagger'    => true,
@@ -408,8 +408,8 @@ $container->loadFromExtension('api_platform', [
     ],
     'exception_to_status' => [
         'Symfony\Component\Serializer\Exception\ExceptionInterface'       => 400,
-        'ApiPlatform\Core\Exception\InvalidArgumentException'             => Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST,
-        'ApiPlatform\Core\Exception\FilterValidationException'            => 400,
+        'ApiPlatform\Exception\InvalidArgumentException'                  => Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST,
+        'ApiPlatform\Validator\Exception\ValidationException'             => 400,
         'Doctrine\ORM\OptimisticLockException'                            => 409,
         'Symfony\Component\Security\Core\Exception\AccessDeniedException' => 403,
     ],

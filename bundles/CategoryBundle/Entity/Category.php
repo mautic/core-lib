@@ -2,7 +2,13 @@
 
 namespace Mautic\CategoryBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -13,65 +19,67 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   collectionOperations={
- *     "get",
- *     "post"={"security"="'category:categories:create'"}
- *   },
- *   itemOperations={
- *     "get"={"security"="'category:categories:view'"},
- *     "put"={"security"="'category:categories:edit'"},
- *     "patch"={"security"="'category:categories:edit'"},
- *     "delete"={"security"="'category:categories:delete'"},
- *   },
- *   attributes={
- *     "normalization_context"={
- *       "groups"={
- *         "category:read"
- *        },
- *       "swagger_definition_name"="Read"
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "category:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(security: "is_granted('category:categories:create')"),
+        new Get(security: "is_granted('category:categories:view')"),
+        new Put(security: "is_granted('category:categories:edit')"),
+        new Patch(security: "is_granted('category:categories:edit')"),
+        new Delete(security: "is_granted('category:categories:delete')"),
+    ],
+    normalizationContext: [
+        'groups'                  => ['category:read'],
+        'swagger_definition_name' => 'Read',
+    ],
+    denormalizationContext: [
+        'groups'                  => ['category:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class Category extends FormEntity implements UuidInterface
 {
     use UuidTrait;
 
     /**
      * @var int
+     *
+     * @Groups({"category:read"})
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @Groups({"category:read", "category:write"})
      */
     private $title;
 
     /**
      * @var string|null
+     *
+     * @Groups({"category:read", "category:write"})
      */
     private $description;
 
     /**
      * @var string
+     *
+     * @Groups({"category:read", "category:write"})
      */
     private $alias;
 
     /**
      * @var string|null
+     *
+     * @Groups({"category:read", "category:write"})
      */
     private $color;
 
     /**
      * @var string
+     *
+     * @Groups({"category:read", "category:write"})
      */
     private $bundle;
 
