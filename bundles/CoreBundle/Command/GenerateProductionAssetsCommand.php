@@ -131,17 +131,17 @@ EOT
         $this->filesystem->copy("{$nodeModulesDir}/jquery/dist/jquery.min.js", "{$assetsDir}/js/jquery.min.js");
         $this->filesystem->copy("{$nodeModulesDir}/vimeo-froogaloop2/javascript/froogaloop.min.js", "{$assetsDir}/js/froogaloop.min.js");
 
-        // Copy all pictogram SVGs from node_modules to the assets pictograms directory
+        // Copy all pictogram SVGs from node_modules to the CoreBundle/Assets/pictograms directory
         $pictogramsSourceDir = "{$nodeModulesDir}/@carbon/pictograms/svg";
-        $pictogramsTargetDir = "{$assetsDir}/pictograms";
-        if (!is_dir($pictogramsTargetDir)) {
-            mkdir($pictogramsTargetDir, 0777, true);
+        $coreBundleAssetsDir = $this->pathsHelper->getRootPath().'/app/bundles/CoreBundle/Assets/pictograms';
+        if (!is_dir($coreBundleAssetsDir)) {
+            mkdir($coreBundleAssetsDir, 0777, true);
         }
         if (is_dir($pictogramsSourceDir)) {
             $svgFiles = glob($pictogramsSourceDir.'/*.svg');
             foreach ($svgFiles as $svgFile) {
                 $basename = basename($svgFile);
-                $this->filesystem->copy($svgFile, $pictogramsTargetDir.'/'.$basename, true);
+                $this->filesystem->copy($svgFile, $coreBundleAssetsDir.'/'.$basename, true);
             }
         }
     }
