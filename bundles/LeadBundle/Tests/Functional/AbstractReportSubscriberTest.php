@@ -23,14 +23,19 @@ abstract class AbstractReportSubscriberTest extends MauticMysqlTestCase
      *      condition: string,
      *      value: list<string>|int|string
      *  }> $filters
+     * @param array<int, array{
+     *       column: string,
+     *       direction: string,
+     *   }> $order
      */
-    public function createReport(string $source, array $columns = [], array $filters = []): Report
+    public function createReport(string $source, array $columns = [], array $filters = [], array $order = []): Report
     {
         $report = new Report();
         $report->setName('Test report');
         $report->setSource($source);
         $report->setColumns($columns);
         $report->setFilters($filters);
+        $report->setTableOrder($order);
         $this->em->persist($report);
         $this->em->flush();
 

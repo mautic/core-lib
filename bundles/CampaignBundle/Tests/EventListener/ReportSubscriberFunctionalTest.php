@@ -50,7 +50,8 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
                         'email:'.DoNotContact::BOUNCED,
                     ],
                 ],
-            ]
+            ],
+            order: [['column' => 'l.id', 'direction' => 'ASC']]
         );
 
         $expectedReport = [

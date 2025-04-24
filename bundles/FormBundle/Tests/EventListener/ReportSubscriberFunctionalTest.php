@@ -51,7 +51,8 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
                     'condition' => 'eq',
                     'value'     => $formId,
                 ],
-            ]
+            ],
+            order: [['column' => 'l.id', 'direction' => 'ASC']]
         );
 
         $expectedReport = [
@@ -115,7 +116,8 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
                         'email:'.DoNotContact::BOUNCED,
                     ],
                 ],
-            ]
+            ],
+            order: [['column' => 'l.id', 'direction' => 'ASC']]
         );
 
         $expectedReport = [
