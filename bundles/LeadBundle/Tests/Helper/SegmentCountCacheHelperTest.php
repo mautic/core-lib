@@ -123,6 +123,39 @@ class SegmentCountCacheHelperTest extends TestCase
         Assert::isNull();
     }
 
+    public function testDeleteSegmentContactCountIfNotExist(): void
+    {
+        $segmentId = 1;
+        $this->cacheStorageHelperMock
+            ->expects(self::exactly(1))
+            ->method('has')
+            ->with('segment.'.$segmentId.'.lead')
+            ->willReturn(false);
+        $this->segmentCountCacheHelper->deleteSegmentContactCount($segmentId);
+        Assert::isNull();
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function testDeleteSegmentContactCountIfExist(): void
+    {
+        $segmentId = 1;
+        $this->cacheStorageHelperMock
+            ->expects(self::exactly(1))
+            ->method('has')
+            ->with('segment.'.$segmentId.'.lead')
+            ->willReturn(true);
+
+        $this->cacheStorageHelperMock
+            ->expects(self::exactly(1))
+            ->method('delete')
+            ->with('segment.'.$segmentId.'.lead');
+
+        $this->segmentCountCacheHelper->deleteSegmentContactCount($segmentId);
+        Assert::isNull();
+    }
+
     public function testDecrementSegmentContactCount(): void
     {
         $segmentId = 1;
