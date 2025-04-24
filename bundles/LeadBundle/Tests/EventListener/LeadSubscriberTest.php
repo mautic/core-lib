@@ -46,10 +46,7 @@ class LeadSubscriberTest extends CommonMocks
      */
     private MockObject $leadEventDispatcher;
 
-    /**
-     * @var DncReasonHelper
-     */
-    private $dncReasonHelper;
+    private DncReasonHelper $dncReasonHelper;
 
     /**
      * @var EntityManager&MockObject
@@ -69,27 +66,15 @@ class LeadSubscriberTest extends CommonMocks
     /**
      * @var ModelFactory<object>&MockObject
      */
-    private MockObject $modelFacotry;
+    private MockObject $modelFactory;
 
-    /**
-     * @var LeadListRepository&MockObject
-     */
-    private MockObject $leadListRepository;
+    private LeadListRepository&MockObject $leadListRepository;
 
-    /**
-     * @var SegmentCountCacheHelper&MockObject
-     */
-    private MockObject $segmentCountCacheHelper;
+    private SegmentCountCacheHelper&MockObject $segmentCountCacheHelper;
 
-    /**
-     * @var CoreParametersHelper&MockObject
-     */
-    private MockObject $coreParametersHelper;
+    private CoreParametersHelper&MockObject $coreParametersHelper;
 
-    /**
-     * @var CompanyLeadRepository&MockObject
-     */
-    private MockObject $companyLeadRepository;
+    private CompanyLeadRepository&MockObject $companyLeadRepository;
 
     protected function setUp(): void
     {
@@ -102,7 +87,7 @@ class LeadSubscriberTest extends CommonMocks
         $this->entityManager           = $this->createMock(EntityManager::class);
         $this->translator              = $this->createMock(TranslatorInterface::class);
         $this->router                  = $this->createMock(RouterInterface::class);
-        $this->modelFacotry            = $this->createMock(ModelFactory::class);
+        $this->modelFactory            = $this->createMock(ModelFactory::class);
         $this->leadListRepository      = $this->createMock(LeadListRepository::class);
         $this->segmentCountCacheHelper = $this->createMock(SegmentCountCacheHelper::class);
         $this->coreParametersHelper    = $this->createMock(CoreParametersHelper::class);
@@ -262,6 +247,7 @@ class LeadSubscriberTest extends CommonMocks
             $this->segmentCountCacheHelper,
             $this->coreParametersHelper,
             $this->companyLeadRepository,
+            $this->modelFactory,
             true
         );
 
@@ -365,6 +351,7 @@ class LeadSubscriberTest extends CommonMocks
             $this->segmentCountCacheHelper,
             $this->coreParametersHelper,
             $this->companyLeadRepository,
+            $this->modelFactory,
             true
         );
 
@@ -427,6 +414,7 @@ class LeadSubscriberTest extends CommonMocks
             $this->segmentCountCacheHelper,
             $this->coreParametersHelper,
             $this->companyLeadRepository,
+            $this->modelFactory,
             true
         );
 
