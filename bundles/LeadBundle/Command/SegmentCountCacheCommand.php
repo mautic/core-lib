@@ -52,6 +52,9 @@ class SegmentCountCacheCommand extends Command
         return ExitCode::SUCCESS;
     }
 
+    /**
+     * @return int[]
+     */
     private function getAllSegmentsForRecount(): array
     {
         $segmentsForRecount = [];

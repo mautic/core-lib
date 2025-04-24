@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Helper;
 
 use Mautic\CoreBundle\Helper\CacheStorageHelper;
+use Psr\Cache\InvalidArgumentException;
 
 class SegmentCountCacheHelper
 {
@@ -14,7 +15,7 @@ class SegmentCountCacheHelper
     }
 
     /**
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function getSegmentContactCount(int $segmentId): int
     {
@@ -22,7 +23,7 @@ class SegmentCountCacheHelper
     }
 
     /**
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function setSegmentContactCount(int $segmentId, int $count): void
     {
@@ -51,7 +52,7 @@ class SegmentCountCacheHelper
     }
 
     /**
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function incrementSegmentContactCount(int $segmentId): void
     {
@@ -67,7 +68,7 @@ class SegmentCountCacheHelper
     }
 
     /**
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function decrementSegmentContactCount(int $segmentId): void
     {

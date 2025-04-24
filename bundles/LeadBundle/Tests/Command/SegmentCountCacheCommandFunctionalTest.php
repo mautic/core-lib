@@ -38,10 +38,10 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
         $exitCode = $applicationTester->run([SegmentCountCacheCommand::COMMAND_NAME]);
         self::assertSame(0, $exitCode, $applicationTester->getDisplay());
 
-        // Check segment cached contact count.
-        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
-        $content = $crawler->filter('a.col-count')->filter('a[data-id="'.$segmentId.'"]')->html();
-        self::assertSame('View 5 Contacts', trim($content));
+        // Check segment cached contact count using the SegmentCountCacheHelper directly
+        $segmentCountCacheHelper = static::getContainer()->get('mautic.helper.segment.count.cache');
+        $count = $segmentCountCacheHelper->getSegmentContactCount($segmentId);
+        self::assertEquals(5, $count, "Expected segment $segmentId to have 5 contacts");
 
         // Delete 1 contact.
         $contact = $contacts[0];
@@ -53,12 +53,15 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
         $exitCode = $applicationTester->run([SegmentCountCacheCommand::COMMAND_NAME]);
         self::assertSame(0, $exitCode, $applicationTester->getDisplay());
 
-        // Check segment cached contact count.
-        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments');
-        $content = $crawler->filter('a.col-count')->filter('a[data-id="'.$segmentId.'"]')->html();
-        self::assertSame('View 4 Contacts', trim($content));
+        // Check segment cached contact count using the SegmentCountCacheHelper directly
+        $segmentCountCacheHelper = static::getContainer()->get('mautic.helper.segment.count.cache');
+        $count = $segmentCountCacheHelper->getSegmentContactCount($segmentId);
+        self::assertEquals(4, $count, "Expected segment $segmentId to have 4 contacts");
     }
 
+    /**
+     * @return array<int, Lead>
+     */
     private function saveContacts(): array
     {
         // Add 5 contacts
@@ -80,7 +83,7 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
     private function saveSegment(): LeadList
     {
         // Add 1 segment
-        /** @var LeadListRepository $contactRepo */
+        /** @var LeadListRepository $segmentRepo */
         $segmentRepo = $this->em->getRepository(LeadList::class);
         $segment     = new LeadList();
         $filters     = [
@@ -94,6 +97,7 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
             ],
         ];
         $segment->setName('Segment A')
+            ->setPublicName('Segment A')
             ->setFilters($filters)
             ->setAlias('segment-a');
         $segmentRepo->saveEntity($segment);

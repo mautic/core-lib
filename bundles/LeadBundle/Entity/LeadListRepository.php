@@ -814,6 +814,9 @@ SQL;
         return array_map(fn ($segment) => ['item_id' => (string) $segment], $segmentIds);
     }
 
+    /**
+     * @return int[]
+     */
     public function getLeadSegmentIds(int $leadId): array
     {
         $qb = $this->getEntityManager()->createQueryBuilder();

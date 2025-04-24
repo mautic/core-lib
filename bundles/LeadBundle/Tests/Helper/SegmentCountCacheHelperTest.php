@@ -9,6 +9,7 @@ use Mautic\LeadBundle\Helper\SegmentCountCacheHelper;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\InvalidArgumentException;
 
 class SegmentCountCacheHelperTest extends TestCase
 {
@@ -61,7 +62,7 @@ class SegmentCountCacheHelperTest extends TestCase
             ->method('delete')
             ->with('segment.'.$segmentId.'.lead.recount');
 
-        $this->segmentCountCacheHelper->SetSegmentContactCount($segmentId, $count);
+        $this->segmentCountCacheHelper->setSegmentContactCount($segmentId, $count);
         Assert::isNull();
     }
 
@@ -87,10 +88,9 @@ class SegmentCountCacheHelperTest extends TestCase
         $this->cacheStorageHelperMock
             ->expects(self::exactly(1))
             ->method('delete')
-            ->with('segment.'.$segmentId.'.lead.recount')
-            ->willReturn(true);
+            ->with('segment.'.$segmentId.'.lead.recount');
 
-        $this->segmentCountCacheHelper->SetSegmentContactCount($segmentId, $count);
+        $this->segmentCountCacheHelper->setSegmentContactCount($segmentId, $count);
         Assert::isNull();
     }
 
@@ -129,8 +129,16 @@ class SegmentCountCacheHelperTest extends TestCase
         $this->cacheStorageHelperMock
             ->expects(self::exactly(2))
             ->method('has')
-            ->withConsecutive(['segment.'.$segmentId.'.lead'], ['segment.'.$segmentId.'.lead.recount'])
-            ->willReturnOnConsecutiveCalls(true, false);
+            ->willReturnCallback(function ($key) use ($segmentId) {
+                if ($key === 'segment.'.$segmentId.'.lead') {
+                    return true;
+                }
+                if ($key === 'segment.'.$segmentId.'.lead.recount') {
+                    return false;
+                }
+
+                return false;
+            });
         $this->cacheStorageHelperMock
             ->expects(self::exactly(1))
             ->method('get')
@@ -152,8 +160,16 @@ class SegmentCountCacheHelperTest extends TestCase
         $this->cacheStorageHelperMock
             ->expects(self::exactly(2))
             ->method('has')
-            ->withConsecutive(['segment.'.$segmentId.'.lead'], ['segment.'.$segmentId.'.lead.recount'])
-            ->willReturnOnConsecutiveCalls(true, false);
+            ->willReturnCallback(function ($key) use ($segmentId) {
+                if ($key === 'segment.'.$segmentId.'.lead') {
+                    return true;
+                }
+                if ($key === 'segment.'.$segmentId.'.lead.recount') {
+                    return false;
+                }
+
+                return false;
+            });
         $this->cacheStorageHelperMock
             ->expects(self::exactly(1))
             ->method('get')
