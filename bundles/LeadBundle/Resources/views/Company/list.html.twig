@@ -209,10 +209,11 @@
             heading: 'mautic.company.empty.heading',
             subheading: 'mautic.company.empty.subheading',
             childContainer: childContainer,
-            cta: {
+            cta: permissions['lead:leads:create'] ? {
                 'label': 'mautic.company.action.add',
-                'link': path('mautic_company_action', {'objectAction': 'new'}),
-            }
+                'link': path('mautic_import_action', {'object': 'companies', 'objectAction': 'new'}),
+                'attributes': {'data-toggle': 'ajax'}
+            } : null
         }) }}
       </div>
     {% endif %}
