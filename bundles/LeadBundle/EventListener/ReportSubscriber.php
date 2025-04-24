@@ -938,9 +938,7 @@ class ReportSubscriber implements EventSubscriberInterface
                     unset($row);
                 }
             }
-        }
-
-        if ($event->checkContext([self::CONTEXT_LEADS])) {
+        } elseif ($event->checkContext([self::CONTEXT_LEADS])) {
             $data = $this->dncReportService->processDncStatusDisplay($data);
         }
 

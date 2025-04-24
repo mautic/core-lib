@@ -102,25 +102,16 @@ class ReportSubscriber implements EventSubscriberInterface
 
             $companyColumns = $this->companyReportData->getCompanyData();
 
-            $formSubmissionColumns = array_merge(
+            $commonColumnsAndFilters = array_merge(
                 $submissionColumns,
                 $columns,
                 $event->getCampaignByChannelColumns(),
                 $event->getLeadColumns(),
                 $event->getIpColumn(),
-                $this->dncReportService->getDncColumns(),
                 $companyColumns
             );
-
-            $formSubmissionFilters = array_merge(
-                $submissionColumns,
-                $columns,
-                $event->getCampaignByChannelColumns(),
-                $event->getLeadColumns(),
-                $event->getIpColumn(),
-                $this->dncReportService->getDncFilters(),
-                $companyColumns
-            );
+            $formSubmissionColumns = array_merge($commonColumnsAndFilters, $this->dncReportService->getDncColumns());
+            $formSubmissionFilters = array_merge($commonColumnsAndFilters, $this->dncReportService->getDncFilters());
 
             $data = [
                 'display_name' => 'mautic.form.report.submission.table',
