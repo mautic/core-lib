@@ -130,6 +130,20 @@ EOT
     {
         $this->filesystem->copy("{$nodeModulesDir}/jquery/dist/jquery.min.js", "{$assetsDir}/js/jquery.min.js");
         $this->filesystem->copy("{$nodeModulesDir}/vimeo-froogaloop2/javascript/froogaloop.min.js", "{$assetsDir}/js/froogaloop.min.js");
+
+        // Copy all pictogram SVGs from node_modules to the CoreBundle/Assets/pictograms directory
+        $pictogramsSourceDir = "{$nodeModulesDir}/@carbon/pictograms/svg";
+        $coreBundleAssetsDir = $this->pathsHelper->getRootPath().'/app/bundles/CoreBundle/Assets/pictograms';
+        if (!is_dir($coreBundleAssetsDir)) {
+            mkdir($coreBundleAssetsDir, 0777, true);
+        }
+        if (is_dir($pictogramsSourceDir)) {
+            $svgFiles = glob($pictogramsSourceDir.'/*.svg');
+            foreach ($svgFiles as $svgFile) {
+                $basename = basename($svgFile);
+                $this->filesystem->copy($svgFile, $coreBundleAssetsDir.'/'.$basename, true);
+            }
+        }
     }
 
     protected static $defaultDescription = 'Combines and minifies asset files into single production files';
