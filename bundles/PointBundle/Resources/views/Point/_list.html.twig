@@ -138,21 +138,25 @@
                     'size': '64'
                 } %}
             </div>
+            <div class="type-body-02">
                 {% include '@MauticCore/Components/list-unordered--checkmark.html.twig' with {
                     'items': [
                         'mautic.point.action.empty.list.create_segments',
                         'mautic.point.action.empty.list.use_point_data',
                     ]
                 } %}
+            </div>
             {% endset %}
 
             {{ include('@MauticCore/Components/content-group.html.twig', {
                 heading: 'mautic.point.action.empty.apply_across_funnel',
-                copy: 'mautic.point.action.empty.apply_across_funnel_desc',
                 childContainer: actionsUseContainer,
                 cta: {
                     'label': 'mautic.point.action.add',
                     'link': path('mautic_point_action', {'objectAction': 'new'}),
+                    attributes: {
+                        'data-toggle': 'ajax',
+                    },
                 }
             }) }}
 
