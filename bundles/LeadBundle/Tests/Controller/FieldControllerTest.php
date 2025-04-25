@@ -60,7 +60,13 @@ class FieldControllerTest extends MauticMysqlTestCase
         $form['leadfield[label]']->setValue('Cloned Field');
         $this->client->submit($form);
 
+        // Verify we get redirected to the index page
+        $this->assertResponseStatusCodeSame(302);
+        $this->assertTrue($this->client->getResponse()->isRedirect('/s/contacts/fields'));
+
+        $this->client->followRedirect();
         $this->assertResponseStatusCodeSame(200);
+        $this->assertSelectorTextContains('h3.box-title', 'Contact Fields');
 
         $clonedField = $this->em->getRepository(LeadField::class)->findOneBy(['label' => 'Cloned Field']);
         $this->assertNotNull($clonedField);
