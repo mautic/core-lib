@@ -5812,9 +5812,22 @@ label.list-group-item:focus {
 .list--none {
   padding-inline-start: 0;
 }
-.ds-list-bullet {
-  list-style-type: disc;
+.list--unordered.list--bullets {
+  list-style-type: none;
   padding-inline-start: 18px;
+}
+.list--unordered.list--bullets .list__item {
+  padding: var(--spacing-01) 0;
+  border: none;
+}
+.list--unordered.list--bullets .list__item:before {
+  position: absolute;
+  content: "–";
+  inset-inline-start: calc(-1 * 1em);
+}
+.list--unordered.list--nested .list__item:before {
+  content: "▪";
+  inset-inline-start: calc(-1*0.75em);
 }
 .caret {
   margin-top: -1px;
