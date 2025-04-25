@@ -364,9 +364,9 @@ class FieldController extends FormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId)
+    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
-        $model = $this->getModel('lead.field');
+        $model  = $this->getModel('lead.field');
         $entity = $model->getEntity($objectId);
 
         if (!$entity) {
@@ -378,8 +378,7 @@ class FieldController extends FormController
         $fieldAliasHelper->makeAliasUnique($clone);
 
         $action    = $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'new']);
-        $form = $model->createForm($clone, $this->formFactory, $action);
-
+        $form      = $model->createForm($clone, $this->formFactory, $action);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -397,7 +396,7 @@ class FieldController extends FormController
             'contentTemplate' => '@MauticLead/Field/form.html.twig',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_contactfield_index',
-                'route'         =>  $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'clone', 'objectId' => $objectId]),
+                'route'         => $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'clone', 'objectId' => $objectId]),
                 'mauticContent' => 'leadfield',
             ],
         ]);
