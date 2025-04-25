@@ -58,9 +58,11 @@ class FieldControllerTest extends MauticMysqlTestCase
 
         $form = $crawler->selectButton('Save & Close')->form();
         $form['leadfield[label]']->setValue('Cloned Field');
-        $this->client->submit($form);
 
-        $this->assertResponseStatusCodeSame(200);
+        $this->client->followRedirects(false);
+        $this->client->submit($form);
+        $this->assertResponseStatusCodeSame(302);
+        $this->assertResponseHeaderSame('Location', '/s/contacts/fields');
 
         $clonedField = $this->em->getRepository(LeadField::class)->findOneBy(['label' => 'Cloned Field']);
         $this->assertNotNull($clonedField);
