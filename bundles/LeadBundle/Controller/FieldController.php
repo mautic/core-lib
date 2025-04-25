@@ -381,12 +381,6 @@ class FieldController extends FormController
         $action    = $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'new']);
         $form      = $model->createForm($clone, $this->formFactory, $action);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $model->saveEntity($clone);
-
-            return $this->redirectToRoute('mautic_contactfield_index');
-        }
-
         return $this->delegateView([
             'viewParameters' => [
                 'form'      => $form->createView(),
