@@ -366,6 +366,7 @@ class FieldController extends FormController
      */
     public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId): RedirectResponse|Response
     {
+        /** @var FieldModel $model */
         $model  = $this->getModel('lead.field');
         $entity = $model->getEntity($objectId);
 
