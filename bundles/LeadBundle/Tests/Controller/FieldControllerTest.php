@@ -38,7 +38,7 @@ class FieldControllerTest extends MauticMysqlTestCase
         $this->assertNotNull($field);
     }
 
-    public function testCloneFieldRedirectToNewRoute(): void
+    public function testCloneFieldRedirectToCloneRoute(): void
     {
         $field = new LeadField();
         $field->setLabel('Test value for custom field 4');
