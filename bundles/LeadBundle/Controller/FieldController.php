@@ -382,9 +382,7 @@ class FieldController extends FormController
         $form      = $model->createForm($clone, $this->formFactory, $action);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($clone);
-            $em->flush();
+            $model->saveEntity($clone);
 
             return $this->redirectToRoute('mautic_contactfield_index');
         }
