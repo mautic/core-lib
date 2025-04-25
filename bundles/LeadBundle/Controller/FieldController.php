@@ -364,7 +364,7 @@ class FieldController extends FormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId): RedirectResponse|Response
     {
         $model  = $this->getModel('lead.field');
         $entity = $model->getEntity($objectId);
