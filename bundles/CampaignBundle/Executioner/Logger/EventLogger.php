@@ -23,11 +23,6 @@ class EventLogger
 
     private array $contactRotations = [];
 
-    /**
-     * @var int
-     */
-    private $lastUsedCampaignIdToFetchRotation;
-
     public function __construct(
         private IpLookupHelper $ipLookupHelper,
         private ContactTracker $contactTracker,
