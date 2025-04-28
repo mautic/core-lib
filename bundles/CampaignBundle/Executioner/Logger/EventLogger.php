@@ -23,6 +23,8 @@ class EventLogger
 
     private array $contactRotations = [];
 
+    private ?int $lastUsedCampaignIdToFetchRotation;
+
     public function __construct(
         private IpLookupHelper $ipLookupHelper,
         private ContactTracker $contactTracker,
@@ -78,7 +80,7 @@ class EventLogger
         $log->setDateTriggered(new \DateTime());
         $log->setSystemTriggered(defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED'));
 
-        if (isset($this->contactRotations[$campaign->getId()][$contact->getId()])) {
+        if (isset($this->contactRotations[$campaign->getId()][$contact->getId()]) && ($this->lastUsedCampaignIdToFetchRotation === $event->getCampaign()->getId())) {
             $log->setRotation($this->contactRotations[$campaign->getId()][$contact->getId()]['rotation']);
         } else {
             // Likely a single contact handle such as decision processing
@@ -187,7 +189,8 @@ class EventLogger
      */
     public function hydrateContactRotationsForNewLogs(array $contactIds, $campaignId): void
     {
-        $this->contactRotations[$campaignId] = $this->leadRepository->getContactRotations($contactIds, $campaignId);
+        $this->contactRotations[$campaignId]     = $this->leadRepository->getContactRotations($contactIds, $campaignId);
+        $this->lastUsedCampaignIdToFetchRotation = $campaignId;
     }
 
     private function persistPendingAndInsertIntoLogStack(): void
