@@ -1,5 +1,3 @@
-
-
 {% if items|length > 0 %}
     <div class="table-responsive">
         <table class="table table-hover" id="leadTable">
@@ -43,5 +41,53 @@
         }) }}
     </div>
 {% else %}
+    {% if searchValue is not empty %}
     {{ include('@MauticCore/Helper/noresults.html.twig') }}
+    {% else %}
+    <div class="mt-80 col-md-offset-2 col-lg-offset-3 col-md-8 col-lg-5 height-auto">
+        {% set childContainer %}
+            <div class="mb-md">
+                {% include '@MauticCore/Helper/pictogram.html.twig' with {
+                    'pictogram': 'user--analytics',
+                    'size': '80'
+                } %}
+            </div>
+
+            {{ include('@MauticCore/Components/content-item-row--default.html.twig', {
+                eyebrow: 'mautic.lead.list.eyebrow',
+                heading: 'mautic.lead.list.heading',
+                copy: 'mautic.lead.list.copy',
+            }) }}
+            
+            {% set formFeaturesContainer %}
+            <div class="row">
+                {{ include('@MauticCore/Components/content-item--pictogram.html.twig', {
+                    heading: 'mautic.lead.list.anonymous.heading',
+                    pictogram: 'anonymous--users',
+                    copy: 'mautic.lead.list.anonymous.copy',
+                }) }}
+                {{ include('@MauticCore/Components/content-item--pictogram.html.twig', {
+                    heading: 'mautic.lead.list.known.heading',
+                    pictogram: 'id--badge',
+                    copy: 'mautic.lead.list.known.copy',
+                }) }}
+            </div>
+
+
+            {% endset %}
+
+            {{ include('@MauticCore/Components/content-group.html.twig', {
+                heading: 'mautic.lead.list.types.heading',
+                childContainer: formFeaturesContainer,
+            }) }}
+            {% endset %}
+            
+            {{ include('@MauticCore/Components/content-block.html.twig', {
+                heading: 'mautic.lead.list.block.heading',
+                subheading: 'mautic.lead.list.block.subheading',
+                copy: 'mautic.lead.list.block.copy',
+            childContainer: childContainer,
+        }) }}
+    </div>
+    {% endif %}
 {% endif %}
