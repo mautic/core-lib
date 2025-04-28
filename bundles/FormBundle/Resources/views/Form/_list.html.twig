@@ -153,17 +153,6 @@
     {% else %}
         <div class="mt-80 col-md-offset-2 col-lg-offset-3 col-md-8 col-lg-5 height-auto">
             {% set childContainer %}
-                <!-- <div class="type-body-02 mb-32">
-                    {% include '@MauticCore/Components/list-unordered--checkmark.html.twig' with {
-                        'items': [
-                            'Standard contact forms, newsletter sign-ups, demo requests.',
-                            'Offer valuable assets (ebooks, guides) in exchange for form submission.',
-                            'Collect sign-ups for webinars, workshops, or conferences.',
-                            'Allow contacts to update their preferences or information.',
-                            'Create simple survey or feedback forms.',
-                        ]
-                    } %}
-                </div> -->
                 <div class="mb-md">
                     {% include '@MauticCore/Helper/pictogram.html.twig' with {
                         'pictogram': 'text--input',
@@ -172,44 +161,56 @@
                 </div>
 
                 {{ include('@MauticCore/Components/content-item-row--default.html.twig', {
-                    eyebrow: 'Understand',
-                    heading: 'Why are they useful?',
-                    copy: 'Use them to convert anonymous visitors into known leads, progressively build detailed contact profiles, and trigger automated marketing actions.',
+                    eyebrow: 'mautic.form.list.eyebrow',
+                    heading: 'mautic.form.list.heading',
+                    copy: 'mautic.form.list.copy',
                 }) }}
                 
                 {% set formFeaturesContainer %}
-                <div class="mb-md">
-                    {% include '@MauticCore/Helper/pictogram.html.twig' with {
-                        'pictogram': 'select--range',
-                        'size': '64'
+                <div class="row">
+                    {{ include('@MauticCore/Components/content-item--pictogram.html.twig', {
+                        pictogram: 'select--range',
+                        heading: 'mautic.form.list.feature1.heading',
+                        copy: 'mautic.form.list.feature1.copy',
+                    }) }}
+                    {{ include('@MauticCore/Components/content-item--pictogram.html.twig', {
+                        pictogram: 'event-driven',
+                        heading: 'mautic.form.list.feature2.heading',
+                        copy: 'mautic.form.list.feature2.copy',
+                    }) }}
+                </div>
+                {% endset %}
+
+                {{ include('@MauticCore/Components/content-group.html.twig', {
+                    heading: 'mautic.form.list.capabilities.heading',
+                    childContainer: formFeaturesContainer,
+                }) }}
+
+                {% set formUsesContainer %}
+                <div class="type-body-02 mb-32">
+                    {% include '@MauticCore/Components/list-unordered--checkmark.html.twig' with {
+                        'items': [
+                            'mautic.form.list.use1',
+                            'mautic.form.list.use2',
+                            'mautic.form.list.use3',
+                            'mautic.form.list.use4',
+                            'mautic.form.list.use5',
+                        ]
                     } %}
                 </div>
-
-                {{ include('@MauticCore/Components/content-item-row--default.html.twig', {
-                    eyebrow: 'Feature',
-                    heading: 'Progressive Profiling',
-                    copy: 'Show or hide fields based on known contact data or previous submissions to avoid asking repetitive questions.',
-                }) }}
-                {{ include('@MauticCore/Components/content-item-row--default.html.twig', {
-                    eyebrow: 'Feature',
-                    heading: 'Actions (on Submit)',
-                    copy: 'After a submission – modify segments/tags/points, send emails, trigger asset downloads, redirect URLs, display messages, push to integrations, and more.',
-                }) }}
-
                 {% endset %}
-    
+                
                 {{ include('@MauticCore/Components/content-group.html.twig', {
-                    heading: 'Highlighted capabilities',
-                    childContainer: formFeaturesContainer,
+                    heading: 'mautic.form.list.uses.heading',
+                    childContainer: formUsesContainer,
                 }) }}
                 {% endset %}
                 
                 {{ include('@MauticCore/Components/content-block.html.twig', {
-                    heading: 'Capture leads and collect data with Forms',
-                    subheading: 'Create everything from simple contact forms to complex multi-field questionnaires.',
-                    copy: '',
-                childContainer: childContainer,
-            }) }}
+                    heading: 'mautic.form.list.block.heading',
+                    subheading: 'mautic.form.list.block.subheading',
+                    childContainer: childContainer,
+                }) }}
         </div>
     {% endif %}
 {% endif %}
