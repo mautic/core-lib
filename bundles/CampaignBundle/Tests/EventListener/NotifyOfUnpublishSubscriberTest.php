@@ -6,19 +6,18 @@ use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Event\NotifyOfUnpublishEvent;
 use Mautic\CampaignBundle\EventListener\NotifyOfUnpublishSubscriber;
 use Mautic\CampaignBundle\Executioner\Helper\NotificationHelper;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class NotifyOfUnpublishSubscriberTest extends TestCase
 {
-    private NotificationHelper $notificationHelper;
+    private MockObject&NotificationHelper $notificationHelper;
     private NotifyOfUnpublishSubscriber $subscriber;
 
     protected function setUp(): void
     {
-        $this->notificationHelper = $this->getMockBuilder(NotificationHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->subscriber = new NotifyOfUnpublishSubscriber($this->notificationHelper);
+        $this->notificationHelper = $this->createMock(NotificationHelper::class);
+        $this->subscriber         = new NotifyOfUnpublishSubscriber($this->notificationHelper);
     }
 
     public function testNotifyOfUnpublish(): void
