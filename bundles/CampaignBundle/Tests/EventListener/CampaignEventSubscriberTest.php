@@ -12,10 +12,10 @@ use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
 use Mautic\CampaignBundle\Event\CampaignEvent;
 use Mautic\CampaignBundle\Event\ExecutedEvent;
 use Mautic\CampaignBundle\Event\FailedEvent;
-use Mautic\CampaignBundle\EventCollector\Accessor\Event\AbstractEventAccessor;
-use Mautic\CampaignBundle\EventListener\CampaignEventSubscriber;
 use Mautic\CampaignBundle\Event\NotifyOfFailureEvent;
 use Mautic\CampaignBundle\Event\NotifyOfUnpublishEvent;
+use Mautic\CampaignBundle\EventCollector\Accessor\Event\AbstractEventAccessor;
+use Mautic\CampaignBundle\EventListener\CampaignEventSubscriber;
 use Mautic\CampaignBundle\Model\CampaignModel;
 use Mautic\LeadBundle\Entity\Lead;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -31,12 +31,11 @@ class CampaignEventSubscriberTest extends TestCase
      */
     private $eventRepo;
 
-
     /**
      * @var MockObject|LeadEventLogRepository
      */
     private $leadEventLogRepositoryMock;
-    
+
     /**
      * @var MockObject|EventDispatcherInterface
      */
@@ -148,7 +147,7 @@ class CampaignEventSubscriberTest extends TestCase
             ->method('hasListeners')
             ->with(CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY)
             ->willReturn(true);
-        
+
         $this->eventDispatcherMock->expects($this->once())
             ->method('dispatch')
             ->with(
@@ -212,12 +211,13 @@ class CampaignEventSubscriberTest extends TestCase
         // Configure event dispatcher for failure notification
         $this->eventDispatcherMock->method('hasListeners')
             ->willReturnCallback(function ($eventType) {
-                if ($eventType === CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY) {
+                if (CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY === $eventType) {
                     return true;
                 }
+
                 return false;
             });
-            
+
         $this->eventDispatcherMock->method('dispatch')
             ->with(
                 $this->isInstanceOf(NotifyOfFailureEvent::class),
@@ -230,16 +230,17 @@ class CampaignEventSubscriberTest extends TestCase
         $this->eventDispatcherMock->method('hasListeners')
             ->willReturnMap([
                 [CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY, true],
-                [CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY, true]
+                [CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY, true],
             ]);
-            
+
         $this->eventDispatcherMock->method('dispatch')
-            ->willReturnCallback(function($event, $eventName) {
-                if ($eventName === CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY) {
+            ->willReturnCallback(function ($event, $eventName) {
+                if (CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY === $eventName) {
                     $this->assertInstanceOf(NotifyOfUnpublishEvent::class, $event);
-                } elseif ($eventName === CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY) {
+                } elseif (CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY === $eventName) {
                     $this->assertInstanceOf(NotifyOfFailureEvent::class, $event);
                 }
+
                 return $event;
             });
 
@@ -360,14 +361,15 @@ class CampaignEventSubscriberTest extends TestCase
         $this->eventDispatcherMock->method('hasListeners')
             ->willReturnMap([
                 [CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY, true],
-                [CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY, true]
+                [CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY, true],
             ]);
-            
+
         $this->eventDispatcherMock->method('dispatch')
-            ->willReturnCallback(function($event, $eventName) {
-                if ($eventName === CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY) {
+            ->willReturnCallback(function ($event, $eventName) {
+                if (CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY === $eventName) {
                     $this->assertInstanceOf(NotifyOfFailureEvent::class, $event);
                 }
+
                 return $event;
             });
 

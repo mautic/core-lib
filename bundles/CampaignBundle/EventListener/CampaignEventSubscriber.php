@@ -3,7 +3,6 @@
 namespace Mautic\CampaignBundle\EventListener;
 
 use Mautic\CampaignBundle\CampaignEvents;
-use Mautic\CampaignBundle\Entity\CampaignRepository;
 use Mautic\CampaignBundle\Entity\EventRepository;
 use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
 use Mautic\CampaignBundle\Event\CampaignEvent;
@@ -20,13 +19,13 @@ class CampaignEventSubscriber implements EventSubscriberInterface
     public const LOOPS_TO_FAIL = 100;
 
     private const MINIMUM_CONTACTS_FOR_DISABLE = 100;
-    private const DISABLE_CAMPAIGN_THRESHOLD = 0.35;
+    private const DISABLE_CAMPAIGN_THRESHOLD   = 0.35;
 
     public function __construct(
-        private EventRepository $eventRepository, 
+        private EventRepository $eventRepository,
         private LeadEventLogRepository $leadEventLogRepository,
         private EventDispatcherInterface $eventDispatcher,
-        private CampaignModel $campaignModel
+        private CampaignModel $campaignModel,
     ) {
     }
 
@@ -98,11 +97,10 @@ class CampaignEventSubscriber implements EventSubscriberInterface
             );
         }
 
-        if ($contactCount >= self::MINIMUM_CONTACTS_FOR_DISABLE && 
-            $failedPercent >= self::DISABLE_CAMPAIGN_THRESHOLD &&
+        if ($contactCount >= self::MINIMUM_CONTACTS_FOR_DISABLE
+            && $failedPercent >= self::DISABLE_CAMPAIGN_THRESHOLD
             // Trigger only if published, if unpublished, do not trigger further notifications
-            $campaign->isPublished()) {
-            
+            && $campaign->isPublished()) {
             $this->campaignModel->transactionalCampaignUnPublish($campaign);
 
             if ($this->eventDispatcher->hasListeners(CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY)) {

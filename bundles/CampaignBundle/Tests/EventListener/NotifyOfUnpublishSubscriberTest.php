@@ -24,19 +24,19 @@ class NotifyOfUnpublishSubscriberTest extends TestCase
     public function testNotifyOfUnpublish(): void
     {
         $event = $this->createMock(Event::class);
-        
+
         $notifyEvent = new NotifyOfUnpublishEvent($event);
-        
+
         // Mock the notifyOfUnpublish method to expect the event
         $this->notificationHelper->expects($this->once())
             ->method('notifyOfUnpublish')
             ->with(
                 $this->equalTo($event)
             );
-        
+
         $this->subscriber->notifyOfUnpublish($notifyEvent);
     }
-    
+
     public function testGetSubscribedEvents(): void
     {
         $events = NotifyOfUnpublishSubscriber::getSubscribedEvents();

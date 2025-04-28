@@ -7,28 +7,28 @@ use Mautic\CampaignBundle\Event\NotifyOfFailureEvent;
 use Mautic\CampaignBundle\EventListener\NotifyOfFailureSubscriber;
 use Mautic\CampaignBundle\Executioner\Helper\NotificationHelper;
 use Mautic\LeadBundle\Entity\Lead;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class NotifyOfFailureSubscriberTest extends TestCase
 {
-    private NotificationHelper $notificationHelper;
+    private MockObject&NotificationHelper $notificationHelper;
+
     private NotifyOfFailureSubscriber $subscriber;
 
     protected function setUp(): void
     {
-        $this->notificationHelper = $this->getMockBuilder(NotificationHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->subscriber = new NotifyOfFailureSubscriber($this->notificationHelper);
+        $this->notificationHelper = $this->createMock(NotificationHelper::class);
+        $this->subscriber         = new NotifyOfFailureSubscriber($this->notificationHelper);
     }
 
     public function testNotifyOfFailure(): void
     {
-        $lead = new Lead();
+        $lead  = new Lead();
         $event = $this->createMock(Event::class);
-        
+
         $notifyEvent = new NotifyOfFailureEvent($lead, $event);
-        
+
         // Mock the notifyOfFailure method to expect the lead and event
         $this->notificationHelper->expects($this->once())
             ->method('notifyOfFailure')
@@ -36,10 +36,10 @@ class NotifyOfFailureSubscriberTest extends TestCase
                 $this->equalTo($lead),
                 $this->equalTo($event)
             );
-        
+
         $this->subscriber->notifyOfFailure($notifyEvent);
     }
-    
+
     public function testGetSubscribedEvents(): void
     {
         $events = NotifyOfFailureSubscriber::getSubscribedEvents();
