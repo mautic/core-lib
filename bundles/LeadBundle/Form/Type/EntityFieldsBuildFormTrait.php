@@ -207,7 +207,7 @@ trait EntityFieldsBuildFormTrait
 
                     if (array_key_exists('use_nullable_yes_no_type', $options) && true === $options['use_nullable_yes_no_type'] && BooleanType::class === $type) {
                         $type       = NullableYesNoButtonGroupType::class;
-                        $emptyValue = 'No change';
+                        $emptyValue = 'mautic.core.form.no_change';
                     } elseif (in_array($type, [SelectType::class, MultiselectType::class]) && !empty($properties['list'])) {
                         $typeProperties['choices']      = array_flip(FormFieldHelper::parseList($properties['list']));
                         $cleaningRules[$field['alias']] = 'raw';
