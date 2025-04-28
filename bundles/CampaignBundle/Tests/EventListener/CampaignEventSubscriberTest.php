@@ -26,25 +26,13 @@ class CampaignEventSubscriberTest extends TestCase
 {
     private CampaignEventSubscriber $fixture;
 
-    /**
-     * @var EventRepository|MockObject
-     */
-    private $eventRepo;
+    private EventRepository|MockObject $eventRepo;
 
-    /**
-     * @var MockObject|LeadEventLogRepository
-     */
-    private $leadEventLogRepositoryMock;
+    private MockObject|LeadEventLogRepository $leadEventLogRepositoryMock;
 
-    /**
-     * @var MockObject|EventDispatcherInterface
-     */
-    private $eventDispatcherMock;
+    private MockObject|EventDispatcherInterface $eventDispatcherMock;
 
-    /**
-     * @var MockObject|CampaignModel
-     */
-    private $campaignModelMock;
+    private MockObject|CampaignModel $campaignModelMock;
 
     public function setUp(): void
     {
