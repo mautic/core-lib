@@ -188,21 +188,23 @@
     {% else %}
       <div class="mt-80 col-md-offset-2 col-lg-offset-3 col-md-8 col-lg-5 height-auto">
         {% set childContainer %}
-          <div class="mb-md">
+          <div class="mb-32">
               {% include '@MauticCore/Helper/pictogram.html.twig' with {
                   'pictogram': 'organization',
                   'size': '80'
               } %}
           </div>
-          {% include '@MauticCore/Components/list-unordered--checkmark.html.twig' with {
-              'items': [
-                  'mautic.company.empty.feature.segment_contacts',
-                  'mautic.company.empty.feature.custom_fields',
-                  'mautic.company.empty.feature.adjust_scores',
-                  'mautic.company.empty.feature.identify',
-                  'mautic.company.empty.feature.assign_contacts',
-              ]
-          } %}
+          <div class="type-body-02">
+              {% include '@MauticCore/Components/list-unordered--checkmark.html.twig' with {
+                  'items': [
+                      'mautic.company.empty.feature.segment_contacts',
+                      'mautic.company.empty.feature.custom_fields',
+                      'mautic.company.empty.feature.adjust_scores',
+                      'mautic.company.empty.feature.identify',
+                      'mautic.company.empty.feature.assign_contacts',
+                  ]
+              } %}
+          </div>
         {% endset %}
 
         {{ include('@MauticCore/Components/content-block.html.twig', {
