@@ -865,4 +865,28 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
     {
         return $this->em->getRepository(CampaignLead::class)->getCampaignMembersGroupByCountry($campaign, $dateFromObject, $dateToObject);
     }
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function transactionalCampaignUnPublish(Campaign $campaign): void
+    {
+        /** @var Campaign $entity */
+        $entity = $this->em->find(Campaign::class, $campaign->getId());
+        $this->em->getConnection()->beginTransaction();
+        $this->em->lock($entity, \Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
+
+        try {
+            $entity->setIsPublished(false);
+            $this->saveEntity($entity);
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+            $this->em->getConnection()->close();
+            throw $e;
+        }
+    }
 }
