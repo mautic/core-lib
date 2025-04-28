@@ -136,27 +136,14 @@
                     ]
                 } %}
             </div>
-            {{ include('@MauticCore/Notification/inline_notification.html.twig', {
-                'title': 'mautic.point.trigger.onboarding.notification.title',
-                'content': 'mautic.point.trigger.onboarding.notification.content',
-                'alert_type': 'success',
-                'dismissible': false,
-            }) }}
-
-            {{ include('@MauticCore/Helper/accordion.html.twig', {
-                items: [
-                    {
-                        title: 'mautic.point.trigger.onboarding.accordion.title',
-                        content: include('@MauticCore/Components/list-unordered.html.twig', {
-                            items: [
-                                { label: 'mautic.point.trigger.onboarding.accordion.item1'|trans },
-                                { label: 'mautic.point.trigger.onboarding.accordion.item2'|trans },
-                                { label: 'mautic.point.trigger.onboarding.accordion.item3'|trans }
-                            ]
-                        })|raw
-                    }
-                ]
-            }) }}   
+            <div class="mt-lg">
+                {{ include('@MauticCore/Notification/inline_notification.html.twig', {
+                    'title': 'mautic.point.trigger.onboarding.notification.title',
+                    'content': 'mautic.point.trigger.onboarding.notification.content',
+                    'alert_type': 'success',
+                    'dismissible': false,
+                }) }}
+            </div>
             {% endset %}
 
         {{ include('@MauticCore/Components/content-group.html.twig', {
@@ -170,7 +157,6 @@
                 },
             }
         }) }}
-
         {% endset %}
 
         {{ include('@MauticCore/Components/content-block.html.twig', {
