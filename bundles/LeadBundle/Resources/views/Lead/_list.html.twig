@@ -86,8 +86,13 @@
                 heading: 'mautic.lead.list.block.heading',
                 subheading: 'mautic.lead.list.block.subheading',
                 copy: 'mautic.lead.list.block.copy',
-            childContainer: childContainer,
-        }) }}
+                childContainer: childContainer,
+                cta: permissions['lead:leads:create'] ? {
+                    'label': 'mautic.lead.action.add',
+                    'link': path('mautic_import_action', {'object': 'contacts', 'objectAction': 'new'}),
+                    'attributes': {'data-toggle': 'ajax'}
+                } : null
+            }) }}
     </div>
     {% endif %}
 {% endif %}
