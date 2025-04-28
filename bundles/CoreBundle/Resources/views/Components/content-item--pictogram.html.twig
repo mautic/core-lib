@@ -1,5 +1,5 @@
 {% if orientation is defined and orientation == 'horizontal' %}
-<div class="col-sm-6 col-xs-12 mb-32 mt-32">
+<div class="col-sm-6 col-xs-12 mb-32">
     <div class="row-no-gutters">
         <div class="col-sm-2">
             <div class="mb-xs">
@@ -22,7 +22,7 @@
     </div>
 </div>
 {% else %}
-<div class="col-sm-6 col-xs-12 mb-32 mt-32">
+<div class="col-sm-6 col-xs-12 mb-32">
     <div class="mb-xs">
         {% include '@MauticCore/Helper/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
     </div>
