@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class NullableYesNoButtonGroupType extends AbstractType
 {
-    public function getParent()
+    public function getParent(): string
     {
         return ButtonGroupType::class;
     }
