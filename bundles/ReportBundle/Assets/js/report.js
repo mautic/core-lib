@@ -216,31 +216,31 @@ Mautic.updateReportFilterValueInput = function (filterColumn, setup) {
     Mautic.destroyChosen(mQuery('#' + valueId));
 
     if (filterType == 'bool' || filterType == 'boolean') {
-        if (mQuery(valueEl).attr('type') != 'radio') {
+        const yesId = valueId + '_1';
+        const noId = valueId + '_0';
+        const isYes = valueVal == '1';
+        const $template = mQuery('#filterValueYesNoTemplate').clone();
+        const $label = $template.find('#report_value_template_yesno_label');
+        const $yesOption = $template.find('#report_value_template_yesno_1');
+        const $noOption = $template.find('#report_value_template_yesno_0');
 
-            var template     = mQuery('#filterValueYesNoTemplate').clone(true);
-            const yesNoValue = mQuery(valueEl).val();
+        $template.removeAttr('id').addClass('toggle-container');
+        $yesOption.attr('name', valueName)
+            .attr('id', yesId);
+        $noOption.attr('name', valueName)
+            .attr('id', noId);
+        $label.attr('id', valueId + '_bool-label')
+            .attr('data-yes-id', yesId)
+            .attr('data-no-id', noId);
 
-            mQuery(template).find('input[type="radio"]').each(function () {
-                mQuery(this).attr('name', valueName);
-                var radioVal = mQuery(this).val();
-                mQuery(this).attr('id', valueId + '_' + radioVal);
-            });
-
-            mQuery(template).find('.toggle__label').attr('data-yes-id', valueId + '_1');
-            mQuery(template).find('.toggle__label').attr('data-no-id', valueId + '_0');
-
-            mQuery(valueEl).replaceWith(template);
-
-            const yesNoLabel = mQuery('#report_filters_' + idParts[2] + '_container #filterValueYesNoTemplate #report_value_template_yesno_label');
-
-            if ((yesNoValue === '1' && yesNoLabel.attr('aria-checked') !== 'true') || (yesNoValue === '0' && yesNoLabel.attr('aria-checked') !== 'false')) {
-                yesNoLabel.trigger('click');
-            }
+        if (mQuery(valueEl).is(':radio')) {
+            mQuery(valueEl).closest('.toggle-container').replaceWith($template);
+        } else {
+            mQuery(valueEl).replaceWith($template);
         }
 
-        if (setup) {
-            mQuery('#' + valueId + '_' + valueVal).click();
+        if (!isYes) {
+            Mautic.toggleYesNo($label);
         }
     } else if (mQuery(valueEl).attr('type') != 'text') {
         var newValueEl = mQuery('<input type="text" />').attr({
