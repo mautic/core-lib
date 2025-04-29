@@ -7257,6 +7257,9 @@ ul.line-legend li {
 .contact-avatar {
   width: 100%;
 }
+.pictogram {
+  flex-shrink: 0;
+}
 .pictogram--size-48 {
   width: 48px;
 }
@@ -9401,6 +9404,38 @@ lesshat-selector { -lh-property: 0 ;
 }
 .gap-0 {
   gap: 0px !important;
+}
+.row-gap-20,
+.row-gap-lg {
+  row-gap: 20px !important;
+}
+.row-gap-15,
+.row-gap-md {
+  row-gap: 15px !important;
+}
+.row-gap-10,
+.row-gap-sm {
+  row-gap: 10px !important;
+}
+.row-gap-5,
+.row-gap-xs {
+  row-gap: 5px !important;
+}
+.column-gap-20,
+.column-gap-lg {
+  column-gap: 20px !important;
+}
+.column-gap-15,
+.column-gap-md {
+  column-gap: 15px !important;
+}
+.column-gap-10,
+.column-gap-sm {
+  column-gap: 10px !important;
+}
+.column-gap-5,
+.column-gap-xs {
+  column-gap: 5px !important;
 }
 @media (min-width: 768px) {
   .fd-row-sm {
