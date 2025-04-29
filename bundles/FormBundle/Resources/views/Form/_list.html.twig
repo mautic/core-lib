@@ -168,16 +168,22 @@
                 
                 {% set formFeaturesContainer %}
                 <div class="row">
-                    {{ include('@MauticCore/Components/content-item--pictogram.html.twig', {
-                        pictogram: 'select--range',
-                        heading: 'mautic.form.list.feature1.heading',
-                        copy: 'mautic.form.list.feature1.copy',
-                    }) }}
-                    {{ include('@MauticCore/Components/content-item--pictogram.html.twig', {
-                        pictogram: 'event-driven',
-                        heading: 'mautic.form.list.feature2.heading',
-                        copy: 'mautic.form.list.feature2.copy',
-                    }) }}
+                    <div class="col-sm-6 col-xs-12">
+                        {{ include('@MauticCore/Components/content-item.html.twig', {
+                            type: 'pictogram',
+                            pictogram: 'select--range',
+                            heading: 'mautic.form.list.feature1.heading',
+                            copy: 'mautic.form.list.feature1.copy',
+                        }) }}
+                    </div>
+                    <div class="col-sm-6 col-xs-12">
+                        {{ include('@MauticCore/Components/content-item.html.twig', {
+                            type: 'pictogram',
+                            pictogram: 'event-driven',
+                            heading: 'mautic.form.list.feature2.heading',
+                            copy: 'mautic.form.list.feature2.copy',
+                        }) }}
+                    </div>
                 </div>
                 {% endset %}
 

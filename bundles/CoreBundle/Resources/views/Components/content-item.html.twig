@@ -1,0 +1,63 @@
+{% set common_header_content %}
+    <div class="content-item__header fw-b type-heading-02 mb-xs">{{ heading|trans }}</div>
+    <div class="content-item__copy type-body-compact-02 {% if cta is defined and cta %} mb-md{% endif %}">{{ copy|trans }}</div>
+    {% if cta is defined and cta %}
+        {% set cta = cta|merge({'variant': 'link', 'icon': 'ri-arrow-right-line', 'href': cta.link}) %}
+        {% include '@MauticCore/Helper/button.html.twig' with {buttons: [cta]} %}
+    {% endif %}
+{% endset %}
+
+{# IMAGE TYPE #}
+{% if type == 'image' %}
+    {% if orientation is defined and orientation == 'horizontal' %}
+            <div class="row mb-32">
+                <div class="col-sm-4 col-xs-12 mb-xs">
+                    <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-xs">
+                </div>
+                <div class="col-sm-8 col-xs-12">
+                    {{ common_header_content }}
+                </div>
+            </div>
+    {% else %}
+        <div class="mb-32">
+            <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-md">
+            {{ common_header_content }}
+        </div>
+    {% endif %}
+
+{# LOGO TYPE #}
+{% elseif type == 'logo' %}
+    <div class="mb-32">
+        <img src="{{ asset(logo.path) }}" alt="{{ logo.alt|trans }}" title="{{ logo.alt|trans }}" class="mb-32" style="height: 30px; width: fit-content;">
+        {{ common_header_content }}
+    </div>
+
+{# PICTOGRAM TYPE #}
+{% elseif type == 'pictogram' %}
+    {% if orientation is defined and orientation == 'horizontal' %}
+            <div class="row-no-gutters mb-32">
+                <div class="col-sm-2">
+                    <div class="mb-xs">
+                        {% include '@MauticCore/Helper/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
+                    </div>
+                </div>
+                <div class="col-sm-10">
+                    {{ common_header_content }}
+                </div>
+            </div>
+    {% else %}
+        <div class="mb-32">
+            <div class="mb-xs">
+                {% include '@MauticCore/Helper/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
+            </div>
+            {{ common_header_content }}
+        </div>
+    {% endif %}
+
+{# STATISTIC TYPE #}
+{% elseif type == 'statistic' %}
+    <div class="mb-32">
+        <div class="content-item__statistic type-fluid-display-03 mb-xs">{{ statistic }}</div>
+        {{ common_header_content }}
+    </div>
+{% endif %}

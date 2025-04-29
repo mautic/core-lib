@@ -61,16 +61,22 @@
             
             {% set formFeaturesContainer %}
             <div class="row">
-                {{ include('@MauticCore/Components/content-item--pictogram.html.twig', {
-                    heading: 'mautic.lead.list.anonymous.heading',
-                    pictogram: 'anonymous--users',
-                    copy: 'mautic.lead.list.anonymous.copy',
-                }) }}
-                {{ include('@MauticCore/Components/content-item--pictogram.html.twig', {
-                    heading: 'mautic.lead.list.known.heading',
-                    pictogram: 'id--badge',
-                    copy: 'mautic.lead.list.known.copy',
-                }) }}
+                <div class="col-sm-6 col-xs-12">
+                    {{ include('@MauticCore/Components/content-item.html.twig', {
+                        type: 'pictogram',
+                        heading: 'mautic.lead.list.anonymous.heading',
+                        pictogram: 'anonymous--users',
+                        copy: 'mautic.lead.list.anonymous.copy',
+                    }) }}
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    {{ include('@MauticCore/Components/content-item.html.twig', {
+                        type: 'pictogram',
+                        heading: 'mautic.lead.list.known.heading',
+                        pictogram: 'id--badge',
+                        copy: 'mautic.lead.list.known.copy',
+                    }) }}
+                </div>
             </div>
 
 
