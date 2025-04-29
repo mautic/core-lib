@@ -129,7 +129,9 @@
                 } %}
             </div>
             <div class="type-body-02">
-                {% include '@MauticCore/Components/list-ordered--numbers.html.twig' with {
+                {% include '@MauticCore/Components/list--styled.html.twig' with {
+                    'type': 'ordered',
+                    'style': 'numbers', 
                     'items': [
                         'mautic.point.trigger.onboarding.step1',
                         'mautic.point.trigger.onboarding.step2',

@@ -46,7 +46,9 @@
 
                         {% if typeOneDifferences is defined and typeOneDifferences is not empty %}
                             <div class="layer-two mt-sm text-secondary">
-                                {% include '@MauticCore/Components/list-unordered--none.html.twig' with {
+                                {% include '@MauticCore/Components/list--styled.html.twig' with {
+                                    'type': 'unordered',
+                                    'style': 'none',
                                     'items': typeOneDifferences
                                 } %}
                             </div>
@@ -88,7 +90,9 @@
 
                         {% if typeTwoDifferences is defined and typeTwoDifferences is not empty %}
                             <div class="layer-two mt-sm text-secondary">
-                                {% include '@MauticCore/Components/list-unordered--none.html.twig' with {
+                                {% include '@MauticCore/Components/list--styled.html.twig' with {
+                                    'type': 'unordered',
+                                    'style': 'none',
                                     'items': typeTwoDifferences
                                 } %}
                             </div>

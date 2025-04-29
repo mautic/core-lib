@@ -195,7 +195,9 @@
 
                 {% set formUsesContainer %}
                 <div class="type-body-02 mb-32">
-                    {% include '@MauticCore/Components/list-unordered--checkmark.html.twig' with {
+                    {% include '@MauticCore/Components/list--styled.html.twig' with {
+                        'type': 'unordered',
+                        'style': 'checkmark',
                         'items': [
                             'mautic.form.list.use1',
                             'mautic.form.list.use2',

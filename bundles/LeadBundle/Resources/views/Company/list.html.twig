@@ -195,7 +195,9 @@
               } %}
           </div>
           <div class="type-body-02">
-              {% include '@MauticCore/Components/list-unordered--checkmark.html.twig' with {
+              {% include '@MauticCore/Components/list--styled.html.twig' with {
+                  'type': 'unordered',
+                  'style': 'checkmark',
                   'items': [
                       'mautic.company.empty.feature.segment_contacts',
                       'mautic.company.empty.feature.custom_fields',
