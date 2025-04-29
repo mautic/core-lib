@@ -118,13 +118,15 @@
                 } %}
             </div>
 
-            {{ include('@MauticCore/Components/content-item-row--default.html.twig', {
+            {{ include('@MauticCore/Components/content-item-row.html.twig', {
+                type: 'default',
                 eyebrow: 'mautic.point.action.empty.understand',
                 heading: 'mautic.point.action.empty.what_are_point_actions',
                 copy: 'mautic.point.action.empty.what_are_point_actions_desc',
             }) }}
 
-            {{ include('@MauticCore/Components/content-item-row--default.html.twig', {
+            {{ include('@MauticCore/Components/content-item-row.html.twig', {
+                type: 'default',
                 eyebrow: 'mautic.point.action.empty.purpose',
                 heading: 'mautic.point.action.empty.score_contacts_heading',
                 copy: 'mautic.point.action.empty.score_contacts_desc',
