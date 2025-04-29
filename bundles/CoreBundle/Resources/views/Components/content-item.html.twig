@@ -9,21 +9,10 @@
 
 {# IMAGE TYPE #}
 {% if type == 'image' %}
-    {% if orientation is defined and orientation == 'horizontal' %}
-            <div class="row mb-32">
-                <div class="col-sm-4 col-xs-12 mb-xs">
-                    <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-xs">
-                </div>
-                <div class="col-sm-8 col-xs-12">
-                    {{ common_header_content }}
-                </div>
-            </div>
-    {% else %}
-        <div class="mb-32">
-            <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-md">
-            {{ common_header_content }}
-        </div>
-    {% endif %}
+    <div class="d-flex fd-column row-gap-xs mb-32">
+        <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-xs fs-0">
+        <div>{{ common_header_content }}</div>
+    </div>
 
 {# LOGO TYPE #}
 {% elseif type == 'logo' %}
@@ -34,25 +23,10 @@
 
 {# PICTOGRAM TYPE #}
 {% elseif type == 'pictogram' %}
-    {% if orientation is defined and orientation == 'horizontal' %}
-            <div class="row-no-gutters mb-32">
-                <div class="col-sm-2">
-                    <div class="mb-xs">
-                        {% include '@MauticCore/Helper/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
-                    </div>
-                </div>
-                <div class="col-sm-10">
-                    {{ common_header_content }}
-                </div>
-            </div>
-    {% else %}
-        <div class="mb-32">
-            <div class="mb-xs">
-                {% include '@MauticCore/Helper/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
-            </div>
-            {{ common_header_content }}
-        </div>
-    {% endif %}
+    <div class="d-flex {% if orientation is defined and orientation == 'horizontal' %}fd-row-sm column-gap-lg {% endif %}fd-column row-gap-xs mb-32">
+        {% include '@MauticCore/Helper/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
+        <div>{{ common_header_content }}</div>
+    </div>
 
 {# STATISTIC TYPE #}
 {% elseif type == 'statistic' %}
@@ -60,4 +34,8 @@
         <div class="content-item__statistic type-fluid-display-03 mb-xs">{{ statistic }}</div>
         {{ common_header_content }}
     </div>
+
+{# TEXT TYPE #}
+{% elseif type == 'text' %}
+    <div class="mb-32">{{ common_header_content }}</div>
 {% endif %}
