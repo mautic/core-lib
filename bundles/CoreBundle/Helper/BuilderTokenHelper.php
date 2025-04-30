@@ -95,10 +95,10 @@ class BuilderTokenHelper
 
         $exprBuilder = $this->connection->createExpressionBuilder();
 
-        if (isset($permissions[$this->viewPermissionBase.':viewown']) && !$permissions[$this->viewPermissionBase.':viewown']) {
-            $expr = $expr->with(
-                $exprBuilder->eq($prefix.'created_by', $this->userHelper->getUser()->getId())
-            );
+        if (isset($expr) && isset($permissions[$this->viewPermissionBase.':viewother']) && !$permissions[$this->viewPermissionBase.':viewother']) {
+          $expr = $expr->with(
+            $exprBuilder->eq($prefix.'created_by', $this->userHelper->getUser()->getId())
+          );
         }
 
         if (!empty($filter)) {
