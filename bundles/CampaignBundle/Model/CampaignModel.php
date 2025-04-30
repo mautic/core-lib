@@ -16,6 +16,8 @@ use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
 use Mautic\CampaignBundle\Form\Type\CampaignType;
 use Mautic\CampaignBundle\Helper\ChannelExtractor;
 use Mautic\CampaignBundle\Membership\MembershipBuilder;
+use Mautic\CampaignBundle\Model\Exceptions\CampaignAlreadyUnpublishedException;
+use Mautic\CampaignBundle\Model\Exceptions\CampaignVersionMismatchedException;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\Chart\LineChart;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
@@ -867,26 +869,28 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
     }
 
     /**
+     * @throws CampaignAlreadyUnpublishedException
+     * @throws CampaignVersionMismatchedException
      * @throws Exception
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function transactionalCampaignUnPublish(Campaign $campaign): void
     {
-        /** @var Campaign $entity */
-        $entity = $this->em->find(Campaign::class, $campaign->getId());
-        $this->em->getConnection()->beginTransaction();
-        $this->em->lock($entity, \Doctrine\DBAL\LockMode::PESSIMISTIC_WRITE);
+        $this->em->beginTransaction();
+        $result = $this->getRepository()->getCampaignPublishAndVersionData($campaign->getId());
 
-        try {
-            $entity->setIsPublished(false);
-            $this->saveEntity($entity);
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-            $this->em->getConnection()->close();
-            throw $e;
+        if (!(int) $result['is_published']) {
+            $this->em->commit();
+            throw new CampaignAlreadyUnpublishedException('Campaign is unpublished!');
         }
+
+        if ((int) $result['version'] !== $campaign->getVersion()) {
+            $this->em->commit();
+            throw new CampaignVersionMismatchedException('Version do not match!');
+        }
+
+        $campaign->setIsPublished(false);
+        $campaign->markForVersionIncrement();
+        $this->saveEntity($campaign);
+        $this->em->commit();
     }
 }
