@@ -22,40 +22,19 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class CampaignRotationTest extends MauticMysqlTestCase
 {
-    /**
-     * @var Campaign
-     */
-    private $campaignWithoutJump;
+    private Campaign $campaignWithoutJump;
 
-    /**
-     * @var Campaign
-     */
-    private $campaignWithJump;
+    private Campaign $campaignWithJump;
 
-    /**
-     * @var Page
-     */
-    private $page;
+    private Page $page;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
+    private Lead $lead;
 
-    /**
-     * @var ContactTracker|object|null
-     */
-    private $contactTracker;
+    private ContactTracker $contactTracker;
 
-    /**
-     * @var LeadRepository|object|null
-     */
-    private $campaignLeadRepository;
+    private LeadRepository $campaignLeadRepository;
 
-    /**
-     * @var LeadEventLogRepository
-     */
-    private $leadEventLogRepository;
+    private LeadEventLogRepository $leadEventLogRepository;
 
     public function setUp(): void
     {
