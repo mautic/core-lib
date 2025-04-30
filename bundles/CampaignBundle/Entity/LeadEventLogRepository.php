@@ -661,4 +661,50 @@ SQL;
 
         return false;
     }
+
+    public function getEventLogStats(int $eventId): array
+    {
+        $qb = $this->getReplicaConnection()->createQueryBuilder();
+        $qb->select([
+            'COUNT(log.id) as total_logs',
+            'SUM(log.is_scheduled) as pending_executions',
+            'SUM(log.non_action_path_taken) as negative_path_count',
+            'MIN(log.date_triggered) as first_execution_date',
+            'MAX(log.date_triggered) as last_execution_date',
+        ])
+            ->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'log')
+            ->where(
+                $qb->expr()->and(
+                    $qb->expr()->eq('log.event_id', ':eventId')
+                )
+            )
+            ->setParameter('eventId', $eventId)
+            ->groupBy('log.event_id');
+
+        $result = $qb->executeQuery()->fetchAssociative();
+        if (false === $result) {
+            return [
+                'total_executions'     => 0,
+                'pending_executions'   => 0,
+                'negative_path_count'  => 0,
+                'positive_path_count'  => 0,
+                'first_execution_date' => null,
+                'last_execution_date'  => null,
+            ];
+        }
+        $totalLogs         = (int) $result['total_logs'] ?? 0;
+        $pendingExecutions = (int) $result['pending_executions'] ?? 0;
+        $totalExecutions   = $totalLogs - $pendingExecutions;
+        $negativePathCount = (int) $result['negative_path_count'] ?? 0;
+        $positivePathCount = $totalExecutions - $negativePathCount;
+
+        return [
+            'total_executions'     => $totalLogs - $pendingExecutions,
+            'pending_executions'   => $pendingExecutions,
+            'negative_path_count'  => $negativePathCount,
+            'positive_path_count'  => $positivePathCount,
+            'first_execution_date' => $result['first_execution_date'] ?: null,
+            'last_execution_date'  => $result['last_execution_date'] ?: null,
+        ];
+    }
 }

@@ -239,6 +239,7 @@ Mautic.lazyLoadEventStatsOnCampaignDetail = function()  {
             mQuery('#preview-container').html(response.preview);
             Mautic.prepareCampaignCanvas();
             Mautic.previewCampaignLabels();
+            Mautic.previewCampaignEventDetails()
         }
         else
         {
@@ -2387,10 +2388,14 @@ Mautic.hideCampaignEventPanel = function() {
     mQuery('#CampaignEventPanel').addClass('hide');
 }
 
+Mautic.getCampaignBuilderHtmlElements = function() {
+    const managedElements = Mautic.campaignBuilderInstance.getManagedElements();
+    return Object.values(managedElements).map(el => el.el);
+}
+
 Mautic.previewCampaignLabels = function() {
     const campaignBuilder = Mautic.campaignBuilderInstance;
-    const managedElements = Mautic.campaignBuilderInstance.getManagedElements();
-    const allElements = Object.values(managedElements).map(el => el.el);
+    const allElements = Mautic.getCampaignBuilderHtmlElements();
 
     allElements.forEach(function(element) {
         const id = element.id;
@@ -2416,6 +2421,57 @@ Mautic.previewCampaignLabels = function() {
             }
         });
     });
+}
+
+Mautic.previewCampaignEventDetails = function() {
+    const $allElements = mQuery(Mautic.getCampaignBuilderHtmlElements());
+
+    $allElements.click(function (event) {
+        const $el = mQuery(event.currentTarget);
+        const eventId = $el.data('eventId');
+        console.log(eventId, $el);
+
+        if (!eventId) return;
+
+        if ($el.hasClass('event-details-visible')) {
+            $el.removeClass('event-details-visible');
+            return;
+        } else {
+            $allElements.removeClass('event-details-visible');
+            $el.addClass('event-details-visible');
+        }
+
+
+        if ($el.data('event-details-loaded')) return;
+
+        mQuery.ajax({
+            url: '/s/campaign/metrics/event-details/' + eventId,
+            success: function (response) {
+                console.log(response);
+                renderEventDetails($el, response);
+            }
+        });
+        
+        event.preventDefault();
+    });
+
+    const renderEventDetails = function($el, data) {
+        const $dl = mQuery('<dl class="dl-horizontal campaign-event-details-dl"/>');
+
+        Object.entries(data).forEach(([key, value]) => {
+            const translationKey = 'mautic.campaign.event.' + key;
+
+            $dl.append(
+                '<dt data-event-details-key="' + key + '">' +
+                Mautic.translate(translationKey) +
+                '</dt><dd data-event-details-key="' + key + '">' +
+                value +
+                '</dd>'
+            );
+        });
+        $el.find('.campaign-event-details').html($dl);
+        $el.data('event-details-loaded', true);
+    }
 }
 
 Mautic.campaignAuditlogOnLoad = function (container, response) {

@@ -226,4 +226,13 @@ final class CampaignEvents
      * @var string
      */
     public const ON_EVENT_DECISION_TRIGGER = 'mautic.campaign_on_event_decision_trigger';
+
+    /**
+     * todo.
+     *
+     * @var string
+     *
+     * The event listener receives a Mautic\CampaignBundle\Event\EventDetailsAction instance
+     */
+    public const ON_EVENT_DETAILS_ACTION = 'mautic.campaign_on_event_details_action';
 }

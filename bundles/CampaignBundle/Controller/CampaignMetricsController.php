@@ -4,13 +4,19 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Controller;
 
+use Mautic\CampaignBundle\CampaignEvents;
+use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
+use Mautic\CampaignBundle\Event\EventPreview;
 use Mautic\CampaignBundle\Model\CampaignModel;
+use Mautic\CampaignBundle\Model\EventModel;
 use Mautic\CoreBundle\Helper\Chart\BarChart;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\EmailBundle\Stats\EmailPeriodMetrics;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class CampaignMetricsController extends AbstractController
@@ -103,5 +109,21 @@ class CampaignMetricsController extends AbstractController
                 'chartHeight' => 300,
             ]
         );
+    }
+
+    public function eventDetailsAction(
+        EventDispatcherInterface $eventDispatcher,
+        EventModel $eventModel,
+        LeadEventLogRepository $leadEventLogRepository,
+        int $objectId,
+    ): JsonResponse {
+        $event = $eventModel->getEntity($objectId);
+
+        $logStats = $leadEventLogRepository->getEventLogStats($event->getId());
+
+        $eventDetailsAction = new EventPreview($event, $logStats);
+        $eventDispatcher->dispatch($eventDetailsAction, CampaignEvents::ON_EVENT_DETAILS_ACTION);
+
+        return $this->json($eventDetailsAction->data);
     }
 }

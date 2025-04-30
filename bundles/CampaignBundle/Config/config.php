@@ -47,6 +47,10 @@ return [
                 'path'       => '/campaign/metrics/email-hours/{objectId}/{dateFrom}/{dateTo}',
                 'controller' => 'Mautic\CampaignBundle\Controller\CampaignMetricsController::emailHoursAction',
             ],
+            'mautic_campaign_metrics_event_details' => [
+                'path'       => '/campaign/metrics/event-details/{objectId}',
+                'controller' => 'Mautic\CampaignBundle\Controller\CampaignMetricsController::eventDetailsAction',
+            ],
         ],
         'api'  => [
             'mautic_api_campaignsstandard'            => [

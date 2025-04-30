@@ -211,7 +211,7 @@
     position: relative;
 }
 
-.preview .campaign-event-content {
+.preview .list-campaign-source .campaign-event-content {
     cursor: default;
 }
 
@@ -462,4 +462,27 @@
     max-width: 100%;
     max-height: 150px;
     overflow-y: auto;
+}
+
+.list-campaign-event.event-details-visible {
+    z-index: 1011;
+    cursor: pointer;
+}
+.list-campaign-event .campaign-event-details {
+    display: none;
+}
+.list-campaign-event.event-details-visible .campaign-event-details {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: #fff;
+    padding: 15px 5px;
+    box-shadow: hsl(0deg 100% 15% / 10%) 0 0 10px 0;
+}
+
+.list-campaign-event .campaign-event-details-dl {
+    margin-bottom: 0;
 }
