@@ -2,6 +2,10 @@
 
 namespace Mautic\CampaignBundle\EventListener;
 
+use Doctrine\DBAL\Exception;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\TransactionRequiredException;
 use Mautic\CampaignBundle\CampaignEvents;
 use Mautic\CampaignBundle\Entity\EventRepository;
 use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
@@ -23,9 +27,9 @@ class CampaignEventSubscriber implements EventSubscriberInterface
 
     public function __construct(
         private EventRepository $eventRepository,
+        private CampaignModel $campaignModel,
         private LeadEventLogRepository $leadEventLogRepository,
         private EventDispatcherInterface $eventDispatcher,
-        private CampaignModel $campaignModel,
     ) {
     }
 
@@ -66,10 +70,10 @@ class CampaignEventSubscriber implements EventSubscriberInterface
      * Process the FailedEvent event. Notifies users and checks
      * failed thresholds to notify CS and/or disable the campaign.
      *
-     * @throws \Doctrine\DBAL\Exception
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws Exception
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
      */
     public function onEventFailed(FailedEvent $event): void
     {
