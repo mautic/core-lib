@@ -121,7 +121,7 @@ class Redirect extends FormEntity
      */
     public function getUrl()
     {
-        return $this->url;
+        return trim($this->url);
     }
 
     /**
@@ -129,7 +129,7 @@ class Redirect extends FormEntity
      */
     public function setUrl($url): void
     {
-        $this->url = $url;
+        $this->url = trim($url);
     }
 
     /**
@@ -137,7 +137,7 @@ class Redirect extends FormEntity
      *
      * @param int $hits
      *
-     * @return Page
+     * @return Redirect
      */
     public function setHits($hits)
     {
@@ -161,7 +161,7 @@ class Redirect extends FormEntity
      *
      * @param int $uniqueHits
      *
-     * @return Page
+     * @return Redirect
      */
     public function setUniqueHits($uniqueHits)
     {
