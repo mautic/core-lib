@@ -3,27 +3,85 @@
 namespace Mautic\CampaignBundle\Tests\Model;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManager;
 use Mautic\CampaignBundle\Entity\Campaign;
+use Mautic\CampaignBundle\Entity\CampaignRepository;
+use Mautic\CampaignBundle\EventCollector\EventCollector;
+use Mautic\CampaignBundle\Membership\MembershipBuilder;
 use Mautic\CampaignBundle\Model\CampaignModel;
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\UserHelper;
+use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\CoreBundle\Translation\Translator;
+use Mautic\FormBundle\Model\FormModel;
+use Mautic\LeadBundle\Model\ListModel;
+use Mautic\LeadBundle\Tracker\ContactTracker;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CampaignModelTransactionalTest extends TestCase
 {
     private MockObject $entityManagerMock;
     private MockObject $connectionMock;
-    private CampaignModel $model;
+    private MockObject $userHelperMock;
+    private MockObject $campaignRepositoryMock;
+    private MockObject $campaignModel;
 
     protected function setUp(): void
     {
         $this->connectionMock = $this->createMock(Connection::class);
 
+        // Create repository mock
+        $this->campaignRepositoryMock = $this->createMock(CampaignRepository::class);
+        $this->campaignRepositoryMock->method('setCurrentUser')
+            ->willReturnSelf();
+
         $this->entityManagerMock = $this->createMock(EntityManager::class);
-        $this->entityManagerMock->expects($this->any())
-            ->method('getConnection')
+        $this->entityManagerMock->method('getConnection')
             ->willReturn($this->connectionMock);
+
+        $this->entityManagerMock->method('getRepository')
+            ->with(Campaign::class)
+            ->willReturn($this->campaignRepositoryMock);
+
+        // Mock user helper
+        $this->userHelperMock = $this->createMock(UserHelper::class);
+
+        // Create all the required dependencies as mocks
+        $leadListModel        = $this->createMock(ListModel::class);
+        $formModel            = $this->createMock(FormModel::class);
+        $eventCollector       = $this->createMock(EventCollector::class);
+        $membershipBuilder    = $this->createMock(MembershipBuilder::class);
+        $contactTracker       = $this->createMock(ContactTracker::class);
+        $security             = $this->createMock(CorePermissions::class);
+        $dispatcher           = $this->createMock(EventDispatcherInterface::class);
+        $router               = $this->createMock(UrlGeneratorInterface::class);
+        $translator           = $this->createMock(Translator::class);
+        $logger               = $this->createMock(LoggerInterface::class);
+        $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+
+        // Create the campaign model mock
+        $this->campaignModel = $this->getMockBuilder(CampaignModel::class)
+            ->setConstructorArgs([
+                $leadListModel,
+                $formModel,
+                $eventCollector,
+                $membershipBuilder,
+                $contactTracker,
+                $this->entityManagerMock,
+                $security,
+                $dispatcher,
+                $router,
+                $translator,
+                $this->userHelperMock,
+                $logger,
+                $coreParametersHelper,
+            ])
+            ->onlyMethods(['saveEntity'])
+            ->getMock();
     }
 
     public function testTransactionalCampaignUnPublish(): void
@@ -34,58 +92,39 @@ class CampaignModelTransactionalTest extends TestCase
             ->method('getId')
             ->willReturn($campaignId);
 
-        $campaignEntityMock = $this->createMock(Campaign::class);
+        // Mock version data from repository
+        $this->campaignRepositoryMock->expects($this->once())
+            ->method('getCampaignPublishAndVersionData')
+            ->with($campaignId)
+            ->willReturn([
+                'is_published' => 1,
+                'version'      => 1,
+            ]);
 
-        // Setup the entity manager mock to find the campaign
-        $this->entityManagerMock->expects($this->once())
-            ->method('find')
-            ->with(Campaign::class, $campaignId)
-            ->willReturn($campaignEntityMock);
-
-        // Transaction handling
-        $this->connectionMock->expects($this->once())
-            ->method('beginTransaction');
-
-        $this->connectionMock->expects($this->once())
-            ->method('commit');
-
-        $this->connectionMock->expects($this->never())
-            ->method('rollBack');
-
-        $this->connectionMock->expects($this->never())
-            ->method('close');
-
-        // Locking the entity
-        $this->entityManagerMock->expects($this->once())
-            ->method('lock')
-            ->with($campaignEntityMock, LockMode::PESSIMISTIC_WRITE);
+        $campaignMock->expects($this->once())
+            ->method('getVersion')
+            ->willReturn(1);
 
         // Setting published flag
-        $campaignEntityMock->expects($this->once())
+        $campaignMock->expects($this->once())
             ->method('setIsPublished')
             ->with(false);
 
-        // Set up expectation for saveEntity
-        $this->model = $this->getMockBuilder(CampaignModel::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['saveEntity'])
-            ->getMock();
-
-        $reflection = new \ReflectionClass(CampaignModel::class);
-        $property   = $reflection->getProperty('em');
-        $property->setValue($this->model, $this->entityManagerMock);
+        $campaignMock->expects($this->once())
+            ->method('markForVersionIncrement');
 
         // Saving the entity
-        $this->model->expects($this->once())
+        $this->campaignModel->expects($this->once())
             ->method('saveEntity')
-            ->with($campaignEntityMock);
+            ->with($campaignMock);
 
-        $this->model->transactionalCampaignUnPublish($campaignMock);
+        $this->campaignModel->transactionalCampaignUnPublish($campaignMock);
     }
 
     public function testTransactionalCampaignUnPublishWithException(): void
     {
         $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Database error');
 
         $campaignMock = $this->createMock(Campaign::class);
         $campaignId   = 5;
@@ -93,53 +132,33 @@ class CampaignModelTransactionalTest extends TestCase
             ->method('getId')
             ->willReturn($campaignId);
 
-        $campaignEntityMock = $this->createMock(Campaign::class);
+        // Mock version data from repository
+        $this->campaignRepositoryMock->expects($this->once())
+            ->method('getCampaignPublishAndVersionData')
+            ->with($campaignId)
+            ->willReturn([
+                'is_published' => 1,
+                'version'      => 1,
+            ]);
 
-        // Setup the entity manager mock to find the campaign
-        $this->entityManagerMock->expects($this->once())
-            ->method('find')
-            ->with(Campaign::class, $campaignId)
-            ->willReturn($campaignEntityMock);
-
-        // Transaction handling
-        $this->connectionMock->expects($this->once())
-            ->method('beginTransaction');
-
-        $this->connectionMock->expects($this->never())
-            ->method('commit');
-
-        $this->connectionMock->expects($this->once())
-            ->method('rollBack');
-
-        $this->connectionMock->expects($this->once())
-            ->method('close');
-
-        // Locking the entity
-        $this->entityManagerMock->expects($this->once())
-            ->method('lock')
-            ->with($campaignEntityMock, LockMode::PESSIMISTIC_WRITE);
+        $campaignMock->expects($this->once())
+            ->method('getVersion')
+            ->willReturn(1);
 
         // Setting published flag
-        $campaignEntityMock->expects($this->once())
+        $campaignMock->expects($this->once())
             ->method('setIsPublished')
             ->with(false);
 
-        // Set up expectation for saveEntity
-        $this->model = $this->getMockBuilder(CampaignModel::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['saveEntity'])
-            ->getMock();
-
-        $reflection = new \ReflectionClass(CampaignModel::class);
-        $property   = $reflection->getProperty('em');
-        $property->setValue($this->model, $this->entityManagerMock);
+        $campaignMock->expects($this->once())
+            ->method('markForVersionIncrement');
 
         // Saving the entity throws an exception
-        $this->model->expects($this->once())
+        $this->campaignModel->expects($this->once())
             ->method('saveEntity')
-            ->with($campaignEntityMock)
+            ->with($campaignMock)
             ->willThrowException(new \Exception('Database error'));
 
-        $this->model->transactionalCampaignUnPublish($campaignMock);
+        $this->campaignModel->transactionalCampaignUnPublish($campaignMock);
     }
 }
