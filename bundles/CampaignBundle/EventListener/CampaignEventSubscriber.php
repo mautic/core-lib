@@ -109,7 +109,7 @@ class CampaignEventSubscriber implements EventSubscriberInterface
             && $campaign->isPublished()) {
             try {
                 $this->campaignModel->transactionalCampaignUnPublish($campaign);
-            } catch (CampaignAlreadyUnpublishedException|CampaignVersionMismatchedException $e) {
+            } catch (CampaignAlreadyUnpublishedException|CampaignVersionMismatchedException) {
                 return;
             }
 
