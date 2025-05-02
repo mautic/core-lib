@@ -15,6 +15,8 @@ use Mautic\CampaignBundle\Event\FailedEvent;
 use Mautic\CampaignBundle\Event\NotifyOfFailureEvent;
 use Mautic\CampaignBundle\Event\NotifyOfUnpublishEvent;
 use Mautic\CampaignBundle\Model\CampaignModel;
+use Mautic\CampaignBundle\Model\Exceptions\CampaignAlreadyUnpublishedException;
+use Mautic\CampaignBundle\Model\Exceptions\CampaignVersionMismatchedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -105,7 +107,11 @@ class CampaignEventSubscriber implements EventSubscriberInterface
             && $failedPercent >= self::DISABLE_CAMPAIGN_THRESHOLD
             // Trigger only if published, if unpublished, do not trigger further notifications
             && $campaign->isPublished()) {
-            $this->campaignModel->transactionalCampaignUnPublish($campaign);
+            try {
+                $this->campaignModel->transactionalCampaignUnPublish($campaign);
+            } catch (CampaignAlreadyUnpublishedException|CampaignVersionMismatchedException $e) {
+                return;
+            }
 
             if ($this->eventDispatcher->hasListeners(CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY)) {
                 $this->eventDispatcher->dispatch(
