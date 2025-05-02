@@ -2,24 +2,36 @@
 
 namespace Mautic\CampaignBundle\EventListener;
 
+use Doctrine\DBAL\Exception;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\TransactionRequiredException;
 use Mautic\CampaignBundle\CampaignEvents;
-use Mautic\CampaignBundle\Entity\CampaignRepository;
 use Mautic\CampaignBundle\Entity\EventRepository;
 use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
 use Mautic\CampaignBundle\Event\CampaignEvent;
 use Mautic\CampaignBundle\Event\ExecutedEvent;
 use Mautic\CampaignBundle\Event\FailedEvent;
-use Mautic\CampaignBundle\Executioner\Helper\NotificationHelper;
+use Mautic\CampaignBundle\Event\NotifyOfFailureEvent;
+use Mautic\CampaignBundle\Event\NotifyOfUnpublishEvent;
+use Mautic\CampaignBundle\Model\CampaignModel;
+use Mautic\CampaignBundle\Model\Exceptions\CampaignAlreadyUnpublishedException;
+use Mautic\CampaignBundle\Model\Exceptions\CampaignVersionMismatchedException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CampaignEventSubscriber implements EventSubscriberInterface
 {
     public const LOOPS_TO_FAIL = 100;
 
-    private const DISABLE_CAMPAIGN_THRESHOLD = 0.35;
-
-    public function __construct(private EventRepository $eventRepository, private NotificationHelper $notificationHelper, private CampaignRepository $campaignRepository, private LeadEventLogRepository $leadEventLogRepository)
-    {
+    private const MINIMUM_CONTACTS_FOR_DISABLE = 100;
+    private const DISABLE_CAMPAIGN_THRESHOLD   = 0.35;
+    public function __construct(
+        private EventRepository $eventRepository,
+        private CampaignModel $campaignModel,
+        private LeadEventLogRepository $leadEventLogRepository,
+        private EventDispatcherInterface $eventDispatcher,
+    ) {
     }
 
     /**
@@ -59,7 +71,10 @@ class CampaignEventSubscriber implements EventSubscriberInterface
      * Process the FailedEvent event. Notifies users and checks
      * failed thresholds to notify CS and/or disable the campaign.
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws Exception
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
      */
     public function onEventFailed(FailedEvent $event): void
     {
@@ -80,12 +95,29 @@ class CampaignEventSubscriber implements EventSubscriberInterface
         $contactCount  = $campaign->getLeads()->count();
         $failedPercent = $contactCount ? ($failedCount / $contactCount) : 1;
 
-        $this->notificationHelper->notifyOfFailure($lead, $failedEvent);
+        if ($this->eventDispatcher->hasListeners(CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY)) {
+            $this->eventDispatcher->dispatch(
+                new NotifyOfFailureEvent($lead, $failedEvent),
+                CampaignEvents::ON_CAMPAIGN_FAILURE_NOTIFY
+            );
+        }
 
-        if ($failedPercent >= self::DISABLE_CAMPAIGN_THRESHOLD && $campaign->isPublished()) {
-            $this->notificationHelper->notifyOfUnpublish($failedEvent);
-            $campaign->setIsPublished(false);
-            $this->campaignRepository->saveEntity($campaign);
+        if ($contactCount >= self::MINIMUM_CONTACTS_FOR_DISABLE
+            && $failedPercent >= self::DISABLE_CAMPAIGN_THRESHOLD
+            // Trigger only if published, if unpublished, do not trigger further notifications
+            && $campaign->isPublished()) {
+            try {
+                $this->campaignModel->transactionalCampaignUnPublish($campaign);
+            } catch (CampaignAlreadyUnpublishedException|CampaignVersionMismatchedException) {
+                return;
+            }
+
+            if ($this->eventDispatcher->hasListeners(CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY)) {
+                $this->eventDispatcher->dispatch(
+                    new NotifyOfUnpublishEvent($failedEvent),
+                    CampaignEvents::ON_CAMPAIGN_UNPUBLISH_NOTIFY
+                );
+            }
         }
     }
 
