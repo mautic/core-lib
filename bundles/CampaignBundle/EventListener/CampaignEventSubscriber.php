@@ -26,6 +26,7 @@ class CampaignEventSubscriber implements EventSubscriberInterface
 
     private const MINIMUM_CONTACTS_FOR_DISABLE = 100;
     private const DISABLE_CAMPAIGN_THRESHOLD   = 0.35;
+
     public function __construct(
         private EventRepository $eventRepository,
         private CampaignModel $campaignModel,
