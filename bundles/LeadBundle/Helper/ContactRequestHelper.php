@@ -123,8 +123,6 @@ class ContactRequestHelper
         } catch (ContactNotFoundException) {
         }
 
-        $this->setEmailFromClickthroughIdentification($clickthrough);
-
         /* @var Lead $foundContact */
         if (!empty($this->queryFields)) {
             [$foundContact, $this->publiclyUpdatableFieldValues] = $this->leadModel->checkForDuplicateContact(
@@ -173,25 +171,6 @@ class ContactRequestHelper
         throw new ContactNotFoundException();
     }
 
-    private function setEmailFromClickthroughIdentification(array $clickthrough): void
-    {
-        if (!$this->coreParametersHelper->get('track_by_tracking_url') || !empty($queryFields['email'])) {
-            return;
-        }
-
-        if (empty($clickthrough['lead']) || !$foundContact = $this->leadModel->getEntity($clickthrough['lead'])) {
-            return;
-        }
-
-        // Identify contact from link if email field is set as publicly updateable
-        if ($email = $foundContact->getEmail()) {
-            // Add email to query for checkForDuplicateContact to pick up and merge
-            $this->queryFields['email'] = $email;
-            $this->logger->debug("LEAD: Contact ID# {$clickthrough['lead']} tracked through clickthrough query.");
-
-            return;
-        }
-    }
 
     private function prepareContactFromRequest(): void
     {
