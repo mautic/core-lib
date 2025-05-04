@@ -3,7 +3,6 @@
 namespace Mautic\LeadBundle\Helper;
 
 use Mautic\CoreBundle\Helper\ClickthroughHelper;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Entity\StatRepository;
@@ -169,7 +168,6 @@ class ContactRequestHelper
 
         throw new ContactNotFoundException();
     }
-
 
     private function prepareContactFromRequest(): void
     {

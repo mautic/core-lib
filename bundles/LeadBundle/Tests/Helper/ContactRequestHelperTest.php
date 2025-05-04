@@ -6,7 +6,6 @@ namespace Mautic\LeadBundle\Tests\Helper;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Mautic\CoreBundle\Entity\IpAddress;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\Stat;
@@ -34,7 +33,6 @@ class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
      * @var MockObject|ContactTracker
      */
     private MockObject $contactTracker;
-
 
     /**
      * @var MockObject|IpLookupHelper
@@ -163,7 +161,6 @@ class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($contact === $foundContact);
     }
-
 
     private function getContactRequestHelper(): ContactRequestHelper
     {
