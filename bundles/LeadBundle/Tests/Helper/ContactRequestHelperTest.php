@@ -86,7 +86,6 @@ class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
 
         $this->leadModel                = $this->createMock(LeadModel::class);
         $this->contactTracker           = $this->createMock(ContactTracker::class);
-        $this->coreParametersHelper     = $this->createMock(CoreParametersHelper::class);
         $this->ipLookupHelper           = $this->createMock(IpLookupHelper::class);
         $this->requestStack             = $this->createMock(RequestStack::class);
         $this->logger                   = $this->createMock(Logger::class);
@@ -175,7 +174,6 @@ class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
         return new ContactRequestHelper(
             $this->leadModel,
             $this->contactTracker,
-            $this->coreParametersHelper,
             $this->ipLookupHelper,
             $this->requestStack,
             $this->logger,
