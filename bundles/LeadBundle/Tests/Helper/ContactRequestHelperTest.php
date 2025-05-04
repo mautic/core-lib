@@ -35,10 +35,6 @@ class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $contactTracker;
 
-    /**
-     * @var MockObject|CoreParametersHelper
-     */
-    private MockObject $coreParametersHelper;
 
     /**
      * @var MockObject|IpLookupHelper
