@@ -284,6 +284,55 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame(Response::HTTP_OK, $response['statusCode']);
     }
 
+    public function testSegmentClone(): void
+    {
+        $segment   = $this->saveSegment('Test Segment', 'testsegment');
+        $segmentId = $segment->getId();
+
+        // Number of segments before clone
+        $segmentsCountBefore = $this->em->getRepository(LeadList::class)->count([]);
+        // Go to clone segment action
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/clone/'.(string) $segmentId);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        // First submit
+        $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
+        $crawler = $this->client->submit($form);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), 'Correct Apply');
+        // Second submit
+        $form = $crawler->selectButton('leadlist_buttons_apply')->form();
+        $this->client->submit($form);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), 'Correct Apply');
+        // Number of segments after clone
+        $segmentsCountAfter = $this->em->getRepository(LeadList::class)->count([]);
+        // Check that just one segment was created
+        $this->assertSame($segmentsCountBefore + 1, $segmentsCountAfter);
+    }
+
+    public function testSegmentAliasCreation(): void
+    {
+        $segment   = $this->saveSegment('Test Segment Alias', 'test-segment-alias');
+        $segmentId = $segment->getId();
+
+        // Clone segment
+        $aliasFirst = $this->getAliasWhenCloneSegment($segmentId);
+        // Clone segment again
+        $aliasSecond = $this->getAliasWhenCloneSegment($segmentId);
+        // Check that aliases are not the same
+        $this->assertNotSame($aliasFirst, $aliasSecond);
+    }
+
+    private function getAliasWhenCloneSegment(int $segmentId): string
+    {
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/clone/'.(string) $segmentId);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        // Save cloned segment
+        $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
+        $crawler = $this->client->submit($form);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), 'Correct Apply');
+
+        return $crawler->filter('#leadlist_alias')->attr('value');
+    }
+
     public function testSegmentNotFoundOnAjax(): void
     {
         // Emulate invalid request parameter.
@@ -456,11 +505,11 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $crawler            = $this->client->request(Request::METHOD_GET, '/s/segments');
         $leadListsTableRows = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr");
         $this->assertEquals(3, $leadListsTableRows->count());
-        $secondColumnOfLine    = $leadListsTableRows->first()->filterXPath('//td[2]//div//i[@class="text-danger ri-error-warning-line-circle fs-14"]')->count();
+        $secondColumnOfLine    = $leadListsTableRows->first()->filterXPath('//td[2]//div//i[@class="text-danger ri-error-warning-line fs-14"]')->count();
         $this->assertEquals(1, $secondColumnOfLine);
-        $secondColumnOfLine    = $leadListsTableRows->eq(1)->filterXPath('//td[2]//div//i[@class="text-danger ri-error-warning-line-circle fs-14"]')->count();
+        $secondColumnOfLine    = $leadListsTableRows->eq(1)->filterXPath('//td[2]//div//i[@class="text-danger ri-error-warning-line fs-14"]')->count();
         $this->assertEquals(0, $secondColumnOfLine);
-        $secondColumnOfLine    = $leadListsTableRows->eq(2)->filterXPath('//td[2]//div//i[@class="text-danger ri-error-warning-line-circle fs-14"]')->count();
+        $secondColumnOfLine    = $leadListsTableRows->eq(2)->filterXPath('//td[2]//div//i[@class="text-danger ri-error-warning-line fs-14"]')->count();
         $this->assertEquals(0, $secondColumnOfLine);
     }
 
