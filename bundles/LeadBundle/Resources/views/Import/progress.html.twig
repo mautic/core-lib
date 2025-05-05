@@ -30,8 +30,8 @@ Variables
         <div class="row mb-lg">
             {% if not complete %}
             <div class="col-md-12 ai-start">
-                {% include '@MauticCore/Helper/_illustration.html.twig' with {
-                    illustration: 'data--processing',
+                {% include '@MauticCore/Helper/pictogram.html.twig' with {
+                    pictogram: 'data--processing',
                     size: 64
                 } %}
                 <h2 class="mt-lg pb-sm text-left">{{ header|trans({'object': object}) }}</h2>
@@ -41,8 +41,8 @@ Variables
             </div>
             {% else %}
             <div class="col-md-8 ai-start">
-                {% include '@MauticCore/Helper/_illustration.html.twig' with {
-                    illustration: 'data--storage',
+                {% include '@MauticCore/Helper/pictogram.html.twig' with {
+                    pictogram: 'data--storage',
                     size: 64
                 } %}
                 <h2 class="mt-lg pb-sm text-left">{{ header|trans({'object': object}) }}</h2>
