@@ -235,18 +235,18 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTest
     {
         $crawler        = $this->getCrawlers($campaignId);
         $successPercent = [
-            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(1) .label-success')->html()),
-            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(2) .label-success')->html()),
+            trim($crawler->filter('.campaign-event-list li:nth-child(1) .label-success')->text()),
+            trim($crawler->filter('.campaign-event-list li:nth-child(2) .label-success')->text()),
         ];
 
         $completed = [
-            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(1) .label-warning')->html()),
-            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(2) .label-warning')->html()),
+            trim($crawler->filter('.campaign-event-list li:nth-child(1) .label-warning')->text()),
+            trim($crawler->filter('.campaign-event-list li:nth-child(2) .label-warning')->text()),
         ];
 
         $pending = [
-            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(1) .label-gray')->html()),
-            trim($crawler->filter('#actions-container .campaign-event-list li:nth-child(2) .label-gray')->html()),
+            trim($crawler->filter('.campaign-event-list li:nth-child(1) .label-gray')->text()),
+            trim($crawler->filter('.campaign-event-list li:nth-child(2) .label-gray')->text()),
         ];
 
         return [
