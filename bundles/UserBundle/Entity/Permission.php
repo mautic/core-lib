@@ -3,12 +3,12 @@
 namespace Mautic\UserBundle\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\CacheInvalidateInterface;
@@ -23,15 +23,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(),
         new Put(),
         new Patch(),
-        new Delete()
+        new Delete(),
     ],
     normalizationContext: [
-        'groups' => ['permission:read'],
-        'swagger_definition_name' => 'Read'
+        'groups'                  => ['permission:read'],
+        'swagger_definition_name' => 'Read',
     ],
     denormalizationContext: [
-        'groups' => ['permission:write'],
-        'swagger_definition_name' => 'Write'
+        'groups'                  => ['permission:write'],
+        'swagger_definition_name' => 'Write',
     ]
 )]
 class Permission implements CacheInvalidateInterface, UuidInterface

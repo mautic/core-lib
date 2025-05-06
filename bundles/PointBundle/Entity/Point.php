@@ -3,12 +3,12 @@
 namespace Mautic\PointBundle\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -18,7 +18,6 @@ use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\IntHelper;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -29,16 +28,16 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
         new Post(),
         new Put(),
         new Patch(),
-        new Delete()
+        new Delete(),
     ],
     normalizationContext: [
-        'groups' => ['point:read'],
+        'groups'                  => ['point:read'],
         'swagger_definition_name' => 'Read',
-        'api_included' => ['category']
+        'api_included'            => ['category'],
     ],
     denormalizationContext: [
-        'groups' => ['point:write'],
-        'swagger_definition_name' => 'Write'
+        'groups'                  => ['point:write'],
+        'swagger_definition_name' => 'Write',
     ]
 )]
 class Point extends FormEntity implements UuidInterface

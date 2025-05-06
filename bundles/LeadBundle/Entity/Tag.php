@@ -16,7 +16,6 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [

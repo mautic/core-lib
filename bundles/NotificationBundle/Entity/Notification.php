@@ -3,12 +3,12 @@
 namespace Mautic\NotificationBundle\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -30,16 +30,16 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
         new Post(),
         new Put(),
         new Patch(),
-        new Delete()
+        new Delete(),
     ],
     normalizationContext: [
-        'groups' => ['notification:read'],
+        'groups'                  => ['notification:read'],
         'swagger_definition_name' => 'Read',
-        'api_included' => ['category']
+        'api_included'            => ['category'],
     ],
     denormalizationContext: [
-        'groups' => ['notification:write'],
-        'swagger_definition_name' => 'Write'
+        'groups'                  => ['notification:write'],
+        'swagger_definition_name' => 'Write',
     ]
 )]
 class Notification extends FormEntity implements UuidInterface

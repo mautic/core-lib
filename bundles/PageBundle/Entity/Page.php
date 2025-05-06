@@ -3,12 +3,12 @@
 namespace Mautic\PageBundle\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -36,16 +36,16 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
         new Post(),
         new Put(),
         new Patch(),
-        new Delete()
+        new Delete(),
     ],
     normalizationContext: [
-        'groups' => ['page:read'],
+        'groups'                  => ['page:read'],
         'swagger_definition_name' => 'Read',
-        'api_included' => ['category', 'translationChildren']
+        'api_included'            => ['category', 'translationChildren'],
     ],
     denormalizationContext: [
-        'groups' => ['page:write'],
-        'swagger_definition_name' => 'Write'
+        'groups'                  => ['page:write'],
+        'swagger_definition_name' => 'Write',
     ]
 )]
 class Page extends FormEntity implements TranslationEntityInterface, VariantEntityInterface, UuidInterface
