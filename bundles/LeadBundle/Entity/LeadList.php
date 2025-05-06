@@ -2,6 +2,13 @@
 
 namespace Mautic\LeadBundle\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -14,28 +21,28 @@ use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\LeadBundle\Form\Validator\Constraints\SegmentInUse;
 use Mautic\LeadBundle\Form\Validator\Constraints\UniqueUserAlias;
 use Mautic\LeadBundle\Validator\Constraints\SegmentUsedInCampaigns;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "segment:read"
- *        },
- *       "swagger_definition_name"="Read"
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "segment:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(),
+    ],
+    normalizationContext: [
+        'groups'                  => ['segment:read'],
+        'swagger_definition_name' => 'Read',
+    ],
+    denormalizationContext: [
+        'groups'                  => ['segment:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class LeadList extends FormEntity implements UuidInterface
 {
     use UuidTrait;
@@ -136,7 +143,6 @@ class LeadList extends FormEntity implements UuidInterface
             ->build();
 
         $builder->createOneToMany('leads', 'ListLead')
-            ->setIndexBy('id')
             ->mappedBy('list')
             ->fetchExtraLazy()
             ->build();

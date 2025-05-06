@@ -2,7 +2,13 @@
 
 namespace Mautic\EmailBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -35,26 +41,25 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "email:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"category", "asset", "page", "translationChildren", "unsubscribeForm", "fields", "actions", "lists", "excludedLists", "preferenceCenter", "assetAttachments"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "email:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(),
+    ],
+    normalizationContext: [
+        'groups'                  => ['email:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included'            => ['category', 'asset', 'page', 'translationChildren', 'unsubscribeForm', 'fields', 'actions', 'lists', 'excludedLists', 'preferenceCenter', 'assetAttachments'],
+    ],
+    denormalizationContext: [
+        'groups'                  => ['email:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class Email extends FormEntity implements VariantEntityInterface, TranslationEntityInterface, UuidInterface
 {
     use VariantEntityTrait;

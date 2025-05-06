@@ -2,7 +2,13 @@
 
 namespace Mautic\PageBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -23,26 +29,25 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "page:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"category", "translationChildren"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "page:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete()
+    ],
+    normalizationContext: [
+        'groups' => ['page:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included' => ['category', 'translationChildren']
+    ],
+    denormalizationContext: [
+        'groups' => ['page:write'],
+        'swagger_definition_name' => 'Write'
+    ]
+)]
 class Page extends FormEntity implements TranslationEntityInterface, VariantEntityInterface, UuidInterface
 {
     use TranslationEntityTrait;

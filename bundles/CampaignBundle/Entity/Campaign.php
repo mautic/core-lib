@@ -2,6 +2,13 @@
 
 namespace Mautic\CampaignBundle\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Order;
@@ -17,29 +24,29 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\Lead as Contact;
 use Mautic\LeadBundle\Entity\LeadList;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "campaign:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"category", "events", "lists", "forms", "fields", "actions"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "campaign:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(),
+    ],
+    normalizationContext: [
+        'groups'                  => ['campaign:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included'            => ['category', 'events', 'lists', 'forms', 'fields', 'actions'],
+    ],
+    denormalizationContext: [
+        'groups'                  => ['campaign:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class Campaign extends FormEntity implements PublishStatusIconAttributesInterface, OptimisticLockInterface, UuidInterface
 {
     use UuidTrait;

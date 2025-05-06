@@ -2,6 +2,13 @@
 
 namespace Mautic\ChannelBundle\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -14,26 +21,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "message:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"category", "channels"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "message:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(),
+        new Get(),
+        new Put(),
+        new Patch(),
+        new Delete(),
+    ],
+    normalizationContext: [
+        'groups'                  => ['message:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included'            => ['category', 'channels'],
+    ],
+    denormalizationContext: [
+        'groups'                  => ['message:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class Message extends FormEntity implements UuidInterface
 {
     use UuidTrait;

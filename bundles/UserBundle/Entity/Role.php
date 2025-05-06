@@ -2,7 +2,13 @@
 
 namespace Mautic\UserBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -15,26 +21,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "role:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"permissions"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "role:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete()
+    ],
+    normalizationContext: [
+        'groups' => ['role:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included' => ['permissions']
+    ],
+    denormalizationContext: [
+        'groups' => ['role:write'],
+        'swagger_definition_name' => 'Write'
+    ]
+)]
 class Role extends FormEntity implements CacheInvalidateInterface, UuidInterface
 {
     use UuidTrait;
