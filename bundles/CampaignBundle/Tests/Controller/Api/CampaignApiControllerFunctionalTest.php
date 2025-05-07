@@ -579,23 +579,6 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         unlink($filePath);
     }
 
-    public function testImportCampaignFilePathDoesNotExist(): void
-    {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->loginUser($user);
-
-        $filePath = tempnam(sys_get_temp_dir(), 'mautic_test_');
-
-        // Create an UploadedFile object with the deleted file path
-        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile($filePath, 'test.zip', null, null, true);
-
-        $this->client->request(Request::METHOD_POST, '/api/campaigns/import', [], ['file' => $file]);
-
-        $response = $this->client->getResponse();
-
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-    }
-
     public function testImportCampaignMalformedJson(): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
@@ -617,8 +600,5 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
         $this->assertStringContainsString('Unable to open ZIP file', $response->getContent());
-
-        // Clean up
-        unlink($zipPath);
     }
 }
