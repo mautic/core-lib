@@ -55,7 +55,7 @@ final class ReportOnDashboardAsTableFunctionalTest extends MauticMysqlTestCase
             return trim($node->text());
         });
 
-        $expectedHeaders = ['subject1', 'sent_count', 'read_count', 'read_ratio', 'unsubscribed_ratio', 'hits_ratio', 'category_title'];
+        $expectedHeaders = ['Subject', 'Sent count', 'Read count', 'Read ratio', 'Unsubscribed ratio', 'Clicks ratio', 'Category name'];
         $this->assertEquals($expectedHeaders, $headers);
 
         $rows = $crawler->filter('table tbody tr');
