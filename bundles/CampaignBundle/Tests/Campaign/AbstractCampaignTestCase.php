@@ -15,7 +15,7 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadRepository;
 
-abstract class AbstractCampaignTest extends MauticMysqlTestCase
+abstract class AbstractCampaignTestCase extends MauticMysqlTestCase
 {
     protected function saveSomeCampaignLeadEventLogs(bool $emulatePendingCount = false): Campaign
     {
@@ -114,6 +114,7 @@ abstract class AbstractCampaignTest extends MauticMysqlTestCase
             $leadEventLogD->setEvent($eventA);
             $leadEventLogD->setLead($contactC);
             $leadEventLogD->setDateTriggered(new \DateTime($relativeDate.' 16:34:00', new \DateTimeZone('UTC')));
+            $leadEventLogD->setIsScheduled(true); // <- Only in this case event is considered as pending!
             $leadEventLogD->setRotation(0);
             $leadEventLogRepo->saveEntity($leadEventLogD);
 
