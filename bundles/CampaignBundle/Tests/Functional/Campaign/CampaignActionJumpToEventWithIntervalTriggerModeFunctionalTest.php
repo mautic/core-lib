@@ -37,15 +37,19 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
 
     protected function setUp(): void
     {
+        // Mautic need to be configured to use the time zone that does not "jump" between days.
+        // As of PHPUnit 10, data provider is static.
         // Tear down of the base class will restore timezone to UTC.
-        date_default_timezone_set($this->configParams['default_timezone']);
+        date_default_timezone_set(self::$timezone);
+
+        $this->configParams += [
+            'default_timezone' => self::$timezone,
+        ];
 
         parent::setUp();
     }
 
-    /**
-     * @dataProvider dataForCampaignWithJumpToEventWithIntervalTriggerMode
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataForCampaignWithJumpToEventWithIntervalTriggerMode')]
     public function testCampaignWithJumpToEventWithIntervalTriggerMode(Event $adjustPointEvent, callable $assertEventLog): void
     {
         // Create Campaign
@@ -131,9 +135,20 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
     /**
      * @return iterable<mixed>
      */
-    public function dataForCampaignWithJumpToEventWithIntervalTriggerMode(): iterable
+    public static function dataForCampaignWithJumpToEventWithIntervalTriggerMode(): iterable
     {
-        date_default_timezone_set($this->configParams['default_timezone']);
+        $timezone = 'UTC';
+        $nowUTC   = new \DateTime('now', new \DateTimeZone($timezone));
+        if ($nowUTC->format('G') <= 4) {
+            $timezone = 'Asia/Bangkok'; // +07:00
+        } elseif ($nowUTC->format('G') >= 20) {
+            $timezone = 'America/Phoenix'; // -07:00
+        }
+
+        $originalTimezone = date_default_timezone_get();
+        self::$timezone   = $timezone;
+
+        date_default_timezone_set(self::$timezone);
         // Event times starts when the PHPUNIT suite starts. The closures can run minutes later
         // which breaks the test in the CI. Use this time in the closures to avoid flaky tests.
         $testNow = new \DateTime();
@@ -168,7 +183,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog) use ($testNow): void {
                 Assert::assertFalse($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+                self::assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             },
         ];
 
@@ -197,7 +212,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             function (LeadEventLog $eventLog) use ($testNow): void {
                 $testNow = clone $testNow;
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($testNow->modify('+1 day')->modify('+2 hours')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+                self::assertPlusMinusOneMinuteOf($testNow->modify('+1 day')->modify('+2 hours')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
             },
         ];
 
@@ -222,7 +237,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             function (LeadEventLog $eventLog) use ($testNow): void {
                 $testNow = clone $testNow;
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($testNow->modify('+3 hour')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+                self::assertPlusMinusOneMinuteOf($testNow->modify('+3 hour')->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
             },
         ];
 
@@ -234,7 +249,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog): void {
                 Assert::assertFalse($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf((new \DateTime())->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
+                self::assertPlusMinusOneMinuteOf((new \DateTime('now', new \DateTimeZone(self::$timezone)))->format('Y-m-d H:i'), $eventLog->getTriggerDate()->format('Y-m-d H:i'));
             },
         ];
 
@@ -275,7 +290,7 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog) use ($triggerHourDate): void {
                 Assert::assertTrue($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($triggerHourDate->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+                self::assertPlusMinusOneMinuteOf($triggerHourDate->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             },
         ];
 
@@ -291,8 +306,8 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
                 Assert::assertTrue($eventLog->getIsScheduled());
                 // In this case firstly the time is set as 15:00 if less then that or right now if more, then the date is set to tomorrow.
                 // So the range can be tomorrow 15:00 - tomorrow 23:59:59
-                Assert::assertLessThanOrEqual((new \DateTime('tomorrow'))->format('Y-m-d 23:59:59'), $eventLog->getTriggerDate()->format('Y-m-d H:i:s'));
-                Assert::assertGreaterThanOrEqual((new \DateTime('tomorrow'))->format('Y-m-d 15:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:i:s'));
+                Assert::assertLessThanOrEqual((new \DateTime('tomorrow', new \DateTimeZone(self::$timezone)))->format('Y-m-d 23:59:59'), $eventLog->getTriggerDate()->format('Y-m-d H:i:s'));
+                Assert::assertGreaterThanOrEqual((new \DateTime('tomorrow', new \DateTimeZone(self::$timezone)))->format('Y-m-d 15:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:i:s'));
             },
         ];
 
@@ -307,18 +322,18 @@ class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends Mau
             $adjustPointEvent,
             function (LeadEventLog $eventLog) use ($testNow): void {
                 Assert::assertFalse($eventLog->getIsScheduled());
-                $this->assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
+                self::assertPlusMinusOneMinuteOf($testNow->format('Y-m-d H:00:00'), $eventLog->getTriggerDate()->format('Y-m-d H:00:00'));
             },
         ];
 
         // Need to reset timezone for next date providers call
-        date_default_timezone_set($this->originalTimezone);
+        date_default_timezone_set($originalTimezone);
     }
 
     /**
      * Avoid flaky test when executing the test right whe the minute is increasing.
      */
-    private function assertPlusMinusOneMinuteOf(string $expectedDateString, string $actualDateString): void
+    private static function assertPlusMinusOneMinuteOf(string $expectedDateString, string $actualDateString): void
     {
         $expectedDate = new \DateTime($expectedDateString);
         $actualDate   = new \DateTime($actualDateString);

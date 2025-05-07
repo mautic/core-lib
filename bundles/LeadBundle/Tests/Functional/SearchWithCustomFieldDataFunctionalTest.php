@@ -11,9 +11,7 @@ class SearchWithCustomFieldDataFunctionalTest extends AbstractSearchTest
 {
     protected $useCleanupRollback = false;
 
-    /**
-     * @dataProvider dataTestCreatingCustomFieldIndexableAndSearchable
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataTestCreatingCustomFieldIndexableAndSearchable')]
     public function testCreatingCustomFieldIndexableAndSearchable(int $isIndex, string $expectedValue): void
     {
         $crawler = $this->client->request(Request::METHOD_GET, 's/contacts/fields/new');
@@ -41,7 +39,7 @@ class SearchWithCustomFieldDataFunctionalTest extends AbstractSearchTest
     /**
      * @return iterable<string, array{0: int, 1: string}>
      */
-    public function dataTestCreatingCustomFieldIndexableAndSearchable(): iterable
+    public static function dataTestCreatingCustomFieldIndexableAndSearchable(): iterable
     {
         yield 'When "Add to Search Index" is enabled' => [1, '1'];
 
