@@ -362,7 +362,7 @@ class CampaignSubscriber implements EventSubscriberInterface
             }
         }
 
-        $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $values), false);
+        $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $tokenizedValues), false);
         $this->leadModel->saveEntity($lead);
         $event->pass($log);
     }
