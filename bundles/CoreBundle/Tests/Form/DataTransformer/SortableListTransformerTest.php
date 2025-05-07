@@ -10,7 +10,6 @@ use PHPUnit\Framework\TestCase;
 class SortableListTransformerTest extends TestCase
 {
     /**
-     *
      * @param array<string, array<int|string, string>>    $input
      * @param array<string, array<array<string, string>>> $expected
      */
@@ -24,7 +23,6 @@ class SortableListTransformerTest extends TestCase
     }
 
     /**
-     *
      * @param array<string, string>                       $input
      * @param array<string, array<array<string, string>>> $expected
      */
@@ -38,7 +36,6 @@ class SortableListTransformerTest extends TestCase
     }
 
     /**
-     *
      * @param array<string, array<int|string, string>> $input
      * @param array<string, array<string>>             $expected
      */
@@ -68,7 +65,6 @@ class SortableListTransformerTest extends TestCase
     }
 
     /**
-     *
      * @param array<string, array<array<string, string>>> $input
      * @param array<string, string>                       $expected
      */
