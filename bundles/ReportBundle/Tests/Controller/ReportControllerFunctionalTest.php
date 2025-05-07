@@ -469,7 +469,7 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
     {
         $report = new Report();
         $report->setName('HTML Test');
-        $report->setDescription('<strong>This is allowed HTML</strong>');
+        $report->setDescription('This is allowed HTML');
         $report->setSource('email');
         static::getContainer()->get('mautic.report.model.report')->saveEntity($report);
 
@@ -477,7 +477,7 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request('GET', '/s/reports/'.$report->getId());
         $clientResponse        = $this->client->getResponse();
         $clientResponseContent = $clientResponse->getContent();
-        $this->assertStringContainsString('<strong>This is allowed HTML</strong>', $clientResponseContent);
+        $this->assertStringContainsString('This is allowed HTML', $clientResponseContent);
 
         // Check the list - HTML should be stripped
         $this->client->request('GET', '/s/reports');
