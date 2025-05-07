@@ -378,7 +378,13 @@ final class ImportController extends AbstractFormController
         } catch (\RuntimeException $e) {
             $this->logger->error($e->getMessage());
 
-            return ['errors' => ['messages' => $e->getMessage()]];
+            return [
+                [
+                    'errors' => [
+                        'messages' => [$e->getMessage()],
+                    ],
+                ],
+            ];
         }
 
         $allData = [];
