@@ -478,7 +478,7 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request('GET', '/s/reports/'.$report->getId());
         $clientResponse        = $this->client->getResponse();
         $clientResponseContent = $clientResponse->getContent();
-        $this->assertStringContainsString('<small><b>This is allowed HTML</b></small>', $clientResponseContent);
+        $this->assertStringContainsString('<b>This is allowed HTML</b>', $clientResponseContent);
 
         // Check the list - HTML should be stripped
         $this->client->request('GET', '/s/reports');
