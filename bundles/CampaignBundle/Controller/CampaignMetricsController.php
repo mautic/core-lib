@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mautic\CampaignBundle\Controller;
 
 use Mautic\CampaignBundle\CampaignEvents;
-use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
 use Mautic\CampaignBundle\Event\EventPreview;
 use Mautic\CampaignBundle\Model\CampaignModel;
 use Mautic\CampaignBundle\Model\EventModel;
@@ -114,16 +113,13 @@ class CampaignMetricsController extends AbstractController
     public function eventDetailsAction(
         EventDispatcherInterface $eventDispatcher,
         EventModel $eventModel,
-        LeadEventLogRepository $leadEventLogRepository,
         int $objectId,
     ): JsonResponse {
         $event = $eventModel->getEntity($objectId);
 
-        $logStats = $leadEventLogRepository->getEventLogStats($event->getId());
+        $eventDetailsAction = new EventPreview($event);
+        $eventDispatcher->dispatch($eventDetailsAction, CampaignEvents::ON_EVENT_PREVIEW_REQUEST);
 
-        $eventDetailsAction = new EventPreview($event, $logStats);
-        $eventDispatcher->dispatch($eventDetailsAction, CampaignEvents::ON_EVENT_DETAILS_ACTION);
-
-        return $this->json($eventDetailsAction->data);
+        return $this->json($eventDetailsAction->eventStats);
     }
 }

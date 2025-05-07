@@ -7,9 +7,11 @@ use Mautic\CampaignBundle\Entity\CampaignRepository;
 use Mautic\CampaignBundle\Entity\EventRepository;
 use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
 use Mautic\CampaignBundle\Event\CampaignEvent;
+use Mautic\CampaignBundle\Event\EventPreview;
 use Mautic\CampaignBundle\Event\ExecutedEvent;
 use Mautic\CampaignBundle\Event\FailedEvent;
 use Mautic\CampaignBundle\Executioner\Helper\NotificationHelper;
+use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CampaignEventSubscriber implements EventSubscriberInterface
@@ -30,9 +32,10 @@ class CampaignEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CampaignEvents::CAMPAIGN_PRE_SAVE => ['onCampaignPreSave', 0],
-            CampaignEvents::ON_EVENT_FAILED   => ['onEventFailed', 0],
-            CampaignEvents::ON_EVENT_EXECUTED => ['onEventExecuted', 0],
+            CampaignEvents::CAMPAIGN_PRE_SAVE        => ['onCampaignPreSave', 0],
+            CampaignEvents::ON_EVENT_FAILED          => ['onEventFailed', 0],
+            CampaignEvents::ON_EVENT_EXECUTED        => ['onEventExecuted', 0],
+            CampaignEvents::ON_EVENT_PREVIEW_REQUEST => ['onEventPreviewRequest', 0],
         ];
     }
 
@@ -114,5 +117,23 @@ class CampaignEventSubscriber implements EventSubscriberInterface
         }
         // Decrease if last failed and over the LOOPS_TO_FAIL
         $this->eventRepository->decreaseFailedCount($executedEvent);
+    }
+
+    public function onEventPreviewRequest(EventPreview $eventPreview): void
+    {
+        $logStats = $this->leadEventLogRepository->getEventLogStats($eventPreview->event->getId());
+
+        $firstExecutionDate = $logStats['first_execution_date'] ? new DateTimeHelper($logStats['first_execution_date']) : null;
+        $lastExecutionDate  = $logStats['last_execution_date'] ? new DateTimeHelper($logStats['last_execution_date']) : null;
+
+        $eventPreview->addEventStat('first_execution_date', $firstExecutionDate?->toLocalString());
+        $eventPreview->addEventStat('last_execution_date', $lastExecutionDate?->toLocalString());
+        $eventPreview->addEventStat('total_executions', $logStats['total_executions']);
+        $eventPreview->addEventStat('pending_executions', $logStats['pending_executions']);
+
+        if (in_array($eventPreview->event->getEventType(), ['condition', 'decision'])) {
+            $eventPreview->addEventStat('negative_path_count', $logStats['negative_path_count']);
+            $eventPreview->addEventStat('positive_path_count', $logStats['positive_path_count']);
+        }
     }
 }
