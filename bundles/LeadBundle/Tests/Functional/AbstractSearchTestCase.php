@@ -13,7 +13,7 @@ use Mautic\LeadBundle\Model\LeadModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class AbstractSearchTest extends MauticMysqlTestCase
+abstract class AbstractSearchTestCase extends MauticMysqlTestCase
 {
     /**
      * @param array<string, string|array<string, string>> $data
