@@ -14,26 +14,7 @@ use PHPUnit\Framework\Assert;
 
 class CampaignActionJumpToEventWithIntervalTriggerModeFunctionalTest extends MauticMysqlTestCase
 {
-    private string $originalTimezone;
-
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-
-        $timezone = 'UTC';
-        $nowUTC   = new \DateTime('now', new \DateTimeZone($timezone));
-        if ($nowUTC->format('G') <= 4) {
-            $timezone = 'Asia/Bangkok'; // +07:00
-        } elseif ($nowUTC->format('G') >= 20) {
-            $timezone = 'America/Phoenix'; // -07:00
-        }
-
-        $this->originalTimezone = date_default_timezone_get();
-
-        $this->configParams += [
-            'default_timezone' => $timezone,
-        ];
-    }
+    private static string $timezone;
 
     protected function setUp(): void
     {
