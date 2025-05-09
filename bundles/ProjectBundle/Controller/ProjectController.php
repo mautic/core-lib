@@ -57,15 +57,7 @@ final class ProjectController extends AbstractFormController
         $filter     = '';
 
         if ($search) {
-            $filter = [
-                'where' => [
-                    [
-                        'expr' => 'like',
-                        'col'  => 'p.name',
-                        'val'  => '%'.$search.'%',
-                    ],
-                ],
-            ];
+            $filter = ['string' => $search];
         }
 
         $tmpl  = $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index';
