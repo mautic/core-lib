@@ -337,6 +337,21 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
                     }
                 }
             }
+            if ($element['type'] === 'campaign.jump_to_event') {
+                $originalJumpToEventId = (int) $element['properties']['jumpToEvent'];
+                $newJumpToEventId      = $idMap[$originalJumpToEventId] ?? null;
+
+                if ($newJumpToEventId) {
+                    $campaignEventId = $idMap[(int) $element['id']];
+                    $campaignEvent   = $this->entityManager->getRepository(Event::class)->find($campaignEventId);
+
+                    $element['properties']['jumpToEvent'] = $newJumpToEventId;
+                    if ($campaignEvent) {
+                        $campaignEvent->setProperties($element['properties'] ?? []);
+                        $this->entityManager->persist($campaignEvent);
+                    }
+                }
+            }
         }
 
         $this->entityManager->flush();
