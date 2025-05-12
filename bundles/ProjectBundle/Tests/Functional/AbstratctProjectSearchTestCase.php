@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\ProjectBundle\Tests\Functional;
 
-use Doctrine\DBAL\Logging\DebugStack;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\ProjectBundle\Entity\Project;
 use PHPUnit\Framework\Assert;
@@ -15,60 +14,39 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstratctProjectSearchTestCase extends MauticMysqlTestCase
 {
-    private DebugStack $sqlLogger;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // Enable SQL query logging
-        $this->sqlLogger = new DebugStack();
-        $this->em->getConnection()->getConfiguration()->setSQLLogger($this->sqlLogger);
-    }
-
     /**
-     * Output executed SQL queries when a test fails.
-     */
-    protected function onNotSuccessfulTest(\Throwable $t): never
-    {
-        if (!empty($this->sqlLogger->queries)) {
-            $queries = $this->formatQueriesForOutput($this->sqlLogger->queries);
-            echo "\n\nExecuted SQL Queries:\n".$queries."\n";
-        }
-
-        parent::onNotSuccessfulTest($t);
-    }
-
-    /**
-     * @param string[] $expectedSegments
-     * @param string[] $unexpectedSegments
+     * @param string[] $expectedEntities
+     * @param string[] $unexpectedEntities
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('searchDataProvider')]
-    abstract public function testProjectSearch(string $searchTerm, array $expectedSegments, array $unexpectedSegments): void;
+    abstract public function testProjectSearch(string $searchTerm, array $expectedEntities, array $unexpectedEntities): void;
 
     /**
-     * @return \Generator<string, array{searchTerm: string, expectedSegments: array<string>, unexpectedSegments: array<string>}>
+     * @return \Generator<string, array{searchTerm: string, expectedEntities: array<string>, unexpectedEntities: array<string>}>
      */
     abstract public static function searchDataProvider(): \Generator;
 
     /**
      * Test and assert API as well as UI.
      *
-     * @param string[] $expectedSegments
-     * @param string[] $unexpectedSegments
+     * @param string[] $expectedEntities
+     * @param string[] $unexpectedEntities
+     * @param string[] $routes
      */
-    protected function searchAndAssert(string $searchTerm, array $expectedSegments, array $unexpectedSegments): void
+    protected function searchAndAssert(string $searchTerm, array $expectedEntities, array $unexpectedEntities, array $routes): void
     {
-        foreach (['api', 's'] as $route) {
-            $this->client->request(Request::METHOD_GET, "/$route/segments?search=".urlencode($searchTerm));
+        foreach ($routes as $route) {
+            $crawler = $this->client->request(Request::METHOD_GET, $route.'?search='.urlencode($searchTerm));
             $this->assertResponseIsSuccessful();
 
-            foreach ($expectedSegments as $expectedSegment) {
-                Assert::assertStringContainsString($expectedSegment, $this->client->getResponse()->getContent());
+            $content = $crawler->count() ? $crawler->filter('body')->text() : $this->client->getResponse()->getContent();
+
+            foreach ($expectedEntities as $expectedEntity) {
+                Assert::assertStringContainsString($expectedEntity, $content);
             }
 
-            foreach ($unexpectedSegments as $unexpectedSegment) {
-                Assert::assertStringNotContainsString($unexpectedSegment, $this->client->getResponse()->getContent());
+            foreach ($unexpectedEntities as $unexpectedEntity) {
+                Assert::assertStringNotContainsString($unexpectedEntity, $content);
             }
         }
     }
@@ -80,25 +58,5 @@ abstract class AbstratctProjectSearchTestCase extends MauticMysqlTestCase
         $this->em->persist($project);
 
         return $project;
-    }
-
-    /**
-     * Format the queries for readable output.
-     *
-     * @param array<array<string,mixed>> $queries
-     */
-    private function formatQueriesForOutput(array $queries): string
-    {
-        $output = '';
-        foreach ($queries as $i => $query) {
-            $output .= "\n".($i + 1).'. ['.sprintf('%.2f', $query['executionMS'] * 1000).' ms] ';
-            $output .= $query['sql']."\n";
-
-            if (!empty($query['params'])) {
-                $output .= '   Parameters: '.json_encode($query['params'])."\n";
-            }
-        }
-
-        return $output;
     }
 }

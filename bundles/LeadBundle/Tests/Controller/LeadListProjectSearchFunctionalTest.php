@@ -10,7 +10,7 @@ use Mautic\ProjectBundle\Tests\Functional\AbstratctProjectSearchTestCase;
 final class LeadListProjectSearchFunctionalTest extends AbstratctProjectSearchTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('searchDataProvider')]
-    public function testProjectSearch(string $searchTerm, array $expectedSegments, array $unexpectedSegments): void
+    public function testProjectSearch(string $searchTerm, array $expectedEntities, array $unexpectedEntities): void
     {
         $projectOne   = $this->createProject('Project One');
         $projectTwo   = $this->createProject('Project Two');
@@ -29,60 +29,60 @@ final class LeadListProjectSearchFunctionalTest extends AbstratctProjectSearchTe
         $this->em->flush();
         $this->em->clear();
 
-        $this->searchAndAssert($searchTerm, $expectedSegments, $unexpectedSegments);
+        $this->searchAndAssert($searchTerm, $expectedEntities, $unexpectedEntities, ['/api/segments', '/s/segments']);
     }
 
     /**
-     * @return \Generator<string, array{searchTerm: string, expectedSegments: array<string>, unexpectedSegments: array<string>}>
+     * @return \Generator<string, array{searchTerm: string, expectedEntities: array<string>, unexpectedEntities: array<string>}>
      */
     public static function searchDataProvider(): \Generator
     {
         yield 'search by one project' => [
             'searchTerm'         => 'project:"Project Two"',
-            'expectedSegments'   => ['Segment Alpha', 'Segment Beta'],
-            'unexpectedSegments' => ['Segment Gamma', 'Segment Delta'],
+            'expectedEntities'   => ['Segment Alpha', 'Segment Beta'],
+            'unexpectedEntities' => ['Segment Gamma', 'Segment Delta'],
         ];
 
         yield 'search by one project AND segment name' => [
             'searchTerm'         => 'project:"Project Two" AND Beta',
-            'expectedSegments'   => ['Segment Beta'],
-            'unexpectedSegments' => ['Segment Alpha', 'Segment Gamma', 'Segment Delta'],
+            'expectedEntities'   => ['Segment Beta'],
+            'unexpectedEntities' => ['Segment Alpha', 'Segment Gamma', 'Segment Delta'],
         ];
 
         yield 'search by one project OR segment name' => [
             'searchTerm'         => 'project:"Project Two" OR Gamma',
-            'expectedSegments'   => ['Segment Alpha', 'Segment Beta', 'Segment Gamma'],
-            'unexpectedSegments' => ['Segment Delta'],
+            'expectedEntities'   => ['Segment Alpha', 'Segment Beta', 'Segment Gamma'],
+            'unexpectedEntities' => ['Segment Delta'],
         ];
 
         yield 'search by NOT one project' => [
             'searchTerm'         => '!project:"Project Two"',
-            'expectedSegments'   => ['Segment Gamma', 'Segment Delta'],
-            'unexpectedSegments' => ['Segment Alpha', 'Segment Beta'],
+            'expectedEntities'   => ['Segment Gamma', 'Segment Delta'],
+            'unexpectedEntities' => ['Segment Alpha', 'Segment Beta'],
         ];
 
         yield 'search by two projects with AND' => [
             'searchTerm'         => 'project:"Project Two" AND project:"Project Three"',
-            'expectedSegments'   => ['Segment Beta'],
-            'unexpectedSegments' => ['Segment Alpha', 'Segment Gamma', 'Segment Delta'],
+            'expectedEntities'   => ['Segment Beta'],
+            'unexpectedEntities' => ['Segment Alpha', 'Segment Gamma', 'Segment Delta'],
         ];
 
         yield 'search by two projects with NOT AND' => [
             'searchTerm'         => '!project:"Project Two" AND !project:"Project Three"',
-            'expectedSegments'   => ['Segment Gamma', 'Segment Delta'],
-            'unexpectedSegments' => ['Segment Alpha', 'Segment Beta'],
+            'expectedEntities'   => ['Segment Gamma', 'Segment Delta'],
+            'unexpectedEntities' => ['Segment Alpha', 'Segment Beta'],
         ];
 
         yield 'search by two projects with OR' => [
             'searchTerm'         => 'project:"Project Two" OR project:"Project Three"',
-            'expectedSegments'   => ['Segment Alpha', 'Segment Beta'],
-            'unexpectedSegments' => ['Segment Gamma', 'Segment Delta'],
+            'expectedEntities'   => ['Segment Alpha', 'Segment Beta'],
+            'unexpectedEntities' => ['Segment Gamma', 'Segment Delta'],
         ];
 
         yield 'search by two projects with NOT OR' => [
             'searchTerm'         => '!project:"Project Two" OR !project:"Project Three"',
-            'expectedSegments'   => ['Segment Alpha', 'Segment Gamma', 'Segment Delta'],
-            'unexpectedSegments' => ['Segment Beta'],
+            'expectedEntities'   => ['Segment Alpha', 'Segment Gamma', 'Segment Delta'],
+            'unexpectedEntities' => ['Segment Beta'],
         ];
     }
 
