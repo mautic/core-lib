@@ -337,7 +337,7 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
                     }
                 }
             }
-            if ($element['type'] === 'campaign.jump_to_event') {
+            if ('campaign.jump_to_event' === $element['type']) {
                 $originalJumpToEventId = (int) $element['properties']['jumpToEvent'];
                 $newJumpToEventId      = $idMap[$originalJumpToEventId] ?? null;
 
