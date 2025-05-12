@@ -20,7 +20,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
     protected function setUp(): void
     {
-        $this->configParams['update_segment_contact_count_in_background'] = 'testSegmentCacheCountInBackground' === $this->getName();
+        $this->configParams['update_segment_contact_count_in_background'] = 'testSegmentCacheCountInBackground' === $this->name();
         parent::setUp();
 
         putenv('CAMPAIGN_EXECUTIONER_SCHEDULER_ACKNOWLEDGE_SECONDS=1');

@@ -30,7 +30,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        $this->configParams['update_segment_contact_count_in_background'] = 'testSegmentCountInBackground' === $this->getName();
+        $this->configParams['update_segment_contact_count_in_background'] = 'testSegmentCountInBackground' === $this->name();
         parent::setUp();
         $this->listModel = static::getContainer()->get('mautic.lead.model.list');
         \assert($this->listModel instanceof ListModel);
