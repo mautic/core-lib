@@ -2429,7 +2429,6 @@ Mautic.previewCampaignEventDetails = function() {
     $allElements.click(function (event) {
         const $el = mQuery(event.currentTarget);
         const eventId = $el.data('eventId');
-        console.log(eventId, $el);
 
         if (!eventId) return;
 
@@ -2447,7 +2446,6 @@ Mautic.previewCampaignEventDetails = function() {
         mQuery.ajax({
             url: '/s/campaign/metrics/event-details/' + eventId,
             success: function (response) {
-                console.log(response);
                 renderEventDetails($el, response);
             }
         });

@@ -702,10 +702,10 @@ SQL;
                 'last_execution_date'  => null,
             ];
         }
-        $totalLogs         = (int) $result['total_logs'] ?? 0;
-        $pendingExecutions = (int) $result['pending_executions'] ?? 0;
+        $totalLogs         = (int) $result['total_logs'];
+        $pendingExecutions = (int) $result['pending_executions'];
         $totalExecutions   = $totalLogs - $pendingExecutions;
-        $negativePathCount = (int) $result['negative_path_count'] ?? 0;
+        $negativePathCount = (int) $result['negative_path_count'];
         $positivePathCount = $totalExecutions - $negativePathCount;
 
         return [
