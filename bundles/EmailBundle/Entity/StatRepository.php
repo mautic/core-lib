@@ -765,6 +765,18 @@ class StatRepository extends CommonRepository
         return $contacts;
     }
 
+    /**
+     * @param array<int> $eventIds
+     *
+     * @return array<int, array{
+     *   sent_count: int,
+     *   read_count: int,
+     *   clicked_count: int,
+     *   open_rate: float,
+     *   click_through_rate: float,
+     *   click_through_open_rate: float
+     * }>
+     */
     public function getStatsSummaryForCampaignEvents(array $eventIds): array
     {
         $queryBuilder    = $this->getEntityManager()->getConnection()->createQueryBuilder();

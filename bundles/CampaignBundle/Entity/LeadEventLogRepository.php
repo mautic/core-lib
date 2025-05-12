@@ -662,6 +662,16 @@ SQL;
         return false;
     }
 
+    /**
+     * @return array{
+     *     total_executions: int,
+     *     pending_executions: int,
+     *     negative_path_count: int,
+     *     positive_path_count: int,
+     *     first_execution_date: string|null,
+     *     last_execution_date: string|null
+     * }
+     */
     public function getEventLogStats(int $eventId): array
     {
         $qb = $this->getReplicaConnection()->createQueryBuilder();
