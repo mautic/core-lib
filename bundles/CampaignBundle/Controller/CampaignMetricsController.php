@@ -117,6 +117,12 @@ class CampaignMetricsController extends AbstractController
     ): JsonResponse {
         $event = $eventModel->getEntity($objectId);
 
+        if (!$event) {
+            return $this->json([
+                'message' => $this->translator->trans('mautic.core.error.notfound', [], 'flashes'),
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         $eventDetailsAction = new EventPreview($event);
         $eventDispatcher->dispatch($eventDetailsAction, CampaignEvents::ON_EVENT_PREVIEW_REQUEST);
 
