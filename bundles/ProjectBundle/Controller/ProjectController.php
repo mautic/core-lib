@@ -155,7 +155,7 @@ final class ProjectController extends AbstractFormController
                 ]);
             }
 
-            if ($cancelled || ($valid && $form->get('buttons')->get('save')->isClicked())) {
+            if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
                 return $this->postActionRedirect([
                     'returnUrl'       => $returnUrl,
                     'viewParameters'  => ['page' => $page],
@@ -211,9 +211,9 @@ final class ProjectController extends AbstractFormController
                 }
 
                 if ($this->isFormValid($form)) {
-                    $projectModel->saveEntity($project, $form->get('buttons')->get('save')->isClicked());
+                    $projectModel->saveEntity($project, $this->getFormButton($form, ['buttons', 'save'])->isClicked());
 
-                    $this->addFlash('mautic.core.notice.updated', [
+                    $this->addFlashMessage('mautic.core.notice.updated', [
                         '%name%'      => $project->getName(),
                         '%menu_link%' => self::ROUTE_INDEX,
                         '%url%'       => $this->generateUrl(self::ROUTE_ACTION, [
@@ -222,7 +222,7 @@ final class ProjectController extends AbstractFormController
                         ]),
                     ]);
 
-                    if ($form->get('buttons')->get('apply')->isClicked()) {
+                    if ($this->getFormButton($form, ['buttons', 'save'])->isClicked()) {
                         $contentTemplate                     = self::TEMPLATE_FORM;
                         $postActionVars['contentTemplate']   = $contentTemplate;
                         $postActionVars['forwardController'] = false;
@@ -240,7 +240,7 @@ final class ProjectController extends AbstractFormController
                             'objectAction' => 'edit',
                             'entity'       => $project,
                             'objectId'     => $project->getId(),
-                            'form'         => $this->setFormTheme($form, $contentTemplate, 'MauticProjectBundle:FormTheme\Filter'),
+                            'form'         => $form->createView(),
                         ];
 
                         return $this->postActionRedirect($postActionVars);
