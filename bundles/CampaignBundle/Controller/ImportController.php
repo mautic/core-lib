@@ -93,6 +93,10 @@ final class ImportController extends AbstractFormController
 
     public function uploadAction(Request $request): Response
     {
+        if (!$this->security->isAdmin() && !$this->security->isGranted('campaign:imports:create')) {
+            return $this->accessDenied();
+        }
+
         $fullPath = $this->pathsHelper->getImportCampaignsPath().'/'.$this->getImportFileName();
         $fileName = $this->getImportFileName();
 
@@ -175,6 +179,10 @@ final class ImportController extends AbstractFormController
      */
     public function cancelAction(): Response
     {
+        if (!$this->security->isAdmin() && !$this->security->isGranted('campaign:imports:create')) {
+            return $this->accessDenied();
+        }
+
         $filePath = $this->requestStack->getSession()->get('mautic.campaign.import.file');
 
         if (is_string($filePath)) {
