@@ -20,7 +20,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
         ];
 
         /** @var ProjectModel $projectModel */
-        $projectModel = self::$container->get('mautic.project.model.project');
+        $projectModel = self::getContainer()->get(ProjectModel::class);
 
         $projects = array_map(
             static function (string $projectName) use ($projectModel) {

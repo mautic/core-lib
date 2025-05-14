@@ -331,7 +331,7 @@ class CommonController extends AbstractController implements MauticController
 
         // Ajax call so respond with json
         $newContent = '';
-        $ignoreAjax = $this->request->get('ignoreAjax', false); // get the value here as the forward can overwrite it.
+        $ignoreAjax = $request->get('ignoreAjax', false); // get the value here as the forward can overwrite it.
         if ($contentTemplate) {
             if ($forward) {
                 // the content is from another controller action so we must retrieve the response from it instead of

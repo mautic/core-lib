@@ -13,6 +13,7 @@ use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 final class ProjectControllerTest extends MauticMysqlTestCase
 {
@@ -32,7 +33,7 @@ final class ProjectControllerTest extends MauticMysqlTestCase
         ];
 
         /** @var ProjectModel $projectModel */
-        $projectModel            = self::$container->get('mautic.project.model.project');
+        $projectModel            = self::getContainer()->get(ProjectModel::class);
         $this->projectRepository = $projectModel->getRepository();
 
         foreach ($projects as $projectName) {
@@ -42,9 +43,7 @@ final class ProjectControllerTest extends MauticMysqlTestCase
         }
     }
 
-    /**
-     * @dataProvider indexUrlsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('indexUrlsProvider')]
     public function testIndexActionDisplaysProjects(string $url): void
     {
         $this->client->request('GET', $url);
@@ -59,7 +58,7 @@ final class ProjectControllerTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, array<int, string>>
      */
-    public function indexUrlsProvider(): iterable
+    public static function indexUrlsProvider(): iterable
     {
         yield 'non-existent page nuber'                         => ['/s/projects/999'];
         yield 'main index page with no number (meaning page=1)' => ['/s/projects'];
@@ -81,6 +80,7 @@ final class ProjectControllerTest extends MauticMysqlTestCase
         $project = $this->projectRepository->findOneBy([]);
         $segment = new LeadList();
         $segment->setName('Test segment');
+        $segment->setPublicName('Test segment');
         $segment->setAlias('test-segment');
         $segment->addProject($project);
 
@@ -196,9 +196,9 @@ final class ProjectControllerTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->detach($role);
 
-        $this->loginUser(self::USERNAME);
-        $this->client->setServerParameter('PHP_AUTH_USER', self::USERNAME);
-        $this->client->setServerParameter('PHP_AUTH_PW', 'mautic');
+        $this->loginUser($user);
+        // $this->client->setServerParameter('PHP_AUTH_USER', self::USERNAME);
+        // $this->client->setServerParameter('PHP_AUTH_PW', 'mautic');
 
         return $user;
     }
@@ -221,8 +221,9 @@ final class ProjectControllerTest extends MauticMysqlTestCase
         $user->setLastName('Doe');
         $user->setUsername(self::USERNAME);
         $user->setEmail('john.doe@email.com');
-        $encoder = self::$container->get('security.encoder_factory')->getEncoder($user);
-        $user->setPassword($encoder->encodePassword('mautic', null));
+        $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
+        \assert($hasher instanceof PasswordHasherInterface);
+        $user->setPassword($hasher->hash('mautic'));
         $user->setRole($role);
 
         $this->em->persist($user);
