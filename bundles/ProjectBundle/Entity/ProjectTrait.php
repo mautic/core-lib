@@ -11,6 +11,9 @@ use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 
 trait ProjectTrait
 {
+    /**
+     * @var Collection<int, Project>
+     */
     private Collection $projects;
 
     private function initializeProjects(): void
@@ -58,7 +61,7 @@ trait ProjectTrait
     public function addProject(Project $project): void
     {
         $this->isChanged('projects', $project);
-        $this->projects[$project->getName()] = $project;
+        $this->projects[] = $project;
     }
 
     public function removeProject(Project $project): bool

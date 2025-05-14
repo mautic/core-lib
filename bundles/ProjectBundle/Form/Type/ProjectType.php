@@ -27,7 +27,7 @@ final class ProjectType extends AbstractType
 
         if ($this->corePermissions->isGranted(ProjectPermissions::CAN_CREATE)) {
             $attr['data-placeholder']     = $this->translator->trans('mautic.project.select_or_create');
-            $attr['onchange']             = 'Mautic.createProjects(this)';
+            $attr['data-action']          = 'createProject';
             $attr['data-no-results-text'] = $this->translator->trans('mautic.project.enter_to_create');
             $attr['data-allow-add']       = 'true';
         }

@@ -155,7 +155,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $project = new Project();
         $project->setName('Test Project');
 
-        $projectModel = self::$container->get('mautic.project.model.project');
+        $projectModel = self::getContainer()->get(ProjectModel::class);
         \assert($projectModel instanceof ProjectModel);
         $projectModel->saveEntity($project);
 
@@ -163,7 +163,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/edit/'.$segment->getId());
         $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
-        $form['leadlist[projects]']->setValue([$project->getId()]);
+        $form['leadlist[projects]']->setValue((string) $project->getId());
 
         $this->client->submit($form);
 
