@@ -22,7 +22,7 @@ trait ProjectRepositoryTrait
             'project.id = projectxref.project_id'
         );
         $queryBuilder->where($queryBuilder->expr()->eq('project.name', ':name'));
-        $queryBuilder->setParameter(':name', $projectName);
+        $queryBuilder->setParameter('name', $projectName);
 
         if ($negation) {
             $expr = $queryBuilder->expr()->notIn("{$parentTableAlias}.id", ":{$paramName}");
@@ -30,6 +30,6 @@ trait ProjectRepositoryTrait
             $expr = $queryBuilder->expr()->in("{$parentTableAlias}.id", ":{$paramName}");
         }
 
-        return [$expr, [$paramName => $queryBuilder->execute()->fetchFirstColumn()]];
+        return [$expr, [$paramName => $queryBuilder->executeQuery()->fetchFirstColumn()]];
     }
 }

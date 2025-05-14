@@ -29,7 +29,7 @@ abstract class AbstratctProjectSearchTestCase extends MauticMysqlTestCase
     /**
      * Output executed SQL queries when a test fails.
      */
-    protected function onNotSuccessfulTest(\Throwable $t): void
+    protected function onNotSuccessfulTest(\Throwable $t): never
     {
         if (!empty($this->sqlLogger->queries)) {
             $queries = $this->formatQueriesForOutput($this->sqlLogger->queries);
@@ -40,17 +40,16 @@ abstract class AbstratctProjectSearchTestCase extends MauticMysqlTestCase
     }
 
     /**
-     * @dataProvider searchDataProvider
-     *
      * @param string[] $expectedSegments
      * @param string[] $unexpectedSegments
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('searchDataProvider')]
     abstract public function testProjectSearch(string $searchTerm, array $expectedSegments, array $unexpectedSegments): void;
 
     /**
      * @return \Generator<string, array{searchTerm: string, expectedSegments: array<string>, unexpectedSegments: array<string>}>
      */
-    abstract public function searchDataProvider(): \Generator;
+    abstract public static function searchDataProvider(): \Generator;
 
     /**
      * Test and assert API as well as UI.

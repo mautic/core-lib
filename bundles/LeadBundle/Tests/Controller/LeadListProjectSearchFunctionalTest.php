@@ -9,9 +9,7 @@ use Mautic\ProjectBundle\Tests\Functional\AbstratctProjectSearchTestCase;
 
 final class LeadListProjectSearchFunctionalTest extends AbstratctProjectSearchTestCase
 {
-    /**
-     * @dataProvider searchDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('searchDataProvider')]
     public function testProjectSearch(string $searchTerm, array $expectedSegments, array $unexpectedSegments): void
     {
         $projectOne   = $this->createProject('Project One');
@@ -37,7 +35,7 @@ final class LeadListProjectSearchFunctionalTest extends AbstratctProjectSearchTe
     /**
      * @return \Generator<string, array{searchTerm: string, expectedSegments: array<string>, unexpectedSegments: array<string>}>
      */
-    public function searchDataProvider(): \Generator
+    public static function searchDataProvider(): \Generator
     {
         yield 'search by one project' => [
             'searchTerm'         => 'project:"Project Two"',
