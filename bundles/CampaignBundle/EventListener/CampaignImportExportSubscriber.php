@@ -9,6 +9,7 @@ use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Event\CampaignEvent;
 use Mautic\CampaignBundle\Model\CampaignModel;
+use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
@@ -227,12 +228,9 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
             EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
             'errors'                  => [],
         ];
-        $uuidRegex = '/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
 
         foreach ($event->getEntityData() as $element) {
-            // UUID format check
-            $uuid = $element['uuid'] ?? '';
-            if (!empty($uuid) && !preg_match($uuidRegex, $uuid)) {
+            if (!empty($element['uuid']) && !UuidTrait::isValidUuid($element['uuid'])) {
                 $summary['errors'][] = sprintf('Invalid UUID format for %s', $event->getEntityName());
                 break;
             }

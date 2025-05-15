@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
@@ -189,12 +190,9 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
             EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
             'errors'                  => [],
         ];
-        $uuidRegex = '/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
 
         foreach ($event->getEntityData() as $item) {
-            // UUID format check
-            $uuid = $item['uuid'] ?? '';
-            if (!empty($uuid) && !preg_match($uuidRegex, $uuid)) {
+            if (!empty($item['uuid']) && !UuidTrait::isValidUuid($item['uuid'])) {
                 $summary['errors'][] = sprintf('Invalid UUID format for %s', $event->getEntityName());
                 break;
             }
