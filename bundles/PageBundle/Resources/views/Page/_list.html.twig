@@ -65,6 +65,13 @@
 
                 {{ include('@MauticCore/Helper/tableheader.html.twig', {
                         'sessionVar': 'page',
+                        'orderBy': 'p.template',
+                        'text': 'mautic.core.form.theme',
+                        'class': 'visible-md visible-lg col-page-template',
+                }) }}
+
+                {{ include('@MauticCore/Helper/tableheader.html.twig', {
+                        'sessionVar': 'page',
                         'orderBy': 'submission_count',
                         'text': 'mautic.form.form.results',
                         'class': 'visible-md visible-lg col-page-submissions',
@@ -160,6 +167,13 @@
                         {% if item.dateModified %}{{ dateToDate(item.dateModified) }}{% endif %}
                     </td>
                     <td class="visible-md visible-lg">{{ item.createdByUser }}</td>
+                    <td class="visible-md visible-lg">
+                        {% if item.template %}
+                            {{ getThemeName(item.template) }}
+                        {% else %}
+                            <span class="text-muted">{{ 'mautic.core.form.default'|trans }}</span>
+                        {% endif %}
+                    </td>
                     <td class="visible-md visible-lg">
                         <a href="{{ path('mautic_page_results', {'objectId': item.id}) }}" data-toggle="ajax" data-menu-link="mautic_form_index" size="sm" class="label label-gray" {% if 0 == i.submission_count %}disabled="disabled"{% endif %}>
                             {{- 'mautic.form.form.viewresults'|trans({'%count%': i.submission_count}) -}}
