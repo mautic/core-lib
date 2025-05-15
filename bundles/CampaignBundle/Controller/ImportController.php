@@ -64,7 +64,7 @@ final class ImportController extends AbstractFormController
 
     public function newAction(): Response
     {
-        if (!$this->security->isAdmin() && !$this->security->isGranted('campaign:imports:create')) {
+        if (!$this->security->isGranted('campaign:imports:create')) {
             return $this->accessDenied();
         }
 
@@ -93,7 +93,7 @@ final class ImportController extends AbstractFormController
 
     public function uploadAction(Request $request): Response
     {
-        if (!$this->security->isAdmin() && !$this->security->isGranted('campaign:imports:create')) {
+        if (!$this->security->isGranted('campaign:imports:create')) {
             return $this->accessDenied();
         }
 
@@ -179,7 +179,7 @@ final class ImportController extends AbstractFormController
      */
     public function cancelAction(): Response
     {
-        if (!$this->security->isAdmin() && !$this->security->isGranted('campaign:imports:create')) {
+        if (!$this->security->isGranted('campaign:imports:create')) {
             return $this->accessDenied();
         }
 
@@ -445,7 +445,7 @@ final class ImportController extends AbstractFormController
 
     public function undoAction(): JsonResponse
     {
-        if (!$this->security->isAdmin() && !$this->security->isGranted('campaign:imports:delete')) {
+        if (!$this->security->isGranted('campaign:imports:delete')) {
             return $this->accessDenied();
         }
 

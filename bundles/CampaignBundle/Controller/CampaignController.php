@@ -22,6 +22,7 @@ use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Factory\PageHelperFactoryInterface;
 use Mautic\CoreBundle\Form\Type\DateRangeType;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Helper\ExportHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
@@ -129,34 +130,19 @@ class CampaignController extends AbstractStandardFormController
         );
     }
 
-    /**
-     * Deletes a group of entities.
-     *
-     * @return JsonResponse|RedirectResponse
-     */
-    public function batchDeleteAction(Request $request)
+    public function batchDeleteAction(Request $request): JsonResponse|RedirectResponse
     {
         return $this->batchDeleteStandard($request);
     }
 
-    /**
-     * Clone an entity.
-     *
-     * @return JsonResponse|RedirectResponse|Response
-     */
-    public function cloneAction(Request $request, $objectId)
+    public function cloneAction(Request $request, $objectId): JsonResponse|RedirectResponse|Response
     {
         return $this->cloneStandard($request, $objectId);
     }
 
-    /**
-     * Export an entity.
-     *
-     * @return JsonResponse|BinaryFileResponse|Response
-     */
-    public function exportAction(ExportHelper $exportHelper, CampaignModel $campaignModel, int $objectId)
+    public function exportAction(ExportHelper $exportHelper, CampaignModel $campaignModel, int $objectId): JsonResponse|BinaryFileResponse|Response
     {
-        if (!$this->security->isAdmin() && !$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
+        if (!$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
             $this->logger->error('Access denied for campaign export', ['user' => $this->user->getId()]);
 
             return $this->accessDenied();
@@ -170,7 +156,7 @@ class CampaignController extends AbstractStandardFormController
             return $this->notFound();
         }
 
-        $date           = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        $date           = (new \DateTimeImmutable())->format(DateTimeHelper::FORMAT_DB);
         $exportFileName = $this->translator->trans('mautic.campaign.campaign_export_file.name', ['%date%' => $date]);
 
         $event = new EntityExportEvent(Campaign::ENTITY_NAME, $objectId);
@@ -198,12 +184,7 @@ class CampaignController extends AbstractStandardFormController
         return $exportHelper->downloadAsZip($filePath, $exportFileName);
     }
 
-    /**
-     * Bulk export contacts.
-     *
-     * @return JsonResponse|BinaryFileResponse|Response
-     */
-    public function batchExportAction(Request $request, ExportHelper $exportHelper)
+    public function batchExportAction(Request $request, ExportHelper $exportHelper): JsonResponse|BinaryFileResponse|Response
     {
         // set some permissions
         $permissions = $this->security->isGranted(
@@ -221,7 +202,7 @@ class CampaignController extends AbstractStandardFormController
 
         if (!$permissions['campaign:campaigns:viewown'] && !$permissions['campaign:campaigns:viewother']) {
             return $this->accessDenied();
-        } elseif (!$this->security->isAdmin() && !$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
+        } elseif (!$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
             return $this->accessDenied();
         }
 
@@ -230,7 +211,7 @@ class CampaignController extends AbstractStandardFormController
         $orderByDir  = $session->get('mautic.campaign.orderbydir', 'ASC');
 
         $ids            = $request->get('ids');
-        $date           = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        $date           = (new \DateTimeImmutable())->format(DateTimeHelper::FORMAT_DB);
         $exportFileName = $this->translator->trans('mautic.campaign.campaign_export_file.name', ['%date%' => $date]);
         $objectIds      = json_decode($ids, true);
 
@@ -403,22 +384,12 @@ class CampaignController extends AbstractStandardFormController
         );
     }
 
-    /**
-     * Deletes the entity.
-     *
-     * @return JsonResponse|RedirectResponse
-     */
-    public function deleteAction(Request $request, $objectId)
+    public function deleteAction(Request $request, $objectId): JsonResponse|RedirectResponse
     {
         return $this->deleteStandard($request, $objectId);
     }
 
-    /**
-     * @param bool $ignorePost
-     *
-     * @return JsonResponse|RedirectResponse|Response
-     */
-    public function editAction(Request $request, $objectId, $ignorePost = false)
+    public function editAction(Request $request, $objectId, $ignorePost = false): JsonResponse|RedirectResponse|Response
     {
         return $this->editStandard($request, $objectId, $ignorePost);
     }
@@ -668,12 +639,7 @@ class CampaignController extends AbstractStandardFormController
         );
     }
 
-    /**
-     * View a specific campaign.
-     *
-     * @return JsonResponse|Response
-     */
-    public function viewAction(Request $request, $objectId)
+    public function viewAction(Request $request, $objectId): JsonResponse|Response
     {
         return $this->viewStandard($request, $objectId, $this->getModelName(), null, null, 'campaign');
     }

@@ -12,7 +12,6 @@ use Mautic\CoreBundle\Event\EntityImportEvent;
 use Mautic\CoreBundle\Event\EntityImportUndoEvent;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
-use Mautic\EmailBundle\Entity\Email;
 use Mautic\FormBundle\Entity\Action;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Model\ActionModel;
@@ -70,21 +69,6 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
         $this->logAction('export', $actionId, $actionData, 'formAction');
 
         $data = [];
-        // if (
-        //     isset($actionData['properties']['useremail']['email']) &&
-        //     !empty($actionData['properties']['useremail']['email'])
-        // ) {
-        //     $emailId = (int) $actionData['properties']['useremail']['email'];
-        //     $subEvent = new EntityExportEvent(Email::ENTITY_NAME, $emailId);
-        //     $this->dispatcher->dispatch($subEvent);
-        //     $event->addDependencies($subEvent->getDependencies());
-        //     $this->mergeExportData($data, $subEvent);
-
-        //     $event->addDependencyEntity(Action::ENTITY_NAME, [
-        //         Action::ENTITY_NAME => $actionId,
-        //         Email::ENTITY_NAME  => $emailId,
-        //     ]);
-        // }
 
         if (
             isset($actionData['properties']['asset'])

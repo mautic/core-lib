@@ -34,7 +34,7 @@ final class ButtonSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (!$this->security->isAdmin() && !$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
+        if (!$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
             return;
         }
 

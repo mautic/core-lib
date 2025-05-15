@@ -8,7 +8,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @extends AbstractType<mixed>
@@ -47,23 +46,5 @@ final class CampaignImportType extends AbstractType
                 ],
             ]
         );
-    }
-
-    /**
-     * Configure options for the form.
-     *
-     * @param OptionsResolver $resolver The resolver
-     */
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([]);
-    }
-
-    /**
-     * Get the block prefix for the form.
-     */
-    public function getBlockPrefix(): string
-    {
-        return 'campaign_import';
     }
 }

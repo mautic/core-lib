@@ -13,6 +13,7 @@ use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
 use Mautic\CoreBundle\Event\EntityImportUndoEvent;
+use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\EmailBundle\Entity\Email;
@@ -174,6 +175,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
             EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
             EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],
         ];
+        $allowedTags = ['p', 'b', 'strong', 'i', 'em', 'u', 'ul', 'ol', 'li', 'br', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
         foreach ($entityData[Campaign::ENTITY_NAME] as $campaignData) {
             $object = $this->entityManager->getRepository(Campaign::class)->findOneBy(['uuid' => $campaignData['uuid']]);
@@ -190,8 +192,8 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                 $object->setModifiedByUser($user);
             }
 
-            $object->setName(strip_tags($campaignData['name'] ?? '', '<p><b><strong><i><em><u><ul><ol><li><br><span><h1><h2><h3><h4><h5><h6>'));
-            $object->setDescription(strip_tags($campaignData['description'] ?? '', '<p><b><strong><i><em><u><ul><ol><li><br><span><h1><h2><h3><h4><h5><h6>'));
+            $object->setName(InputHelper::stripTags($campaignData['name'] ?? '', $allowedTags));
+            $object->setDescription(InputHelper::stripTags($campaignData['description'] ?? '', $allowedTags));
             $object->setIsPublished(false);
             $object->setCanvasSettings($campaignData['canvas_settings'] ?? '');
 

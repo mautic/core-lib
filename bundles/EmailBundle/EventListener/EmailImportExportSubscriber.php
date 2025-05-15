@@ -129,12 +129,6 @@ final class EmailImportExportSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $userName = '';
-        if ($event->getUserId()) {
-            $user     = $this->userModel->getEntity($event->getUserId());
-            $userName = $user ? $user->getFirstName().' '.$user->getLastName() : '';
-        }
-
         $stats = [
             EntityImportEvent::NEW    => ['names' => [], 'ids' => [], 'count' => 0],
             EntityImportEvent::UPDATE => ['names' => [], 'ids' => [], 'count' => 0],

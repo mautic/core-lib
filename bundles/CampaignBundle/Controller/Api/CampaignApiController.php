@@ -413,7 +413,7 @@ class CampaignApiController extends CommonApiController
 
             if (1 !== count($files)) {
                 return $this->handleView(
-                    $this->view(['error' => 'No JSON content found and exactly one ZIP file must be uploaded.'], Response::HTTP_BAD_REQUEST)
+                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.incorrect_zip_file', [], 'messages')], Response::HTTP_BAD_REQUEST)
                 );
             }
 
@@ -421,13 +421,13 @@ class CampaignApiController extends CommonApiController
 
             if (!$uploadedFile->isValid()) {
                 return $this->handleView(
-                    $this->view(['error' => 'File upload failed or exceeded server size limit'], Response::HTTP_BAD_REQUEST)
+                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.upload_failed', [], 'messages')], Response::HTTP_BAD_REQUEST)
                 );
             }
 
             if ('zip' !== $uploadedFile->getClientOriginalExtension()) {
                 return $this->handleView(
-                    $this->view(['error' => 'Unsupported file type. Only ZIP archives are supported.'], Response::HTTP_BAD_REQUEST)
+                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.incorrect_upload_file_format', [], 'messages')], Response::HTTP_BAD_REQUEST)
                 );
             }
 
@@ -435,7 +435,7 @@ class CampaignApiController extends CommonApiController
 
             if (!file_exists($zipPath)) {
                 return $this->handleView(
-                    $this->view(['error' => 'Uploaded file path does not exist on disk.'], Response::HTTP_INTERNAL_SERVER_ERROR)
+                    $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.uploaded_file_no_exist', [], 'messages')], Response::HTTP_INTERNAL_SERVER_ERROR)
                 );
             }
 
@@ -454,7 +454,7 @@ class CampaignApiController extends CommonApiController
             $event  = new EntityImportEvent(Campaign::ENTITY_NAME, $entity, $userId);
             $this->dispatcher->dispatch($event);
         }
-        $view = $this->view(['Campaign imported successfully.'], Response::HTTP_CREATED);
+        $view = $this->view([$this->translator->trans('mautic.campaign.campaign.import.finished', [], 'messages')], Response::HTTP_CREATED);
         $this->setSerializationContext($view);
 
         return $this->handleView($view);
