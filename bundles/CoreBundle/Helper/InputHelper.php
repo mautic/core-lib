@@ -418,7 +418,7 @@ class InputHelper
             $value = str_replace(['<!-->', '<!--', '-->'], ['<mcomment></mcomment>', '<mcomment>', '</mcomment>'], $value, $commentCount);
 
             try {
-                $hasUnicode = strlen($value) != strlen(iconv('UTF-8', 'Windows-1252', $value));
+                $hasUnicode = mb_check_encoding($value, 'UTF-8') || (strlen($value) != strlen(iconv('UTF-8', 'Windows-1252', $value)));
             } catch (\ErrorException) {
                 $hasUnicode = 'UTF-8' === mb_detect_encoding($value);
             }
