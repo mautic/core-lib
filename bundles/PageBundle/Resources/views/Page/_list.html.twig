@@ -36,6 +36,13 @@
 
                 {{ include('@MauticCore/Helper/tableheader.html.twig', {
                         'sessionVar': 'page',
+                        'orderBy': 'p.template',
+                        'text': 'mautic.core.form.theme',
+                        'class': 'visible-md visible-lg col-page-template',
+                }) }}
+
+                {{ include('@MauticCore/Helper/tableheader.html.twig', {
+                        'sessionVar': 'page',
                         'orderBy': 'p.hits',
                         'text': 'mautic.page.thead.hits',
                         'class': 'col-page-hits visible-md visible-lg',
@@ -61,13 +68,6 @@
                         'orderBy': 'p.createdByUser',
                         'text': 'mautic.core.createdby',
                         'class': 'col-page-createdByUser visible-md visible-lg',
-                }) }}
-
-                {{ include('@MauticCore/Helper/tableheader.html.twig', {
-                        'sessionVar': 'page',
-                        'orderBy': 'p.template',
-                        'text': 'mautic.core.form.theme',
-                        'class': 'visible-md visible-lg col-page-template',
                 }) }}
 
                 {{ include('@MauticCore/Helper/tableheader.html.twig', {
@@ -159,6 +159,13 @@
                     <td class="visible-md visible-lg">
                         {{ include('@MauticCore/Helper/category--expanded.html.twig', {'category': item.category}) }}
                     </td>
+                    <td class="visible-md visible-lg">
+                        {% if item.template %}
+                            {{ getThemeName(item.template) }}
+                        {% else %}
+                            <span class="text-muted">{{ 'mautic.core.form.default'|trans }}</span>
+                        {% endif %}
+                    </td>
                     <td class="visible-md visible-lg">{{ item.hits }}</td>
                     <td class="visible-md visible-lg" title="{% if item.dateAdded %}{{ dateToFullConcat(item.dateAdded) }}{% endif %}">
                         {% if item.dateAdded %}{{ dateToDate(item.dateAdded) }}{% endif %}
@@ -167,13 +174,6 @@
                         {% if item.dateModified %}{{ dateToDate(item.dateModified) }}{% endif %}
                     </td>
                     <td class="visible-md visible-lg">{{ item.createdByUser }}</td>
-                    <td class="visible-md visible-lg">
-                        {% if item.template %}
-                            {{ getThemeName(item.template) }}
-                        {% else %}
-                            <span class="text-muted">{{ 'mautic.core.form.default'|trans }}</span>
-                        {% endif %}
-                    </td>
                     <td class="visible-md visible-lg">
                         <a href="{{ path('mautic_page_results', {'objectId': item.id}) }}" data-toggle="ajax" data-menu-link="mautic_form_index" size="sm" class="label label-gray" {% if 0 == i.submission_count %}disabled="disabled"{% endif %}>
                             {{- 'mautic.form.form.viewresults'|trans({'%count%': i.submission_count}) -}}
