@@ -389,6 +389,9 @@ class CampaignController extends AbstractStandardFormController
         return $this->deleteStandard($request, $objectId);
     }
 
+    /**
+     * @param bool $ignorePost
+     */
     public function editAction(Request $request, $objectId, $ignorePost = false): JsonResponse|RedirectResponse|Response
     {
         return $this->editStandard($request, $objectId, $ignorePost);

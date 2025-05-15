@@ -16,7 +16,6 @@ use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\PageBundle\Entity\Page;
-use Mautic\UserBundle\Model\UserModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -25,7 +24,6 @@ final class EmailImportExportSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private EmailModel $emailModel,
-        private UserModel $userModel,
         private EntityManagerInterface $entityManager,
         private EventDispatcherInterface $dispatcher,
         private AuditLogModel $auditLogModel,

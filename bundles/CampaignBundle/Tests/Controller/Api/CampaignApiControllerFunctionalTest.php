@@ -447,7 +447,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseStatusCodeSame(201, 'Expected status code 201 for successful import.');
         $responseData = json_decode($clientResponse->getContent(), true);
         $this->assertIsArray($responseData);
-        $this->assertContains('Campaign imported successfully.', $responseData);
+        $this->assertContains('Import successful: Imported campaigns are switched off by default.', $responseData);
     }
 
     public function testImportCampaignActionZip(): void
@@ -486,7 +486,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->assertResponseStatusCodeSame(201);
         $decoded = json_decode($response->getContent(), true);
-        $this->assertContains('Campaign imported successfully.', $decoded);
+        $this->assertContains('Import successful: Imported campaigns are switched off by default.', $decoded);
     }
 
     public function testImportCampaignAccessDenied(): void
