@@ -4,6 +4,7 @@ namespace Mautic\LeadBundle\Tests\Entity;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\LeadBundle\Entity\LeadRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

@@ -364,7 +364,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
             ->where('l.id = :id')
             ->setParameter(':id', $id);
 
-        return (bool) $query->execute()->fetchOne();
+        return (bool) $query->executeQuery()->fetchOne();
     }
 
     /**
