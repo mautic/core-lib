@@ -307,6 +307,11 @@ class LeadField extends FormEntity implements CacheInvalidateInterface
         return $this->id;
     }
 
+    public function getIsCloned(): bool
+    {
+        return $this->isCloned;
+    }
+
     /**
      * Set label.
      *
