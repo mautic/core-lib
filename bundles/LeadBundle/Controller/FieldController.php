@@ -364,11 +364,9 @@ class FieldController extends FormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, $objectId): RedirectResponse|Response
+    public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, FieldModel $fieldModel, $objectId): RedirectResponse|Response
     {
-        /** @var FieldModel $model */
-        $model  = $this->getModel('lead.field');
-        $entity = $model->getEntity($objectId);
+        $entity = $fieldModel->getEntity($objectId);
 
         if (!$entity) {
             throw $this->createNotFoundException('Entity not found');
@@ -379,7 +377,7 @@ class FieldController extends FormController
         $fieldAliasHelper->makeAliasUnique($clone);
 
         $action    = $this->generateUrl('mautic_contactfield_action', ['objectAction' => 'new']);
-        $form      = $model->createForm($clone, $this->formFactory, $action);
+        $form      = $fieldModel->createForm($clone, $this->formFactory, $action);
 
         return $this->delegateView([
             'viewParameters' => [
