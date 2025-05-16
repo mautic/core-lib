@@ -66,20 +66,23 @@ class LeadListRepository extends CommonRepository
     /**
      * Get a list of lists.
      *
-     * @param bool   $user
      * @param string $alias
      * @param string $id
+     * @param bool   $justPublished if false, returns all published and unpublished segments
      *
      * @return array
      */
-    public function getLists(?User $user = null, $alias = '', $id = '')
+    public function getLists(?User $user = null, $alias = '', $id = '', bool $justPublished = true)
     {
         $q = $this->getEntityManager()->createQueryBuilder()
             ->from(LeadList::class, 'l', 'l.id');
 
-        $q->select('partial l.{id, name, alias}')
-            ->andWhere($q->expr()->eq('l.isPublished', ':true'))
-            ->setParameter('true', true, 'boolean');
+        $q->select('partial l.{id, name, alias}');
+
+        if ($justPublished) {
+            $q->andWhere($q->expr()->eq('l.isPublished', ':true'))
+                ->setParameter('true', true, 'boolean');
+        }
 
         if ($user) {
             $q->andWhere($q->expr()->eq('l.isGlobal', ':true'));
@@ -809,5 +812,23 @@ SQL;
         }
 
         return array_map(fn ($segment) => ['item_id' => (string) $segment], $segmentIds);
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getLeadSegmentIds(int $leadId): array
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('ll.id')
+            ->from(LeadList::class, 'll')
+            ->innerJoin('ll.leads', 'l')
+            ->where(
+                $qb->expr()->eq('l.lead', ':leadId')
+            )
+            ->setParameter('leadId', $leadId);
+        $result = $qb->getQuery()->getArrayResult();
+
+        return array_column($result, 'id');
     }
 }
