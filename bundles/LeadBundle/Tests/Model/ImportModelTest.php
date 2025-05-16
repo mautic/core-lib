@@ -16,7 +16,7 @@ use Mautic\LeadBundle\Model\ImportModel;
 use Mautic\LeadBundle\Tests\StandardImportTestHelper;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ImportModelTest extends StandardImportTestHelper
 {
