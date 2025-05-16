@@ -25,6 +25,7 @@ class ImportValidateEvent extends Event
     private array $tags = [];
 
     private bool $skipIfExists = false;
+
     /**
      * @param FormInterface<mixed> $form
      */

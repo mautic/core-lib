@@ -35,7 +35,7 @@ abstract class AbstractCommonModel implements MauticModelInterface
     ) {
     }
 
-    public function setDispatcher(EventDispatcherInterface $dispatcher)
+    public function setDispatcher(EventDispatcherInterface $dispatcher): void
     {
         $this->dispatcher = $dispatcher;
     }
