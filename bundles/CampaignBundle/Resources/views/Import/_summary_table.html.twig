@@ -39,15 +39,15 @@
                         <td class="text-center">
                             {% if isAnalyzeStage %}
                                 {% if entity == 'campaign_event' %}
-                                    {{ 'Will follow campaign action'|trans }}
+                                    {{ 'mautic.campaign.campaign.import.follow_campaign_action'|trans }}
                                 {% elseif entity == 'form_fields' %}
-                                    {{ 'Will follow form'|trans }}
+                                    {{ 'mautic.campaign.campaign.import.follow_form'|trans }}
                                 {% elseif entity == 'form_actions' %}
-                                    {{ 'Will follow form'|trans }}
+                                    {{ 'mautic.campaign.campaign.import.follow_form'|trans }}
                                  {% elseif entityKey ends with '_update' %}
                                     <select name="importAction[{{ entity }}][{{ ids[i] }}]" class="form-control input-sm">
-                                        <option value="update" selected>{{ 'Update entity'|trans }}</option>
-                                        <option value="create">{{ 'Create new entity'|trans }}</option>
+                                        <option value="update" selected>{{ 'mautic.campaign.campaign.import.update_entity'|trans }}</option>
+                                        <option value="create">{{ 'mautic.campaign.campaign.import.create_entity'|trans }}</option>
                                     </select>
                                 {% else %}
                                     {{ details.status }}
