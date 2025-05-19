@@ -675,7 +675,6 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
     private function processNonChannelEvent(array &$event, array $eventDependency): void
     {
         $eventType  = $event['type'] ?? null;
-        // $properties = $event['properties'] ?? [];
 
         switch ($eventType) {
             case 'lead.pageHit':
