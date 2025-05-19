@@ -362,7 +362,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
         $query->select('1')
             ->from(MAUTIC_TABLE_PREFIX.'leads', 'l')
             ->where('l.id = :id')
-            ->setParameter(':id', $id);
+            ->setParameter('id', $id);
 
         return (bool) $query->executeQuery()->fetchOne();
     }
