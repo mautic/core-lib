@@ -14,7 +14,7 @@ final class Version20250415142826 extends PreUpAssertionMigration
     protected function preUpAssertions(): void
     {
         $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName(self::TABLE_NAME))->hasIndex('{$this->prefix}idx_scheduled_events'),
+            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName(self::TABLE_NAME))->hasIndex("{$this->prefix}idx_scheduled_events"),
             'Index idx_scheduled_events already exists'
         );
     }
