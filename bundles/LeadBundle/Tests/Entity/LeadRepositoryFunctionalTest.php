@@ -181,10 +181,12 @@ class LeadRepositoryFunctionalTest extends MauticMysqlTestCase
 
     public function testIfLeadExists(): void
     {
-        $lead = $this->createLead();
-
         /** @var LeadRepository $repo */
-        $repo   = $this->em->getRepository(Lead::class);
+        $repo = $this->em->getRepository(Lead::class);
+
+        $this->assertFalse($repo->exists('654'));
+
+        $lead = $this->createLead();
 
         $this->assertTrue($repo->exists((string) $lead->getId()));
     }

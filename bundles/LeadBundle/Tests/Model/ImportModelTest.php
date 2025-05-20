@@ -15,8 +15,6 @@ use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\ImportModel;
 use Mautic\LeadBundle\Tests\StandardImportTestHelper;
 use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\MockObject\MockObject;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ImportModelTest extends StandardImportTestHelper
 {
@@ -395,10 +393,10 @@ class ImportModelTest extends StandardImportTestHelper
 
     public function testWhenWarningsAvailableInProcessEventLog(): void
     {
-        /** @var EventDispatcherInterface|MockObject $dispatcher */
-        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $model  = $this->initImportModel();
+        $entity = $this->initImportEntity();
 
-        $dispatcher->expects($this->exactly(4))
+        $this->dispatcher->expects($this->exactly(4))
             ->method('dispatch')
             ->with(
                 $this->callback(function (ImportProcessEvent $event) {
@@ -411,9 +409,6 @@ class ImportModelTest extends StandardImportTestHelper
                 LeadEvents::IMPORT_ON_PROCESS
             );
 
-        $model = $this->initImportModel();
-        $model->setDispatcher($dispatcher);
-        $entity = $this->initImportEntity();
         $entity->start();
         $model->process($entity, new Progress());
         $entity->end();
