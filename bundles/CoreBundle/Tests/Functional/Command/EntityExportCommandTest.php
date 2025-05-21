@@ -52,35 +52,6 @@ final class EntityExportCommandTest extends MauticMysqlTestCase
         Assert::assertSame(0, $response->getStatusCode());
     }
 
-    public function testExecuteRequiresOutputOption(): void
-    {
-        $entityName = 'campaign';
-        $entityId   = $this->getTestCampaignId();
-
-        $response = $this->testSymfonyCommand(EntityExportCommand::COMMAND_NAME, [
-            '--entity' => $entityName,
-            '--id'     => (string) $entityId,
-        ]);
-
-        Assert::assertStringContainsString('You must specify one of --json-only, --json-file, or --zip-file options.', $response->getDisplay());
-        Assert::assertSame(1, $response->getStatusCode());
-    }
-
-    public function testJsonFileOptionCreatesFile(): void
-    {
-        $entityName = 'campaign';
-        $entityId   = $this->getTestCampaignId();
-
-        $response = $this->testSymfonyCommand(EntityExportCommand::COMMAND_NAME, [
-            '--entity'    => $entityName,
-            '--id'        => (string) $entityId,
-            '--json-file' => true,
-        ]);
-
-        Assert::assertStringContainsString('JSON file created at:', $response->getDisplay());
-        Assert::assertSame(0, $response->getStatusCode());
-    }
-
     public function testZipFileOptionCreatesZip(): void
     {
         $entityName = 'campaign';

@@ -442,9 +442,7 @@ class CampaignApiController extends CommonApiController
             try {
                 $data = $importHelper->readZipFile($zipPath);
             } catch (\RuntimeException $e) {
-                if (file_exists($zipPath)) {
-                    unlink($zipPath);
-                }
+                unlink($zipPath);
 
                 return $this->handleView(
                     $this->view(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST)
