@@ -91,22 +91,28 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
         $parentId = $campaignEvent->getParent()?->getId();
 
         return [
-            'id'                    => $campaignEvent->getId(),
-            'campaign_id'           => $campaign->getId(),
-            'name'                  => $campaignEvent->getName(),
-            'description'           => $campaignEvent->getDescription(),
-            'type'                  => $campaignEvent->getType(),
-            'event_type'            => $campaignEvent->getEventType(),
-            'event_order'           => $campaignEvent->getOrder(),
-            'properties'            => $campaignEvent->getProperties(),
-            'trigger_interval'      => $campaignEvent->getTriggerInterval(),
-            'trigger_interval_unit' => $campaignEvent->getTriggerIntervalUnit(),
-            'trigger_mode'          => $campaignEvent->getTriggerMode(),
-            'triggerDate'           => $campaignEvent->getTriggerDate()?->format(DATE_ATOM),
-            'channel'               => $campaignEvent->getChannel(),
-            'channel_id'            => $campaignEvent->getChannelId(),
-            'parent_id'             => $parentId,
-            'uuid'                  => $campaignEvent->getUuid(),
+            'id'                          => $campaignEvent->getId(),
+            'campaign_id'                 => $campaign->getId(),
+            'name'                        => $campaignEvent->getName(),
+            'description'                 => $campaignEvent->getDescription(),
+            'type'                        => $campaignEvent->getType(),
+            'event_type'                  => $campaignEvent->getEventType(),
+            'event_order'                 => $campaignEvent->getOrder(),
+            'properties'                  => $campaignEvent->getProperties(),
+            'trigger_interval'            => $campaignEvent->getTriggerInterval(),
+            'trigger_interval_unit'       => $campaignEvent->getTriggerIntervalUnit(),
+            'trigger_mode'                => $campaignEvent->getTriggerMode(),
+            'triggerDate'                 => $campaignEvent->getTriggerDate()?->format(DATE_ATOM),
+            'trigger_hour'                => $campaignEvent->getTriggerHour(),
+            'triggerRestrictedStartHour'  => $campaignEvent->getTriggerRestrictedStartHour(),
+            'triggerRestrictedStopHour'   => $campaignEvent->getTriggerRestrictedStopHour(),
+            'triggerRestrictedDaysOfWeek' => $campaignEvent->getTriggerRestrictedDaysOfWeek(),
+            'triggerWindow'               => $campaignEvent->getTriggerWindow(),
+            'decisionPath'                => $campaignEvent->getDecisionPath(),
+            'channel'                     => $campaignEvent->getChannel(),
+            'channel_id'                  => $campaignEvent->getChannelId(),
+            'parent_id'                   => $parentId,
+            'uuid'                        => $campaignEvent->getUuid(),
         ];
     }
 
@@ -244,6 +250,12 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
             $campaignEvent->setTriggerIntervalUnit($element['trigger_interval_unit'] ?? '');
             $campaignEvent->setTriggerMode($element['trigger_mode'] ?? '');
             $campaignEvent->setTriggerDate(isset($element['triggerDate']) ? new \DateTime($element['triggerDate']) : null);
+            $campaignEvent->setTriggerHour($element['trigger_hour']);
+            $campaignEvent->setDecisionPath($element['decisionPath']);
+            $campaignEvent->setTriggerWindow($element['triggerWindow']);
+            $campaignEvent->setTriggerRestrictedDaysOfWeek($element['triggerRestrictedDaysOfWeek']);
+            $campaignEvent->setTriggerRestrictedStopHour($element['triggerRestrictedStopHour']);
+            $campaignEvent->setTriggerRestrictedStartHour($element['triggerRestrictedStartHour']);
             $campaignEvent->setChannel($element['channel'] ?? '');
             $campaignEvent->setChannelId($element['channel_id'] ?? 0);
 
