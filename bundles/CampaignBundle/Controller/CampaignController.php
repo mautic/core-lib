@@ -234,6 +234,15 @@ class CampaignController extends AbstractStandardFormController
         }
         $allData = [];
 
+        if (empty($objectIds)) {
+            $this->addFlashMessage('mautic.campaign.error.export.no_campaigns_selected', [], FlashBag::LEVEL_WARNING);
+        
+            return new JsonResponse([
+                'error'   => $this->translator->trans('mautic.campaign.error.export.no_campaigns_selected', [], 'flashes'),
+                'flashes' => $this->getFlashContent(),
+            ], 400);
+        }
+
         foreach ($objectIds as $objectId) {
             $event = new EntityExportEvent(Campaign::ENTITY_NAME, (int) $objectId);
             $event = $this->dispatcher->dispatch($event);
