@@ -23,7 +23,6 @@ class ImportHelper
         $jsonFilePath = null;
 
         if (true !== $zip->open($filePath)) {
-            unlink($filePath);
             throw new \RuntimeException(sprintf('Unable to open ZIP file: %s', $filePath));
         }
 
@@ -36,14 +35,12 @@ class ImportHelper
                 $totalUncompressedSize += $stat['size'];
                 if ($totalUncompressedSize > $maxUncompressedSize) {
                     $zip->close();
-                    unlink($filePath);
                     throw new \RuntimeException('Uncompressed ZIP contents exceed allowed size.');
                 }
             }
         }
 
         if (!$zip->extractTo($tempDir)) {
-            unlink($filePath);
             $zip->close();
             throw new \RuntimeException(sprintf('Unable to extract ZIP file to temp directory: %s', $tempDir));
         }
@@ -58,17 +55,14 @@ class ImportHelper
             if (str_starts_with($filename, 'assets/')) {
                 if (is_dir($sourcePath)) {
                     if (!is_dir($destinationPath) && !mkdir($destinationPath, 0755, true) && !is_dir($destinationPath)) {
-                        unlink($filePath);
                         throw new \RuntimeException(sprintf('Failed to create directory: %s', $destinationPath));
                     }
                 } else {
                     $dirPath = dirname($destinationPath);
                     if (!is_dir($dirPath) && !mkdir($dirPath, 0755, true) && !is_dir($dirPath)) {
-                        unlink($filePath);
                         throw new \RuntimeException(sprintf('Failed to create directory: %s', $dirPath));
                     }
                     if (!copy($sourcePath, $destinationPath)) {
-                        unlink($filePath);
                         throw new \RuntimeException(sprintf('Failed to copy file to destination: %s', $destinationPath));
                     }
                 }
@@ -80,19 +74,16 @@ class ImportHelper
         $zip->close();
 
         if (!$jsonFilePath || !is_readable($jsonFilePath)) {
-            unlink($filePath);
             throw new \RuntimeException('JSON file not found or not readable in ZIP archive.');
         }
 
         $fileContents = file_get_contents($jsonFilePath);
         if (false === $fileContents) {
-            unlink($filePath);
             throw new \RuntimeException('Failed to read JSON file contents.');
         }
 
         $jsonData = json_decode($fileContents, true);
         if (JSON_ERROR_NONE !== json_last_error()) {
-            unlink($filePath);
             unlink($jsonFilePath);
             throw new \RuntimeException('Invalid JSON: '.json_last_error_msg());
         }

@@ -28,13 +28,13 @@ final class EntityImportCommand extends ModeratedCommand
     {
         $this
             ->setName('mautic:entity:import')
-            ->setDescription('Import entity data as JSON.')
+            ->setDescription('Import entity data from a ZIP file.')
             ->addOption('entity', null, InputOption::VALUE_REQUIRED, 'The name of the entity to import (e.g., campaign, email)')
             ->addOption(
                 'file',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'The file path of the JSON or ZIP file to import.'
+                'The file path of the ZIP file to import.'
             )
             ->addOption(
                 'user',
