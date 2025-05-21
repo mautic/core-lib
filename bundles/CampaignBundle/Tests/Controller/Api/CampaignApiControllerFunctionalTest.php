@@ -333,6 +333,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $event1->setType('dwc.decision');
         $event1->setEventType('decision'); // Set the event type
         $event1->setCampaign($campaign);  // Set the campaign for this event
+        $event1->setTriggerWindow(null);
 
         $event2 = new Event();
         $event2->setName('Send email');
@@ -340,6 +341,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $event2->setType('email.send');
         $event2->setEventType('action'); // Set the event type
         $event2->setCampaign($campaign);  // Set the campaign for this event
+        $event2->setTriggerWindow(null);
 
         // Add events to the campaign (using addEvents)
         $campaign->addEvents([

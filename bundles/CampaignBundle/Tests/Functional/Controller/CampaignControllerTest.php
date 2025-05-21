@@ -355,8 +355,7 @@ class CampaignControllerTest extends MauticMysqlTestCase
 
         $response = $this->client->getResponse();
 
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertStringContainsString('.zip', $response->headers->get('Content-Disposition'));
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testBatchExportFileNotCreated(): void

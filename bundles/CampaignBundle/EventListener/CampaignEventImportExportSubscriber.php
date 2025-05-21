@@ -250,12 +250,12 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
             $campaignEvent->setTriggerIntervalUnit($element['trigger_interval_unit'] ?? '');
             $campaignEvent->setTriggerMode($element['trigger_mode'] ?? '');
             $campaignEvent->setTriggerDate(isset($element['triggerDate']) ? new \DateTime($element['triggerDate']) : null);
-            $campaignEvent->setTriggerHour($element['trigger_hour'] ?? '' );
-            $campaignEvent->setDecisionPath($element['decisionPath'] ?? '' );
-            $campaignEvent->setTriggerWindow($element['triggerWindow'] ?? '' );
-            $campaignEvent->setTriggerRestrictedDaysOfWeek($element['triggerRestrictedDaysOfWeek'] ?? '' );
-            $campaignEvent->setTriggerRestrictedStopHour($element['triggerRestrictedStopHour'] ?? '' );
-            $campaignEvent->setTriggerRestrictedStartHour($element['triggerRestrictedStartHour'] ?? '' );
+            $campaignEvent->setTriggerHour($element['trigger_hour'] ?? null);
+            $campaignEvent->setDecisionPath($element['decisionPath'] ?? '');
+            $campaignEvent->setTriggerWindow($element['triggerWindow'] ?? null);
+            $campaignEvent->setTriggerRestrictedDaysOfWeek($element['triggerRestrictedDaysOfWeek'] ?? null);
+            $campaignEvent->setTriggerRestrictedStopHour($element['triggerRestrictedStopHour'] ?? null);
+            $campaignEvent->setTriggerRestrictedStartHour($element['triggerRestrictedStartHour'] ?? null);
             $campaignEvent->setChannel($element['channel'] ?? '');
             $campaignEvent->setChannelId($element['channel_id'] ?? 0);
 
