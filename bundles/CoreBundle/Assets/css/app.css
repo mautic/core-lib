@@ -10280,6 +10280,40 @@ lesshat-selector { -lh-property: 0 ;
   height: auto;
   object-fit: cover;
 }
+.card-in-card {
+  outline: 2px solid transparent;
+  outline-offset: 0px !important;
+}
+.card-in-card:focus {
+  outline-color: var(--focus);
+}
+.card-in-card .card__wrapper {
+  position: relative;
+}
+@media (min-width: 768px) {
+  .card-in-card .card__wrapper {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: 0;
+  }
+  .card-in-card .card__image-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+  .card-in-card .card__image-wrapper:after {
+    position: absolute;
+    background: #000000;
+    block-size: 100%;
+    content: "";
+    inline-size: 100%;
+    opacity: 0;
+    left: 0;
+    transition: opacity var(--duration-productive) var(--easing-standard-productive);
+  }
+  .card-in-card:hover .card__image-wrapper:after {
+    opacity: 0.08;
+  }
+}
 @media (min-width: 992px) {
   .modal-xl {
     width: 1140px;

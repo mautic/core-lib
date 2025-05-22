@@ -1,0 +1,26 @@
+<a class="card-in-card" href="https://example.com">
+    <div class="row">
+        <div class="col-xs-12">
+            <div part="image-wrapper" class="card__image-wrapper">
+                <img part="image" class="image__img as-16-9" src="{{ asset(image.src) }}" alt="{{ image.alt }}">
+            </div>
+        </div>
+        <div class="col-md-4 col-xs-12 card__wrapper">
+            <div class="tile">
+                <div class="tile-content">
+                    {% if eyebrow is defined %}
+                        <div part="eyebrow-wrapper" class="card__eyebrow-wrapper type-label-02 text-secondary mb-8">
+                            <div data-autoid="card-eyebrow">{{ eyebrow }}</div>
+                        </div>
+                    {% endif %}
+                    <div part="heading-wrapper" class="card__heading-wrapper type-heading-03 mb-64">
+                        <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading }}</div>
+                    </div>
+                </div>
+                <div class="fs-20 ml-a">
+                    <i class="{{ icon|default('ri-arrow-right-line') }}" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</a>
