@@ -1,17 +1,13 @@
-{% for tile in tiles %}
-    <div class="tile" id="tile-{{ loop.index }}">
-        {{ tile.content|raw }}
+<div class="tile {{ className|default('') }}" id="tile-{{ random() }}">
+    {{ content|raw }}
 
-        {% if tile.button is defined %}
-        <div class="tile__button-wrapper mt-md">
-            {% if tile.button.variant is not defined or tile.button.variant != 'link' %}
-                {% set button = tile.button|merge({'variant': 'tertiary', 'wide': true}) %}
-            {% else %}
-                {% set button = tile.button %}
-            {% endif %}
-
-            {% include '@MauticCore/Helper/button.html.twig' with {'buttons': [button]} %}
-        </div>
+    {% if button is defined %}
+    <div class="tile__button-wrapper mt-md">
+        {% set button = button %}
+        {% if button.variant is not defined or button.variant != 'link' %}
+            {% set button = button|merge({'variant': 'tertiary', 'wide': true}) %}
         {% endif %}
+        {% include '@MauticCore/Helper/button.html.twig' with {'buttons': [button]} %}
     </div>
-{% endfor %}
+    {% endif %}
+</div>
