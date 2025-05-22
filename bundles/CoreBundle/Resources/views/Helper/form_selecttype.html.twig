@@ -56,11 +56,9 @@
                         {% endset %}
 
                         {% include '@MauticCore/Components/tile--clickable.html.twig' with {
-                            'tiles': [{
-                                'onclick': typeOneOnClick,
-                                'content': typeOneContent,
-                                'icon': typeOneIconClass|default('')
-                            }]
+                            'onclick': typeOneOnClick,
+                            'content': typeOneContent,
+                            'icon': typeOneIconClass|default('')
                         } %}
                     </div>
                     <div class="col-md-6">
@@ -100,11 +98,9 @@
                         {% endset %}
 
                         {% include '@MauticCore/Components/tile--clickable.html.twig' with {
-                            'tiles': [{
-                                'onclick': typeTwoOnClick,
-                                'content': typeTwoContent,
-                                'icon': typeTwoIconClass|default('')
-                            }]
+                            'onclick': typeTwoOnClick,
+                            'content': typeTwoContent,
+                            'icon': typeTwoIconClass|default('')
                         } %}
                     </div>
                 </div>
