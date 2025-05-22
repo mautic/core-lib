@@ -1,8 +1,6 @@
 {% for tile in tiles %}
     <div class="tile" id="tile-{{ loop.index }}">
-        {% if tile.content is defined %}
-            {{ tile.content|raw }}
-        {% endif %}
+        {{ tile.content|raw }}
 
         {% if tile.button is defined %}
         <div class="tile__button-wrapper mt-md">
