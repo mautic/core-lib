@@ -5,25 +5,15 @@
         {% endif %}
 
         {% if tile.button is defined %}
-            {% set button = tile.button %}
-            {% if button.variant is defined %}
-                {% if button.variant != 'link' %}
-                    {% set button = button|merge({'variant': 'tertiary', 'wide': true}) %}
-                {% endif %}
+        <div class="tile__button-wrapper mt-md">
+            {% if tile.button.variant is not defined or tile.button.variant != 'link' %}
+                {% set button = tile.button|merge({'variant': 'tertiary', 'wide': true}) %}
             {% else %}
-                {% set button = button|merge({'variant': 'tertiary', 'wide': true}) %}
-            {% endif %}
-
-            {# Add default class mt-md while preserving any existing classes #}
-            {% if button.attributes is defined and button.attributes.class is defined %}
-                {% set button = button|merge({'attributes': button.attributes|merge({'class': button.attributes.class ~ ' mt-md'})}) %}
-            {% elseif button.attributes is defined %}
-                {% set button = button|merge({'attributes': button.attributes|merge({'class': 'mt-md'})}) %}
-            {% else %}
-                {% set button = button|merge({'attributes': {'class': 'mt-md'}}) %}
+                {% set button = tile.button %}
             {% endif %}
 
             {% include '@MauticCore/Helper/button.html.twig' with {'buttons': [button]} %}
+        </div>
         {% endif %}
     </div>
 {% endfor %}
