@@ -1,0 +1,220 @@
+{% set ctaIcons = {
+    'local': 'ri-arrow-right-line',
+    'jump': 'ri-arrow-down-line',
+    'external': 'ri-external-link-line',
+    'new tab': 'ri-window-2-line',
+    'download': 'ri-download-line',
+    'video': 'ri-play-fill',
+    'pdf': 'ri-file-pdf-2-line',
+    'blog': 'ri-article-line',
+    'email': 'ri-mail-line',
+    'schedule': 'ri-calendar-line',
+    'chat': 'ri-chat-1-line',
+    'call': 'ri-phone-line'
+} %}
+
+{% set aspectRatioClasses = {
+    '1:1': 'as-1-1',
+    '2:1': 'as-2-1',
+    '3:2': 'as-3-2',
+    '4:3': 'as-4-3',
+    '16:9': 'as-16-9'
+} %}
+
+{% set type = type|default('default') %}
+{% set aspectRatio = aspectRatio|default(type == 'link' ? '2:1' : '4:3') %}
+{% set ctaType = ctaType|default('local') %}
+
+{% if type == 'static' %}
+    {% set cardContent %}
+        {% if image is defined %}
+            <div part="image-wrapper" class="card__image-wrapper">
+                <img part="image" class="image__img as-4-3" src="{{ asset(image.src) }}" alt="{{ image.alt }}">
+            </div>
+        {% endif %}
+
+        <div part="wrapper" class="card__wrapper pa-md {{ aspectRatioClasses[aspectRatio] }}">
+            <div part="content" class="card__content">
+                {% if eyebrow is defined %}
+                <div part="eyebrow-wrapper" class="card__eyebrow-wrapper type-label-02 text-secondary mb-8">
+                    <div data-autoid="card-eyebrow">{{ eyebrow }}</div>
+                </div>
+                {% endif %}
+                
+                <div part="heading-wrapper" class="card__heading-wrapper type-heading-03 mb-64">
+                    <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading }}</div>
+                </div>
+                
+                {% if copy is defined %}
+                    {% if copy is iterable %}
+                        {% for item in copy %}
+                            <div part="copy" class="card__copy pr-32 mb-32">{{ item }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <div part="copy" class="card__copy type-body-02 pr-32 mb-32">{{ copy }}</div>
+                    {% endif %}
+                {% endif %}
+
+                {% if tags is defined %}
+                <div class="mt-16">
+                    {% include '@MauticCore/Helper/_tag.html.twig' with {'tags': tags} %}
+                </div>
+                {% endif %}
+          
+                <div part="footer-wrapper" class="card__footer-wrapper">
+                    {% if cta is defined %}
+                        {% include '@MauticCore/Helper/button.html.twig' with {'buttons': [cta|merge({'variant': 'link', 'icon': 'ri-arrow-right-line'})]} %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endset %}
+
+    <div aspect-ratio="{{ aspectRatio }}" size="">
+        {% include '@MauticCore/Components/tile--base.html.twig' with {
+            'content': cardContent,
+            'className': 'card pa-0',
+        } %}
+    </div>
+{% elseif type == 'logo' %}
+    <div href="{{ href }}" size="">
+        {% set cardContent %}
+            {% if image is defined %}
+                <div part="image-wrapper" class="card__image-wrapper">
+                    <img part="image" class="image__img" src="{{ asset(image.src) }}" alt="{{ image.alt }}">
+                </div>
+            {% endif %}
+
+            <div part="wrapper" class="card__wrapper pa-md">
+                <div part="content" class="card__content">
+                    <div part="eyebrow-wrapper" class="card__eyebrow-wrapper type-label-02 text-secondary mb-8">
+                        <div data-autoid="card-eyebrow">{{ eyebrow }}</div>
+                    </div>
+
+                    {% if heading is defined %}
+                    <div part="heading-wrapper" class="card__heading-wrapper type-heading-03 mb-64">
+                        <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    <div part="copy" class="card__copy type-body-02 pr-32 mb-32">{{ copy }}</div>
+
+                    {% if tags is defined %}
+                    <div class="mt-16">
+                        {% include '@MauticCore/Helper/_tag.html.twig' with {'tags': tags} %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endset %}
+            
+        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+            'content': cardContent,
+            'className': 'card pa-0 card--link ',
+            'href': href,
+            'icon': ''
+        } %}
+    </div>
+{% elseif type == 'link' %}
+    <div aspect-ratio="{{ aspectRatio }}" cta-type="{{ ctaType }}" href="{{ href }}" {% if ctaType == 'external' or ctaType == 'new tab' %}target="_blank"{% endif %} size="">
+        {% set cardContent %}
+            <div part="wrapper" class="card__wrapper pa-md as-2-1">
+                <div part="content" class="card__content">           
+                    <div part="heading-wrapper" class="card__heading-wrapper type-heading-02">
+                        <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading }}</div>
+                    </div>
+                    
+                    {% if copy is defined %}
+                        <div part="copy" class="card__copy type-body-02">{{ copy }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endset %}
+                
+        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+            'content': cardContent,
+            'className': 'card pa-0 card--link ',
+            'icon': ctaIcons[ctaType],
+            'href': href,
+        } %}
+    </div>
+{% elseif type == 'pictogram' %}
+    <div aspect-ratio="{{ aspectRatio }}" cta-type="{{ ctaType }}" href="{{ href }}" {% if ctaType == 'external' or ctaType == 'new tab' %}target="_blank"{% endif %} data-autoid="card" size="" pictogram-placement="bottom">
+        {% set cardContent %}
+            <div part="wrapper" class="card__wrapper d-flex fd-column pa-md {{ aspectRatioClasses[aspectRatio] }}">
+                <div part="content" class="card__content d-flex fd-column fg-1">
+                    
+                    <div part="heading-wrapper" class="card__heading-wrapper type-heading-03">
+                        <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading }}</div>
+                    </div>
+                    
+                    {% if copy is defined %}
+                        <div part="copy" class="card__copy type-body-02 pr-32 mb-32 mt-32">
+                            {{ copy }}
+                        </div>
+                    {% endif %}
+                
+                    <div part="pictogram-wrapper" class="card__pictogram-wrapper mt-a">
+                        {% include '@MauticCore/Helper/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
+                    </div>
+                </div>
+            </div>
+        {% endset %}
+
+        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+            'content': cardContent,
+            'className': 'card pa-0 card--link ' ~ (disabled is defined ? 'disabled' : ''),
+            'icon': ctaIcons[ctaType],
+            'href': href,
+        } %}
+    </div>
+{% else %}
+    <div aspect-ratio="{{ aspectRatio }}" cta-type="{{ ctaType }}" href="{{ href }}" {% if ctaType == 'external' or ctaType == 'new tab' %}target="_blank"{% endif %} size="">
+        {% set cardContent %}
+            {% if image is defined %}
+                <div part="image-wrapper" class="card__image-wrapper">
+                    <img part="image" class="image__img as-4-3" src="{{ asset(image.src) }}" alt="{{ image.alt }}">
+                </div>
+            {% endif %}
+
+            <div part="wrapper" class="card__wrapper pa-md {{ aspectRatioClasses[aspectRatio] }}">
+                <div part="content" class="card__content">
+                    {% if eyebrow is defined %}
+                    <div part="eyebrow-wrapper" class="card__eyebrow-wrapper type-label-02 text-secondary mb-8">
+                        <div data-autoid="card-eyebrow">{{ eyebrow }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    <div part="heading-wrapper" class="card__heading-wrapper type-heading-03 mb-64">
+                        <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading }}</div>
+                    </div>
+                    
+                    {% if copy is defined and copy is iterable %}
+                        {% for item in copy %}
+                            <div part="copy" class="card__copy pr-32 mb-32">
+                                {{ item }}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div part="copy" class="card__copy type-body-02 pr-32 mb-32">
+                            {{ copy }}
+                        </div>
+                    {% endif %}
+
+                    {% if tags is defined %}
+                    <div class="mt-16">
+                        {% include '@MauticCore/Helper/_tag.html.twig' with {'tags': tags} %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endset %}
+                
+        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+            'content': cardContent,
+            'className': 'card pa-0 card--link ',
+            'icon': ctaIcons[ctaType],
+            'href': href,
+        } %}
+    </div>
+{% endif %}
