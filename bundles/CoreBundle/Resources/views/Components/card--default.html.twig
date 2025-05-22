@@ -1,7 +1,3 @@
-{# Variables
--  
-#}
-{% for card in cards %}
 {% set ctaIcons = {
     'local': 'ri-arrow-right-line',
     'jump': 'ri-arrow-down-line',
@@ -17,64 +13,59 @@
     'call': 'ri-phone-line'
 } %}
 
+{% set aspectRatioClasses = {
+    '1:1': 'as-1-1',
+    '2:1': 'as-2-1',
+    '3:2': 'as-3-2',
+    '4:3': 'as-4-3',
+    '16:9': 'as-16-9'
+} %}
 
-<div aspect-ratio="{{ card.aspectRatio }}" cta-type="{{ card.ctaType }}" color-scheme="" href="{{ card.href }}" {% if card.ctaType == 'external' or card.ctaType == 'new tab' %}target="_blank"{% endif %} data-autoid="card" size="" pictogram-placement="bottom">
-    <div part="container" class="tile card tile--clickable card--link {% if card.disabled is defined %}disabled{% endif %}">
-
-      {% if card.image is defined %}
+<div aspect-ratio="{{ aspectRatio|default('4:3') }}" cta-type="{{ ctaType|default('local') }}" href="{{ href }}" {% if ctaType == 'external' or ctaType == 'new tab' %}target="_blank"{% endif %} size="">
+  {% set cardContent %}
+      {% if image is defined %}
         <div part="image-wrapper" class="card__image-wrapper">
-          <picture part="picture">
-            <img aria-describedby="image-caption long-description" part="image" class="image__img as-4-3" src="{{ card.image.url }}" alt="{{ card.image.alt }}">
-          </picture>
+            <img part="image" class="image__img as-4-3" src="{{ asset(image.src) }}" alt="{{ image.alt }}">
         </div>
       {% endif %}
 
-        <div part="wrapper" class="card__wrapper ">
+        <div part="wrapper" class="card__wrapper pa-md {{ aspectRatioClasses[aspectRatio|default('4:3')] }}">
           <div part="content" class="card__content">
-            {% if card.eyebrow is defined %}
-            <div part="eyebrow-wrapper" class="card__eyebrow-wrapper type-label-02 text-secondary">
-                <div data-autoid="card-eyebrow">{{ card.eyebrow }}</div>
+            {% if eyebrow is defined %}
+            <div part="eyebrow-wrapper" class="card__eyebrow-wrapper type-label-02 text-secondary mb-8">
+                <div data-autoid="card-eyebrow">{{ eyebrow }}</div>
             </div>
             {% endif %}
             
             <div part="heading-wrapper" class="card__heading-wrapper type-heading-03 mb-64">
-                <div role="heading" aria-level="3" data-autoid="card-heading">{{ card.heading }}</div>
+                <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading }}</div>
             </div>
             
-            {% if card.copy is defined and card.copy is iterable %}
-                {% for item in card.copy %}
+            {% if copy is defined and copy is iterable %}
+                {% for item in copy %}
                     <div part="copy" class="card__copy pr-32 mb-32">
                         {{ item }}
                     </div>
                 {% endfor %}
             {% else %}
                 <div part="copy" class="card__copy type-body-02 pr-32 mb-32">
-                    {{ card.copy }}
+                    {{ copy }}
                 </div>
             {% endif %}
 
-            {% if card.tags is defined %}
+            {% if tags is defined %}
             <div class="mt-16">
-                {% include '@MauticCore/Helper/_tag.html.twig' with {'tags': card.tags} %}
+                {% include '@MauticCore/Helper/_tag.html.twig' with {'tags': tags} %}
             </div>
             {% endif %}
-      
-        <div part="pictogram-wrapper" class="card__pictogram-wrapper card__pictogram-wrapper--empty">
-          <slot name="pictogram" data-pictogram-placement="bottom"></slot>
-        </div>
-      
-            <div part="footer-wrapper" class="card__footer-wrapper">
-              <div data-autoid="card-footer" cta-type="local" icon-placement="right" color-scheme="" slot="footer" parent-href="https://www.example.com">
-                <a tabindex="0" id="link" part="link" class="link link--lg link-with-icon link-with-icon__icon-right link-with-icon--inline-icon card__footer" href="tel:(555)-555-5555" aria-label="Aerospace and defence" data-ibm-contact="phone-link">
-                  <i class="{{ ctaIcons[card.ctaType] }} tile-icon"></i>              
-                </a>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
-    
-    
-
+  {% endset %}
+        
+  {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+      'content': cardContent,
+      'className': 'card pa-0 card--link ',
+      'icon': ctaIcons[ctaType],
+      'href': href,
+  } %}
 </div>
-{% endfor %}
