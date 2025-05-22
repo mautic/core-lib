@@ -1,0 +1,37 @@
+{% set ctaIcons = {
+    'local': 'ri-arrow-right-line',
+    'jump': 'ri-arrow-down-line',
+    'external': 'ri-external-link-line',
+    'new tab': 'ri-window-2-line',
+    'download': 'ri-download-line',
+    'video': 'ri-play-fill',
+    'pdf': 'ri-file-pdf-2-line',
+    'blog': 'ri-article-line',
+    'email': 'ri-mail-line',
+    'schedule': 'ri-calendar-line',
+    'chat': 'ri-chat-1-line',
+    'call': 'ri-phone-line'
+} %}
+
+<div aspect-ratio="2:1" cta-type="{{ ctaType|default('local') }}" href="{{ href }}" {% if ctaType == 'external' or ctaType == 'new tab' %}target="_blank"{% endif %} size="">
+  {% set cardContent %}
+    <div part="wrapper" class="card__wrapper pa-md as-2-1">
+        <div part="content" class="card__content">           
+            <div part="heading-wrapper" class="card__heading-wrapper type-heading-02">
+                <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading }}</div>
+            </div>
+            
+            {% if copy is defined %}
+                <div part="copy" class="card__copy type-body-02">{{ copy }}</div>
+            {% endif %}
+        </div>
+    </div>
+  {% endset %}
+        
+  {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+      'content': cardContent,
+      'className': 'card pa-0 card--link ',
+      'icon': ctaIcons[ctaType],
+      'href': href,
+  } %}
+</div>
