@@ -9929,6 +9929,21 @@ lesshat-selector { -lh-property: 0 ;
     opacity: 1;
   }
 }
+.as-1-1 {
+  aspect-ratio: 1 / 1;
+}
+.as-2-1 {
+  aspect-ratio: 2 / 1;
+}
+.as-3-2 {
+  aspect-ratio: 3 / 2;
+}
+.as-4-3 {
+  aspect-ratio: 4 / 3;
+}
+.as-16-9 {
+  aspect-ratio: 16 / 9;
+}
 .map-options {
   margin-left: 10px;
   margin-bottom: 10px;
@@ -10259,6 +10274,11 @@ lesshat-selector { -lh-property: 0 ;
 .nav-tabs-contained + .tab-content .tile.tile-clickable:hover,
 .nav-tabs-contained + .tab-content .tile.tile-selectable:hover {
   background: var(--layer-hover-02);
+}
+.card__image-wrapper .image__img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 @media (min-width: 992px) {
   .modal-xl {
