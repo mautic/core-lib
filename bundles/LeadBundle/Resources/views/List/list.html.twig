@@ -18,6 +18,100 @@
   {% set listCommand = 'mautic.lead.lead.searchcommand.list'|trans %}
 
   {% if isIndex %}
+  <div class="row mb-lg mt-lg">
+    <div class="col-md-3">
+      {% include '@MauticCore/Components/card.html.twig' with {
+        'type': 'default',
+        'aspectRatio': '4:3',
+        'ctaType': 'local',
+        'image': {
+          'src': 'app/bundles/LeadBundle/Resources/views/List/clem-onojeghuo-tca2Hfz1cvY-unsplash.jpg',
+          'alt': 'Image alt'
+        },
+        'href': '#',
+        'heading': 'This is a header',
+        'copy': 'This is a copy',
+        'eyebrow': 'This is an eyebrow',
+      } %}
+    </div>
+    <div class="col-md-3">
+      {% include '@MauticCore/Components/card.html.twig' with {
+        'type': 'default',
+        'aspectRatio': '4:3',
+        'ctaType': 'new tab',
+        'href': '#',
+        'heading': 'Something different',
+        'copy': 'Test copy',
+        'eyebrow': 'Eyebrow',
+      } %}
+    </div>
+    <div class="col-md-3">
+      {% include '@MauticCore/Components/card.html.twig' with {
+        'type': 'pictogram',
+        'aspectRatio': '4:3',
+        'ctaType': 'local',
+        'image': {
+          'src': 'app/bundles/LeadBundle/Resources/views/List/clem-onojeghuo-tca2Hfz1cvY-unsplash.jpg',
+          'alt': 'Image alt'
+        },
+        'href': '#',
+        'heading': 'This is a header',
+        'copy': 'This is a copy',
+        'eyebrow': 'This is an eyebrow',
+        'pictogram': 'ad-tech'
+      } %}
+    </div>
+    <div class="col-md-3">
+      {% include '@MauticCore/Components/card.html.twig' with {
+        'type': 'static',
+        'cta': {
+          'label': 'Something differenta',
+          'href': '#'
+        },
+        'heading': 'Something different',
+        'copy': 'Test copy',
+        'eyebrow': 'Eyebrow'
+      } %}
+    </div>
+    <div class="col-md-3">
+      {% include '@MauticCore/Components/card.html.twig' with {
+        'type': 'link',
+        'ctaType': 'local',
+        'href': '#',
+        'heading': 'This is a header',
+        'copy': 'This is a copy',
+        
+      } %}
+    </div>
+    <div class="col-md-3">
+      {% include '@MauticCore/Components/card.html.twig' with {
+        'type': 'logo',
+        'ctaType': 'local',
+        'href': '#',
+        'copy': 'This is a copy',
+        'eyebrow': 'This is an eyebrow',
+        'image': {
+          'src': 'app/bundles/LeadBundle/Resources/views/List/clem-onojeghuo-tca2Hfz1cvY-unsplash.jpg',
+          'alt': 'Image alt'
+        }
+      } %}
+    </div>
+    <div class="col-md-12">
+      {% include '@MauticCore/Components/card-in-card.html.twig' with {
+        'type': 'default',
+        'ctaType': 'local',
+        'image': {
+          'src': 'app/bundles/LeadBundle/Resources/views/List/clem-onojeghuo-tca2Hfz1cvY-unsplash.jpg',
+          'alt': 'Image alt'
+        },
+        'href': '#',
+        'heading': 'This is a header',
+        'copy': 'This is a copy',
+        'eyebrow': 'This is an eyebrow',
+      } %}
+    </div>
+    </div>
+    
     <div id="page-list-wrapper" class="{% if items|length > 0 or searchValue is not empty %}panel {% endif %}panel-default">
       {{- include('@MauticCore/Helper/list_toolbar.html.twig', {
         'searchValue': searchValue,
@@ -59,18 +153,6 @@
     }) -}}
     <div class="page-list">
   {% endif %}
-
-  {% include '@MauticCore/Components/card--default.html.twig' with {
-    'cards': [{
-      'aspectRatio': '4:3',
-      'ctaType': 'local',
-      'href': '#',
-      'heading': 'This is a header',
-      'copy': 'This is a copy',
-      'eyebrow': 'This is an eyebrow',
-      
-    }]
-  } %}
 
   {{ include('@MauticLead/List/_list.html.twig') }}
 

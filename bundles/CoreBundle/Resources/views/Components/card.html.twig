@@ -72,6 +72,7 @@
 {% endset %}
 
 <div class="card">
+    {# === STATIC TYPE === #}
     {% if type == 'static' %}
         {% set cardContent %}
             {{ common_image_content }}
@@ -93,6 +94,8 @@
             'content': cardContent,
             'className': 'card pa-0',
         } %}
+
+    {# === LOGO TYPE === #}
     {% elseif type == 'logo' %}
         {% set cardContent %}
             {{ common_image_content }}
@@ -111,6 +114,8 @@
             'href': href,
             'icon': ' '
         } %}
+
+    {# === LINK TYPE === #}
     {% elseif type == 'link' %}
         {% set cardContent %}
             <div part="wrapper" class="card__wrapper pa-md as-2-1">
@@ -126,6 +131,8 @@
             'icon': ctaIcons[ctaType],
             'href': href,
         } %}
+
+    {# === PICTOGRAM TYPE === #}
     {% elseif type == 'pictogram' %}
         {% set cardContent %}
             <div part="wrapper" class="card__wrapper d-flex fd-column pa-md {{ aspectRatioClasses[aspectRatio] }}">
@@ -142,7 +149,9 @@
             'icon': ctaIcons[ctaType],
             'href': href,
         } %}
-    {% else %}
+
+    {# === DEFAULT TYPE === #}
+    {% elseif type == 'default' %}
         {% set cardContent %}
             {{ common_image_content }}
             <div part="wrapper" class="card__wrapper pa-md {{ aspectRatioClasses[aspectRatio] }}">
