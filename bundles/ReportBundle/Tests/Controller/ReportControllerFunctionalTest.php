@@ -398,9 +398,10 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
      * @throws NotSupported
      * @throws MappingException
      */
-    public function testScheduleEdit(string $oldScheduleUnit, ?string $oldScheduleDay, ?string $oldScheduleMonthFrequency, string $newScheduleUnit, ?string $newScheduleDay, ?string $newScheduleMonthFrequency): void
+    public function testScheduleEdit(?string $oldScheduleUnit, ?string $oldScheduleDay, ?string $oldScheduleMonthFrequency, string $newScheduleUnit, ?string $newScheduleDay, ?string $newScheduleMonthFrequency): void
     {
         $report = new Report();
+        $report->setToAddress('test@test.com');
         $report->setName('Checking for schedule change');
         $report->setDescription('<b>This is a report</b>');
         $report->setSource('leads');
@@ -453,6 +454,11 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
     public function scheduleProvider(): array
     {
         return [
+            'null_to_now'      => [null, null, null, SchedulerEnum::UNIT_NOW, null, null],
+            'null_to_daily'    => [null, null, null, SchedulerEnum::UNIT_DAILY, null, null],
+            'null_to_weekly'   => [null, null, null, SchedulerEnum::UNIT_WEEKLY, SchedulerEnum::DAY_MO, null],
+            'null_to_monthly'  => [null, null, null, SchedulerEnum::UNIT_MONTHLY, SchedulerEnum::DAY_MO, SchedulerEnum::MONTH_FREQUENCY_FIRST],
+
             'daily_to_weekly'  => [SchedulerEnum::UNIT_DAILY, null, null, SchedulerEnum::UNIT_WEEKLY, SchedulerEnum::DAY_MO, null],
             'daily_to_monthly' => [SchedulerEnum::UNIT_DAILY, null, null, SchedulerEnum::UNIT_MONTHLY, SchedulerEnum::DAY_MO, '1'],
 
