@@ -110,7 +110,7 @@ class ExportHelperTest extends TestCase
         $jsonOutput = json_encode(['key' => 'value']);
 
         // Call the method
-        $zipFilePath = $this->exportHelper->writeToZipFile($jsonOutput, $assetList);
+        $zipFilePath = $this->exportHelper->writeToZipFile($jsonOutput, $assetList, '');
 
         // Open the ZIP file and verify contents
         $zip = new \ZipArchive();

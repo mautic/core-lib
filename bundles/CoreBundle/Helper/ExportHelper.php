@@ -246,11 +246,17 @@ class ExportHelper
     /**
      * @param array<string|int, string> $assetList
      */
-    public function writeToZipFile(string $jsonOutput, array $assetList): string
+    public function writeToZipFile(string $jsonOutput, array $assetList, string $path): string
     {
-        $tempDir      = sys_get_temp_dir();
-        $jsonFilePath = sprintf('%s/entity_data.json', $tempDir);
-        $zipFilePath  = sprintf('%s/entity_data.zip', $tempDir);
+        if ('' === $path) {
+            $tempDir      = sys_get_temp_dir();
+            $jsonFilePath = sprintf('%s/entity_data.json', $tempDir);
+            $zipFilePath  = sprintf('%s/entity_data.zip', $tempDir);
+        } else {
+            $jsonFilePath = sprintf('%s/entity_data.json', $path);
+            $zipFilePath  = sprintf('%s/entity_data.zip', $path);
+        }
+
         if (file_exists($jsonFilePath)) {
             unlink($jsonFilePath);
         }

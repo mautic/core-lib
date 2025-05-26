@@ -35,8 +35,8 @@ final class EntityExportCommand extends ModeratedCommand
             ->addOption('entity', null, InputOption::VALUE_REQUIRED, 'The name of the entity to export (e.g., campaign, email)')
             ->addOption('id', null, InputOption::VALUE_REQUIRED, 'Comma-separated list of entity IDs to export (e.g., --id=1,2,3)')
             ->addOption('json-only', null, InputOption::VALUE_NONE, 'Output only JSON data.')
-            ->addOption('zip-file', null, InputOption::VALUE_NONE, 'Save JSON data to a zip file.');
-
+            ->addOption('zip-file', null, InputOption::VALUE_NONE, 'Save JSON data to a zip file.')
+            ->addOption('path', null, InputOption::VALUE_REQUIRED, 'Custom directory to save exported files.'); // NEW OPTION
         parent::configure();
     }
 
@@ -91,11 +91,19 @@ final class EntityExportCommand extends ModeratedCommand
     private function outputData(array $data, array $assetList, InputInterface $input, OutputInterface $output): int
     {
         $jsonOutput = json_encode($data, JSON_PRETTY_PRINT);
+        $customPath = $input->getOption('path');
 
         if ($input->getOption('json-only')) {
             $output->writeln($jsonOutput);
         } elseif ($input->getOption('zip-file')) {
-            $zipPath = $this->exportHelper->writeToZipFile($jsonOutput, $assetList);
+            $resolvedPath = '';
+            if ($customPath) {
+                $resolvedPath = $this->resolveAndValidatePath($customPath, $output);
+                if (null === $resolvedPath) {
+                    return self::FAILURE;
+                }
+            }
+            $zipPath = $this->exportHelper->writeToZipFile($jsonOutput, $assetList, $resolvedPath);
             $output->writeln('<info>ZIP file created at:</info> '.$zipPath);
         } else {
             $output->writeln('<error>You must specify one of --json-only or --zip-file options.</error>');
@@ -104,5 +112,25 @@ final class EntityExportCommand extends ModeratedCommand
         }
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Validate and resolve the provided path.
+     */
+    private function resolveAndValidatePath(string $path, OutputInterface $output): ?string
+    {
+        $resolvedPath = realpath($path) ?: $path; // Accept both absolute and relative
+        if (!is_dir($resolvedPath)) {
+            $output->writeln('<error>The specified path is not a valid directory: '.$resolvedPath.'</error>');
+
+            return null;
+        }
+        if (!is_writable($resolvedPath)) {
+            $output->writeln('<error>The specified directory is not writable: '.$resolvedPath.'</error>');
+
+            return null;
+        }
+
+        return $resolvedPath;
     }
 }

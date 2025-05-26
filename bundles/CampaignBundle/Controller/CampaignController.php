@@ -169,7 +169,7 @@ class CampaignController extends AbstractStandardFormController
         $assetListEvent = $this->dispatcher->dispatch($assetListEvent);
         $assetList      = $assetListEvent->getList();
 
-        $filePath   = $exportHelper->writeToZipFile($jsonOutput, $assetList);
+        $filePath   = $exportHelper->writeToZipFile($jsonOutput, $assetList, '');
 
         if (!file_exists($filePath)) {
             $this->logger->error('Export file could not be created', ['filePath' => $filePath]);
@@ -258,7 +258,7 @@ class CampaignController extends AbstractStandardFormController
         $assetList      = $assetListEvent->getList();
 
         $jsonOutput = json_encode($allData, JSON_PRETTY_PRINT);
-        $filePath   = $exportHelper->writeToZipFile($jsonOutput, $assetList);
+        $filePath   = $exportHelper->writeToZipFile($jsonOutput, $assetList, '');
 
         if (!file_exists($filePath)) {
             $this->logger->error('Export file could not be created', ['filePath' => $filePath]);
