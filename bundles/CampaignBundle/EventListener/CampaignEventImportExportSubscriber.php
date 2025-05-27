@@ -91,28 +91,28 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
         $parentId = $campaignEvent->getParent()?->getId();
 
         return [
-            'id'                          => $campaignEvent->getId(),
-            'campaign_id'                 => $campaign->getId(),
-            'name'                        => $campaignEvent->getName(),
-            'description'                 => $campaignEvent->getDescription(),
-            'type'                        => $campaignEvent->getType(),
-            'event_type'                  => $campaignEvent->getEventType(),
-            'event_order'                 => $campaignEvent->getOrder(),
-            'properties'                  => $campaignEvent->getProperties(),
-            'trigger_interval'            => $campaignEvent->getTriggerInterval(),
-            'trigger_interval_unit'       => $campaignEvent->getTriggerIntervalUnit(),
-            'trigger_mode'                => $campaignEvent->getTriggerMode(),
-            'triggerDate'                 => $campaignEvent->getTriggerDate()?->format(DATE_ATOM),
-            'trigger_hour'                => $campaignEvent->getTriggerHour(),
-            'triggerRestrictedStartHour'  => $campaignEvent->getTriggerRestrictedStartHour(),
-            'triggerRestrictedStopHour'   => $campaignEvent->getTriggerRestrictedStopHour(),
-            'triggerRestrictedDaysOfWeek' => $campaignEvent->getTriggerRestrictedDaysOfWeek(),
-            'triggerWindow'               => $campaignEvent->getTriggerWindow(),
-            'decisionPath'                => $campaignEvent->getDecisionPath(),
-            'channel'                     => $campaignEvent->getChannel(),
-            'channel_id'                  => $campaignEvent->getChannelId(),
-            'parent_id'                   => $parentId,
-            'uuid'                        => $campaignEvent->getUuid(),
+            'id'                           => $campaignEvent->getId(),
+            'campaign_id'                  => $campaign->getId(),
+            'name'                         => $campaignEvent->getName(),
+            'description'                  => $campaignEvent->getDescription(),
+            'type'                         => $campaignEvent->getType(),
+            'event_type'                   => $campaignEvent->getEventType(),
+            'event_order'                  => $campaignEvent->getOrder(),
+            'properties'                   => $campaignEvent->getProperties(),
+            'trigger_interval'             => $campaignEvent->getTriggerInterval(),
+            'trigger_interval_unit'        => $campaignEvent->getTriggerIntervalUnit(),
+            'trigger_mode'                 => $campaignEvent->getTriggerMode(),
+            'trigger_date'                 => $campaignEvent->getTriggerDate()?->format(DATE_ATOM),
+            'trigger_hour'                 => $campaignEvent->getTriggerHour()?->format('H:i:s'),
+            'triggerRestrictedStartHour'   => $campaignEvent->getTriggerRestrictedStartHour()?->format('H:i:s'),
+            'triggerRestrictedStopHour'    => $campaignEvent->getTriggerRestrictedStopHour()?->format('H:i:s'),
+            'triggerRestrictedDaysOfWeek'  => $campaignEvent->getTriggerRestrictedDaysOfWeek(),
+            'triggerWindow'                => $campaignEvent->getTriggerWindow(),
+            'decisionPath'                 => $campaignEvent->getDecisionPath(),
+            'channel'                      => $campaignEvent->getChannel(),
+            'channel_id'                   => $campaignEvent->getChannelId(),
+            'parent_id'                    => $parentId,
+            'uuid'                         => $campaignEvent->getUuid(),
         ];
     }
 
@@ -249,7 +249,7 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
             $campaignEvent->setTriggerInterval($element['trigger_interval'] ?? 0);
             $campaignEvent->setTriggerIntervalUnit($element['trigger_interval_unit'] ?? '');
             $campaignEvent->setTriggerMode($element['trigger_mode'] ?? '');
-            $campaignEvent->setTriggerDate(isset($element['triggerDate']) ? new \DateTime($element['triggerDate']) : null);
+            $campaignEvent->setTriggerDate(isset($element['trigger_date']) ? new \DateTime($element['triggerDate']) : null);
             $campaignEvent->setTriggerHour($element['trigger_hour'] ?? null);
             $campaignEvent->setDecisionPath($element['decisionPath'] ?? '');
             $campaignEvent->setTriggerWindow($element['triggerWindow'] ?? null);
