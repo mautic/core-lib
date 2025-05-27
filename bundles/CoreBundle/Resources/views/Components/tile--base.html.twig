@@ -14,7 +14,7 @@
         {% if button.variant is not defined or button.variant != 'link' %}
             {% set button = button|merge({'variant': 'tertiary', 'wide': true}) %}
         {% endif %}
-        {% include '@MauticCore/Helper/button.html.twig' with {'buttons': [button]} %}
+        {% include '@MauticCore/Components/button.html.twig' with {'buttons': [button]} %}
     </div>
     {% endif %}
 </div>

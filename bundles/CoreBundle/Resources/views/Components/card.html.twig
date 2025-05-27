@@ -100,7 +100,7 @@
                     {{ common_tags_content }}
                     <div part="footer-wrapper" class="card__footer-wrapper">
                         {% if cta is defined %}
-                            {% include '@MauticCore/Helper/button.html.twig' with {'buttons': [cta|merge({'variant': 'link', 'icon': 'ri-arrow-right-line', 'attributes': {'class': 'type-body-02'}})]} %}
+                            {% include '@MauticCore/Components/button.html.twig' with {'buttons': [cta|merge({'variant': 'link', 'icon': 'ri-arrow-right-line', 'attributes': {'class': 'type-body-02'}})]} %}
                         {% endif %}
                     </div>
                 </div>
