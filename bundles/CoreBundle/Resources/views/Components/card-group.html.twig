@@ -1,10 +1,22 @@
-<div class="card-group" grid-mode="{{ gridMode|default('default') }}" style="--card-group--cards-in-row: {{ cardsPerRow }};">
+{#
+  Variables
+    - type: 'default', 'static', 'logo', 'link', 'pictogram', 'card-in-card'
+    - gridMode
+    - cardsPerRow
+    - cardSectionOffset
+    - cards
+#}
+<div class="card-group" grid-mode="{{ type == 'card-in-card' ? 'condensed' : gridMode|default('default') }}" style="--card-group--cards-in-row: {{ type == 'card-in-card' ? 3 : cardsPerRow|default(3) }};">
     {% if cardSectionOffset %}
         <div class="card-group__item"></div>
     {% endif %}
     {% for card in cards %}
         <div class="card-group__item">
-            {% include '@MauticCore/Components/card.html.twig' with {'card': card} %}
+            {% if type == 'card-in-card' and loop.first %}
+                {% include '@MauticCore/Components/card-in-card.html.twig' with {'card': card} %}
+            {% else %}
+                {% include '@MauticCore/Components/card.html.twig' with {'card': card, 'type': type == 'card-in-card' ? 'default' : type} %}
+            {% endif %}
         </div>
     {% endfor %}
 </div>
