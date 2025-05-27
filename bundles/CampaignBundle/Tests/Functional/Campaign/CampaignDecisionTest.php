@@ -284,7 +284,7 @@ class CampaignDecisionTest extends MauticMysqlTestCase
                     ],
                 ],
             ]);
-            $companyModel = self::$container->get('mautic.lead.model.company');
+            $companyModel = static::getContainer()->get('mautic.lead.model.company');
             \assert($companyModel instanceof CompanyModel);
             $companyModel->setFieldValues($company, [$customField['alias'] => $customField['value']]);
         }
