@@ -202,7 +202,7 @@ class CampaignDecisionTest extends MauticMysqlTestCase
                     ],
                 ],
             ]);
-            $leadModel = self::$container->get('mautic.lead.model.lead');
+            $leadModel = static::getContainer()->get('mautic.lead.model.lead');
             \assert($leadModel instanceof LeadModel);
             $leadModel->setFieldValues($lead, [$customField['alias'] => $customField['value']]);
         }
@@ -249,7 +249,7 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         string $eventType,
         array $property = null,
         string $decisionPath = '',
-        Event $parentEvent = null
+        Event $parentEvent = null,
     ): Event {
         $event = new Event();
         $event->setName($name);
@@ -312,7 +312,7 @@ class CampaignDecisionTest extends MauticMysqlTestCase
         string $object,
         array $fieldDetails,
         array $additionalValue,
-        int $index
+        int $index,
     ): Lead {
         $fieldValue      = !empty($fieldDetails) ?
             array_merge($fieldDetails, ['value' => array_merge(['v'.$index], $additionalValue)]) : [];
