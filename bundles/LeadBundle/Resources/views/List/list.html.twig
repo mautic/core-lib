@@ -60,18 +60,6 @@
     <div class="page-list">
   {% endif %}
 
-  {% include '@MauticCore/Components/card--default.html.twig' with {
-    'cards': [{
-      'aspectRatio': '4:3',
-      'ctaType': 'local',
-      'href': '#',
-      'heading': 'This is a header',
-      'copy': 'This is a copy',
-      'eyebrow': 'This is an eyebrow',
-      
-    }]
-  } %}
-
   {{ include('@MauticLead/List/_list.html.twig') }}
 
   {% if isIndex %}
