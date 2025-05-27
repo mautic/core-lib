@@ -1,3 +1,10 @@
+{#
+  Variables
+    - content
+    - className
+    - button
+#}
+
 <div class="tile {{ className|default('') }}" id="tile-{{ random() }}">
     {{ content|raw }}
 

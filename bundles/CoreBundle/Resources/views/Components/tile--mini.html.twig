@@ -1,3 +1,9 @@
+{#
+  Variables
+    - tile: {link, title, icon}
+    - className
+#}
+
 <a href="{{ tile.link|default('#') }}" class="tile tile--clickable {{ className|default('') }}">
     <div class="d-flex jc-space-between ai-center">
         <div class="tile-title">{{ tile.title }}</div>

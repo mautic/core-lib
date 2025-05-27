@@ -1,3 +1,12 @@
+{#
+  Variables
+    - content
+    - className
+    - href
+    - icon
+    - onclick
+#}
+
 {% if href is defined and href is not empty %}
     <a class="tile tile--clickable {{ className|default('') }}" id="clickable-tile-{{ random() }}" href="{{ href }}">
         <div>

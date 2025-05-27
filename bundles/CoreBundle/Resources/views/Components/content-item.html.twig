@@ -1,3 +1,16 @@
+{#
+  Variables
+    - type: 'image', 'logo', 'pictogram', 'statistic', 'text'
+    - heading
+    - copy
+    - cta
+    - image: {src, alt} (for type 'image')
+    - logo: {src, alt} (for type 'logo')
+    - pictogram (for type 'pictogram')
+    - orientation: 'horizontal' (for type 'pictogram')
+    - statistic (for type 'statistic')
+#}
+
 {% set common_header_content %}
     <div class="content-item__header fw-b type-heading-02 mb-xs">{{ heading|trans }}</div>
     <div class="content-item__copy type-body-compact-02 {% if cta is defined and cta %} mb-md{% endif %}">{{ copy|trans }}</div>
@@ -10,14 +23,14 @@
 {# === IMAGE TYPE === #}
 {% if type == 'image' %}
     <div class="d-flex fd-column row-gap-xs mb-32">
-        <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-xs fs-0">
+        <img src="{{ asset(image.src) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-xs fs-0">
         <div>{{ common_header_content }}</div>
     </div>
 
 {# === LOGO TYPE === #}
 {% elseif type == 'logo' %}
     <div class="mb-32">
-        <img src="{{ asset(logo.path) }}" alt="{{ logo.alt|trans }}" title="{{ logo.alt|trans }}" class="mb-32" style="height: 30px; width: fit-content;">
+        <img src="{{ asset(logo.src) }}" alt="{{ logo.alt|trans }}" title="{{ logo.alt|trans }}" class="mb-32" style="height: 30px; width: fit-content;">
         {{ common_header_content }}
     </div>
 

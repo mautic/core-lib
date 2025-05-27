@@ -1,3 +1,9 @@
+{#
+  Variables
+    - className
+    - tile: {aboveFoldContent, belowFoldContent}
+#}
+
 {% set randomId = random() %}
 <button type="button" 
         class="tile tile--expandable collapsed {{ className|default('') }}" 

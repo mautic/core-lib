@@ -1,3 +1,11 @@
+{#
+  Variables
+    - type: 'ordered', 'unordered'
+    - style: 'alphabet', 'numbers', 'checkmark', 'none'
+    - color: 'neutral' (default) or other color value
+    - items: array of list items
+#}
+
 {% set listTag = type == 'ordered' ? 'ol' : 'ul' %}
 {% set listClass = [
     'list',
