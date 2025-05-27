@@ -9,7 +9,6 @@
 {% set padding = padding is defined ? padding : '' %}
 {% set footerButtonClass = footerButtonClass is defined ? footerButtonClass : 'modal-form-buttons' %}
 {% set dismissable = dismissable is defined ? dismissable : true %}
-{% set id = id is defined ? id : 'modal-' ~ random() %}
 
 <div class="modal fade{{ containerClass }}" id="{{ id }}" data-backdrop="static" role="dialog" aria-labelledby="{{ id }}-label" {{ containerAttr }}>
     <div class="modal-dialog{{ size }}">
