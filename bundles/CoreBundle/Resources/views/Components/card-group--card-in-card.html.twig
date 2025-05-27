@@ -1,0 +1,11 @@
+<div class="card-group" grid-mode="condensed" style="--card-group--cards-in-row: 3;">
+    {% for card in cards %}
+        <div class="card-group__item">
+            {% if loop.first %}
+                {% include '@MauticCore/Components/card-in-card.html.twig' with {'card': card} %}
+            {% else %}
+                {% include '@MauticCore/Components/card.html.twig' with {'card': card} %}
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>

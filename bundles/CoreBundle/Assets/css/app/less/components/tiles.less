@@ -61,7 +61,7 @@
 
     &.tile--expandable,
     &.tile--expandable--interactive {
-        padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);
+        padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 16px);
     }
 
     &.tile--expandable--interactive {
@@ -72,7 +72,7 @@
     }
 
     &.tile--expandable {
-        padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);    
+        padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 16px);    
     }
 
     .tile-icon {
@@ -93,8 +93,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    block-size: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);
-    inline-size: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);
+    block-size: calc(var(--layout-density-padding-inline-local)* 2 + 16px);
+    inline-size: calc(var(--layout-density-padding-inline-local)* 2 + 16px);
     inset-block-end: 0;
     inset-inline-end: 0;
     -webkit-transform: rotate(180deg);
@@ -158,5 +158,59 @@
         }
     
         &:hover .card__image-wrapper:after { opacity: 0.08; }
+    }
+}
+
+@media (min-width: @screen-md-min) {
+    .card-group[grid-mode="default"] {
+        gap: 0px 32px;
+        padding-block-start: 16px;
+    }
+}
+
+.card-group[grid-mode="default"] {
+    gap: 0px 32px;
+    padding-block-start: 8px;
+}
+@media (min-width: @screen-lg-min) {
+    .card-group[grid-mode="default"] {
+        grid-template-columns: repeat(var(--card-group--cards-in-row), 1fr);
+    }
+}
+
+@media (min-width: @screen-md-min) {
+    .card-group[grid-mode="default"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.card-group[grid-mode="default"] {
+    --card-group--cards-in-row: 1;
+    display: grid;
+    background: none;
+    gap: 1px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: @screen-md-min) {
+    .card-group[grid-mode="narrow"] {
+        gap: 0px 16px;
+        padding-block-start: 16px;
+    }
+}
+
+.card-group[grid-mode="narrow"] {
+    gap: 0px 8px;
+    padding-block-start: 8px;
+}
+
+.card-group[grid-mode="condensed"] {
+    gap: 1px;
+    padding-block-start: 8px;
+}
+
+@media (min-width: @screen-lg-min) {
+    .card-group {
+        grid-template-columns: repeat(var(--card-group--cards-in-row), 1fr);
     }
 }

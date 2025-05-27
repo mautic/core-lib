@@ -1,0 +1,10 @@
+<div class="card-group" grid-mode="{{ gridMode|default('default') }}" style="--card-group--cards-in-row: {{ cardsPerRow }};">
+    {% if cardSectionOffset %}
+        <div class="card-group__item"></div>
+    {% endif %}
+    {% for card in cards %}
+        <div class="card-group__item">
+            {% include '@MauticCore/Components/card.html.twig' with {'card': card} %}
+        </div>
+    {% endfor %}
+</div>
