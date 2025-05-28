@@ -221,24 +221,59 @@
               <!--/ #translation-container -->
           </div>
           <!--/ end: tab-content -->
-          {% elseif allowAbTest %}
-          <div class="pa-md">
-              <div class="text-center">
-                    {% include '@MauticCore/Components/button.html.twig' with {
-                        buttons: [
-                            {
-                                label: 'mautic.core.ab_test.create',
-                                variant: 'tertiary',
-                                href: path('mautic_page_action', {'objectAction': 'abtest', 'objectId': activePage.id}),
-                                icon: 'ri-arrow-right-s-line',
-                                attributes: {
-                                    'class': 'create-abtest-link',
-                                    'data-toggle': 'ajax'
-                                }
-                            }
-                        ]
-                    } %}
-              </div>
+          {% endif %}
+          
+          {% if (showVariants or showTranslations) and ((activePage.isVariant and not activePage.isVariant(true)) or (activePage.isTranslation and not activePage.isTranslation(true))) or (not showVariants and not showTranslations and allowAbTest) %}
+          <div class="pa-md mt-80">
+            {% set cards = [] %}
+            
+            {% if allowAbTest %}
+                {% set cards = cards|merge([{
+                    heading: 'mautic.core.ab_test.create',
+                    copy: (not showVariants and not showTranslations) ? 'mautic.core.ab_test.create.description' : null,
+                    pictogram: 'pilot-test',
+                    href: path('mautic_page_action', {'objectAction': 'abtest', 'objectId': activePage.id}),
+                    attributes: {
+                        'data-toggle': 'ajax'
+                    }
+                }]) %}
+            {% endif %}
+            
+            {% set cards = cards|merge([{
+                heading: 'mautic.core.translation.create',
+                copy: (not showVariants and not showTranslations) ? 'mautic.core.translation.create.description' : null,
+                pictogram: 'language--translation',
+                href: path('mautic_page_action', {'objectAction': 'clone', 'objectId': activePage.id}),
+                attributes: {
+                    'data-toggle': 'ajax'
+                }
+            }]) %}
+
+            {% set cards = cards|merge([{
+                heading: 'mautic.page.results.view',
+                copy: (not showVariants and not showTranslations) ? 'mautic.page.results.view.description' : null,
+                pictogram: 'data--set',
+                href: path('mautic_page_results', {'objectId': activePage.id}),
+                attributes: {
+                    'data-toggle': 'ajax',
+                    'data-menu-link': 'mautic_form_index'
+                }
+            }]) %}
+            
+            {% set childContainer %}
+            {% include '@MauticCore/Components/card-group.html.twig' with {
+                type: (not showVariants and not showTranslations) ? 'pictogram' : 'link',
+                gridMode: 'narrow',
+                cardsPerRow: 3,
+                aspectRatio: '2:1',
+                cards: cards
+            } %}
+            {% endset %}
+            
+            {% include '@MauticCore/Components/content-block.html.twig' with {
+                subheading: 'mautic.core.suggested_actions',
+                childContainer: childContainer
+            } %}
           </div>
           {% endif %}
       </div>
