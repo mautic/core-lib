@@ -44,7 +44,7 @@
 {% set common_image_content %}
     {% if image is defined %}
         <div part="image-wrapper" class="card__image-wrapper">
-            <img part="image" class="image__img {% if type == 'static' or type == 'default' %}as-4-3{% endif %}" src="{{ asset(image.src) }}" alt="{{ image.alt }}">
+            <img part="image" class="image__img {% if type == 'static' or type == 'default' %}as-4-3{% endif %}" src="{{ asset(image.src) }}" alt="{{ image.alt|trans }}">
         </div>
     {% endif %}
 {% endset %}
@@ -52,7 +52,7 @@
 {% set common_eyebrow_content %}
     {% if eyebrow is defined %}
         <div part="eyebrow-wrapper" class="card__eyebrow-wrapper type-label-02 text-secondary mb-8">
-            <div data-autoid="card-eyebrow">{{ eyebrow }}</div>
+            <div data-autoid="card-eyebrow">{{ eyebrow|trans }}</div>
         </div>
     {% endif %}
 {% endset %}
@@ -60,14 +60,14 @@
 {% set common_heading_content %}
     {% if heading is defined %}
         <div part="heading-wrapper" class="card__heading-wrapper type-heading-0{{ type == 'link' ? '2' : '3' }} {% if type != 'pictogram' and type != 'link' %}mb-64{% endif %}">
-            <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading }}</div>
+            <div role="heading" aria-level="3" data-autoid="card-heading">{{ heading|trans }}</div>
         </div>
     {% endif %}
 {% endset %}
 
 {% set common_copy_content %}
     {% if copy is defined %}
-        <div part="copy" class="card__copy type-body-02 pr-32 mb-32 {% if type == 'pictogram' %}mt-32{% endif %}">{{ copy }}</div>
+        <div part="copy" class="card__copy type-body-02 pr-32 mb-32 {% if type == 'pictogram' %}mt-32{% endif %}">{{ copy|trans }}</div>
     {% endif %}
 {% endset %}
 
@@ -87,7 +87,7 @@
     {% endif %}
 {% endset %}
 
-<div class="card">
+<div class="card" {% if disabled is defined %}disabled{% endif %}>
     {# === STATIC TYPE === #}
     {% if type == 'static' %}
         {% set cardContent %}
@@ -108,7 +108,7 @@
         {% endset %}
         {% include '@MauticCore/Components/tile--base.html.twig' with {
             'content': cardContent,
-            'className': 'card pa-0',
+            'className': 'card pa-0' ~ (disabled is defined ? ' tile--disabled' : ''),
         } %}
 
     {# === LOGO TYPE === #}
@@ -126,7 +126,7 @@
         {% endset %}
         {% include '@MauticCore/Components/tile--clickable.html.twig' with {
             'content': cardContent,
-            'className': 'card pa-0 card--link',
+            'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
             'href': href,
             'icon': ' '
         } %}
@@ -143,7 +143,7 @@
         {% endset %}
         {% include '@MauticCore/Components/tile--clickable.html.twig' with {
             'content': cardContent,
-            'className': 'card pa-0 card--link',
+            'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
             'icon': ctaIcons[ctaType],
             'href': href,
         } %}
@@ -161,7 +161,7 @@
         {% endset %}
         {% include '@MauticCore/Components/tile--clickable.html.twig' with {
             'content': cardContent,
-            'className': 'card pa-0 card--link ' ~ (disabled is defined ? 'disabled' : ''),
+            'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
             'icon': ctaIcons[ctaType],
             'href': href,
         } %}
@@ -181,7 +181,7 @@
         {% endset %}
         {% include '@MauticCore/Components/tile--clickable.html.twig' with {
             'content': cardContent,
-            'className': 'card pa-0 card--link',
+            'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
             'icon': ctaIcons[ctaType],
             'href': href,
         } %}
