@@ -10268,6 +10268,21 @@ lesshat-selector { -lh-property: 0 ;
 .tile * {
   box-sizing: inherit;
 }
+.tile.tile--disabled,
+.tile.tile--disabled:hover,
+.tile.tile--disabled:focus,
+.tile.tile--disabled:active {
+  pointer-events: none;
+  color: var(--text-disabled);
+  background-color: var(--layer);
+  border-color: var(--border-disabled);
+}
+.tile.tile--disabled .tile-icon,
+.tile.tile--disabled:hover .tile-icon,
+.tile.tile--disabled:focus .tile-icon,
+.tile.tile--disabled:active .tile-icon {
+  color: var(--icon-disabled);
+}
 .tile__chevron {
   position: absolute;
   display: flex;
@@ -10295,6 +10310,9 @@ lesshat-selector { -lh-property: 0 ;
   width: 100%;
   height: auto;
   object-fit: cover;
+}
+.card[disabled] {
+  cursor: not-allowed;
 }
 .card-in-card {
   outline: 2px solid transparent;
@@ -10329,6 +10347,13 @@ lesshat-selector { -lh-property: 0 ;
   .card-in-card:hover .card__image-wrapper:after {
     opacity: 0.08;
   }
+}
+.card-group {
+  --card-group--cards-in-row: 1;
+  display: grid;
+  background: none;
+  gap: 1px;
+  grid-template-columns: 1fr;
 }
 @media (min-width: 992px) {
   .card-group[grid-mode="default"] {
