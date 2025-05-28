@@ -417,6 +417,48 @@
               {% endif %}
               <!--/ #translation-container -->
           </div>
+          {% if (showVariants or showTranslations) and ((email.isVariant and not email.isVariant(true)) or (email.isTranslation and not email.isTranslation(true))) or (not showVariants and not showTranslations and allowAbTest) %}
+          <div class="pa-md mt-80">
+            {% set cards = [] %}
+            
+            {% if allowAbTest %}
+                {% set cards = cards|merge([{
+                    heading: 'mautic.core.ab_test.create',
+                    copy: (not showVariants and not showTranslations) ? 'mautic.core.ab_test.create.description' : null,
+                    pictogram: 'pilot-test',
+                    href: path('mautic_email_action', {'objectAction': 'abtest', 'objectId': email.id}),
+                    attributes: {
+                        'data-toggle': 'ajax'
+                    }
+                }]) %}
+            {% endif %}
+            
+            {% set cards = cards|merge([{
+                heading: 'mautic.core.translation.create',
+                copy: (not showVariants and not showTranslations) ? 'mautic.core.translation.create.description' : null,
+                pictogram: 'language--translation',
+                href: path('mautic_email_action', {'objectAction': 'clone', 'objectId': email.id}),
+                attributes: {
+                    'data-toggle': 'ajax'
+                }
+            }]) %}
+            
+            {% set childContainer %}
+            {% include '@MauticCore/Components/card-group.html.twig' with {
+                type: (not showVariants and not showTranslations) ? 'pictogram' : 'link',
+                gridMode: 'narrow',
+                cardsPerRow: 3,
+                aspectRatio: '2:1',
+                cards: cards
+            } %}
+            {% endset %}
+            
+            {% include '@MauticCore/Components/content-block.html.twig' with {
+                subheading: 'mautic.core.suggested_actions',
+                childContainer: childContainer
+            } %}
+          </div>
+          {% endif %}
       </div>
       <!--/ left section -->
 
