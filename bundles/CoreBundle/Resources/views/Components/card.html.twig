@@ -43,7 +43,7 @@
 
 {% set common_image_content %}
     {% if image is defined %}
-        <div part="image-wrapper" class="card__image-wrapper">
+        <div part="image-wrapper" class="card__image-wrapper d-flex">
             <img part="image" class="image__img {% if type == 'static' or type == 'default' %}as-4-3{% endif %}" src="{{ asset(image.src) }}" alt="{{ image.alt|trans }}">
         </div>
     {% endif %}
@@ -182,6 +182,29 @@
         {% include '@MauticCore/Components/tile--clickable.html.twig' with {
             'content': cardContent,
             'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
+            'icon': ctaIcons[ctaType],
+            'href': href,
+        } %}
+
+    {# === FEATURE TYPE === #}
+    {% elseif type == 'feature' %}
+        {% set cardContent %}
+        <div class="d-flex fd-column fd-row-md">
+            <div class="d-flex fg-1 fs-1 fb-0 as-1-1">
+                {{ common_image_content }}
+            </div>
+            <div class="fg-1 fs-1 fb-0">
+            <div part="wrapper" class="card__wrapper pa-md as-1-1">
+                <div part="content" class="card__content">
+                    {{ common_heading_content }}
+                </div>
+            </div>
+            </div>
+        </div>
+        {% endset %}
+        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+            'content': cardContent,
+            'className': 'card pa-0 card--link',
             'icon': ctaIcons[ctaType],
             'href': href,
         } %}
