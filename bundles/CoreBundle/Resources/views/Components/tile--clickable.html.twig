@@ -9,7 +9,7 @@
 #}
 
 {% if href is defined and href is not empty %}
-    <a class="tile tile--clickable {{ className|default('') }}" id="clickable-tile-{{ random() }}" href="{{ href }}" {% for attr_key, attr_value in attributes %}{{ attr_key }}="{{ attr_value }}" {% endfor %}>
+    <a class="tile tile--clickable {{ className|default('') }}" id="clickable-tile-{{ random() }}" href="{{ href }}" {% if attributes is defined and attributes is not empty %}{% for attr_key, attr_value in attributes %}{{ attr_key }}="{{ attr_value }}" {% endfor %}{% endif %}>
         <div>
             <div class="tile-content">
                 {{ content|raw }}
@@ -20,7 +20,7 @@
         </div>
     </a>
 {% else %}
-    <button type="button" class="tile tile--clickable" id="clickable-tile-{{ random() }}" {% if onclick is defined %}onclick="{{ onclick }}"{% endif %} {% for attr_key, attr_value in attributes %}{{ attr_key }}="{{ attr_value }}" {% endfor %}>
+    <button type="button" class="tile tile--clickable" id="clickable-tile-{{ random() }}" {% if onclick is defined %}onclick="{{ onclick }}"{% endif %} {% if attributes is defined and attributes is not empty %}{% for attr_key, attr_value in attributes %}{{ attr_key }}="{{ attr_value }}" {% endfor %}{% endif %}>
         <div>
             <div class="tile-content">
                 {{ content|raw }}
