@@ -352,13 +352,6 @@ class CampaignSubscriber implements EventSubscriberInterface
             }
         }
 
-        foreach ($values as $alias => &$value) {
-            if (isset($fields[$alias]) && 'boolean' === $fields[$alias]['type'] && 0 === $value) {
-                // 0 is interpreted as 'don't change the bool field' instead of setting it to false, so we change the field manually in this step
-                $lead->addUpdatedField($alias, 0);
-            }
-        }
-
         $this->leadModel->setFieldValues($lead, CustomFieldHelper::fieldsValuesTransformer($fields, $values), false);
         $this->leadModel->saveEntity($lead);
 
