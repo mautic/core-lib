@@ -331,10 +331,12 @@ trait LeadDetailsTrait
             }
 
             $lead = $model->getEntity($contact['lead_id']);
-            $model->getRepository()->refetchEntity($lead);
+
             if (!$lead instanceof Lead) {
                 continue;
             }
+
+            $model->getRepository()->refetchEntity($lead);
             $engagementsData = $this->getStatsCount($lead);
 
             $engagements = array_map(fn ($a, $b) => $a + $b, $engagementsData['engagements']['byUnit'], $engagements);
