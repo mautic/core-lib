@@ -163,66 +163,6 @@ class CampaignDecisionTest extends MauticMysqlTestCase
     }
 
     /**
-     * @throws ORMException
-     */
-    private function createSegmentMember(LeadList $segment, Lead $lead): void
-    {
-        $segmentMember = new ListLead();
-        $segmentMember->setLead($lead);
-        $segmentMember->setList($segment);
-        $segmentMember->setDateAdded(new \DateTime());
-        $this->em->persist($segmentMember);
-    }
-
-    /**
-     * @throws ORMException
-     */
-    private function createCampaign(string $campaignName, LeadList $segment): Campaign
-    {
-        $campaign = new Campaign();
-        $campaign->setName($campaignName);
-        $campaign->setIsPublished(true);
-        $campaign->addList($segment);
-        $this->em->persist($campaign);
-
-        return $campaign;
-    }
-
-    private function createCompanyLeadRelation(Company $company, Lead $lead): void
-    {
-        $companyLead = new CompanyLead();
-        $companyLead->setCompany($company);
-        $companyLead->setLead($lead);
-        $companyLead->setDateAdded(new \DateTime());
-
-        $this->em->persist($companyLead);
-    }
-
-    /**
-     * @param array<mixed> $fieldDetails
-     * @param array<mixed> $additionalValue
-     */
-    private function createLeadData(
-        LeadList $segment,
-        string $object,
-        array $fieldDetails,
-        array $additionalValue,
-        int $index,
-    ): Lead {
-        $fieldValue      = !empty($fieldDetails) ?
-            array_merge($fieldDetails, ['value' => array_merge(['v'.$index], $additionalValue)]) : [];
-        $leadFieldValue  = 'lead' === $object ? $fieldValue : [];
-        $lead            = $this->createLead('l'.$index, $leadFieldValue);
-        if ('company' === $object) {
-            $company = $this->createCompany('c'.$index, $fieldValue);
-            $this->createCompanyLeadRelation($company, $lead);
-        }
-        $this->createSegmentMember($segment, $lead);
-
-        return $lead;
-    }
-
-    /**
      * @return iterable<string, mixed>
      */
     public function dataProviderLeadSelect(): iterable
