@@ -335,7 +335,6 @@ trait LeadDetailsTrait
             if (!$lead instanceof Lead) {
                 continue;
             }
-
             $model->getRepository()->refetchEntity($lead);
             $engagementsData = $this->getStatsCount($lead);
 
