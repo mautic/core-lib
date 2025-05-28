@@ -5,10 +5,11 @@
     - href
     - icon
     - onclick
+    - attributes
 #}
 
 {% if href is defined and href is not empty %}
-    <a class="tile tile--clickable {{ className|default('') }}" id="clickable-tile-{{ random() }}" href="{{ href }}">
+    <a class="tile tile--clickable {{ className|default('') }}" id="clickable-tile-{{ random() }}" href="{{ href }}" {% for attr_key, attr_value in attributes %}{{ attr_key }}="{{ attr_value }}" {% endfor %}>
         <div>
             <div class="tile-content">
                 {{ content|raw }}
@@ -19,7 +20,7 @@
         </div>
     </a>
 {% else %}
-    <button type="button" class="tile tile--clickable" id="clickable-tile-{{ random() }}" {% if onclick is defined %}onclick="{{ onclick }}"{% endif %}>
+    <button type="button" class="tile tile--clickable" id="clickable-tile-{{ random() }}" {% if onclick is defined %}onclick="{{ onclick }}"{% endif %} {% for attr_key, attr_value in attributes %}{{ attr_key }}="{{ attr_value }}" {% endfor %}>
         <div>
             <div class="tile-content">
                 {{ content|raw }}
