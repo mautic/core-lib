@@ -1,4 +1,9 @@
 {# @MauticCore/Helper/description--inline.html.twig #}
 {%- if description is defined and description is not empty -%}
-    <div class="text-secondary mt-4"><small>{{ description|striptags|slice(0, 60) }}{% if description|striptags|length > 60 %}...{% endif %}</small></div>
+    {% set clean_description = description|striptags|u %}
+    <div class="text-secondary mt-4">
+        <small>
+            {{ clean_description.slice(0, 60) }}{% if clean_description.length > 60 %}...{% endif %}
+        </small>
+    </div>
 {%- endif -%}
