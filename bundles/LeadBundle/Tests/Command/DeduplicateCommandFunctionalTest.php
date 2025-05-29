@@ -50,7 +50,7 @@ final class DeduplicateCommandFunctionalTest extends MauticMysqlTestCase
             'The deduper should see and process only 2 duplicated contacts. The third is unique.'
         );
 
-        $output = $this->testSymfonyCommand(DeduplicateCommand::NAME);
+        $output = $this->testSymfonyCommand(DeduplicateCommand::getDefaultName());
 
         Assert::assertSame(3, $contactRepository->count([]), $output->getDisplay());
     }
@@ -82,7 +82,7 @@ final class DeduplicateCommandFunctionalTest extends MauticMysqlTestCase
 
         Assert::assertSame(8, $contactRepository->count([]));
 
-        $output = $this->testSymfonyCommand(DeduplicateCommand::NAME);
+        $output = $this->testSymfonyCommand(DeduplicateCommand::getDefaultName());
 
         Assert::assertSame(5, $contactRepository->count([]), $output->getDisplay());
     }
@@ -114,7 +114,7 @@ final class DeduplicateCommandFunctionalTest extends MauticMysqlTestCase
 
         Assert::assertSame(8, $contactRepository->count([]));
 
-        $output = $this->testSymfonyCommand(DeduplicateCommand::NAME);
+        $output = $this->testSymfonyCommand(DeduplicateCommand::getDefaultName());
 
         Assert::assertSame(3, $contactRepository->count([]), $output->getDisplay());
     }

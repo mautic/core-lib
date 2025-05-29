@@ -94,7 +94,7 @@ EOT
         foreach ($contactIdChunks as $contactIdBatch) {
             $command = [
                 $this->params->get('kernel.project_dir').'/bin/console',
-                DeduplicateIdsCommand::NAME,
+                DeduplicateIdsCommand::getDefaultName(),
                 '--contact-ids',
                 implode(',', $contactIdBatch),
                 '-e',

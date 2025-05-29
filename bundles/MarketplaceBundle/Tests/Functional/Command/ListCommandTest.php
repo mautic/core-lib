@@ -27,7 +27,7 @@ final class ListCommandTest extends AbstractMauticTestCase
         $command         = new ListCommand($pluginCollector);
 
         $result = $this->testSymfonyCommand(
-            ListCommand::NAME,
+            ListCommand::getDefaultName(),
             [
                 '--page'   => 1,
                 '--limit'  => 5,
@@ -126,7 +126,7 @@ final class ListCommandTest extends AbstractMauticTestCase
         $command         = new ListCommand($pluginCollector);
 
         $result = $this->testSymfonyCommand(
-            ListCommand::NAME,
+            ListCommand::getDefaultName(),
             [
                 '--page'   => $page,
                 '--limit'  => $limit,

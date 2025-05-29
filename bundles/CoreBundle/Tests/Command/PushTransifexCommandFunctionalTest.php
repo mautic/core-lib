@@ -94,7 +94,7 @@ class PushTransifexCommandFunctionalTest extends MauticMysqlTestCase
             }
         );
 
-        $commandTester = $this->testSymfonyCommand(PushTransifexCommand::NAME, ['--bundle' => 'WebhookBundle']);
+        $commandTester = $this->testSymfonyCommand(PushTransifexCommand::getDefaultName(), ['--bundle' => 'WebhookBundle']);
         $dir           = realpath(__DIR__.'/../../..');
 
         $expectedOutput = <<<EOT

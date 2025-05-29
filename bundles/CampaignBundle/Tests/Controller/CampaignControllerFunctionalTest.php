@@ -285,7 +285,7 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
 
         if ($runCommand) {
             $this->testSymfonyCommand(
-                SummarizeCommand::NAME,
+                SummarizeCommand::getDefaultName(),
                 [
                     '--env'       => 'test',
                     '--max-hours' => 768,

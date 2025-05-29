@@ -15,7 +15,7 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
 {
     public function testFailWhenSegmentDoesNotExist(): void
     {
-        $output = $this->testSymfonyCommand(UpdateLeadListsCommand::NAME, ['--list-id' => 999999]);
+        $output = $this->testSymfonyCommand(UpdateLeadListsCommand::getDefaultName(), ['--list-id' => 999999]);
 
         Assert::assertSame(1, $output->getStatusCode());
         Assert::assertStringContainsString('Segment #999999 does not exist', $output->getDisplay());
@@ -56,7 +56,7 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
 
         Assert::assertEquals($longTimeAgo, $segment->getLastBuiltDate());
 
-        $output = $this->testSymfonyCommand(UpdateLeadListsCommand::NAME, $getCommandParams($segment));
+        $output = $this->testSymfonyCommand(UpdateLeadListsCommand::getDefaultName(), $getCommandParams($segment));
 
         /** @var LeadList $segment */
         $segment = $this->em->find(LeadList::class, $segment->getId());

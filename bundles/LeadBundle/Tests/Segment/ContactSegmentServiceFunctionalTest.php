@@ -138,7 +138,7 @@ class ContactSegmentServiceFunctionalTest extends MauticMysqlTestCase
         self::assertNull($lastRebuiltDate);
 
         $this->testSymfonyCommand(
-            UpdateLeadListsCommand::NAME,
+            UpdateLeadListsCommand::getDefaultName(),
             [
                 '--exclude' => [$segmentTest3Ref->getId()],
                 '--env'     => 'test',
