@@ -8,6 +8,7 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,10 +20,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * CLI Command to purge old data per settings.
  */
+#[AsCommand(
+    name: 'mautic:maintenance:cleanup',
+    description: 'Updates the Mautic application'
+)]
 class CleanupMaintenanceCommand extends ModeratedCommand
 {
-    public const NAME                    = 'mautic:maintenance:cleanup';
-
     public function __construct(
         private TranslatorInterface $translator,
         private EventDispatcherInterface $dispatcher,
@@ -36,7 +39,7 @@ class CleanupMaintenanceCommand extends ModeratedCommand
 
     protected function configure(): void
     {
-        $this->setName(self::NAME)
+        $this
             ->setDefinition(
                 [
                     new InputOption(
@@ -173,6 +176,4 @@ EOT
             $this->auditLogModel->writeToLog($log);
         }
     }
-
-    protected static $defaultDescription = 'Updates the Mautic application';
 }

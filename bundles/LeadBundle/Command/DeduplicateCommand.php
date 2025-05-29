@@ -6,6 +6,7 @@ namespace Mautic\LeadBundle\Command;
 
 use Mautic\CoreBundle\Service\ProcessQueue;
 use Mautic\LeadBundle\Deduplicate\ContactDeduper;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,10 +16,12 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+#[AsCommand(
+    name: 'mautic:contacts:deduplicate',
+    description: 'Merge contacts based on same unique identifiers'
+)]
 class DeduplicateCommand extends Command
 {
-    public const NAME = 'mautic:contacts:deduplicate';
-
     public function __construct(
         private ContactDeduper $contactDeduper,
         private ParameterBagInterface $params,
@@ -30,7 +33,7 @@ class DeduplicateCommand extends Command
     {
         parent::configure();
 
-        $this->setName(self::NAME)
+        $this
             ->addOption(
                 '--newer-into-older',
                 null,
@@ -146,6 +149,4 @@ EOT
 
         return Command::SUCCESS;
     }
-
-    protected static $defaultDescription = 'Merge contacts based on same unique identifiers';
 }

@@ -13,6 +13,7 @@ use Mautic\Transifex\Exception\ResponseException;
 use Mautic\Transifex\Exception\TransifexException;
 use Mautic\Transifex\Promise;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,10 +23,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * CLI Command to push language resources to Transifex.
  */
+#[AsCommand(
+    name: 'mautic:transifex:push',
+    description: 'Pushes Mautic translation resources to Transifex'
+)]
 class PushTransifexCommand extends Command
 {
-    public const NAME = 'mautic:transifex:push';
-
     public function __construct(
         private TransifexFactory $transifexFactory,
         private TranslatorInterface $translator,
@@ -36,7 +39,7 @@ class PushTransifexCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName(self::NAME)
+        $this
             ->addOption('bundle', null, InputOption::VALUE_OPTIONAL, 'Optional bundle to pull. Example value: WebhookBundle', null)
             ->setHelp(<<<'EOT'
 The <info>%command.name%</info> command is used to push translation resources to Transifex
@@ -129,6 +132,4 @@ EOT
 
         return Command::SUCCESS;
     }
-
-    protected static $defaultDescription = 'Pushes Mautic translation resources to Transifex';
 }

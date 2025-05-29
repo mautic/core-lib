@@ -11,17 +11,20 @@ use Mautic\CoreBundle\Twig\Helper\FormatterHelper;
 use Mautic\LeadBundle\Event\ContactExportSchedulerEvent;
 use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\ContactExportSchedulerModel;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+#[AsCommand(
+    name: 'mautic:contacts:scheduled_export',
+    description: 'Export contacts which are scheduled in `contact_export_scheduler` table.'
+)]
 class ContactScheduledExportCommand extends Command
 {
     private const PICK_SCHEDULED_EXPORTS_LIMIT = 10;
-
-    public const COMMAND_NAME                  = 'mautic:contacts:scheduled_export';
 
     public function __construct(
         private ContactExportSchedulerModel $contactExportSchedulerModel,
@@ -35,7 +38,6 @@ class ContactScheduledExportCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName(self::COMMAND_NAME)
             ->addOption(
                 '--ids',
                 null,
@@ -79,6 +81,4 @@ class ContactScheduledExportCommand extends Command
             return ExitCode::TERMINATED;
         }
     }
-
-    protected static $defaultDescription = 'Export contacts which are scheduled in `contact_export_scheduler` table.';
 }
