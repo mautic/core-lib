@@ -25,6 +25,7 @@
         transition: var(--transition-all-productive);
         outline: 2px solid transparent;
         outline-offset: -2px;
+        text-align: unset;
 
         &:hover { background: var(--layer-hover); }
         &:focus {
@@ -32,12 +33,43 @@
             text-decoration: none;
         }
 
-        .tile-icon { inset-block-end: var(--layout-density-padding-inline-local); }
+        .tile-icon { 
+            inset-block-end: var(--layout-density-padding-inline-local); 
+            inset-block-start: unset;
+        }
     }
 
     &.tile--clickable {
         color: var(--text-primary, #161616);
         text-decoration: none;
+
+        .tile-icon { 
+            font-size: 20px;
+            color: var(--icon-interactive, #4e5e9e);
+            line-height: 1em;
+            aspect-ratio: 1 / 1;
+            display: inline-flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            margin-right: -3px;
+            margin-bottom: -3px;
+        }
+    }
+
+    &.tile--expandable,
+    &.tile--expandable--interactive {
+        padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);
+    }
+
+    &.tile--expandable--interactive {
+        &:hover { 
+            background: var(--layer); 
+            cursor: default;
+        }
+    }
+
+    &.tile--expandable {
+        padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);    
     }
 
     &.tile--expandable,
