@@ -18,6 +18,24 @@
         <tbody>
             {% for entityKey, details in summary %}
                 {% set entity = entityKey|replace({'_create':'', '_update':''}) %}
+
+                {% set entityTranslations = {
+                    'pointGroup': 'mautic.point.group.header.index',
+                    'page': 'mautic.page.page',
+                    'lists': 'mautic.segment.segment',
+                    'customField': 'mautic.lead.field.header.index',
+                    'form_fields': 'mautic.form.field',
+                    'form_actions': 'mautic.form.actions',
+                    'forms': 'mautic.form.form',
+                    'email': 'mautic.email.email',
+                    'dynamicContent': 'mautic.dynamicContent.dynamicContent',
+                    'campaign_event': 'mautic.campaign.events',
+                    'asset': 'mautic.asset.asset',
+                    'campaign': 'mautic.campaign.campaign'
+                } %}
+
+                {% set translatedEntity = entityTranslations[entity] ? entityTranslations[entity]|trans : entity|capitalize %}
+
                 {% set names = details.names is iterable ? details.names : [details.names] %}
                 {% if isAnalyzeStage %}
                     {% set ids = details.uuids is iterable ? details.uuids : [details.uuids] %}
@@ -26,7 +44,7 @@
                 {% endif %}
                 {% for i in 0..(names|length - 1) %}
                     <tr>
-                        <td class="text-center"><strong>{{ entity|capitalize }}</strong></td>
+                        <td class="text-center"><strong>{{ translatedEntity }}</strong></td>
                         <td>
                             {% if entity == 'campaign' and showLinks %}
                                 <a href="{{ path('mautic_campaign_action', {'objectAction': 'view', 'objectId': ids[i]}) }}">
