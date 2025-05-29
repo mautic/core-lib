@@ -2447,6 +2447,13 @@ Mautic.previewCampaignEventDetails = function() {
             url: '/s/campaign/metrics/event-details/' + eventId,
             success: function (response) {
                 renderEventDetails($el, response);
+            },
+            error: function (response) {
+                if (response.responseJSON.message) {
+                    renderEventDetailsError($el, response.responseJSON.message);
+                } else {
+                    renderEventDetailsError($el, Mautic.translate('mautic.core.request.error'));
+                }
             }
         });
         
@@ -2470,6 +2477,10 @@ Mautic.previewCampaignEventDetails = function() {
         $el.find('.campaign-event-details').html($dl);
         $el.data('event-details-loaded', true);
     }
+
+    const renderEventDetailsError = function($el, message) {
+       $el.find('.campaign-event-details').html('<div class="alert alert-danger" role="alert">' + message + '</div>');
+   }
 }
 
 Mautic.campaignAuditlogOnLoad = function (container, response) {
