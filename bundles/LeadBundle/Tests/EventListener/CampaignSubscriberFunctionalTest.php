@@ -99,12 +99,12 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Execute the campaign.
-        $this->runCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
 
-        $prefix = $this->container->getParameter('mautic.db_table_prefix');
+        $prefix = static::getContainer()->getParameter('mautic.db_table_prefix');
 
         foreach ($contactIds as $contactId) {
-            $points = $this->connection->fetchColumn("SELECT points FROM {$prefix}leads WHERE id = :id", ['id' => $contactId]);
+            $points = $this->connection->fetchOne("SELECT points FROM {$prefix}leads WHERE id = :id", ['id' => $contactId]);
             Assert::assertEquals(42, $points);
         }
     }
