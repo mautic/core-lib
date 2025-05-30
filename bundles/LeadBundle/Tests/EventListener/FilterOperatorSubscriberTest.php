@@ -371,7 +371,7 @@ final class FilterOperatorSubscriberTest extends TestCase
             [
                 'label'      => 'mautic.lead.list.filter.date_identified',
                 'properties' => [
-                    'type' => 'date',
+                    'type' => 'datetime',
                 ],
                 'operators' => [
                     'equals'    => '=',
@@ -669,7 +669,7 @@ final class FilterOperatorSubscriberTest extends TestCase
             [
                 'label'      => 'mautic.lead.list.filter.date_identified',
                 'properties' => [
-                    'type' => 'date',
+                    'type' => 'datetime',
                 ],
                 'operators' => [
                     'equals'    => '=',
