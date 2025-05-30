@@ -126,7 +126,7 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(
             [
-                'is exactly'    => OperatorOptions::EQUAL_TO,
+                'is exactly'     => OperatorOptions::EQUAL_TO,
                 'is not exactly' => OperatorOptions::NOT_EQUAL_TO,
             ],
             $this->provider->getOperatorsForFieldType('text')
@@ -189,9 +189,9 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(
             [
-                'is exactly'      => OperatorOptions::EQUAL_TO,
+                'is exactly'       => OperatorOptions::EQUAL_TO,
                 'is not exactly'   => OperatorOptions::NOT_EQUAL_TO,
-                'starts with' => OperatorOptions::STARTS_WITH,
+                'starts with'      => OperatorOptions::STARTS_WITH,
             ],
             $this->provider->getOperatorsForField('text', 'email')
         );
