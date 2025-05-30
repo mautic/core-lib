@@ -420,3 +420,13 @@
 .campaign-event-stat-divider {
     padding: 0 4px;
 }
+
+/* Campaign source widget text overflow handling */
+.list-campaign-source .campaign-event-name {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+    white-space: nowrap;
+}
