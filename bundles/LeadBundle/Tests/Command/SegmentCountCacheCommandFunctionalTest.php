@@ -10,8 +10,6 @@ use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\LeadListRepository;
 use Mautic\LeadBundle\Entity\LeadRepository;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,10 +25,10 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
         $segmentId = $segment->getId();
 
         // Run segments update command.
-        $this->runCommand('mautic:segments:update', ['-i' => $segmentId]);
+        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId]);
 
         // Run segment count cache command.
-        $this->runCommand(SegmentCountCacheCommand::COMMAND_NAME);
+        $this->testSymfonyCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
         // Check segment cached contact count using the SegmentCountCacheHelper directly
         $segmentCountCacheHelper = static::getContainer()->get('mautic.helper.segment.count.cache');
@@ -44,7 +42,7 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
         self::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
 
         // Run segment count cache command again.
-        $this->runCommand(SegmentCountCacheCommand::COMMAND_NAME);
+        $this->testSymfonyCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
         // Check segment cached contact count using the SegmentCountCacheHelper directly
         $segmentCountCacheHelper = static::getContainer()->get('mautic.helper.segment.count.cache');
