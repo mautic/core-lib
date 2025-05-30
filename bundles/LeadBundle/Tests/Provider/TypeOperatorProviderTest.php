@@ -45,12 +45,12 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
-                    'label'        => 'equals',
+                    'label'        => 'is exactly',
                     'expr'         => 'eq',
                     'negagte_expr' => 'neq',
                 ],
                 OperatorOptions::NOT_EQUAL_TO => [
-                    'label'        => 'not equal',
+                    'label'        => 'is not exactly',
                     'expr'         => 'neq',
                     'negagte_expr' => 'eq',
                 ],
@@ -68,12 +68,12 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
-                    'label'        => 'equals',
+                    'label'        => 'is exactly',
                     'expr'         => 'eq',
                     'negagte_expr' => 'neq',
                 ],
                 OperatorOptions::NOT_EQUAL_TO => [
-                    'label'        => 'not equal',
+                    'label'        => 'is not exactly',
                     'expr'         => 'neq',
                     'negagte_expr' => 'eq',
                 ],
@@ -91,12 +91,12 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
-                    'label'        => 'equals',
+                    'label'        => 'is exactly',
                     'expr'         => 'eq',
                     'negagte_expr' => 'neq',
                 ],
                 OperatorOptions::NOT_EQUAL_TO => [
-                    'label'        => 'not equal',
+                    'label'        => 'is not exactly',
                     'expr'         => 'neq',
                     'negagte_expr' => 'eq',
                 ],
@@ -139,12 +139,12 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
-                    'label'        => 'equals',
+                    'label'        => 'is exactly',
                     'expr'         => 'eq',
                     'negagte_expr' => 'neq',
                 ],
                 OperatorOptions::NOT_EQUAL_TO => [
-                    'label'        => 'not equal',
+                    'label'        => 'is not exactly',
                     'expr'         => 'neq',
                     'negagte_expr' => 'eq',
                 ],
