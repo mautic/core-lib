@@ -229,10 +229,9 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider dataLabelProvider
-     *
      * @param string|int $result
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataLabelProvider')]
     public function testLabelFormatForSelect(string $token, $result): void
     {
         $lead         = $this->lead;
@@ -243,7 +242,7 @@ class TokenHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array<int, array<int, int|string>>
      */
-    public function dataLabelProvider(): array
+    public static function dataLabelProvider(): array
     {
         return
             [
