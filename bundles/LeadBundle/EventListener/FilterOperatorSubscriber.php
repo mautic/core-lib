@@ -630,6 +630,11 @@ final class FilterOperatorSubscriber implements EventSubscriberInterface
         $event->setChoices($choices);
     }
 
+    /**
+     * @param array<string, string> $operators
+     *
+     * @return array<string, string>
+     */
     private function translateOperators(array $operators): array
     {
         $translationKeys = [
