@@ -63,7 +63,7 @@ class PublicController extends CommonFormController
                 $content = $copy->getBody();
 
                 // Replace tokens
-                if (!empty($tokens)) {
+                if (is_array($tokens)) {
                     $content = str_ireplace(array_keys($tokens), $tokens, $content);
                     $subject = str_ireplace(array_keys($tokens), $tokens, $subject);
                 }
