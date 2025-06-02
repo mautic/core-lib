@@ -897,11 +897,4 @@ class AjaxController extends CommonAjaxController
             ]
         );
     }
-
-    public function getSegmentFilterIconAction(Request $request): JsonResponse
-    {
-        $fieldAlias = $request->request->get('filterType');
-
-        return $this->sendJsonResponse(['iconClass' => $this->getSegmentFilterIcon($fieldAlias)]);
-    }
 }
