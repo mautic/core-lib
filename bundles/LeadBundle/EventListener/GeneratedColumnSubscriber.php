@@ -67,7 +67,7 @@ class GeneratedColumnSubscriber implements EventSubscriberInterface
                 ]
             ),
             'object'    => 'lead',
-            'iconClass' => $this->getSegmentFilterIcon('leadlist'),
+            'iconClass' => $this->getSegmentFilterIcon('generated_email_domain'),
         ]);
     }
 }
