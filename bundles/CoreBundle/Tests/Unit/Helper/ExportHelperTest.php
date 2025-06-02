@@ -131,8 +131,8 @@ class ExportHelperTest extends TestCase
     public function testWriteToZipFileIncludesAssetsWithCustomPath(): void
     {
         $filesystem = new \Symfony\Component\Filesystem\Filesystem();
-        $tempDir = sys_get_temp_dir();
-        $customDir = $tempDir . '/export_test_' . uniqid();
+        $tempDir    = sys_get_temp_dir();
+        $customDir  = $tempDir.'/export_test_'.uniqid();
         $filesystem->mkdir($customDir);
 
         // Create temporary asset files
@@ -156,8 +156,8 @@ class ExportHelperTest extends TestCase
         $zip->open($zipFilePath);
 
         $this->assertNotFalse($zip->locateName('entity_data.json'));
-        $this->assertNotFalse($zip->locateName('assets/' . basename($assetFilePath1)));
-        $this->assertNotFalse($zip->locateName('assets/' . basename($assetFilePath2)));
+        $this->assertNotFalse($zip->locateName('assets/'.basename($assetFilePath1)));
+        $this->assertNotFalse($zip->locateName('assets/'.basename($assetFilePath2)));
 
         $zip->close();
 
