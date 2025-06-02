@@ -179,14 +179,15 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
      */
     private function applySqlFromFile($file): void
     {
-        $connection = $this->connection;
-        $command    = 'mysql -h"${:db_host}" -P"${:db_port}" -u"${:db_user}" "${:db_name}" < "${:db_backup_file}"';
-        $envVars    = [
-            'MYSQL_PWD'      => $this->connection->getParams()['password'],
-            'db_host'        => $this->connection->getParams()['host'],
-            'db_port'        => $this->connection->getParams()['port'],
-            'db_user'        => $this->connection->getParams()['user'],
-            'db_name'        => $this->connection->getParams()['dbname'],
+        $connectionParams = $this->connection->getParams();
+        $command = 'mysql -h"${:db_host}" -P"${:db_port}" -u"${:db_user}" -p"${:db_password}" "${:db_name}" < "${:db_backup_file}"';
+
+        $envVars = [
+            'db_host'        => $connectionParams['host'],
+            'db_port'        => $connectionParams['port'],
+            'db_user'        => $connectionParams['user'],
+            'db_password'    => $connectionParams['password'],
+            'db_name'        => $connectionParams['dbname'],
             'db_backup_file' => $file,
         ];
 
@@ -278,14 +279,15 @@ abstract class MauticMysqlTestCase extends AbstractMauticTestCase
      */
     private function dumpToFile(string $sqlDumpFile): void
     {
-        $connection = $this->connection;
-        $command    = 'mysqldump --opt -h"${:db_host}" -P"${:db_port}" -u"${:db_user}" "${:db_name}" > "${:db_backup_file}"';
-        $envVars    = [
-            'MYSQL_PWD'      => $this->connection->getParams()['password'],
-            'db_host'        => $this->connection->getParams()['host'],
-            'db_port'        => $this->connection->getParams()['port'],
-            'db_user'        => $this->connection->getParams()['user'],
-            'db_name'        => $this->connection->getParams()['dbname'],
+        $connectionParams = $this->connection->getParams();
+        $command = 'mysqldump --opt -h"${:db_host}" -P"${:db_port}" -u"${:db_user}" -p"${:db_password}" "${:db_name}" > "${:db_backup_file}"';
+
+        $envVars = [
+            'db_host'        => $connectionParams['host'],
+            'db_port'        => $connectionParams['port'],
+            'db_user'        => $connectionParams['user'],
+            'db_password'    => $connectionParams['password'],
+            'db_name'        => $connectionParams['dbname'],
             'db_backup_file' => $sqlDumpFile,
         ];
 
