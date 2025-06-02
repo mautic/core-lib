@@ -640,8 +640,6 @@ Mautic.addLeadListFilter = function (elId, elObj) {
     var filterOption = mQuery(filterId);
 
     // Create a new filter
-    var filterNum = parseInt(mQuery('.available-filters').data('index'));
-    mQuery('.available-filters').data('index', filterNum + 1);
 
     var filterNum = Mautic.segmentFilter().getFilterCount();
     var prototypeStr = mQuery('.available-filters').data('prototype');
@@ -669,15 +667,8 @@ Mautic.addLeadListFilter = function (elId, elObj) {
         prototype.find(".panel-heading .panel-glue").addClass('hide');
     }
 
-    Mautic.ajaxActionRequest(
-        'lead:getSegmentFilterIcon',
-        { filterType: elId },
-        function (response) {
-            if (response.iconClass) {
-                prototype.find('.object-icon').removeClass('ri-shapes-line').addClass(response.iconClass);
-            }
-        }
-    );
+    const filterTypeIcon = filterOption.data('field-icon');
+    prototype.find('.object-icon').removeClass('ri-shapes-line').addClass(filterTypeIcon);
 
     prototype.find(".inline-spacer").append(fieldObject);
 
