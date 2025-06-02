@@ -30,9 +30,9 @@
             <div class="filter--panel panel fg-0">
                 <div class="d-flex ai-center fw-nowrap">
                     <div class="filter--field-name d-flex ai-center pr-lg pl-lg" size="lg">
-                        {% set objectLable = translatorHasId('mautic.lead_list.filter.' ~ object) ? ('mautic.lead_list.filter.' ~ object)|trans : object|trans  %}
-                        <i class="filter-type-icon {{ filterTypeIconClass }}" aria-hidden="true"></i>
-                        <span> {% if isPrototype %}__label__{% else %}{{ 'mautic.lead_list.filter.field.label'|trans({'%object%': objectLable, '%field%': fields[object][filterType]['label'] })|raw}}{% endif %}</span>
+                        {% set objectLabel = translatorHasId('mautic.lead_list.filter.' ~ object) ? ('mautic.lead_list.filter.' ~ object)|trans : object|trans  %}
+                        <i class="object-icon {{ filterTypeIconClass }}" aria-hidden="true"></i>
+                        <span> {% if isPrototype %}__label__{% else %}{{ 'mautic.lead_list.filter.field.label'|trans({'%object%': objectLabel, '%field%': fields[object][filterType]['label'] })|raw}}{% endif %}</span>
                     </div>
 
                     <div class="filter--field-operator">
