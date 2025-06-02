@@ -128,6 +128,43 @@ class ExportHelperTest extends TestCase
         unlink($zipFilePath);
     }
 
+    public function testWriteToZipFileIncludesAssetsWithCustomPath(): void
+    {
+        $filesystem = new \Symfony\Component\Filesystem\Filesystem();
+        $tempDir = sys_get_temp_dir();
+        $customDir = $tempDir . '/export_test_' . uniqid();
+        $filesystem->mkdir($customDir);
+
+        // Create temporary asset files
+        $assetFilePath1 = tempnam($tempDir, 'asset_test1');
+        file_put_contents($assetFilePath1, 'Asset content 1');
+
+        $assetFilePath2 = tempnam($tempDir, 'asset_test2');
+        file_put_contents($assetFilePath2, 'Asset content 2');
+
+        $assetList  = [$assetFilePath1, $assetFilePath2];
+        $jsonOutput = json_encode(['key' => 'value']);
+
+        // Call the method with custom path
+        $zipFilePath = $this->exportHelper->writeToZipFile($jsonOutput, $assetList, $customDir);
+
+        $this->assertFileExists($zipFilePath);
+        $this->assertStringStartsWith($customDir, $zipFilePath);
+
+        // Open the ZIP file and verify contents
+        $zip = new \ZipArchive();
+        $zip->open($zipFilePath);
+
+        $this->assertNotFalse($zip->locateName('entity_data.json'));
+        $this->assertNotFalse($zip->locateName('assets/' . basename($assetFilePath1)));
+        $this->assertNotFalse($zip->locateName('assets/' . basename($assetFilePath2)));
+
+        $zip->close();
+
+        // Clean up using Symfony Filesystem
+        $filesystem->remove([$assetFilePath1, $assetFilePath2, $zipFilePath, $customDir]);
+    }
+
     /**
      * Test if exportDataAs() correctly generates a CSV file when we input some array data.
      */
