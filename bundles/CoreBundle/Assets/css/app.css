@@ -10401,6 +10401,12 @@ lesshat-selector { -lh-property: 0 ;
   clear: both;
   content: "";
 }
+.card .card__content {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  inline-size: 100%;
+}
 .card--pictogram {
   position: relative;
   -webkit-padding-after: 64px;
