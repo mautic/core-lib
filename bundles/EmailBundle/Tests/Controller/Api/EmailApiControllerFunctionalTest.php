@@ -616,6 +616,8 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
             sprintf('/api/emails/%s/edit', $childEmail->getId()),
             $payload
         );
+        $this->assertResponseIsSuccessful();
+
         $response     = $this->client->getResponse();
         $responseData = json_decode($response->getContent(), true);
 
