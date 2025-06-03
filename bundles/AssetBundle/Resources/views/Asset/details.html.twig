@@ -141,7 +141,7 @@
                                 <td>{{ activeAsset.getSize() }}</td>
                             </tr>
                             <tr>
-                                <td width="20%"><span class="fw-b textTitle">{% trans %}mautic.asset.asset.path.relative{% endtrans %}</span></td>
+                                <td width="20%"><span class="fw-b textTitle">{% trans %}mautic.asset.asset.url{% endtrans %}</span></td>
                                 <td>{{ assetDownloadUrl }}</td>
                             </tr>
                             <tr>
@@ -222,28 +222,16 @@
     <div class="col-md-3 bdr-l height-auto">
         <!-- preview URL -->
         <div class="panel shd-none bdr-rds-0 bdr-w-0 mt-sm mb-0">
-            <div class="panel-heading">
-                <div class="panel-title">{% trans %}mautic.asset.asset.url{% endtrans %}</div>
-            </div>
             <div class="panel-body pt-xs">
-                <div class="input-group">
-                    <input onclick="this.setSelectionRange(0, this.value.length);" type="text" class="form-control"
-                           readonly value="{{ assetDownloadUrl|escape }}"/>
-                <span class="input-group-btn">
-                    {% include '@MauticCore/Components/button.html.twig' with {
-                        buttons: [
-                            {
-                                icon: 'ri-external-link-line',
-                                icon_only: true,
-                                tooltip_placement: 'left',
-                                label: 'mautic.core.open_link',
-                                onclick: "window.open('" ~ assetDownloadUrl ~ "', '_blank')",
-                                variant: 'ghost',
-                            }
-                        ]
-                    } %}
-                </span>
-                </div>
+                {% include '@MauticCore/Components/card.html.twig' with {
+                type: 'link',
+                href: assetDownloadUrl,
+                ctaType: 'new tab',
+                heading: 'mautic.core.open_link',
+                attributes: {
+                    'target': '_blank'
+                }
+            } %}
             </div>
         </div>
         <!--/ preview URL -->
