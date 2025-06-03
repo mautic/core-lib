@@ -6586,7 +6586,6 @@ input[style]:hover {
   padding: var(--spacing-01) var(--spacing-04);
 }
 .form-control[disabled],
-.form-control[readonly],
 fieldset[disabled] .form-control {
   color: var(--text-disabled);
 }
@@ -11185,7 +11184,7 @@ code:hover > .copy-icon {
 }
 .contained-list-item__content,
 .contained-list-item--clickable .contained-list-item__content {
-  --temp-1lh: (var(--body-01-line-height, 1.42857)* 1em);
+  --temp-1lh: var(--body-01-line-height, 1.42857);
   font-weight: var(--body-01-font-weight, 400);
   line-height: var(--body-01-line-height, 1.42857);
   letter-spacing: var(--body-01-letter-spacing, 0.16px);
