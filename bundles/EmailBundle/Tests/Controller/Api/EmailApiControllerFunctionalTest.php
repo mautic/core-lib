@@ -2,6 +2,8 @@
 
 namespace Mautic\EmailBundle\Tests\Controller\Api;
 
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\Stat;
@@ -52,7 +54,7 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
 
     protected function beforeBeginTransaction(): void
     {
-        $this->resetAutoincrement(['categories']);
+        $this->resetAutoincrement(['categories', 'emails']);
     }
 
     public function testCreateWithDynamicContent(): void
@@ -590,5 +592,59 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($email);
 
         return $email;
+    }
+
+    /**
+     * @param array<string, int|string> $payload
+     *
+     * @throws OptimisticLockException
+     * @throws ORMException
+     * @throws \Doctrine\ORM\ORMException
+     *
+     * @dataProvider getDataForUpdatingTranslatedEmailDoesNotRemoveParentRelation
+     */
+    public function testUpdatingTranslatedEmailDoesNotRemoveParentRelation(array $payload): void
+    {
+        $parentEmail = $this->createEmail('Parent Email', 'Parent Email Subject', 'template', 'blank', 'Parent Email');
+        $childEmail  = $this->createEmail('Child Email', 'Child Email Subject', 'template', 'blank', 'Child Email');
+        $childEmail->setTranslationParent($parentEmail);
+        $this->em->persist($childEmail);
+        $this->em->flush();
+
+        $this->client->request(
+            Request::METHOD_PATCH,
+            sprintf('/api/emails/%s/edit', $childEmail->getId()),
+            $payload
+        );
+        $response     = $this->client->getResponse();
+        $responseData = json_decode($response->getContent(), true);
+
+        $emailData = $responseData['email'];
+        $this->assertArrayHasKey('translationParent', $emailData);
+        $this->assertNotEmpty($emailData['translationParent']);
+
+        $this->assertEquals(
+            $parentEmail->getId(),
+            $emailData['translationParent']['id'],
+            'The translation parent ID should remain unchanged after updating the child email.'
+        );
+    }
+
+    /**
+     * @return iterable<string, array{0: array<string, int|string>}>
+     */
+    public static function getDataForUpdatingTranslatedEmailDoesNotRemoveParentRelation(): iterable
+    {
+        yield 'When children set to unpublished, parent relation should remain' => [
+            [
+                'isPublished' => 0,
+            ],
+        ];
+
+        yield 'When children updated for name, parent relation should remain' => [
+            [
+                'name' => 'Updated Child Email',
+            ],
+        ];
     }
 }
