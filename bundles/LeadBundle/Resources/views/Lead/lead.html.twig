@@ -535,9 +535,11 @@
             {% if lead.tags|length <= 8 %}
                 {# Use tile--base for 8 or fewer tags #}
                 {% set tagContent %}
+                <div class="d-flex jc-space-between">
                     <span class="fw-b ellipsis mb-md">{{ 'mautic.lead.tags'|trans }}</span>
-                    <i class="tile-icon ri-hashtag" aria-hidden="true"></i>
-                    <div class="d-flex fw-wrap gap-xs mt-xs">
+                    <i class="ri-hashtag" aria-hidden="true"></i>
+                </div>
+                <div class="d-flex fw-wrap gap-xs mt-xs">
                     {% if lead.tags|length > 0 %}
                         {% for tag in lead.tags %}
                             <div id="tagLabel{{ tag.id }}">
@@ -570,8 +572,10 @@
                 {% set remainingTags = lead.tags|slice(8) %}
                 
                 {% set aboveContent %}
+                <div class="d-flex jc-space-between">
                     <span class="fw-b ellipsis mb-md">{{ 'mautic.lead.tags'|trans }}</span>
-                    <i class="tile-icon ri-hashtag" aria-hidden="true"></i>
+                    <i class="ri-hashtag" aria-hidden="true"></i>
+                </div>
                     <div class="d-flex fw-wrap gap-xs">
                     {% for tag in firstEightTags %}
                         <div id="tagLabel{{ tag.id }}">
@@ -591,7 +595,7 @@
                 {% endset %}
                 
                 {% set belowContent %}
-                    <div class="d-flex fw-wrap gap-xs mt-xs">
+                <div class="d-flex fw-wrap gap-xs mt-xs">
                     {% for tag in remainingTags %}
                         <div id="tagLabel{{ tag.id }}">
                             {% include '@MauticCore/Helper/_tag.html.twig' with {'tags': [{
@@ -640,8 +644,10 @@
                 
                 {% if segments|length <= 8 %}
                     {% set content %}
-                        <span class="fw-b ellipsis mb-md">{{ 'mautic.lead.lead.lists'|trans }}</span>
-                        <i class="tile-icon ri-pie-chart-line" aria-hidden="true"></i>
+                        <div class="d-flex jc-space-between">
+                            <span class="fw-b ellipsis mb-md">{{ 'mautic.lead.lead.lists'|trans }}</span>
+                            <i class="ri-pie-chart-line" aria-hidden="true"></i>
+                        </div>
                         <div class="d-flex fw-wrap gap-xs">
                             {% for key, list in segments %}
                                 {% set tag = {
@@ -660,8 +666,10 @@
                     {% include '@MauticCore/Components/tile--base.html.twig' with {'tiles': [{'content': content}]} %}
                 {% else %}
                     {% set aboveContent %}
-                        <span class="fw-b ellipsis mb-md">{{ 'mautic.lead.lead.lists'|trans }}</span>
-                        <i class="tile-icon ri-pie-chart-line" aria-hidden="true"></i>
+                        <div class="d-flex jc-space-between">
+                            <span class="fw-b ellipsis mb-md">{{ 'mautic.lead.lead.lists'|trans }}</span>
+                            <i class="ri-pie-chart-line" aria-hidden="true"></i>
+                        </div>
                         <div class="d-flex fw-wrap gap-xs">
                             {% for key, list in segments|slice(0, 8) %}
                                 {% set tag = {
@@ -699,10 +707,12 @@
                 {% endif %}
             {% else %}
                 {% set content %}
+                <div class="d-flex jc-space-between">
                     <span class="fw-b ellipsis mb-md">{{ 'mautic.lead.lead.lists'|trans }}</span>
-                    <i class="tile-icon ri-pie-chart-line" aria-hidden="true"></i>
-                    <p class="text-helper">{{ 'mautic.lead.lead.lists.no_results'|trans }}</p>
-                    <div class="clearfix"></div>
+                    <i class="ri-pie-chart-line" aria-hidden="true"></i>
+                </div>
+                <p class="text-helper">{{ 'mautic.lead.lead.lists.no_results'|trans }}</p>
+                <div class="clearfix"></div>
                 {% endset %}
                 
                 {% include '@MauticCore/Components/tile--base.html.twig' with {'tiles': [{'content': content}]} %}
