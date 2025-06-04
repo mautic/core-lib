@@ -94,9 +94,11 @@
                                     <i class="ri-fw ri-send-plane-line"></i></label>
                             {% endif %}
                         </div>
-                        {{ include('@MauticCore/Helper/description--inline.html.twig', {
-                            'description': item.description
-                        }) }}
+                        {% if item.description %}
+                            <div class="text-secondary mt-4">
+                                <small>{{ item.description|purify }}</small>
+                            </div>
+                        {% endif %}
                     </td>
 
                     <td>{{ (model.getTableData()[item.getSource()]['display_name'] ?? item.getSource())|trans }}</td>
