@@ -88,7 +88,7 @@
 {% if activeForm.noIndex is defined and activeForm.noIndex == 1 %}
     {% include '@MauticCore/Helper/_tag.html.twig' with {
         tags: [{
-            label: 'mautic.form.tag.search_index.disabled'|trans,
+            label: 'mautic.core.tag.search_index.disabled'|trans,
             icon: 'ri-eye-off-fill',
             color: 'blue',
             icon_only: true
@@ -132,7 +132,7 @@
     <div class="col-md-9 height-auto">
         <div>
             <!-- form detail header -->
-            {% include '@MauticCore/Helper/description.html.twig' with {'description': activeForm.description} %}
+            {% include '@MauticCore/Helper/description--expanded.html.twig' with {'description': activeForm.description} %}
             <!--/ form detail header -->
 
             <!-- form detail collapseable -->

@@ -14,6 +14,7 @@ use Mautic\CoreBundle\Model\IteratorExportDataModel;
 use Mautic\CoreBundle\Service\FlashBag;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Helper\MailHelper;
+use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Deduplicate\ContactMerger;
 use Mautic\LeadBundle\Deduplicate\Exception\SameContactException;
@@ -1379,7 +1380,7 @@ class LeadController extends FormController
     /**
      * @param int $objectId
      */
-    public function emailAction(Request $request, UserHelper $userHelper, MailHelper $mailHelper, $objectId = 0): JsonResponse|Response
+    public function emailAction(Request $request, UserHelper $userHelper, MailHelper $mailHelper, LeadModel $leadModel, EmailModel $emailModel, $objectId = 0): JsonResponse|Response
     {
         $valid = $cancelled = false;
 
@@ -1428,6 +1429,9 @@ class LeadController extends FormController
                 $email['from'] = $lead->getOwner()->getEmail();
             }
         }
+
+        // Hydrate contacts with company profile fields
+        $leadFields = $emailModel->enrichedContactWithCompanies($leadFields);
 
         // Check if lead has a bounce status
         $dnc    = $this->doctrine->getManager()->getRepository(DoNotContact::class)->getEntriesByLeadAndChannel($lead, 'email');
@@ -1665,7 +1669,7 @@ class LeadController extends FormController
             $campaigns = $campaignModel->getPublishedCampaigns(true);
             $items     = [];
             foreach ($campaigns as $campaign) {
-                $items[$campaign['name']] = $campaign['id'];
+                $items[$campaign['name'].' ('.$campaign['id'].')'] = $campaign['id'];
             }
 
             $route = $this->generateUrl(
@@ -1847,7 +1851,7 @@ class LeadController extends FormController
             $stages = $model->getUserStages();
             $items  = [];
             foreach ($stages as $stage) {
-                $items[$stage['name']] = $stage['id'];
+                $items[$stage['name'].' ('.$stage['id'].')'] = $stage['id'];
             }
 
             $route = $this->generateUrl(
@@ -1949,7 +1953,7 @@ class LeadController extends FormController
             $users = $userModel->getRepository()->getUserList('', 0);
             $items = [];
             foreach ($users as $user) {
-                $items[$user['firstName'].' '.$user['lastName']] = $user['id'];
+                $items[$user['firstName'].' '.$user['lastName'].' ('.$user['id'].')'] = $user['id'];
             }
 
             $route = $this->generateUrl(
