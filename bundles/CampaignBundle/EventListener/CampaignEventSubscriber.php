@@ -12,6 +12,7 @@ use Mautic\CampaignBundle\Event\ExecutedEvent;
 use Mautic\CampaignBundle\Event\FailedEvent;
 use Mautic\CampaignBundle\Executioner\Helper\NotificationHelper;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
+use Mautic\CoreBundle\Twig\Helper\DateHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CampaignEventSubscriber implements EventSubscriberInterface
@@ -20,7 +21,7 @@ class CampaignEventSubscriber implements EventSubscriberInterface
 
     private float $disableCampaignThreshold = 0.35;
 
-    public function __construct(private EventRepository $eventRepository, private NotificationHelper $notificationHelper, private CampaignRepository $campaignRepository, private LeadEventLogRepository $leadEventLogRepository)
+    public function __construct(private EventRepository $eventRepository, private NotificationHelper $notificationHelper, private CampaignRepository $campaignRepository, private LeadEventLogRepository $leadEventLogRepository, private DateHelper $dateHelper)
     {
     }
 
@@ -125,9 +126,10 @@ class CampaignEventSubscriber implements EventSubscriberInterface
 
         $firstExecutionDate = $logStats['first_execution_date'] ? new DateTimeHelper($logStats['first_execution_date']) : null;
         $lastExecutionDate  = $logStats['last_execution_date'] ? new DateTimeHelper($logStats['last_execution_date']) : null;
-
-        $eventPreview->addEventStat('first_execution_date', $firstExecutionDate?->toLocalString());
-        $eventPreview->addEventStat('last_execution_date', $lastExecutionDate?->toLocalString());
+        if ($firstExecutionDate && $lastExecutionDate) {
+            $eventPreview->addEventStat('first_execution_date', $this->dateHelper->toText($firstExecutionDate->toLocalString()));
+            $eventPreview->addEventStat('last_execution_date', $this->dateHelper->toText($lastExecutionDate->toLocalString()));
+        }
         $eventPreview->addEventStat('total_executions', $logStats['total_executions']);
         $eventPreview->addEventStat('pending_executions', $logStats['pending_executions']);
 

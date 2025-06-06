@@ -181,8 +181,6 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $conditionEventDetails = json_decode($clientResponse->getContent(), true);
         $this->assertEquals([
-            'first_execution_date' => null,
-            'last_execution_date'  => null,
             'total_executions'     => 0,
             'pending_executions'   => 0,
             'negative_path_count'  => 0,
@@ -195,8 +193,6 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $emailEventDetails = json_decode($clientResponse->getContent(), true);
         $this->assertEquals([
-            'first_execution_date'      => null,
-            'last_execution_date'       => null,
             'total_executions'          => 0,
             'pending_executions'        => 0,
             'sent_count'                => 0,
@@ -215,8 +211,8 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $conditionEventDetails = json_decode($clientResponse->getContent(), true);
-        $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $conditionEventDetails['first_execution_date']);
-        $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $conditionEventDetails['last_execution_date']);
+        $this->assertNotEmpty($conditionEventDetails['first_execution_date'], 'First execution date should not be empty');
+        $this->assertNotEmpty($conditionEventDetails['last_execution_date'], 'Last execution date should not be empty');
         $this->assertEquals(4, $conditionEventDetails['total_executions']);
         $this->assertEquals(0, $conditionEventDetails['pending_executions']);
         $this->assertEquals(1, $conditionEventDetails['negative_path_count']);
@@ -227,8 +223,8 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $emailEventDetails = json_decode($clientResponse->getContent(), true);
-        $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $emailEventDetails['first_execution_date']);
-        $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $emailEventDetails['last_execution_date']);
+        $this->assertNotEmpty($emailEventDetails['first_execution_date'], 'First execution date should not be empty');
+        $this->assertNotEmpty($emailEventDetails['last_execution_date'], 'Last execution date should not be empty');
         $this->assertEquals(3, $emailEventDetails['total_executions']);
         $this->assertEquals(0, $emailEventDetails['pending_executions']);
         $this->assertEquals(3, $emailEventDetails['sent_count']);
@@ -254,8 +250,8 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $emailEventDetails = json_decode($clientResponse->getContent(), true);
-        $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $emailEventDetails['first_execution_date']);
-        $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $emailEventDetails['last_execution_date']);
+        $this->assertNotEmpty($emailEventDetails['first_execution_date'], 'First execution date should not be empty');
+        $this->assertNotEmpty($emailEventDetails['last_execution_date'], 'Last execution date should not be empty');
         $this->assertEquals(3, $emailEventDetails['total_executions']);
         $this->assertEquals(0, $emailEventDetails['pending_executions']);
         $this->assertEquals(3, $emailEventDetails['sent_count']);
