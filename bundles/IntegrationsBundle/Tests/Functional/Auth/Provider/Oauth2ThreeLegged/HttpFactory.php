@@ -14,12 +14,11 @@ use Mautic\IntegrationsBundle\Auth\Provider\AuthProviderInterface;
 use Mautic\IntegrationsBundle\Auth\Provider\Oauth2ThreeLegged\HttpFactory as OriginalHttpFactory;
 
 /**
- * @todo: Remove `extends \Mautic\IntegrationsBundle\Auth\Provider\Oauth2ThreeLegged\HttpFactory`
  * This mock class should just implement the interface.
  * In many custom plugins, the `HttpFactory` is used as argument in constructor injection. The use of class
  * `HttpFactory` should be replaced with AuthProviderInterface.
  */
-class HttpFactory extends \Mautic\IntegrationsBundle\Auth\Provider\Oauth2ThreeLegged\HttpFactory implements AuthProviderInterface
+class HttpFactory extends OriginalHttpFactory implements AuthProviderInterface
 {
     private ClientInterface $client;
 
