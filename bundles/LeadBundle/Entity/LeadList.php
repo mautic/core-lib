@@ -25,7 +25,7 @@ class LeadList extends FormEntity implements UuidInterface
     use ProjectTrait;
 
     public const TABLE_NAME  = 'lead_lists';
-    public const ENTITY_NAME = 'lists';
+    public const ENTITY_NAME = 'lead_list';
 
     /**
      * @var int|null

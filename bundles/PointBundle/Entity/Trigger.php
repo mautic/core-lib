@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 class Trigger extends FormEntity implements UuidInterface
 {
     use UuidTrait;
-    public const ENTITY_NAME = 'pointTrigger';
+    public const ENTITY_NAME = 'point_trigger';
 
     /**
      * @var int

@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 class Action implements UuidInterface
 {
     use UuidTrait;
-    public const ENTITY_NAME = 'form_actions';
+    public const ENTITY_NAME = 'form_action';
 
     /**
      * @var int
