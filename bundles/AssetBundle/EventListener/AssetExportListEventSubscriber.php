@@ -9,7 +9,7 @@ use Mautic\AssetBundle\Event\AssetExportListEvent;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class AsssetExportListEventSubscriber implements EventSubscriberInterface
+final class AssetExportListEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(private PathsHelper $pathsHelper)
     {
