@@ -6,7 +6,7 @@ namespace Mautic\AssetBundle\Event;
 
 use Mautic\CoreBundle\Event\CommonEvent;
 
-final class AsssetExportListEvent extends CommonEvent
+final class AssetExportListEvent extends CommonEvent
 {
     /**
      * @var array<string>

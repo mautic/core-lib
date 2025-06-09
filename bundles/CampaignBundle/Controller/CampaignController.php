@@ -5,7 +5,7 @@ namespace Mautic\CampaignBundle\Controller;
 use Doctrine\DBAL\Cache\CacheException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
-use Mautic\AssetBundle\Event\AsssetExportListEvent;
+use Mautic\AssetBundle\Event\AssetExportListEvent;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
@@ -165,7 +165,7 @@ class CampaignController extends AbstractStandardFormController
 
         $jsonOutput = json_encode([$data], JSON_PRETTY_PRINT);
 
-        $assetListEvent = new AsssetExportListEvent([$data]);
+        $assetListEvent = new AssetExportListEvent([$data]);
         $assetListEvent = $this->dispatcher->dispatch($assetListEvent);
         $assetList      = $assetListEvent->getList();
 
@@ -253,7 +253,7 @@ class CampaignController extends AbstractStandardFormController
             }
         }
 
-        $assetListEvent = new AsssetExportListEvent($allData);
+        $assetListEvent = new AssetExportListEvent($allData);
         $assetListEvent = $this->dispatcher->dispatch($assetListEvent);
         $assetList      = $assetListEvent->getList();
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Command;
 
-use Mautic\AssetBundle\Event\AsssetExportListEvent;
+use Mautic\AssetBundle\Event\AssetExportListEvent;
 use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\ExportHelper;
@@ -70,7 +70,7 @@ final class EntityExportCommand extends ModeratedCommand
             return self::FAILURE;
         }
 
-        $assetListEvent = new AsssetExportListEvent($allData);
+        $assetListEvent = new AssetExportListEvent($allData);
         $assetListEvent = $this->dispatcher->dispatch($assetListEvent);
         $assetList      = $assetListEvent->getList();
 
