@@ -145,6 +145,11 @@ class ExportHelperTest extends TestCase
         $assetList  = [$assetFilePath1, $assetFilePath2];
         $jsonOutput = json_encode(['key' => 'value']);
 
+        // Pre-create entity_data.json to trigger unlink in method
+        $jsonFilePath = sprintf('%s/entity_data.json', $customDir);
+        file_put_contents($jsonFilePath, 'Old content');
+        $this->assertFileExists($jsonFilePath);
+
         // Call the method with custom path
         $zipFilePath = $this->exportHelper->writeToZipFile($jsonOutput, $assetList, $customDir);
 
@@ -160,6 +165,7 @@ class ExportHelperTest extends TestCase
         $this->assertNotFalse($zip->locateName('assets/'.basename($assetFilePath2)));
 
         $zip->close();
+        $this->assertFileDoesNotExist($jsonFilePath);
 
         // Clean up using Symfony Filesystem
         $filesystem->remove([$assetFilePath1, $assetFilePath2, $zipFilePath, $customDir]);
