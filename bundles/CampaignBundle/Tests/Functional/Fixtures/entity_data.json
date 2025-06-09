@@ -25,18 +25,23 @@
                         },
                         {
                             "id": "5",
-                            "positionX": "542",
-                            "positionY": "285"
+                            "positionX": "439",
+                            "positionY": "291"
                         },
                         {
                             "id": "7",
-                            "positionX": "716",
-                            "positionY": "215"
+                            "positionX": "752",
+                            "positionY": "223"
                         },
                         {
                             "id": "4",
                             "positionX": "62",
                             "positionY": "393"
+                        },
+                        {
+                            "id": "8",
+                            "positionX": "852",
+                            "positionY": "328"
                         },
                         {
                             "id": "lists",
@@ -103,6 +108,14 @@
                             "targetId": "7",
                             "anchors": {
                                 "source": "yes",
+                                "target": "top"
+                            }
+                        },
+                        {
+                            "sourceId": "7",
+                            "targetId": "8",
+                            "anchors": {
+                                "source": "no",
                                 "target": "top"
                             }
                         }
@@ -305,15 +318,22 @@
                 "event_type": "action",
                 "event_order": 2,
                 "properties": {
-                    "canvasSettings": {
-                        "droppedX": "543",
-                        "droppedY": "280"
-                    },
+                    "id": 5,
                     "name": "",
-                    "triggerMode": "interval",
+                    "description": "",
+                    "type": "email.send",
+                    "eventType": "action",
+                    "order": 2,
+                    "properties": {
+                        "email": 1,
+                        "email_type": "transactional",
+                        "priority": "2",
+                        "attempts": "3"
+                    },
                     "triggerDate": null,
                     "triggerInterval": "1",
                     "triggerIntervalUnit": "d",
+                    "triggerHour": null,
                     "triggerRestrictedStartHour": "17:00",
                     "triggerRestrictedStopHour": "18:00",
                     "triggerRestrictedDaysOfWeek": [
@@ -322,22 +342,29 @@
                         "3"
                     ],
                     "triggerWindow": "0",
+                    "triggerMode": "interval",
+                    "decisionPath": "no",
+                    "tempId": "new53e9a23f3b0380c744fbf838749f3fa4dd56bf7ccc892d30ffb1701fb2805706",
+                    "contactLog": [],
+                    "channel": "email",
+                    "channelId": 1,
+                    "changes": [],
+                    "deleted": null,
+                    "failedCount": 0,
+                    "uuid": "1af1fc8f-cee5-4087-bb19-abf8966c4b56",
+                    "label": "within 1 day",
                     "anchor": "no",
-                    "properties": {
-                        "email": 1,
-                        "email_type": "transactional",
-                        "priority": "2",
-                        "attempts": "3"
-                    },
-                    "type": "email.send",
-                    "eventType": "action",
                     "anchorEventType": "condition",
+                    "canvasSettings": {
+                        "droppedX": "543",
+                        "droppedY": "280"
+                    },
                     "campaignId": "1",
                     "_token": "7096fe32b3d1b1e9eced95ec12934e.Xezc_mJFKNeX-nv6wopwUBV1iA9mKi9gr5DiQgMWM3s.E8HlnRIRcZjOo0LMgdU-EiMwsF0RaBZZ96SGBXt4fiMtp6iKJXYfg9O0HA",
                     "buttons": {
                         "save": ""
                     },
-                    "email": 1,
+                    "email": "1",
                     "email_type": "transactional",
                     "priority": 2,
                     "attempts": 3
@@ -487,6 +514,54 @@
                 "channel_id": 0,
                 "parent_id": 2,
                 "uuid": "3a0921cc-80b1-4e5f-ab01-8323e48c9a7d"
+            },
+            {
+                "id": 8,
+                "campaign_id": 1,
+                "name": "Downloads asset",
+                "description": null,
+                "type": "asset.download",
+                "event_type": "decision",
+                "event_order": 3,
+                "properties": {
+                    "canvasSettings": {
+                        "droppedX": "852",
+                        "droppedY": "328"
+                    },
+                    "name": "",
+                    "anchor": "no",
+                    "properties": {
+                        "assets": [
+                            "1"
+                        ]
+                    },
+                    "type": "asset.download",
+                    "eventType": "decision",
+                    "anchorEventType": "condition",
+                    "campaignId": "1",
+                    "_token": "25aebe64355ddff.Tk4QmGoBlPB22ciuVWp0cEQdhAQiRJMiPzxnnahjyrE.CCVZzi4z_KE9oZqcPD9DRBJ08Tx0IeQPU24J1NsEmvgkLz3aKEPHuUPvqw",
+                    "buttons": {
+                        "save": ""
+                    },
+                    "triggerDate": null,
+                    "assets": [
+                        1
+                    ]
+                },
+                "trigger_interval": 0,
+                "trigger_interval_unit": null,
+                "trigger_mode": null,
+                "trigger_date": null,
+                "trigger_hour": null,
+                "triggerRestrictedStartHour": null,
+                "triggerRestrictedStopHour": null,
+                "triggerRestrictedDaysOfWeek": [],
+                "triggerWindow": null,
+                "decisionPath": "no",
+                "channel": "asset",
+                "channel_id": 1,
+                "parent_id": 7,
+                "uuid": "53af645a-c78a-4086-8b78-626c75d6fea2"
             }
         ],
         "email": [
@@ -564,6 +639,27 @@
                 "uuid": "06dc9072-fd26-45a7-a63b-8e3cc2a7a5af"
             }
         ],
+        "asset": [
+            {
+                "id": 1,
+                "is_published": true,
+                "title": "icon_128x128.png",
+                "description": null,
+                "alias": "icon128x128png",
+                "storage_location": "local",
+                "path": "1f0ed1fbf1ccef48fedd96657797f36976a2c5f6.png",
+                "remote_path": null,
+                "original_file_name": "icon_128x128.png",
+                "lang": "en",
+                "publish_up": null,
+                "publish_down": null,
+                "extension": "png",
+                "mime": "image\/png",
+                "size": 10,
+                "disallow": true,
+                "uuid": "55f6d8d7-f656-4483-86f1-034f91a7fc51"
+            }
+        ],
         "dependencies": [
             {
                 "campaign_event": [
@@ -592,6 +688,11 @@
                     {
                         "campaign": 1,
                         "campaign_event": 4
+                    },
+                    {
+                        "campaign": 1,
+                        "campaign_event": 8,
+                        "asset": 1
                     }
                 ],
                 "lists": [
