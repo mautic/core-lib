@@ -15,9 +15,12 @@ use Mautic\CampaignBundle\Event\FailedEvent;
 use Mautic\CampaignBundle\EventCollector\Accessor\Event\AbstractEventAccessor;
 use Mautic\CampaignBundle\EventListener\CampaignEventSubscriber;
 use Mautic\CampaignBundle\Executioner\Helper\NotificationHelper;
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Twig\Helper\DateHelper;
 use Mautic\LeadBundle\Entity\Lead;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CampaignEventSubscriberTest extends TestCase
 {
@@ -43,17 +46,28 @@ class CampaignEventSubscriberTest extends TestCase
      */
     private $leadEventLogRepositoryMock;
 
+    private DateHelper $dateHelper;
+
     public function setUp(): void
     {
         $this->eventRepo                  = $this->createMock(EventRepository::class);
         $this->notificationHelper         = $this->createMock(NotificationHelper::class);
         $this->campaignRepository         = $this->createMock(CampaignRepository::class);
         $this->leadEventLogRepositoryMock = $this->createMock(LeadEventLogRepository::class);
+        $this->dateHelper                 = new DateHelper(
+            'F j, Y g:i a T',
+            'D, M d',
+            'F j, Y',
+            'g:i a',
+            $this->createMock(TranslatorInterface::class),
+            $this->createMock(CoreParametersHelper::class)
+        );
         $this->fixture                    = new CampaignEventSubscriber(
             $this->eventRepo,
             $this->notificationHelper,
             $this->campaignRepository,
-            $this->leadEventLogRepositoryMock
+            $this->leadEventLogRepositoryMock,
+            $this->dateHelper
         );
     }
 
