@@ -660,6 +660,115 @@
                 "uuid": "55f6d8d7-f656-4483-86f1-034f91a7fc51"
             }
         ],
+        "lists": [
+            {
+                "id": 1,
+                "name": "Test Segment 1",
+                "is_published": true,
+                "description": null,
+                "alias": "test-segment-1",
+                "public_name": "Test Segment 1",
+                "filters": [],
+                "is_global": true,
+                "is_preference_center": false,
+                "uuid": "ac5aa042-680b-4274-8b7e-68a15334bc3b"
+            }
+        ],
+        "forms": [
+            {
+                "id": 1,
+                "name": "test",
+                "is_published": true,
+                "description": null,
+                "alias": "test",
+                "lang": null,
+                "cached_html": "\n<style type=\"text\/css\" scoped>\n    .mauticform_wrapper { max-width: 600px; margin: 10px auto; }\n    .mauticform-innerform {}\n    .mauticform-post-success {}\n    .mauticform-name { font-weight: bold; font-size: 1.5em; margin-bottom: 3px; }\n    .mauticform-description { margin-top: 2px; margin-bottom: 10px; }\n    .mauticform-error { margin-bottom: 10px; color: red; }\n    .mauticform-message { margin-bottom: 10px; color: green; }\n    .mauticform-row { display: block; margin-bottom: 20px; }\n    .mauticform-label { font-size: 1.1em; display: block; font-weight: bold; margin-bottom: 5px; }\n    .mauticform-row.mauticform-required .mauticform-label:after { color: #e32; content: \" *\"; display: inline; }\n    .mauticform-helpmessage { display: block; font-size: 0.9em; margin-bottom: 3px; }\n    .mauticform-errormsg { display: block; color: red; margin-top: 2px; }\n    .mauticform-selectbox, .mauticform-input, .mauticform-textarea { width: 100%; padding: 0.5em 0.5em; border: 1px solid #CCC; background: #fff; box-shadow: 0px 0px 0px #fff inset; border-radius: 4px; box-sizing: border-box; }\n    .mauticform-checkboxgrp-row {}\n    .mauticform-checkboxgrp-label { font-weight: normal; }\n    .mauticform-checkboxgrp-checkbox {}\n    .mauticform-radiogrp-row {}\n    .mauticform-radiogrp-label { font-weight: normal; }\n    .mauticform-radiogrp-radio {}\n    .mauticform-button-wrapper .mauticform-button.btn-ghost, .mauticform-pagebreak-wrapper .mauticform-pagebreak.btn-ghost { color: #5d6c7c;background-color: #ffffff;border-color: #dddddd;}\n    .mauticform-button-wrapper .mauticform-button, .mauticform-pagebreak-wrapper .mauticform-pagebreak { display: inline-block;margin-bottom: 0;font-weight: 600;text-align: center;vertical-align: middle;cursor: pointer;background-image: none;border: 1px solid transparent;white-space: nowrap;padding: 6px 12px;font-size: 13px;line-height: 1.3856;border-radius: 3px;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}\n    .mauticform-button-wrapper .mauticform-button.btn-ghost[disabled], .mauticform-pagebreak-wrapper .mauticform-pagebreak.btn-ghost[disabled] { background-color: #ffffff; border-color: #dddddd; opacity: 0.75; cursor: not-allowed; }\n    .mauticform-pagebreak-wrapper .mauticform-button-wrapper {  display: inline; }\n\n    \/* Make fields display inline when using width classes *\/\n    .mauticform-page-wrapper {\n        display: flex;\n        flex-wrap: wrap;\n        width: 100%;\n        margin: 0 -10px;\n    }\n\n    \/* Ensure field containers respect width classes *\/\n    .mauticform-row {\n        box-sizing: border-box;\n        padding: 0 10px;\n        margin-bottom: 15px;\n    }\n\n    \/* Responsive adjustment for mobile *\/\n    @media (max-width: 767px) {\n        .mauticform-three-quarters-width,\n        .mauticform-two-thirds-width,\n        .mauticform-half-width,\n        .mauticform-one-third-width,\n        .mauticform-one-quarter-width {\n            width: 100%;\n        }\n    }\n\n    \/**\n    * @see https:\/\/github.com\/TarekRaafat\/autoComplete.js\/blob\/master\/dist\/css\/autoComplete.02.css.\n    *\/\n    .autoComplete_wrapper {position: relative;}\n    .autoComplete_wrapper > input::placeholder {transition: all 0.3s ease;}\n    .autoComplete_wrapper > ul {position: absolute;max-height: 226px;overflow-y: scroll;top: 100%;left: 0;right: 0;padding: 0;margin: 0.5rem 0 0 0;border-radius: 4px;background-color: #fff;border: 1px solid rgba(33, 33, 33, 0.1);z-index: 1000;outline: none;}\n    .autoComplete_wrapper > ul > li {padding: 10px 20px;list-style: none;text-align: left;font-size: 16px;color: #212121;transition: all 0.1s ease-in-out;border-radius: 3px;background-color: rgba(255, 255, 255, 1);white-space: nowrap;overflow: hidden;text-overflow: ellipsis;transition: all 0.2s ease;}\n    .autoComplete_wrapper > ul > li > span {float: right;}\n    .autoComplete_wrapper > ul > li::selection {color: rgba(#ffffff, 0);background-color: rgba(#ffffff, 0);}\n    .autoComplete_wrapper > ul > li:hover {cursor: pointer;background-color: rgba(123, 123, 123, 0.1);}\n    .autoComplete_wrapper > ul > li mark {background-color: transparent;font-weight: bold;}\n    .autoComplete_wrapper > ul > li mark::selection {background-color: rgba(#ffffff, 0);}\n    .autoComplete_wrapper > ul > li[aria-selected=\"true\"] {background-color: rgba(123, 123, 123, 0.1);}\n    @media only screen and (max-width: 600px) {\n      .autoComplete_wrapper > input {width: 18rem;}\n    }\n<\/style>\n\n<style type=\"text\/css\" scoped>\n    .mauticform-field-hidden { display:none }\n<\/style>\n<div id=\"mauticform_wrapper_test\" class=\"mauticform_wrapper\">\n    <form autocomplete=\"false\" role=\"form\" method=\"post\" action=\"https:\/\/campaign.ddev.site\/form\/submit?formId=1\" id=\"mauticform_test\" data-mautic-form=\"test\" enctype=\"multipart\/form-data\" ><div class=\"mauticform-error\" id=\"mauticform_test_error\"><\/div>\n            <div class=\"mauticform-message\" id=\"mauticform_test_message\"><\/div><div class=\"mauticform-innerform\">\n            <div class=\"mauticform-page-wrapper mauticform-page-1\" data-mautic-form-page=\"1\" >\n                  \n\n\n      \n  \n    \n\n\n    \n\n\n\n<div id=\"mauticform_test_f_test\"class=\"mauticform-row mauticform-date mauticform-field-1\"style=\"width: 100%\">\n  <label id=\"mauticform_label_test_f_test\"for=\"mauticform_input_test_f_test\"class=\"mauticform-label\">test<\/label>\n  \n      <input type=\"date\" name=\"mauticform[f_test]\"value=\"\"id=\"mauticform_input_test_f_test\"class=\"mauticform-input\" \/>\n  \n  <span class=\"mauticform-errormsg\" style=\"display:none;\"><\/span>\n<\/div>\n                  \n      \n  \n    \n    \n\n<div id=\"mauticform_test_submit\"class=\"mauticform-row mauticform-button-wrapper mauticform-field-2\"style=\"width: 100%\">\n  <button class=\"btn btn-ghost mauticform-button\"name=\"mauticform[submit]\"value=\"1\"id=\"mauticform_input_test_submit\"type=\"submit\">Submit<\/button>\n<\/div>\n                  <\/div><\/div><input type=\"hidden\" name=\"mauticform[formId]\" id=\"mauticform_test_id\" value=\"1\"\/>\n        <input type=\"hidden\" name=\"mauticform[return]\" id=\"mauticform_test_return\" value=\"\"\/>\n        <input type=\"hidden\" name=\"mauticform[formName]\" id=\"mauticform_test_name\" value=\"test\"\/>\n        \n    <\/form>\n<\/div>\n",
+                "post_action": "message",
+                "template": null,
+                "form_type": "campaign",
+                "render_style": true,
+                "post_action_property": "test",
+                "form_attr": null,
+                "uuid": "805ad9e8-3ecd-4c54-bd93-516cdd0a6561"
+            }
+        ],
+        "form_field": [
+            {
+                "id": 1,
+                "uuid": "5fb6da79-70d2-4136-b1b8-d52564430afb",
+                "label": "test",
+                "show_label": true,
+                "alias": "f_test",
+                "type": "date",
+                "is_custom": false,
+                "custom_parameters": [],
+                "default_value": null,
+                "is_required": false,
+                "validation_message": null,
+                "help_message": null,
+                "field_order": 1,
+                "properties": {
+                    "placeholder": null
+                },
+                "validation": [],
+                "parent_id": null,
+                "conditions": [],
+                "label_attr": null,
+                "input_attr": null,
+                "container_attr": null,
+                "save_result": true,
+                "is_auto_fill": false,
+                "show_when_value_exists": true,
+                "show_after_x_submissions": null,
+                "mapped_object": "contact",
+                "mapped_field": null,
+                "form": 1
+            },
+            {
+                "id": 2,
+                "uuid": "e28d9f74-90f7-48a4-a690-595339aea9e9",
+                "label": "Submit",
+                "show_label": true,
+                "alias": "submit",
+                "type": "button",
+                "is_custom": false,
+                "custom_parameters": [],
+                "default_value": null,
+                "is_required": false,
+                "validation_message": null,
+                "help_message": null,
+                "field_order": 2,
+                "properties": [],
+                "validation": [],
+                "parent_id": null,
+                "conditions": [],
+                "label_attr": null,
+                "input_attr": "class=\"btn btn-ghost\"",
+                "container_attr": null,
+                "save_result": true,
+                "is_auto_fill": false,
+                "show_when_value_exists": null,
+                "show_after_x_submissions": null,
+                "mapped_object": null,
+                "mapped_field": null,
+                "form": 1
+            }
+        ],
+        "form_action": [
+            {
+                "id": 1,
+                "uuid": "9d2abe74-9474-4cc2-9533-77b029c6c5e0",
+                "name": "test",
+                "description": null,
+                "type": "asset.download",
+                "action_order": 1,
+                "properties": {
+                    "asset": 1,
+                    "category": "new"
+                },
+                "form": 1
+            }
+        ],
         "dependencies": [
             {
                 "campaign_event": [
@@ -703,8 +812,26 @@
                 ],
                 "forms": [
                     {
+                        "forms": 1,
+                        "form_field": 1
+                    },
+                    {
+                        "forms": 1,
+                        "form_field": 2
+                    },
+                    {
+                        "forms": 1,
+                        "form_action": 1
+                    },
+                    {
                         "campaign": 1,
                         "forms": 1
+                    }
+                ],
+                "form_action": [
+                    {
+                        "form_action": 1,
+                        "asset": 1
                     }
                 ]
             }
