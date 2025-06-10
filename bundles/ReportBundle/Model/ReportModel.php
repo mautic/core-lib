@@ -496,8 +496,8 @@ class ReportModel extends FormModel
             $dataColumns[$columnData['alias']] = $dbColumn;
         }
 
-        $session = $this->getSession();
-        $orderBy = '';
+        $session    = $this->getSession();
+        $orderBy    = '';
         $orderByDir = 'ASC';
         // make sure to use the session if it's started. Otherwise this is impossible to test:
         // Failed to start the session because headers have already been sent by "/var/www/html/vendor/phpunit/phpunit/src/Util/Printer.php" at line 104.
