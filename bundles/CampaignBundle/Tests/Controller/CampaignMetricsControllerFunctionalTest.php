@@ -181,10 +181,10 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $conditionEventDetails = json_decode($clientResponse->getContent(), true);
         $this->assertEquals([
-            'total_executions'     => 0,
-            'pending_executions'   => 0,
-            'negative_path_count'  => 0,
-            'positive_path_count'  => 0,
+            'total_executions'     => ['value' => 0],
+            'pending_executions'   => ['value' => 0],
+            'negative_path_count'  => ['value' => 0],
+            'positive_path_count'  => ['value' => 0],
         ], $conditionEventDetails);
 
         // check email event details before running the campaign
@@ -193,14 +193,14 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $emailEventDetails = json_decode($clientResponse->getContent(), true);
         $this->assertEquals([
-            'total_executions'          => 0,
-            'pending_executions'        => 0,
-            'sent_count'                => 0,
-            'read_count'                => 0,
-            'clicked_count'             => 0,
-            'open_rate'                 => '0%',
-            'click_through_rate'        => '0%',
-            'click_through_open_rate'   => '0%',
+            'total_executions'          => ['value' => 0],
+            'pending_executions'        => ['value' => 0],
+            'sent_count'                => ['value' => 0],
+            'read_count'                => ['value' => 0],
+            'clicked_count'             => ['value' => 0],
+            'open_rate'                 => ['value' => '0%'],
+            'click_through_rate'        => ['value' => '0%'],
+            'click_through_open_rate'   => ['value' => '0%'],
         ], $emailEventDetails);
 
         $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
@@ -211,28 +211,32 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $conditionEventDetails = json_decode($clientResponse->getContent(), true);
-        $this->assertNotEmpty($conditionEventDetails['first_execution_date'], 'First execution date should not be empty');
-        $this->assertNotEmpty($conditionEventDetails['last_execution_date'], 'Last execution date should not be empty');
-        $this->assertEquals(4, $conditionEventDetails['total_executions']);
-        $this->assertEquals(0, $conditionEventDetails['pending_executions']);
-        $this->assertEquals(1, $conditionEventDetails['negative_path_count']);
-        $this->assertEquals(3, $conditionEventDetails['positive_path_count']);
+        $this->assertNotEmpty($conditionEventDetails['first_execution_date']['value'], 'First execution date should not be empty');
+        $this->assertNotEmpty($conditionEventDetails['first_execution_date']['tooltip'], 'First execution date should not be empty');
+        $this->assertNotEmpty($conditionEventDetails['last_execution_date']['value'], 'Last execution date should not be empty');
+        $this->assertNotEmpty($conditionEventDetails['last_execution_date']['tooltip'], 'Last execution date should not be empty');
+        $this->assertEquals(4, $conditionEventDetails['total_executions']['value']);
+        $this->assertEquals(0, $conditionEventDetails['pending_executions']['value']);
+        $this->assertEquals(1, $conditionEventDetails['negative_path_count']['value']);
+        $this->assertEquals(3, $conditionEventDetails['positive_path_count']['value']);
 
         // check email event details after running the campaign
         $this->client->request(Request::METHOD_GET, "/s/campaign/metrics/event-details/{$emailEvent->getId()}");
         $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $emailEventDetails = json_decode($clientResponse->getContent(), true);
-        $this->assertNotEmpty($emailEventDetails['first_execution_date'], 'First execution date should not be empty');
-        $this->assertNotEmpty($emailEventDetails['last_execution_date'], 'Last execution date should not be empty');
-        $this->assertEquals(3, $emailEventDetails['total_executions']);
-        $this->assertEquals(0, $emailEventDetails['pending_executions']);
-        $this->assertEquals(3, $emailEventDetails['sent_count']);
-        $this->assertEquals(0, $emailEventDetails['read_count']);
-        $this->assertEquals(0, $emailEventDetails['clicked_count']);
-        $this->assertEquals('0%', $emailEventDetails['open_rate']);
-        $this->assertEquals('0%', $emailEventDetails['click_through_rate']);
-        $this->assertEquals('0%', $emailEventDetails['click_through_open_rate']);
+        $this->assertNotEmpty($emailEventDetails['first_execution_date']['value'], 'First execution date should not be empty');
+        $this->assertNotEmpty($emailEventDetails['first_execution_date']['tooltip'], 'First execution date should not be empty');
+        $this->assertNotEmpty($emailEventDetails['last_execution_date']['value'], 'Last execution date should not be empty');
+        $this->assertNotEmpty($emailEventDetails['last_execution_date']['tooltip'], 'Last execution date should not be empty');
+        $this->assertEquals(3, $emailEventDetails['total_executions']['value']);
+        $this->assertEquals(0, $emailEventDetails['pending_executions']['value']);
+        $this->assertEquals(3, $emailEventDetails['sent_count']['value']);
+        $this->assertEquals(0, $emailEventDetails['read_count']['value']);
+        $this->assertEquals(0, $emailEventDetails['clicked_count']['value']);
+        $this->assertEquals('0%', $emailEventDetails['open_rate']['value']);
+        $this->assertEquals('0%', $emailEventDetails['click_through_rate']['value']);
+        $this->assertEquals('0%', $emailEventDetails['click_through_open_rate']['value']);
 
         // emulate email read and link click
         $emailStats = $this->em->getRepository(Stat::class)->findBy(['email' => $email]);
@@ -250,15 +254,17 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $emailEventDetails = json_decode($clientResponse->getContent(), true);
-        $this->assertNotEmpty($emailEventDetails['first_execution_date'], 'First execution date should not be empty');
-        $this->assertNotEmpty($emailEventDetails['last_execution_date'], 'Last execution date should not be empty');
-        $this->assertEquals(3, $emailEventDetails['total_executions']);
-        $this->assertEquals(0, $emailEventDetails['pending_executions']);
-        $this->assertEquals(3, $emailEventDetails['sent_count']);
-        $this->assertEquals(2, $emailEventDetails['read_count']);
-        $this->assertEquals(1, $emailEventDetails['clicked_count']);
-        $this->assertEquals('66.67%', $emailEventDetails['open_rate']);
-        $this->assertEquals('33.33%', $emailEventDetails['click_through_rate']);
-        $this->assertEquals('50%', $emailEventDetails['click_through_open_rate']);
+        $this->assertNotEmpty($emailEventDetails['first_execution_date']['value'], 'First execution date should not be empty');
+        $this->assertNotEmpty($emailEventDetails['first_execution_date']['tooltip'], 'First execution date should not be empty');
+        $this->assertNotEmpty($emailEventDetails['last_execution_date']['value'], 'Last execution date should not be empty');
+        $this->assertNotEmpty($emailEventDetails['last_execution_date']['tooltip'], 'Last execution date should not be empty');
+        $this->assertEquals(3, $emailEventDetails['total_executions']['value']);
+        $this->assertEquals(0, $emailEventDetails['pending_executions']['value']);
+        $this->assertEquals(3, $emailEventDetails['sent_count']['value']);
+        $this->assertEquals(2, $emailEventDetails['read_count']['value']);
+        $this->assertEquals(1, $emailEventDetails['clicked_count']['value']);
+        $this->assertEquals('66.67%', $emailEventDetails['open_rate']['value']);
+        $this->assertEquals('33.33%', $emailEventDetails['click_through_rate']['value']);
+        $this->assertEquals('50%', $emailEventDetails['click_through_open_rate']['value']);
     }
 }

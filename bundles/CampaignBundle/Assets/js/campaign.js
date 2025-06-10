@@ -2463,16 +2463,22 @@ Mautic.previewCampaignEventDetails = function() {
     const renderEventDetails = function($el, data) {
         const $dl = mQuery('<dl class="dl-horizontal campaign-event-details-dl"/>');
 
-        Object.entries(data).forEach(([key, value]) => {
+        Object.entries(data).forEach(([key, stat]) => {
             const translationKey = 'mautic.campaign.event.' + key;
 
-            $dl.append(
-                '<dt data-event-details-key="' + key + '">' +
-                Mautic.translate(translationKey) +
-                '</dt><dd data-event-details-key="' + key + '">' +
-                value +
-                '</dd>'
-            );
+            const $dt = mQuery('<dt>')
+                .attr('data-event-details-key', key)
+                .text(Mautic.translate(translationKey));
+
+            const $dd = mQuery('<dd>')
+                .attr('data-event-details-key', key)
+                .text(stat.value);
+
+            if (stat.tooltip) {
+                $dd.attr('title', stat.tooltip);
+            }
+
+            $dl.append($dt).append($dd);
         });
         $el.find('.campaign-event-details').html($dl);
         $el.data('event-details-loaded', true);

@@ -18,8 +18,12 @@ class EventPreview
         return $this->event->getType() === $type;
     }
 
-    public function addEventStat(string $key, mixed $value): void
+    public function addEventStat(string $key, mixed $value, string $tooltip = null): void
     {
-        $this->eventStats[$key] = $value;
+        $stat = ['value' => $value];
+        if ($tooltip) {
+            $stat['tooltip'] = $tooltip;
+        }
+        $this->eventStats[$key] = $stat;
     }
 }

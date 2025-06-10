@@ -127,8 +127,16 @@ class CampaignEventSubscriber implements EventSubscriberInterface
         $firstExecutionDate = $logStats['first_execution_date'] ? new DateTimeHelper($logStats['first_execution_date']) : null;
         $lastExecutionDate  = $logStats['last_execution_date'] ? new DateTimeHelper($logStats['last_execution_date']) : null;
         if ($firstExecutionDate && $lastExecutionDate) {
-            $eventPreview->addEventStat('first_execution_date', $this->dateHelper->toText($firstExecutionDate->toLocalString()));
-            $eventPreview->addEventStat('last_execution_date', $this->dateHelper->toText($lastExecutionDate->toLocalString()));
+            $eventPreview->addEventStat(
+                key: 'first_execution_date',
+                value: $this->dateHelper->toText($firstExecutionDate->toLocalString()),
+                tooltip: $firstExecutionDate->toLocalString()
+            );
+            $eventPreview->addEventStat(
+                key: 'last_execution_date',
+                value: $this->dateHelper->toText($lastExecutionDate->toLocalString()),
+                tooltip: $lastExecutionDate->toLocalString()
+            );
         }
         $eventPreview->addEventStat('total_executions', $logStats['total_executions']);
         $eventPreview->addEventStat('pending_executions', $logStats['pending_executions']);
