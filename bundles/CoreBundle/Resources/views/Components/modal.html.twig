@@ -9,6 +9,7 @@
     - modalAriaLabel
     - closeButtonLabel
     - modalContent
+    - hasScrollingContent
     - isFullWidth
     - buttons
 #}
@@ -27,7 +28,7 @@
                     <h2 class="modal-header__heading type-heading-03">{{ modalHeading }}</h2>
                 {% endif %}
             </div>
-            <div class="modal-body{% if isFullWidth is defined and isFullWidth and type != 'expressive' %} pa-0{% endif %}{% if type == 'expressive' %} pr-32 pl-32{% endif %}"{% if modalLabel is defined %} aria-label="{{ modalLabel }}"{% else %} aria-label="{{ modalAriaLabel }}"{% endif %} tabindex="0">
+            <div class="modal-body{% if isFullWidth is defined and isFullWidth and type != 'expressive' %} pa-0{% endif %}{% if type == 'expressive' %} pr-32 pl-32{% endif %}{% if hasScrollingContent is defined and hasScrollingContent %} modal-scroll-content{% endif %}"{% if modalLabel is defined %} aria-label="{{ modalLabel }}"{% else %} aria-label="{{ modalAriaLabel }}"{% endif %} tabindex="0">
                 <div class="modal-body-content">
                     {{ modalContent|raw }}
                 </div>
