@@ -9857,6 +9857,15 @@ lesshat-selector { -lh-property: 0 ;
     order: 5;
   }
 }
+.ar-16-9 {
+  aspect-ratio: 16 / 9;
+}
+.ar-2-1 {
+  aspect-ratio: 2 / 1;
+}
+.ar-1-1 {
+  aspect-ratio: 1 / 1;
+}
 .animation--slide-in-up {
   animation: animationSlideInUp var(--duration-expressive) forwards;
 }
