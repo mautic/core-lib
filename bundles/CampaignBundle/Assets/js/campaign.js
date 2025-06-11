@@ -2446,7 +2446,12 @@ Mautic.previewCampaignEventDetails = function() {
         mQuery.ajax({
             url: '/s/campaign/metrics/event-details/' + eventId,
             success: function (response) {
-                renderEventDetails($el, response);
+                if (response.hasOwnProperty('first_execution_date')) {
+                    renderEventDetails($el, response);
+                } else {
+                    renderEventDetailsInfo($el, Mautic.translate('mautic.campaign.event.not_executed'));
+                }
+
             },
             error: function (response) {
                 if (response.responseJSON.message) {
@@ -2485,8 +2490,11 @@ Mautic.previewCampaignEventDetails = function() {
     }
 
     const renderEventDetailsError = function($el, message) {
-       $el.find('.campaign-event-details').html('<div class="alert alert-danger" role="alert">' + message + '</div>');
-   }
+       $el.find('.campaign-event-details').html('<div class="alert alert-danger mb-0" role="alert">' + message + '</div>');
+    }
+    const renderEventDetailsInfo = function($el, message) {
+       $el.find('.campaign-event-details').html('<div class="alert alert-info mb-0" role="alert">' + message + '</div>');
+    }
 }
 
 Mautic.campaignAuditlogOnLoad = function (container, response) {
