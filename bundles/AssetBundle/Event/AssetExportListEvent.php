@@ -36,7 +36,7 @@ final class AssetExportListEvent extends CommonEvent
     }
 
     /**
-     * @return array<string>
+     * @return array<string>|null
      */
     public function getList(): ?array
     {

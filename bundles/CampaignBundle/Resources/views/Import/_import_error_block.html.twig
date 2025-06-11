@@ -2,14 +2,14 @@
     <ul class="text-danger">
         {# Show errors from importSummary.errors #}
         {% for error in importSummary.errors|default([]) %}
-            {{ error }}
+            <li>{{ error }}</li>
         {% endfor %}
 
         {# Show errors from analyzeSummary (grouped errors) #}
         {% for group in analyzeSummary|default([]) %}
             {% if group.errors is defined and group.errors.messages is defined %}
                 {% for message in group.errors.messages %}
-                    {{ message }}
+                    <li>{{ message }}</li>
                 {% endfor %}
             {% endif %}
         {% endfor %}

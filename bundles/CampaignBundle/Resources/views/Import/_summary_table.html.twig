@@ -58,9 +58,9 @@
                             {% if isAnalyzeStage %}
                                 {% if entity == 'campaign_event' %}
                                     {{ 'mautic.campaign.campaign.import.follow_campaign_action'|trans }}
-                                {% elseif entity == 'form_fields' %}
+                                {% elseif entity == 'form_field' %}
                                     {{ 'mautic.campaign.campaign.import.follow_form'|trans }}
-                                {% elseif entity == 'form_actions' %}
+                                {% elseif entity == 'form_action' %}
                                     {{ 'mautic.campaign.campaign.import.follow_form'|trans }}
                                  {% elseif entityKey ends with '_update' %}
                                     <select name="importAction[{{ entity }}][{{ ids[i] }}]" class="form-control input-sm">
