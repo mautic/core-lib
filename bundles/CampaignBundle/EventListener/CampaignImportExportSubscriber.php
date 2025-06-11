@@ -685,6 +685,10 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                 $this->updateArrayProperty($event, 'properties.removeFromLists', $eventDependency, LeadList::ENTITY_NAME);
                 break;
             case 'lead.segments':
+                if (!empty($eventDependency['lists']) && is_array($eventDependency['lists'])) {
+                    $this->setNestedValue($event, 'properties.segments', $eventDependency['lists']);
+                }
+            
                 $this->updateArrayProperty($event, 'properties.segments', $eventDependency, LeadList::ENTITY_NAME);
                 break;
             case 'form.submit':
