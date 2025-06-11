@@ -688,7 +688,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                 if (!empty($eventDependency['lists']) && is_array($eventDependency['lists'])) {
                     $this->setNestedValue($event, 'properties.segments', $eventDependency['lists']);
                 }
-            
+
                 $this->updateArrayProperty($event, 'properties.segments', $eventDependency, LeadList::ENTITY_NAME);
                 break;
             case 'form.submit':
