@@ -9,37 +9,37 @@
                 "canvas_settings": {
                     "nodes": [
                         {
-                            "id": "1",
+                            "id": 1,
                             "positionX": "173",
                             "positionY": "152"
                         },
                         {
-                            "id": "6",
+                            "id": 6,
                             "positionX": "821",
                             "positionY": "121"
                         },
                         {
-                            "id": "2",
+                            "id": 2,
                             "positionX": "97",
                             "positionY": "259"
                         },
                         {
-                            "id": "5",
+                            "id": 5,
                             "positionX": "439",
                             "positionY": "291"
                         },
                         {
-                            "id": "7",
+                            "id": 7,
                             "positionX": "752",
                             "positionY": "223"
                         },
                         {
-                            "id": "4",
+                            "id": 4,
                             "positionX": "62",
                             "positionY": "393"
                         },
                         {
-                            "id": "8",
+                            "id": 8,
                             "positionX": "852",
                             "positionY": "328"
                         },
@@ -57,31 +57,31 @@
                     "connections": [
                         {
                             "sourceId": "lists",
-                            "targetId": "1",
+                            "targetId": 1,
                             "anchors": {
                                 "source": "leadsource",
                                 "target": "top"
                             }
                         },
                         {
-                            "sourceId": "1",
-                            "targetId": "2",
+                            "sourceId": 1,
+                            "targetId": 2,
                             "anchors": {
                                 "source": "yes",
                                 "target": "top"
                             }
                         },
                         {
-                            "sourceId": "2",
-                            "targetId": "4",
+                            "sourceId": 2,
+                            "targetId": 4,
                             "anchors": {
                                 "source": "bottom",
                                 "target": "top"
                             }
                         },
                         {
-                            "sourceId": "1",
-                            "targetId": "5",
+                            "sourceId": 1,
+                            "targetId": 5,
                             "anchors": {
                                 "source": "no",
                                 "target": "top"
@@ -97,23 +97,23 @@
                         },
                         {
                             "sourceId": "forms",
-                            "targetId": "6",
+                            "targetId": 6,
                             "anchors": {
                                 "source": "leadsource",
                                 "target": "top"
                             }
                         },
                         {
-                            "sourceId": "6",
-                            "targetId": "7",
+                            "sourceId": 6,
+                            "targetId": 7,
                             "anchors": {
                                 "source": "yes",
                                 "target": "top"
                             }
                         },
                         {
-                            "sourceId": "7",
-                            "targetId": "8",
+                            "sourceId": 7,
+                            "targetId": 8,
                             "anchors": {
                                 "source": "no",
                                 "target": "top"
@@ -187,7 +187,7 @@
                 "triggerRestrictedStopHour": null,
                 "triggerRestrictedDaysOfWeek": [],
                 "triggerWindow": null,
-                "decisionPath": null,
+                "decisionPath": "",
                 "channel": "",
                 "channel_id": 0,
                 "parent_id": null,
@@ -197,7 +197,7 @@
                 "id": 6,
                 "campaign_id": 1,
                 "name": "Device visit",
-                "description": null,
+                "description": "",
                 "type": "page.devicehit",
                 "event_type": "decision",
                 "event_order": 1,
@@ -229,15 +229,15 @@
                     "device_os": []
                 },
                 "trigger_interval": 0,
-                "trigger_interval_unit": null,
-                "trigger_mode": null,
+                "trigger_interval_unit": "",
+                "trigger_mode": "",
                 "trigger_date": null,
                 "trigger_hour": null,
                 "triggerRestrictedStartHour": null,
                 "triggerRestrictedStopHour": null,
                 "triggerRestrictedDaysOfWeek": [],
                 "triggerWindow": null,
-                "decisionPath": null,
+                "decisionPath": "",
                 "channel": "page",
                 "channel_id": 0,
                 "parent_id": null,
@@ -364,7 +364,7 @@
                     "buttons": {
                         "save": ""
                     },
-                    "email": "1",
+                    "email": 1,
                     "email_type": "transactional",
                     "priority": 2,
                     "attempts": 3
@@ -392,7 +392,7 @@
                 "id": 7,
                 "campaign_id": 1,
                 "name": "Visited page",
-                "description": null,
+                "description": "",
                 "type": "lead.pageHit",
                 "event_type": "condition",
                 "event_order": 2,
@@ -446,7 +446,7 @@
                 "triggerRestrictedDaysOfWeek": [],
                 "triggerWindow": null,
                 "decisionPath": "yes",
-                "channel": null,
+                "channel": "",
                 "channel_id": 0,
                 "parent_id": 6,
                 "uuid": "b16703a4-a7cc-4584-a8b4-d879fb21462c"
@@ -509,7 +509,7 @@
                 "triggerRestrictedStopHour": null,
                 "triggerRestrictedDaysOfWeek": [],
                 "triggerWindow": null,
-                "decisionPath": null,
+                "decisionPath": "",
                 "channel": "",
                 "channel_id": 0,
                 "parent_id": 2,
@@ -519,7 +519,7 @@
                 "id": 8,
                 "campaign_id": 1,
                 "name": "Downloads asset",
-                "description": null,
+                "description": "",
                 "type": "asset.download",
                 "event_type": "decision",
                 "event_order": 3,
@@ -532,7 +532,7 @@
                     "anchor": "no",
                     "properties": {
                         "assets": [
-                            "1"
+                            1
                         ]
                     },
                     "type": "asset.download",
@@ -549,8 +549,8 @@
                     ]
                 },
                 "trigger_interval": 0,
-                "trigger_interval_unit": null,
-                "trigger_mode": null,
+                "trigger_interval_unit": "",
+                "trigger_mode": "",
                 "trigger_date": null,
                 "trigger_hour": null,
                 "triggerRestrictedStartHour": null,
@@ -591,7 +591,7 @@
                 "email_type": "template",
                 "publish_up": null,
                 "publish_down": null,
-                "revision": 3,
+                "revision": 4,
                 "lang": "en",
                 "variant_settings": [],
                 "variant_start_date": null,
@@ -626,7 +626,7 @@
                 "hits": 0,
                 "unique_hits": 0,
                 "variant_hits": 0,
-                "revision": 1,
+                "revision": 2,
                 "meta_description": null,
                 "head_script": null,
                 "footer_script": null,
@@ -865,6 +865,10 @@
                     }
                 ],
                 "forms": [
+                    {
+                        "forms": 1,
+                        "form_field": 1
+                    },
                     {
                         "form_field": 3,
                         "lead_field": 44

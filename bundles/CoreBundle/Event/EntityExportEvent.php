@@ -84,6 +84,10 @@ final class EntityExportEvent extends Event
      */
     public function addDependencies(array $entities): void
     {
-        $this->dependencies = array_merge($this->dependencies, $entities);
+        foreach ($entities as $entityName => $entityList) {
+            foreach ($entityList as $entity) {
+                $this->addDependencyEntity($entityName, $entity);
+            }
+        }
     }
 }

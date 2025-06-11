@@ -91,7 +91,7 @@ final class FieldImportExportSubscriber implements EventSubscriberInterface
 
         $data = [];
 
-        if (isset($fieldData['mapped_object']) && in_array($fieldData['mapped_object'], ['contact', 'company'], true)) {
+        if (isset($fieldData['mapped_object']) && isset($fieldData['mapped_field']) && in_array($fieldData['mapped_object'], ['contact', 'company'], true)) {
             $customFields   = $this->leadFieldModel->getLeadFieldCustomFields();
             foreach ($customFields as $object) {
                 if (isset($fieldData['mapped_field']) && $fieldData['mapped_field'] === $object->getAlias()) {

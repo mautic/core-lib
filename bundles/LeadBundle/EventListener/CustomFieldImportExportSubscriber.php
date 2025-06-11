@@ -95,13 +95,16 @@ final class CustomFieldImportExportSubscriber implements EventSubscriberInterfac
             $isNew = !$field;
 
             $field ??= new LeadField();
+            $elementForDenormalize = $element;
+            unset($elementForDenormalize['id']);
 
             $this->serializer->denormalize(
-                $element,
+                $elementForDenormalize,
                 LeadField::class,
                 null,
                 ['object_to_populate' => $field]
             );
+
             if ($isNew) {
                 $alias       = $element['alias'] ?? $field->getAlias() ?? '';
                 $uniqueAlias = $this->fieldModel->generateUniqueFieldAlias($alias);
@@ -109,7 +112,6 @@ final class CustomFieldImportExportSubscriber implements EventSubscriberInterfac
             }
 
             $this->fieldModel->saveEntity($field);
-
             $event->addEntityIdMap((int) $element['id'], $field->getId());
 
             $status                    = $isNew ? EntityImportEvent::NEW : EntityImportEvent::UPDATE;
