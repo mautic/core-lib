@@ -10,7 +10,6 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
@@ -76,27 +75,27 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     private ?string $description = null;
 
     /**
-     * @var Collection<int, Event>
+     * @var ArrayCollection<int, Event>
      */
     #[ORM\OneToMany(mappedBy: 'campaign', targetEntity: 'Event', cascade: ['all'], orphanRemoval: true)]
     #[Groups(['campaign:read', 'campaign:write'])]
-    private Collection $events;
+    private $events;
 
     /**
-     * @var Collection<int, LeadList>
+     * @var ArrayCollection<int, LeadList>
      */
     #[ORM\ManyToMany(targetEntity: 'Mautic\LeadBundle\Entity\LeadList', inversedBy: 'campaigns')]
     #[ORM\JoinTable(name: 'campaign_leadlist_xref')]
     #[Groups(['campaign:read', 'campaign:write'])]
-    private Collection $lists;
+    private $lists;
 
     /**
-     * @var Collection<int, Form>
+     * @var ArrayCollection<int, Form>
      */
     #[ORM\ManyToMany(targetEntity: 'Mautic\FormBundle\Entity\Form', inversedBy: 'campaigns')]
     #[ORM\JoinTable(name: 'campaign_form_xref')]
     #[Groups(['campaign:read', 'campaign:write'])]
-    private Collection $forms;
+    private $forms;
 
     #[ORM\Column(name: 'canvas_settings', type: 'array', nullable: true)]
     #[Groups(['campaign:read', 'campaign:write'])]
@@ -115,9 +114,9 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     public ?\DateTimeInterface $deleted = null;
 
     /**
-     * @var Collection<int, Lead>
+     * @var ArrayCollection<int, Lead>
      */
-    private Collection $leads;
+    private $leads;
 
     public function __construct()
     {
@@ -371,14 +370,14 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Get events.
      *
-     * @return Collection<int, Event>
+     * @return ArrayCollection<int, Event>
      */
     public function getEvents()
     {
         return $this->events;
     }
 
-    public function getRootEvents(): Collection
+    public function getRootEvents(): ArrayCollection
     {
         $criteria = Criteria::create()->where(
             Criteria::expr()->andX(
@@ -401,7 +400,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         return $keyedArrayCollection;
     }
 
-    public function getInactionBasedEvents(): Collection
+    public function getInactionBasedEvents(): ArrayCollection
     {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('decisionPath', Event::PATH_INACTION));
         $events   = $this->getEvents()->matching($criteria);
@@ -422,9 +421,9 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * @param string $type
      *
-     * @return Collection<int,Event>
+     * @return ArrayCollection<int,Event>
      */
-    public function getEventsByType($type): Collection
+    public function getEventsByType($type): ArrayCollection
     {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('eventType', $type));
         $events   = $this->getEvents()->matching($criteria);
@@ -443,9 +442,9 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     }
 
     /**
-     * @return Collection<int, Event>
+     * @return ArrayCollection<int, Event>
      */
-    public function getEmailSendEvents(): Collection
+    public function getEmailSendEvents(): ArrayCollection
     {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('type', 'email.send'));
         $events   = $this->getEvents()->matching($criteria);
@@ -565,7 +564,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Get leads.
      *
-     * @return Lead[]|Collection
+     * @return Lead[]|ArrayCollection
      */
     public function getLeads()
     {
@@ -573,7 +572,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     }
 
     /**
-     * @return Collection<int, LeadList>
+     * @return ArrayCollection<int, LeadList>
      */
     public function getLists()
     {
@@ -604,7 +603,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     }
 
     /**
-     * @return Collection<int, Form>
+     * @return ArrayCollection<int, Form>
      */
     public function getForms()
     {
@@ -686,7 +685,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Get contact membership.
      *
-     * @return Collection
+     * @return ArrayCollection
      */
     public function getContactMembership(Contact $contact)
     {
