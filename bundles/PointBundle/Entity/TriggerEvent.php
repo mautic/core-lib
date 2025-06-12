@@ -15,6 +15,7 @@ use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
@@ -41,36 +42,43 @@ class TriggerEvent implements UuidInterface
     /**
      * @var int|null
      */
+    #[Groups(['trigger_event:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $description;
 
     /**
      * @var string
      */
+    #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $type;
 
     /**
      * @var int
      */
+    #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $order = 0;
 
     /**
      * @var array
      */
+    #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $properties = [];
 
     /**
      * @var Trigger
      */
+    #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $trigger;
 
     /**

@@ -18,6 +18,7 @@ use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\IntHelper;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -47,46 +48,55 @@ class Point extends FormEntity implements UuidInterface
     /**
      * @var int
      */
+    #[Groups(['point:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['point:read', 'point:write'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['point:read', 'point:write'])]
     private $description;
 
     /**
      * @var string
      */
+    #[Groups(['point:read', 'point:write'])]
     private $type;
 
     /**
      * @var bool
      */
+    #[Groups(['point:read', 'point:write'])]
     private $repeatable = false;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['point:read', 'point:write'])]
     private $publishUp;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['point:read', 'point:write'])]
     private $publishDown;
 
     /**
      * @var int
      */
+    #[Groups(['point:read', 'point:write'])]
     private $delta = 0;
 
     /**
      * @var array
      */
+    #[Groups(['point:read', 'point:write'])]
     private $properties = [];
 
     /**
@@ -97,8 +107,10 @@ class Point extends FormEntity implements UuidInterface
     /**
      * @var Category|null
      **/
+    #[Groups(['point:read', 'point:write'])]
     private $category;
 
+    #[Groups(['point:read', 'point:write'])]
     private ?Group $group = null;
 
     public function __clone()

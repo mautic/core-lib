@@ -16,6 +16,7 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -45,53 +46,64 @@ class Trigger extends FormEntity implements UuidInterface
     /**
      * @var int
      */
+    #[Groups(['trigger:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['trigger:read', 'trigger:write'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['trigger:read', 'trigger:write'])]
     private $description;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['trigger:read', 'trigger:write'])]
     private $publishUp;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['trigger:read', 'trigger:write'])]
     private $publishDown;
 
     /**
      * @var int
      */
+    #[Groups(['trigger:read', 'trigger:write'])]
     private $points = 0;
 
     /**
      * @var string
      */
+    #[Groups(['trigger:read', 'trigger:write'])]
     private $color = 'a0acb8';
 
     /**
      * @var bool
      */
+    #[Groups(['trigger:read', 'trigger:write'])]
     private $triggerExistingLeads = false;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category|null
      **/
+    #[Groups(['trigger:read', 'trigger:write'])]
     private $category;
 
     /**
      * @var ArrayCollection<int, TriggerEvent>
      */
+    #[Groups(['trigger:read', 'trigger:write'])]
     private $events;
 
+    #[Groups(['trigger:read', 'trigger:write'])]
     private ?Group $group = null;
 
     public function __clone()
