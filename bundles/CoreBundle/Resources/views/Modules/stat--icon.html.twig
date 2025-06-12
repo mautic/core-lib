@@ -23,11 +23,13 @@
 
         {% if stat.link is defined and stat.value != 0 %}
             {% include '@MauticCore/Components/tile--clickable.html.twig' with {
-                'tiles': [{'content': tileContent, 'link': stat.link, 'icon': stat.icon|default('ri-arrow-right-line')}]
+                content: tileContent, 
+                link: stat.link, 
+                icon: stat.icon|default('ri-arrow-right-line')
             } %}
         {% else %}
             {% include '@MauticCore/Components/tile--base.html.twig' with {
-                'tiles': [{'content': tileContent}]
+                content: tileContent
             } %}
         {% endif %}
     </div>
