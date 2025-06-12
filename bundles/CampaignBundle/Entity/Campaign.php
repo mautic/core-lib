@@ -10,10 +10,12 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
+use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\OptimisticLockInterface;
@@ -24,6 +26,7 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\Lead as Contact;
 use Mautic\LeadBundle\Entity\LeadList;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -39,7 +42,6 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
     normalizationContext: [
         'groups'                  => ['campaign:read'],
         'swagger_definition_name' => 'Read',
-        'api_included'            => ['category', 'events', 'lists', 'forms', 'fields', 'actions'],
     ],
     denormalizationContext: [
         'groups'                  => ['campaign:write'],
@@ -52,65 +54,68 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
 
     use OptimisticLockTrait;
 
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private ?int $id = null;
+
+    #[ORM\Column(name: 'name', type: 'string')]
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private string $name;
+
+    #[ORM\ManyToOne(targetEntity: 'Mautic\CategoryBundle\Entity\Category')]
+    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: true)]
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private ?Category $category = null;
+
+    #[ORM\Column(name: 'description', type: 'text', nullable: true)]
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private ?string $description = null;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(mappedBy: 'campaign', targetEntity: 'Event', cascade: ['all'], orphanRemoval: true)]
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private Collection $events;
+
+    /**
+     * @var Collection<int, LeadList>
+     */
+    #[ORM\ManyToMany(targetEntity: 'Mautic\LeadBundle\Entity\LeadList', inversedBy: 'campaigns')]
+    #[ORM\JoinTable(name: 'campaign_leadlist_xref')]
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private Collection $lists;
+
+    /**
+     * @var Collection<int, Form>
+     */
+    #[ORM\ManyToMany(targetEntity: 'Mautic\FormBundle\Entity\Form', inversedBy: 'campaigns')]
+    #[ORM\JoinTable(name: 'campaign_form_xref')]
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private Collection $forms;
+
+    #[ORM\Column(name: 'canvas_settings', type: 'array', nullable: true)]
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private ?array $canvasSettings = [];
+
+    #[ORM\Column(name: 'allow_restart', type: 'boolean')]
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private bool $allowRestart = false;
+
     public const TABLE_NAME = 'campaigns';
-    /**
-     * @var int
-     */
-    private $id;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?\DateTimeInterface $publishUp = null;
 
-    /**
-     * @var string|null
-     */
-    private $description;
-
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $publishUp;
-
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $publishDown;
+    private ?\DateTimeInterface $publishDown = null;
 
     public ?\DateTimeInterface $deleted = null;
 
     /**
-     * @var \Mautic\CategoryBundle\Entity\Category|null
-     **/
-    private $category;
-
-    /**
-     * @var ArrayCollection<int, Event>
+     * @var Collection<int, Lead>
      */
-    private $events;
-
-    /**
-     * @var ArrayCollection<int, Lead>
-     */
-    private $leads;
-
-    /**
-     * @var ArrayCollection<int, LeadList>
-     */
-    private $lists;
-
-    /**
-     * @var ArrayCollection<int, Form>
-     */
-    private $forms;
-
-    /**
-     * @var array
-     */
-    private $canvasSettings = [];
-
-    private bool $allowRestart = false;
+    private Collection $leads;
 
     public function __construct()
     {
@@ -360,14 +365,14 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Get events.
      *
-     * @return ArrayCollection
+     * @return Collection<int, Event>
      */
     public function getEvents()
     {
         return $this->events;
     }
 
-    public function getRootEvents(): ArrayCollection
+    public function getRootEvents(): Collection
     {
         $criteria = Criteria::create()->where(
             Criteria::expr()->andX(
@@ -390,7 +395,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         return $keyedArrayCollection;
     }
 
-    public function getInactionBasedEvents(): ArrayCollection
+    public function getInactionBasedEvents(): Collection
     {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('decisionPath', Event::PATH_INACTION));
         $events   = $this->getEvents()->matching($criteria);
@@ -411,9 +416,9 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * @param string $type
      *
-     * @return ArrayCollection<int,Event>
+     * @return Collection<int,Event>
      */
-    public function getEventsByType($type): ArrayCollection
+    public function getEventsByType($type): Collection
     {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('eventType', $type));
         $events   = $this->getEvents()->matching($criteria);
@@ -432,9 +437,9 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     }
 
     /**
-     * @return ArrayCollection<int, Event>
+     * @return Collection<int, Event>
      */
-    public function getEmailSendEvents(): ArrayCollection
+    public function getEmailSendEvents(): Collection
     {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('type', 'email.send'));
         $events   = $this->getEvents()->matching($criteria);
@@ -554,7 +559,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Get leads.
      *
-     * @return Lead[]|\Doctrine\Common\Collections\Collection
+     * @return Lead[]|Collection
      */
     public function getLeads()
     {
@@ -562,7 +567,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection<int, LeadList>
      */
     public function getLists()
     {
@@ -593,7 +598,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection<int, Form>
      */
     public function getForms()
     {
@@ -675,7 +680,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Get contact membership.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getContactMembership(Contact $contact)
     {
