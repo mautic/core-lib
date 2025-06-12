@@ -19,6 +19,7 @@ use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -48,108 +49,130 @@ class Form extends FormEntity implements UuidInterface
     /**
      * @var int
      */
+    #[Groups(['form:read'])]
     private $id;
 
+    #[Groups(['form:read', 'form:write'])]
     private ?string $language = null;
 
     /**
      * @var string
      */
+    #[Groups(['form:read', 'form:write'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['form:read', 'form:write'])]
     private $formAttributes;
 
     /**
      * @var string|null
      */
+    #[Groups(['form:read', 'form:write'])]
     private $description;
 
     /**
      * @var string
      */
+    #[Groups(['form:read', 'form:write'])]
     private $alias;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category|null
      **/
+    #[Groups(['form:read', 'form:write'])]
     private $category;
 
     /**
      * @var string|null
      */
+    #[Groups(['form:read'])]
     private $cachedHtml;
 
     /**
      * @var string
      */
+    #[Groups(['form:read', 'form:write'])]
     private $postAction = 'message';
 
     /**
      * @var string|null
      */
+    #[Groups(['form:read', 'form:write'])]
     private $postActionProperty;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['form:read', 'form:write'])]
     private $publishUp;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['form:read', 'form:write'])]
     private $publishDown;
 
     /**
      * @var ArrayCollection<int, Field>
      */
+    #[Groups(['form:read', 'form:write'])]
     private $fields;
 
     /**
      * @var ArrayCollection<string, Action>
      */
+    #[Groups(['form:read', 'form:write'])]
     private $actions;
 
     /**
      * @var string|null
      */
+    #[Groups(['form:read', 'form:write'])]
     private $template;
 
     /**
      * @var bool|null
      */
+    #[Groups(['form:read', 'form:write'])]
     private $inKioskMode = false;
 
     /**
      * @var bool|null
      */
+    #[Groups(['form:read', 'form:write'])]
     private $renderStyle = false;
 
     /**
      * @var Collection<int, Submission>
      */
+    #[Groups(['form:read'])]
     private Collection $submissions;
 
     /**
      * @var int
      */
+    #[Groups(['form:read'])]
     public $submissionCount;
 
     /**
      * @var string|null
      */
+    #[Groups(['form:read', 'form:write'])]
     private $formType;
 
     /**
      * @var bool|null
      */
+    #[Groups(['form:read', 'form:write'])]
     private $noIndex;
 
     /**
      * @var int|null
      */
+    #[Groups(['form:read', 'form:write'])]
     private $progressiveProfilingLimit;
 
     /**
