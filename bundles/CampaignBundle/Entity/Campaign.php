@@ -56,53 +56,39 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     use OptimisticLockTrait;
     use ProjectTrait;
 
-    #[ORM\Column(name: 'id', type: 'integer')]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[Groups(['campaign:read', 'campaign:write'])]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'name', type: 'string')]
     #[Groups(['campaign:read', 'campaign:write'])]
     private string $name;
 
-    #[ORM\ManyToOne(targetEntity: 'Mautic\CategoryBundle\Entity\Category')]
-    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: true)]
     #[Groups(['campaign:read', 'campaign:write'])]
     private ?Category $category = null;
 
-    #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     #[Groups(['campaign:read', 'campaign:write'])]
     private ?string $description = null;
 
     /**
      * @var ArrayCollection<int, Event>
      */
-    #[ORM\OneToMany(mappedBy: 'campaign', targetEntity: 'Event', cascade: ['all'], orphanRemoval: true)]
     #[Groups(['campaign:read', 'campaign:write'])]
     private $events;
 
     /**
      * @var ArrayCollection<int, LeadList>
      */
-    #[ORM\ManyToMany(targetEntity: 'Mautic\LeadBundle\Entity\LeadList', inversedBy: 'campaigns')]
-    #[ORM\JoinTable(name: 'campaign_leadlist_xref')]
     #[Groups(['campaign:read', 'campaign:write'])]
     private $lists;
 
     /**
      * @var ArrayCollection<int, Form>
      */
-    #[ORM\ManyToMany(targetEntity: 'Mautic\FormBundle\Entity\Form', inversedBy: 'campaigns')]
-    #[ORM\JoinTable(name: 'campaign_form_xref')]
     #[Groups(['campaign:read', 'campaign:write'])]
     private $forms;
 
-    #[ORM\Column(name: 'canvas_settings', type: 'array', nullable: true)]
     #[Groups(['campaign:read', 'campaign:write'])]
     private ?array $canvasSettings = [];
 
-    #[ORM\Column(name: 'allow_restart', type: 'boolean')]
     #[Groups(['campaign:read', 'campaign:write'])]
     private bool $allowRestart = false;
 
