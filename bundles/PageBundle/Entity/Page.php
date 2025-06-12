@@ -22,6 +22,7 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Entity\VariantEntityInterface;
 use Mautic\CoreBundle\Entity\VariantEntityTrait;
 use Mautic\CoreBundle\Validator\EntityEvent;
+use Mautic\ProjectBundle\Entity\ProjectTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -53,6 +54,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     use TranslationEntityTrait;
     use VariantEntityTrait;
     use UuidTrait;
+    use ProjectTrait;
 
     public const TABLE_NAME = 'pages';
 
@@ -188,6 +190,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     {
         $this->translationChildren = new \Doctrine\Common\Collections\ArrayCollection();
         $this->variantChildren     = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->initializeProjects();
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
@@ -279,6 +282,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
         self::addTranslationMetadata($builder, self::class);
         self::addVariantMetadata($builder, self::class);
         static::addUuidField($builder);
+        self::addProjectsField($builder, 'page_projects_xref', 'page_id');
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
@@ -373,6 +377,8 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
             ->setMaxDepth(1, 'translationParent')
             ->setMaxDepth(1, 'translationChildren')
             ->build();
+
+        self::addProjectsInLoadApiMetadata($metadata, 'page');
     }
 
     /**

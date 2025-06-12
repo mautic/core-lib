@@ -26,6 +26,7 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\Lead as Contact;
 use Mautic\LeadBundle\Entity\LeadList;
+use Mautic\ProjectBundle\Entity\ProjectTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -53,6 +54,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     use UuidTrait;
 
     use OptimisticLockTrait;
+    use ProjectTrait;
 
     #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\Id]
@@ -123,6 +125,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         $this->leads  = new ArrayCollection();
         $this->lists  = new ArrayCollection();
         $this->forms  = new ArrayCollection();
+        $this->initializeProjects();
     }
 
     public function __clone()
@@ -186,6 +189,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
 
         self::addVersionField($builder);
         static::addUuidField($builder);
+        self::addProjectsField($builder, 'campaign_projects_xref', 'campaign_id');
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
@@ -239,6 +243,8 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
                 ]
             )
             ->build();
+
+        self::addProjectsInLoadApiMetadata($metadata, 'campaign');
     }
 
     public function convertToArray(): array

@@ -18,6 +18,7 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
+use Mautic\ProjectBundle\Entity\ProjectTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
@@ -44,6 +45,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata
 class Message extends FormEntity implements UuidInterface
 {
     use UuidTrait;
+    use ProjectTrait;
 
     /**
      * @var ?int
@@ -126,6 +128,7 @@ class Message extends FormEntity implements UuidInterface
             ->build();
 
         static::addUuidField($builder);
+        self::addProjectsField($builder, 'message_projects_xref', 'message_id');
     }
 
     public static function loadValidatorMetadata(ValidationClassMetadata $metadata): void
@@ -154,11 +157,14 @@ class Message extends FormEntity implements UuidInterface
                 ]
             )
             ->build();
+
+        self::addProjectsInLoadApiMetadata($metadata, 'message');
     }
 
     public function __construct()
     {
         $this->channels = new ArrayCollection();
+        $this->initializeProjects();
     }
 
     /**

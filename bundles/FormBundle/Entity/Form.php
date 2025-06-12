@@ -19,6 +19,7 @@ use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
+use Mautic\ProjectBundle\Entity\ProjectTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -45,6 +46,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 class Form extends FormEntity implements UuidInterface
 {
     use UuidTrait;
+    use ProjectTrait;
 
     /**
      * @var int
@@ -194,6 +196,7 @@ class Form extends FormEntity implements UuidInterface
         $this->fields      = new ArrayCollection();
         $this->actions     = new ArrayCollection();
         $this->submissions = new ArrayCollection();
+        $this->initializeProjects();
     }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
@@ -278,6 +281,7 @@ class Form extends FormEntity implements UuidInterface
         $builder->addNullableField('progressiveProfilingLimit', Types::INTEGER, 'progressive_profiling_limit');
 
         static::addUuidField($builder);
+        self::addProjectsField($builder, 'form_projects_xref', 'form_id');
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
@@ -367,6 +371,8 @@ class Form extends FormEntity implements UuidInterface
                 ]
             )
             ->build();
+
+        self::addProjectsInLoadApiMetadata($metadata, 'form');
     }
 
     protected function isChanged($prop, $val)
