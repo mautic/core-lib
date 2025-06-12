@@ -21,6 +21,7 @@ use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\LeadBundle\Form\Validator\Constraints\SegmentInUse;
 use Mautic\LeadBundle\Form\Validator\Constraints\UniqueUserAlias;
 use Mautic\LeadBundle\Validator\Constraints\SegmentUsedInCampaigns;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -51,46 +52,55 @@ class LeadList extends FormEntity implements UuidInterface
     /**
      * @var int|null
      */
+    #[Groups(['segment:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['segment:read', 'segment:write'])]
     private $name;
 
     /**
      * @var string
      */
+    #[Groups(['segment:read', 'segment:write'])]
     private $publicName;
 
     /**
      * @var Category|null
      **/
+    #[Groups(['segment:read', 'segment:write'])]
     private $category;
 
     /**
      * @var string|null
      */
+    #[Groups(['segment:read', 'segment:write'])]
     private $description;
 
     /**
      * @var string
      */
+    #[Groups(['segment:read', 'segment:write'])]
     private $alias;
 
     /**
      * @var array
      */
+    #[Groups(['segment:read', 'segment:write'])]
     private $filters = [];
 
     /**
      * @var bool
      */
+    #[Groups(['segment:read', 'segment:write'])]
     private $isGlobal = true;
 
     /**
      * @var bool
      */
+    #[Groups(['segment:read', 'segment:write'])]
     private $isPreferenceCenter = false;
 
     /**
@@ -101,11 +111,13 @@ class LeadList extends FormEntity implements UuidInterface
     /**
      * @var \DateTimeInterface|null
      */
+    #[Groups(['segment:read'])]
     private $lastBuiltDate;
 
     /**
      * @var float|null
      */
+    #[Groups(['segment:read'])]
     private $lastBuiltTime;
 
     public function __construct()

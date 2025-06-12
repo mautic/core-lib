@@ -18,6 +18,7 @@ use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Form\Validator\Constraints\LeadListAccess;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -49,76 +50,91 @@ class Notification extends FormEntity implements UuidInterface
     /**
      * @var int
      */
+    #[Groups(['notification:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $description;
 
     /**
      * @var string
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $language = 'en';
 
     /**
      * @var string|null
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $url;
 
     /**
      * @var string
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $heading;
 
     /**
      * @var string
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $message;
 
     /**
      * @var string|null
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $button;
 
     /**
      * @var array
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $utmTags = [];
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $publishUp;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $publishDown;
 
     /**
      * @var int
      */
+    #[Groups(['notification:read'])]
     private $readCount = 0;
 
     /**
      * @var int
      */
+    #[Groups(['notification:read'])]
     private $sentCount = 0;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category|null
      **/
+    #[Groups(['notification:read', 'notification:write'])]
     private $category;
 
     /**
      * @var ArrayCollection<int, LeadList>
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $lists;
 
     /**
@@ -129,16 +145,19 @@ class Notification extends FormEntity implements UuidInterface
     /**
      * @var string|null
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $notificationType = 'template';
 
     /**
      * @var bool
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $mobile = false;
 
     /**
      * @var ?array
      */
+    #[Groups(['notification:read', 'notification:write'])]
     private $mobileSettings;
 
     public function __clone()
