@@ -63,7 +63,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     private int $id;
 
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?string $name;
+    private ?string $name = null;
 
     #[Groups(['campaign:read', 'campaign:write'])]
     private ?string $description;
@@ -298,11 +298,9 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Set name.
      *
-     * @param string $name
-     *
      * @return Campaign
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->isChanged('name', $name);
         $this->name = $name;
