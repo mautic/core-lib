@@ -92,6 +92,19 @@
                                 },
                                 'routeBase': 'page',
                                 'nameGetter': 'getTitle',
+                                'customButtons': {
+                                    'preview': {
+                                        'attr': {
+                                            'class': 'btn btn-ghost btn-sm btn-nospin',
+                                            'href': path('mautic_page_preview', {'id': item.id}),
+                                            'target': '_blank',
+                                            'data-toggle': '',
+                                        },
+                                        'iconClass': 'ri-external-link-line',
+                                        'btnText': 'mautic.core.open_link'|trans,
+                                        'priority': 100
+                                    }
+                                }
                         }) }}
                     </td>
                     <td>
