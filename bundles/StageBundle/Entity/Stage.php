@@ -16,6 +16,7 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -45,31 +46,37 @@ class Stage extends FormEntity implements UuidInterface
     /**
      * @var int
      */
+    #[Groups(['stage:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['stage:read', 'stage:write'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['stage:read', 'stage:write'])]
     private $description;
 
     /**
      * @var int
      */
+    #[Groups(['stage:read', 'stage:write'])]
     private $weight = 0;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['stage:read', 'stage:write'])]
     private $publishUp;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['stage:read', 'stage:write'])]
     private $publishDown;
 
     /**
@@ -80,6 +87,7 @@ class Stage extends FormEntity implements UuidInterface
     /**
      * @var \Mautic\CategoryBundle\Entity\Category|null
      **/
+    #[Groups(['stage:read', 'stage:write'])]
     private $category;
 
     public function __clone()

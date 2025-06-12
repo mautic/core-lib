@@ -19,6 +19,7 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Form\Validator\Constraints\LeadListAccess;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -50,51 +51,61 @@ class Sms extends FormEntity implements UuidInterface
     /**
      * @var int
      */
+    #[Groups(['sms:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $description;
 
     /**
      * @var string
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $language = 'en';
 
     /**
      * @var string
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $message;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $publishUp;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $publishDown;
 
     /**
      * @var int
      */
+    #[Groups(['sms:read'])]
     private $sentCount = 0;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category|null
      **/
+    #[Groups(['sms:read', 'sms:write'])]
     private $category;
 
     /**
      * @var ArrayCollection<int, LeadList>
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $lists;
 
     /**
@@ -105,11 +116,13 @@ class Sms extends FormEntity implements UuidInterface
     /**
      * @var string|null
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $smsType = 'template';
 
     /**
      * @var int
      */
+    #[Groups(['sms:read'])]
     private $pendingCount = 0;
 
     public function __clone()
