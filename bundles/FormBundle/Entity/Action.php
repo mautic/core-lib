@@ -14,6 +14,7 @@ use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -42,36 +43,43 @@ class Action implements UuidInterface
     /**
      * @var int
      */
+    #[Groups(['action:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['action:read', 'action:write'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['action:read', 'action:write'])]
     private $description;
 
     /**
      * @var string
      */
+    #[Groups(['action:read', 'action:write'])]
     private $type;
 
     /**
      * @var int
      */
+    #[Groups(['action:read', 'action:write'])]
     private $order = 0;
 
     /**
      * @var array
      */
+    #[Groups(['action:read', 'action:write'])]
     private $properties = [];
 
     /**
      * @var Form|null
      */
+    #[Groups(['action:read', 'action:write'])]
     private $form;
 
     /**

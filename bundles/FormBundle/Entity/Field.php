@@ -18,6 +18,7 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\FormBundle\ProgressiveProfiling\DisplayManager;
 use Mautic\LeadBundle\Entity\Lead;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
@@ -46,115 +47,141 @@ class Field implements UuidInterface
     /**
      * @var int
      */
+    #[Groups(['field:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['field:read', 'field:write'])]
     private $label;
 
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $showLabel = true;
 
     /**
      * @var string
      */
+    #[Groups(['field:read', 'field:write'])]
     private $alias;
 
     /**
      * @var string
      */
+    #[Groups(['field:read', 'field:write'])]
     private $type;
 
     /**
      * @var bool
      */
+    #[Groups(['field:read', 'field:write'])]
     private $isCustom = false;
 
     /**
      * @var array
      */
+    #[Groups(['field:read', 'field:write'])]
     private $customParameters = [];
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $defaultValue;
 
     /**
      * @var bool
      */
+    #[Groups(['field:read', 'field:write'])]
     private $isRequired = false;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $validationMessage;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $helpMessage;
 
     /**
      * @var int|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $order = 0;
 
     /**
      * @var array
      */
+    #[Groups(['field:read', 'field:write'])]
     private $properties = [];
 
     /**
      * @var array
      */
+    #[Groups(['field:read', 'field:write'])]
     private $validation = [];
 
     /**
      * @var array<string,mixed>|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $conditions = [];
 
     /**
      * @var Form|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $form;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $labelAttributes;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $inputAttributes;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $containerAttributes;
 
     /**
      * @var string|null
+     *
+     * @deprecated, to be removed in Mautic 4. Use mappedObject and mappedField instead.
      */
+    #[Groups(['field:read', 'field:write'])]
     private $leadField;
 
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $saveResult = true;
 
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $isAutoFill = false;
 
+    #[Groups(['field:read', 'field:write'])]
     private bool $isReadOnly = false;
 
+    #[Groups(['field:read', 'field:write'])]
     private string $fieldWidth = '100%';
 
     /**
@@ -167,31 +194,37 @@ class Field implements UuidInterface
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $showWhenValueExists;
 
     /**
      * @var int|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $showAfterXSubmissions;
 
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $alwaysDisplay;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $parent;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $mappedObject;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write'])]
     private $mappedField;
 
     /**
@@ -1056,6 +1089,12 @@ class Field implements UuidInterface
             return;
         }
 
+        /**
+         * Ignoring this line because the leadField is deprecated and will be removed in Mautic 4.
+         * Todo: Use mappedObject or mappedField instead.
+         *
+         * @phpstan-ignore-next-line
+         */
         $this->leadField = null;
     }
 
