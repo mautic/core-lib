@@ -43,6 +43,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
     normalizationContext: [
         'groups'                  => ['campaign:read'],
         'swagger_definition_name' => 'Read',
+        'api_included'            => ['category', 'events', 'lists', 'forms', 'fields', 'actions'],
     ],
     denormalizationContext: [
         'groups'                  => ['campaign:write'],
@@ -56,54 +57,58 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     use OptimisticLockTrait;
     use ProjectTrait;
 
-    #[Groups(['campaign:read', 'campaign:write'])]
-    private ?int $id = null;
+    public const TABLE_NAME = 'campaigns';
 
     #[Groups(['campaign:read', 'campaign:write'])]
-    private string $name;
+    private int $id;
 
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?Category $category = null;
+    private ?string $name;
 
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?string $description = null;
+    private ?string $description;
+
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private ?\DateTimeInterface $publishUp;
+
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private ?\DateTimeInterface $publishDown;
+
+    #[Groups(['campaign:read', 'campaign:write'])]
+    public ?\DateTimeInterface $deleted = null;
+
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private ?Category $category;
 
     /**
      * @var ArrayCollection<int, Event>
      */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private $events;
+    private ArrayCollection $events;
+
+    /**
+     * @var ArrayCollection<int, Lead>
+     */
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private ArrayCollection $leads;
 
     /**
      * @var ArrayCollection<int, LeadList>
      */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private $lists;
+    private ArrayCollection $lists;
 
     /**
      * @var ArrayCollection<int, Form>
      */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private $forms;
+    private ArrayCollection $forms;
 
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?array $canvasSettings = [];
+    private array $canvasSettings = [];
 
     #[Groups(['campaign:read', 'campaign:write'])]
     private bool $allowRestart = false;
-
-    public const TABLE_NAME = 'campaigns';
-
-    private ?\DateTimeInterface $publishUp = null;
-
-    private ?\DateTimeInterface $publishDown = null;
-
-    public ?\DateTimeInterface $deleted = null;
-
-    /**
-     * @var ArrayCollection<int, Lead>
-     */
-    private $leads;
 
     public function __construct()
     {
