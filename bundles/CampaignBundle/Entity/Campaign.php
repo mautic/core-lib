@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
@@ -684,10 +685,8 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
 
     /**
      * Get contact membership.
-     *
-     * @return ArrayCollection
      */
-    public function getContactMembership(Contact $contact)
+    public function getContactMembership(Contact $contact): Collection
     {
         return $this->leads->matching(
             Criteria::create()
