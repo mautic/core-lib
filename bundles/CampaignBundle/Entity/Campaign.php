@@ -23,6 +23,7 @@ use Mautic\CoreBundle\Entity\OptimisticLockTrait;
 use Mautic\CoreBundle\Entity\PublishStatusIconAttributesInterface;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
+use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\Lead as Contact;
 use Mautic\LeadBundle\Entity\LeadList;
@@ -81,28 +82,28 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     private ?Category $category;
 
     /**
-     * @var ArrayCollection<int, Event>
+     * @var Collection<int, Event>|ArrayCollection<int, Event>
      */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ArrayCollection $events;
+    private $events;
 
     /**
-     * @var ArrayCollection<int, Lead>
+      * @var ArrayCollection<int, Lead>
      */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ArrayCollection $leads;
+    private Collection $leads;
 
     /**
-     * @var ArrayCollection<int, LeadList>
+     * @var Collection<int, LeadList>
      */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ArrayCollection $lists;
+    private Collection $lists;
 
     /**
-     * @var ArrayCollection<int, Form>
+     * @var Collection<int, Form>
      */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ArrayCollection $forms;
+    private Collection $forms;
 
     #[Groups(['campaign:read', 'campaign:write'])]
     private array $canvasSettings = [];
