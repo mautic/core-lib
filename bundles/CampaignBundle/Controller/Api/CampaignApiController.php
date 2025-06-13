@@ -425,7 +425,7 @@ class CampaignApiController extends CommonApiController
                 );
             }
 
-            if ('zip' !== $uploadedFile->getClientOriginalExtension()) {
+            if ('zip' !== strtolower($uploadedFile->getClientOriginalExtension())) {
                 return $this->handleView(
                     $this->view(['error' => $this->translator->trans('mautic.campaign.api.import.incorrect_upload_file_format', [], 'messages')], Response::HTTP_BAD_REQUEST)
                 );
