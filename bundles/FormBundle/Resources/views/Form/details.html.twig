@@ -45,16 +45,6 @@
             'customButtons': [
                 {
                     'attr': {
-                        'data-toggle': '',
-                        'target': '_blank',
-                        'href': path('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}),
-                    },
-                    'iconClass': 'ri-camera-3-line',
-                    'btnText': 'mautic.form.form.preview',
-                    'btnClass': 'btn btn-ghost btn-nospin',
-                },
-                {
-                    'attr': {
                         'data-toggle': 'ajax',
                         'href': path('mautic_form_action', {'objectAction': 'results', 'objectId': activeForm.id}),
                     },
@@ -285,6 +275,42 @@
 
     <!-- right section -->
     <div class="col-md-3 bdr-l height-auto">
+        <!-- preview URL -->
+        <div class="panel shd-none bdr-rds-0 bdr-w-0 mt-sm mb-0">
+            <div class="panel-heading">
+                <div class="panel-title">{{ 'mautic.form.form.preview'|trans }}</div>
+            </div>
+            <div class="panel-body pt-xs">
+                <div class="row">
+                    <div class="form-group col-xs-12">
+                        <div class="input-group">
+                            <input type="text" class="form-control" readonly 
+                                   value="{{ path('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}, true)|escape }}"
+                                   onclick="this.setSelectionRange(0, this.value.length);"/>
+                            <span class="input-group-btn">
+                                {% include '@MauticCore/Helper/button.html.twig' with {
+                                    buttons: [
+                                        {
+                                            label: 'mautic.core.open_link',
+                                            variant: 'ghost',
+                                            size: 'md',
+                                            icon_only: true,
+                                            icon: 'ri-external-link-line',
+                                            attributes: {
+                                                'type': 'button'
+                                            },
+                                            onclick: 'window.open("' ~ path('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}, true) ~ '", "_blank");'
+                                        }
+                                    ]
+                                } %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/ preview URL -->
+
         <!-- form HTML -->
         <div class="pa-md">
             <div class="panel bg-info bg-light-lg bdr-w-0 mb-0">
