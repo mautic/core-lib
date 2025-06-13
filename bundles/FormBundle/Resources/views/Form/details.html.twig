@@ -45,6 +45,16 @@
             'customButtons': [
                 {
                     'attr': {
+                        'data-toggle': '',
+                        'target': '_blank',
+                        'href': path('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}),
+                    },
+                    'iconClass': 'ri-camera-3-line',
+                    'btnText': 'mautic.form.form.preview',
+                    'btnClass': 'btn btn-ghost btn-nospin',
+                },
+                {
+                    'attr': {
                         'data-toggle': 'ajax',
                         'href': path('mautic_form_action', {'objectAction': 'results', 'objectId': activeForm.id}),
                     },
