@@ -63,94 +63,78 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
     /**
      * @var int
      */
-    #[ORM\Column(name: 'id', type: 'integer')]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[Groups(['dynamicContent:read'])]
     private $id;
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'name', type: 'string')]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $name;
 
     /**
      * @Groups({"dynamicContent:read", "dynamicContent:write"})
      */
-    #[ORM\Column(name: 'type', type: 'string', length: 10, options: ['default' => TypeList::HTML])]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private string $type = TypeList::HTML;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $description;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category|null
      **/
-    #[ORM\ManyToOne(targetEntity: \Mautic\CategoryBundle\Entity\Category::class)]
-    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: true)]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $category;
 
     /**
      * @var \DateTimeInterface
      */
-    #[ORM\Column(name: 'publish_up', type: 'datetime', nullable: true)]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $publishUp;
 
     /**
      * @var \DateTimeInterface
      */
-    #[ORM\Column(name: 'publish_down', type: 'datetime', nullable: true)]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $publishDown;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(name: 'content', type: 'text', nullable: true)]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $content;
 
     /**
      * @var array|null
      */
-    #[ORM\Column(name: 'utm_tags', type: Types::JSON, nullable: true)]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $utmTags = [];
 
     /**
      * @var int
      */
-    #[ORM\Column(name: 'sent_count', type: 'integer')]
     #[Groups(['dynamicContent:read'])]
     private $sentCount = 0;
 
     /**
      * @var ArrayCollection<Stat>
      */
-    #[ORM\OneToMany(mappedBy: 'dynamicContent', targetEntity: Stat::class, cascade: ['persist'], fetch: 'EXTRA_LAZY')]
     #[Groups(['dynamicContent:read'])]
     private $stats;
 
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'is_campaign_based', type: 'boolean')]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $isCampaignBased = true;
 
     /**
      * @var string|null
      */
-    #[ORM\Column(name: 'slot_name', type: 'string', nullable: true)]
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $slotName;
 
