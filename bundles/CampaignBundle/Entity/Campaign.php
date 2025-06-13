@@ -23,7 +23,6 @@ use Mautic\CoreBundle\Entity\OptimisticLockTrait;
 use Mautic\CoreBundle\Entity\PublishStatusIconAttributesInterface;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
-use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\Lead as Contact;
 use Mautic\LeadBundle\Entity\LeadList;
@@ -88,7 +87,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     private $events;
 
     /**
-      * @var ArrayCollection<int, Lead>
+     * @var ArrayCollection<int, Lead>
      */
     #[Groups(['campaign:read', 'campaign:write'])]
     private Collection $leads;
