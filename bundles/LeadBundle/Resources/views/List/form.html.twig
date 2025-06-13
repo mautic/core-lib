@@ -76,8 +76,8 @@
                                       <optgroup label="{{ header }}">
                                           {% for value, params in field %}
                                               {% set operators = params.operators is not empty ? params.operators|json_encode() : '{}' %}
-                                              {% set objectLable = translatorHasId('mautic.lead_list.filter.' ~ object) ? ('mautic.lead_list.filter.' ~ object)|trans : object|trans  %}
-                                              {% set label =  'mautic.lead_list.filter.field.label'|trans({'%object%': objectLable, '%field%': params.label|capitalize|trans }) %}
+                                              {% set objectLabel = translatorHasId('mautic.lead_list.filter.' ~ object) ? ('mautic.lead_list.filter.' ~ object)|trans : object|trans  %}
+                                              {% set label =  'mautic.lead_list.filter.field.label'|trans({'%object%': objectLabel, '%field%': params.label|capitalize|trans }) %}
                                               <option value="{{ value|e }}"
                                                       id="available_{{ object }}_{{ value }}"
                                                       data-field-label="{{ label }}"
