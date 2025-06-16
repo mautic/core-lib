@@ -307,7 +307,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
      */
     private $clonedId;
 
-    private ?bool $continueSending = false;
+    private bool $continueSending = false;
 
     public function __clone()
     {
@@ -378,7 +378,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         $builder->addPublishDates();
         $builder->addField('continueSending', Types::BOOLEAN, [
             'columnName' => 'continue_sending',
-            'nullable'   => true,
+            'nullable'   => false,
             'options'    => [
                 'default' => false,
             ],
@@ -1096,12 +1096,12 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     public function isContinueSending(): bool
     {
-        return $this->continueSending ?? false;
+        return $this->continueSending;
     }
 
     public function getContinueSending(): bool
     {
-        return $this->continueSending ?? false;
+        return $this->continueSending;
     }
 
     public function setContinueSending(bool $continueSending): self
