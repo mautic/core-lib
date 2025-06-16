@@ -17,7 +17,7 @@ final class DeviceTrackingServiceClearCookiesTest extends MauticMysqlTestCase
     public function blockedTrackingCookieDataProvider(): array
     {
         return [
-            'with blocked tracking cookie' => [true],
+            'with blocked tracking cookie'    => [true],
             'without blocked tracking cookie' => [false],
         ];
     }
@@ -40,22 +40,22 @@ final class DeviceTrackingServiceClearCookiesTest extends MauticMysqlTestCase
         if ($shouldClearCookies) {
             $this->client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('Blocked-Tracking', '1'));
         }
-        
+
         $this->client->request(Request::METHOD_GET, '/test-clear-cookies');
         $this->assertResponseIsSuccessful();
-        
+
         $deviceIdCookieCleared = false;
         $mtcIdCookieCleared    = false;
-        
+
         foreach ($this->client->getResponse()->headers->getCookies() as $cookie) {
             // Check if tracking cookies are being deleted (empty value + past expiration)
-            $cookieIsDeleted = $cookie->getValue() === '' && $cookie->getExpiresTime() < time();
+            $cookieIsDeleted = '' === $cookie->getValue() && $cookie->getExpiresTime() < time();
 
-            if ($cookie->getName() === 'mautic_device_id' && $cookieIsDeleted) {
+            if ('mautic_device_id' === $cookie->getName() && $cookieIsDeleted) {
                 $deviceIdCookieCleared = true;
             }
 
-            if ($cookie->getName() === 'mtc_id' && $cookieIsDeleted) {
+            if ('mtc_id' === $cookie->getName() && $cookieIsDeleted) {
                 $mtcIdCookieCleared = true;
             }
         }
