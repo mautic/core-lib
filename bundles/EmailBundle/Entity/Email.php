@@ -1464,6 +1464,28 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         return $publishStatus;
     }
 
+    public function getSendingStatus(): string
+    {
+        $publishStatus = $this->getPublishStatus();
+
+        switch ($publishStatus) {
+            case 'published':
+            case 'unpublished':
+                if ($this->isSegmentEmail() && $this->getIsPublished()) {
+                    if (!$this->isContinueSending() && !$this->getPendingCount() && $this->getSentCount(true)) {
+                        return 'sent';
+                    }
+
+                    if ($this->getPendingCount()) {
+                        return 'sending';
+                    }
+                }
+                break;
+        }
+
+        return $publishStatus;
+    }
+
     public function shouldCheckForUnpublishEmail(): bool
     {
         if ($this->isContinueSending()) {

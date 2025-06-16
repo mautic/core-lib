@@ -1526,6 +1526,7 @@ class EmailController extends FormController
                     $entity->setPublishUp($data['publishUp']);
                     $entity->setPublishDown($data['publishDown']);
                     $entity->setContinueSending($data['continueSending']);
+                    $entity->setIsPublished(true);
 
                     $this->addFlashMessage('mautic.email.notice.schedule.sent');
                 }
