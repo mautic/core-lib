@@ -280,7 +280,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         }
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
