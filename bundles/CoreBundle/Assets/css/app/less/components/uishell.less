@@ -254,7 +254,8 @@ a.header__menu-item {
     transition: background-color 110ms, border-color 110ms, color 110ms;
     -webkit-user-select: none;
     -ms-user-select: none;
-    user-select: none
+    user-select: none;
+    text-wrap: nowrap;
 }
 
 a.header__menu-item:hover {
@@ -354,12 +355,7 @@ a.header__menu-item.header__menu-item--current:focus {
     display: flex;
     flex-direction: column;
     background-color: var(--layer);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, .5);
     inline-size: 200px;
-    inset-block-end: 0;
-    inset-inline-start: 0;
-    -webkit-transform: translateY(100%);
-    transform: translateY(100%)
 }
 
 .header__menu-title[aria-expanded=true]+.header__menu .header__menu-item {
