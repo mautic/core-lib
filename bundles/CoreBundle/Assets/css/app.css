@@ -3802,14 +3802,14 @@ fieldset[disabled] .btn-tertiary.btn-danger.focus i {
 .btn-tertiary:has(i) {
   padding-right: var(--spacing-05);
 }
-.btn-primary.btn-icon,
-.btn-secondary.btn-icon,
-.btn-tertiary.btn-icon {
+.btn-primary.btn--icon-only,
+.btn-secondary.btn--icon-only,
+.btn-tertiary.btn--icon-only {
   padding-right: 0;
 }
-.btn-primary.btn-icon span,
-.btn-secondary.btn-icon span,
-.btn-tertiary.btn-icon span {
+.btn-primary.btn--icon-only span,
+.btn-secondary.btn--icon-only span,
+.btn-tertiary.btn--icon-only span {
   width: initial;
 }
 .btn-primary span,
@@ -3929,7 +3929,7 @@ fieldset[disabled] .btn-ghost.focus i {
   gap: var(--spacing-03);
 }
 .btn-ghost.btn-danger,
-.btn-ghost.btn-danger.btn-icon {
+.btn-ghost.btn-danger.btn--icon-only {
   background-color: transparent;
   color: var(--button-danger-secondary);
   border: 1px solid transparent;
@@ -3937,267 +3937,267 @@ fieldset[disabled] .btn-ghost.focus i {
   outline-offset: -2px;
 }
 .btn-ghost.btn-danger:hover,
-.btn-ghost.btn-danger.btn-icon:hover {
+.btn-ghost.btn-danger.btn--icon-only:hover {
   outline: 2px var(--outline-style) transparent;
 }
 .btn-ghost.btn-danger:focus,
-.btn-ghost.btn-danger.btn-icon:focus,
+.btn-ghost.btn-danger.btn--icon-only:focus,
 .btn-ghost.btn-danger.focus,
-.btn-ghost.btn-danger.btn-icon.focus,
+.btn-ghost.btn-danger.btn--icon-only.focus,
 .btn-ghost.btn-danger:focus-visible,
-.btn-ghost.btn-danger.btn-icon:focus-visible {
+.btn-ghost.btn-danger.btn--icon-only:focus-visible {
   outline: 2px var(--outline-style) var(--focus);
 }
 .btn-ghost.btn-danger i,
-.btn-ghost.btn-danger.btn-icon i {
+.btn-ghost.btn-danger.btn--icon-only i {
   color: var(--button-danger-secondary);
 }
 .btn-ghost.btn-danger:hover,
-.btn-ghost.btn-danger.btn-icon:hover {
+.btn-ghost.btn-danger.btn--icon-only:hover {
   color: var(--text-inverse);
   background-color: var(--button-danger-hover);
   border: 1px solid var(--button-danger-hover);
 }
 .btn-ghost.btn-danger:hover i,
-.btn-ghost.btn-danger.btn-icon:hover i {
+.btn-ghost.btn-danger.btn--icon-only:hover i {
   color: var(--text-inverse);
 }
 .btn-ghost.btn-danger:active,
-.btn-ghost.btn-danger.btn-icon:active,
+.btn-ghost.btn-danger.btn--icon-only:active,
 .btn-ghost.btn-danger.active,
-.btn-ghost.btn-danger.btn-icon.active,
+.btn-ghost.btn-danger.btn--icon-only.active,
 .open > .dropdown-toggle.btn-ghost.btn-danger,
-.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon {
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn--icon-only {
   color: var(--text-inverse);
   background-color: var(--button-danger-active);
   border: 1px solid transparent;
 }
 .btn-ghost.btn-danger:active i,
-.btn-ghost.btn-danger.btn-icon:active i,
+.btn-ghost.btn-danger.btn--icon-only:active i,
 .btn-ghost.btn-danger.active i,
-.btn-ghost.btn-danger.btn-icon.active i,
+.btn-ghost.btn-danger.btn--icon-only.active i,
 .open > .dropdown-toggle.btn-ghost.btn-danger i,
-.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon i {
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn--icon-only i {
   color: var(--text-inverse);
 }
 .btn-ghost.btn-danger:active:hover,
-.btn-ghost.btn-danger.btn-icon:active:hover,
+.btn-ghost.btn-danger.btn--icon-only:active:hover,
 .btn-ghost.btn-danger.active:hover,
-.btn-ghost.btn-danger.btn-icon.active:hover,
+.btn-ghost.btn-danger.btn--icon-only.active:hover,
 .open > .dropdown-toggle.btn-ghost.btn-danger:hover,
-.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon:hover,
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn--icon-only:hover,
 .btn-ghost.btn-danger:active:focus,
-.btn-ghost.btn-danger.btn-icon:active:focus,
+.btn-ghost.btn-danger.btn--icon-only:active:focus,
 .btn-ghost.btn-danger.active:focus,
-.btn-ghost.btn-danger.btn-icon.active:focus,
+.btn-ghost.btn-danger.btn--icon-only.active:focus,
 .open > .dropdown-toggle.btn-ghost.btn-danger:focus,
-.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon:focus,
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn--icon-only:focus,
 .btn-ghost.btn-danger:active.focus,
-.btn-ghost.btn-danger.btn-icon:active.focus,
+.btn-ghost.btn-danger.btn--icon-only:active.focus,
 .btn-ghost.btn-danger.active.focus,
-.btn-ghost.btn-danger.btn-icon.active.focus,
+.btn-ghost.btn-danger.btn--icon-only.active.focus,
 .open > .dropdown-toggle.btn-ghost.btn-danger.focus,
-.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon.focus {
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn--icon-only.focus {
   color: var(--text-inverse);
   background-color: var(--button-danger-active);
   border-color: var(--button-danger-active);
 }
 .btn-ghost.btn-danger:active:hover i,
-.btn-ghost.btn-danger.btn-icon:active:hover i,
+.btn-ghost.btn-danger.btn--icon-only:active:hover i,
 .btn-ghost.btn-danger.active:hover i,
-.btn-ghost.btn-danger.btn-icon.active:hover i,
+.btn-ghost.btn-danger.btn--icon-only.active:hover i,
 .open > .dropdown-toggle.btn-ghost.btn-danger:hover i,
-.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon:hover i,
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn--icon-only:hover i,
 .btn-ghost.btn-danger:active:focus i,
-.btn-ghost.btn-danger.btn-icon:active:focus i,
+.btn-ghost.btn-danger.btn--icon-only:active:focus i,
 .btn-ghost.btn-danger.active:focus i,
-.btn-ghost.btn-danger.btn-icon.active:focus i,
+.btn-ghost.btn-danger.btn--icon-only.active:focus i,
 .open > .dropdown-toggle.btn-ghost.btn-danger:focus i,
-.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon:focus i,
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn--icon-only:focus i,
 .btn-ghost.btn-danger:active.focus i,
-.btn-ghost.btn-danger.btn-icon:active.focus i,
+.btn-ghost.btn-danger.btn--icon-only:active.focus i,
 .btn-ghost.btn-danger.active.focus i,
-.btn-ghost.btn-danger.btn-icon.active.focus i,
+.btn-ghost.btn-danger.btn--icon-only.active.focus i,
 .open > .dropdown-toggle.btn-ghost.btn-danger.focus i,
-.open > .dropdown-toggle.btn-ghost.btn-danger.btn-icon.focus i {
+.open > .dropdown-toggle.btn-ghost.btn-danger.btn--icon-only.focus i {
   color: var(--text-inverse);
 }
 .btn-ghost.btn-danger:focus,
-.btn-ghost.btn-danger.btn-icon:focus,
+.btn-ghost.btn-danger.btn--icon-only:focus,
 .btn-ghost.btn-danger.focus,
-.btn-ghost.btn-danger.btn-icon.focus {
+.btn-ghost.btn-danger.btn--icon-only.focus {
   color: var(--text-inverse);
   background-color: var(--button-danger-active);
   border: 1px solid var(--button-danger-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
 .btn-ghost.btn-danger:focus i,
-.btn-ghost.btn-danger.btn-icon:focus i,
+.btn-ghost.btn-danger.btn--icon-only:focus i,
 .btn-ghost.btn-danger.focus i,
-.btn-ghost.btn-danger.btn-icon.focus i {
+.btn-ghost.btn-danger.btn--icon-only.focus i {
   color: var(--text-inverse);
 }
 .btn-ghost.btn-danger[disabled],
-.btn-ghost.btn-danger.btn-icon[disabled],
+.btn-ghost.btn-danger.btn--icon-only[disabled],
 .btn-ghost.btn-danger.disabled,
-.btn-ghost.btn-danger.btn-icon.disabled,
+.btn-ghost.btn-danger.btn--icon-only.disabled,
 fieldset[disabled] .btn-ghost.btn-danger,
-fieldset[disabled] .btn-ghost.btn-danger.btn-icon,
+fieldset[disabled] .btn-ghost.btn-danger.btn--icon-only,
 .btn-ghost.btn-danger[disabled]:hover,
-.btn-ghost.btn-danger.btn-icon[disabled]:hover,
+.btn-ghost.btn-danger.btn--icon-only[disabled]:hover,
 .btn-ghost.btn-danger.disabled:hover,
-.btn-ghost.btn-danger.btn-icon.disabled:hover,
+.btn-ghost.btn-danger.btn--icon-only.disabled:hover,
 fieldset[disabled] .btn-ghost.btn-danger:hover,
-fieldset[disabled] .btn-ghost.btn-danger.btn-icon:hover,
+fieldset[disabled] .btn-ghost.btn-danger.btn--icon-only:hover,
 .btn-ghost.btn-danger[disabled]:focus,
-.btn-ghost.btn-danger.btn-icon[disabled]:focus,
+.btn-ghost.btn-danger.btn--icon-only[disabled]:focus,
 .btn-ghost.btn-danger.disabled:focus,
-.btn-ghost.btn-danger.btn-icon.disabled:focus,
+.btn-ghost.btn-danger.btn--icon-only.disabled:focus,
 fieldset[disabled] .btn-ghost.btn-danger:focus,
-fieldset[disabled] .btn-ghost.btn-danger.btn-icon:focus,
+fieldset[disabled] .btn-ghost.btn-danger.btn--icon-only:focus,
 .btn-ghost.btn-danger[disabled].focus,
-.btn-ghost.btn-danger.btn-icon[disabled].focus,
+.btn-ghost.btn-danger.btn--icon-only[disabled].focus,
 .btn-ghost.btn-danger.disabled.focus,
-.btn-ghost.btn-danger.btn-icon.disabled.focus,
+.btn-ghost.btn-danger.btn--icon-only.disabled.focus,
 fieldset[disabled] .btn-ghost.btn-danger.focus,
-fieldset[disabled] .btn-ghost.btn-danger.btn-icon.focus {
+fieldset[disabled] .btn-ghost.btn-danger.btn--icon-only.focus {
   background-color: transparent;
   color: var(--text-disabled);
   border: 1px solid transparent;
 }
 .btn-ghost.btn-danger[disabled] i,
-.btn-ghost.btn-danger.btn-icon[disabled] i,
+.btn-ghost.btn-danger.btn--icon-only[disabled] i,
 .btn-ghost.btn-danger.disabled i,
-.btn-ghost.btn-danger.btn-icon.disabled i,
+.btn-ghost.btn-danger.btn--icon-only.disabled i,
 fieldset[disabled] .btn-ghost.btn-danger i,
-fieldset[disabled] .btn-ghost.btn-danger.btn-icon i,
+fieldset[disabled] .btn-ghost.btn-danger.btn--icon-only i,
 .btn-ghost.btn-danger[disabled]:hover i,
-.btn-ghost.btn-danger.btn-icon[disabled]:hover i,
+.btn-ghost.btn-danger.btn--icon-only[disabled]:hover i,
 .btn-ghost.btn-danger.disabled:hover i,
-.btn-ghost.btn-danger.btn-icon.disabled:hover i,
+.btn-ghost.btn-danger.btn--icon-only.disabled:hover i,
 fieldset[disabled] .btn-ghost.btn-danger:hover i,
-fieldset[disabled] .btn-ghost.btn-danger.btn-icon:hover i,
+fieldset[disabled] .btn-ghost.btn-danger.btn--icon-only:hover i,
 .btn-ghost.btn-danger[disabled]:focus i,
-.btn-ghost.btn-danger.btn-icon[disabled]:focus i,
+.btn-ghost.btn-danger.btn--icon-only[disabled]:focus i,
 .btn-ghost.btn-danger.disabled:focus i,
-.btn-ghost.btn-danger.btn-icon.disabled:focus i,
+.btn-ghost.btn-danger.btn--icon-only.disabled:focus i,
 fieldset[disabled] .btn-ghost.btn-danger:focus i,
-fieldset[disabled] .btn-ghost.btn-danger.btn-icon:focus i,
+fieldset[disabled] .btn-ghost.btn-danger.btn--icon-only:focus i,
 .btn-ghost.btn-danger[disabled].focus i,
-.btn-ghost.btn-danger.btn-icon[disabled].focus i,
+.btn-ghost.btn-danger.btn--icon-only[disabled].focus i,
 .btn-ghost.btn-danger.disabled.focus i,
-.btn-ghost.btn-danger.btn-icon.disabled.focus i,
+.btn-ghost.btn-danger.btn--icon-only.disabled.focus i,
 fieldset[disabled] .btn-ghost.btn-danger.focus i,
-fieldset[disabled] .btn-ghost.btn-danger.btn-icon.focus i {
+fieldset[disabled] .btn-ghost.btn-danger.btn--icon-only.focus i {
   color: var(--text-disabled);
 }
-.btn-ghost.btn-icon {
+.btn-ghost.btn--icon-only {
   background-color: transparent;
   color: var(--icon-primary);
   border: 1px solid transparent;
   outline: 2px var(--outline-style) transparent;
   outline-offset: -2px;
 }
-.btn-ghost.btn-icon:hover {
+.btn-ghost.btn--icon-only:hover {
   outline: 2px var(--outline-style) transparent;
 }
-.btn-ghost.btn-icon:focus,
-.btn-ghost.btn-icon.focus,
-.btn-ghost.btn-icon:focus-visible {
+.btn-ghost.btn--icon-only:focus,
+.btn-ghost.btn--icon-only.focus,
+.btn-ghost.btn--icon-only:focus-visible {
   outline: 2px var(--outline-style) var(--focus);
 }
-.btn-ghost.btn-icon i {
+.btn-ghost.btn--icon-only i {
   color: var(--icon-primary);
 }
-.btn-ghost.btn-icon:hover {
+.btn-ghost.btn--icon-only:hover {
   color: var(--icon-primary);
   background-color: var(--background-hover);
   border: 1px solid var(--background-hover);
 }
-.btn-ghost.btn-icon:hover i {
+.btn-ghost.btn--icon-only:hover i {
   color: var(--icon-primary);
 }
-.btn-ghost.btn-icon:active,
-.btn-ghost.btn-icon.active,
-.open > .dropdown-toggle.btn-ghost.btn-icon {
+.btn-ghost.btn--icon-only:active,
+.btn-ghost.btn--icon-only.active,
+.open > .dropdown-toggle.btn-ghost.btn--icon-only {
   color: var(--icon-primary);
   background-color: var(--background-active);
   border: 1px solid transparent;
 }
-.btn-ghost.btn-icon:active i,
-.btn-ghost.btn-icon.active i,
-.open > .dropdown-toggle.btn-ghost.btn-icon i {
+.btn-ghost.btn--icon-only:active i,
+.btn-ghost.btn--icon-only.active i,
+.open > .dropdown-toggle.btn-ghost.btn--icon-only i {
   color: var(--icon-primary);
 }
-.btn-ghost.btn-icon:active:hover,
-.btn-ghost.btn-icon.active:hover,
-.open > .dropdown-toggle.btn-ghost.btn-icon:hover,
-.btn-ghost.btn-icon:active:focus,
-.btn-ghost.btn-icon.active:focus,
-.open > .dropdown-toggle.btn-ghost.btn-icon:focus,
-.btn-ghost.btn-icon:active.focus,
-.btn-ghost.btn-icon.active.focus,
-.open > .dropdown-toggle.btn-ghost.btn-icon.focus {
+.btn-ghost.btn--icon-only:active:hover,
+.btn-ghost.btn--icon-only.active:hover,
+.open > .dropdown-toggle.btn-ghost.btn--icon-only:hover,
+.btn-ghost.btn--icon-only:active:focus,
+.btn-ghost.btn--icon-only.active:focus,
+.open > .dropdown-toggle.btn-ghost.btn--icon-only:focus,
+.btn-ghost.btn--icon-only:active.focus,
+.btn-ghost.btn--icon-only.active.focus,
+.open > .dropdown-toggle.btn-ghost.btn--icon-only.focus {
   color: var(--icon-primary);
   background-color: var(--background-active);
   border-color: var(--background-active);
 }
-.btn-ghost.btn-icon:active:hover i,
-.btn-ghost.btn-icon.active:hover i,
-.open > .dropdown-toggle.btn-ghost.btn-icon:hover i,
-.btn-ghost.btn-icon:active:focus i,
-.btn-ghost.btn-icon.active:focus i,
-.open > .dropdown-toggle.btn-ghost.btn-icon:focus i,
-.btn-ghost.btn-icon:active.focus i,
-.btn-ghost.btn-icon.active.focus i,
-.open > .dropdown-toggle.btn-ghost.btn-icon.focus i {
+.btn-ghost.btn--icon-only:active:hover i,
+.btn-ghost.btn--icon-only.active:hover i,
+.open > .dropdown-toggle.btn-ghost.btn--icon-only:hover i,
+.btn-ghost.btn--icon-only:active:focus i,
+.btn-ghost.btn--icon-only.active:focus i,
+.open > .dropdown-toggle.btn-ghost.btn--icon-only:focus i,
+.btn-ghost.btn--icon-only:active.focus i,
+.btn-ghost.btn--icon-only.active.focus i,
+.open > .dropdown-toggle.btn-ghost.btn--icon-only.focus i {
   color: var(--icon-primary);
 }
-.btn-ghost.btn-icon:focus,
-.btn-ghost.btn-icon.focus {
+.btn-ghost.btn--icon-only:focus,
+.btn-ghost.btn--icon-only.focus {
   color: var(--icon-primary);
   background-color: var(--background-active);
   border: 1px solid var(--background-active);
   box-shadow: inset 0 0 0 1px var(--focus), inset 0 0 0 2px var(--background, #ffffff);
 }
-.btn-ghost.btn-icon:focus i,
-.btn-ghost.btn-icon.focus i {
+.btn-ghost.btn--icon-only:focus i,
+.btn-ghost.btn--icon-only.focus i {
   color: var(--icon-primary);
 }
-.btn-ghost.btn-icon[disabled],
-.btn-ghost.btn-icon.disabled,
-fieldset[disabled] .btn-ghost.btn-icon,
-.btn-ghost.btn-icon[disabled]:hover,
-.btn-ghost.btn-icon.disabled:hover,
-fieldset[disabled] .btn-ghost.btn-icon:hover,
-.btn-ghost.btn-icon[disabled]:focus,
-.btn-ghost.btn-icon.disabled:focus,
-fieldset[disabled] .btn-ghost.btn-icon:focus,
-.btn-ghost.btn-icon[disabled].focus,
-.btn-ghost.btn-icon.disabled.focus,
-fieldset[disabled] .btn-ghost.btn-icon.focus {
+.btn-ghost.btn--icon-only[disabled],
+.btn-ghost.btn--icon-only.disabled,
+fieldset[disabled] .btn-ghost.btn--icon-only,
+.btn-ghost.btn--icon-only[disabled]:hover,
+.btn-ghost.btn--icon-only.disabled:hover,
+fieldset[disabled] .btn-ghost.btn--icon-only:hover,
+.btn-ghost.btn--icon-only[disabled]:focus,
+.btn-ghost.btn--icon-only.disabled:focus,
+fieldset[disabled] .btn-ghost.btn--icon-only:focus,
+.btn-ghost.btn--icon-only[disabled].focus,
+.btn-ghost.btn--icon-only.disabled.focus,
+fieldset[disabled] .btn-ghost.btn--icon-only.focus {
   background-color: transparent;
   color: var(--icon-disabled);
   border: 1px solid transparent;
 }
-.btn-ghost.btn-icon[disabled] i,
-.btn-ghost.btn-icon.disabled i,
-fieldset[disabled] .btn-ghost.btn-icon i,
-.btn-ghost.btn-icon[disabled]:hover i,
-.btn-ghost.btn-icon.disabled:hover i,
-fieldset[disabled] .btn-ghost.btn-icon:hover i,
-.btn-ghost.btn-icon[disabled]:focus i,
-.btn-ghost.btn-icon.disabled:focus i,
-fieldset[disabled] .btn-ghost.btn-icon:focus i,
-.btn-ghost.btn-icon[disabled].focus i,
-.btn-ghost.btn-icon.disabled.focus i,
-fieldset[disabled] .btn-ghost.btn-icon.focus i {
+.btn-ghost.btn--icon-only[disabled] i,
+.btn-ghost.btn--icon-only.disabled i,
+fieldset[disabled] .btn-ghost.btn--icon-only i,
+.btn-ghost.btn--icon-only[disabled]:hover i,
+.btn-ghost.btn--icon-only.disabled:hover i,
+fieldset[disabled] .btn-ghost.btn--icon-only:hover i,
+.btn-ghost.btn--icon-only[disabled]:focus i,
+.btn-ghost.btn--icon-only.disabled:focus i,
+fieldset[disabled] .btn-ghost.btn--icon-only:focus i,
+.btn-ghost.btn--icon-only[disabled].focus i,
+.btn-ghost.btn--icon-only.disabled.focus i,
+fieldset[disabled] .btn-ghost.btn--icon-only.focus i {
   color: var(--icon-disabled);
 }
-.btn-ghost.btn-icon.btn-toggletip {
+.btn-ghost.btn--icon-only.btn-toggletip {
   color: inherit;
 }
-.btn-icon {
+.btn--icon-only {
   justify-content: center;
   padding: 0;
   align-items: center;
