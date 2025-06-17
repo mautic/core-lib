@@ -10802,7 +10802,7 @@ code:hover > .copy-icon {
 .builder-content {
   position: fixed;
   left: 0;
-  top: 0;
+  top: 48px;
   width: 70%;
   height: 100%;
 }
