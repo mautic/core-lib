@@ -17,21 +17,25 @@
                     children: entity.name|default('mautic.campaign.unsaved'),
                 },
                 headerGlobal: {
-                    children: {
-                        headerGlobalAction: {
-                            ariaLabel: 'mautic.core.form.apply',
-                            onClick: 'Mautic.saveCampaignFromBuilder();',
-                            children: 'ri-save-line',
+                    children: [
+                        {
+                            headerGlobalAction: {
+                                ariaLabel: 'mautic.core.form.apply',
+                                onClick: 'Mautic.saveCampaignFromBuilder();',
+                                renderActionIcon: 'ri-save-line',
+                            }
                         },
-                        headerGlobalAction2: {
-                            ariaLabel: 'mautic.core.close.builder',
-                            onClick: 'Mautic.closeCampaignBuilder();',
-                            children: 'ri-close-line',
-                        },
-                    },
-                },
-            },
-        },
+                        {
+                            headerGlobalAction: {
+                                ariaLabel: 'mautic.core.close.builder',
+                                onClick: 'Mautic.closeCampaignBuilder();',
+                                renderActionIcon: 'ri-close-line',
+                            }
+                        }
+                    ]
+                }
+            }
+        }
     } %}
     <div class="builder-content">
         <div id="CampaignCanvas">
