@@ -7,31 +7,6 @@
     - canvasSettings
 #}
 <div id="campaign-builder" class="hide builder campaign-builder live animation--slide-in-down">
-    <div class="btns-builder">
-        {% include '@MauticCore/Helper/button.html.twig' with {
-            buttons: [
-                {
-                    label: 'mautic.core.form.apply',
-                    variant: 'primary',
-                    onclick: 'Mautic.saveCampaignFromBuilder();',
-                    icon: 'ri-save-line',
-                    attributes: {
-                        class: 'btn-apply-builder',
-                        type: 'submit'
-                    }
-                },
-                {
-                    label: 'mautic.core.close.builder',
-                    variant: 'secondary',
-                    onclick: 'Mautic.closeCampaignBuilder();',
-                    icon: 'ri-close-line',
-                    attributes: {
-                        class: 'btn-close-campaign-builder'
-                    }
-                }
-            ]
-        } %}
-    </div>
     <div id="builder-errors" class="alert alert-danger" role="alert" style="display: none;">test</div>
     {% include '@MauticCore/Components/uishell.html.twig' with {
         header: {
