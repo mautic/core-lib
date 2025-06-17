@@ -65,23 +65,38 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     #[Groups(['campaign:read', 'campaign:write'])]
     private $id;
 
+    /**
+     * @var string
+     */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?string $name = null;
+    private $name;
 
+    /**
+     * @var string|null
+     */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?string $description;
+    private $description;
 
+    /**
+     * @var \DateTimeInterface|null
+     */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?\DateTimeInterface $publishUp = null;
+    private $publishUp;
 
+    /**
+     * @var \DateTimeInterface|null
+     */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?\DateTimeInterface $publishDown = null;
+    private $publishDown;
 
     #[Groups(['campaign:read', 'campaign:write'])]
     public ?\DateTimeInterface $deleted = null;
 
+    /**
+     * @var Category|null
+     **/
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?Category $category;
+    private $category;
 
     /**
      * @var Collection<int, Event>|ArrayCollection<int, Event>
