@@ -59,7 +59,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
 
     public const TABLE_NAME = 'campaigns';
 
-    /*
+    /**
      * @var int
      */
     #[Groups(['campaign:read', 'campaign:write'])]
