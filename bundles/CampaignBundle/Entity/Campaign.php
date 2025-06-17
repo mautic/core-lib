@@ -59,8 +59,11 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
 
     public const TABLE_NAME = 'campaigns';
 
+    /*
+     * @var int
+     */
     #[Groups(['campaign:read', 'campaign:write'])]
-    private int $id;
+    private $id;
 
     #[Groups(['campaign:read', 'campaign:write'])]
     private ?string $name = null;
@@ -69,10 +72,10 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     private ?string $description;
 
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?\DateTimeInterface $publishUp;
+    private ?\DateTimeInterface $publishUp = null;
 
     #[Groups(['campaign:read', 'campaign:write'])]
-    private ?\DateTimeInterface $publishDown;
+    private ?\DateTimeInterface $publishDown = null;
 
     #[Groups(['campaign:read', 'campaign:write'])]
     public ?\DateTimeInterface $deleted = null;
@@ -262,10 +265,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         }
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -476,7 +476,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Get publishUp.
      *
-     * @return \DateTimeInterface
+     * @return \DateTimeInterface|null
      */
     public function getPublishUp()
     {
