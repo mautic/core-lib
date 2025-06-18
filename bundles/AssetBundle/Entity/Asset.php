@@ -1165,11 +1165,12 @@ class Asset extends FormEntity
                     ->setTranslationDomain('validators')
                     ->addViolation();
             }
-            $loader           = new ParameterLoader();
-            $parameters       = $loader->getParameterBag();
-            $mimeTypesAllowed = $parameters->get('allowed_mimetypes');
+            $parameters = (new ParameterLoader())->getParameterBag();
+            $extensionsAllowed = $parameters->get('allowed_extensions');
+            $mimeTypesMap = $parameters->get('allowed_mimetypes');
+            $mimeTypesAllowed = array_intersect_key($mimeTypesMap, array_flip($extensionsAllowed));
 
-            if (!empty($object->getFileMimeType()) && !in_array($object->getFileMimeType(), $mimeTypesAllowed)) {
+            if (!empty($object->getFileMimeType()) && array_key_exists(strtolower($object->getExtension() ?? ''), array_change_key_case($mimeTypesAllowed, CASE_LOWER)) && !in_array(strtolower($object->getFileMimeType()), array_map('strtolower', $mimeTypesAllowed), true)) {
                 $context->buildViolation('mautic.asset.asset.error.invalid.mimetype', [
                     '%fileMimetype%'=> $object->getFileMimeType(),
                     '%mimetypes%'   => implode(', ', $mimeTypesAllowed),
@@ -1178,9 +1179,8 @@ class Asset extends FormEntity
                     ->addViolation();
             }
 
-            $extensionsAllowed = array_keys($mimeTypesAllowed);
-            $fileType          = $object->getExtension();
-            if (null !== $object->getExtension() && !in_array($fileType, $extensionsAllowed)) {
+            $fileType = $object->getExtension();
+            if (null !== $fileType && !in_array(strtolower($fileType), array_map('strtolower', $extensionsAllowed), true)) {
                 $context->buildViolation('mautic.asset.asset.error.file.extension', [
                     '%fileExtension%'=> $object->getExtension(),
                     '%extensions%'   => implode(', ', $extensionsAllowed),
