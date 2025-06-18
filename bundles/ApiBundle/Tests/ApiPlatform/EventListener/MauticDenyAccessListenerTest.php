@@ -21,13 +21,13 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 final class MauticDenyAccessListenerTest extends TestCase
 {
-    private MockObject|CorePermissions $corePermissionsMock;
+    private MockObject&CorePermissions $corePermissionsMock;
 
     private ApiResource $resourceMetadata;
 
-    private ResourceMetadataCollectionFactoryInterface|MockObject $resourceMetadataFactoryMock;
+    private ResourceMetadataCollectionFactoryInterface&MockObject $resourceMetadataFactoryMock;
 
-    private RequestEvent|MockObject $requestEvent;
+    private RequestEvent $requestEvent;
 
     private MauticDenyAccessListener $mauticDenyAccessListener;
 

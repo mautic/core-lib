@@ -15,17 +15,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class MauticWriteSubscriberTest extends TestCase
+final class MauticWriteSubscriberTest extends TestCase
 {
     private MauticWriteSubscriber $mauticWriteSubscriber;
 
     private ViewEvent $event;
 
-    private MockObject|FormEntity $formEntityMock;
+    private MockObject&FormEntity $formEntityMock;
 
-    private Request|MockObject $requestMock;
+    private Request&MockObject $requestMock;
 
-    private UserHelper|MockObject $userHelperMock;
+    private UserHelper&MockObject $userHelperMock;
 
     protected function setUp(): void
     {
