@@ -47,7 +47,6 @@ final class FixtureHelper
         $campaign->setIsPublished(true);
 
         $this->em->persist($campaign);
-        $this->em->flush();
 
         return $campaign;
     }
