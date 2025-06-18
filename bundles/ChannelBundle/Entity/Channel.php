@@ -10,7 +10,6 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -45,23 +44,18 @@ class Channel extends CommonEntity implements UuidInterface
     /**
      * @var int
      */
-    #[ORM\Column(name: 'id', type: 'integer')]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[Groups(['channel:read'])]
     private $id;
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'channel', type: 'string')]
     #[Groups(['channel:read', 'channel:write', 'message:read'])]
     private $channel;
 
     /**
      * @var int|null
      */
-    #[ORM\Column(name: 'channel_id', type: 'integer', nullable: true)]
     #[Groups(['channel:read', 'channel:write'])]
     private $channelId;
 
@@ -74,22 +68,18 @@ class Channel extends CommonEntity implements UuidInterface
     /**
      * @var Message
      */
-    #[ORM\ManyToOne(targetEntity: Message::class, inversedBy: 'channels')]
-    #[ORM\JoinColumn(name: 'message_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[Groups(['channel:read', 'channel:write'])]
     private $message;
 
     /**
      * @var array
      */
-    #[ORM\Column(name: 'properties', type: Types::JSON)]
     #[Groups(['channel:read', 'channel:write'])]
     private $properties = [];
 
     /**
      * @var bool
      */
-    #[ORM\Column(name: 'is_enabled', type: 'boolean')]
     #[Groups(['channel:read', 'channel:write', 'message:read'])]
     private $isEnabled = false;
 
