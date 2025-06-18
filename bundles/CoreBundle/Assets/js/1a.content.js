@@ -400,6 +400,11 @@ Mautic.onPageLoad = function (container, response, inModal) {
         mQuery(document).ready(callback(this));
     });
 
+    // Initialize copy to clipboard functionality
+    mQuery(container + " *[data-copy]").off('click.copy').on('click.copy', function (event) {
+        event.preventDefault();
+        Mautic.copyToClipboard(mQuery(this).data('copy'));
+    });
 
     mQuery(container + " input[data-toggle='color']").each(function() {
         Mautic.activateColorPicker(this);
@@ -1735,6 +1740,25 @@ Mautic.processCsvContactExport = function (route) {
         error: function (request, textStatus, errorThrown) {
             Mautic.processAjaxError(request, textStatus, errorThrown);
         }
+    });
+};
+
+/**
+ * Copies text to the clipboard and displays a Mautic flash message.
+ *
+ * @param {string} text The text to copy to the clipboard.
+ */
+Mautic.copyToClipboard = function (text) {
+    console.log('Attempting to copy text to clipboard:', text);
+    navigator.clipboard.writeText(text).then(function () {
+        var message = Mautic.translate('mautic.core.notice.copiedtoclipboard');
+        var flashMessage = Mautic.addInfoFlashMessage(message);
+        Mautic.setFlashes(flashMessage);
+    }).catch(function (err) {
+        console.error('Clipboard write error:', err);
+        var message = Mautic.translate('mautic.core.error.copyfailed');
+        var flashMessage = Mautic.addErrorFlashMessage(message);
+        Mautic.setFlashes(flashMessage);
     });
 };
 
