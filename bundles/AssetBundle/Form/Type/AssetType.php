@@ -199,7 +199,7 @@ class AssetType extends AbstractType
         }
         $parameters = (new ParameterLoader())->getParameterBag();
         $extensions = $parameters->get('allowed_extensions');
-        $fileName         = $object;
+        $fileName   = $object;
         if (!is_string($object) && $object instanceof Asset) {
             $fileName = $object->getOriginalFileName();
         }

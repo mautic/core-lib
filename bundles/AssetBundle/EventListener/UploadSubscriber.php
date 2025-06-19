@@ -60,11 +60,11 @@ class UploadSubscriber implements EventSubscriberInterface
      */
     public function onUploadValidation(ValidationEvent $event): void
     {
-        $file = $event->getFile();
-        $extensions = $this->coreParametersHelper->get('allowed_extensions');
+        $file                = $event->getFile();
+        $extensions          = $this->coreParametersHelper->get('allowed_extensions');
         $configuredMimeTypes = $this->coreParametersHelper->get('allowed_mimetypes');
-        $allowedMimeTypes = array_intersect_key($configuredMimeTypes, array_flip($extensions));
-        $maxSize = $this->assetModel->getMaxUploadSize('B');
+        $allowedMimeTypes    = array_intersect_key($configuredMimeTypes, array_flip($extensions));
+        $maxSize             = $this->assetModel->getMaxUploadSize('B');
 
         if (null === $file) {
             return;
