@@ -1165,12 +1165,17 @@ class Asset extends FormEntity
                     ->setTranslationDomain('validators')
                     ->addViolation();
             }
-            $parameters = (new ParameterLoader())->getParameterBag();
+            $parameters        = (new ParameterLoader())->getParameterBag();
             $extensionsAllowed = $parameters->get('allowed_extensions');
-            $mimeTypesMap = $parameters->get('allowed_mimetypes');
-            $mimeTypesAllowed = array_intersect_key($mimeTypesMap, array_flip($extensionsAllowed));
+            $mimeTypesMap      = $parameters->get('allowed_mimetypes');
+            $mimeTypesAllowed  = array_intersect_key($mimeTypesMap, array_flip($extensionsAllowed));
 
-            if (!empty($object->getFileMimeType()) && array_key_exists(strtolower($object->getExtension() ?? ''), array_change_key_case($mimeTypesAllowed, CASE_LOWER)) && !in_array(strtolower($object->getFileMimeType()), array_map('strtolower', $mimeTypesAllowed), true)) {
+            $fileMimeType        = $object->getFileMimeType();
+            $fileExtension       = strtolower($object->getExtension() ?? '');
+            $lowercaseMimeTypes  = array_change_key_case($mimeTypesAllowed, CASE_LOWER);
+            $lowercaseMimeValues = array_map('strtolower', $mimeTypesAllowed);
+
+            if (!empty($fileMimeType) && array_key_exists($fileExtension, $lowercaseMimeTypes) && !in_array(strtolower($fileMimeType), $lowercaseMimeValues, true)) {
                 $context->buildViolation('mautic.asset.asset.error.invalid.mimetype', [
                     '%fileMimetype%'=> $object->getFileMimeType(),
                     '%mimetypes%'   => implode(', ', $mimeTypesAllowed),
