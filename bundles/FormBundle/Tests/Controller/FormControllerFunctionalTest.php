@@ -139,8 +139,8 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
 
         $form->setValues(
             [
-                'mauticform[name]'       => 'Test',
-                'mauticform[postAction]' => 'hideform',
+                'mauticform[name]'               => 'Test',
+                'mauticform[postAction]'         => 'hideform',
                 'mauticform[postActionProperty]' => 'message',
             ]
         );
