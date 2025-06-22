@@ -2991,7 +2991,7 @@ blockquote > p:after {
 code {
   padding: var(--spacing-01) var(--spacing-03);
   overflow: hidden;
-  border-radius: clamp(1px, var(--border-radius-sm), 4px);
+  border-radius: clamp(4px, var(--border-radius-sm), 6px);
 }
 kbd {
   min-width: 20px;
