@@ -2994,6 +2994,7 @@ code {
   border-radius: clamp(4px, var(--border-radius-sm), 6px);
 }
 pre {
+  min-height: 40px;
   max-height: 100px;
   overflow: hidden;
 }
@@ -10923,6 +10924,7 @@ code:hover > .copy-icon {
   height: 70px;
   background: linear-gradient(to top, var(--layer) 5%, transparent);
   pointer-events: none;
+  max-height: 100%;
 }
 .code-snippet--inline {
   display: inline-flex;
