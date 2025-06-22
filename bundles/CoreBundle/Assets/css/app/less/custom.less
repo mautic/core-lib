@@ -585,3 +585,30 @@ code:hover > .copy-icon {
 .modal.fade .modal-dialog {
   animation: modal-fade var(--duration-productive) var(--easing-standard-productive);
 }
+
+.code-snippet {
+  position: relative;
+
+  button {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  &--single {
+    code {
+      height: 24px;
+      display: flex;
+    }
+  }
+  &--multi {
+
+
+  }
+  &--inline {
+    display: inline-flex;
+    code {
+      cursor: pointer;
+    }
+  }
+}

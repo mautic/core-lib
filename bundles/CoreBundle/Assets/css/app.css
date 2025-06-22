@@ -2990,7 +2990,6 @@ blockquote > p:after {
 }
 code {
   padding: var(--spacing-01) var(--spacing-03);
-  cursor: pointer;
   overflow: hidden;
   border-radius: clamp(1px, var(--border-radius-sm), 4px);
 }
@@ -10898,6 +10897,24 @@ code:hover > .copy-icon {
 }
 .modal.fade .modal-dialog {
   animation: modal-fade var(--duration-productive) var(--easing-standard-productive);
+}
+.code-snippet {
+  position: relative;
+}
+.code-snippet button {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.code-snippet--single code {
+  height: 24px;
+  display: flex;
+}
+.code-snippet--inline {
+  display: inline-flex;
+}
+.code-snippet--inline code {
+  cursor: pointer;
 }
 .toggle {
   display: inline-block;
