@@ -12,21 +12,21 @@ Variables
 - minCollapsedNumberOfRows
 - maxExpandedNumberOfRows
 - minExpandedNumberOfRows
+- showMoreText
+- showLessText
 #}
 
 {% if variant == 'inline' %}
-<div class="code-snippet code-snippet--inline" {% if disabled is defined and disabled %}disabled{% endif %} data-toggle="tooltip" title="{{ copyButtonDescription|trans }}">
-    <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" {% if not disabled %} data-copy="{{ copyText|default(innerText) }}" tabindex="0"{% endif %}>
+<div class="code-snippet code-snippet--inline" {% if disabled is defined and disabled %}disabled{% endif %} data-toggle="tooltip" title="{{ copyButtonDescription|default('mautic.core.copy_code_snippet')|trans }}">
+    <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" {% if disabled is not defined or not disabled %} data-copy="{{ copyText|default(innerText) }}" tabindex="0"{% endif %}>
         {{ innerText|raw }}
     </code>
 </div>
 
 {% elseif variant == 'multi' %}
 <div class="code-snippet code-snippet--multi" {% if disabled is defined and disabled %}disabled{% endif %}>
-    <pre class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">
-        {{ innerText|raw }}
-    </pre>
-    {% if not hideCopyButton %}
+    <pre class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">{{ innerText|raw }}</pre>
+    {% if hideCopyButton is not defined or not hideCopyButton %}
     {% include '@MauticCore/Components/button.html.twig' with {
         buttons: [{
         variant: 'icon',
@@ -34,7 +34,7 @@ Variables
         icon_only: true,
         label: copyButtonDescription|default('mautic.core.copy_code_snippet')|trans,
         attributes: {
-            'data-copy': copyText|default(innerText),
+            'data-copy': copyText|default(innerText)|raw,
             'type': 'button',
         },
         }]
@@ -47,7 +47,7 @@ Variables
     <code class="{{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">
         {{ innerText|raw }}
     </code>
-    {% if not hideCopyButton %}
+    {% if hideCopyButton is not defined or not hideCopyButton %}
     {% include '@MauticCore/Components/button.html.twig' with {
         buttons: [{
         variant: 'icon',
@@ -56,7 +56,7 @@ Variables
         icon_only: true,
         label: copyButtonDescription|default('mautic.core.copy_code_snippet')|trans,
         attributes: {
-            'data-copy': copyText|default(innerText),
+            'data-copy': copyText|default(innerText)|raw,
             'type': 'button',
         },
         }]
