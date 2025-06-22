@@ -125,15 +125,6 @@ mQuery( document ).ready(function() {
         }
     }, mauticSessionLifetime * 1000 / 2);
 
-    // Copy code blocks when clicked
-    mQuery(document).on('click', 'code', function(e) {
-        e.preventDefault();
-        navigator.clipboard.writeText(mQuery(this).clone().children('.copy-icon').remove().end().text().trim()).then(() => {
-            mQuery(this).find('.copy-icon').toggleClass('ri-clipboard-fill ri-check-line');
-            setTimeout(() => mQuery(this).find('.copy-icon').toggleClass('ri-clipboard-fill ri-check-line'), 2000);
-        });
-    });
-    Mautic.initializeCodeBlocks();
     Mautic.attachDismissHandlers();
 });
 
@@ -370,19 +361,6 @@ var Mautic = {
             modalWindow.modal();
         });
 
-    },
-
-    /**
-     * Copy code blocks when clicked
-     *
-     */
-    initializeCodeBlocks: function () {
-        mQuery('code').each(function() {
-            var $codeBlock = mQuery(this);
-            if (!$codeBlock.find('.copy-icon').length) {
-                $codeBlock.append('<i class="ri-clipboard-fill copy-icon"></i>');
-            }
-        });
     },
 
     /**
