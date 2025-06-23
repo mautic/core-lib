@@ -18,8 +18,8 @@ Variables
 
 {% if variant == 'inline' %}
 <div class="code-snippet code-snippet--inline" {% if disabled is defined and disabled %}disabled{% endif %} data-toggle="tooltip" title="{{ copyButtonDescription|default('mautic.core.copy_code_snippet')|trans }}">
-    <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" {% if disabled is not defined or not disabled %} data-copy="{{ copyText|default(innerText) }}" tabindex="0"{% endif %}>
-        {{ innerText|raw }}
+    <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" {% if disabled is not defined or not disabled %} data-copy="{{ copyText|default(innerText)|escape('html_attr') }}" tabindex="0"{% endif %}>
+        {{ innerText|raw|escape('html_attr') }}
     </code>
 </div>
 
@@ -34,7 +34,7 @@ Variables
         icon_only: true,
         label: copyButtonDescription|default('mautic.core.copy_code_snippet')|trans,
         attributes: {
-            'data-copy': copyText|default(innerText)|raw,
+            'data-copy': copyText|default(innerText)|escape('html_attr'),
             'type': 'button',
         },
         }]
@@ -45,7 +45,7 @@ Variables
 {% elseif variant == 'single' %}
 <div class="code-snippet code-snippet--single" {% if disabled is defined and disabled %}disabled{% endif %}>
     <code class="{{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">
-        {{ innerText|raw }}
+        {{ innerText|raw|escape('html_attr') }}
     </code>
     {% if hideCopyButton is not defined or not hideCopyButton %}
     {% include '@MauticCore/Components/button.html.twig' with {
@@ -56,7 +56,7 @@ Variables
         icon_only: true,
         label: copyButtonDescription|default('mautic.core.copy_code_snippet')|trans,
         attributes: {
-            'data-copy': copyText|default(innerText)|raw,
+            'data-copy': copyText|default(innerText)|escape('html_attr'),
             'type': 'button',
         },
         }]
