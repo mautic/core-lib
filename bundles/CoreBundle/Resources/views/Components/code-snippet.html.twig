@@ -44,7 +44,7 @@ Variables
 
 {% elseif variant == 'single' %}
 <div class="code-snippet code-snippet--single" {% if disabled is defined and disabled %}disabled{% endif %}>
-    <code class="{{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">
+    <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">
         {{ innerText|raw|escape('html_attr') }}
     </code>
     {% if hideCopyButton is not defined or not hideCopyButton %}
