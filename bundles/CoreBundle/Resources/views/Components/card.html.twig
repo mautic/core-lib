@@ -98,7 +98,7 @@
                 </div>
             </div>
         {% endset %}
-        {% include '@MauticCore/Components/tile--base.html.twig' with {
+        {% include '@MauticCore/Components/tile.html.twig' with {
             'content': cardContent,
             'className': 'card pa-0' ~ (disabled is defined ? ' tile--disabled' : ''),
         } %}
@@ -116,7 +116,8 @@
                 </div>
             </div>
         {% endset %}
-        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+        {% include '@MauticCore/Components/tile.html.twig' with {
+            'type': 'clickable',
             'content': cardContent,
             'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
             'icon': ctaIcons[ctaType],
@@ -134,7 +135,8 @@
             </div>
             
         {% endset %}
-        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+        {% include '@MauticCore/Components/tile.html.twig' with {
+            'type': 'clickable',
             'content': cardContent,
             'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
             'icon': ctaIcons[ctaType],
@@ -152,7 +154,8 @@
                 </div>
             </div>
         {% endset %}
-        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+        {% include '@MauticCore/Components/tile.html.twig' with {
+            'type': 'clickable',
             'content': cardContent,
             'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
             'icon': ctaIcons[ctaType],
@@ -172,7 +175,8 @@
                 </div>
             </div>
         {% endset %}
-        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+        {% include '@MauticCore/Components/tile.html.twig' with {
+            'type': 'clickable',
             'content': cardContent,
             'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
             'href': href,
@@ -194,7 +198,8 @@
             </div>
         </div>
         {% endset %}
-        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+        {% include '@MauticCore/Components/tile.html.twig' with {
+            'type': 'clickable',
             'content': cardContent,
             'className': 'card pa-0 card--link',
             'href': href,
@@ -218,7 +223,8 @@
             </div>
         </div>
         {% endset %}
-        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+        {% include '@MauticCore/Components/tile.html.twig' with {
+            'type': 'clickable',
             'content': cardContent,
             'className': 'card pa-0 card--link',
             'href': href,

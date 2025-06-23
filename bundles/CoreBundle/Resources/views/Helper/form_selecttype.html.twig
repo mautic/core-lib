@@ -55,7 +55,8 @@
                         {% endif %}
                         {% endset %}
 
-                        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+                        {% include '@MauticCore/Components/tile.html.twig' with {
+                            'type': 'clickable',
                             'onclick': typeOneOnClick,
                             'content': typeOneContent,
                             'icon': typeOneIconClass|default('')
@@ -97,7 +98,8 @@
                         {% endif %}
                         {% endset %}
 
-                        {% include '@MauticCore/Components/tile--clickable.html.twig' with {
+                        {% include '@MauticCore/Components/tile.html.twig' with {
+                            'type': 'clickable',
                             'onclick': typeTwoOnClick,
                             'content': typeTwoContent,
                             'icon': typeTwoIconClass|default('')
