@@ -68,7 +68,7 @@
         <div>
             <div class="tile-content">
                 <div class="tile-content__above-the-fold">
-                    {{ tile.aboveFoldContent|raw }}
+                    {{ aboveFoldContent|raw }}
                 </div>
             </div>
             <div class="tile__chevron">
@@ -77,7 +77,7 @@
             <div class="collapse" id="collapse-{{ randomId }}">
                 <div class="tile-content">
                     <div class="tile-content__below-the-fold">
-                        {{ tile.belowFoldContent|raw }}
+                        {{ belowFoldContent|raw }}
                     </div>
                 </div>
             </div>
@@ -91,7 +91,7 @@
         <div>
             <div class="tile-content">
                 <div class="tile-content__above-the-fold">
-                    {{ tile.aboveFoldContent|raw }}
+                    {{ aboveFoldContent|raw }}
                 </div>
             </div>
             <button type="button"
@@ -106,7 +106,7 @@
             <div class="collapse" id="collapse-{{ randomId }}">
                 <div class="tile-content" id="expandable-tile-interactive-{{ randomId }}">
                     <div class="tile-content__below-the-fold">
-                        {{ tile.belowFoldContent|raw }}
+                        {{ belowFoldContent|raw }}
                     </div>
                 </div>
             </div>
@@ -115,10 +115,10 @@
 
 {# === MINI TYPE === #}
 {% elseif type == 'mini' %}
-    <a href="{{ tile.link|default('#') }}" class="tile tile--clickable {{ className|default('') }}">
+    <a href="{{ href|default('#') }}" class="tile tile--clickable {{ className|default('') }}">
         <div class="d-flex jc-space-between ai-center">
-            <div class="tile-title">{{ tile.title }}</div>
-            {% if tile.icon is defined %}
+            <div class="tile-title">{{ title }}</div>
+            {% if icon is defined %}
                 <div class="tile-icon">
                     <i class="{{ tile.icon }} text-interactive ri-lg"></i>
                 </div>
