@@ -4308,7 +4308,6 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
   display: flex;
   justify-content: flex-end;
   gap: 1px;
-  margin: -15px;
 }
 .modal-footer .modal-form-buttons .btn {
   align-items: flex-start;
