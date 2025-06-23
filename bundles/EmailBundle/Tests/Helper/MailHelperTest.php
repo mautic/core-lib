@@ -1216,12 +1216,14 @@ class MailHelperTest extends TestCase
         $mailer->message->addMetadata($contact['email'], ['test' => 'metadata']);
 
         // Verify metadata exists before sending
-        $this->assertNotEmpty($mailer->message->getMetadata(), 'Metadata should exist before sending');
+        $metadataBeforeSend = $mailer->message->getMetadata();
+        $this->assertCount(1, $metadataBeforeSend, 'Metadata should exist before sending');
 
         // Send the email
         $mailer->send();
 
         // Verify metadata is cleared after sending
-        $this->assertEmpty($mailer->message->getMetadata(), 'Metadata should be cleared after sending to prevent memory leaks');
+        $metadataAfterSend = $mailer->message->getMetadata();
+        $this->assertCount(0, $metadataAfterSend, 'Metadata should be cleared after sending to prevent memory leaks');
     }
 }
