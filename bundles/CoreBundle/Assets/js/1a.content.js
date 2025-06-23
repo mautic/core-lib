@@ -1748,7 +1748,11 @@ Mautic.processCsvContactExport = function (route) {
  * @param {string} text
  */
 Mautic.copyToClipboard = function (text) {
-    navigator.clipboard.writeText(text).then(function () {
+    var textArea = document.createElement('textarea');
+    textArea.innerHTML = text;
+    var decodedText = textArea.value || textArea.innerText;
+
+    navigator.clipboard.writeText(decodedText).then(function () {
         var message = Mautic.translate('mautic.core.notice.copiedtoclipboard');
         var flashMessage = Mautic.addInfoFlashMessage(message);
         Mautic.setFlashes(flashMessage);
