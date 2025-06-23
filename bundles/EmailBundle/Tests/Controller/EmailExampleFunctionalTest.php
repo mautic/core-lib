@@ -60,6 +60,7 @@ final class EmailExampleFunctionalTest extends MauticMysqlTestCase
     public function testSendExampleEmailWithOutContact(): void
     {
         $email = $this->createEmail();
+        $email->setCustomHtml('Contact emails is {contactfield=email}. Company details: {contactfield=companyname}, {contactfield=companycity}.');
         $this->em->flush();
         $this->em->clear();
 
