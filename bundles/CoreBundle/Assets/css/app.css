@@ -10914,6 +10914,15 @@ code:hover > .copy-icon {
 .code-snippet--single code {
   min-height: 24px;
   display: flex;
+  text-wrap: nowrap;
+  overflow-x: auto;
+}
+.code-snippet--single:has(button) code {
+  padding-inline-end: 30px;
+}
+.code-snippet--single button {
+  border-top-right-radius: clamp(4px, var(--border-radius-sm), 6px);
+  border-bottom-right-radius: clamp(4px, var(--border-radius-sm), 6px);
 }
 .code-snippet--multi pre:before {
   content: '';

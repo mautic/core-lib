@@ -599,6 +599,17 @@ code:hover > .copy-icon {
     code {
       min-height: 24px;
       display: flex;
+      text-wrap: nowrap;
+      overflow-x: auto;
+    }
+    &:has(button) {
+      code {
+        padding-inline-end: 30px;
+      }
+    }
+    button {
+      border-top-right-radius: clamp(4px, var(--border-radius-sm), 6px);
+      border-bottom-right-radius: clamp(4px, var(--border-radius-sm), 6px);
     }
   }
   &--multi {
