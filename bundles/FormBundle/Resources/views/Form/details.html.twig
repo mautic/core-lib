@@ -327,11 +327,10 @@
                 } %}
             {% endset %}
 
-            {{ include('@MauticCore/Components/tile--expandable-interactive.html.twig', {
-                'tiles': [{
-                    'aboveFoldContent': aboveFoldContent,
-                    'belowFoldContent': belowFoldContent
-                }]
+            {{ include('@MauticCore/Components/tile.html.twig', {
+                'type': 'expandable-interactive',
+                'aboveFoldContent': aboveFoldContent,
+                'belowFoldContent': belowFoldContent
             }) }}
         </div>
         <!--/ form HTML -->
