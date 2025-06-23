@@ -1,21 +1,4 @@
-{# 
-Variables
-- type: inline, multi, single
-- innerText
-- className
-- ariaLabel
-- copyButtonDescription
-- copyText
-- disabled
-- hideCopyButton
-- maxCollapsedNumberOfRows
-- minCollapsedNumberOfRows
-- maxExpandedNumberOfRows
-- minExpandedNumberOfRows
-- showMoreText
-- showLessText
-#}
-
+{# === INLINE VARIANT === #}
 {% if variant == 'inline' %}
 <div class="code-snippet code-snippet--inline" {% if disabled is defined and disabled %}disabled{% endif %} data-toggle="tooltip" title="{{ copyButtonDescription|default('mautic.core.copy_code_snippet')|trans }}">
     <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" {% if disabled is not defined or not disabled %} data-copy="{{ copyText|default(innerText)|escape('html_attr') }}" tabindex="0"{% endif %}>
@@ -23,6 +6,7 @@ Variables
     </code>
 </div>
 
+{# === MULTI VARIANT === #}
 {% elseif variant == 'multi' %}
 <div class="code-snippet code-snippet--multi" {% if disabled is defined and disabled %}disabled{% endif %}>
     <pre class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">{{ innerText|raw }}</pre>
@@ -42,6 +26,7 @@ Variables
     {% endif %}
 </div>
 
+{# === SINGLE VARIANT === #}
 {% elseif variant == 'single' %}
 <div class="code-snippet code-snippet--single" {% if disabled is defined and disabled %}disabled{% endif %}>
     <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">
