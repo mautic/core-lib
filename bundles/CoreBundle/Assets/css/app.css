@@ -3150,7 +3150,8 @@ kbd {
 .btn.btn-outline.btn-info {
   color: #35B4B9;
 }
-.btn.btn-block {
+.btn.btn-block,
+.btn.btn-wide {
   width: 100%;
 }
 .btn ~ .btn,
