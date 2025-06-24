@@ -598,7 +598,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testUnpublishedSegmentDoesNotShowRebuildingLabel(): void
     {
-        // Create a segment that would normally show "Building" label
+        // Create a segment that would normally  show "Building" label
         $segment = $this->saveSegment('Unpublished Segment', 'unpublished-segment', [
             [
                 'glue'     => 'and',
