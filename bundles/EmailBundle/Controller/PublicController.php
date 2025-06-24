@@ -523,8 +523,6 @@ class PublicController extends CommonFormController
             $template = $emailEntity->getTemplate();
             $slots    = $this->factory->getTheme($template)->getSlots('email');
 
-            $assetsHelper = $this->factory->getHelper('template.assets');
-
             $assetsHelper->addCustomDeclaration('<meta name="robots" content="noindex">');
 
             $this->processSlots($slots, $emailEntity);
