@@ -8,7 +8,7 @@ use Mautic\CoreBundle\Event\CommonEvent;
 use Mautic\FormBundle\Entity\Field;
 use Symfony\Contracts\EventDispatcher\Event;
 
-final class FormFieldEvent extends CommonEvent
+final class FormFieldEvent extends Event
 {
     public function __construct(
         private Field $entity,
