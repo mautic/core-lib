@@ -5,18 +5,18 @@ namespace Mautic\FormBundle\Tests\Model;
 use Doctrine\DBAL\Schema\Column;
 use Mautic\CoreBundle\Doctrine\Helper\ColumnSchemaHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\LeadBundle\Entity\LeadField;
-use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Model\FieldModel;
 use Mautic\FormBundle\Model\FormModel;
+use Mautic\LeadBundle\Entity\LeadField;
+use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class FieldModelFunctionalTest extends MauticMysqlTestCase
 {
     public function testGetObjectFieldsUnpublishedField(): void
     {
-        /** @var \Mautic\FormBundle\Model\FieldModel $fieldModel */
+        /** @var FieldModel $fieldModel */
         $fieldModel   = static::getContainer()->get('mautic.form.model.field');
         $fieldsBefore = $fieldModel->getObjectFields('lead');
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\FormBundle\Event;
 
-use Mautic\CoreBundle\Event\CommonEvent;
 use Mautic\FormBundle\Entity\Field;
 use Symfony\Contracts\EventDispatcher\Event;
 

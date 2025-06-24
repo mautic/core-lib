@@ -4,11 +4,11 @@ namespace Mautic\FormBundle\Tests\Model;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
+use Mautic\CoreBundle\Doctrine\Helper\ColumnSchemaHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
-use Mautic\CoreBundle\Doctrine\Helper\ColumnSchemaHelper;
 use Mautic\FormBundle\Model\FieldModel;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -22,10 +22,10 @@ class FieldModelTest extends TestCase
     {
         $connection = $this->createMock(Connection::class);
 
-        $platform = new class() {
+        $platform = new class {
             public function getReservedKeywordsList(): object
             {
-                return new class() {
+                return new class {
                     public function isKeyword(): bool
                     {
                         return false;
