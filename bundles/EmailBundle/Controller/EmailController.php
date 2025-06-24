@@ -1574,7 +1574,7 @@ class EmailController extends FormController
                 }
 
                 if (!isset($fields)) {
-                    // Prepare a fake contact
+                    // Prepare a fake  contact
                     $fields = $fakeLeadHelper->prepareFakeContactWithPrimaryCompany();
                 }
 
