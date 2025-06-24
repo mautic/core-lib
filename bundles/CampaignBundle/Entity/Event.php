@@ -954,7 +954,7 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @param string $channelId
+     * @param string|int $channelId
      */
     public function setChannelId($channelId): void
     {

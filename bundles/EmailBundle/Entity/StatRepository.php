@@ -766,8 +766,8 @@ class StatRepository extends CommonRepository
     }
 
     /**
-     * @param array<int> $emailsIds
-     * @param array<int> $eventsIds
+     * @param array<int|string> $emailsIds
+     * @param array<int>        $eventsIds
      *
      * @return array<int, array<string, int|string>>
      *
