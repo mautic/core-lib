@@ -77,7 +77,7 @@ class FieldControllerTest extends MauticMysqlTestCase
     /**
      * @return array<mixed, mixed>
      */
-    public function getStringTypeFieldsArray(): iterable
+    public static function getStringTypeFieldsArray(): iterable
     {
         yield ['test_email', 'email'];
         yield ['test_text', 'text'];
@@ -113,7 +113,7 @@ class FieldControllerTest extends MauticMysqlTestCase
     /**
      * @return array<mixed, mixed>
      */
-    public function getCustomFields(): iterable
+    public static function getCustomFields(): iterable
     {
         yield ['test_timezone', 'timezone'];
         yield ['test_locale', 'locale'];
