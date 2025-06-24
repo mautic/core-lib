@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class FieldModelFunctionalTest extends MauticMysqlTestCase
 {
+    protected $useCleanupRollback = false;
+
     public function testGetObjectFieldsUnpublishedField(): void
     {
         /** @var FieldModel $fieldModel */
