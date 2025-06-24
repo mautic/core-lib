@@ -4,7 +4,6 @@ namespace Mautic\LeadBundle\Tests\Controller;
 
 use Doctrine\DBAL\Schema\Column;
 use Mautic\CoreBundle\Doctrine\Helper\ColumnSchemaHelper;
-use Mautic\CoreBundle\Exception\SchemaException;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\LeadField;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,9 +40,7 @@ class FieldControllerTest extends MauticMysqlTestCase
         $this->assertNotNull($field);
     }
 
-    /**
-     * @dataProvider getStringTypeFieldsArray
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getStringTypeFieldsArray')]
     public function testMaxCharLengthFieldValidationOnStringTypeWhenAddingCustomFieldFailure(string $label, string $type): void
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts/fields/new');
@@ -56,14 +53,12 @@ class FieldControllerTest extends MauticMysqlTestCase
         $crawler = $this->client->submit($form);
 
         $errorMessage             = trim($crawler->filter('#leadfield_charLengthLimit')->nextAll()->text());
-        $maxCharLimitErrorMessage = 'This value should be 191 or less.';
+        $maxCharLimitErrorMessage = 'This value should be between 1 and 191.';
 
         $this->assertEquals($maxCharLimitErrorMessage, $errorMessage);
     }
 
-    /**
-     * @dataProvider getStringTypeFieldsArray
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getStringTypeFieldsArray')]
     public function testMaxCharLengthFieldValidationOnStringTypeWhenAddingCustomFieldSuccess(string $label, string $type): void
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts/fields/new');
@@ -88,11 +83,7 @@ class FieldControllerTest extends MauticMysqlTestCase
         yield ['test_text', 'text'];
     }
 
-    /**
-     * @dataProvider getCustomFields
-     *
-     * @throws SchemaException
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getCustomFields')]
     public function testCustomFieldCharacterLengthLimit(string $label, string $type): void
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts/fields/new');
