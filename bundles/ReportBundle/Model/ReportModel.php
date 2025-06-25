@@ -833,7 +833,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
         $dependents = [];
         foreach ($entities as $entity) {
             foreach ($entity->getFilters() as $entityFilter) {
-                if ($entityFilter['column'] == $search && in_array($tagId, $entityFilter['value'])) {
+                if ($entityFilter['column'] == $search && (is_array($entityFilter['value']) && in_array($tagId, $entityFilter['value']))) {
                     $dependents[] = $entity->getId();
                 }
             }
