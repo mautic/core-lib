@@ -119,12 +119,12 @@
                             {% set merged = {} %}
                             {% if group.update is defined %}
                                 {% for entity, details in group.update %}
-                                    {% set merged = merged|merge({ (entity ~ '_update'): details|merge({'status': 'Updated'}) }) %}
+                                    {% set merged = merged|merge({ (entity ~ '_update'): details|merge({'status': 'mautic.campaign.campaign.import.status.updated'|trans}) }) %}
                                 {% endfor %}
                             {% endif %}
                             {% if group.new is defined %}
                                 {% for entity, details in group.new %}
-                                    {% set merged = merged|merge({ (entity ~ '_create'): details|merge({'status': 'Created'}) }) %}
+                                    {% set merged = merged|merge({ (entity ~ '_create'): details|merge({'status': 'mautic.campaign.campaign.import.status.created'|trans}) }) %}
                                 {% endfor %}
                             {% endif %}
                             {% if merged is not empty %}
