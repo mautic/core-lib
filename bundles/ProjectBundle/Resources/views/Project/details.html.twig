@@ -64,6 +64,47 @@
                 </span>
             </div>
         </div>
+        
+        <!-- Project Items Section -->
+        <div class="bg-auto mt-lg">
+            <div class="pr-md pl-md pt-lg pb-lg">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h4 class="fw-sb">{{ 'mautic.project.associated_entities'|trans }}</h4>
+                        
+                        {% for entityType, entityData in projectEntities %}
+                            {% if entityData.count > 0 %}
+                            <div class="panel panel-default mt-md">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        {{ entityData.label|trans }} ({{ entityData.count }})
+                                    </h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="list-group">
+                                        {% for entity in entityData.entities %}
+                                        <div class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                    <strong>{{ entity.name|purify }}</strong>
+                                                </div>
+                                                <div class="col-sm-4 text-right">
+                                                    <small class="text-muted">
+                                                        ID: {{ entity.id }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <input name="entityId" id="entityId" type="hidden" value="{{ project.getId()|e }}" />
 </div>

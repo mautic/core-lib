@@ -12,6 +12,7 @@ use Mautic\ProjectBundle\Entity\Project;
 use Mautic\ProjectBundle\Form\Type\ProjectEntityType;
 use Mautic\ProjectBundle\Model\ProjectModel;
 use Mautic\ProjectBundle\Security\Permissions\ProjectPermissions;
+use Mautic\ProjectBundle\Service\ProjectEntityLoaderService;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -238,7 +239,13 @@ final class ProjectController extends AbstractFormController
                         return $this->postActionRedirect($postActionVars);
                     }
 
-                    return $this->viewAction($project->getId(), $request, $projectModel, $corePermissions);
+                    // Redirect to view action after successful edit
+                    $viewUrl = $this->generateUrl(self::ROUTE_ACTION, [
+                        'objectAction' => 'view',
+                        'objectId'     => $project->getId(),
+                    ]);
+
+                    return $this->redirect($viewUrl);
                 }
             }
 
@@ -299,7 +306,7 @@ final class ProjectController extends AbstractFormController
         ];
     }
 
-    public function viewAction(string|int $objectId, Request $request, ProjectModel $projectModel, CorePermissions $corePermissions): Response
+    public function viewAction(string|int $objectId, Request $request, ProjectModel $projectModel, CorePermissions $corePermissions, ProjectEntityLoaderService $entityLoader): Response
     {
         /** @var ?Project $project */
         $project = $projectModel->getEntity($objectId);
@@ -330,10 +337,14 @@ final class ProjectController extends AbstractFormController
             return $this->accessDenied();
         }
 
+        // Načítaj všetky entity asociované s projektom
+        $projectEntities = $entityLoader->getProjectEntities($project);
+
         return $this->delegateView([
             'returnUrl'      => $this->generateUrl(self::ROUTE_ACTION, ['objectAction' => 'view', 'objectId' => $project->getId()]),
             'viewParameters' => [
-                'project' => $project,
+                'project'         => $project,
+                'projectEntities' => $projectEntities,
             ],
             'contentTemplate' => '@MauticProject/Project/details.html.twig',
             'passthroughVars' => [
