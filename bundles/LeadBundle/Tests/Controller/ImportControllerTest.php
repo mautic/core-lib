@@ -17,7 +17,6 @@ use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\UserBundle\Entity\Permission;
-use Mautic\UserBundle\Entity\Permission;
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
@@ -196,20 +195,19 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
     public function testImportPublishAndUnpublish(): void
     {
-        // Create non-admin role
-        $permission = ['lead:imports' => ['view', 'edit', 'create', 'delete']];
-        $role       = $this->createRole(false, $permission);
-        // Create permissions for the role
-        $this->createPermission('lead:imports:create', $role, 180);
-        // Create non-admin user
+        $permission = [
+            'lead:imports' => ['view', 'create', 'edit'],
+        ];
+        $role = $this->createRole(false, $permission);
+        $this->createPermission('lead:imports', $role, 36);
         $user = $this->createUser($role);
         $this->em->flush();
         $this->em->clear();
 
         // Login newly created non-admin user
-        $this->loginUser($user->getUsername());
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', $user->getUsername());
-        $this->client->setServerParameter('PHP_AUTH_PW', 'mautic');
+        $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
         $uploadForm = $crawler->selectButton('Upload')->form();
@@ -223,7 +221,6 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
         Assert::assertStringContainsString(
             'Import process was successfully created. But it will not be processed as you do not have permission to publish.',
-            $crawler->html(),
             $crawler->html()
         );
 
@@ -234,7 +231,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $importEntity = $importRepository->findOneBy(['originalFile' => 'contacts.csv']);
 
         Assert::assertNotNull($importEntity);
-        Assert::assertSame(false, $importEntity->getIsPublished());
+        Assert::assertFalse($importEntity->getIsPublished());
         Assert::assertSame(Import::STOPPED, $importEntity->getStatus());
     }
 
