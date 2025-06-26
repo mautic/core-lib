@@ -84,9 +84,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame([$tagName], $importProperty['defaults']['tags']);
     }
 
-    /**
-     * @dataProvider commandOutputStringProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('commandOutputStringProvider')]
     public function testImportCSV(bool $createLead, string $expectedOutput, int $created, int $identified, int $imported): void
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
