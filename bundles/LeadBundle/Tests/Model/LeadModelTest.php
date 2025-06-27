@@ -9,9 +9,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Mautic\CategoryBundle\Model\CategoryModel;
 use Mautic\ChannelBundle\Helper\ChannelListHelper;
 use Mautic\CoreBundle\Entity\IpAddress;
-use Mautic\CoreBundle\Helper\CookieHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
@@ -44,7 +42,6 @@ use Mautic\StageBundle\Entity\Stage;
 use Mautic\StageBundle\Entity\StageRepository;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Security\Provider\UserProvider;
-use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -55,10 +52,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LeadModelTest extends \PHPUnit\Framework\TestCase
 {
-    use PHPMock;
     private MockObject|RequestStack $requestStack;
-
-    private MockObject|CookieHelper $cookieHelperMock;
 
     /**
      * @var MockObject|IpLookupHelper
@@ -720,9 +714,6 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $fields = ['custom_html_field' => 'custom_html_field'];
         $data   = ['custom_html_field' => '<html><head></head><body>Test</body></html>'];
 
-        $this->fieldModelMock->method('getUniqueIdentifierFields')
-            ->willReturn(['email' => 'Email']);
-
         $this->userHelperMock->method('getUser')
             ->willReturn(new User());
 
@@ -738,8 +729,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->with('custom_html_field')
             ->willReturn($fieldEntity);
 
-        $inputHelperMock = $this->getFunctionMock(InputHelper::class, '_');
-        $inputHelperMock->expects($this->never());
+        $this->companyModelMock->expects($this->once())
+            ->method('extractCompanyDataFromImport')
+            ->willReturn([[], []]);
 
         $this->leadModel->import($fields, $data);
     }
