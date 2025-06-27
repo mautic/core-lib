@@ -3,20 +3,16 @@
 namespace Mautic\LeadBundle\Tests\Model;
 
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\EmailBundle\Helper\EmailValidator;
 use Mautic\LeadBundle\Deduplicate\CompanyDeduper;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\FieldModel;
-use phpmock\phpunit\PHPMock;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(\Mautic\CoreBundle\Helper\AbstractFormFieldHelper::class)]
 class CompanyModelTest extends \PHPUnit\Framework\TestCase
 {
-    use PHPMock;
-
     /**
      * @var FieldModel|\PHPUnit\Framework\MockObject\MockObject
      */
@@ -107,25 +103,34 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
 
     public function testImportHtmlFieldsForCompany(): void
     {
-        $companyModel = $this->getMockBuilder(CompanyModel::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['fetchCompanyFields', 'getFieldData'])
-            ->getMock();
+        $companyModel = $this->getCompanyModelForImport();
 
-        $fields = ['custom_html_field' => 'custom_html_field'];
-        $data   = ['custom_html_field' => '<p>test</p>'];
+        $companyModel->method('fetchCompanyFields')->willReturn(
+            [
+                [
+                    'alias'        => 'companyfield',
+                    'defaultValue' => '',
+                    'type'         => 'text',
+                ],
+                [
+                    'alias'        => 'custom_html_field',
+                    'defaultValue' => '',
+                    'type'         => 'html',
+                ],
+            ]
+        );
+
+        $data   = ['custom_html_field' => '<p>html content</p>'];
+        $companyModel->method('getFieldData')->willReturn($data);
 
         $duplicatedCompany = $this->createMock(Company::class);
         $duplicatedCompany->method('getProfileFields')->willReturn($data);
+
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
         $this->setProperty($companyModel, CompanyModel::class, 'companyDeduper', $companyDeduper);
 
-        $companyModel->method('getFieldData')->willReturn($data);
-
-        $inputHelperMock = $this->getFunctionMock(InputHelper::class, '_');
-        $inputHelperMock->expects($this->never());
-
-        $companyModel->importCompany($fields, $data, null, false, false);
+        $duplicatedCompany->expects($this->once())->method('addUpdatedField');
+        $companyModel->importCompany([], [], null, false, false);
     }
 
     private function getCompanyModelForImport()
