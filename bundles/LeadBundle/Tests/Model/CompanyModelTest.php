@@ -103,7 +103,10 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
 
     public function testImportHtmlFieldsForCompany(): void
     {
-        $companyModel = $this->getCompanyModelForImport();
+        $companyModel = $this->getMockBuilder(CompanyModel::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['fetchCompanyFields', 'getFieldData'])
+            ->getMock();
 
         $companyModel->method('fetchCompanyFields')->willReturn(
             [
@@ -120,7 +123,11 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $data   = ['custom_html_field' => '<p>html content</p>'];
+        $data = ['companyfield' => 'test', 'custom_html_field' => '<p>html content</p>'];
+        $companyModel->method('getFieldData')
+            ->willReturn($data);
+        $this->setSecurity($companyModel);
+
         $companyModel->method('getFieldData')->willReturn($data);
 
         $duplicatedCompany = $this->createMock(Company::class);
@@ -129,7 +136,7 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
         $this->setProperty($companyModel, CompanyModel::class, 'companyDeduper', $companyDeduper);
 
-        $duplicatedCompany->expects($this->once())->method('addUpdatedField');
+        $duplicatedCompany->expects($this->exactly(2))->method('addUpdatedField');
         $companyModel->importCompany([], [], null, false, false);
     }
 
