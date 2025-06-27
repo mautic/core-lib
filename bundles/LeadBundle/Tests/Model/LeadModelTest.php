@@ -503,6 +503,11 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['saveEntity', 'checkForDuplicateContact', 'modifyTags'])
             ->getMock();
 
+        $reflection         = new \ReflectionClass($mockLeadModel);
+        $reflectionProperty = $reflection->getProperty('leadFieldModel');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($mockLeadModel, $this->fieldModelMock);
+
         $mockLeadModel->setUserHelper($mockUserModel);
         $this->setSecurity($mockLeadModel);
 
