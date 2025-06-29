@@ -9,24 +9,24 @@
 <div id="campaign-builder" class="hide builder campaign-builder live animation--slide-in-down">
     <div id="builder-errors" class="alert alert-danger" role="alert" style="display: none;">test</div>
     {% include '@MauticCore/Components/uishell.html.twig' with {
-        header: {
+        Header: {
             ariaLabel: 'mautic.campaign.builder',
             children: {
-                headerName: {
+                HeaderName: {
                     prefix: entity.name is empty ? '' : 'mautic.campaign.campaign',
                     children: entity.name|default('mautic.campaign.unsaved'),
                 },
-                headerGlobal: {
+                HeaderGlobal: {
                     children: [
                         {
-                            headerGlobalAction: {
+                            HeaderGlobalAction: {
                                 ariaLabel: 'mautic.core.form.apply',
                                 onClick: 'Mautic.saveCampaignFromBuilder();',
                                 renderActionIcon: 'ri-save-line',
                             }
                         },
                         {
-                            headerGlobalAction: {
+                            HeaderGlobalAction: {
                                 ariaLabel: 'mautic.core.close.builder',
                                 onClick: 'Mautic.closeCampaignBuilder();',
                                 renderActionIcon: 'ri-close-line',
