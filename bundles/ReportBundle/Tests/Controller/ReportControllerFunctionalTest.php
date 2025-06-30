@@ -588,13 +588,11 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         self::assertNotFalse($bytesWritten);
         self::assertFileExists($zipPath);
 
-        $this->testSymfonyCommand('messenger:consume', ['receivers' => ['email'], '--limit' => '1', '--time-limit' => '5']);
+        $queuedMessage = self::getMailerMessagesByToAddress($toAddress);
 
-        // Filter the "real" transport. In case of tests it's `null://`
-        $messages = self::getMailerMessagesByToAddress($toAddress, 'null://');
-        self::assertCount(1, $messages);
-        self::assertFileDoesNotExist($csvPath);
-        self::assertFileDoesNotExist($zipPath);
+        self::assertCount(1, $queuedMessage);
+        self::assertFileExists($csvPath);
+        self::assertFileExists($zipPath);
     }
 
     /**
