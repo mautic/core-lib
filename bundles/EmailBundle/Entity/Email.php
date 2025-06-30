@@ -61,6 +61,8 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     use DynamicContentEntityTrait;
     use UuidTrait;
 
+    public const MAX_NAME_SUBJECT_LENGTH = 190;
+
     /**
      * @var int
      *
@@ -446,7 +448,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
             'name',
             new Length(
                 [
-                    'max'        => 190,
+                    'max'        => self::MAX_NAME_SUBJECT_LENGTH,
                     'maxMessage' => 'mautic.email.name.length',
                 ]
             )
@@ -465,7 +467,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
             'subject',
             new Length(
                 [
-                    'max'        => 190,
+                    'max'        => self::MAX_NAME_SUBJECT_LENGTH,
                     'maxMessage' => 'mautic.email.subject.length',
                 ]
             )
