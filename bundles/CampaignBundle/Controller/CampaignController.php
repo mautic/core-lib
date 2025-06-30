@@ -140,6 +140,29 @@ class CampaignController extends AbstractStandardFormController
         return $this->cloneStandard($request, $objectId);
     }
 
+    /**
+     * @param array<int, mixed> $assetList
+     */
+    private function handleExportDownload(
+        ExportHelper $exportHelper,
+        string $jsonOutput,
+        array $assetList,
+        string $exportFileName,
+    ): JsonResponse|BinaryFileResponse {
+        $filePath = $exportHelper->writeToZipFile($jsonOutput, $assetList, '');
+        if (!file_exists($filePath)) {
+            $this->logger->error('Export file could not be created', ['filePath' => $filePath]);
+            $this->addFlashMessage('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], FlashBag::LEVEL_ERROR);
+
+            return new JsonResponse([
+                'error'   => $this->translator->trans('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], 'flashes'),
+                'flashes' => $this->getFlashContent(),
+            ], 400);
+        }
+
+        return $exportHelper->downloadAsZip($filePath, $exportFileName);
+    }
+
     public function exportAction(ExportHelper $exportHelper, CampaignModel $campaignModel, int $objectId): JsonResponse|BinaryFileResponse|Response
     {
         if (!$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
@@ -169,19 +192,7 @@ class CampaignController extends AbstractStandardFormController
         $assetListEvent = $this->dispatcher->dispatch($assetListEvent);
         $assetList      = $assetListEvent->getList();
 
-        $filePath   = $exportHelper->writeToZipFile($jsonOutput, $assetList, '');
-
-        if (!file_exists($filePath)) {
-            $this->logger->error('Export file could not be created', ['filePath' => $filePath]);
-            $this->addFlashMessage('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], FlashBag::LEVEL_ERROR);
-
-            return new JsonResponse([
-                'error'   => $this->translator->trans('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], 'flashes'),
-                'flashes' => $this->getFlashContent(),
-            ], 400);
-        }
-
-        return $exportHelper->downloadAsZip($filePath, $exportFileName);
+        return $this->handleExportDownload($exportHelper, $jsonOutput, $assetList, $exportFileName);
     }
 
     public function batchExportAction(Request $request, ExportHelper $exportHelper): JsonResponse|BinaryFileResponse|Response
@@ -258,19 +269,8 @@ class CampaignController extends AbstractStandardFormController
         $assetList      = $assetListEvent->getList();
 
         $jsonOutput = json_encode($allData, JSON_PRETTY_PRINT);
-        $filePath   = $exportHelper->writeToZipFile($jsonOutput, $assetList, '');
 
-        if (!file_exists($filePath)) {
-            $this->logger->error('Export file could not be created', ['filePath' => $filePath]);
-            $this->addFlashMessage('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], FlashBag::LEVEL_ERROR);
-
-            return new JsonResponse([
-                'error'   => $this->translator->trans('mautic.campaign.error.export.file_not_found', ['%path%' => $filePath], 'flashes'),
-                'flashes' => $this->getFlashContent(),
-            ], 400);
-        }
-
-        return $exportHelper->downloadAsZip($filePath, $exportFileName);
+        return $this->handleExportDownload($exportHelper, $jsonOutput, $assetList, $exportFileName);
     }
 
     /**

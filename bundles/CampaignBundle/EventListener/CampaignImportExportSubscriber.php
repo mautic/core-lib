@@ -9,11 +9,11 @@ use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Event\CampaignEvent;
 use Mautic\CampaignBundle\Model\CampaignModel;
-use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
 use Mautic\CoreBundle\Event\EntityImportUndoEvent;
+use Mautic\CoreBundle\EventListener\ImportExportTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
@@ -31,6 +31,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class CampaignImportExportSubscriber implements EventSubscriberInterface
 {
+    use ImportExportTrait;
+
     public function __construct(
         private CampaignModel $campaignModel,
         private UserModel $userModel,
@@ -219,44 +221,13 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
 
     public function onDuplicationCheck(EntityImportAnalyzeEvent $event): void
     {
-        if (Campaign::ENTITY_NAME !== $event->getEntityName() || empty($event->getEntityData())) {
-            return;
-        }
-
-        $summary = [
-            EntityImportEvent::NEW    => ['names' => []],
-            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
-            'errors'                  => [],
-        ];
-
-        foreach ($event->getEntityData() as $element) {
-            if (!empty($element['uuid']) && !UuidTrait::isValidUuid($element['uuid'])) {
-                $summary['errors'][] = sprintf('Invalid UUID format for %s', $event->getEntityName());
-                break;
-            }
-
-            $existing = $this->entityManager->getRepository(Campaign::class)->findOneBy(['uuid' => $element['uuid'] ?? null]);
-
-            if ($existing) {
-                $summary[EntityImportEvent::UPDATE]['names'][]   = $existing->getName();
-                $summary[EntityImportEvent::UPDATE]['uuids'][]   = $existing->getUuid();
-            } else {
-                $summary[EntityImportEvent::NEW]['names'][] = $element['name'] ?? '';
-            }
-        }
-
-        foreach ($summary as $type => $data) {
-            if ('errors' === $type) {
-                if (count($data) > 0) {
-                    $event->setSummary('errors', ['messages' => $data]);
-                }
-                break;
-            }
-
-            if (isset($data['names']) && count($data['names']) > 0) {
-                $event->setSummary($type, [Campaign::ENTITY_NAME => $data]);
-            }
-        }
+        $this->performDuplicationCheck(
+            $event,
+            Campaign::ENTITY_NAME,
+            Campaign::class,
+            'name',
+            $this->entityManager
+        );
     }
 
     /**

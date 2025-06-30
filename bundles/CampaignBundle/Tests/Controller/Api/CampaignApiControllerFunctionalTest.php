@@ -34,7 +34,12 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         parent::setUp();
     }
 
-    public function testCreateNewCampaign(): void
+    /**
+     * Creates and persists common test entities used across multiple tests.
+     *
+     * @return array<string, mixed> Array containing the created entities
+     */
+    private function createTestEntities(): array
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->loginUser($user);
@@ -84,6 +89,26 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($member1);
         $this->em->persist($member2);
         $this->em->flush();
+
+        return [
+            'user'     => $user,
+            'segment'  => $segment,
+            'email'    => $email,
+            'dwc'      => $dwc,
+            'company'  => $company,
+            'contact1' => $contact1,
+            'contact2' => $contact2,
+        ];
+    }
+
+    public function testCreateNewCampaign(): void
+    {
+        $entities = $this->createTestEntities();
+        $user     = $entities['user'];
+        $segment  = $entities['segment'];
+        $email    = $entities['email'];
+        $dwc      = $entities['dwc'];
+        $company  = $entities['company'];
 
         $payload = [
             'name'        => 'test',
@@ -237,7 +262,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame($this->configParams['mailer_from_email'], $email1->getFrom()[0]->getAddress());
         Assert::assertCount(1, $email1->getTo());
         Assert::assertSame('', $email1->getTo()[0]->getName());
-        Assert::assertSame($contact1->getEmail(), $email1->getTo()[0]->getAddress());
+        Assert::assertSame($entities['contact1']->getEmail(), $email1->getTo()[0]->getAddress());
         Assert::assertCount(1, $email1->getReplyTo());
         Assert::assertSame('', $email1->getReplyTo()[0]->getName());
         Assert::assertSame($this->configParams['mailer_from_email'], $email1->getReplyTo()[0]->getAddress());
@@ -253,7 +278,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame($user->getEmail(), $email2->getFrom()[0]->getAddress());
         Assert::assertCount(1, $email2->getTo());
         Assert::assertSame('', $email2->getTo()[0]->getName());
-        Assert::assertSame($contact2->getEmail(), $email2->getTo()[0]->getAddress());
+        Assert::assertSame($entities['contact2']->getEmail(), $email2->getTo()[0]->getAddress());
         Assert::assertCount(1, $email2->getReplyTo());
         Assert::assertSame('', $email2->getReplyTo()[0]->getName());
         Assert::assertSame($user->getEmail(), $email2->getReplyTo()[0]->getAddress());
@@ -271,55 +296,12 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testExportCampaignAction(): void
     {
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->loginUser($user);
-
-        // Create and persist campaign with events, as before
-        $segment = new LeadList();
-        $segment->setName('test');
-        $segment->setAlias('test');
-        $segment->setPublicName('test');
-
-        $email = new Email();
-        $email->setName('test');
-        $email->setSubject('Ahoy {contactfield=email}');
-        $email->setCustomHtml('Your email is <b>{contactfield=email}</b>');
-        $email->setUseOwnerAsMailer(true);
-
-        $dwc = new DynamicContent();
-        $dwc->setName('test');
-        $dwc->setSlotName('test');
-        $dwc->setContent('test');
-
-        $company = new Company();
-        $company->setName('test');
-
-        $contact1 = new Lead();
-        $contact1->setEmail('contact@one.email');
-
-        $contact2 = new Lead();
-        $contact2->setEmail('contact@two.email');
-        $contact2->setOwner($user);
-
-        $member1 = new ListLead();
-        $member1->setLead($contact1);
-        $member1->setList($segment);
-        $member1->setDateAdded(new \DateTime());
-
-        $member2 = new ListLead();
-        $member2->setLead($contact2);
-        $member2->setList($segment);
-        $member2->setDateAdded(new \DateTime());
-
-        $this->em->persist($segment);
-        $this->em->persist($email);
-        $this->em->persist($dwc);
-        $this->em->persist($company);
-        $this->em->persist($contact1);
-        $this->em->persist($contact2);
-        $this->em->persist($member1);
-        $this->em->persist($member2);
-        $this->em->flush();
+        $entities = $this->createTestEntities();
+        $user     = $entities['user'];
+        $segment  = $entities['segment'];
+        $email    = $entities['email'];
+        $dwc      = $entities['dwc'];
+        $company  = $entities['company'];
 
         // Create the campaign
         $campaign = new Campaign();

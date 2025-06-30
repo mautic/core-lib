@@ -56,7 +56,7 @@ class ImportHelper
             }
 
             // Check file count limit
-            if ('/' !== substr($filename, -1)) {
+            if (!str_ends_with($filename, '/')) {
                 ++$fileCount;
                 if ($fileCount > $maxFiles) {
                     $zip->close();
@@ -103,7 +103,7 @@ class ImportHelper
 
             $sourcePath = $tempDir.'/'.$filename;
 
-            if ('/' !== substr($filename, -1)) {
+            if (!str_ends_with($filename, '/')) {
                 // Create directory if needed
                 $dirPath = dirname($sourcePath);
                 if (!is_dir($dirPath) && !mkdir($dirPath, 0755, true) && !is_dir($dirPath)) {

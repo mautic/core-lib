@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Mautic\FormBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
 use Mautic\CoreBundle\Event\EntityImportUndoEvent;
+use Mautic\CoreBundle\EventListener\ImportExportTrait;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\FormBundle\Entity\Action;
@@ -22,6 +22,8 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 final class FormImportExportSubscriber implements EventSubscriberInterface
 {
+    use ImportExportTrait;
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private FormModel $formModel,
@@ -189,43 +191,13 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
 
     public function onDuplicationCheck(EntityImportAnalyzeEvent $event): void
     {
-        if (Form::ENTITY_NAME !== $event->getEntityName() || empty($event->getEntityData())) {
-            return;
-        }
-
-        $summary = [
-            EntityImportEvent::NEW    => ['names' => []],
-            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
-            'errors'                  => [],
-        ];
-
-        foreach ($event->getEntityData() as $item) {
-            if (!empty($item['uuid']) && !UuidTrait::isValidUuid($item['uuid'])) {
-                $summary['errors'][] = sprintf('Invalid UUID format for %s', $event->getEntityName());
-                break;
-            }
-
-            $existing = $this->entityManager->getRepository(Form::class)->findOneBy(['uuid' => $item['uuid']]);
-            if ($existing) {
-                $summary[EntityImportEvent::UPDATE]['names'][]   = $existing->getName();
-                $summary[EntityImportEvent::UPDATE]['uuids'][]   = $existing->getUuid();
-            } else {
-                $summary[EntityImportEvent::NEW]['names'][] = $item['name'];
-            }
-        }
-
-        foreach ($summary as $type => $data) {
-            if ('errors' === $type) {
-                if (count($data) > 0) {
-                    $event->setSummary('errors', ['messages' => $data]);
-                }
-                break;
-            }
-
-            if (isset($data['names']) && count($data['names']) > 0) {
-                $event->setSummary($type, [Form::ENTITY_NAME => $data]);
-            }
-        }
+        $this->performDuplicationCheck(
+            $event,
+            Form::ENTITY_NAME,
+            Form::class,
+            'name',
+            $this->entityManager
+        );
     }
 
     /**
