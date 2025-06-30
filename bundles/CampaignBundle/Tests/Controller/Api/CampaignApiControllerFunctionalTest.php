@@ -586,21 +586,31 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->loginUser($user);
 
-        // Create a temporary ZIP file with invalid JSON
-        $zipPath = $this->createTemporaryFile('zip');
+        // Create a temporary ZIP file with valid structure but malformed JSON
+        $zipPath = tempnam(sys_get_temp_dir(), 'mautic_test_').'.zip';
         $zip     = new \ZipArchive();
         if (true === $zip->open($zipPath, \ZipArchive::CREATE)) {
-            $zip->addFromString('malformed.json', '{invalid json}');
+            // Add a valid JSON file with malformed content
+            $zip->addFromString('campaign.json', '{invalid json content}');
             $zip->close();
+        } else {
+            $this->fail('Failed to create test ZIP file.');
         }
 
         $file = new \Symfony\Component\HttpFoundation\File\UploadedFile($zipPath, 'test.zip', null, null, true);
 
-        $this->client->request(Request::METHOD_POST, '/api/campaigns/import', [], ['file' => $file]);
+        try {
+            $this->client->request(Request::METHOD_POST, '/api/campaigns/import', [], ['file' => $file]);
 
-        $response = $this->client->getResponse();
+            $response = $this->client->getResponse();
 
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        $this->assertStringContainsString('Unable to open ZIP file', $response->getContent());
+            $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+            $this->assertStringContainsString('Invalid JSON', $response->getContent());
+        } finally {
+            // Clean up - check if file exists before trying to delete
+            if (file_exists($zipPath)) {
+                unlink($zipPath);
+            }
+        }
     }
 }

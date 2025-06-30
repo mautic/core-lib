@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\CoreBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
@@ -17,9 +18,11 @@ trait ImportExportTrait
     /**
      * Common duplication check logic for entity import analysis.
      *
+     * @template T of object
+     *
      * @param EntityImportAnalyzeEvent $event         The import analyze event
      * @param string                   $entityName    The entity name to check
-     * @param string                   $entityClass   The entity class to query
+     * @param class-string<T>          $entityClass   The entity class to query
      * @param string                   $nameField     The field name to use for entity names (e.g., 'name', 'title')
      * @param EntityManagerInterface   $entityManager The entity manager
      */
@@ -40,13 +43,16 @@ trait ImportExportTrait
             'errors'                  => [],
         ];
 
+        /** @var EntityRepository<T> $repository */
+        $repository = $entityManager->getRepository($entityClass);
+
         foreach ($event->getEntityData() as $item) {
             if (!empty($item['uuid']) && !UuidTrait::isValidUuid($item['uuid'])) {
                 $summary['errors'][] = sprintf('Invalid UUID format for %s', $event->getEntityName());
                 break;
             }
 
-            $existing = $entityManager->getRepository($entityClass)->findOneBy(['uuid' => $item['uuid']]);
+            $existing = $repository->findOneBy(['uuid' => $item['uuid']]);
             if ($existing) {
                 $summary[EntityImportEvent::UPDATE]['names'][]   = $existing->{'get'.ucfirst($nameField)}();
                 $summary[EntityImportEvent::UPDATE]['uuids'][]   = $existing->getUuid();

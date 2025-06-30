@@ -22,40 +22,62 @@ class ImportHelper
         $zip          = new \ZipArchive();
         $jsonFilePath = null;
 
+        // Zip Bomb protection constants
+        $maxFiles     = 1000;  // Maximum number of files
+        $maxSize      = 100 * 1024 * 1024;  // 100MB total uncompressed size
+        $maxRatio     = 10;    // Maximum compression ratio (1:10)
+        $readLength   = 1024;  // Read buffer size
+
         if (true !== $zip->open($filePath)) {
             throw new \RuntimeException(sprintf('Unable to open ZIP file: %s', $filePath));
         }
 
-        $maxUncompressedSize   = 100 * 1024 * 1024; // 100MB, adjust as needed
-        $totalUncompressedSize = 0;
+        $fileCount   = 0;
+        $totalSize   = 0;
+        $realTempDir = rtrim(realpath($tempDir), '/');
 
+        // Store file information before closing the ZIP
+        $fileList = [];
         for ($i = 0; $i < $zip->numFiles; ++$i) {
-            $stat = $zip->statIndex($i);
-            if (isset($stat['size'])) {
-                $totalUncompressedSize += $stat['size'];
-                if ($totalUncompressedSize > $maxUncompressedSize) {
-                    $zip->close();
-                    throw new \RuntimeException('Uncompressed ZIP contents exceed allowed size.');
-                }
+            $filename = $zip->getNameIndex($i);
+            if (!empty($filename)) {
+                $fileList[] = $filename;
             }
         }
 
-        $realTempDir = rtrim(realpath($tempDir), '/');
+        // Validate all files before extraction
         for ($i = 0; $i < $zip->numFiles; ++$i) {
             $filename = $zip->getNameIndex($i);
+            $stat     = $zip->statIndex($i);
 
             // Skip empty filenames
             if (empty($filename)) {
                 continue;
             }
 
-            // Normalize the filename to remove any path traversal attempts
-            $normalizedFilename = $this->normalizePath($filename);
+            // Check file count limit
+            if ('/' !== substr($filename, -1)) {
+                ++$fileCount;
+                if ($fileCount > $maxFiles) {
+                    $zip->close();
+                    throw new \RuntimeException('ZIP file contains too many files.');
+                }
+            }
 
-            // Check if the normalized filename contains path traversal or absolute paths
+            // Check path traversal
+            $normalizedFilename = $this->normalizePath($filename);
             if (str_contains($normalizedFilename, '..') || str_starts_with($normalizedFilename, '/')) {
                 $zip->close();
                 throw new \RuntimeException('Unsafe file path detected in ZIP: '.$filename);
+            }
+
+            // Check compression ratio for potential zip bomb
+            if (isset($stat['size']) && isset($stat['comp_size']) && $stat['comp_size'] > 0) {
+                $ratio = $stat['size'] / $stat['comp_size'];
+                if ($ratio > $maxRatio) {
+                    $zip->close();
+                    throw new \RuntimeException('Suspicious compression ratio detected in ZIP file.');
+                }
             }
 
             // For files in subdirectories, ensure they don't escape the temp directory
@@ -70,16 +92,88 @@ class ImportHelper
             }
         }
 
-        // Extract the ZIP file after validating all paths
-        if (!$zip->extractTo($tempDir)) {
-            $zip->close();
-            throw new \RuntimeException(sprintf('Unable to extract ZIP file to temp directory: %s', $tempDir));
+        // Extract files using streaming to prevent zip bomb
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
+            $filename = $zip->getNameIndex($i);
+            $stat     = $zip->statIndex($i);
+
+            if (empty($filename)) {
+                continue;
+            }
+
+            $sourcePath = $tempDir.'/'.$filename;
+
+            if ('/' !== substr($filename, -1)) {
+                // Create directory if needed
+                $dirPath = dirname($sourcePath);
+                if (!is_dir($dirPath) && !mkdir($dirPath, 0755, true) && !is_dir($dirPath)) {
+                    $zip->close();
+                    throw new \RuntimeException(sprintf('Failed to create directory: %s', $dirPath));
+                }
+
+                // Stream extract file to prevent zip bomb
+                $fp = $zip->getStream($filename);
+                if (!$fp) {
+                    $zip->close();
+                    throw new \RuntimeException('Failed to open file stream from ZIP.');
+                }
+
+                $currentSize = 0;
+                $fileHandle  = fopen($sourcePath, 'wb');
+                if (!$fileHandle) {
+                    fclose($fp);
+                    $zip->close();
+                    throw new \RuntimeException('Failed to create file: '.$sourcePath);
+                }
+
+                while (!feof($fp)) {
+                    $data = fread($fp, $readLength);
+                    if (false === $data) {
+                        break;
+                    }
+
+                    $currentSize += strlen($data);
+                    $totalSize += strlen($data);
+
+                    // Check total size limit
+                    if ($totalSize > $maxSize) {
+                        fclose($fileHandle);
+                        fclose($fp);
+                        $zip->close();
+                        throw new \RuntimeException('Uncompressed ZIP contents exceed allowed size.');
+                    }
+
+                    // Check compression ratio during extraction
+                    if (isset($stat['comp_size']) && $stat['comp_size'] > 0) {
+                        $ratio = $currentSize / $stat['comp_size'];
+                        if ($ratio > $maxRatio) {
+                            fclose($fileHandle);
+                            fclose($fp);
+                            $zip->close();
+                            throw new \RuntimeException('Suspicious compression ratio detected during extraction.');
+                        }
+                    }
+
+                    fwrite($fileHandle, $data);
+                }
+
+                fclose($fileHandle);
+                fclose($fp);
+            } else {
+                // Create directory
+                if (!is_dir($sourcePath) && !mkdir($sourcePath, 0755, true) && !is_dir($sourcePath)) {
+                    $zip->close();
+                    throw new \RuntimeException(sprintf('Failed to create directory: %s', $sourcePath));
+                }
+            }
         }
+
+        $zip->close();
 
         $mediaPath = $this->pathsHelper->getSystemPath('media').'/files/';
 
-        for ($i = 0; $i < $zip->numFiles; ++$i) {
-            $filename        = $zip->getNameIndex($i);
+        // Process extracted files using stored file list
+        foreach ($fileList as $filename) {
             $sourcePath      = $tempDir.'/'.$filename;
             $destinationPath = $mediaPath.substr($filename, strlen('assets/'));
 
@@ -101,8 +195,6 @@ class ImportHelper
                 $jsonFilePath = $tempDir.'/'.$filename;
             }
         }
-
-        $zip->close();
 
         if (!$jsonFilePath || !is_readable($jsonFilePath)) {
             throw new \RuntimeException('JSON file not found or not readable in ZIP archive.');
