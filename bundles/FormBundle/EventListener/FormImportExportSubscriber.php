@@ -107,25 +107,6 @@ final class FormImportExportSubscriber implements EventSubscriberInterface
         }
     }
 
-    /**
-     * Merge exported data avoiding duplicate entries.
-     *
-     * @param array<string, array<mixed>> $data
-     */
-    private function mergeExportData(array &$data, EntityExportEvent $subEvent): void
-    {
-        foreach ($subEvent->getEntities() as $key => $values) {
-            if (!isset($data[$key])) {
-                $data[$key] = $values;
-            } else {
-                $existingIds = array_column($data[$key], 'id');
-                $data[$key]  = array_merge($data[$key], array_filter($values, function ($value) use ($existingIds) {
-                    return !in_array($value['id'], $existingIds);
-                }));
-            }
-        }
-    }
-
     public function onFormImport(EntityImportEvent $event): void
     {
         if (Form::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {

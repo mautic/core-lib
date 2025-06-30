@@ -11,6 +11,7 @@ use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
 use Mautic\CoreBundle\Event\EntityImportUndoEvent;
+use Mautic\CoreBundle\EventListener\ImportExportTrait;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\FormBundle\Entity\Action;
@@ -22,6 +23,8 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 final class ActionImportExportSubscriber implements EventSubscriberInterface
 {
+    use ImportExportTrait;
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ActionModel $actionModel,
@@ -87,25 +90,6 @@ final class ActionImportExportSubscriber implements EventSubscriberInterface
         }
         foreach ($data as $entityName => $entities) {
             $event->addEntities([$entityName => $entities]);
-        }
-    }
-
-    /**
-     * Merge exported data avoiding duplicate entries.
-     *
-     * @param array<string, array<mixed>> $data
-     */
-    private function mergeExportData(array &$data, EntityExportEvent $subEvent): void
-    {
-        foreach ($subEvent->getEntities() as $key => $values) {
-            if (!isset($data[$key])) {
-                $data[$key] = $values;
-            } else {
-                $existingIds = array_column($data[$key], 'id');
-                $data[$key]  = array_merge($data[$key], array_filter($values, function ($value) use ($existingIds) {
-                    return !in_array($value['id'], $existingIds);
-                }));
-            }
         }
     }
 

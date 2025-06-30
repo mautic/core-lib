@@ -7,6 +7,7 @@ namespace Mautic\CoreBundle\EventListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Mautic\CoreBundle\Entity\UuidTrait;
+use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
 
@@ -71,6 +72,25 @@ trait ImportExportTrait
 
             if (isset($data['names']) && count($data['names']) > 0) {
                 $event->setSummary($type, [$entityName => $data]);
+            }
+        }
+    }
+
+    /**
+     * Merge exported data avoiding duplicate entries.
+     *
+     * @param array<string, array<mixed>> $data
+     */
+    protected function mergeExportData(array &$data, EntityExportEvent $subEvent): void
+    {
+        foreach ($subEvent->getEntities() as $key => $values) {
+            if (!isset($data[$key])) {
+                $data[$key] = $values;
+            } else {
+                $existingIds = array_column($data[$key], 'id');
+                $data[$key]  = array_merge($data[$key], array_filter($values, function ($value) use ($existingIds) {
+                    return !in_array($value['id'], $existingIds);
+                }));
             }
         }
     }

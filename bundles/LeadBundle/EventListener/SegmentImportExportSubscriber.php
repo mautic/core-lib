@@ -97,25 +97,6 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
         $this->logAction('export', $leadListId, $segmentData);
     }
 
-    /**
-     * Merge exported data avoiding duplicate entries.
-     *
-     * @param array<string, array<mixed>> $data
-     */
-    private function mergeExportData(array &$data, EntityExportEvent $subEvent): void
-    {
-        foreach ($subEvent->getEntities() as $key => $values) {
-            if (!isset($data[$key])) {
-                $data[$key] = $values;
-            } else {
-                $existingIds = array_column($data[$key], 'id');
-                $data[$key]  = array_merge($data[$key], array_filter($values, function ($value) use ($existingIds) {
-                    return !in_array($value['id'], $existingIds);
-                }));
-            }
-        }
-    }
-
     public function onSegmentImport(EntityImportEvent $event): void
     {
         if (LeadList::ENTITY_NAME !== $event->getEntityName() || !$event->getEntityData()) {
