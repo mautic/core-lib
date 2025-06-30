@@ -576,7 +576,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
 
         $response = $this->client->getResponse();
-        $this->assertStringContainsString('mautic.email.name.length', $response->getContent());
+        $this->assertStringContainsString('Email name maximum length is 190 characters', $response->getContent());
     }
 
     /**
@@ -597,6 +597,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->submit($form);
 
         $response = $this->client->getResponse();
-        $this->assertStringContainsString('mautic.email.subject.length', $response->getContent());
+        $this->assertStringContainsString('Email subject maximum length is 190 characters', $response->getContent());
     }
 }
