@@ -7,11 +7,11 @@ namespace Mautic\AssetBundle\EventListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Mautic\AssetBundle\Entity\Asset;
 use Mautic\AssetBundle\Model\AssetModel;
-use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
 use Mautic\CoreBundle\Event\EntityImportUndoEvent;
+use Mautic\CoreBundle\EventListener\ImportExportTrait;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -19,6 +19,8 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 final class AssetImportExportSubscriber implements EventSubscriberInterface
 {
+    use ImportExportTrait;
+
     public function __construct(
         private AssetModel $assetModel,
         private EntityManagerInterface $entityManager,
@@ -150,43 +152,13 @@ final class AssetImportExportSubscriber implements EventSubscriberInterface
 
     public function onDuplicationCheck(EntityImportAnalyzeEvent $event): void
     {
-        if (Asset::ENTITY_NAME !== $event->getEntityName() || empty($event->getEntityData())) {
-            return;
-        }
-
-        $summary = [
-            EntityImportEvent::NEW    => ['names' => []],
-            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
-            'errors'                  => [],
-        ];
-
-        foreach ($event->getEntityData() as $item) {
-            if (!empty($item['uuid']) && !UuidTrait::isValidUuid($item['uuid'])) {
-                $summary['errors'][] = sprintf('Invalid UUID format for %s', $event->getEntityName());
-                break;
-            }
-
-            $existing = $this->entityManager->getRepository(Asset::class)->findOneBy(['uuid' => $item['uuid']]);
-            if ($existing) {
-                $summary[EntityImportEvent::UPDATE]['names'][]   = $existing->getTitle();
-                $summary[EntityImportEvent::UPDATE]['uuids'][]   = $existing->getUuid();
-            } else {
-                $summary[EntityImportEvent::NEW]['names'][] = $item['title'];
-            }
-        }
-
-        foreach ($summary as $type => $data) {
-            if ('errors' === $type) {
-                if (count($data) > 0) {
-                    $event->setSummary('errors', ['messages' => $data]);
-                }
-                break;
-            }
-
-            if (isset($data['names']) && count($data['names']) > 0) {
-                $event->setSummary($type, [Asset::ENTITY_NAME => $data]);
-            }
-        }
+        $this->performDuplicationCheck(
+            $event,
+            Asset::ENTITY_NAME,
+            Asset::class,
+            'title',
+            $this->entityManager
+        );
     }
 
     /**

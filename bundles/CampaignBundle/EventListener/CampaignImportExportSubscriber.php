@@ -388,25 +388,9 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                 $this->updateCanvasConnections($canvasSettings, $eventIdMap);
             }
         }
+        unset($campaignData);
 
         $this->persistUpdatedCanvasSettings($data, $campaignIdMap);
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     * @param array<int, int>      $campaignIdMap
-     */
-    private function persistUpdatedCanvasSettings(array &$data, array $campaignIdMap): void
-    {
-        foreach ($data[Campaign::ENTITY_NAME] as $campaignData) {
-            $campaign = $this->entityManager->getRepository(Campaign::class)->find($campaignIdMap[$campaignData['id']] ?? null);
-
-            if ($campaign) {
-                $campaign->setCanvasSettings($campaignData['canvas_settings'] ?? '');
-                $this->entityManager->persist($campaign);
-                $this->entityManager->flush();
-            }
-        }
     }
 
     /**
@@ -424,6 +408,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                 $node['id'] = $eventIdMap[$node['id']];
             }
         }
+        unset($node);
     }
 
     /**
@@ -442,6 +427,24 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
             }
             if (isset($connection['targetId']) && isset($eventIdMap[$connection['targetId']])) {
                 $connection['targetId'] = $eventIdMap[$connection['targetId']];
+            }
+        }
+        unset($connection);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @param array<int, int>      $campaignIdMap
+     */
+    private function persistUpdatedCanvasSettings(array &$data, array $campaignIdMap): void
+    {
+        foreach ($data[Campaign::ENTITY_NAME] as $campaignData) {
+            $campaign = $this->entityManager->getRepository(Campaign::class)->find($campaignIdMap[$campaignData['id']] ?? null);
+
+            if ($campaign) {
+                $campaign->setCanvasSettings($campaignData['canvas_settings'] ?? '');
+                $this->entityManager->persist($campaign);
+                $this->entityManager->flush();
             }
         }
     }
@@ -463,6 +466,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                                     $subKey = $idMap[$subKey];
                                 }
                             }
+                            unset($subKey);
                         } else {
                             // If it's a single value, update it normally
                             if (isset($idMap[$dependency[$key]])) {
@@ -471,8 +475,11 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                         }
                     }
                 }
+                unset($dependency);
             }
+            unset($items);
         }
+        unset($dependencyGroup);
     }
 
     /**
@@ -488,6 +495,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                             $this->insertCampaignFormXref($dependency[Campaign::ENTITY_NAME], $dependency[Form::ENTITY_NAME]);
                         }
                     }
+                    unset($dependency);
                 }
                 if (LeadList::ENTITY_NAME === $key) {
                     foreach ($items as &$dependency) {
@@ -495,9 +503,11 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                             $this->insertCampaignSegmentXref($dependency[Campaign::ENTITY_NAME], $dependency[LeadList::ENTITY_NAME]);
                         }
                     }
+                    unset($dependency);
                 }
             }
         }
+        unset($dependencyGroup);
     }
 
     private function insertCampaignFormXref(int $campaignId, int $formId): void
@@ -564,6 +574,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                 }
             }
         }
+        unset($event);
     }
 
     /**
@@ -593,6 +604,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                 }
             }
         }
+        unset($email);
     }
 
     /**
@@ -619,6 +631,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                 }
             }
         }
+        unset($item);
     }
 
     /**
@@ -733,6 +746,7 @@ final class CampaignImportExportSubscriber implements EventSubscriberInterface
                     $id = $eventDependency[$entityName][$id];
                 }
             }
+            unset($id);
             $this->setNestedValue($event, $propertyPath, $propertyValue);
         }
     }

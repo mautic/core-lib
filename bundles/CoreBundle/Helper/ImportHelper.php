@@ -40,6 +40,37 @@ class ImportHelper
             }
         }
 
+        $realTempDir = rtrim(realpath($tempDir), '/');
+        for ($i = 0; $i < $zip->numFiles; ++$i) {
+            $filename = $zip->getNameIndex($i);
+
+            // Skip empty filenames
+            if (empty($filename)) {
+                continue;
+            }
+
+            // Normalize the filename to remove any path traversal attempts
+            $normalizedFilename = $this->normalizePath($filename);
+
+            // Check if the normalized filename contains path traversal or absolute paths
+            if (str_contains($normalizedFilename, '..') || str_starts_with($normalizedFilename, '/')) {
+                $zip->close();
+                throw new \RuntimeException('Unsafe file path detected in ZIP: '.$filename);
+            }
+
+            // For files in subdirectories, ensure they don't escape the temp directory
+            if (str_contains($normalizedFilename, '/')) {
+                $extractionPath           = $tempDir.'/'.$normalizedFilename;
+                $normalizedExtractionPath = $this->normalizePath($extractionPath);
+
+                if (!str_starts_with($normalizedExtractionPath, $realTempDir)) {
+                    $zip->close();
+                    throw new \RuntimeException('Unsafe file path detected in ZIP: '.$filename);
+                }
+            }
+        }
+
+        // Extract the ZIP file after validating all paths
         if (!$zip->extractTo($tempDir)) {
             $zip->close();
             throw new \RuntimeException(sprintf('Unable to extract ZIP file to temp directory: %s', $tempDir));
@@ -89,6 +120,27 @@ class ImportHelper
         }
 
         return $jsonData;
+    }
+
+    private function normalizePath(string $path): string
+    {
+        $parts    = [];
+        $segments = explode('/', str_replace('\\', '/', $path));
+
+        foreach ($segments as $segment) {
+            if ('' === $segment || '.' === $segment) {
+                continue;
+            }
+            if ('..' === $segment) {
+                if (!empty($parts)) {
+                    array_pop($parts);
+                }
+            } else {
+                $parts[] = $segment;
+            }
+        }
+
+        return implode('/', $parts);
     }
 
     /**

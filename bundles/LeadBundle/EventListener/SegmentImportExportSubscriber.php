@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Event\EntityExportEvent;
 use Mautic\CoreBundle\Event\EntityImportAnalyzeEvent;
 use Mautic\CoreBundle\Event\EntityImportEvent;
 use Mautic\CoreBundle\Event\EntityImportUndoEvent;
+use Mautic\CoreBundle\EventListener\ImportExportTrait;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\LeadBundle\Entity\LeadField;
@@ -23,6 +23,8 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 final class SegmentImportExportSubscriber implements EventSubscriberInterface
 {
+    use ImportExportTrait;
+
     public function __construct(
         private ListModel $leadListModel,
         private EntityManagerInterface $entityManager,
@@ -185,50 +187,30 @@ final class SegmentImportExportSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $summary = [
-            EntityImportEvent::NEW    => ['names' => []],
-            EntityImportEvent::UPDATE => ['names' => [], 'uuids' => []],
-            'errors'                  => [],
-        ];
-
+        // Check for custom object dependencies first
         foreach ($event->getEntityData() as $item) {
-            if (!empty($item['uuid']) && !UuidTrait::isValidUuid($item['uuid'])) {
-                $summary['errors'][] = sprintf('Invalid UUID format for %s', $event->getEntityName());
-                break;
-            }
-
             if (!empty($item['filters'])) {
                 foreach ($item['filters'] as $filter) {
                     if (isset($filter['object']) && 'custom_object' === $filter['object']) {
                         $plugins = $this->pluginModel->getAllPluginsConfig();
                         if (!isset($plugins['CustomObjectsBundle'])) {
-                            $summary['errors'][] = 'Segment filter uses Custom Objects but the plugin CustomObjectBundle is not installed.';
-                            break;
+                            $event->setSummary('errors', ['messages' => ['Segment filter uses Custom Objects but the plugin CustomObjectBundle is not installed.']]);
+
+                            return;
                         }
                     }
                 }
             }
-            $existing = $this->entityManager->getRepository(LeadList::class)->findOneBy(['uuid' => $item['uuid']]);
-            if ($existing) {
-                $summary[EntityImportEvent::UPDATE]['names'][]   = $existing->getName();
-                $summary[EntityImportEvent::UPDATE]['uuids'][]   = $existing->getUuid();
-            } else {
-                $summary[EntityImportEvent::NEW]['names'][] = $item['name'];
-            }
         }
 
-        foreach ($summary as $type => $data) {
-            if ('errors' === $type) {
-                if (count($data) > 0) {
-                    $event->setSummary('errors', ['messages' => $data]);
-                }
-                break;
-            }
-
-            if (isset($data['names']) && count($data['names']) > 0) {
-                $event->setSummary($type, [LeadList::ENTITY_NAME => $data]);
-            }
-        }
+        // Use the trait for standard duplication check
+        $this->performDuplicationCheck(
+            $event,
+            LeadList::ENTITY_NAME,
+            LeadList::class,
+            'name',
+            $this->entityManager
+        );
     }
 
     /**
