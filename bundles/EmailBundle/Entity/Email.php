@@ -443,6 +443,16 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         );
 
         $metadata->addPropertyConstraint(
+            'name',
+            new Length(
+                [
+                    'max'        => 190,
+                    'maxMessage' => 'mautic.email.name.length',
+                ]
+            )
+        );
+
+        $metadata->addPropertyConstraint(
             'subject',
             new NotBlank(
                 [
