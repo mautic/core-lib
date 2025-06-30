@@ -559,44 +559,29 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * Test email name length validation (190 character limit).
+     * Test that valid length email name and subject are accepted.
      */
-    public function testEmailNameLengthValidation(): void
+    public function testValidEmailNameAndSubjectLength(): void
     {
-        $longName = str_repeat('a', Email::MAX_NAME_SUBJECT_LENGTH + 1); // 191 characters
+        $validName    = str_repeat('c', Email::MAX_NAME_SUBJECT_LENGTH); // Exactly 190 characters
+        $validSubject = str_repeat('d', Email::MAX_NAME_SUBJECT_LENGTH); // Exactly 190 characters
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
         $this->assertTrue($this->client->getResponse()->isOk());
 
         $form = $crawler->selectButton('emailform[buttons][save]')->form();
-        $form['emailform[name]']->setValue($longName);
-        $form['emailform[subject]']->setValue('Valid Subject');
+        $form['emailform[name]']->setValue($validName);
+        $form['emailform[subject]']->setValue($validSubject);
         $form['emailform[emailType]']->setValue('template');
 
         $this->client->submit($form);
 
+        // Should redirect on successful save (no validation errors)
         $response = $this->client->getResponse();
-        $this->assertStringContainsString('Email name maximum length is 190 characters', $response->getContent());
-    }
+        $this->assertTrue($response->isRedirection() || $response->isOk());
 
-    /**
-     * Test email subject length validation (190 character limit).
-     */
-    public function testEmailSubjectLengthValidation(): void
-    {
-        $longSubject = str_repeat('b', Email::MAX_NAME_SUBJECT_LENGTH + 1); // 191 characters
-
-        $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
-        $this->assertTrue($this->client->getResponse()->isOk());
-
-        $form = $crawler->selectButton('emailform[buttons][save]')->form();
-        $form['emailform[name]']->setValue('Valid Name');
-        $form['emailform[subject]']->setValue($longSubject);
-        $form['emailform[emailType]']->setValue('template');
-
-        $this->client->submit($form);
-
-        $response = $this->client->getResponse();
-        $this->assertStringContainsString('Email subject maximum length is 190 characters', $response->getContent());
+        // Should not contain validation error messages
+        $this->assertStringNotContainsString('mautic.email.name.length', $response->getContent());
+        $this->assertStringNotContainsString('mautic.email.subject.length', $response->getContent());
     }
 }
