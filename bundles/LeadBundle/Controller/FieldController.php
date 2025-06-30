@@ -360,8 +360,6 @@ class FieldController extends FormController
 
     /**
      * Clone an entity.
-     *
-     * @return JsonResponse|RedirectResponse|Response
      */
     public function cloneAction(Request $request, FieldAliasHelper $fieldAliasHelper, FieldModel $fieldModel, $objectId): RedirectResponse|Response
     {

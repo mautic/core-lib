@@ -1379,7 +1379,7 @@ class LeadController extends FormController
     /**
      * @param int $objectId
      */
-    public function emailAction(Request $request, UserHelper $userHelper, MailHelper $mailHelper, LeadModel $leadModel, EmailModel $emailModel, $objectId = 0)
+    public function emailAction(Request $request, UserHelper $userHelper, MailHelper $mailHelper, LeadModel $leadModel, EmailModel $emailModel, $objectId = 0): JsonResponse|Response
     {
         $valid = $cancelled = false;
 
