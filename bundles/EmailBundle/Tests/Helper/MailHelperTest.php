@@ -100,6 +100,8 @@ class MailHelperTest extends TestCase
 
     private EntityManagerInterface&MockObject $entityManager;
 
+    private ModelFactory&MockObject $mockFactory;
+
     /**
      * @var array<array<string,string|int>>
      */
@@ -149,6 +151,7 @@ class MailHelperTest extends TestCase
         $this->entityManager        = $this->createMock(EntityManagerInterface::class);
         $this->mailHashHelper       = new MailHashHelper($this->coreParametersHelper);
         $this->requestStack         = new RequestStack();
+        $this->mockFactory          = $this->createMock(ModelFactory::class);
 
         $this->entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
             ->method('getReference');
@@ -1632,7 +1635,25 @@ class MailHelperTest extends TestCase
 
         $transport     = new BatchTransport();
         $symfonyMailer = new Mailer($transport);
-        $mailer        = new MailHelper($this->mockFactory, $symfonyMailer, $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router);
+        $mailer        = new MailHelper(
+            $symfonyMailer,
+            $this->fromEmailHelper,
+            $this->coreParametersHelper,
+            $this->mailbox,
+            $this->logger,
+            $this->mailHashHelper,
+            $this->router,
+            $this->twig,
+            $this->themeHelper,
+            $this->createMock(PathsHelper::class),
+            $this->createMock(EventDispatcherInterface::class),
+            $this->requestStack,
+            $this->entityManager,
+            $this->mockFactory,
+            $this->createMock(AssetModel::class),
+            $this->createMock(TrackableModel::class),
+            $this->createMock(RedirectModel::class)
+        );
 
         $email = new Email();
         $email->setSubject('Test Subject');

@@ -255,7 +255,8 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $email->setCustomHtml('<html><body>Contact emails is {contactfield=email}. Company Name: {contactfield=companyname} and Company City: {contactfield=companycity}</body></html>');
 
         $this->em->flush();
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->loginUser($user);
 
         $url                    = "/email/preview/{$email->getId()}";
         $urlWithContact         = "{$url}?contactId={$lead->getId()}";
