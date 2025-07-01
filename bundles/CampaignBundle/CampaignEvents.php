@@ -226,13 +226,4 @@ final class CampaignEvents
      * @var string
      */
     public const ON_EVENT_DECISION_TRIGGER = 'mautic.campaign_on_event_decision_trigger';
-
-    /**
-     * This event is dispatched when a campaign event stats preview is requested.
-     *
-     * @var string
-     *
-     * The event listener receives a Mautic\CampaignBundle\Event\EventDetailsAction instance
-     */
-    public const ON_EVENT_PREVIEW_REQUEST = 'mautic.campaign_on_event_preview_request';
 }

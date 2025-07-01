@@ -36,7 +36,7 @@ class CampaignEventSubscriber implements EventSubscriberInterface
             CampaignEvents::CAMPAIGN_PRE_SAVE        => ['onCampaignPreSave', 0],
             CampaignEvents::ON_EVENT_FAILED          => ['onEventFailed', 0],
             CampaignEvents::ON_EVENT_EXECUTED        => ['onEventExecuted', 0],
-            CampaignEvents::ON_EVENT_PREVIEW_REQUEST => ['onEventPreviewRequest', 0],
+            EventPreview::class                      => ['onEventPreviewRequest', 0],
         ];
     }
 

@@ -50,7 +50,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     {
         return [
             CampaignEvents::CAMPAIGN_ON_BUILD        => ['onCampaignBuild', 0],
-            CampaignEvents::ON_EVENT_PREVIEW_REQUEST => ['onEventPreviewRequest', 0],
+            EventPreview::class                      => ['onEventPreviewRequest', 0],
             EmailEvents::EMAIL_ON_OPEN               => ['onEmailOpen', 0],
             EmailEvents::ON_CAMPAIGN_BATCH_ACTION    => [
                 ['onCampaignTriggerActionSendEmailToContact', 0],

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Controller;
 
-use Mautic\CampaignBundle\CampaignEvents;
 use Mautic\CampaignBundle\Event\EventPreview;
 use Mautic\CampaignBundle\Model\CampaignModel;
 use Mautic\CampaignBundle\Model\EventModel;
@@ -124,7 +123,7 @@ class CampaignMetricsController extends AbstractController
         }
 
         $eventDetailsAction = new EventPreview($event);
-        $eventDispatcher->dispatch($eventDetailsAction, CampaignEvents::ON_EVENT_PREVIEW_REQUEST);
+        $eventDispatcher->dispatch($eventDetailsAction);
 
         return $this->json($eventDetailsAction->eventStats);
     }
