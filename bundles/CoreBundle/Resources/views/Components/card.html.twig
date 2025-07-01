@@ -83,8 +83,9 @@
             </div>
         {% endset %}
         {% include '@MauticCore/Components/tile.html.twig' with {
-            'content': cardContent,
-            'className': 'card pa-0' ~ (disabled is defined ? ' tile--disabled' : ''),
+            type: 'base',
+            content: cardContent,
+            className: 'card pa-0' ~ (disabled is defined ? ' tile--disabled' : ''),
         } %}
 
     {# === LOGO TYPE === #}
@@ -101,11 +102,11 @@
             </div>
         {% endset %}
         {% include '@MauticCore/Components/tile.html.twig' with {
-            'type': 'clickable',
-            'content': cardContent,
-            'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
-            'icon': ctaIcons[ctaType],
-            'href': href,
+            type: 'clickable',
+            content: cardContent,
+            className: 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
+            icon: ctaIcons[ctaType],
+            href: href,
         } %}
 
     {# === LINK TYPE === #}
@@ -120,11 +121,11 @@
             
         {% endset %}
         {% include '@MauticCore/Components/tile.html.twig' with {
-            'type': 'clickable',
-            'content': cardContent,
-            'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
-            'icon': ctaIcons[ctaType],
-            'href': href,
+            type: 'clickable',
+            content: cardContent,
+            className: 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
+            icon: ctaIcons[ctaType],
+            href: href,
         } %}
 
     {# === PICTOGRAM TYPE === #}
@@ -139,11 +140,11 @@
             </div>
         {% endset %}
         {% include '@MauticCore/Components/tile.html.twig' with {
-            'type': 'clickable',
-            'content': cardContent,
-            'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
-            'icon': ctaIcons[ctaType],
-            'href': href,
+            type: 'clickable',
+            content: cardContent,
+            className: 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
+            icon: ctaIcons[ctaType],
+            href: href,
         } %}
 
     {# === DEFAULT TYPE === #}
@@ -160,10 +161,10 @@
             </div>
         {% endset %}
         {% include '@MauticCore/Components/tile.html.twig' with {
-            'type': 'clickable',
-            'content': cardContent,
-            'className': 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
-            'href': href,
+            type: 'clickable',
+            content: cardContent,
+            className: 'card pa-0 card--link' ~ (disabled is defined ? ' tile--disabled' : ''),
+            href: href,
         } %}
 
     {# === FEATURE TYPE === #}
@@ -183,10 +184,10 @@
         </div>
         {% endset %}
         {% include '@MauticCore/Components/tile.html.twig' with {
-            'type': 'clickable',
-            'content': cardContent,
-            'className': 'card pa-0 card--link',
-            'href': href,
+            type: 'clickable',
+            content: cardContent,
+            className: 'card pa-0 card--link',
+            href: href,
         } %}
 
         {# === FEATURE TYPE === #}
@@ -208,10 +209,10 @@
         </div>
         {% endset %}
         {% include '@MauticCore/Components/tile.html.twig' with {
-            'type': 'clickable',
-            'content': cardContent,
-            'className': 'card pa-0 card--link',
-            'href': href,
-            'icon': ctaIcons[ctaType],
+            type: 'clickable',
+            content: cardContent,
+            className: 'card pa-0 card--link',
+            href: href,
+            icon: ctaIcons[ctaType],
         } %}
     {% endif %}
