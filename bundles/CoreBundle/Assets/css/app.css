@@ -10540,6 +10540,7 @@ lesshat-selector { -lh-property: 0 ;
 .card-in-card {
   outline: 2px solid transparent;
   outline-offset: 0px !important;
+  position: relative;
 }
 .card-in-card:focus {
   outline-color: var(--focus);
