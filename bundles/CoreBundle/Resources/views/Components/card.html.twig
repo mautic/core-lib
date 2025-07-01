@@ -75,7 +75,7 @@
 {% set common_pictogram_content %}
     {% if type == 'pictogram' and pictogram is defined %}
         <div part="pictogram-wrapper" class="card__pictogram-wrapper mt-a">
-            {% include '@MauticCore/Component/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
+            {% include '@MauticCore/Components/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
         </div>
     {% endif %}
 {% endset %}
