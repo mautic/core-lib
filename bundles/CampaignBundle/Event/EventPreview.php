@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\CampaignBundle\Event;
 
 use Mautic\CampaignBundle\Entity\Event;
 
-class EventPreview
+final class EventPreview
 {
     /** @var array<string, mixed> */
     public array $eventStats = [];
