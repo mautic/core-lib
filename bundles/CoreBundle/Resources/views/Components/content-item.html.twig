@@ -1,16 +1,3 @@
-{#
-  Variables
-    - type: 'image', 'logo', 'pictogram', 'statistic', 'text'
-    - heading
-    - copy
-    - cta
-    - image: {src, alt} (for type 'image')
-    - logo: {src, alt} (for type 'logo')
-    - pictogram (for type 'pictogram')
-    - orientation: 'horizontal' (for type 'pictogram')
-    - statistic (for type 'statistic')
-#}
-
 {% set common_header_content %}
     <div class="content-item__header fw-b type-heading-02 mb-xs">{{ heading|trans }}</div>
     <div class="content-item__copy type-body-compact-02 {% if cta is defined and cta %} mb-md{% endif %}">{{ copy|trans }}</div>
