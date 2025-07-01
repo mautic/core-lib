@@ -10626,42 +10626,35 @@ lesshat-selector { -lh-property: 0 ;
   content: "";
   grid-area: 1 / 1 / -1 / -1;
 }
+.card-group[grid-mode="default"] {
+  --card-group--cards-in-row: 1;
+  display: grid;
+  background: none;
+  gap: 0px 32px;
+  padding-block-start: 8px;
+  grid-template-columns: 1fr;
+}
 @media (min-width: 992px) {
   .card-group[grid-mode="default"] {
     gap: 0px 32px;
     padding-block-start: 16px;
+    grid-template-columns: repeat(2, 1fr);
   }
-}
-.card-group[grid-mode="default"] {
-  gap: 0px 32px;
-  padding-block-start: 8px;
 }
 @media (min-width: 1200px) {
   .card-group[grid-mode="default"] {
     grid-template-columns: repeat(var(--card-group--cards-in-row), 1fr);
   }
 }
-@media (min-width: 992px) {
-  .card-group[grid-mode="default"] {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-.card-group[grid-mode="default"] {
-  --card-group--cards-in-row: 1;
-  display: grid;
-  background: none;
-  gap: 1px;
-  grid-template-columns: 1fr;
+.card-group[grid-mode="narrow"] {
+  gap: 0px 8px;
+  padding-block-start: 8px;
 }
 @media (min-width: 992px) {
   .card-group[grid-mode="narrow"] {
     gap: 0px 16px;
     padding-block-start: 16px;
   }
-}
-.card-group[grid-mode="narrow"] {
-  gap: 0px 8px;
-  padding-block-start: 8px;
 }
 .card-group[grid-mode="condensed"] {
   gap: 1px;
