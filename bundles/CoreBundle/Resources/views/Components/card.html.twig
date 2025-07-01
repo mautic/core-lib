@@ -67,7 +67,7 @@
 {% set common_tags_content %}
     {% if tags is defined %}
         <div class="mt-16">
-            {% include '@MauticCore/Components/tag.html.twig' with {'tags': tags} %}
+            {% include '@MauticCore/Helper/_tag.html.twig' with {'tags': tags} %}
         </div>
     {% endif %}
 {% endset %}
