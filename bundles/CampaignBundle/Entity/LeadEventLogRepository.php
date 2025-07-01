@@ -692,27 +692,17 @@ SQL;
             ->setParameter('eventId', $eventId)
             ->groupBy('log.event_id');
 
-        $result = $qb->executeQuery()->fetchAssociative();
-        if (false === $result) {
-            return [
-                'total_executions'     => 0,
-                'pending_executions'   => 0,
-                'negative_path_count'  => 0,
-                'positive_path_count'  => 0,
-                'first_execution_date' => null,
-                'last_execution_date'  => null,
-            ];
-        }
-        $totalLogs         = (int) $result['total_logs'];
-        $pendingExecutions = (int) $result['pending_executions'];
+        $result            = $qb->executeQuery()->fetchAssociative();
+        $totalLogs         = (int) ($result['total_logs'] ?? 0);
+        $pendingExecutions = (int) ($result['pending_executions'] ?? 0);
 
         return [
             'total_executions'     => $totalLogs - $pendingExecutions,
-            'pending_executions'   => (int) $result['pending_executions'],
-            'negative_path_count'  => (int) $result['negative_path_count'],
-            'positive_path_count'  => (int) $result['positive_path_count'],
-            'first_execution_date' => $result['first_execution_date'] ?: null,
-            'last_execution_date'  => $result['last_execution_date'] ?: null,
+            'pending_executions'   => $pendingExecutions,
+            'negative_path_count'  => (int) ($result['negative_path_count'] ?? 0),
+            'positive_path_count'  => (int) ($result['positive_path_count'] ?? 0),
+            'first_execution_date' => $result['first_execution_date'] ?? null,
+            'last_execution_date'  => $result['last_execution_date'] ?? null,
         ];
     }
 }
