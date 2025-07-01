@@ -15,7 +15,7 @@
         {% endif %}
         {% for card in cards %}
             <div class="card-group__item">
-                {% include '@MauticCore/Components/card.html.twig' with card %}
+                {% include '@MauticCore/Components/card.html.twig' with card|merge({type: type}) %}
             </div>
         {% endfor %}
     </div>
