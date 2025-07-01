@@ -4,7 +4,7 @@
     <div class="card-group" grid-mode="condensed" style="--card-group--cards-in-row: {{ cardsPerRow|default(3) }};">
         {% for card in cards|slice(1) %}
             <div class="card-group__item">
-                {% include '@MauticCore/Components/card.html.twig' with card|merge({type: 'link'}) %}
+                {% include '@MauticCore/Components/card.html.twig' with card|merge({type: 'default'}) %}
             </div>
         {% endfor %}
     </div>
