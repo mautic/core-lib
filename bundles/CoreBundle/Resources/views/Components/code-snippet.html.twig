@@ -6,14 +6,17 @@
     </code>
 </div>
 
-{# === MULTI VARIANT === #}
-{% elseif variant == 'multi' %}
-<div class="code-snippet code-snippet--multi" {% if disabled is defined and disabled %}disabled{% endif %}>
-    <pre class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">{{ innerText|raw }}</pre>
+{# === SINGLE VARIANT === #}
+{% elseif variant == 'single' %}
+<div class="code-snippet code-snippet--single" {% if disabled is defined and disabled %}disabled{% endif %}>
+    <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">
+        {{ innerText|raw|escape('html_attr') }}
+    </code>
     {% if hideCopyButton is not defined or not hideCopyButton %}
     {% include '@MauticCore/Helper/button.html.twig' with {
         buttons: [{
         variant: 'icon',
+        size: 'xs',
         icon: 'ri-file-copy-line',
         icon_only: true,
         label: copyButtonDescription|default('mautic.core.copy_code_snippet')|trans,
@@ -26,17 +29,14 @@
     {% endif %}
 </div>
 
-{# === SINGLE VARIANT === #}
-{% elseif variant == 'single' %}
-<div class="code-snippet code-snippet--single" {% if disabled is defined and disabled %}disabled{% endif %}>
-    <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">
-        {{ innerText|raw|escape('html_attr') }}
-    </code>
+{# === MULTI VARIANT === #}
+{% elseif variant == 'multi' %}
+<div class="code-snippet code-snippet--multi" {% if disabled is defined and disabled %}disabled{% endif %}>
+    <pre class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">{{ innerText|raw }}</pre>
     {% if hideCopyButton is not defined or not hideCopyButton %}
     {% include '@MauticCore/Helper/button.html.twig' with {
         buttons: [{
         variant: 'icon',
-        size: 'xs',
         icon: 'ri-file-copy-line',
         icon_only: true,
         label: copyButtonDescription|default('mautic.core.copy_code_snippet')|trans,
