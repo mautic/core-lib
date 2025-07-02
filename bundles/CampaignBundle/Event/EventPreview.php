@@ -9,7 +9,7 @@ use Mautic\CampaignBundle\Entity\Event;
 
 final class EventPreview
 {
-    /** @var array<string, EventPreviewStat> */
+    /** @var array<string, EventPreviewStatDto> */
     public array $eventStats = [];
 
     public function __construct(public Event $event)

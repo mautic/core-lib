@@ -181,10 +181,10 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $conditionEventDetails = json_decode($clientResponse->getContent(), true);
         $this->assertEquals([
-            'total_executions'     => ['value' => 0],
-            'pending_executions'   => ['value' => 0],
-            'negative_path_count'  => ['value' => 0],
-            'positive_path_count'  => ['value' => 0],
+            'total_executions'     => ['value' => 0, 'tooltip' => null],
+            'pending_executions'   => ['value' => 0, 'tooltip' => null],
+            'negative_path_count'  => ['value' => 0, 'tooltip' => null],
+            'positive_path_count'  => ['value' => 0, 'tooltip' => null],
         ], $conditionEventDetails);
 
         // check email event details before running the campaign
@@ -193,14 +193,14 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful($clientResponse->getContent());
         $emailEventDetails = json_decode($clientResponse->getContent(), true);
         $this->assertEquals([
-            'total_executions'          => ['value' => 0],
-            'pending_executions'        => ['value' => 0],
-            'sent_count'                => ['value' => 0],
-            'read_count'                => ['value' => 0],
-            'clicked_count'             => ['value' => 0],
-            'open_rate'                 => ['value' => '0%'],
-            'click_through_rate'        => ['value' => '0%'],
-            'click_through_open_rate'   => ['value' => '0%'],
+            'total_executions'          => ['value' => 0, 'tooltip' => null],
+            'pending_executions'        => ['value' => 0, 'tooltip' => null],
+            'sent_count'                => ['value' => 0, 'tooltip' => null],
+            'read_count'                => ['value' => 0, 'tooltip' => null],
+            'clicked_count'             => ['value' => 0, 'tooltip' => null],
+            'open_rate'                 => ['value' => '0%', 'tooltip' => null],
+            'click_through_rate'        => ['value' => '0%', 'tooltip' => null],
+            'click_through_open_rate'   => ['value' => '0%', 'tooltip' => null],
         ], $emailEventDetails);
 
         $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
