@@ -124,9 +124,9 @@ class CampaignEventSubscriber implements EventSubscriberInterface
     {
         $logStats = $this->leadEventLogRepository->getEventLogStats($eventPreview->event->getId());
 
-        if ($logStats->getFirstExecutionDate() && $logStats->getLastExecutionDate()) {
-            $firstExecutionDate = new DateTimeHelper($logStats->getFirstExecutionDate());
-            $lastExecutionDate  = new DateTimeHelper($logStats->getLastExecutionDate());
+        if ($logStats->firstExecutionDate && $logStats->lastExecutionDate) {
+            $firstExecutionDate = new DateTimeHelper($logStats->firstExecutionDate);
+            $lastExecutionDate  = new DateTimeHelper($logStats->lastExecutionDate);
 
             $eventPreview->addEventStat(
                 key: 'first_execution_date',
@@ -139,12 +139,12 @@ class CampaignEventSubscriber implements EventSubscriberInterface
                 tooltip: $lastExecutionDate->toLocalString()
             );
         }
-        $eventPreview->addEventStat('total_executions', $logStats->getTotalExecutions());
-        $eventPreview->addEventStat('pending_executions', $logStats->getPendingExecutions());
+        $eventPreview->addEventStat('total_executions', $logStats->totalExecutions);
+        $eventPreview->addEventStat('pending_executions', $logStats->pendingExecutions);
 
         if (in_array($eventPreview->event->getEventType(), ['condition', 'decision'])) {
-            $eventPreview->addEventStat('negative_path_count', $logStats->getNegativePathCount());
-            $eventPreview->addEventStat('positive_path_count', $logStats->getPositivePathCount());
+            $eventPreview->addEventStat('negative_path_count', $logStats->negativePathCount);
+            $eventPreview->addEventStat('positive_path_count', $logStats->positivePathCount);
         }
     }
 }

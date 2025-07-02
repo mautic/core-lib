@@ -684,6 +684,11 @@ SQL;
             ->groupBy('log.event_id');
 
         $result            = $qb->executeQuery()->fetchAssociative();
+
+        if (false === $result) {
+            return new EventLogStatsDto();
+        }
+
         $totalLogs         = (int) ($result['total_logs'] ?? 0);
         $pendingExecutions = (int) ($result['pending_executions'] ?? 0);
 

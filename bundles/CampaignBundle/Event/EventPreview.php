@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Event;
 
+use Mautic\CampaignBundle\DTO\EventPreviewStatDto;
 use Mautic\CampaignBundle\Entity\Event;
 
 final class EventPreview
 {
-    /** @var array<string, mixed> */
+    /** @var array<string, EventPreviewStat> */
     public array $eventStats = [];
 
     public function __construct(public Event $event)
@@ -22,10 +23,6 @@ final class EventPreview
 
     public function addEventStat(string $key, mixed $value, string $tooltip = null): void
     {
-        $stat = ['value' => $value];
-        if ($tooltip) {
-            $stat['tooltip'] = $tooltip;
-        }
-        $this->eventStats[$key] = $stat;
+        $this->eventStats[$key] = new EventPreviewStatDto($value, $tooltip);
     }
 }
