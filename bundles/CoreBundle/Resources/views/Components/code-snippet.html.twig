@@ -2,7 +2,7 @@
 {% if variant == 'inline' %}
 <div class="code-snippet code-snippet--inline" {% if disabled is defined and disabled %}disabled{% endif %} data-toggle="tooltip" title="{{ copyButtonDescription|default('mautic.core.copy_code_snippet')|trans }}">
     <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" {% if disabled is not defined or not disabled %} data-copy="{{ copyText|default(innerText)|escape('html_attr') }}" tabindex="0"{% endif %}>
-        {{ innerText|raw|escape('html_attr') }}
+        {{ innerText|escape('html_attr') }}
     </code>
 </div>
 
@@ -10,7 +10,7 @@
 {% elseif variant == 'single' %}
 <div class="code-snippet code-snippet--single" {% if disabled is defined and disabled %}disabled{% endif %}>
     <code class="code-snippet__code {{ className|default('') }}" aria-label="{{ ariaLabel|default(copyButtonDescription|default('mautic.core.copy_code_snippet')|trans) }}" tabindex="0">
-        {{ innerText|raw|escape('html_attr') }}
+        {{ innerText|escape('html_attr') }}
     </code>
     {% if hideCopyButton is not defined or not hideCopyButton %}
     {% include '@MauticCore/Helper/button.html.twig' with {
