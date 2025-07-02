@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Types\Types;
+use Mautic\CampaignBundle\DTO\EventLogStatsDto;
 use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
@@ -662,17 +663,7 @@ SQL;
         return false;
     }
 
-    /**
-     * @return array{
-     *     total_executions: int,
-     *     pending_executions: int,
-     *     negative_path_count: int,
-     *     positive_path_count: int,
-     *     first_execution_date: string|null,
-     *     last_execution_date: string|null
-     * }
-     */
-    public function getEventLogStats(int $eventId): array
+    public function getEventLogStats(int $eventId): EventLogStatsDto
     {
         $qb = $this->getReplicaConnection()->createQueryBuilder();
         $qb->select([
@@ -696,13 +687,13 @@ SQL;
         $totalLogs         = (int) ($result['total_logs'] ?? 0);
         $pendingExecutions = (int) ($result['pending_executions'] ?? 0);
 
-        return [
-            'total_executions'     => $totalLogs - $pendingExecutions,
-            'pending_executions'   => $pendingExecutions,
-            'negative_path_count'  => (int) ($result['negative_path_count'] ?? 0),
-            'positive_path_count'  => (int) ($result['positive_path_count'] ?? 0),
-            'first_execution_date' => $result['first_execution_date'] ?? null,
-            'last_execution_date'  => $result['last_execution_date'] ?? null,
-        ];
+        return new EventLogStatsDto(
+            totalExecutions: $totalLogs - $pendingExecutions,
+            pendingExecutions: $pendingExecutions,
+            negativePathCount: (int) ($result['negative_path_count'] ?? 0),
+            positivePathCount: (int) ($result['positive_path_count'] ?? 0),
+            firstExecutionDate: $result['first_execution_date'] ? new \DateTime($result['first_execution_date']) : null,
+            lastExecutionDate: $result['last_execution_date'] ? new \DateTime($result['last_execution_date']) : null
+        );
     }
 }
