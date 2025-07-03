@@ -627,6 +627,28 @@ class ReportController extends FormController
             $filterSettings[$filterDefinitions->definitions[$filter['column']]['alias']] = $filter['value'];
         }
 
+        // Add values for dynamic filters that don't have session values
+        foreach ($entity->getFilters() as $filter) {
+            if (isset($filter['dynamic']) && 1 === $filter['dynamic']) {
+                $column = $filter['column'];
+                $alias  = $filterDefinitions->definitions[$column]['alias'];
+
+                // Only set value if no session value exists
+                if (!isset($filterSettings[$alias])) {
+                    // Use the value from the report filter config if present
+                    if (isset($filter['value']) && '' !== $filter['value']) {
+                        $filterSettings[$alias] = $filter['value'];
+                    } else {
+                        // Only fall back to defaultValue if neither session nor config value is present
+                        $definition = $filterDefinitions->definitions[$column];
+                        if (isset($definition['defaultValue']) && '' !== $definition['defaultValue']) {
+                            $filterSettings[$alias] = $definition['defaultValue'];
+                        }
+                    }
+                }
+            }
+        }
+
         $dynamicFilterForm = $this->formFactory->create(
             DynamicFiltersType::class,
             $filterSettings,
