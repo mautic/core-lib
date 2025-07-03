@@ -211,10 +211,10 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEventDetails(
             actual: $conditionEventDetails,
             expected: [
-                'total_executions'     => ['value' => 4, 'tooltip' => $conditionEventDetails['total_executions']['tooltip']],
-                'pending_executions'   => ['value' => 0, 'tooltip' => $conditionEventDetails['pending_executions']['tooltip']],
-                'negative_path_count'  => ['value' => 1, 'tooltip' => $conditionEventDetails['negative_path_count']['tooltip']],
-                'positive_path_count'  => ['value' => 3, 'tooltip' => $conditionEventDetails['positive_path_count']['tooltip']],
+                'total_executions'     => ['value' => 4, 'tooltip' => null],
+                'pending_executions'   => ['value' => 0, 'tooltip' => null],
+                'negative_path_count'  => ['value' => 1, 'tooltip' => null],
+                'positive_path_count'  => ['value' => 3, 'tooltip' => null],
             ],
             notEmptyFields: ['first_execution_date', 'last_execution_date']
         );
@@ -224,14 +224,14 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEventDetails(
             actual: $emailEventDetails,
             expected: [
-                'total_executions'          => ['value' => 3, 'tooltip' => $emailEventDetails['total_executions']['tooltip']],
-                'pending_executions'        => ['value' => 0, 'tooltip' => $emailEventDetails['pending_executions']['tooltip']],
-                'sent_count'                => ['value' => 3, 'tooltip' => $emailEventDetails['sent_count']['tooltip']],
-                'read_count'                => ['value' => 0, 'tooltip' => $emailEventDetails['read_count']['tooltip']],
-                'clicked_count'             => ['value' => 0, 'tooltip' => $emailEventDetails['clicked_count']['tooltip']],
-                'open_rate'                 => ['value' => '0%', 'tooltip' => $emailEventDetails['open_rate']['tooltip']],
-                'click_through_rate'        => ['value' => '0%', 'tooltip' => $emailEventDetails['click_through_rate']['tooltip']],
-                'click_through_open_rate'   => ['value' => '0%', 'tooltip' => $emailEventDetails['click_through_open_rate']['tooltip']],
+                'total_executions'          => ['value' => 3, 'tooltip' => null],
+                'pending_executions'        => ['value' => 0, 'tooltip' => null],
+                'sent_count'                => ['value' => 3, 'tooltip' => null],
+                'read_count'                => ['value' => 0, 'tooltip' => null],
+                'clicked_count'             => ['value' => 0, 'tooltip' => null],
+                'open_rate'                 => ['value' => '0%', 'tooltip' => null],
+                'click_through_rate'        => ['value' => '0%', 'tooltip' => null],
+                'click_through_open_rate'   => ['value' => '0%', 'tooltip' => null],
             ],
             notEmptyFields: ['first_execution_date', 'last_execution_date']
         );
@@ -252,14 +252,14 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertEventDetails(
             actual: $emailEventDetails,
             expected: [
-                'total_executions'          => ['value' => 3, 'tooltip' => $emailEventDetails['total_executions']['tooltip']],
-                'pending_executions'        => ['value' => 0, 'tooltip' => $emailEventDetails['pending_executions']['tooltip']],
-                'sent_count'                => ['value' => 3, 'tooltip' => $emailEventDetails['sent_count']['tooltip']],
-                'read_count'                => ['value' => 2, 'tooltip' => $emailEventDetails['read_count']['tooltip']],
-                'clicked_count'             => ['value' => 1, 'tooltip' => $emailEventDetails['clicked_count']['tooltip']],
-                'open_rate'                 => ['value' => '66.67%', 'tooltip' => $emailEventDetails['open_rate']['tooltip']],
-                'click_through_rate'        => ['value' => '33.33%', 'tooltip' => $emailEventDetails['click_through_rate']['tooltip']],
-                'click_through_open_rate'   => ['value' => '50%', 'tooltip' => $emailEventDetails['click_through_open_rate']['tooltip']],
+                'total_executions'          => ['value' => 3, 'tooltip' => null],
+                'pending_executions'        => ['value' => 0, 'tooltip' => null],
+                'sent_count'                => ['value' => 3, 'tooltip' => null],
+                'read_count'                => ['value' => 2, 'tooltip' => null],
+                'clicked_count'             => ['value' => 1, 'tooltip' => null],
+                'open_rate'                 => ['value' => '66.67%', 'tooltip' => null],
+                'click_through_rate'        => ['value' => '33.33%', 'tooltip' => null],
+                'click_through_open_rate'   => ['value' => '50%', 'tooltip' => null],
             ],
             notEmptyFields: ['first_execution_date', 'last_execution_date']
         );
@@ -281,6 +281,9 @@ class CampaignMetricsControllerFunctionalTest extends MauticMysqlTestCase
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getEventDetails(int $eventId): array
     {
         $this->client->request(Request::METHOD_GET, "/s/campaign/metrics/event-details/{$eventId}");
