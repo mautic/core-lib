@@ -11377,21 +11377,18 @@ code:hover > .copy-icon {
 }
 .header__action {
   box-sizing: border-box;
+  padding: 0;
+  border: 0;
   margin: 0;
   font-family: inherit;
   font-size: 100%;
   vertical-align: baseline;
-  display: inline-block;
-  padding: 0;
-  border: 0;
   -webkit-appearance: none;
   appearance: none;
   background: none;
   cursor: pointer;
   text-align: start;
-  inline-size: 100%;
   display: inline-flex;
-  border: 1px solid rgba(0, 0, 0, 0);
   block-size: 48px;
   inline-size: 48px;
   transition: background-color 110ms, border-color 110ms;
@@ -11475,7 +11472,6 @@ code:hover > .copy-icon {
 }
 a.header__name {
   font-size: var(--body-compact-01-font-size, 14px);
-  font-weight: var(--body-compact-01-font-weight, 400);
   line-height: var(--body-compact-01-line-height, 20.57152px);
   letter-spacing: var(--body-compact-01-letter-spacing, 0.16px);
   display: flex;
@@ -11484,8 +11480,6 @@ a.header__name {
   border: 2px solid rgba(0, 0, 0, 0);
   block-size: 100%;
   font-weight: 600;
-  letter-spacing: 0.1px;
-  line-height: 20px;
   outline: none;
   text-decoration: none;
   transition: border-color 110ms;
@@ -11538,13 +11532,13 @@ a.header__name:hover {
 }
 .header__menu-bar {
   box-sizing: border-box;
+  padding: 0;
   border: 0;
+  margin: 0;
   font-family: inherit;
   font-size: 100%;
   vertical-align: baseline;
   display: flex;
-  padding: 0;
-  margin: 0;
   block-size: 100%;
   list-style: none;
 }
