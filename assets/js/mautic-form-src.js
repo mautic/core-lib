@@ -220,6 +220,22 @@ var t,e;t=this,e=function(){"use strict";function t(t,e){var n=Object.keys(t);if
                     Form.prepareShowOn(formId);
                     Form.preparePagination(formId);
 
+                    var theForm = forms[i];
+                    var hasPageBreak = theForm.querySelectorAll('[data-mautic-form-page]').length > 1;
+                    if (hasPageBreak) {
+                        var inputs = theForm.querySelectorAll('input, select, button');
+                        Array.prototype.forEach.call(inputs, function(input) {
+                            if (input.tagName.toLowerCase() !== 'textarea') {
+                                input.addEventListener('keydown', function(e) {
+                                    if (e.key === 'Enter' || e.keyCode === 13) {
+                                        e.preventDefault();
+                                        return false;
+                                    }
+                                });
+                            }
+                        });
+                    }
+
                     Form.populateValuesWithGetParameters();
                 }
             }
