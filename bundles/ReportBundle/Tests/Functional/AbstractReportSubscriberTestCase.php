@@ -9,7 +9,7 @@ use Mautic\ReportBundle\Entity\Report;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class AbstractReportSubscriberTest extends MauticMysqlTestCase
+abstract class AbstractReportSubscriberTestCase extends MauticMysqlTestCase
 {
     protected $useCleanupRollback   = false;
     protected bool $authenticateApi = true;
