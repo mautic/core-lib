@@ -338,62 +338,7 @@ final class LeadFieldRepositoryTest extends TestCase
         );
     }
 
-    public function testCompareValueInOperatorEscapesSpecialCharactersCorrectly(): void
-    {
-        $contactId = 123;
-        $fieldType = 'select';
-        $builderCompare = $this->createMock(QueryBuilder::class);
-        $statementCompareResult = $this->createMock(Result::class);
-        $exprCompare = $this->createMock(ExpressionBuilder::class);
 
-        $this->entityManager->method('getConnection')->willReturn($this->connection);
-        $builderCompare->method('expr')->willReturn($exprCompare);
-
-        $this->connection->expects($this->once())
-            ->method('createQueryBuilder')
-            ->willReturn($builderCompare);
-
-        $builderCompare->expects($this->once())
-            ->method('select')
-            ->with('l.id')
-            ->willReturnSelf();
-
-        $builderCompare->expects($this->once())
-            ->method('from')
-            ->with(MAUTIC_TABLE_PREFIX.'leads', 'l')
-            ->willReturnSelf();
-
-        $exprCompare->expects($this->once())
-            ->method('and')
-            ->willReturn($exprCompare);
-
-        $exprCompare->expects($this->once())
-            ->method('eq')
-            ->with('l.id', ':lead')
-            ->willReturn($exprCompare);
-
-        $builderCompare->expects($this->once())
-            ->method('where')
-            ->willReturnSelf();
-
-        $builderCompare->expects($this->once())
-            ->method('setParameter')
-            ->with('lead', $contactId)
-            ->willReturnSelf();
-
-        $builderCompare->expects($this->once())
-            ->method('executeQuery')
-            ->willReturn($statementCompareResult);
-
-        $statementCompareResult->expects($this->once())
-            ->method('fetchAssociative')
-            ->willReturn(['id' => $contactId]);
-
-        $testValue = ["administrator's"];
-        $result = $this->repository->compareValue($contactId, 'job_title', $testValue, 'in', $fieldType);
-        
-        $this->assertTrue($result);
-    }
 
     private function createQueryMock(): MockObject
     {

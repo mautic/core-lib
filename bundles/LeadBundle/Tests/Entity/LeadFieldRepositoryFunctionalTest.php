@@ -210,11 +210,11 @@ class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
 
         $this->assertTrue($repository->compareValue($lead->getId(), 'job_title', ["administrator's"], 'in'));
         $this->assertFalse($repository->compareValue($lead->getId(), 'job_title', ['user'], 'in'));
-        
+
         $lead2 = new Lead();
         $lead2->addUpdatedField('job_title', 'manager&supervisor');
         $contactModel->saveEntity($lead2);
-        
+
         $this->assertTrue($repository->compareValue($lead2->getId(), 'job_title', ['manager&supervisor'], 'in'));
     }
 

@@ -291,12 +291,12 @@ class InputHelperTest extends TestCase
     public function testCleanConvertsSpecialCharacters(): void
     {
         $valueWithApostrophe = "administrator's";
-        $cleanResult = InputHelper::clean($valueWithApostrophe);
-        $rawResult = InputHelper::raw($valueWithApostrophe);
-        
+        $cleanResult         = InputHelper::clean($valueWithApostrophe);
+        $rawResult           = InputHelper::raw($valueWithApostrophe);
+
         $this->assertNotEquals($valueWithApostrophe, $cleanResult);
         $this->assertStringContainsString('&#', $cleanResult);
-        
+
         $this->assertEquals($valueWithApostrophe, $rawResult);
     }
 
@@ -305,11 +305,11 @@ class InputHelperTest extends TestCase
     {
         $testValues = [
             "administrator's",
-            "manager&supervisor", 
+            'manager&supervisor',
             '"quoted value"',
             '<tag>content</tag>',
         ];
-        
+
         foreach ($testValues as $originalValue) {
             $rawResult = InputHelper::raw($originalValue);
             $this->assertEquals($originalValue, $rawResult, "Raw filter should preserve: {$originalValue}");
