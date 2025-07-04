@@ -47,7 +47,7 @@
                     'attr': {
                         'data-toggle': '',
                         'target': '_blank',
-                        'href': path('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}),
+                        'href': previewPath,
                     },
                     'iconClass': 'ri-camera-3-line',
                     'btnText': 'mautic.form.form.preview',
@@ -126,6 +126,8 @@
 
 {% block content %}
 {% set showActions = activeFormActions|length %}
+{% set previewPath = path('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}) %}
+{% set previewUrl = url('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}) %}
 <!-- start: box layout -->
 <div class="box-layout">
     <!-- left section -->
@@ -331,7 +333,7 @@
                     <div class="form-group col-xs-12">
                         <div class="input-group">
                             <input type="text" class="form-control" readonly 
-                                   value="{{ url('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id})|escape }}"
+                                   value="{{ previewUrl|escape }}"
                                    onclick="this.setSelectionRange(0, this.value.length);"/>
                             <span class="input-group-btn">
                                 {% include '@MauticCore/Helper/button.html.twig' with {
@@ -345,7 +347,7 @@
                                             attributes: {
                                                 'type': 'button'
                                             },
-                                            onclick: 'window.open("' ~ url('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}) ~ '", "_blank");'
+                                            onclick: 'window.open("' ~ previewUrl ~ '", "_blank");'
                                         }
                                     ]
                                 } %}
