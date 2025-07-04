@@ -348,7 +348,7 @@
                                             attributes: {
                                                 'type': 'button'
                                             },
-                                            onclick: 'window.open("' ~ previewUrl ~ '", "_blank");'
+                                            onclick: 'window.open("' ~ previewUrl|e('js') ~ '", "_blank");'
                                         }
                                     ]
                                 } %}
