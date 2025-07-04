@@ -172,6 +172,52 @@ class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
         $this->assertFalse($repository->compareValue($lead->getId(), 'colors', ['red', 'yellow'], 'in'));
     }
 
+    public function testCompareValueInOperatorWithSpecialCharacters(): void
+    {
+        $field = new LeadField();
+        $field->setType('select');
+        $field->setObject('lead');
+        $field->setAlias('job_title');
+        $field->setName('Job Title');
+        $field->setProperties(
+            [
+                'list' => [
+                    [
+                        'label' => "Administrator's Role",
+                        'value' => "administrator's",
+                    ], [
+                        'label' => 'User Role',
+                        'value' => 'user',
+                    ], [
+                        'label' => 'Manager & Supervisor',
+                        'value' => 'manager&supervisor',
+                    ],
+                ],
+            ]
+        );
+
+        $fieldModel = self::getContainer()->get(FieldModel::class);
+        \assert($fieldModel instanceof FieldModel);
+        $fieldModel->saveEntity($field);
+
+        $lead = new Lead();
+        $lead->addUpdatedField('job_title', "administrator's");
+        $contactModel = self::getContainer()->get(LeadModel::class);
+        \assert($contactModel instanceof LeadModel);
+
+        $contactModel->saveEntity($lead);
+        $repository = $fieldModel->getRepository();
+
+        $this->assertTrue($repository->compareValue($lead->getId(), 'job_title', ["administrator's"], 'in'));
+        $this->assertFalse($repository->compareValue($lead->getId(), 'job_title', ['user'], 'in'));
+        
+        $lead2 = new Lead();
+        $lead2->addUpdatedField('job_title', 'manager&supervisor');
+        $contactModel->saveEntity($lead2);
+        
+        $this->assertTrue($repository->compareValue($lead2->getId(), 'job_title', ['manager&supervisor'], 'in'));
+    }
+
     public function testExcludeUnpublishedField(): void
     {
         $field = new LeadField();
