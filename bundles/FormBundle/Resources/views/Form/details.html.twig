@@ -47,7 +47,7 @@
                     'attr': {
                         'data-toggle': '',
                         'target': '_blank',
-                        'href': previewPath,
+                        'href': path('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}),
                     },
                     'iconClass': 'ri-camera-3-line',
                     'btnText': 'mautic.form.form.preview',
@@ -126,7 +126,6 @@
 
 {% block content %}
 {% set showActions = activeFormActions|length %}
-{% set previewPath = path('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}) %}
 {% set previewUrl = url('mautic_form_action', {'objectAction': 'preview', 'objectId': activeForm.id}) %}
 <!-- start: box layout -->
 <div class="box-layout">
