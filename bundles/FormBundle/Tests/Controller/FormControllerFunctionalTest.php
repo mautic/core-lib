@@ -657,6 +657,38 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame($project->getId(), $savedForm->getProjects()->first()->getId());
     }
 
+    public function testFormDetailsViewWithPreviewPanel(): void
+    {
+        // Create a form
+        $form = $this->createForm('Test Form Details', 'test_form_details');
+        $this->em->persist($form);
+        $this->em->flush();
+
+        // Request the form details view
+        $crawler = $this->client->request('GET', sprintf('/s/forms/view/%d', $form->getId()));
+        $this->assertResponseIsSuccessful();
+
+        // Verify the preview panel is present
+        $previewPanel = $crawler->filter('.panel:contains("Preview")');
+        $this->assertCount(1, $previewPanel, 'Preview panel should be present');
+
+        // Verify the preview URL input field exists and has the correct value
+        $previewInput = $crawler->filter('input[type="text"][readonly]');
+        $this->assertCount(1, $previewInput, 'Preview URL input should be present');
+
+        $expectedUrl = sprintf('/s/forms/preview/%d', $form->getId());
+        $actualValue = $previewInput->attr('value');
+        $this->assertStringContainsString($expectedUrl, $actualValue, 'Preview URL should contain the correct form preview path');
+
+        // Verify the external link button exists
+        $externalLinkButton = $crawler->filter('button[onclick*="window.open"]');
+        $this->assertCount(1, $externalLinkButton, 'External link button should be present');
+
+        // Verify the external link button has the correct onclick attribute
+        $onclickValue = $externalLinkButton->attr('onclick');
+        $this->assertStringContainsString($expectedUrl, $onclickValue, 'External link button should open the preview URL');
+    }
+
     private function createForm(string $name, string $alias): Form
     {
         $form = new Form();
