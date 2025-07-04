@@ -104,7 +104,11 @@ class CampaignSubscriber implements EventSubscriberInterface
         $field = $this->formModel->findFormFieldByAlias($form, $event->getConfig()['field']);
 
         $filter = $this->formFieldHelper->getFieldFilter($field->getType());
-        $value  = InputHelper::_($event->getConfig()['value'], $filter);
+        if (in_array($field->getType(), ['select', 'radiogrp', 'checkboxgrp'])) {
+            $value = InputHelper::_($event->getConfig()['value'], 'raw');
+        } else {
+            $value = InputHelper::_($event->getConfig()['value'], $filter);
+        }
 
         $result = $this->formSubmissionModel->getRepository()->compareValue(
             $lead->getId(),
