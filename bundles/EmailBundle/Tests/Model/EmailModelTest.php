@@ -966,7 +966,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testGetLookupResultsIdTextWithWithDefaultOptions()
+    public function testGetLookupResultsIdTextWithWithDefaultOptions(): void
     {
         $this->entityManager->expects($this->once())
             ->method('getRepository')
