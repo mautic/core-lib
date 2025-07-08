@@ -176,7 +176,7 @@ class LeadEventLogRepository extends CommonRepository
                 ->where($eventIdQuery->expr()->eq('e.type', ':type'))
                 ->setParameter('type', $options['type']);
 
-            $eventIds = $eventIdQuery->execute()->fetchFirstColumn();
+            $eventIds = $eventIdQuery->executeQuery()->fetchFirstColumn();
             if (!empty($eventIds)) {
                 $query->andWhere($query->expr()->in('ll.event_id', $eventIds));
             }
