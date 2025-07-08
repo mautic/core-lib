@@ -170,16 +170,8 @@ class LeadEventLogRepository extends CommonRepository
         }
 
         if (isset($options['type'])) {
-            $eventIdQuery = $this->_em->getConnection()->createQueryBuilder();
-            $eventIdQuery->select('e.id')
-                ->from(MAUTIC_TABLE_PREFIX.'campaign_events', 'e')
-                ->where($eventIdQuery->expr()->eq('e.type', ':type'))
-                ->setParameter('type', $options['type']);
-
-            $eventIds = $eventIdQuery->executeQuery()->fetchFirstColumn();
-            if (!empty($eventIds)) {
-                $query->andWhere($query->expr()->in('ll.event_id', $eventIds));
-            }
+            $query->andwhere('e.type = :type')
+            ->setParameter('type', $options['type']);
         }
 
         if (isset($options['eventType'])) {
