@@ -159,6 +159,7 @@ class PublicController extends CommonFormController
                         break;
                     case 'hideform':
                         $data['hideform'] = true;
+                        // no break
                     default:
                         if (!empty($postActionProperty)) {
                             $data['successMessage'] = [$postActionProperty];
