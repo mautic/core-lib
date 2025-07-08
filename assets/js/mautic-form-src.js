@@ -772,9 +772,6 @@ var t,e;t=this,e=function(){"use strict";function t(t,e){var n=Object.keys(t);if
                         if (response.success) {
                             if (response.hideform) {
                                 this.fadeOut(document.getElementsByClassName('mauticform-innerform')[0]);
-                                if (response.hideform_text) {
-                                    this.setMessage(response.hideform_text, 'message');
-                                }
                             }
 
                             if (response.successMessage) {
