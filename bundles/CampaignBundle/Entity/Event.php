@@ -813,14 +813,7 @@ class Event implements ChannelInterface, UuidInterface
      */
     public function setTriggerHour($triggerHour)
     {
-        if (empty($triggerHour)) {
-            $triggerHour = null;
-        } elseif (is_array($triggerHour) && array_key_exists('date', $triggerHour)) {
-            $triggerHour = new \DateTime($triggerHour['date']);
-        } elseif (!$triggerHour instanceof \DateTime) {
-            $triggerHour = new \DateTime($triggerHour);
-        }
-
+        $triggerHour = $this->convertToDateTime($triggerHour);
         $this->isChanged('triggerHour', $triggerHour ? $triggerHour->format('H:i') : $triggerHour);
         $this->triggerHour = $triggerHour;
 
@@ -1024,13 +1017,7 @@ class Event implements ChannelInterface, UuidInterface
      */
     public function setTriggerRestrictedStartHour($triggerRestrictedStartHour)
     {
-        if (empty($triggerRestrictedStartHour)) {
-            $triggerRestrictedStartHour = null;
-        } elseif (is_array($triggerRestrictedStartHour) && array_key_exists('date', $triggerRestrictedStartHour)) {
-            $triggerRestrictedStartHour = new \DateTime($triggerRestrictedStartHour['date']);
-        } elseif (!$triggerRestrictedStartHour instanceof \DateTime) {
-            $triggerRestrictedStartHour = new \DateTime($triggerRestrictedStartHour);
-        }
+        $triggerRestrictedStartHour = $this->convertToDateTime($triggerRestrictedStartHour);
 
         $this->isChanged('triggerRestrictedStartHour', $triggerRestrictedStartHour ? $triggerRestrictedStartHour->format('H:i') : $triggerRestrictedStartHour);
 
@@ -1058,13 +1045,7 @@ class Event implements ChannelInterface, UuidInterface
      */
     public function setTriggerRestrictedStopHour($triggerRestrictedStopHour)
     {
-        if (empty($triggerRestrictedStopHour)) {
-            $triggerRestrictedStopHour = null;
-        } elseif (is_array($triggerRestrictedStopHour) && array_key_exists('date', $triggerRestrictedStopHour)) {
-            $triggerRestrictedStopHour = new \DateTime($triggerRestrictedStopHour['date']);
-        } elseif (!$triggerRestrictedStopHour instanceof \DateTime) {
-            $triggerRestrictedStopHour = new \DateTime($triggerRestrictedStopHour);
-        }
+        $triggerRestrictedStopHour = $this->convertToDateTime($triggerRestrictedStopHour);
 
         $this->isChanged('triggerRestrictedStopHour', $triggerRestrictedStopHour ? $triggerRestrictedStopHour->format('H:i') : $triggerRestrictedStopHour);
 
@@ -1117,5 +1098,25 @@ class Event implements ChannelInterface, UuidInterface
     public function getFailedCount(): int
     {
         return $this->failedCount;
+    }
+
+    /**
+     * @param \DateTime|mixed|null $triggerDate
+     *
+     * @return \DateTime|mixed|null
+     *
+     * @throws \Exception
+     */
+    public function convertToDateTime($triggerDate)
+    {
+        if (empty($triggerDate)) {
+            $triggerDate = null;
+        } elseif (is_array($triggerDate) && array_key_exists('date', $triggerDate)) {
+            $triggerDate = new \DateTime($triggerDate['date']);
+        } elseif (!$triggerDate instanceof \DateTime) {
+            $triggerDate = new \DateTime($triggerDate);
+        }
+
+        return $triggerDate;
     }
 }
