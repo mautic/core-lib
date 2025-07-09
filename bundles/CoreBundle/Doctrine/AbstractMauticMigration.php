@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Doctrine;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\Exception\AbortMigration;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class AbstractMauticMigration extends AbstractMigration
@@ -41,22 +39,6 @@ abstract class AbstractMauticMigration extends AbstractMigration
     protected string $prefix;
 
     /**
-     * Database platform.
-     */
-    protected string $platformString;
-
-    protected CoreParametersHelper $coreParametersHelper;
-
-    public function __construct(
-        Connection $connection,
-        LoggerInterface $logger,
-    ) {
-        parent::__construct($connection, $logger);
-
-        $this->platformString = DatabasePlatform::getDatabasePlatform($this->connection->getDatabasePlatform());
-    }
-
-    /**
      * @throws \Doctrine\DBAL\Exception
      * @throws AbortMigration
      *
@@ -64,10 +46,12 @@ abstract class AbstractMauticMigration extends AbstractMigration
      */
     public function up(Schema $schema): void
     {
-        // Abort the migration if the platform is unsupported
-        $this->abortIf(!in_array($this->platformString, $this->supported), 'The database platform is unsupported for migrations');
+        $platform = DatabasePlatform::getDatabasePlatform($this->platform);
 
-        $function = $this->platformString.'Up';
+        // Abort the migration if the platform is unsupported
+        $this->abortIf(!in_array($platform, $this->supported), 'The database platform is unsupported for migrations');
+
+        $function = $platform.'Up';
 
         if (method_exists($this, $function)) {
             $this->$function($schema);
@@ -81,10 +65,8 @@ abstract class AbstractMauticMigration extends AbstractMigration
 
     public function setContainer(ContainerInterface $container = null): void
     {
-        $this->container            = $container;
-        $this->coreParametersHelper = $container->get(CoreParametersHelper::class);
-        $this->platformString       = DatabasePlatform::getDatabasePlatform($this->connection->getDatabasePlatform());
-        $this->prefix               = (string) $this->coreParametersHelper->get('db_table_prefix', '');
+        $this->container = $container;
+        $this->prefix    = (string) $container->get(CoreParametersHelper::class)->get('db_table_prefix', '');
     }
 
     /**

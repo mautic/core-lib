@@ -16,13 +16,6 @@ return function (ContainerConfigurator $configurator): void {
         ->autoconfigure()
         ->public();
 
-    $services->set(Mautic\CoreBundle\Doctrine\MigrationFactoryDecorator::class)
-        ->decorate('doctrine.migrations.migrations_factory')
-        ->args([
-            service('.inner'),
-            service('service_container'),
-        ]);
-
     $excludes = [
         'Doctrine',
         'Model/IteratorExportDataModel.php',
@@ -53,6 +46,7 @@ return function (ContainerConfigurator $configurator): void {
     $services->load('Mautic\\CoreBundle\\Entity\\', '../Entity/*Repository.php');
 
     $services->set('mautic.http.client', GuzzleHttp\Client::class)->autowire();
+    $services->set(Mautic\CoreBundle\Doctrine\MigrationFactoryDecorator::class)->autowire();
 
     $services->alias(GuzzleHttp\Client::class, 'mautic.http.client');
     $services->alias(Psr\Http\Client\ClientInterface::class, 'mautic.http.client');
