@@ -1100,14 +1100,7 @@ class Event implements ChannelInterface, UuidInterface
         return $this->failedCount;
     }
 
-    /**
-     * @param \DateTime|mixed|null $triggerDate
-     *
-     * @return \DateTime|mixed|null
-     *
-     * @throws \Exception
-     */
-    public function convertToDateTime($triggerDate)
+    private function convertToDateTime(mixed $triggerDate): mixed
     {
         if (empty($triggerDate)) {
             $triggerDate = null;
