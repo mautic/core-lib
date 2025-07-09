@@ -1303,6 +1303,23 @@ class EmailController extends FormController
             );
         }
 
+        if (!$entity->isPublished()) {
+            return $this->postActionRedirect(
+                array_merge(
+                    $postActionVars,
+                    [
+                        'flashes' => [
+                            [
+                                'type'    => 'error',
+                                'msg'     => 'mautic.email.error.notpublished',
+                                'msgVars' => ['%id%' => $objectId],
+                            ],
+                        ],
+                    ]
+                )
+            );
+        }
+
         if ('template' == $entity->getEmailType()
             || !$this->security->hasEntityAccess(
                 'email:emails:viewown',
