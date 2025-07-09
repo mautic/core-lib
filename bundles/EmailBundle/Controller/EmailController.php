@@ -1303,26 +1303,6 @@ class EmailController extends FormController
             );
         }
 
-        if (!$entity->isPublished()) {
-            return $this->postActionRedirect(
-                array_merge(
-                    $postActionVars,
-                    [
-                        'flashes' => [
-                            [
-                                'type'    => 'error',
-                                'msg'     => 'mautic.email.error.send.unpublished',
-                                'msgVars' => [
-                                    '%id%'   => $objectId,
-                                    '%name%' => $entity->getName(),
-                                ],
-                            ],
-                        ],
-                    ]
-                )
-            );
-        }
-
         if ('template' == $entity->getEmailType()
             || !$this->security->hasEntityAccess(
                 'email:emails:viewown',
@@ -1525,7 +1505,7 @@ class EmailController extends FormController
                 } else {
                     $entity->setPublishUp($data['publishUp']);
                     $entity->setPublishDown($data['publishDown']);
-                    $entity->setContinueSending($data['continueSending']);
+                    $entity->setContinueSending($data['continueSending'] ?? false);
                     $entity->setIsPublished(true);
 
                     $this->addFlashMessage('mautic.email.notice.schedule.sent');
