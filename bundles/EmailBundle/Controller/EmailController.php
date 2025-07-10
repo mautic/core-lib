@@ -1507,7 +1507,7 @@ class EmailController extends FormController
 
         $form = $this->createForm(ScheduleSendType::class, $data, ['action' => $action]);
 
-        if ('POST' == $request->getMethod()) {
+        if ('POST' === $request->getMethod()) {
             $isCancelled = $this->isFormCancelled($form);
             $isValid     = $this->isFormValid($form);
             if (!$isCancelled && $isValid) {
