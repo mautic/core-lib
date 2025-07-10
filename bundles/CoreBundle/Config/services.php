@@ -67,9 +67,6 @@ return function (ContainerConfigurator $configurator): void {
     $services->alias('mautic.core.model.auditlog', Mautic\CoreBundle\Model\AuditLogModel::class);
     $services->alias('mautic.core.model.notification', Mautic\CoreBundle\Model\NotificationModel::class);
     $services->alias('mautic.core.model.form', Mautic\CoreBundle\Model\FormModel::class);
-    $services->get(Mautic\CoreBundle\EventListener\CacheInvalidateSubscriber::class)
-        ->arg('$ormConfiguration', service('doctrine.orm.default_configuration'))
-        ->tag('doctrine.event_subscriber');
     $services->get(OptimisticLockSubscriber::class)
         ->tag('doctrine.event_subscriber');
     $services->set(UUIDListener::class)
