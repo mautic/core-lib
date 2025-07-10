@@ -57,7 +57,7 @@ class CompanyListType extends AbstractType
                 foreach ($missingCompanies as $company) {
                     $view->vars['choices'][] = new ChoiceView(
                         $company->getId(),
-                        $company->getId(),
+                        (string) $company->getId(),
                         $company->getName()
                     );
                 }
