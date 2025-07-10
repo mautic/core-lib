@@ -58,8 +58,6 @@ class DynamicFiltersType extends AbstractType
                         $args['html5']  = false;
                         $args['format'] = 'y-MM-dd';
                         $args['attr']['class'] .= ' datepicker';
-                        if (!isset($options['data'][$definition['alias']]) && (empty($filter['value']) || '' === $filter['value'])) {
-                        }
                         break;
                     case 'datetime':
                         $type           = DateTimeType::class;
@@ -68,8 +66,6 @@ class DynamicFiltersType extends AbstractType
                         $args['html5']  = false;
                         $args['format'] = 'y-MM-dd HH:mm:ss';
                         $args['attr']['class'] .= ' datetimepicker';
-                        if (!isset($options['data'][$definition['alias']]) && (empty($filter['value']) || '' === $filter['value'])) {
-                        }
                         break;
                     case 'multiselect':
                         $args['multiple']         = true;
@@ -77,13 +73,9 @@ class DynamicFiltersType extends AbstractType
                     case 'select':
                         $type            = ChoiceType::class;
                         $args['choices'] = array_flip($definition['list']);
-                        if (!isset($options['data'][$definition['alias']]) && (empty($filter['value']) || '' === $filter['value'])) {
-                        }
                         break;
                     default:
                         $type = TextType::class;
-                        if (!isset($options['data'][$definition['alias']]) && (empty($filter['value']) || '' === $filter['value'])) {
-                        }
                         break;
                 }
 
