@@ -11,11 +11,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'mautic:marketplace:remove',
+    name: RemoveCommand::NAME,
     description: 'Removes a plugin that is currently installed'
 )]
 class RemoveCommand extends Command
 {
+    public const NAME = 'mautic:marketplace:remove';
+
     public function __construct(
         private ComposerHelper $composer,
         private LoggerInterface $logger,

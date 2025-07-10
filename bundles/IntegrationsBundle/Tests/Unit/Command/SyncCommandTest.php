@@ -48,7 +48,7 @@ class SyncCommandTest extends TestCase
         );
 
         $this->commandTester = new CommandTester(
-            $application->find(SyncCommand::getDefaultName())
+            $application->find(SyncCommand::NAME)
         );
     }
 

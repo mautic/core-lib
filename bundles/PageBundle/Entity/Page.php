@@ -287,7 +287,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
         ]));
 
         $metadata->addConstraint(new Callback(
-            callback: function (Page $page, ExecutionContextInterface $context): void {
+            function (Page $page, ExecutionContextInterface $context): void {
                 $type = $page->getRedirectType();
                 if (!is_null($type)) {
                     $validator  = $context->getValidator();

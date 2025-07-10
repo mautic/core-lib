@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand(
-    name: 'mautic:contact:delete:secondary-companies',
+    name: DeleteContactSecondaryCompaniesCommand::NAME,
     description: "Deletes all contact\'s secondary companies."
 )]
 class DeleteContactSecondaryCompaniesCommand extends Command

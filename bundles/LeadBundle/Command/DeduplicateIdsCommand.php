@@ -14,11 +14,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 #[AsCommand(
-    name: 'mautic:contacts:deduplicate:ids',
+    name: DeduplicateIdsCommand::NAME,
     description: 'Merge contacts based on same unique identifiers'
 )]
 class DeduplicateIdsCommand extends Command
 {
+    public const NAME = 'mautic:contacts:deduplicate:ids';
+
     public function __construct(
         private ContactDeduper $contactDeduper,
     ) {

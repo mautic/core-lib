@@ -12,11 +12,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'mautic:marketplace:install',
+    name: InstallCommand::NAME,
     description: 'Installs a plugin that is available at Packagist.org'
 )]
 class InstallCommand extends Command
 {
+    public const NAME = 'mautic:marketplace:install';
+
     public function __construct(
         private ComposerHelper $composer,
         private PackageModel $packageModel,

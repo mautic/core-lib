@@ -15,11 +15,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'mautic:integrations:sync',
+    name: SyncCommand::NAME,
     description: 'Fetch objects from integration.'
 )]
 class SyncCommand extends Command
 {
+    public const NAME = 'mautic:integrations:sync';
+
     public function __construct(
         private SyncServiceInterface $syncService,
     ) {

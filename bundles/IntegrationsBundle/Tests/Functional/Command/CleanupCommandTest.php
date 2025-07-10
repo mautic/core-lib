@@ -18,7 +18,7 @@ class CleanupCommandTest extends MauticMysqlTestCase
         $lead                    = $this->createLead();
         $fieldChangeExistLead    = $this->createFieldChange((int) $lead->getId());
         $fieldChangeNonExistLead = $this->createFieldChange(9999);
-        $response                = $this->testSymfonyCommand(CleanupCommand::getDefaultName());
+        $response                = $this->testSymfonyCommand(CleanupCommand::NAME);
         Assert::assertSame(Command::SUCCESS, $response->getStatusCode());
         Assert::assertStringContainsString('1 records deleted.', $response->getDisplay());
 
@@ -30,7 +30,7 @@ class CleanupCommandTest extends MauticMysqlTestCase
 
     public function testWhenNoRecordsToDelete(): void
     {
-        $response = $this->testSymfonyCommand(CleanupCommand::getDefaultName());
+        $response = $this->testSymfonyCommand(CleanupCommand::NAME);
         Assert::assertSame(Command::SUCCESS, $response->getStatusCode());
         Assert::assertStringContainsString('0 records deleted.', $response->getDisplay());
     }

@@ -17,11 +17,13 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 #[AsCommand(
-    name: 'mautic:contacts:deduplicate',
+    name: DeduplicateCommand::NAME,
     description: 'Merge contacts based on same unique identifiers'
 )]
 class DeduplicateCommand extends Command
 {
+    public const NAME = 'mautic:contacts:deduplicate';
+
     public function __construct(
         private ContactDeduper $contactDeduper,
         private ParameterBagInterface $params,
@@ -94,7 +96,7 @@ EOT
         foreach ($contactIdChunks as $contactIdBatch) {
             $command = [
                 $this->params->get('kernel.project_dir').'/bin/console',
-                DeduplicateIdsCommand::getDefaultName(),
+                DeduplicateIdsCommand::NAME,
                 '--contact-ids',
                 implode(',', $contactIdBatch),
                 '-e',

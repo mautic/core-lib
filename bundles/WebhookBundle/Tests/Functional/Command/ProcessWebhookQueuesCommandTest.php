@@ -51,7 +51,7 @@ final class ProcessWebhookQueuesCommandTest extends MauticMysqlTestCase
 
         // Process queue records from 4 to 9 including. 6 in total.
         $output = $this->testSymfonyCommand(
-            ProcessWebhookQueuesCommand::getDefaultName(),
+            ProcessWebhookQueuesCommand::COMMAND_NAME,
             ['--webhook-id' => $webhook->getId(), '--min-id' => $queueIds[3], '--max-id' => $queueIds[8]]
         );
         Assert::assertStringContainsString('Webhook Processing Complete', $output->getDisplay());

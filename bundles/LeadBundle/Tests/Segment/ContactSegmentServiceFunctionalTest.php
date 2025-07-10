@@ -7,6 +7,7 @@ namespace Mautic\LeadBundle\Tests\Segment;
 use Doctrine\Common\DataFixtures\ReferenceRepository;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\InstallBundle\InstallFixtures\ORM\LeadFieldData;
+use Mautic\LeadBundle\Command\UpdateLeadListsCommand;
 use Mautic\LeadBundle\DataFixtures\ORM\LoadCompanyData;
 use Mautic\LeadBundle\DataFixtures\ORM\LoadLeadData;
 use Mautic\LeadBundle\DataFixtures\ORM\LoadLeadListData;
@@ -137,7 +138,7 @@ class ContactSegmentServiceFunctionalTest extends MauticMysqlTestCase
         self::assertNull($lastRebuiltDate);
 
         $this->testSymfonyCommand(
-            'mautic:segments:update',
+            UpdateLeadListsCommand::NAME,
             [
                 '--exclude' => [$segmentTest3Ref->getId()],
                 '--env'     => 'test',

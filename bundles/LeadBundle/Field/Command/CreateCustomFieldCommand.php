@@ -23,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand(
-    name: 'mautic:custom-field:create-column',
+    name: CreateCustomFieldCommand::COMMAND_NAME,
     description: 'Create custom field column in the background',
 )]
 class CreateCustomFieldCommand extends ModeratedCommand

@@ -15,11 +15,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Retains a rolling number of log records.
  */
 #[AsCommand(
-    name: 'mautic:webhooks:delete_logs',
+    name: DeleteWebhookLogsCommand::COMMAND_NAME,
     description: 'Retains a rolling number of log records.'
 )]
 class DeleteWebhookLogsCommand extends Command
 {
+    public const COMMAND_NAME = 'mautic:webhooks:delete_logs';
+
     private \Mautic\WebhookBundle\Entity\LogRepository $logRepository;
 
     public function __construct(

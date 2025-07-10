@@ -21,11 +21,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * CLI Command to import data.
  */
 #[AsCommand(
-    name: 'mautic:import',
+    name: ImportCommand::COMMAND_NAME,
     description: 'Imports data to Mautic'
 )]
 class ImportCommand extends Command
 {
+    public const COMMAND_NAME = 'mautic:import';
+
     public function __construct(
         private TranslatorInterface $translator,
         private ImportModel $importModel,

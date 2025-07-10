@@ -192,7 +192,7 @@ class Sms extends FormEntity implements UuidInterface
         );
 
         $metadata->addConstraint(new Callback(
-            callback: function (Sms $sms, ExecutionContextInterface $context): void {
+            function (Sms $sms, ExecutionContextInterface $context): void {
                 $type = $sms->getSmsType();
                 if ('list' == $type) {
                     $validator  = $context->getValidator();

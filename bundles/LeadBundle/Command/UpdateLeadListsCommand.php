@@ -15,12 +15,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand(
-    name: 'mautic:segments:update',
+    name: UpdateLeadListsCommand::NAME,
     description: 'Update contacts in smart segments based on new contact data.',
     aliases: ['mautic:segments:rebuild']
 )]
 class UpdateLeadListsCommand extends ModeratedCommand
 {
+    public const NAME = 'mautic:segments:update';
+
     public function __construct(
         private ListModel $listModel,
         private TranslatorInterface $translator,

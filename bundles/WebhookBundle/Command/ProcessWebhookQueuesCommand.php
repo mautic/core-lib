@@ -14,11 +14,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  * CLI Command to process queued webhook payloads.
  */
 #[AsCommand(
-    name: 'mautic:webhooks:process',
+    name: ProcessWebhookQueuesCommand::COMMAND_NAME,
     description: 'Process queued webhook payloads'
 )]
 class ProcessWebhookQueuesCommand extends Command
 {
+    public const COMMAND_NAME = 'mautic:webhooks:process';
+
     public function __construct(
         private CoreParametersHelper $coreParametersHelper,
         private WebhookModel $webhookModel,

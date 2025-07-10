@@ -12,11 +12,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'mautic:integrations:cleanup',
+    name: CleanupCommand::NAME,
     description: 'Delete records from field changes which are invalid'
 )]
 class CleanupCommand extends Command
 {
+    public const NAME = 'mautic:integrations:cleanup';
+
     public function __construct(private FieldChangeRepository $fieldChangeRepository)
     {
         parent::__construct();

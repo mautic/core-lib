@@ -90,7 +90,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
         Assert::assertSame($fields, $importEntity->getProperties()['fields']);
         Assert::assertSame(array_values($fields), $importEntity->getProperties()['headers']);
 
-        $this->testSymfonyCommand(ImportCommand::getDefaultName());
+        $this->testSymfonyCommand(ImportCommand::COMMAND_NAME);
 
         $this->em->clear();
 
@@ -160,7 +160,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
         Assert::assertSame($user->getId(), $importEntity->getModifiedBy());
         Assert::assertSame(Import::QUEUED, $importEntity->getStatus());
 
-        $this->testSymfonyCommand(ImportCommand::getDefaultName());
+        $this->testSymfonyCommand(ImportCommand::COMMAND_NAME);
 
         $this->em->clear();
 
@@ -224,7 +224,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $importEntity->setStatus(4);
         $importRepository->saveEntity($importEntity);
 
-        $applicationTester = $this->testSymfonyCommand(ImportCommand::getDefaultName(), ['--id' => $importEntity->getId()]);
+        $applicationTester = $this->testSymfonyCommand(ImportCommand::COMMAND_NAME, ['--id' => $importEntity->getId()]);
 
         $this->em->clear();
 

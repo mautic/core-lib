@@ -76,7 +76,7 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
         // At this point there should be 3 events waiting to be processed.
         Assert::assertTrue($webhookQueueRepository->exists($webhook->getId()));
 
-        $this->testSymfonyCommand(ProcessWebhookQueuesCommand::getDefaultName(), ['--webhook-id' => $webhook->getId()]);
+        $this->testSymfonyCommand(ProcessWebhookQueuesCommand::COMMAND_NAME, ['--webhook-id' => $webhook->getId()]);
 
         // The queue should be processed now.
         Assert::assertfalse($webhookQueueRepository->exists($webhook->getId()));

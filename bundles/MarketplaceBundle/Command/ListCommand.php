@@ -14,11 +14,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 #[AsCommand(
-    name: 'mautic:marketplace:list',
+    name: ListCommand::NAME,
     description: 'Lists plugins that are available at Packagist.org'
 )]
 class ListCommand extends Command
 {
+    public const NAME = 'mautic:marketplace:list';
+
     public function __construct(
         private PluginCollector $pluginCollector,
     ) {

@@ -287,7 +287,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
         ]));
 
         $metadata->addConstraint(new Assert\Callback(
-            callback: function (LeadField $field, ExecutionContextInterface $context): void {
+            function (LeadField $field, ExecutionContextInterface $context): void {
                 $violations = $context->getValidator()->validate($field, [new FieldAliasKeyword()]);
 
                 if ($violations->count() > 0) {

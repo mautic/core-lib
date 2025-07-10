@@ -19,12 +19,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 #[AsCommand(
-    name: 'mautic:contacts:scheduled_export',
+    name: ContactScheduledExportCommand::COMMAND_NAME,
     description: 'Export contacts which are scheduled in `contact_export_scheduler` table.'
 )]
 class ContactScheduledExportCommand extends Command
 {
     private const PICK_SCHEDULED_EXPORTS_LIMIT = 10;
+
+    public const COMMAND_NAME                  = 'mautic:contacts:scheduled_export';
 
     public function __construct(
         private ContactExportSchedulerModel $contactExportSchedulerModel,
