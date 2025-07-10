@@ -21,11 +21,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * CLI Command to purge old data per settings.
  */
 #[AsCommand(
-    name: 'mautic:maintenance:cleanup',
+    name: CleanupMaintenanceCommand::NAME,
     description: 'Updates the Mautic application'
 )]
 class CleanupMaintenanceCommand extends ModeratedCommand
 {
+    public const NAME = 'mautic:maintenance:cleanup';
+
     public function __construct(
         private TranslatorInterface $translator,
         private EventDispatcherInterface $dispatcher,

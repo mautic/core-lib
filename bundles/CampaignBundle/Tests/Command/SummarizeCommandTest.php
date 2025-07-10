@@ -16,7 +16,7 @@ final class SummarizeCommandTest extends AbstractCampaignTestCase
     public function testBackwardSummarizationWhenThereAreNoCampaignEventLogs(): void
     {
         $commandResult = $this->testSymfonyCommand(
-            SummarizeCommand::getDefaultName(),
+            SummarizeCommand::NAME,
             [
                 '--env'       => 'test',
                 '--max-hours' => 768,
@@ -42,7 +42,7 @@ final class SummarizeCommandTest extends AbstractCampaignTestCase
         $campaign = $this->saveSomeCampaignLeadEventLogs();
 
         $this->testSymfonyCommand(
-            SummarizeCommand::getDefaultName(),
+            SummarizeCommand::NAME,
             [
                 '--env'       => 'test',
                 '--max-hours' => 768,

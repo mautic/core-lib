@@ -59,7 +59,7 @@ class CampaignDeleteEventLogsCommandFunctionalTest extends MauticMysqlTestCase
         $this->createEventLog($lead, $event1);
         $this->createEventLog($lead, $event2);
 
-        $commandData = ['command' => CampaignDeleteEventLogsCommand::getDefaultName()];
+        $commandData = ['command' => CampaignDeleteEventLogsCommand::COMMAND_NAME];
         if ($usingCampaign) {
             $commandData['--campaign-id'] = $campaign->getId();
         } else {

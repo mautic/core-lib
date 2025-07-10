@@ -15,11 +15,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'mautic:campaign:delete-event-logs',
+    name: CampaignDeleteEventLogsCommand::COMMAND_NAME,
     description: 'Delete campaign event logs'
 )]
 class CampaignDeleteEventLogsCommand extends Command
 {
+    public const COMMAND_NAME = 'mautic:campaign:delete-event-logs';
+
     public function __construct(private LeadEventLogRepository $leadEventLogRepository, private CampaignModel $campaignModel, private EventModel $eventModel)
     {
         parent::__construct();

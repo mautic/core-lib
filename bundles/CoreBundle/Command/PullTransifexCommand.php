@@ -25,11 +25,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * CLI Command to pull language resources from Transifex.
  */
 #[AsCommand(
-    name: 'mautic:transifex:pull',
+    name: PullTransifexCommand::NAME,
     description: 'Fetches translations for Mautic from Transifex'
 )]
 class PullTransifexCommand extends Command
 {
+    public const NAME = 'mautic:transifex:pull';
+
     public function __construct(
         private TransifexFactory $transifexFactory,
         private TranslatorInterface $translator,

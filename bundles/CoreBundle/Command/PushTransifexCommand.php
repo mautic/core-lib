@@ -24,11 +24,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * CLI Command to push language resources to Transifex.
  */
 #[AsCommand(
-    name: 'mautic:transifex:push',
+    name: PushTransifexCommand::NAME,
     description: 'Pushes Mautic translation resources to Transifex'
 )]
 class PushTransifexCommand extends Command
 {
+    public const NAME = 'mautic:transifex:push';
+
     public function __construct(
         private TransifexFactory $transifexFactory,
         private TranslatorInterface $translator,

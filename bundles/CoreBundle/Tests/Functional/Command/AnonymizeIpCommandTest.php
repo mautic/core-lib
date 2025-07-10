@@ -20,7 +20,7 @@ class AnonymizeIpCommandTest extends MauticMysqlTestCase
     public function testAnonymizeIpCommandWithFeatureEnableDisable(): void
     {
         $this->createIpAddress();
-        $response = $this->testSymfonyCommand(AnonymizeIpCommand::getDefaultName());
+        $response = $this->testSymfonyCommand(AnonymizeIpCommand::COMMAND_NAME);
         Assert::assertStringContainsString('Anonymization could not be done because anonymize Ip feature is disabled for this instance.', $response->getDisplay());
         $ipAddressList = $this->em->getRepository(IpAddress::class)->findBy(['ipAddress' => '*.*.*.*']);
         Assert::assertCount(0, $ipAddressList);
@@ -30,7 +30,7 @@ class AnonymizeIpCommandTest extends MauticMysqlTestCase
     {
         $this->createIpAddress();
 
-        $this->testSymfonyCommand(AnonymizeIpCommand::getDefaultName());
+        $this->testSymfonyCommand(AnonymizeIpCommand::COMMAND_NAME);
         $this->em->clear();
         $ipAddressList = $this->em->getRepository(IpAddress::class)->findBy(['ipAddress' => '*.*.*.*']);
         Assert::assertCount(1, $ipAddressList);

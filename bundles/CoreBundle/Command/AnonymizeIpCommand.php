@@ -14,11 +14,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'mautic:anonymize:ip',
+    name: AnonymizeIpCommand::COMMAND_NAME,
     description: 'Delete all stored ip addresses.'
 )]
 class AnonymizeIpCommand extends Command
 {
+    /**
+     * @var string
+     */
+    public const COMMAND_NAME = 'mautic:anonymize:ip';
+
     public function __construct(private IpAddressRepository $ipAddressRepository, private CoreParametersHelper $coreParametersHelper, private AuditLogRepository $auditLogRepository)
     {
         parent::__construct();
