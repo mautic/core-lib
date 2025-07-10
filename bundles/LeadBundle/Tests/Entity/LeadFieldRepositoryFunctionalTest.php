@@ -10,7 +10,8 @@ use Mautic\LeadBundle\Model\LeadModel;
 
 class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
 {
-    protected $useCleanupRollback = false;
+    protected $useCleanupRollback     = false;
+    private const ADMINISTRATOR_VALUE = "administrator's";
 
     public function testCompareValueEqualsOperator(): void
     {
@@ -174,8 +175,6 @@ class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
 
     public function testCompareValueInOperatorWithSpecialCharacters(): void
     {
-        const ADMINISTRATOR_VALUE = "administrator's";
-        
         $field = new LeadField();
         $field->setType('select');
         $field->setObject('lead');
@@ -186,7 +185,7 @@ class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
                 'list' => [
                     [
                         'label' => "Administrator's Role",
-                        'value' => ADMINISTRATOR_VALUE,
+                        'value' => self::ADMINISTRATOR_VALUE,
                     ], [
                         'label' => 'User Role',
                         'value' => 'user',
@@ -203,14 +202,14 @@ class LeadFieldRepositoryFunctionalTest extends MauticMysqlTestCase
         $fieldModel->saveEntity($field);
 
         $lead = new Lead();
-        $lead->addUpdatedField('job_title', ADMINISTRATOR_VALUE);
+        $lead->addUpdatedField('job_title', self::ADMINISTRATOR_VALUE);
         $contactModel = self::getContainer()->get(LeadModel::class);
         \assert($contactModel instanceof LeadModel);
 
         $contactModel->saveEntity($lead);
         $repository = $fieldModel->getRepository();
 
-        $this->assertTrue($repository->compareValue($lead->getId(), 'job_title', [ADMINISTRATOR_VALUE], 'in'));
+        $this->assertTrue($repository->compareValue($lead->getId(), 'job_title', [self::ADMINISTRATOR_VALUE], 'in'));
         $this->assertFalse($repository->compareValue($lead->getId(), 'job_title', ['user'], 'in'));
 
         $lead2 = new Lead();
