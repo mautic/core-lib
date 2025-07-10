@@ -1476,7 +1476,6 @@ class EmailController extends FormController
 
     public function scheduleSendAction(CorePermissions $security, EmailModel $model, Request $request, int $objectId): JsonResponse|Response
     {
-        /** @var Email $entity */
         $entity = $model->getEntity($objectId);
 
         // not found or not allowed
