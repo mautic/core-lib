@@ -338,8 +338,6 @@ final class LeadFieldRepositoryTest extends TestCase
         );
     }
 
-
-
     private function createQueryMock(): MockObject
     {
         // This is terrible, but the Query class is final and AbstractQuery doesn't have some methods used.
