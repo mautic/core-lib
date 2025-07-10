@@ -22,11 +22,6 @@ class CleanupCommand extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        parent::configure();
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
