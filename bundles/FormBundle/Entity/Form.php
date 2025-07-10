@@ -42,6 +42,8 @@ class Form extends FormEntity implements UuidInterface
     use UuidTrait;
     use ProjectTrait;
 
+    public int $submission_count = 0;
+
     /**
      * @var int
      */
