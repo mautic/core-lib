@@ -2483,7 +2483,7 @@ h6,
   color: var(--link-primary);
 }
 .fs-base {
-  font-size: 13px;
+  font-size: 14px;
 }
 .fs-2 {
   font-size: 2px !important;
@@ -3101,7 +3101,7 @@ kbd {
   min-width: 13px;
   order: 2;
   line-height: inherit;
-  font-size: 12px;
+  font-size: calc(1em - 1px);
   vertical-align: -0.05em;
 }
 .btn > .caret {
@@ -4533,7 +4533,7 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
   margin-left: 5px;
 }
 .alert-growl .close {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-inverse);
   margin-left: 10px;
   font-weight: normal;
@@ -5998,7 +5998,7 @@ ul.dropdown-menu-form {
 .nav > li > a .text,
 .nav > li > a .icon,
 .nav > li > a .arrow {
-  line-height: 18px;
+  line-height: 19px;
 }
 .nav .open > a,
 .nav .open > a:hover,
@@ -6682,7 +6682,7 @@ fieldset[disabled] .form-control {
   padding-left: 48px;
 }
 .form-control-icon .form-control.input-lg + .the-icon {
-  font-size: 16px;
+  font-size: 17px;
   line-height: 48px;
   width: 48px;
 }
@@ -7366,7 +7366,7 @@ ul.line-legend li {
 }
 .table-responsive-force {
   width: 100%;
-  margin-bottom: 13.5px;
+  margin-bottom: 14.25px;
   overflow-y: hidden;
   overflow-x: auto;
   -ms-overflow-style: -ms-autohiding-scrollbar;
@@ -7443,16 +7443,16 @@ ul.line-legend li {
   box-shadow: none;
 }
 .progress.progress-md {
-  height: 12px;
+  height: 13px;
   border-radius: 0px;
 }
 .progress.progress-sm {
-  height: 8px;
+  height: 9px;
   border-radius: 0px;
   margin-top: 2px;
 }
 .progress.progress-xs {
-  height: 4px;
+  height: 5px;
   border-radius: 0px;
 }
 .progress-bar {
@@ -7519,7 +7519,7 @@ ul.line-legend li {
   clear: both;
 }
 .panel-heading .panel-title {
-  padding: 10px 0;
+  padding: 9.5px 0;
   display: table-cell;
   vertical-align: middle;
   font-weight: 600;
