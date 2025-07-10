@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Tests\Command;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\LeadBundle\Command\UpdateLeadListsCommand;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\LeadListRepository;
