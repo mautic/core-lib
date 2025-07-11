@@ -16,6 +16,42 @@ class ConfigThemeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add(
+            'brand_name',
+            TextType::class,
+            [
+                'label'      => 'mautic.core.config.form.brand_name',
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'  => [
+                    'class'   => 'form-control',
+                    'tooltip' => 'mautic.core.config.form.brand_name.tooltip',
+                ],
+                'required' => false,
+                'data'     => $options['data']['brand_name'] ?? '',
+            ]
+        );
+
+        $builder->add(
+            'primary_brand_color',
+            TextType::class,
+            [
+                'label'      => 'mautic.core.config.form.primary_brand_color',
+                'label_attr' => [
+                    'class' => 'control-label',
+                ],
+                'attr'  => [
+                    'class'        => 'form-control minicolors-input',
+                    'tooltip'      => 'mautic.core.config.form.primary_brand_color.tooltip',
+                    'data-toggle'  => 'color',
+                    'autocomplete' => 'false',
+                    'size'         => '7',
+                ],
+                'required' => false,
+            ]
+        );
+
+        $builder->add(
             'theme',
             ThemeListType::class,
             [
@@ -34,6 +70,18 @@ class ConfigThemeType extends AbstractType
             [
                 'label'      => 'mautic.user.preferences.accent',
                 'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class' => 'form-control',
+                ],
+                'required' => false,
+            ]
+        );
+
+        // Rounded corners
+        $builder->add(
+            'rounded_corners',
+            HiddenType::class,
+            [
                 'attr'       => [
                     'class' => 'form-control',
                 ],

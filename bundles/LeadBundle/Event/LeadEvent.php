@@ -9,6 +9,8 @@ use Mautic\LeadBundle\Entity\Lead;
 
 final class LeadEvent extends CommonEvent
 {
+    protected bool $alreadyProcessedInBatch = false;
+
     public function __construct(
         Lead $lead,
         bool $isNew = false,
@@ -25,5 +27,15 @@ final class LeadEvent extends CommonEvent
     public function setLead(Lead $lead): void
     {
         $this->entity = $lead;
+    }
+
+    public function isAlreadyProcessedInBatch(): bool
+    {
+        return $this->alreadyProcessedInBatch;
+    }
+
+    public function setAlreadyProcessedInBatch(bool $alreadyProcessedInBatch): void
+    {
+        $this->alreadyProcessedInBatch = $alreadyProcessedInBatch;
     }
 }
