@@ -190,4 +190,18 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
+
+    public function testDownloadActionWithDisallowedAssetSetsRobotsTag(): void
+    {
+        $this->logoutUser();
+        $asset = $this->createAsset(['title' => 'Disallowed Asset']);
+        $asset->setDisallow(true);
+        $this->em->flush();
+
+        $assetSlug = $asset->getId().':'.$asset->getAlias();
+        $this->client->request('GET', '/asset/'.$assetSlug);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSame('noindex, nofollow, noarchive', $this->client->getResponse()->headers->get('X-Robots-Tag'));
+    }
 }
