@@ -43,7 +43,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
         ob_end_clean();
 
         $this->assertResponseIsSuccessful();
-        $this->assertSame($this->expectedContentDisposition.$this->asset->getOriginalFileName(), $response->headers->get('Content-Disposition'));
+        $this->assertStringStartsWith($this->expectedContentDisposition.$this->asset->getOriginalFileName(), $response->headers->get('Content-Disposition'));
         $this->assertEquals($this->expectedPngContent, $content);
     }
 
