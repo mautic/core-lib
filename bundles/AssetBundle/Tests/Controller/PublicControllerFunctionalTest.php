@@ -95,4 +95,99 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
         $this->assertSame('test5', $download->getUtmContent());
         $this->assertSame('test6', $download->getUtmCampaign());
     }
+
+    public function testDownloadActionWithInvalidSlug(): void
+    {
+        $this->client->request('GET', '/asset/1:invalid-slug-with-special-chars!');
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testDownloadActionWithUnpublishedAsset(): void
+    {
+        $this->logoutUser();
+        $asset = $this->createAsset(['title' => 'Unpublished Asset', 'isPublished' => false]);
+        $this->em->flush();
+
+        $assetSlug = $asset->getId().':'.$asset->getAlias();
+        $this->client->request('GET', '/asset/'.$assetSlug);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testDownloadActionWithNonCanonicalUrlRedirectAndDownload(): void
+    {
+        $this->logoutUser();
+
+        $asset = $this->createAsset(['title' => 'Canonical Asset']);
+        $this->em->flush();
+
+        $nonCanonicalSlug = $asset->getId().':some-other-alias';
+        $canonicalSlug    = $asset->getId().':'.$asset->getAlias();
+        $nonCanonicalUrl  = '/asset/'.$nonCanonicalSlug;
+        $canonicalUrl     = '/asset/'.$canonicalSlug;
+
+        // Step 1: Assert redirect occurs
+        $this->client->followRedirects(false);
+        $this->client->request('GET', $nonCanonicalUrl);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_MOVED_PERMANENTLY);
+        $this->assertTrue($this->client->getResponse()->isRedirect($canonicalUrl));
+
+        // Step 2: Follow the redirect and assert the final response is 200 OK with expected headers
+        $this->client->followRedirect();
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        // Optional: Check headers
+        $headers = $this->client->getResponse()->headers;
+
+        $this->assertTrue(
+            $headers->has('Content-Disposition'),
+            'Expected Content-Disposition header for file download'
+        );
+    }
+
+    public function testDownloadActionWithRemoteAsset(): void
+    {
+        $this->logoutUser();
+
+        $remotePath = 'https://example.com/remote-asset.png';
+        $asset      = $this->createAsset([
+            'title'   => 'Remote Asset',
+            'storage' => 'remote',
+            'path'    => $remotePath,
+        ]);
+
+        $this->em->clear();
+
+        $assetSlug = $asset->getId().':'.$asset->getAlias();
+
+        // Don't follow redirects automatically
+        $this->client->followRedirects(false);
+        $this->client->request('GET', '/asset/'.$assetSlug);
+
+        $response = $this->client->getResponse();
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $this->assertSame($remotePath, $response->headers->get('Location'));
+    }
+
+    public function testDownloadActionWithMissingLocalFile(): void
+    {
+        $this->logoutUser();
+        $asset                = $this->createAsset(['title' => 'Missing Local File Asset']);
+        $coreParametersHelper = static::getContainer()->get('mautic.helper.core_parameters');
+        $asset->setUploadDir($coreParametersHelper->get('upload_dir'));
+        $this->em->flush();
+
+        $assetPath = $asset->getAbsolutePath();
+
+        // Assert the file exists before attempting to delete
+        $this->assertFileExists($assetPath, 'Expected asset file to exist before deletion');
+        unlink($assetPath);
+
+        $assetSlug = $asset->getId().':'.$asset->getAlias();
+        $this->client->request('GET', '/asset/'.$assetSlug);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
 }

@@ -1174,11 +1174,14 @@ class Asset extends FormEntity implements UuidInterface
     }
 
     /**
-     * Load content of the file from it's path.
+     * Load the content of the file from its path.
      */
     public function getFileContents(): string|bool
     {
         $path = $this->getFilePath();
+        if (!file_exists($path)) {
+            throw new \RuntimeException("File does not exist at $path");
+        }
 
         return file_get_contents($path);
     }
