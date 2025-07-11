@@ -6,12 +6,12 @@ namespace Mautic\FormBundle\Tests\EventListener;
 
 use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\LeadBundle\Tests\Functional\AbstractReportSubscriberTest;
+use Mautic\ReportBundle\Tests\Functional\AbstractReportSubscriberTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
+class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
 {
     public function testLeadReportWithDncListColumn(): void
     {

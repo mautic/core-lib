@@ -7,10 +7,10 @@ namespace Mautic\CampaignBundle\Tests\EventListener;
 use Mautic\CampaignBundle\Tests\Functional\Fixtures\FixtureHelper;
 use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\LeadBundle\Tests\Functional\AbstractReportSubscriberTest;
+use Mautic\ReportBundle\Tests\Functional\AbstractReportSubscriberTestCase;
 use PHPUnit\Framework\Assert;
 
-class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
+class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
 {
     public function testCampaignLeadLogReportWithDncListColumn(): void
     {

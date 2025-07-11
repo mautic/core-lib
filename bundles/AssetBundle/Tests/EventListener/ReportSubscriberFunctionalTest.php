@@ -8,9 +8,9 @@ use Mautic\AssetBundle\Entity\Asset;
 use Mautic\AssetBundle\Entity\Download;
 use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\LeadBundle\Tests\Functional\AbstractReportSubscriberTest;
+use Mautic\ReportBundle\Tests\Functional\AbstractReportSubscriberTestCase;
 
-class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
+class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
 {
     public function testAssetDownloadReportWithDncListColumn(): void
     {

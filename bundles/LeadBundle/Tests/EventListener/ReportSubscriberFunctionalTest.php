@@ -6,9 +6,9 @@ namespace Mautic\LeadBundle\Tests\EventListener;
 
 use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\LeadBundle\Tests\Functional\AbstractReportSubscriberTest;
+use Mautic\ReportBundle\Tests\Functional\AbstractReportSubscriberTestCase;
 
-class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTest
+class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
 {
     public function testLeadReportWithDncListColumn(): void
     {
