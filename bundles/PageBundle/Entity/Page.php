@@ -266,8 +266,8 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
             'message' => 'mautic.core.title.required',
         ]));
 
-        $metadata->addConstraint(new Callback([
-            'callback' => function (Page $page, ExecutionContextInterface $context): void {
+        $metadata->addConstraint(new Callback(
+            function (Page $page, ExecutionContextInterface $context): void {
                 $type = $page->getRedirectType();
                 if (!is_null($type)) {
                     $validator  = $context->getValidator();
@@ -304,7 +304,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
                     }
                 }
             },
-        ]));
+        ));
 
         $metadata->addConstraint(new EntityEvent());
     }
