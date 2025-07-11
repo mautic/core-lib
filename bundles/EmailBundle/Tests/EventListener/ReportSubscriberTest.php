@@ -249,10 +249,10 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->any();
 
         $eventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if (1 === $matcher->getInvocationCount()) {
+            if (1 === $matcher->numberOfInvocations()) {
                 $this->assertSame(['email.stats', 'emails'], $parameters[0]);
             }
-            if (2 === $matcher->getInvocationCount()) {
+            if (2 === $matcher->numberOfInvocations()) {
                 $this->assertSame('emails', $parameters[0]);
             }
 
@@ -302,10 +302,10 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $eventMock->expects($matcher)
             ->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(['email.stats', 'emails'], $parameters[0]);
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('emails', $parameters[0]);
                 }
 
@@ -360,12 +360,12 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->any();
 
         $eventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if (1 === $matcher->getInvocationCount()) {
+            if (1 === $matcher->numberOfInvocations()) {
                 $this->assertSame(['email.stats', 'emails'], $parameters[0]);
 
                 return true;
             }
-            if (2 === $matcher->getInvocationCount()) {
+            if (2 === $matcher->numberOfInvocations()) {
                 $this->assertSame('emails', $parameters[0]);
 
                 return false;

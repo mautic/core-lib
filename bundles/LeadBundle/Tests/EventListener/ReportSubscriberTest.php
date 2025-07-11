@@ -373,7 +373,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportBuilderEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
-                    if (1 === $matcher->getInvocationCount()) {
+                    if (1 === $matcher->numberOfInvocations()) {
                         $this->assertSame([
                             'leads',
                             'lead.pointlog',
@@ -398,7 +398,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $matcher = $this->exactly(2);
         $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
-            if (1 === $matcher->getInvocationCount()) {
+            if (1 === $matcher->numberOfInvocations()) {
                 $this->assertSame([
                     'leads',
                     'lead.pointlog',
@@ -408,7 +408,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
                     'contact.frequencyrules',
                 ], $parameters[0]);
             }
-            if (2 === $matcher->getInvocationCount()) {
+            if (2 === $matcher->numberOfInvocations()) {
                 $this->assertSame(['companies'], $parameters[0]);
             }
 
@@ -421,9 +421,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportSubscriber->onReportGenerate($this->reportGeneratorEventMock);
     }
 
-    /**
-     * @dataProvider eventDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('eventDataProvider')]
     public function testOnReportBuilder(string $event): void
     {
         if ('companies' != $event) {
@@ -894,16 +892,14 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, $reportBuilderEvent->getTables());
     }
 
-    /**
-     * @dataProvider eventDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('eventDataProvider')]
     public function testReportGenerate(string $context): void
     {
         $matcher = $this->any();
         $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher) {
-                    if (1 === $matcher->getInvocationCount()) {
+                    if (1 === $matcher->numberOfInvocations()) {
                         $this->assertSame([
                             'leads',
                             'lead.pointlog',
@@ -929,9 +925,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportSubscriber->onReportGenerate($this->reportGeneratorEventMock);
     }
 
-    /**
-     * @dataProvider ReportGraphEventDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('ReportGraphEventDataProvider')]
     public function testonReportGraphGenerate(string $event): void
     {
         $this->reportGraphEventMock->expects($this->once())
@@ -1008,9 +1002,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->reportSubscriber->onReportGraphGenerate($this->reportGraphEventMock);
     }
 
-    /**
-     * @dataProvider ReportGraphEventDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('ReportGraphEventDataProvider')]
     public function testOnReportDisplay(string $event): void
     {
         $this->reportBuilderEventMock->expects($this->any())
