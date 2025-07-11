@@ -1180,7 +1180,7 @@ class Asset extends FormEntity implements UuidInterface
     {
         $path = $this->getFilePath();
         if (!file_exists($path)) {
-            throw new \RuntimeException("File does not exist at $path");
+            throw new FileNotFoundException(sprintf('Asset file not found at path: "%s"', $path));
         }
 
         return file_get_contents($path);
