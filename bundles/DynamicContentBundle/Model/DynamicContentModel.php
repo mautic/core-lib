@@ -82,7 +82,7 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface,
     }
 
     public function checkEntityBySlotName(string $slotName, ?string $type = null, string $typeCondition = '=',
-        int $skipId = null): bool
+        ?int $skipId = null): bool
     {
         $qb = $this->em->getConnection()->createQueryBuilder();
 

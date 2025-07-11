@@ -65,7 +65,7 @@ class ProcessSignalService
      *
      * @throws SignalCaughtException
      */
-    public function throwExceptionIfSignalIsCaught(callable $stateCallable = null): void
+    public function throwExceptionIfSignalIsCaught(?callable $stateCallable = null): void
     {
         if (!$this->isSignalCaught()) {
             return;

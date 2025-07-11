@@ -330,7 +330,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         return $tag;
     }
 
-    private function createLead(string $email = null): Lead
+    private function createLead(?string $email = null): Lead
     {
         $lead = new Lead();
         if (!empty($email)) {
