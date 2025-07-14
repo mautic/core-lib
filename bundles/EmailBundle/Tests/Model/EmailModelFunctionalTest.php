@@ -34,8 +34,6 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->emailModel = static::getContainer()->get('mautic.email.model.email');
     }
 
-    protected $useCleanupRollback = true;
-
     protected function beforeBeginTransaction(): void
     {
         $this->resetAutoincrement(['leads']);
@@ -91,13 +89,13 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
     /**
      * @param Lead[] $contacts
      */
-    private function addContactsToSegment(array $contacts, LeadList $segment, ?\DateTime $dateAdded = null): void
+    private function addContactsToSegment(array $contacts, LeadList $segment): void
     {
         foreach ($contacts as $contact) {
             $reference = new ListLead();
             $reference->setLead($contact);
             $reference->setList($segment);
-            $reference->setDateAdded($dateAdded ?? new \DateTime());
+            $reference->setDateAdded(new \DateTime());
             $this->em->persist($reference);
         }
 
