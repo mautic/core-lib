@@ -5,6 +5,7 @@ namespace Mautic\CampaignBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -179,7 +180,9 @@ class Event implements ChannelInterface, UuidInterface
     private $channel;
 
     /**
-     * @var int|null
+     * @var string|null
+     *
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $channelId;
 
@@ -322,8 +325,9 @@ class Event implements ChannelInterface, UuidInterface
             ->nullable()
             ->build();
 
-        $builder->createField('channelId', 'integer')
+        $builder->createField('channelId', Types::STRING)
             ->columnName('channel_id')
+            ->length(64)
             ->nullable()
             ->build();
 
@@ -739,7 +743,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return Event
      */
-    public function setParent(Event $parent = null)
+    public function setParent(?Event $parent = null)
     {
         $this->isChanged('parent', $parent);
         $this->parent = $parent;
@@ -937,7 +941,7 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getChannelId()
     {
@@ -945,12 +949,12 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @param int $channelId
+     * @param string|int $channelId
      */
     public function setChannelId($channelId): void
     {
         $this->isChanged('channelId', $channelId);
-        $this->channelId = (int) $channelId;
+        $this->channelId = (string) $channelId;
     }
 
     /**
@@ -958,7 +962,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return LeadEventLog[]|Collection|static
      */
-    public function getContactLog(Contact $contact = null)
+    public function getContactLog(?Contact $contact = null)
     {
         if ($this->contactLog) {
             return $this->contactLog;
@@ -1069,7 +1073,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return self
      */
-    public function setTriggerRestrictedDaysOfWeek(array $triggerRestrictedDaysOfWeek = null)
+    public function setTriggerRestrictedDaysOfWeek(?array $triggerRestrictedDaysOfWeek = null)
     {
         $this->triggerRestrictedDaysOfWeek = $triggerRestrictedDaysOfWeek;
         $this->isChanged('triggerRestrictedDaysOfWeek', $triggerRestrictedDaysOfWeek);
