@@ -31,7 +31,7 @@ class EventScheduler
         private OptimizedScheduler $optimizedScheduler,
         private EventCollector $collector,
         private EventDispatcherInterface $dispatcher,
-        private CoreParametersHelper $coreParametersHelper
+        private CoreParametersHelper $coreParametersHelper,
     ) {
     }
 
@@ -137,7 +137,7 @@ class EventScheduler
     /**
      * @throws NotSchedulableException
      */
-    public function getExecutionDateTime(Event $event, \DateTimeInterface $compareFromDateTime = null, \DateTime $comparedToDateTime = null): \DateTimeInterface
+    public function getExecutionDateTime(Event $event, ?\DateTimeInterface $compareFromDateTime = null, ?\DateTime $comparedToDateTime = null): \DateTimeInterface
     {
         if (null === $compareFromDateTime) {
             $compareFromDateTime = new \DateTime();

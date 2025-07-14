@@ -21,7 +21,7 @@ class HitRepository extends CommonRepository
      * @param Page|Redirect $page
      * @param string        $trackingId
      */
-    public function isUniquePageHit($page, $trackingId, Lead $lead = null): bool
+    public function isUniquePageHit($page, $trackingId, ?Lead $lead = null): bool
     {
         $q  = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $q2 = $this->getEntityManager()->getConnection()->createQueryBuilder();
@@ -93,7 +93,7 @@ class HitRepository extends CommonRepository
     public function getHitCountForSource($source, $sourceId = null, $fromDate = null, $code = 200)
     {
         $query = $this->createQueryBuilder('h');
-        $query->select('count(distinct(h.trackingId)) as "hitCount"');
+        $query->select('count(distinct(h.trackingId)) as hitCount');
         $query->andWhere($query->expr()->eq('h.source', $query->expr()->literal($source)));
 
         if (null != $sourceId) {
@@ -120,7 +120,7 @@ class HitRepository extends CommonRepository
      *
      * @param int $code
      */
-    public function getEmailClickthroughHitCount($emailIds, \DateTime $fromDate = null, $code = 200): array
+    public function getEmailClickthroughHitCount($emailIds, ?\DateTime $fromDate = null, $code = 200): array
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
 
@@ -253,7 +253,7 @@ class HitRepository extends CommonRepository
      *
      * @return mixed[]
      */
-    public function getBounces($pageIds, \DateTime $fromDate = null, $isVariantCheck = false): array
+    public function getBounces($pageIds, ?\DateTime $fromDate = null, $isVariantCheck = false): array
     {
         $inOrEq = (!is_array($pageIds)) ? 'eq' : 'in';
 
@@ -356,7 +356,7 @@ class HitRepository extends CommonRepository
                 )
             );
 
-        if (isset($options['fromDate']) && null !== $options['fromDate']) {
+        if (isset($options['fromDate'])) {
             // make sure the date is UTC
             $dt = new DateTimeHelper($options['fromDate']);
             $q->andWhere(
@@ -532,7 +532,7 @@ class HitRepository extends CommonRepository
             ->executeStatement();
     }
 
-    public function getLatestHitDateByLead(int $leadId, string $trackingId = null): ?\DateTime
+    public function getLatestHitDateByLead(int $leadId, ?string $trackingId = null): ?\DateTime
     {
         $q = $this->_em->getConnection()->createQueryBuilder()
             ->select('MAX(date_hit)')

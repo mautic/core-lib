@@ -5,15 +5,39 @@ namespace Mautic\CampaignBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
+use Mautic\CoreBundle\Entity\UuidInterface;
+use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\LeadBundle\Entity\Lead as Contact;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-class Event implements ChannelInterface
+/**
+ * @ApiResource(
+ *   attributes={
+ *     "security"="false",
+ *     "normalization_context"={
+ *       "groups"={
+ *         "event:read"
+ *        },
+ *       "swagger_definition_name"="Read"
+ *     },
+ *     "denormalization_context"={
+ *       "groups"={
+ *         "event:write"
+ *       },
+ *       "swagger_definition_name"="Write"
+ *     }
+ *   }
+ * )
+ */
+class Event implements ChannelInterface, UuidInterface
 {
+    use UuidTrait;
+
     public const TABLE_NAME = 'campaign_events';
 
     public const TYPE_DECISION  = 'decision';
@@ -119,7 +143,7 @@ class Event implements ChannelInterface
     private $campaign;
 
     /**
-     * @var ArrayCollection<int, \Mautic\CampaignBundle\Entity\Event>
+     * @var ArrayCollection<int, Event>
      **/
     private $children;
 
@@ -139,7 +163,7 @@ class Event implements ChannelInterface
     private $tempId;
 
     /**
-     * @var ArrayCollection<int, \Mautic\CampaignBundle\Entity\LeadEventLog>
+     * @var ArrayCollection<int, LeadEventLog>
      */
     private $log;
 
@@ -156,7 +180,9 @@ class Event implements ChannelInterface
     private $channel;
 
     /**
-     * @var int|null
+     * @var string|null
+     *
+     * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $channelId;
 
@@ -299,14 +325,17 @@ class Event implements ChannelInterface
             ->nullable()
             ->build();
 
-        $builder->createField('channelId', 'integer')
+        $builder->createField('channelId', Types::STRING)
             ->columnName('channel_id')
+            ->length(64)
             ->nullable()
             ->build();
 
         $builder->createField('failedCount', 'integer')
             ->columnName('failed_count')
             ->build();
+
+        static::addUuidField($builder);
     }
 
     /**
@@ -714,7 +743,7 @@ class Event implements ChannelInterface
      *
      * @return Event
      */
-    public function setParent(Event $parent = null)
+    public function setParent(?Event $parent = null)
     {
         $this->isChanged('parent', $parent);
         $this->parent = $parent;
@@ -782,18 +811,13 @@ class Event implements ChannelInterface
     }
 
     /**
-     * @param string $triggerHour
+     * @param \DateTime|string|array<string,string> $triggerHour
      *
      * @return Event
      */
     public function setTriggerHour($triggerHour)
     {
-        if (empty($triggerHour)) {
-            $triggerHour = null;
-        } elseif (!$triggerHour instanceof \DateTime) {
-            $triggerHour = new \DateTime($triggerHour);
-        }
-
+        $triggerHour = $this->convertToDateTime($triggerHour);
         $this->isChanged('triggerHour', $triggerHour ? $triggerHour->format('H:i') : $triggerHour);
         $this->triggerHour = $triggerHour;
 
@@ -917,7 +941,7 @@ class Event implements ChannelInterface
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getChannelId()
     {
@@ -925,20 +949,20 @@ class Event implements ChannelInterface
     }
 
     /**
-     * @param int $channelId
+     * @param string|int $channelId
      */
     public function setChannelId($channelId): void
     {
         $this->isChanged('channelId', $channelId);
-        $this->channelId = (int) $channelId;
+        $this->channelId = (string) $channelId;
     }
 
     /**
      * Used by the API.
      *
-     * @return LeadEventLog[]|\Doctrine\Common\Collections\Collection|static
+     * @return LeadEventLog[]|Collection|static
      */
-    public function getContactLog(Contact $contact = null)
+    public function getContactLog(?Contact $contact = null)
     {
         if ($this->contactLog) {
             return $this->contactLog;
@@ -997,11 +1021,7 @@ class Event implements ChannelInterface
      */
     public function setTriggerRestrictedStartHour($triggerRestrictedStartHour)
     {
-        if (empty($triggerRestrictedStartHour)) {
-            $triggerRestrictedStartHour = null;
-        } elseif (!$triggerRestrictedStartHour instanceof \DateTime) {
-            $triggerRestrictedStartHour = new \DateTime($triggerRestrictedStartHour);
-        }
+        $triggerRestrictedStartHour = $this->convertToDateTime($triggerRestrictedStartHour);
 
         $this->isChanged('triggerRestrictedStartHour', $triggerRestrictedStartHour ? $triggerRestrictedStartHour->format('H:i') : $triggerRestrictedStartHour);
 
@@ -1029,11 +1049,7 @@ class Event implements ChannelInterface
      */
     public function setTriggerRestrictedStopHour($triggerRestrictedStopHour)
     {
-        if (empty($triggerRestrictedStopHour)) {
-            $triggerRestrictedStopHour = null;
-        } elseif (!$triggerRestrictedStopHour instanceof \DateTime) {
-            $triggerRestrictedStopHour = new \DateTime($triggerRestrictedStopHour);
-        }
+        $triggerRestrictedStopHour = $this->convertToDateTime($triggerRestrictedStopHour);
 
         $this->isChanged('triggerRestrictedStopHour', $triggerRestrictedStopHour ? $triggerRestrictedStopHour->format('H:i') : $triggerRestrictedStopHour);
 
@@ -1057,7 +1073,7 @@ class Event implements ChannelInterface
      *
      * @return self
      */
-    public function setTriggerRestrictedDaysOfWeek(array $triggerRestrictedDaysOfWeek = null)
+    public function setTriggerRestrictedDaysOfWeek(?array $triggerRestrictedDaysOfWeek = null)
     {
         $this->triggerRestrictedDaysOfWeek = $triggerRestrictedDaysOfWeek;
         $this->isChanged('triggerRestrictedDaysOfWeek', $triggerRestrictedDaysOfWeek);
@@ -1086,5 +1102,18 @@ class Event implements ChannelInterface
     public function getFailedCount(): int
     {
         return $this->failedCount;
+    }
+
+    private function convertToDateTime(mixed $triggerDate): mixed
+    {
+        if (empty($triggerDate)) {
+            $triggerDate = null;
+        } elseif (is_array($triggerDate) && array_key_exists('date', $triggerDate)) {
+            $triggerDate = new \DateTime($triggerDate['date']);
+        } elseif (!$triggerDate instanceof \DateTime) {
+            $triggerDate = new \DateTime($triggerDate);
+        }
+
+        return $triggerDate;
     }
 }

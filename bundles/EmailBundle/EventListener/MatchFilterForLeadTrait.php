@@ -93,8 +93,8 @@ trait MatchFilterForLeadTrait
                     }
                     break;
                 case 'number':
-                    $leadVal   = (int) $leadVal;
-                    $filterVal = (int) $filterVal;
+                    $leadVal   = (float) $leadVal;
+                    $filterVal = (float) $filterVal;
                     break;
                 case 'select':
                     if (!is_array($filterVal)) {
@@ -202,7 +202,7 @@ trait MatchFilterForLeadTrait
      * @param string $operator   empty, !empty, in, !in
      * @param int[]  $segmentIds
      */
-    private function isContactSegmentRelationshipValid(LeadListRepository $segmentRepository, int $contactId, string $operator, array $segmentIds = null): bool
+    private function isContactSegmentRelationshipValid(LeadListRepository $segmentRepository, int $contactId, string $operator, ?array $segmentIds = null): bool
     {
         return match ($operator) {
             OperatorOptions::EMPTY     => $segmentRepository->isNotContactInAnySegment($contactId), // Contact is not in any segment

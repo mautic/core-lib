@@ -195,8 +195,6 @@ class Mailbox
 
     /**
      * Returns if a mailbox is configured.
-     *
-     * @throws MailboxException
      */
     public function isConfigured($bundleKey = null, $folderKey = null): bool
     {
@@ -325,7 +323,7 @@ class Mailbox
      * @param int $options
      * @param int $retriesNum
      */
-    public function setConnectionArgs($options = 0, $retriesNum = 0, array $params = null): void
+    public function setConnectionArgs($options = 0, $retriesNum = 0, ?array $params = null): void
     {
         $this->imapOptions    = $options;
         $this->imapRetriesNum = $retriesNum;

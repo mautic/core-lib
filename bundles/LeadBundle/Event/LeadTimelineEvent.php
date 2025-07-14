@@ -96,7 +96,7 @@ class LeadTimelineEvent extends Event
         protected $page = 1,
         protected $limit = 25,
         protected $forTimeline = true,
-        protected $siteDomain = null
+        protected $siteDomain = null,
     ) {
         $this->filters = !empty($filters)
             ? $filters
@@ -479,7 +479,7 @@ class LeadTimelineEvent extends Event
     /**
      * Calculate engagement counts only.
      */
-    public function setCountOnly(\DateTime $dateFrom, \DateTime $dateTo, $groupUnit = null, ChartQuery $chartQuery = null): void
+    public function setCountOnly(\DateTime $dateFrom, \DateTime $dateTo, $groupUnit = null, ?ChartQuery $chartQuery = null): void
     {
         $this->countOnly  = true;
         $this->dateFrom   = $dateFrom;

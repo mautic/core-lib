@@ -2,6 +2,7 @@
 
 namespace Mautic\FormBundle\Entity;
 
+use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Query\QueryBuilder as DbalQueryBuilder;
 use Doctrine\ORM\QueryBuilder;
 use Mautic\CoreBundle\Entity\CommonRepository;
@@ -153,7 +154,7 @@ class SubmissionRepository extends CommonRepository
                     $q->expr()->in('s.id', ':ids')
                 )->setParameter('ids', $ids);
 
-                $q->orderBy('ORD', \Doctrine\Common\Collections\Criteria::ASC);
+                $q->orderBy('ORD', Order::Ascending->value);
                 $results = $returnEntities ? $q->getQuery()->getResult() : $q->getQuery()->getArrayResult();
 
                 foreach ($results as &$r) {
@@ -349,7 +350,7 @@ class SubmissionRepository extends CommonRepository
     /**
      * @return mixed[]
      */
-    public function getSubmissionCountsByPage($pageId, \DateTime $fromDate = null): array
+    public function getSubmissionCountsByPage($pageId, ?\DateTime $fromDate = null): array
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
         $q->select('count(distinct(s.tracking_id)) as count, s.page_id as id, p.title as name, p.variant_hits as total')
@@ -379,7 +380,7 @@ class SubmissionRepository extends CommonRepository
      *
      * @return mixed[]
      */
-    public function getSubmissionCountsByEmail($emailId, \DateTime $fromDate = null): array
+    public function getSubmissionCountsByEmail($emailId, ?\DateTime $fromDate = null): array
     {
         // link email to page hit tracking id to form submission tracking id
         $q = $this->_em->getConnection()->createQueryBuilder();

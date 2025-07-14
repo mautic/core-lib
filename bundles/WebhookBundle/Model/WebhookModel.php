@@ -2,7 +2,7 @@
 
 namespace Mautic\WebhookBundle\Model;
 
-use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -117,7 +117,7 @@ class WebhookModel extends FormModel
     /**
      * Timestamp when the webhook processing starts.
      */
-    private string|float|null $startTime = null;
+    private ?float $startTime = null;
 
     public function __construct(
         CoreParametersHelper $coreParametersHelper,
@@ -129,7 +129,7 @@ class WebhookModel extends FormModel
         UrlGeneratorInterface $router,
         Translator $translator,
         UserHelper $userHelper,
-        LoggerInterface $mauticLogger
+        LoggerInterface $mauticLogger,
     ) {
         $this->setConfigProps($coreParametersHelper);
 
@@ -284,7 +284,7 @@ class WebhookModel extends FormModel
         }
     }
 
-    public function processWebhook(Webhook $webhook, WebhookQueue $queue = null): bool
+    public function processWebhook(Webhook $webhook, ?WebhookQueue $queue = null): bool
     {
         // get the webhook payload
         $payload = $this->getWebhookPayload($webhook, $queue);
@@ -456,7 +456,7 @@ class WebhookModel extends FormModel
      *
      * @return array
      */
-    public function getWebhookPayload(Webhook $webhook, WebhookQueue $queue = null)
+    public function getWebhookPayload(Webhook $webhook, ?WebhookQueue $queue = null)
     {
         if ($payload = $webhook->getPayload()) {
             return $payload;
@@ -552,7 +552,7 @@ class WebhookModel extends FormModel
      *
      * @return string
      */
-    public function getEventsOrderbyDir(Webhook $webhook = null)
+    public function getEventsOrderbyDir(?Webhook $webhook = null)
     {
         // Try to get the value from Webhook
         if ($webhook && $orderByDir = $webhook->getEventsOrderbyDir()) {
@@ -566,7 +566,7 @@ class WebhookModel extends FormModel
     /**
      * @throws MethodNotAllowedHttpException
      */
-    protected function dispatchEvent($action, &$entity, $isNew = false, SymfonyEvent $event = null): ?SymfonyEvent
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?SymfonyEvent $event = null): ?SymfonyEvent
     {
         if (!$entity instanceof Webhook) {
             throw new MethodNotAllowedHttpException(['Webhook'], 'Entity must be of class Webhook()');
@@ -671,6 +671,6 @@ class WebhookModel extends FormModel
         $this->webhookTimeout   = (int) $coreParametersHelper->get('webhook_timeout', 15);
         $this->logMax           = (int) $coreParametersHelper->get('webhook_log_max', self::WEBHOOK_LOG_MAX);
         $this->queueMode        = $coreParametersHelper->get('queue_mode');
-        $this->eventsOrderByDir = $coreParametersHelper->get('events_orderby_dir', Criteria::ASC);
+        $this->eventsOrderByDir = $coreParametersHelper->get('events_orderby_dir', Order::Ascending->value);
     }
 }

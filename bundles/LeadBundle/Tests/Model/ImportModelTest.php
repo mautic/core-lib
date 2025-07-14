@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Model;
 
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Exception\ORMException;
 use Mautic\LeadBundle\Entity\Import;
 use Mautic\LeadBundle\Entity\ImportRepository;
-use Mautic\LeadBundle\Entity\LeadEventLog;
-use Mautic\LeadBundle\Entity\LeadEventLogRepository;
 use Mautic\LeadBundle\Event\ImportProcessEvent;
 use Mautic\LeadBundle\Exception\ImportDelayedException;
 use Mautic\LeadBundle\Exception\ImportFailedException;
@@ -31,10 +29,11 @@ class ImportModelTest extends StandardImportTestHelper
         $entity   = $this->initImportEntity();
         $entity->setCreatedBy($userId)
             ->setCreatedByUser($userName)
+            ->setModifiedBy($userId)
+            ->setModifiedByUser($userName)
             ->setOriginalFile($fileName);
         $log = $model->initEventLog($entity, $line);
 
-        Assert::assertInstanceOf(LeadEventLog::class, $log);
         Assert::assertSame($userId, $log->getUserId());
         Assert::assertSame($userName, $log->getUserName());
         Assert::assertSame('lead', $log->getBundle());
@@ -78,7 +77,7 @@ class ImportModelTest extends StandardImportTestHelper
 
         $model->expects($this->once())
             ->method('getParallelImportLimit')
-            ->will($this->returnValue(4));
+            ->willReturn(4);
 
         $repository = $this->getMockBuilder(ImportRepository::class)
             ->onlyMethods(['countImportsWithStatuses'])
@@ -87,11 +86,11 @@ class ImportModelTest extends StandardImportTestHelper
 
         $repository->expects($this->once())
             ->method('countImportsWithStatuses')
-            ->will($this->returnValue(5));
+            ->willReturn(5);
 
         $model->expects($this->once())
             ->method('getRepository')
-            ->will($this->returnValue($repository));
+            ->willReturn($repository);
 
         $result = $model->checkParallelImportLimit();
 
@@ -107,7 +106,7 @@ class ImportModelTest extends StandardImportTestHelper
 
         $model->expects($this->once())
             ->method('getParallelImportLimit')
-            ->will($this->returnValue(4));
+            ->willReturn(4);
 
         $repository = $this->getMockBuilder(ImportRepository::class)
             ->onlyMethods(['countImportsWithStatuses'])
@@ -116,11 +115,11 @@ class ImportModelTest extends StandardImportTestHelper
 
         $repository->expects($this->once())
             ->method('countImportsWithStatuses')
-            ->will($this->returnValue(4));
+            ->willReturn(4);
 
         $model->expects($this->once())
             ->method('getRepository')
-            ->will($this->returnValue($repository));
+            ->willReturn($repository);
 
         $result = $model->checkParallelImportLimit();
 
@@ -136,7 +135,7 @@ class ImportModelTest extends StandardImportTestHelper
 
         $model->expects($this->once())
             ->method('getParallelImportLimit')
-            ->will($this->returnValue(6));
+            ->willReturn(6);
 
         $repository = $this->getMockBuilder(ImportRepository::class)
             ->onlyMethods(['countImportsWithStatuses'])
@@ -145,11 +144,11 @@ class ImportModelTest extends StandardImportTestHelper
 
         $repository->expects($this->once())
             ->method('countImportsWithStatuses')
-            ->will($this->returnValue(5));
+            ->willReturn(5);
 
         $model->expects($this->once())
             ->method('getRepository')
-            ->will($this->returnValue($repository));
+            ->willReturn($repository);
 
         $result = $model->checkParallelImportLimit();
 
@@ -166,16 +165,16 @@ class ImportModelTest extends StandardImportTestHelper
         $model->setTranslator($this->getTranslatorMock());
 
         $model->method('checkParallelImportLimit')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $model->expects($this->once())
             ->method('getParallelImportLimit')
-            ->will($this->returnValue(1));
+            ->willReturn(1);
 
         $entity = $this->initImportEntity(['canProceed']);
 
         $entity->method('canProceed')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         try {
             $model->beginImport($entity, new Progress());
@@ -203,7 +202,7 @@ class ImportModelTest extends StandardImportTestHelper
 
         $model->expects($this->once())
             ->method('checkParallelImportLimit')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $model->expects($this->once())
             ->method('process')
@@ -212,7 +211,7 @@ class ImportModelTest extends StandardImportTestHelper
         $entity = $this->initImportEntity(['canProceed']);
 
         $entity->method('canProceed')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         try {
             $model->beginImport($entity, new Progress());
@@ -391,6 +390,32 @@ class ImportModelTest extends StandardImportTestHelper
         $import->end();
 
         Assert::assertSame(Import::FAILED, $import->getStatus());
+    }
+
+    public function testWhenWarningsAvailableInProcessEventLog(): void
+    {
+        $model  = $this->initImportModel();
+        $entity = $this->initImportEntity();
+
+        $this->dispatcher->expects($this->exactly(4))
+            ->method('dispatch')
+            ->with(
+                $this->callback(function (ImportProcessEvent $event) {
+                    // Emulate a subscriber.
+                    $event->setWasMerged(false);
+                    $event->addWarning('test warning message');
+
+                    return true;
+                }),
+                LeadEvents::IMPORT_ON_PROCESS
+            );
+
+        $entity->start();
+        $model->process($entity, new Progress());
+        $entity->end();
+
+        Assert::assertEquals(100, $entity->getProgressPercentage());
+        Assert::assertSame(Import::IMPORTED, $entity->getStatus());
     }
 
     public function testWhenImportUnpublishedInBetweenImportProcess(): void

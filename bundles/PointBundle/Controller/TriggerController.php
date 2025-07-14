@@ -162,7 +162,7 @@ class TriggerController extends FormController
      *
      * @param array<mixed> $triggerEvents
      */
-    public function newAction(Request $request, Trigger $entity = null, array $triggerEvents = []): Response
+    public function newAction(Request $request, ?Trigger $entity = null, array $triggerEvents = []): Response
     {
         /** @var TriggerModel $model */
         $model = $this->getModel('point.trigger');
@@ -203,7 +203,7 @@ class TriggerController extends FormController
                     $events = array_diff_key($addEvents, array_flip($deletedEvents));
 
                     // make sure that at least one action is selected
-                    if ('point.trigger' == 'point' && empty($events)) {
+                    if (empty($events)) {
                         // set the error
                         $form->addError(new FormError(
                             $this->translator->trans('mautic.core.value.required', [], 'validators')
@@ -350,7 +350,7 @@ class TriggerController extends FormController
 
                 if ($valid = $this->isFormValid($form)) {
                     // make sure that at least one field is selected
-                    if ('point.trigger' == 'point' && empty($addEvents)) {
+                    if (empty($addEvents)) {
                         // set the error
                         $form->addError(new FormError(
                             $this->translator->trans('mautic.core.value.required', [], 'validators')
@@ -547,10 +547,8 @@ class TriggerController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return Response
      */
-    public function batchDeleteAction(Request $request)
+    public function batchDeleteAction(Request $request): Response
     {
         $page      = $request->getSession()->get('mautic.point.trigger.page', 1);
         $returnUrl = $this->generateUrl('mautic_pointtrigger_index', ['page' => $page]);
