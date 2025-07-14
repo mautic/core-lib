@@ -146,7 +146,7 @@ class ScheduleDateRangeValidatorTest extends TestCase
         $violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
         $violationBuilder->expects($this->once())
             ->method('atPath')
-            ->with('publishDown')
+            ->with('[publishDown]')
             ->willReturnSelf();
         $violationBuilder->expects($this->once())
             ->method('addViolation');
