@@ -24,6 +24,7 @@ use Mautic\CoreBundle\Helper\UrlHelper;
 use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\EmailBundle\Validator\EmailLists;
 use Mautic\EmailBundle\Validator\EmailOrEmailTokenList;
+use Mautic\EmailBundle\Validator\ScheduleDateRange;
 use Mautic\EmailBundle\Validator\TextOnlyDynamicContent;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\LeadList;
@@ -513,6 +514,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
         $metadata->addConstraint(new EmailLists());
         $metadata->addConstraint(new EntityEvent());
+        $metadata->addConstraint(new ScheduleDateRange());
 
         $metadata->addConstraint(new Callback(
             function (Email $email, ExecutionContextInterface $context): void {

@@ -6,25 +6,20 @@ namespace Mautic\EmailBundle\Form\Type;
 
 use Mautic\CoreBundle\Form\Type\FormButtonsType;
 use Mautic\CoreBundle\Form\Type\YesNoButtonGroupType;
+use Mautic\EmailBundle\Validator\ScheduleDateRange;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @extends AbstractType<ScheduleSendType>
  */
 final class ScheduleSendType extends AbstractType
 {
-    public function __construct(private TranslatorInterface $translator)
-    {
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -78,17 +73,6 @@ final class ScheduleSendType extends AbstractType
                 'format'      => 'yyyy-MM-dd HH:mm',
                 'html5'       => false,
                 'required'    => false,
-                'constraints' => [
-                    new Callback(function ($value, ExecutionContextInterface $context): void {
-                        $data            = $context->getRoot()->getData() ?? [];
-                        $continueSending = $data['continueSending'] ?? false;
-                        $publishUp       = $data['publishUp'] ?? null;
-                        if ($continueSending && $value && $publishUp && $value <= $publishUp) {
-                            $context->buildViolation($this->translator->trans('mautic.form.date_time_range.invalid_range', [], 'validators'))
-                                ->addViolation();
-                        }
-                    }),
-                ],
             ]
         );
 
@@ -128,5 +112,14 @@ final class ScheduleSendType extends AbstractType
                 $form->add('publishUp', DateTimeType::class, $options);
             }
         });
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'constraints' => [
+                new ScheduleDateRange(),
+            ],
+        ]);
     }
 }
