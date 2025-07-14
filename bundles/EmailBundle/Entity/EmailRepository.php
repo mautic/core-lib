@@ -172,8 +172,8 @@ class EmailRepository extends CommonRepository
         $maxContactId = null,
         $countWithMaxMin = false,
         $maxDate = null,
-        int $maxThreads = null,
-        int $threadId = null,
+        ?int $maxThreads = null,
+        ?int $threadId = null,
         ?\DateTimeInterface $sendStopDate = null,
     ) {
         // Do not include leads in the do not contact table
@@ -334,8 +334,8 @@ class EmailRepository extends CommonRepository
         $minContactId = null,
         $maxContactId = null,
         $countWithMaxMin = false,
-        int $maxThreads = null,
-        int $threadId = null,
+        ?int $maxThreads = null,
+        ?int $threadId = null,
         ?\DateTimeInterface $sendStopDate = null,
     ) {
         $q = $this->getEmailPendingQuery(
