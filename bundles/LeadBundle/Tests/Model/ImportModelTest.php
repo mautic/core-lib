@@ -7,6 +7,7 @@ namespace Mautic\LeadBundle\Tests\Model;
 use Doctrine\ORM\Exception\ORMException;
 use Mautic\LeadBundle\Entity\Import;
 use Mautic\LeadBundle\Entity\ImportRepository;
+use Mautic\LeadBundle\Entity\LeadEventLogRepository;
 use Mautic\LeadBundle\Event\ImportProcessEvent;
 use Mautic\LeadBundle\Exception\ImportDelayedException;
 use Mautic\LeadBundle\Exception\ImportFailedException;
@@ -446,13 +447,11 @@ class ImportModelTest extends StandardImportTestHelper
 
         $this->entityManager->expects($this->any())
             ->method('getRepository')
-            ->will(
-                $this->returnValueMap(
-                    [
-                        ['MauticLeadBundle:LeadEventLog', $logRepository],
-                        ['MauticLeadBundle:Import', $importRepository],
-                    ]
-                )
+            ->willReturnMap(
+                [
+                    ['MauticLeadBundle:LeadEventLog', $logRepository],
+                    ['MauticLeadBundle:Import', $importRepository],
+                ]
             );
 
         $this->entityManager->expects($this->any())
