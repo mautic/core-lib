@@ -427,9 +427,9 @@ class AssetModel extends FormModel implements GlobalSearchInterface
     /**
      * Generate url for an asset.
      *
-     * @param array<string, string> $clickthrough
+     * @param array<string, mixed> $clickthrough
      */
-    public function generateUrl(Asset $entity, bool $absolute = true, array $clickthrough = [], string $stream = null): string
+    public function generateUrl(Asset $entity, bool $absolute = true, array $clickthrough = [], ?string $stream = null): string
     {
         $entityId = $entity->getId();
         $alias    = $entity->getAlias();
