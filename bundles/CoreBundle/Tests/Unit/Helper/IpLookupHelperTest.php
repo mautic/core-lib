@@ -21,9 +21,9 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
 
     private DeviceDetectorFactoryInterface|\PHPUnit\Framework\MockObject\MockObject $deviceDetectorFactory;
 
-    public function __construct($name = null, array $data = [], $dataName = '')
+    public function __construct(?string $name = null, array $data = [], string $dataName = '')
     {
-        parent::__construct($name);
+        parent::__construct($name, $data, $dataName);
     }
 
     protected function setUp(): void
