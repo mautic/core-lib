@@ -55,6 +55,7 @@ class ContactSegmentFilterFactory
                     $mergedProperty[$index]['operator']     = $factorSegmentFilter->getOperator();
                     $mergedProperty[$index]['field']        = $factorSegmentFilter->getField();
                     $mergedProperty[$index]['type']         = $factorSegmentFilter->getType();
+                    $mergedProperty[$index]['filter']       = $factorSegmentFilter;
                 }
                 if ($factorSegmentFilter) {
                     $factorSegmentFilter->contactSegmentFilterCrate->setMergedProperty($mergedProperty);
