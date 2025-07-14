@@ -33,7 +33,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
      */
     public function testDownloadActionStreamIsZero(): void
     {
-        $assetSlug = $this->asset->getId().':'.$this->asset->getAlias();
+        $assetSlug = $this->asset->getId().':'.$this->asset->getUuid();
 
         $this->client->request('GET', '/asset/'.$assetSlug.'?stream=0');
         ob_start();
@@ -120,8 +120,8 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
         $asset = $this->createAsset(['title' => 'Canonical Asset']);
         $this->em->flush();
 
-        $nonCanonicalSlug = $asset->getId().':some-other-alias';
-        $canonicalSlug    = $asset->getId().':'.$asset->getAlias();
+        $nonCanonicalSlug = $asset->getId().':'.$asset->getAlias();
+        $canonicalSlug    = $asset->getId().':'.$asset->getUuid();
         $nonCanonicalUrl  = '/asset/'.$nonCanonicalSlug;
         $canonicalUrl     = '/asset/'.$canonicalSlug;
 
@@ -159,7 +159,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
 
         $this->em->clear();
 
-        $assetSlug = $asset->getId().':'.$asset->getAlias();
+        $assetSlug = $asset->getId().':'.$asset->getUuid();
 
         // Don't follow redirects automatically
         $this->client->followRedirects(false);

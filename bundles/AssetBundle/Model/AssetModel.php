@@ -427,22 +427,25 @@ class AssetModel extends FormModel implements GlobalSearchInterface
     /**
      * Generate url for an asset.
      *
-     * @param Asset $entity
-     * @param bool  $absolute
-     * @param array $clickthrough
-     *
-     * @return string
+     * @param array<string, string> $clickthrough
      */
-    public function generateUrl($entity, $absolute = true, $clickthrough = [])
+    public function generateUrl(Asset $entity, bool $absolute = true, array $clickthrough = [], string $stream = null): string
     {
-        $entityId  = $entity->getId();
-        $assetSlug = isset($entityId) ? $entityId.':'.$entity->getAlias() : '';
+        $entityId = $entity->getId();
+        $alias    = $entity->getAlias();
+        $uuid     = $entity->getUuid();
 
-        $slugs = [
-            'slug' => $assetSlug,
-        ];
+        // Decide slug value: alias preferred over uuid
+        $identifier = $uuid ?: $alias;
 
-        return $this->buildUrl('mautic_asset_download', $slugs, $absolute, $clickthrough);
+        $assetSlug = $entityId.':'.$identifier;
+
+        $routeParams = ['slug' => $assetSlug];
+        if (!is_null($stream)) {
+            $routeParams['stream'] = $stream;
+        }
+
+        return $this->buildUrl('mautic_asset_download', $routeParams, $absolute, $clickthrough);
     }
 
     /**

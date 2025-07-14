@@ -12,8 +12,6 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PublicController extends AbstractFormController
 {
@@ -30,26 +28,15 @@ class PublicController extends AbstractFormController
         Request $request,
         CoreParametersHelper $parametersHelper,
         AssetModel $model,
-        ValidatorInterface $validator,
         string $slug,
     ): Response {
-        if ($this->isInvalidSlug($validator, $slug)) {
+        try {
+            $entity = $model->getRepository()->findByIdAndAliasOrUuid($slug);
+        } catch (\Exception) {
             return $this->notFound();
         }
 
-        $entity = $model->getEntityBySlugs($slug);
-
         return $this->createAssetResponse($request, $parametersHelper, $model, $entity);
-    }
-
-    /**
-     * Validates whether the given slug is in an invalid format.
-     */
-    private function isInvalidSlug(ValidatorInterface $validator, string $slug): bool
-    {
-        $violations = $validator->validate($slug, new Regex('/.*[^\d+\s*:?].+/'));
-
-        return count($violations) > 0;
     }
 
     /**
@@ -66,9 +53,7 @@ class PublicController extends AbstractFormController
      */
     private function createAssetResponse(Request $request, CoreParametersHelper $parametersHelper, AssetModel $model, ?Asset $entity): Response
     {
-        if (!$entity instanceof Asset) {
-            $response = $this->notFound();
-        } elseif (!$this->isAccessAllowed($entity)) {
+        if (!$this->isAccessAllowed($entity)) {
             $model->trackDownload($entity, $request, 401);
             $response = $this->accessDenied();
         } elseif ($this->shouldRedirect($model, $entity, $request)) {
@@ -113,8 +98,9 @@ class PublicController extends AbstractFormController
      */
     private function redirectResponse(AssetModel $model, Asset $entity, Request $request): Response
     {
-        $url = $model->generateUrl($entity, false);
         $model->trackDownload($entity, $request, 301);
+
+        $url = $model->generateUrl($entity, false, [], $request->get('stream'));
 
         return $this->redirect($url, 301);
     }
