@@ -106,6 +106,14 @@ final class ScheduleSendType extends AbstractType
             $form = $event->getForm();
             $data = $event->getData();
 
+            // Reset publishDown date if continueSending is disabled
+            // This ensures that when users disable "continue sending",
+            // any previously set end date is cleared to avoid confusion
+            if (isset($data['continueSending']) && !$data['continueSending']) {
+                $data['publishDown'] = null;
+                $event->setData($data);
+            }
+
             if (isset($data['buttons']['apply'])) {
                 $options                = $form->get('publishUp')->getConfig()->getOptions();
                 $options['constraints'] = [];
