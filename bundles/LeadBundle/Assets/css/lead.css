@@ -240,11 +240,32 @@ ul.tag-cloud li {
 .properties-form:has(.alert) .row:nth-child(2) {
     position: absolute;
     left: 82px;
-    margin-top: 3px;
+    margin-top: 19px;
+}
+
+@media (min-width: 615px) and (max-width: 770px) {
+    .properties-form:has(.alert) .row:nth-child(2) {
+        margin-top: 6px;
+    }
+}
+
+@media (min-width: 820px) {
+    .properties-form:has(.alert) .row:nth-child(2) {
+        margin-top: 3px;
+    }
 }
 
 .filter--row { margin-bottom: 15px; }
-.filter--row:has(.alert) { margin-bottom: 65px; }
+
+.filter--row:has(.alert) { margin-bottom: 125px; }
+
+@media (min-width: 480px) {
+    .filter--row:has(.alert) { margin-bottom: 85px; }
+}
+
+@media (min-width: 1250px) {
+    .filter--row:has(.alert) { margin-bottom: 65px; }
+}
 
 .filter--row select.form-control,
 .filter--row select.glue-select {
