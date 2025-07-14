@@ -113,12 +113,6 @@ final class ScheduleSendType extends AbstractType
                 $data['publishDown'] = null;
                 $event->setData($data);
             }
-
-            if (isset($data['buttons']['apply'])) {
-                $options                = $form->get('publishUp')->getConfig()->getOptions();
-                $options['constraints'] = [];
-                $form->add('publishUp', DateTimeType::class, $options);
-            }
         });
     }
 
