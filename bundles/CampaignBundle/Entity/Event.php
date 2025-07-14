@@ -743,7 +743,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return Event
      */
-    public function setParent(Event $parent = null)
+    public function setParent(?Event $parent = null)
     {
         $this->isChanged('parent', $parent);
         $this->parent = $parent;
@@ -967,7 +967,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return LeadEventLog[]|Collection|static
      */
-    public function getContactLog(Contact $contact = null)
+    public function getContactLog(?Contact $contact = null)
     {
         if ($this->contactLog) {
             return $this->contactLog;
@@ -1086,7 +1086,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return self
      */
-    public function setTriggerRestrictedDaysOfWeek(array $triggerRestrictedDaysOfWeek = null)
+    public function setTriggerRestrictedDaysOfWeek(?array $triggerRestrictedDaysOfWeek = null)
     {
         $this->triggerRestrictedDaysOfWeek = $triggerRestrictedDaysOfWeek;
         $this->isChanged('triggerRestrictedDaysOfWeek', $triggerRestrictedDaysOfWeek);
