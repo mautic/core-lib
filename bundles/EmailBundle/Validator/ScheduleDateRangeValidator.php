@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class ScheduleDateRangeValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$constraint instanceof ScheduleDateRange) {
             throw new UnexpectedTypeException($constraint, ScheduleDateRange::class);
@@ -19,12 +19,22 @@ class ScheduleDateRangeValidator extends ConstraintValidator
 
         // Handle Email entity validation
         if ($value instanceof Email) {
+            // Skip validation if continueSending is false
+            if (!$value->getContinueSending()) {
+                return;
+            }
+
             $publishUp   = $value->getPublishUp();
             $publishDown = $value->getPublishDown();
             $pathPrefix  = '';
         }
         // Handle form data validation
         elseif (is_array($value)) {
+            // Skip validation if continueSending is false
+            if (!($value['continueSending'] ?? true)) {
+                return;
+            }
+
             $publishUp   = $value['publishUp'] ?? null;
             $publishDown = $value['publishDown'] ?? null;
             $pathPrefix  = '[publishDown]';
