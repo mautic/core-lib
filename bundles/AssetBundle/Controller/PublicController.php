@@ -31,7 +31,7 @@ class PublicController extends AbstractFormController
         string $slug,
     ): Response {
         try {
-            $entity = $model->getRepository()->findByIdAndAliasOrUuid($slug);
+            $entity = $model->getRepository()->findByIdAndAlias($slug);
         } catch (\Exception) {
             return $this->notFound();
         }
@@ -45,7 +45,6 @@ class PublicController extends AbstractFormController
      * Logic:
      * - If entity is missing → return 404
      * - If access is not allowed → track and return 401
-     * - If URL doesn't match canonical → track and return 301 (redirect)
      * - If remote asset → track and redirect to remote URL
      * - If local asset → track and stream file
      *
@@ -56,8 +55,6 @@ class PublicController extends AbstractFormController
         if (!$this->isAccessAllowed($entity)) {
             $model->trackDownload($entity, $request, 401);
             $response = $this->accessDenied();
-        } elseif ($this->shouldRedirect($model, $entity, $request)) {
-            $response = $this->redirectResponse($model, $entity, $request);
         } elseif ($entity->isRemote()) {
             $response = $this->remoteRedirectResponse($model, $entity, $request);
         } else {
@@ -77,32 +74,6 @@ class PublicController extends AbstractFormController
     {
         return $entity->isPublished()
             || $this->security->hasEntityAccess('asset:assets:viewown', 'asset:assets:viewother', $entity->getCreatedBy());
-    }
-
-    /**
-     * Checks whether the current request URI matches the canonical asset URL.
-     * If they differ (ignoring query string), a redirect is required.
-     */
-    private function shouldRedirect(AssetModel $model, Asset $entity, Request $request): bool
-    {
-        $expectedUrl = $model->generateUrl($entity, false);
-        $actualUrl   = strtok($request->getRequestUri(), '?');
-
-        return $expectedUrl !== $actualUrl;
-    }
-
-    /**
-     * Tracks the redirect and returns a 301 permanent redirect to the canonical asset URL.
-     *
-     * @throws ORMException
-     */
-    private function redirectResponse(AssetModel $model, Asset $entity, Request $request): Response
-    {
-        $model->trackDownload($entity, $request, 301);
-
-        $url = $model->generateUrl($entity, false, [], $request->get('stream'));
-
-        return $this->redirect($url, 301);
     }
 
     /**

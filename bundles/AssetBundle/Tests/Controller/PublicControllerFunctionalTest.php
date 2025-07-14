@@ -33,7 +33,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
      */
     public function testDownloadActionStreamIsZero(): void
     {
-        $assetSlug = $this->asset->getId().':'.$this->asset->getUuid();
+        $assetSlug = $this->asset->getId().':'.$this->asset->getAlias();
 
         $this->client->request('GET', '/asset/'.$assetSlug.'?stream=0');
         ob_start();
@@ -113,39 +113,6 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function testDownloadActionWithNonCanonicalUrlRedirectAndDownload(): void
-    {
-        $this->logoutUser();
-
-        $asset = $this->createAsset(['title' => 'Canonical Asset']);
-        $this->em->flush();
-
-        $nonCanonicalSlug = $asset->getId().':'.$asset->getAlias();
-        $canonicalSlug    = $asset->getId().':'.$asset->getUuid();
-        $nonCanonicalUrl  = '/asset/'.$nonCanonicalSlug;
-        $canonicalUrl     = '/asset/'.$canonicalSlug;
-
-        // Step 1: Assert redirect occurs
-        $this->client->followRedirects(false);
-        $this->client->request('GET', $nonCanonicalUrl);
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_MOVED_PERMANENTLY);
-        $this->assertTrue($this->client->getResponse()->isRedirect($canonicalUrl));
-
-        // Step 2: Follow the redirect and assert the final response is 200 OK with expected headers
-        $this->client->followRedirect();
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-
-        // Optional: Check headers
-        $headers = $this->client->getResponse()->headers;
-
-        $this->assertTrue(
-            $headers->has('Content-Disposition'),
-            'Expected Content-Disposition header for file download'
-        );
-    }
-
     public function testDownloadActionWithRemoteAsset(): void
     {
         $this->logoutUser();
@@ -159,7 +126,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
 
         $this->em->clear();
 
-        $assetSlug = $asset->getId().':'.$asset->getUuid();
+        $assetSlug = $asset->getId().':'.$asset->getAlias();
 
         // Don't follow redirects automatically
         $this->client->followRedirects(false);

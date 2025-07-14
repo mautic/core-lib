@@ -235,13 +235,13 @@ class AssetRepository extends CommonRepository
      * @throws NonUniqueResultException
      * @throws EntityNotFoundException
      */
-    public function findByIdAndAliasOrUuid(string $slug): Asset
+    public function findByIdAndAlias(string $slug): Asset
     {
         // Split the slug into ID and alias/UUID parts. Alias is to BC check.
-        [$id, $aliasOrUuid] = array_pad(explode(':', $slug, 2), 2, null);
+        [$id, $alias] = array_pad(explode(':', $slug, 2), 2, null);
 
         // Validate input: both parts must be present.
-        if (!$id || !$aliasOrUuid) {
+        if (!$id || !$alias) {
             throw new \InvalidArgumentException('Invalid slug format. Expected "id:alias-or-uuid".');
         }
 
@@ -251,21 +251,18 @@ class AssetRepository extends CommonRepository
         $asset = $qb
             ->where('a.id = :id')
             ->andWhere(
-                $qb->expr()->orX(
-                    'a.alias = :val',
-                    'a.uuid = :val',
-                )
+                $qb->expr()->eq('a.alias', ':val')
             )
             ->setParameters([
                 'id'  => (int) $id,
-                'val' => $aliasOrUuid,
+                'val' => $alias,
             ])
             ->getQuery()
             ->getOneOrNullResult();
 
         // If not found, throw a standardized Doctrine exception.
         if (!$asset) {
-            throw EntityNotFoundException::fromClassNameAndIdentifier(Asset::class, ['id' => $id, 'alias/uuid' => $aliasOrUuid]);
+            throw EntityNotFoundException::fromClassNameAndIdentifier(Asset::class, ['id' => $id, 'alias/uuid' => $alias]);
         }
 
         return $asset;
