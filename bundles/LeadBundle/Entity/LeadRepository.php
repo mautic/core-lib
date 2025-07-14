@@ -943,15 +943,14 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
             case $this->translator->trans('mautic.lead.lead.searchcommand.dnc'):
             case $this->translator->trans('mautic.lead.lead.searchcommand.dnc', [], null, 'en_US'):
                 $anyKeyword = $this->translator->trans('mautic.lead.lead.searchcommand.dnc.any');
-                if ($string === $anyKeyword) {
+                $anyKeywordEn = $this->translator->trans('mautic.lead.lead.searchcommand.dnc.any', [], null, 'en_US');
+                if ($string === $anyKeyword || $string === $anyKeywordEn) {
                     // DNC for any channel
                     $sq = $this->getEntityManager()->getConnection()->createQueryBuilder();
                     $sq->select('1')
                         ->from(MAUTIC_TABLE_PREFIX.'lead_donotcontact', 'dnc')
                         ->where($q->expr()->eq('l.id', 'dnc.lead_id'));
-                    $expr            = $q->expr()->{$filter->not ? 'notExists' : 'exists'}($sq->getSQL());
                     $returnParameter = false;
-                    $filter->strict  = true;
                 } else {
                     // DNC per channel filter
                     $channel = $string;
@@ -964,10 +963,10 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
                                 $q->expr()->eq('dnc.channel', ":$unique")
                             )
                         );
-                    $expr            = $q->expr()->{$filter->not ? 'notExists' : 'exists'}($sq->getSQL());
                     $returnParameter = true;
-                    $filter->strict  = true;
                 }
+                $expr           = $q->expr()->{$filter->not ? 'notExists' : 'exists'}($sq->getSQL());
+                $filter->strict = true;
                 break;
             default:
                 if (in_array($command, $this->availableSearchFields)) {
