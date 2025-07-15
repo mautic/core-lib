@@ -20,31 +20,29 @@
 
 {% set common_image_content %}
     {% if image is defined %}
-        <div part="image-wrapper" class="card__image-wrapper d-flex">
-            <img part="image" class="image__img {% if type == 'static' or type == 'default' %}as-4-3{% endif %}" src="{{ asset(image.src) }}" alt="{{ image.alt|trans }}">
+        <div class="card__image-wrapper d-flex">
+            <img class="image__img {% if type == 'static' or type == 'default' %}as-4-3{% endif %}" src="{{ asset(image.src) }}" alt="{{ image.alt|trans }}">
         </div>
     {% endif %}
 {% endset %}
 
 {% set common_eyebrow_content %}
     {% if eyebrow is defined %}
-        <div part="eyebrow-wrapper" class="card__eyebrow-wrapper type-label-02 text-secondary mb-8">
-            <div data-autoid="card-eyebrow">{{ eyebrow|trans }}</div>
-        </div>
+        <div class="card__eyebrow-wrapper type-label-02 text-secondary mb-8">{{ eyebrow|trans }}</div>
     {% endif %}
 {% endset %}
 
 {% set common_heading_content %}
     {% if heading is defined %}
-        <div part="heading-wrapper" class="card__heading-wrapper {% if type == 'feature--large' %}type-fluid-heading-04{% else %}type-heading-0{{ type == 'link' ? '2' : '3' }}{% endif %}">
-            <div role="heading" aria-level="3" class="card-heading {% if type == 'feature--large' %}mb-32{% elseif type != 'pictogram' and type != 'link' %}mb-64{% endif %}">{{ heading|trans }}</div>
+        <div class="card__heading-wrapper">
+            <h3 class="card-heading {% if type == 'feature--large' %}type-fluid-heading-04{% else %}type-heading-0{{ type == 'link' ? '2' : '3' }}{% endif %} {% if type == 'feature--large' %}mb-32{% elseif type != 'pictogram' and type != 'link' %}mb-64{% endif %}">{{ heading|trans }}</h3>
         </div>
     {% endif %}
 {% endset %}
 
 {% set common_copy_content %}
     {% if copy is defined %}
-        <div part="copy" class="card__copy type-body-02 pr-32 mb-32 {% if type == 'pictogram' %}mt-32{% endif %}">{{ copy|trans }}</div>
+        <div class="card__copy type-body-02 pr-32 mb-32 {% if type == 'pictogram' %}mt-32{% endif %}">{{ copy|trans }}</div>
     {% endif %}
 {% endset %}
 
@@ -58,7 +56,7 @@
 
 {% set common_pictogram_content %}
     {% if type == 'pictogram' and pictogram is defined %}
-        <div part="pictogram-wrapper" class="card__pictogram-wrapper mt-a">
+        <div class="card__pictogram-wrapper mt-a">
             {% include '@MauticCore/Components/pictogram.html.twig' with {'pictogram': pictogram, 'size': 48} %}
         </div>
     {% endif %}
@@ -68,13 +66,13 @@
     {% if type == 'static' %}
         {% set cardContent %}
             {{ common_image_content }}
-            <div part="wrapper" class="card__wrapper" aspect-ratio="{{ aspectRatio }}">
-                <div part="content" class="card__content">
+            <div class="card__wrapper" aspect-ratio="{{ aspectRatio }}">
+                <div class="card__content">
                     {{ common_eyebrow_content }}
                     {{ common_heading_content }}
                     {{ common_copy_content }}
                     {{ common_tags_content }}
-                    <div part="footer-wrapper" class="card__footer-wrapper">
+                    <div class="card__footer-wrapper">
                         {% if cta is defined %}
                             {% include '@MauticCore/Helper/button.html.twig' with {'buttons': [cta|merge({'variant': 'link', 'icon': 'ri-arrow-right-line', 'attributes': {'class': 'type-body-02'}})]} %}
                         {% endif %}
@@ -92,8 +90,8 @@
     {% elseif type == 'logo' %}
         {% set cardContent %}
             {{ common_image_content }}
-            <div part="wrapper" class="card__wrapper">
-                <div part="content" class="card__content">
+            <div class="card__wrapper">
+                <div class="card__content">
                     {{ common_eyebrow_content }}
                     {{ common_heading_content }}
                     {{ common_copy_content }}
@@ -112,8 +110,8 @@
     {# === LINK TYPE === #}
     {% elseif type == 'link' %}
         {% set cardContent %}
-            <div part="wrapper" class="card__wrapper" aspect-ratio="2:1">
-                <div part="content" class="card__content">
+            <div class="card__wrapper" aspect-ratio="2:1">
+                <div class="card__content">
                     {{ common_heading_content }}
                     {{ common_copy_content }}
                 </div>
@@ -131,8 +129,8 @@
     {# === PICTOGRAM TYPE === #}
     {% elseif type == 'pictogram' %}
         {% set cardContent %}
-            <div part="wrapper" class="card__wrapper d-flex fd-column">
-                <div part="content" class="card__content d-flex fd-column fg-1 pb-64">
+            <div class="card__wrapper d-flex fd-column">
+                <div class="card__content d-flex fd-column fg-1 pb-64">
                     {{ common_heading_content }}
                     {{ common_copy_content }}
                     {{ common_pictogram_content }}
@@ -151,8 +149,8 @@
     {% elseif type == 'default' %}
         {% set cardContent %}
             {{ common_image_content }}
-            <div part="wrapper" class="card__wrapper {{ aspectRatio }}">
-                <div part="content" class="card__content">
+            <div class="card__wrapper {{ aspectRatio }}">
+                <div class="card__content">
                     {{ common_eyebrow_content }}
                     {{ common_heading_content }}
                     {{ common_copy_content }}
@@ -175,8 +173,8 @@
                 {{ common_image_content }}
             </div>
             <div class="fg-1 fs-1 fb-0">
-            <div part="wrapper" class="card__wrapper as-1-1">
-                <div part="content" class="card__content">
+            <div class="card__wrapper as-1-1">
+                <div class="card__content">
                     {{ common_heading_content }}
                 </div>
             </div>
@@ -198,8 +196,8 @@
                 {{ common_image_content }}
             </div>
             <div class="fg-1 fs-1 fb-0">
-            <div part="wrapper" class="card__wrapper as-1-1">
-                <div part="content" class="card__content pa-32">
+            <div class="card__wrapper as-1-1">
+                <div class="card__content pa-32">
                     {{ common_eyebrow_content }}
                     {{ common_heading_content }}
                     {{ common_copy_content }}
