@@ -272,13 +272,39 @@
 .btn-link {
   font-weight: @btn-font-weight;
   color: var(--link-primary);
+  gap: var(--spacing-02);
   height: auto;
   line-height: normal;
   padding: 0;
-  &:hover,
-  &:focus { text-decoration: none; }
+  .outline();
 
-  i { font-size: 18px; }
+  span {
+    position: relative;
+  }
+
+  span:before {
+    content: '';
+    position: absolute;
+    background-color: transparent;
+    pointer-events: none;
+    width: 100%;
+    height: 1px;
+    bottom: -1px;
+    transition: var(--transition-all-productive);
+  }
+
+  i { font-size: calc(1em + 2px); }
+
+  &:hover {
+    span:before {
+      background-color: var(--link-primary-hover);
+    }
+  }
+
+  &:hover,
+  &:focus { 
+    text-decoration: none;
+  }
 }
 
 .btn-info {
