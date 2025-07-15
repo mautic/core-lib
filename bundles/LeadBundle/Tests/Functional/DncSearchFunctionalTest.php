@@ -12,6 +12,8 @@ final class DncSearchFunctionalTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback = false;
 
+    private const MESSAGE_EMAIL_DNC_SHOULD_APPEAR_IN_EMAIL_SEARCH = 'Contact with email DNC should appear in dnc:email search';
+
     public function testDncSearchWithAnyChannel(): void
     {
         // Create test contacts
@@ -49,7 +51,7 @@ final class DncSearchFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful();
         $responseText = $crawler->text();
 
-        $this->assertStringContainsString($contact1->getEmail(), $responseText, 'Contact with email DNC should appear in dnc:email search');
+        $this->assertStringContainsString($contact1->getEmail(), $responseText, self::MESSAGE_EMAIL_DNC_SHOULD_APPEAR_IN_EMAIL_SEARCH);
         $this->assertStringNotContainsString($contact2->getEmail(), $responseText, 'Contact with SMS DNC should not appear in dnc:email search');
         $this->assertStringNotContainsString($contact3->getEmail(), $responseText, 'Contact without DNC should not appear in dnc:email search');
 
@@ -109,8 +111,8 @@ final class DncSearchFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful();
         $responseText = $crawler->text();
 
-        $this->assertStringContainsString($contact1->getEmail(), $responseText, 'Contact with email DNC should appear in dnc:email search');
-        $this->assertStringContainsString($contact2->getEmail(), $responseText, 'Contact with email DNC should appear in dnc:email search');
+        $this->assertStringContainsString($contact1->getEmail(), $responseText, self::MESSAGE_EMAIL_DNC_SHOULD_APPEAR_IN_EMAIL_SEARCH);
+        $this->assertStringContainsString($contact2->getEmail(), $responseText, self::MESSAGE_EMAIL_DNC_SHOULD_APPEAR_IN_EMAIL_SEARCH);
         $this->assertStringNotContainsString($contact3->getEmail(), $responseText, 'Contact without email DNC should not appear in dnc:email search');
 
         // Test dnc:sms - should return only contact1
@@ -142,4 +144,4 @@ final class DncSearchFunctionalTest extends MauticMysqlTestCase
             [\Doctrine\DBAL\Types\Types::INTEGER, \Doctrine\DBAL\Types\Types::STRING, \Doctrine\DBAL\Types\Types::INTEGER, \Doctrine\DBAL\Types\Types::STRING, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE]
         );
     }
-} 
+}

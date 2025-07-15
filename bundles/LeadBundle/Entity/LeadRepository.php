@@ -945,15 +945,12 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
                 $anyKeyword = $this->translator->trans('mautic.lead.lead.searchcommand.dnc.any');
                 $anyKeywordEn = $this->translator->trans('mautic.lead.lead.searchcommand.dnc.any', [], null, 'en_US');
                 if ($string === $anyKeyword || $string === $anyKeywordEn) {
-                    // DNC for any channel
                     $sq = $this->getEntityManager()->getConnection()->createQueryBuilder();
                     $sq->select('1')
                         ->from(MAUTIC_TABLE_PREFIX.'lead_donotcontact', 'dnc')
                         ->where($q->expr()->eq('l.id', 'dnc.lead_id'));
                     $returnParameter = false;
                 } else {
-                    // DNC per channel filter
-                    $channel = $string;
                     $sq      = $this->getEntityManager()->getConnection()->createQueryBuilder();
                     $sq->select('1')
                         ->from(MAUTIC_TABLE_PREFIX.'lead_donotcontact', 'dnc')
