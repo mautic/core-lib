@@ -42,9 +42,12 @@ class ModeratedCommandTest extends TestCase
         $this->output               = new NullOutput();
         $this->fakeModeratedCommand = new FakeModeratedCommand($this->pathsHelper, $this->coreParametersHelper);
 
-        // Set the lockFile property using reflection
+        // Safe: test-only reflection to inject value into a non-public $lockFile property.
+        // Justification: The class under test has no public setter, and this setup is needed for accurate test coverage.
         $reflection = new \ReflectionClass($this->fakeModeratedCommand);
         $property   = $reflection->getProperty('lockFile');
+        // Defensive: setAccessible(true) ensures future-proofing if visibility changes to private.
+        $property->setAccessible(true);
         $property->setValue($this->fakeModeratedCommand, $this->lockFilePath);
     }
 
