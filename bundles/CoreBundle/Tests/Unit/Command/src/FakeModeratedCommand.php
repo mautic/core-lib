@@ -5,6 +5,7 @@ namespace Mautic\CoreBundle\Tests\Unit\Command\src;
 use Mautic\CoreBundle\Command\ModeratedCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Lock\LockInterface;
 
 class FakeModeratedCommand extends ModeratedCommand
 {
@@ -25,5 +26,12 @@ class FakeModeratedCommand extends ModeratedCommand
     public function forceCompleteRun(): void
     {
         $this->completeRun();
+    }
+
+    public function setLock(?LockInterface $lock = null): void
+    {
+        $reflection = new \ReflectionClass($this);
+        $property   = $reflection->getParentClass()->getProperty('lock');
+        $property->setValue($this, $lock);
     }
 }

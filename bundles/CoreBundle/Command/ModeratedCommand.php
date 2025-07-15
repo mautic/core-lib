@@ -135,7 +135,9 @@ abstract class ModeratedCommand extends Command
         }
 
         // Attempt to keep things tidy
-        @unlink($this->lockFile);
+        if ($this->lockFile && is_file($this->lockFile)) {
+            unlink($this->lockFile);
+        }
     }
 
     private function checkStatus(): bool
