@@ -397,7 +397,7 @@
         <h3 class="pt-lg">{{ 'mautic.form.form.help.automaticcopy.iframe'|trans }}</h3>
         {{ include('@MauticCore/Components/code-snippet.html.twig', {
             'variant': 'single',
-            'innerText': ('<iframe src="' ~ absolute_url(path('mautic_form_preview', {'id': activeForm.id})) ~ '" width="300" height="300"><p>Your browser does not support iframes.</p></iframe>')
+            'innerText': ('<iframe src="' ~ absolute_url(path('mautic_form_preview', {'id': activeForm.id})) ~ '" width="300" height="300" title="' ~ ('mautic.form.form.iframe.title'|trans) ~ '"><p>Your browser does not support iframes.</p></iframe>')
         }) }}
         <i>{{ 'mautic.form.form.help.automaticcopy.iframe.note'|trans }}</i>
     {% endset %}
