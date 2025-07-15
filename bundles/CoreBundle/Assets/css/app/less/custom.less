@@ -666,11 +666,21 @@ code:hover > .copy-icon {
       min-height: 24px;
       display: flex;
       text-wrap: nowrap;
-      overflow-x: auto;
+      align-items: center;
     }
     &:has(button) {
       code {
         padding-inline-end: 30px;
+
+        &:before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to right, transparent 80%, var(--layer) 95%);
+          border-top-right-radius: clamp(4px, var(--border-radius-sm), 6px);
+          border-bottom-right-radius: clamp(4px, var(--border-radius-sm), 6px);
+          pointer-events: none;
+        }
       }
     }
     button {
