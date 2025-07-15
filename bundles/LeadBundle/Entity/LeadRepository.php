@@ -942,7 +942,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
                 break;
             case $this->translator->trans('mautic.lead.lead.searchcommand.dnc'):
             case $this->translator->trans('mautic.lead.lead.searchcommand.dnc', [], null, 'en_US'):
-                $anyKeyword = $this->translator->trans('mautic.lead.lead.searchcommand.dnc.any');
+                $anyKeyword   = $this->translator->trans('mautic.lead.lead.searchcommand.dnc.any');
                 $anyKeywordEn = $this->translator->trans('mautic.lead.lead.searchcommand.dnc.any', [], null, 'en_US');
                 if ($string === $anyKeyword || $string === $anyKeywordEn) {
                     $sq = $this->getEntityManager()->getConnection()->createQueryBuilder();
