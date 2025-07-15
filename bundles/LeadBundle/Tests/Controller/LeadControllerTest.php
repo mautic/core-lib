@@ -562,7 +562,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         $user       = $userHelper->getUser();
 
         Assert::assertSame('Ahoy contact@an.email', $email->getSubject());
-        Assert::assertMatchesRegularExpression('#Your email is <b>contact@an\.email<\/b>. Company details: Mautic, Pune.<img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif" alt="" \/>#', $email->getHtmlBody());
+        Assert::assertMatchesRegularExpression('#Your email is <b>contact@an\.email<\/b>. Company details: Mautic, Pune.<img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif\?ct=[^" ]*" alt="" \/>#', $email->getHtmlBody());
         $expectedText = <<<EMAIL
 Your email is contact@an.email. Company details:
 Mautic, Pune.
