@@ -23,6 +23,7 @@ use Mautic\FormBundle\Form\Type\FormListType;
 use Mautic\LeadBundle\Form\Type\LeadListType;
 use Mautic\LeadBundle\Helper\FormFieldHelper;
 use Mautic\PageBundle\Form\Type\PreferenceCenterListType;
+use Mautic\ProjectBundle\Form\Type\ProjectType;
 use Mautic\StageBundle\Model\StageModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -396,10 +397,12 @@ class EmailType extends AbstractType
                     !empty($data['variantParent'])
                 );
 
-                if (isset($data['emailType']) && 'list' == $data['emailType']) {
-                    $data['translationParent'] = $data['segmentTranslationParent'] ?? null;
-                } else {
-                    $data['translationParent'] = $data['templateTranslationParent'] ?? null;
+                $emailType = $data['emailType'] ?? null;
+
+                if ('list' === $emailType && isset($data['segmentTranslationParent'])) {
+                    $data['translationParent'] = $data['segmentTranslationParent'];
+                } elseif (isset($data['templateTranslationParent'])) {
+                    $data['translationParent'] = $data['templateTranslationParent'];
                 }
 
                 $event->setData($data);
@@ -463,6 +466,8 @@ class EmailType extends AbstractType
                 'required' => true,
             ]
         );
+
+        $builder->add('projects', ProjectType::class);
 
         $transformer = new IdToEntityModelTransformer(
             $this->em,
