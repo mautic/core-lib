@@ -1625,7 +1625,7 @@ class MailHelperTest extends TestCase
 
     public function testClearMetadataAfterSend(): void
     {
-        $this->coreParametersHelper->method('get')->will($this->returnValueMap($this->defaultParams));
+        $this->coreParametersHelper->method('get')->willReturnMap($this->defaultParams);
 
         $transport     = new BatchTransport();
         $symfonyMailer = new Mailer($transport);
