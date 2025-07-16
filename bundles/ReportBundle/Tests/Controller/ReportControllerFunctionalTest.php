@@ -401,7 +401,7 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
      * @throws MappingException
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('scheduleProvider')]
-    public function testScheduleEdit(string $oldScheduleUnit, ?string $oldScheduleDay, ?string $oldScheduleMonthFrequency, string $newScheduleUnit, ?string $newScheduleDay, ?string $newScheduleMonthFrequency): void
+    public function testScheduleEdit(?string $oldScheduleUnit, ?string $oldScheduleDay, ?string $oldScheduleMonthFrequency, string $newScheduleUnit, ?string $newScheduleDay, ?string $newScheduleMonthFrequency): void
     {
         $report = new Report();
         $report->setToAddress('test@test.com');
