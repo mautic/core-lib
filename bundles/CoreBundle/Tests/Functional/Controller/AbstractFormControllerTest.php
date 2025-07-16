@@ -58,7 +58,7 @@ class AbstractFormControllerTest extends MauticMysqlTestCase
     {
         $objectId    = 1;
         $objectModel = 'form.form';
-        $returnUrl   = 'http://malicious.com/s/forms';
+        $returnUrl   = 'https://malicious.com/s/forms';
 
         $this->client->request(
             'GET',
