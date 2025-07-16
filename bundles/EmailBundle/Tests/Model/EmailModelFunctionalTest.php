@@ -130,12 +130,9 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         [$sentCount, $failedCount, $failedRecipientsByList]     = $this->emailModel->sendEmailToLists($email, [$segment], 4, 2);
         $this->assertEquals($sentCount, 4);
         [$sentCount, $failedCount, $failedRecipientsByList] = $this->emailModel->sendEmailToLists($email, [$segment], 3, 2);
-        [$sentCount, $failedCount, $failedRecipientsByList] = $this->emailModel->sendEmailToLists($email, [$segment], 3, 2);
         $this->assertEquals($sentCount, 3);
         [$sentCount, $failedCount, $failedRecipientsByList] = $this->emailModel->sendEmailToLists($email, [$segment], 2);
-        [$sentCount, $failedCount, $failedRecipientsByList] = $this->emailModel->sendEmailToLists($email, [$segment], 2);
         $this->assertEquals($sentCount, 2);
-        [$sentCount, $failedCount, $failedRecipientsByList] = $this->emailModel->sendEmailToLists($email, [$segment], 4);
         [$sentCount, $failedCount, $failedRecipientsByList] = $this->emailModel->sendEmailToLists($email, [$segment], 4);
         $this->assertEquals($sentCount, 1);
 
