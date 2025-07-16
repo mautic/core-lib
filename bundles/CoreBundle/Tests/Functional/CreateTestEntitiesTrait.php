@@ -51,6 +51,18 @@ trait CreateTestEntitiesTrait
         return $campaign;
     }
 
+    private function createPrimaryCompanyForLead(Lead $lead, Company $company, bool $isPrimary = true): CompanyLead
+    {
+        $companyLead = new CompanyLead();
+        $companyLead->setCompany($company);
+        $companyLead->setLead($lead);
+        $companyLead->setDateAdded(new \DateTime());
+        $companyLead->setPrimary($isPrimary);
+        $this->em->persist($companyLead);
+
+        return $companyLead;
+    }
+
     /**
      * @param mixed[] $properties
      */

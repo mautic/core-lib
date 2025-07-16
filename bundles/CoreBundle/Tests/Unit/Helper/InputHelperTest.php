@@ -45,6 +45,7 @@ class InputHelperTest extends TestCase
             $script                         => $script,
             $unicode                        => $unicode,
             '<applet>content</applet>'      => 'content',
+            '<p>👍</p>'                      => '<p>👍</p>',
         ];
 
         foreach ($samples as $sample => $expected) {
