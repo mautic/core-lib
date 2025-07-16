@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Mautic\CoreBundle\Tests\Unit\Controller;
+namespace Mautic\CoreBundle\Tests\Functional\Controller;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Response;
 
-class AbstractFormControllerFunctionalTest extends MauticMysqlTestCase
+class AbstractFormControllerTest extends MauticMysqlTestCase
 {
     public function testUnlockActionWithValidReturnUrl(): void
     {
