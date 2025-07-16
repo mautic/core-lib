@@ -86,7 +86,7 @@ class ReportExporterTest extends \PHPUnit\Framework\TestCase
         $reportDataAdapter->expects($invokedCount)
             ->method('getReportData')
             ->willReturnCallback(function (Report $report, ReportExportOptions $exportOptions) use ($reportNow, $report2, $report1, $reportDataResult, $invokedCount): ReportDataResult {
-                $invocationCount = $invokedCount->getInvocationCount();
+                $invocationCount = $invokedCount->numberOfInvocations();
                 if (0 < $invocationCount && $invocationCount <= 6) {
                     self::assertSame($report1, $report);
                     self::assertEquals((new \DateTime())->setTime(0, 0), $exportOptions->getDateFrom());
