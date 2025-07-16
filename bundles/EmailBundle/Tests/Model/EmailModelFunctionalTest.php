@@ -10,7 +10,6 @@ use Doctrine\ORM\OptimisticLockException;
 use Mautic\CoreBundle\Entity\IpAddress;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
-use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Model\EmailModel;
@@ -22,20 +21,9 @@ use Mautic\PageBundle\Entity\Hit;
 use Mautic\PageBundle\Entity\Redirect;
 use Mautic\PageBundle\Entity\Trackable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class EmailModelFunctionalTest extends MauticMysqlTestCase
 {
-    use CreateTestEntitiesTrait;
-
-    private EmailModel|ContainerInterface $emailModel;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->emailModel = static::getContainer()->get('mautic.email.model.email');
-    }
-
     use CreateTestEntitiesTrait;
 
     private EmailModel|ContainerInterface $emailModel;
