@@ -6,7 +6,6 @@ namespace Mautic\EmailBundle\Tests\Controller;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
-use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
 use Mautic\EmailBundle\Entity\Email;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 final class EmailExampleFunctionalTest extends MauticMysqlTestCase
 {
     use CreateTestEntitiesTrait;
-    use CreateTestEntitiesTrait;
+
     protected $useCleanupRollback = false;
 
     protected function setUp(): void
@@ -65,7 +64,6 @@ final class EmailExampleFunctionalTest extends MauticMysqlTestCase
     {
         $email = $this->createEmail();
         $email->setCustomHtml('Contact emails is {contactfield=email}. Company details: {contactfield=companyname}, {contactfield=companycity}.');
-        $email->setCustomHtml('Contact emails is {contactfield=email}. Company details: {contactfield=companyname}, {contactfield=companycity}.');
         $this->em->flush();
         $this->em->clear();
 
@@ -79,7 +77,6 @@ final class EmailExampleFunctionalTest extends MauticMysqlTestCase
         $message = $this->getMailerMessagesByToAddress('admin@yoursite.com')[0];
 
         Assert::assertSame('[TEST] [TEST] Email subject', $message->getSubject());
-        Assert::assertStringContainsString('Contact emails is [Email]. Company details: [Company Name], [City].', $message->getBody()->toString());
         Assert::assertStringContainsString('Contact emails is [Email]. Company details: [Company Name], [City].', $message->getBody()->toString());
     }
 
