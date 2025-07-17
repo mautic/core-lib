@@ -120,7 +120,8 @@
   "prefer-stable": true,
   "config": {
     "preferred-install": "dist",
-    "autoloader-suffix": "Mautic4"
+    "autoloader-suffix": "Mautic4",
+    "sort-packages": true
   },
   "extra": {
     "mautic-scaffold": {
