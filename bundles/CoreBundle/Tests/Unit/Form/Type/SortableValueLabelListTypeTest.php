@@ -19,13 +19,13 @@ class SortableValueLabelListTypeTest extends TestCase
         $call = 0;
         $builder->expects($this->exactly(2))
             ->method('add')
-            ->with($this->callback(function ($name) use (&$call) {
+            ->with($this->callback(function ($name) {
                 $expected = [
                     ['label', 'value'],
                 ];
                 return in_array($name, $expected[0], true);
             }),
-            $this->callback(function ($type) use (&$call) {
+            $this->callback(function ($type) {
                 return $type === TextType::class;
             }),
             $this->callback(function ($options) use (&$call) {
@@ -67,9 +67,13 @@ class SortableValueLabelListTypeTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<int, array{string, string}>
+     */
     public static function slugifyDataProvider(): array
     {
-        return [
+        /** @var array<int, array{string, string}> $data */
+        $data = [
             ['My Option', 'my_option'],
             ['First Choice!', 'first_choice'],
             ['Test-Value_123', 'test_value_123'],
@@ -80,5 +84,6 @@ class SortableValueLabelListTypeTest extends TestCase
             ['', ''],
             ['123Numbers', '123numbers'],
         ];
+        return $data;
     }
 }
