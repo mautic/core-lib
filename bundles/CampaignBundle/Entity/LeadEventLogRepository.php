@@ -157,7 +157,8 @@ class LeadEventLogRepository extends CommonRepository
             ->leftJoin('ll', MAUTIC_TABLE_PREFIX.'campaign_events', 'e', 'e.id = ll.event_id')
             ->leftJoin('ll', MAUTIC_TABLE_PREFIX.'campaigns', 'c', 'c.id = e.campaign_id')
             ->leftJoin('ll', MAUTIC_TABLE_PREFIX.'leads', 'l', 'l.id = ll.lead_id')
-            ->where($query->expr()->eq('ll.is_scheduled', 1));
+            ->where($query->expr()->eq('ll.is_scheduled', 1))
+            ->andWhere('ll.trigger_date > NOW()');
 
         if (isset($options['lead'])) {
             /** @var \Mautic\CoreBundle\Entity\IpAddress $ip */
@@ -171,7 +172,7 @@ class LeadEventLogRepository extends CommonRepository
 
         if (isset($options['type'])) {
             $query->andwhere('e.type = :type')
-                  ->setParameter('type', $options['type']);
+            ->setParameter('type', $options['type']);
         }
 
         if (isset($options['eventType'])) {
