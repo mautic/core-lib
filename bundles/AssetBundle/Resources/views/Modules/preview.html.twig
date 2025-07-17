@@ -35,7 +35,7 @@ Variables
         {% if activeAsset.isImage() %}
         <div class="asset-preview--image">
             <div class="asset-preview__label">
-                {% include '@MauticCore/Components/tag.html.twig' with {
+                {% include '@MauticCore/Helper/_tag.html.twig' with {
                     tags: [
                         {
                             label: 'mautic.asset.click_to_zoom',
@@ -49,7 +49,7 @@ Variables
         </div>
         {% elseif 'pdf' == activeAsset.getFileType()|lower %}
             <div class="asset-preview__label">
-                {% include '@MauticCore/Components/tag.html.twig' with {
+                {% include '@MauticCore/Helper/_tag.html.twig' with {
                     tags: [
                         {
                             label: 'mautic.asset.click_to_view_full_size',
@@ -92,14 +92,15 @@ Variables
 {% elseif variant == 'dialog' %}
     {% set modalId = 'asset-dialog-preview-modal-' ~ activeAsset.id|default('new') %}
     {% if isPreviewable %}
-        {% include '@MauticCore/Components/tile--mini.html.twig' with {
-            link: '#',
-            title: 'mautic.core.open_preview',
-            icon: 'ri-window-2-line',
+        {% include '@MauticCore/Components/tile.html.twig' with {
+            type: 'mini',
+            href: '#',
+            title: 'mautic.asset.open_preview',
+            icon: 'ri-rectangle-line',
             attributes: {
                 'data-toggle': 'modal',
                 'data-target': '#' ~ modalId
-            },
+            }
         } %}
     {% endif %}
 
