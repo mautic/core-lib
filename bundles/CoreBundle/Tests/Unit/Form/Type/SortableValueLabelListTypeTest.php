@@ -6,7 +6,6 @@ use Mautic\CoreBundle\Form\Type\SortableValueLabelListType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
 class SortableValueLabelListTypeTest extends TestCase
@@ -14,7 +13,7 @@ class SortableValueLabelListTypeTest extends TestCase
     public function testBuildFormMakesValueOptional(): void
     {
         $builder = $this->createMock(FormBuilderInterface::class);
-        $type = new SortableValueLabelListType();
+        $type    = new SortableValueLabelListType();
 
         $call = 0;
         $builder->expects($this->exactly(2))
@@ -23,30 +22,32 @@ class SortableValueLabelListTypeTest extends TestCase
                 $expected = [
                     ['label', 'value'],
                 ];
+
                 return in_array($name, $expected[0], true);
             }),
-            $this->callback(function ($type) {
-                return $type === TextType::class;
-            }),
-            $this->callback(function ($options) use (&$call) {
-                $expectedOptions = [
-                    [
-                        'label'          => 'mautic.core.label',
-                        'error_bubbling' => true,
-                        'attr'           => ['class' => 'form-control'],
-                    ],
-                    [
-                        'label'          => 'mautic.core.value',
-                        'error_bubbling' => true,
-                        'required'       => false,
-                        'attr'           => ['class' => 'form-control'],
-                    ],
-                ];
-                $result = $options === $expectedOptions[$call];
-                $call++;
-                return $result;
-            })
-        );
+                $this->callback(function ($type) {
+                    return TextType::class === $type;
+                }),
+                $this->callback(function ($options) use (&$call) {
+                    $expectedOptions = [
+                        [
+                            'label'          => 'mautic.core.label',
+                            'error_bubbling' => true,
+                            'attr'           => ['class' => 'form-control'],
+                        ],
+                        [
+                            'label'          => 'mautic.core.value',
+                            'error_bubbling' => true,
+                            'required'       => false,
+                            'attr'           => ['class' => 'form-control'],
+                        ],
+                    ];
+                    $result = $options === $expectedOptions[$call];
+                    ++$call;
+
+                    return $result;
+                })
+            );
 
         $builder->expects($this->once())
             ->method('addEventListener')
@@ -58,9 +59,9 @@ class SortableValueLabelListTypeTest extends TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('slugifyDataProvider')]
     public function testSlugifyMethod(string $input, string $expected): void
     {
-        $type = new SortableValueLabelListType();
+        $type       = new SortableValueLabelListType();
         $reflection = new \ReflectionClass($type);
-        $method = $reflection->getMethod('slugify');
+        $method     = $reflection->getMethod('slugify');
         $method->setAccessible(true);
 
         $result = $method->invoke($type, $input);
@@ -84,6 +85,7 @@ class SortableValueLabelListTypeTest extends TestCase
             ['', ''],
             ['123Numbers', '123numbers'],
         ];
+
         return $data;
     }
 }

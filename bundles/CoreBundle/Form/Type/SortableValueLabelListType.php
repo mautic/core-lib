@@ -43,9 +43,9 @@ class SortableValueLabelListType extends AbstractType
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event): void {
                 $data = $event->getData();
-                
-                if (is_array($data) 
-                    && empty($data['value']) 
+
+                if (is_array($data)
+                    && empty($data['value'])
                     && !empty($data['label'])
                 ) {
                     $data['value'] = $this->slugify((string) $data['label']);
@@ -72,22 +72,22 @@ class SortableValueLabelListType extends AbstractType
     {
         // Replace non-letter or digits with underscores
         $text = preg_replace('~[^\pL\d]+~u', '_', $text);
-        
+
         // Transliterate to ASCII
         $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text) ?: $text;
-        
+
         // Remove unwanted characters
         $text = preg_replace('~[^_\w]+~', '', $text);
-        
+
         // Trim underscores from start and end
         $text = trim($text, '_');
-        
+
         // Convert to lowercase
         $text = mb_strtolower($text, 'UTF-8');
-        
+
         // Remove duplicate underscores
         $text = preg_replace('~_+~', '_', $text);
-        
+
         return $text;
     }
 }
