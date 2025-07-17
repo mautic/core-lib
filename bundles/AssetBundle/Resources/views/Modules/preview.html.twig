@@ -1,7 +1,3 @@
-{# 
-Variables
-- variant: interactive, dialog
-#}
 {% set variant = variant|default('interactive') %}
 {% set isPreviewable = activeAsset.isImage() or 'pdf' == activeAsset.getFileType()|lower or activeAsset.getMime() starts with 'video' or activeAsset.getMime() starts with 'audio' %}
 
