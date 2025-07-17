@@ -11216,8 +11216,10 @@ code:hover > .copy-icon {
   position: relative;
   z-index: 999999;
 }
-.asset-preview:hover .asset-preview__label,
-.asset-preview:focus .asset-preview__label {
+.asset-preview:hover .asset-preview__label {
+  opacity: 0.5;
+}
+.asset-preview .asset-preview__label:has(a:focus) {
   opacity: 0.5;
 }
 .asset-preview--image {

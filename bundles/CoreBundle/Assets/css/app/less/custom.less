@@ -658,10 +658,14 @@ code:hover > .copy-icon {
   position: relative;
   z-index: 999999;
 
-  &:hover, &:focus {
+  &:hover {
     .asset-preview__label {
       opacity: 0.5;
     }
+  }
+  
+  .asset-preview__label:has(a:focus) {
+    opacity: 0.5;
   }
 }
 
