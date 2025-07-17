@@ -87,7 +87,7 @@
     "symfony/mailer": "^7.3",
     "symfony/messenger": "^7.3",
     "symfony/mime": "^7.3",
-    "symfony/monolog-bridge": "^6.4",
+    "symfony/monolog-bridge": "^7.3",
     "symfony/monolog-bundle": "~3.10.0",
     "symfony/options-resolver": "^7.3",
     "symfony/polyfill-mbstring": "~1.0",
