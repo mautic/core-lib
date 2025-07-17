@@ -190,8 +190,7 @@ class SortableValueLabelListTypeTest extends TestCase
      */
     public static function slugifyDataProvider(): array
     {
-        /** @var array<int, array{string, string}> $data */
-        $data = [
+        return [
             ['My Option', 'my_option'],
             ['First Choice!', 'first_choice'],
             ['Test-Value_123', 'test_value_123'],
@@ -202,7 +201,5 @@ class SortableValueLabelListTypeTest extends TestCase
             ['', ''],
             ['123Numbers', '123numbers'],
         ];
-
-        return $data;
     }
 }

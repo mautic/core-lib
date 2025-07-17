@@ -71,7 +71,7 @@ class SortableValueLabelListType extends AbstractType
     {
         $text = preg_replace('~[^\pL\d]+~u', '_', $text);
         $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text) ?: $text;
-        $text = preg_replace('~[^_\w]+~', '', $text);
+        $text = preg_replace('~[^\w]+~', '', $text);
         $text = trim($text, '_');
         $text = mb_strtolower($text, 'UTF-8');
 
