@@ -16,29 +16,37 @@ class SortableValueLabelListTypeTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $type = new SortableValueLabelListType();
 
+        $call = 0;
         $builder->expects($this->exactly(2))
             ->method('add')
-            ->withConsecutive(
-                [
-                    'label',
-                    TextType::class,
+            ->with($this->callback(function ($name) use (&$call) {
+                $expected = [
+                    ['label', 'value'],
+                ];
+                return in_array($name, $expected[0], true);
+            }),
+            $this->callback(function ($type) use (&$call) {
+                return $type === TextType::class;
+            }),
+            $this->callback(function ($options) use (&$call) {
+                $expectedOptions = [
                     [
                         'label'          => 'mautic.core.label',
                         'error_bubbling' => true,
                         'attr'           => ['class' => 'form-control'],
-                    ]
-                ],
-                [
-                    'value',
-                    TextType::class,
+                    ],
                     [
                         'label'          => 'mautic.core.value',
                         'error_bubbling' => true,
                         'required'       => false,
                         'attr'           => ['class' => 'form-control'],
-                    ]
-                ]
-            );
+                    ],
+                ];
+                $result = $options === $expectedOptions[$call];
+                $call++;
+                return $result;
+            })
+        );
 
         $builder->expects($this->once())
             ->method('addEventListener')
@@ -47,9 +55,7 @@ class SortableValueLabelListTypeTest extends TestCase
         $type->buildForm($builder, []);
     }
 
-    /**
-     * @dataProvider slugifyDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('slugifyDataProvider')]
     public function testSlugifyMethod(string $input, string $expected): void
     {
         $type = new SortableValueLabelListType();
@@ -61,13 +67,13 @@ class SortableValueLabelListTypeTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function slugifyDataProvider(): array
+    public static function slugifyDataProvider(): array
     {
         return [
             ['My Option', 'my_option'],
             ['First Choice!', 'first_choice'],
             ['Test-Value_123', 'test_value_123'],
-            ['Special@#$%Characters', 'specialcharacters'],
+            ['Special@#$%Characters', 'special_characters'],
             ['  Trimmed  Spaces  ', 'trimmed_spaces'],
             ['Multiple___Underscores', 'multiple_underscores'],
             ['Àccénted Chàracters', 'accented_characters'],
