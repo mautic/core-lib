@@ -5,7 +5,7 @@
     {% if activeAsset.isImage() %}
         <img src="{{ assetDownloadUrl ~ '?stream=1' }}" alt="{{ activeAsset.getTitle()|escape }}" class="img-thumbnail" />
     {% elseif 'pdf' == activeAsset.getFileType()|lower %}
-        <iframe src="{{ assetDownloadUrl ~ '?stream=1#view=FitH' }}" style="width: 100%; height: 70vh; border: none;"></iframe>
+        <iframe src="{{ assetDownloadUrl ~ '?stream=1#view=FitH' }}" style="width: 100%; height: 70vh; border: none;" title="{{ 'mautic.asset.preview.pdf_iframe_title'|trans({'%title%': activeAsset.getTitle()|escape}) }}"></iframe>
     {% elseif activeAsset.getMime() starts with 'video' or activeAsset.getExtension() in ['mpg', 'mpeg', 'mp4', 'webm'] %}
         <video src="{{ assetDownloadUrl ~ '?stream=1' }}" controls style="width: 100%;">
             {{ 'mautic.asset.no_video_support'|trans }}
@@ -61,7 +61,7 @@
                 } %}
             </div>
             <div class="pdf-preview-thumbnail">
-                <iframe src="{{ assetDownloadUrl ~ '?stream=1' }}#view=FitH" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 4px;"></iframe>
+                <iframe src="{{ assetDownloadUrl ~ '?stream=1' }}#view=FitH" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 4px;" title="{{ 'mautic.asset.preview.pdf_iframe_title'|trans({'%title%': activeAsset.getTitle()|escape}) }}"></iframe>
             </div>
             
             {% include '@MauticCore/Components/modal.html.twig' with {
@@ -70,7 +70,7 @@
                 type: 'productive',
                 modalHeading: activeAsset.getTitle()|escape,
                 modalAriaLabel: 'PDF Preview',
-                modalContent: '<iframe src="' ~ assetDownloadUrl ~ '?stream=1#view=FitH" style="width: 100%; height: 70vh; border: none;"></iframe>',
+                modalContent: '<iframe src="' ~ assetDownloadUrl ~ '?stream=1#view=FitH" style="width: 100%; height: 70vh; border: none;" title="' ~ ("mautic.asset.preview.pdf_iframe_title"|trans({'%title%': activeAsset.getTitle()|escape})) ~ '"></iframe>',
                 hasScrollingContent: false
             } %}
         {% else %}
