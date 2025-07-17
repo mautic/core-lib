@@ -38,7 +38,6 @@ class SortableValueLabelListType extends AbstractType
             ]
         );
 
-        // Auto-generate value from label if value is empty
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event): void {
@@ -70,22 +69,11 @@ class SortableValueLabelListType extends AbstractType
      */
     private function slugify(string $text): string
     {
-        // Replace non-letter or digits with underscores
         $text = preg_replace('~[^\pL\d]+~u', '_', $text);
-
-        // Transliterate to ASCII
         $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text) ?: $text;
-
-        // Remove unwanted characters
         $text = preg_replace('~[^_\w]+~', '', $text);
-
-        // Trim underscores from start and end
         $text = trim($text, '_');
-
-        // Convert to lowercase
         $text = mb_strtolower($text, 'UTF-8');
-
-        // Remove duplicate underscores
         $text = preg_replace('~_+~', '_', $text);
 
         return $text;
