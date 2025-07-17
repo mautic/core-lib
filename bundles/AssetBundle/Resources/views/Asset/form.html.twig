@@ -76,6 +76,7 @@
 		    		<div class="tile jc-center">
 				    	<div class="form-group col-xs-12 ">
 				    		{{- include('@MauticAsset/Modules/preview.html.twig', {
+								'variant': 'interactive',
 								'activeAsset' : activeAsset,
 								'assetDownloadUrl' : url('mautic_asset_action',
                                 {'objectAction' : 'preview', 'objectId' : activeAsset.getId()}
