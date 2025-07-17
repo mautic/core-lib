@@ -101,197 +101,76 @@ class SortableValueLabelListTypeTest extends TestCase
         $this->assertEquals([], $view->vars['postaddon']);
     }
 
-    public function testFormEventListenerWithNonArrayData(): void
+    private function getEventListenerFromBuildForm(SortableValueLabelListType $type, FormBuilderInterface $builder): callable
     {
-        $type    = new SortableValueLabelListType();
-        $builder = $this->createMock(FormBuilderInterface::class);
-
-        $builder->expects($this->exactly(2))
-            ->method('add');
-
-        $builder->expects($this->once())
-            ->method('addEventListener')
-            ->with(FormEvents::PRE_SUBMIT, $this->isType('callable'));
-
-        $type->buildForm($builder, []);
-    }
-
-    public function testFormEventListenerWithEmptyLabel(): void
-    {
-        $type    = new SortableValueLabelListType();
-        $builder = $this->createMock(FormBuilderInterface::class);
-
-        $builder->expects($this->exactly(2))
-            ->method('add');
-
-        $builder->expects($this->once())
-            ->method('addEventListener')
-            ->with(FormEvents::PRE_SUBMIT, $this->isType('callable'));
-
-        $type->buildForm($builder, []);
-    }
-
-    public function testFormEventListenerWithNonEmptyValue(): void
-    {
-        $type    = new SortableValueLabelListType();
-        $builder = $this->createMock(FormBuilderInterface::class);
-
-        $builder->expects($this->exactly(2))
-            ->method('add');
-
-        $builder->expects($this->once())
-            ->method('addEventListener')
-            ->with(FormEvents::PRE_SUBMIT, $this->isType('callable'));
-
-        $type->buildForm($builder, []);
-    }
-
-    public function testFormEventListenerAutoGeneratesValue(): void
-    {
-        $type    = new SortableValueLabelListType();
-        $builder = $this->createMock(FormBuilderInterface::class);
-
         $eventListener = null;
+        // @phpstan-ignore-next-line
         $builder->expects($this->exactly(2))
             ->method('add');
-
+        // @phpstan-ignore-next-line
         $builder->expects($this->once())
             ->method('addEventListener')
             ->with(FormEvents::PRE_SUBMIT, $this->callback(function ($callback) use (&$eventListener) {
                 $eventListener = $callback;
-
                 return true;
             }));
-
         $type->buildForm($builder, []);
-
         $this->assertNotNull($eventListener, 'Event listener should be set');
+        return $eventListener;
+    }
 
+    /**
+     * @dataProvider eventListenerDataProvider
+     */
+    public function testFormEventListenerVariants(mixed $data, bool $shouldSetData, ?string $expectedValue = null): void
+    {
+        $type    = new SortableValueLabelListType();
+        $builder = $this->createMock(FormBuilderInterface::class);
+        $eventListener = $this->getEventListenerFromBuildForm($type, $builder);
         $event = $this->createMock(FormEvent::class);
-        $data  = [
-            'label' => 'Test Label',
-            'value' => '',
+        $event->expects($this->once())
+            ->method('getData')
+            ->willReturn($data);
+        if ($shouldSetData) {
+            $event->expects($this->once())
+                ->method('setData')
+                ->with($this->callback(function ($newData) use ($data, $expectedValue) {
+                    return $newData['label'] === $data['label'] && $newData['value'] === $expectedValue;
+                }));
+        } else {
+            $event->expects($this->never())
+                ->method('setData');
+        }
+        $eventListener($event);
+    }
+
+    /**
+     * @return array<string, array{mixed, bool, string|null}>
+     */
+    public static function eventListenerDataProvider(): array
+    {
+        return [
+            'auto generates value' => [
+                ['label' => 'Test Label', 'value' => ''],
+                true,
+                'test_label',
+            ],
+            'does not modify when value exists' => [
+                ['label' => 'Test Label', 'value' => 'existing_value'],
+                false,
+                null,
+            ],
+            'does not modify when label empty' => [
+                ['label' => '', 'value' => ''],
+                false,
+                null,
+            ],
+            'handles non-array data' => [
+                'not_an_array',
+                false,
+                null,
+            ],
         ];
-
-        $event->expects($this->once())
-            ->method('getData')
-            ->willReturn($data);
-
-        $event->expects($this->once())
-            ->method('setData')
-            ->with($this->callback(function ($newData) {
-                return 'Test Label' === $newData['label'] && 'test_label' === $newData['value'];
-            }));
-
-        $eventListener($event);
-    }
-
-    public function testFormEventListenerDoesNotModifyWhenValueExists(): void
-    {
-        $type    = new SortableValueLabelListType();
-        $builder = $this->createMock(FormBuilderInterface::class);
-
-        $eventListener = null;
-        $builder->expects($this->exactly(2))
-            ->method('add');
-
-        $builder->expects($this->once())
-            ->method('addEventListener')
-            ->with(FormEvents::PRE_SUBMIT, $this->callback(function ($callback) use (&$eventListener) {
-                $eventListener = $callback;
-
-                return true;
-            }));
-
-        $type->buildForm($builder, []);
-
-        $this->assertNotNull($eventListener, 'Event listener should be set');
-
-        $event = $this->createMock(FormEvent::class);
-        $data  = [
-            'label' => 'Test Label',
-            'value' => 'existing_value',
-        ];
-
-        $event->expects($this->once())
-            ->method('getData')
-            ->willReturn($data);
-
-        $event->expects($this->never())
-            ->method('setData');
-
-        $eventListener($event);
-    }
-
-    public function testFormEventListenerDoesNotModifyWhenLabelEmpty(): void
-    {
-        $type    = new SortableValueLabelListType();
-        $builder = $this->createMock(FormBuilderInterface::class);
-
-        $eventListener = null;
-        $builder->expects($this->exactly(2))
-            ->method('add');
-
-        $builder->expects($this->once())
-            ->method('addEventListener')
-            ->with(FormEvents::PRE_SUBMIT, $this->callback(function ($callback) use (&$eventListener) {
-                $eventListener = $callback;
-
-                return true;
-            }));
-
-        $type->buildForm($builder, []);
-
-        $this->assertNotNull($eventListener, 'Event listener should be set');
-
-        $event = $this->createMock(FormEvent::class);
-        $data  = [
-            'label' => '',
-            'value' => '',
-        ];
-
-        $event->expects($this->once())
-            ->method('getData')
-            ->willReturn($data);
-
-        $event->expects($this->never())
-            ->method('setData');
-
-        $eventListener($event);
-    }
-
-    public function testFormEventListenerHandlesNonArrayData(): void
-    {
-        $type    = new SortableValueLabelListType();
-        $builder = $this->createMock(FormBuilderInterface::class);
-
-        $eventListener = null;
-        $builder->expects($this->exactly(2))
-            ->method('add');
-
-        $builder->expects($this->once())
-            ->method('addEventListener')
-            ->with(FormEvents::PRE_SUBMIT, $this->callback(function ($callback) use (&$eventListener) {
-                $eventListener = $callback;
-
-                return true;
-            }));
-
-        $type->buildForm($builder, []);
-
-        $this->assertNotNull($eventListener, 'Event listener should be set');
-
-        $event = $this->createMock(FormEvent::class);
-        $data  = 'not_an_array';
-
-        $event->expects($this->once())
-            ->method('getData')
-            ->willReturn($data);
-
-        $event->expects($this->never())
-            ->method('setData');
-
-        $eventListener($event);
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('slugifyDataProvider')]
