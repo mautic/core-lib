@@ -112,10 +112,12 @@ class SortableValueLabelListTypeTest extends TestCase
             ->method('addEventListener')
             ->with(FormEvents::PRE_SUBMIT, $this->callback(function ($callback) use (&$eventListener) {
                 $eventListener = $callback;
+
                 return true;
             }));
         $type->buildForm($builder, []);
         $this->assertNotNull($eventListener, 'Event listener should be set');
+
         return $eventListener;
     }
 
@@ -124,10 +126,10 @@ class SortableValueLabelListTypeTest extends TestCase
      */
     public function testFormEventListenerVariants(mixed $data, bool $shouldSetData, ?string $expectedValue = null): void
     {
-        $type    = new SortableValueLabelListType();
-        $builder = $this->createMock(FormBuilderInterface::class);
+        $type          = new SortableValueLabelListType();
+        $builder       = $this->createMock(FormBuilderInterface::class);
         $eventListener = $this->getEventListenerFromBuildForm($type, $builder);
-        $event = $this->createMock(FormEvent::class);
+        $event         = $this->createMock(FormEvent::class);
         $event->expects($this->once())
             ->method('getData')
             ->willReturn($data);
