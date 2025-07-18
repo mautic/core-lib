@@ -251,7 +251,7 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
     {
         $contacts = [
             [
-                'email'     => sprintf('contact1%s@email.com', rand(99999, 999999)),
+                'email'     => sprintf('contact1%s@email.com', mt_rand(99999, 999999)),
                 'firstname' => 'Contact',
                 'lastname'  => 'One',
                 'points'    => 4,
@@ -260,7 +260,7 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
                 'country'   => 'United States',
             ],
             [
-                'email'     => sprintf('contact2%s@email.com', rand(99999, 999999)),
+                'email'     => sprintf('contact2%s@email.com', mt_rand(99999, 999999)),
                 'firstname' => 'Contact',
                 'lastname'  => 'Two',
                 'city'      => 'Boston',
@@ -269,7 +269,7 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
                 'timezone'  => 'America/New_York',
             ],
             [
-                'email'     => sprintf('contact3%s@email.com', rand(99999, 999999)),
+                'email'     => sprintf('contact3%s@email.com', mt_rand(99999, 999999)),
                 'firstname' => 'contact',
                 'lastname'  => 'Three',
             ],
