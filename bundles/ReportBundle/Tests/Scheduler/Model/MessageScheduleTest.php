@@ -33,8 +33,6 @@ class MessageScheduleTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $translatorMock;
 
-    private Report $report;
-
     private MessageSchedule $messageSchedule;
 
     protected function setUp(): void
@@ -43,130 +41,12 @@ class MessageScheduleTest extends \PHPUnit\Framework\TestCase
         $this->fileProperties       = $this->createMock(FileProperties::class);
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $this->translatorMock       = $this->createMock(TranslatorInterface::class);
-        $this->report               = new Report();
         $this->messageSchedule      = new MessageSchedule(
             $this->translatorMock,
             $this->fileProperties,
             $this->coreParametersHelper,
             $this->router
         );
-    }
-
-    /**
-     * @param int $fileSize
-     * @param int $limit
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('sendFileProvider')]
-    public function testSendFile($fileSize, $limit): void
-    {
-        $this->translatorMock->expects($this->once())
-            ->method('trans')
-            ->with('mautic.report.schedule.email.message')
-            ->willReturn('Subject');
-
-        $this->fileProperties->expects($this->once())
-            ->method('getFileSize')
-            ->with('path-to-a-file')
-            ->willReturn($fileSize);
-
-        $this->coreParametersHelper->expects($this->once())
-            ->method('get')
-            ->with('report_export_max_filesize_in_bytes')
-            ->willReturn($limit);
-
-        $this->router->expects($this->once())
-            ->method('generate')
-            ->with('mautic_report_view')
-            ->willReturn('some/route');
-
-        $this->messageSchedule->getMessage($this->report, 'path-to-a-file');
-    }
-
-    public static function sendFileProvider()
-    {
-        return [
-            [10, 100],
-            [100, 100],
-            [1, 1],
-            [1, 1],
-        ];
-    }
-
-    /**
-     * @param int $fileSize
-     * @param int $limit
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('doSendFileProvider')]
-    public function testDoSendFile($fileSize, $limit): void
-    {
-        $this->translatorMock->expects($this->once())
-            ->method('trans')
-            ->with('mautic.report.schedule.email.message_file_not_attached')
-            ->willReturn('Subject');
-
-        $this->fileProperties->expects($this->once())
-            ->method('getFileSize')
-            ->with('path-to-a-file')
-            ->willReturn($fileSize);
-
-        $this->coreParametersHelper->expects($this->once())
-            ->method('get')
-            ->with('report_export_max_filesize_in_bytes')
-            ->willReturn($limit);
-
-        $this->router->expects($this->once())
-            ->method('generate')
-            ->with('mautic_report_view');
-
-        $this->messageSchedule->getMessage($this->report, 'path-to-a-file');
-    }
-
-    public static function doSendFileProvider()
-    {
-        return [
-            [100, 10],
-            [100, 99],
-        ];
-    }
-
-    /**
-     * @param int $fileSize
-     * @param int $limit
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('sendFileProvider')]
-    public function testFileCouldBeSend($fileSize, $limit): void
-    {
-        $this->fileProperties->expects($this->once())
-            ->method('getFileSize')
-            ->with('path-to-a-file')
-            ->willReturn($fileSize);
-
-        $this->coreParametersHelper->expects($this->once())
-            ->method('get')
-            ->with('report_export_max_filesize_in_bytes')
-            ->willReturn($limit);
-
-        $this->assertTrue($this->messageSchedule->fileCouldBeSend('path-to-a-file'));
-    }
-
-    /**
-     * @param int $fileSize
-     * @param int $limit
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('doSendFileProvider')]
-    public function testFileCouldNotBeSend($fileSize, $limit): void
-    {
-        $this->fileProperties->expects($this->once())
-            ->method('getFileSize')
-            ->with('path-to-a-file')
-            ->willReturn($fileSize);
-
-        $this->coreParametersHelper->expects($this->once())
-            ->method('get')
-            ->with('report_export_max_filesize_in_bytes')
-            ->willReturn($limit);
-
-        $this->assertFalse($this->messageSchedule->fileCouldBeSend('path-to-a-file'));
     }
 
     public function testGetMessageForAttachedFile(): void

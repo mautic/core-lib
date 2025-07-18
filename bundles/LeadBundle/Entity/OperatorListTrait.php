@@ -153,8 +153,6 @@ trait OperatorListTrait
             return $processedTypes[$type];
         }
 
-        $type = $this->normalizeType($type);
-
         if (null === $type) {
             foreach ($this->typeOperators as $type => $def) {
                 if (!array_key_exists($type, $processedTypes)) {
@@ -205,37 +203,5 @@ trait OperatorListTrait
         }
 
         return array_flip($choices);
-    }
-
-    /**
-     * @deprecated These aliases are subscribed in the TypeOperatorSubscriber now so this is not necessary. To be removed in next Mautic version.
-     */
-    protected function normalizeType(mixed $type): mixed
-    {
-        if (null === $type) {
-            return $type;
-        }
-
-        if ('boolean' === $type) {
-            return 'bool';
-        }
-
-        if (in_array($type, ['country', 'timezone', 'region', 'locale'])) {
-            return 'select';
-        }
-
-        if (in_array($type, ['lookup',  'text', 'email', 'url', 'email', 'tel'])) {
-            return 'text';
-        }
-
-        if ('datetime' === $type) {
-            return 'date';
-        }
-
-        if (!array_key_exists($type, $this->typeOperators)) {
-            return 'default';
-        }
-
-        return $type;
     }
 }

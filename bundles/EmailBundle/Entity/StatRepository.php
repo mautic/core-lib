@@ -626,25 +626,6 @@ class StatRepository extends CommonRepository
             ->getResult();
     }
 
-    /**
-     * @deprecated to be removed as it is not used anywhere
-     *
-     * @return mixed
-     */
-    public function checkContactsSentEmail($contacts, $emailId)
-    {
-        $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $query->from(MAUTIC_TABLE_PREFIX.'email_stats', 's');
-        $query->select('id, lead_id')
-            ->where('s.email_id = :email')
-            ->andWhere('s.lead_id in (:contacts)')
-            ->andWhere('is_failed = 0')
-            ->setParameter('email', $emailId)
-            ->setParameter('contacts', $contacts);
-
-        return $query->executeQuery()->fetchAssociative();
-    }
-
     public function checkContactSentEmail(int $contactId, int $emailId): bool
     {
         $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
