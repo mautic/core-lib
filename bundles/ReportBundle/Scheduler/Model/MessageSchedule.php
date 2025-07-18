@@ -2,8 +2,6 @@
 
 namespace Mautic\ReportBundle\Scheduler\Model;
 
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Mautic\CoreBundle\Helper\FileProperties;
 use Mautic\ReportBundle\Entity\Report;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -12,8 +10,6 @@ class MessageSchedule
 {
     public function __construct(
         private TranslatorInterface $translator,
-        private FileProperties $fileProperties,
-        private CoreParametersHelper $coreParametersHelper,
         private UrlGeneratorInterface $router,
     ) {
     }

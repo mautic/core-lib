@@ -2,8 +2,6 @@
 
 namespace Mautic\ReportBundle\Tests\Scheduler\Model;
 
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Mautic\CoreBundle\Helper\FileProperties;
 use Mautic\ReportBundle\Entity\Report;
 use Mautic\ReportBundle\Scheduler\Model\MessageSchedule;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -13,38 +11,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MessageScheduleTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var MockObject|Router
-     */
-    private MockObject $router;
+    private MockObject&Router $router;
 
-    /**
-     * @var MockObject|FileProperties
-     */
-    private MockObject $fileProperties;
-
-    /**
-     * @var MockObject|CoreParametersHelper
-     */
-    private MockObject $coreParametersHelper;
-
-    /**
-     * @var MockObject|TranslatorInterface
-     */
-    private MockObject $translatorMock;
+    private MockObject&TranslatorInterface $translatorMock;
 
     private MessageSchedule $messageSchedule;
 
     protected function setUp(): void
     {
-        $this->router               = $this->createMock(Router::class);
-        $this->fileProperties       = $this->createMock(FileProperties::class);
-        $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $this->translatorMock       = $this->createMock(TranslatorInterface::class);
-        $this->messageSchedule      = new MessageSchedule(
+        $this->router          = $this->createMock(Router::class);
+        $this->translatorMock  = $this->createMock(TranslatorInterface::class);
+        $this->messageSchedule = new MessageSchedule(
             $this->translatorMock,
-            $this->fileProperties,
-            $this->coreParametersHelper,
             $this->router
         );
     }
