@@ -30,12 +30,12 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
     private mixed $mockedHttpClient;
 
     /**
-     * @var WebhookQueueRepository|EntityRepository<WebhookQueue>
+     * @var WebhookQueueRepository
      */
     private $webhookQueueRepository;
 
     /**
-     * @var NotificationRepository|EntityRepository<Notification>
+     * @var NotificationRepository
      */
     private $notificationRepository;
 
@@ -159,9 +159,7 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
         $this->testSymfonyCommand(ProcessWebhookQueuesCommand::COMMAND_NAME, ['--webhook-id' => $webhook->getId()]);
 
         Assert::assertSame(3, $this->getQueueCountByWebhookId($webhook->getId()));
-        /**
-         * @var WebhookQueue[] $webhookQueues
-         */
+
         $webhookQueues = $this->getWebhookQueue($webhook->getId());
         foreach ($webhookQueues as $webhookQueue) {
             $webhookQueue->setRetries(2);
@@ -348,13 +346,6 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
         return $this->webhookQueueRepository->getEntities([
             'webhook_id' => $webhookId,
         ]);
-    }
-
-    private function markWebhookHealthy(Webhook $webhook): void
-    {
-        $webhook->setMarkedUnhealthyAt(null);
-        $this->em->persist($webhook);
-        $this->em->flush();
     }
 
     private function getQueueCountByWebhookId(int $webhookId): int

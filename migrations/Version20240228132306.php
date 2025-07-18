@@ -10,7 +10,7 @@ use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20240228132306 extends PreUpAssertionMigration
 {
-    protected static $tableName = 'webhook_queue';
+    protected static string $tableName = 'webhook_queue';
 
     public function preUpAssertions(): void
     {

@@ -36,6 +36,9 @@ final class WebhookModelProcessFailureTest extends MauticMysqlTestCase
         $this->clientMockHandler           = new MockHandler();
     }
 
+    /**
+     * @param array<int> $logStatusCodes
+     */
     #[\PHPUnit\Framework\Attributes\DataProvider('dataFailureWithPreviousLogs')]
     public function testFailureWithPreviousLogs(array $logStatusCodes, bool $expectedIsPublished, int $expectedNumberOfLogs): void
     {

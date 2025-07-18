@@ -18,7 +18,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
-use Twig\TemplateWrapper;
 
 final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
 {
@@ -26,11 +25,6 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
      * @var MockObject&TranslatorInterface
      */
     private MockObject $translatorMock;
-
-    /**
-     * @var MockObject&Router
-     */
-    private MockObject $routerMock;
 
     /**
      * @var MockObject&NotificationModel
@@ -82,11 +76,6 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
      */
     private $userRepositoryMock;
 
-    /**
-     * @var MockObject|TemplateWrapper
-     */
-    private $twig;
-
     private WebhookNotificationSender $webhookNotificationSender;
 
     private EventDispatcherInterface $eventDispatcher;
@@ -100,13 +89,13 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
         $this->coreParamHelperMock   = $this->createMock(CoreParametersHelper::class);
         $this->webhook               = $this->createMock(Webhook::class);
         $this->userRepositoryMock    = $this->createMock(UserRepository::class);
-        $this->twig                  = $this->createMock(Environment::class);
+        $twig                        = $this->createMock(Environment::class);
         $this->eventDispatcher       = $this->createMock(EventDispatcherInterface::class);
 
         $webhookNotificationEventMock =  $this->createMock(WebhookNotificationEvent::class);
         $webhookNotificationEventMock->method('canSend')->willReturn(true);
 
-        $this->twig->expects(self::once())
+        $twig->expects(self::once())
             ->method('render')
             ->willReturn($this->details);
 
@@ -115,7 +104,7 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
                 $webhookNotificationEventMock
             );
         $this->webhookNotificationSender =new WebhookNotificationSender(
-            $this->twig,
+            $twig,
             $this->notificationModelMock,
             $this->entityManagerMock,
             $this->mailHelperMock,
@@ -223,7 +212,7 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
         $this->mailHelperMock
             ->expects($this->once())
             ->method('setCc')
-            ->with($this->ownerEmail, null);
+            ->with([$this->ownerEmail], null);
 
         $this->webhookKillNotificator->send($this->webhook, $this->reason);
     }
@@ -358,7 +347,7 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
         $this->mailHelperMock
             ->expects($this->once())
             ->method('setCc')
-            ->with($ownerEmail, null);
+            ->with([$ownerEmail], null);
         $this->mailHelperMock
             ->expects($this->once())
             ->method('setSubject')
