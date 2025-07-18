@@ -71,7 +71,7 @@ class BuilderTokenHelper
         $filter = '',
         $labelColumn = 'name',
         $valueColumn = 'id',
-        CompositeExpression $expr = null,
+        ?CompositeExpression $expr = null,
     ) {
         if (!$this->isConfigured) {
             throw new \BadMethodCallException('You must call the "'.static::class.'::configure()" method first.');
@@ -95,7 +95,7 @@ class BuilderTokenHelper
 
         $exprBuilder = $this->connection->createExpressionBuilder();
 
-        if (isset($permissions[$this->viewPermissionBase.':viewother']) && !$permissions[$this->viewPermissionBase.':viewother']) {
+        if (isset($expr) && isset($permissions[$this->viewPermissionBase.':viewother']) && !$permissions[$this->viewPermissionBase.':viewother']) {
             $expr = $expr->with(
                 $exprBuilder->eq($prefix.'created_by', $this->userHelper->getUser()->getId())
             );
