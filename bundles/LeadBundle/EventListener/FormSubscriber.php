@@ -143,9 +143,9 @@ class FormSubscriber implements EventSubscriberInterface
 
         // Add the owner and stage fields to the form
         if ('lead' === $object) {
-            $event->appendField(new FieldCrate('owner', 'Owner\'s email', 'email', []));
-            $event->appendField(new FieldCrate('ownerbyid', 'Owner\'s id', 'email', []));
-            $event->appendField(new FieldCrate('stage', 'Stage', 'text', []));
+            $event->appendField(new FieldCrate('owner', 'mautic.lead.field.owner', 'email', []));
+            $event->appendField(new FieldCrate('ownerbyid', 'mautic.lead.field.ownerbyid', 'email', []));
+            $event->appendField(new FieldCrate('stage', 'mautic.lead.field.stage', 'text', []));
         }
     }
 

@@ -45,6 +45,7 @@ use Mautic\LeadBundle\Deduplicate\Exception\SameContactException;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\StagesChangeLog;
+use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
 use Mautic\LeadBundle\Helper\CustomFieldValueHelper;
 use Mautic\LeadBundle\Helper\IdentifyCompanyHelper;
 use Mautic\LeadBundle\Model\CompanyModel;
@@ -115,7 +116,7 @@ class SubmissionModel extends CommonFormModel
      */
     public function saveSubmission($post, $server, Form $form, Request $request, $returnEvent = false)
     {
-        $leadFields = $this->leadFieldModel->getFieldListWithProperties(false, true);
+        $leadFields = array_merge($this->leadFieldModel->getFieldListWithProperties(false), $this->leadFieldModel->getSpecialLeadFields());
 
         // everything matches up so let's save the results
         $submission = new Submission();

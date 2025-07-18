@@ -928,7 +928,7 @@ class FieldModel extends FormModel
     /**
      * @param string $object
      */
-    public function getFieldListWithProperties($object = 'lead', bool $withSpecialFields = false)
+    public function getFieldListWithProperties($object = 'lead'): array
     {
         return $this->getFieldsProperties(['object' => $object]);
     }
@@ -973,10 +973,6 @@ class FieldModel extends FormModel
                 'properties'   => $contactField['properties'],
                 'isPublished'  => $contactField['isPublished'],
             ];
-        }
-
-        if (true === $withSpecialFields && 'company' !== $object) {
-            $fields = array_merge($fields, $this->getSpecialLeadFields());
         }
 
         return $fields;
@@ -1045,11 +1041,11 @@ class FieldModel extends FormModel
      *
      * @return array<string, mixed>
      */
-    private function getSpecialLeadFields(): array
+    public function getSpecialLeadFields(): array
     {
         return [
             'owner' => [
-                'label'        => 'Owner\'s email',
+                'label'        => $this->translator->trans('mautic.lead.field.owner'),
                 'alias'        => 'owner',
                 'type'         => 'email',
                 'group'        => 'core',
@@ -1059,7 +1055,7 @@ class FieldModel extends FormModel
                 'isPublished'  => true,
             ],
             'ownerbyid' => [
-                'label'        => 'Owner\'s id',
+                'label'        => $this->translator->trans('mautic.lead.field.ownerbyid'),
                 'alias'        => 'ownerbyid',
                 'type'         => 'text',
                 'group'        => 'core',
@@ -1069,7 +1065,7 @@ class FieldModel extends FormModel
                 'isPublished'  => true,
             ],
             'stage' => [
-                'label'        => 'Stage',
+                'label'        => $this->translator->trans('mautic.lead.field.stage'),
                 'alias'        => 'stage',
                 'type'         => 'text',
                 'group'        => 'core',
