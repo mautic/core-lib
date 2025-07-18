@@ -145,9 +145,7 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
         yield 'Actual user' => [1, 1];
     }
 
-    /**
-     * @dataProvider dataNotificationToUser
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataNotificationToUser')]
     public function testWebhookFailureNotificationSent(?int $createdByUserId, ?int $expectedUserId): void
     {
         $this->mockFailedWebhookResponse(2);

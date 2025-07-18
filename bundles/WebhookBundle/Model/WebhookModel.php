@@ -118,15 +118,11 @@ class WebhookModel extends FormModel
 
     /**
      * Timestamp when the webhook processing starts.
-     *
-     * @var float
      */
-    private $startTime;
+    private ?float $startTime = null;
 
     private bool $disableAutoUnpublish;
     private int $webhookRetryDelay;
-
-    private WebhookService $webhookService;
 
     public function __construct(
         CoreParametersHelper $coreParametersHelper,
@@ -139,9 +135,8 @@ class WebhookModel extends FormModel
         Translator $translator,
         UserHelper $userHelper,
         LoggerInterface $mauticLogger,
-        WebhookService $webhookService,
+        private WebhookService $webhookService,
     ) {
-        $this->webhookService = $webhookService;
         $this->setConfigProps($coreParametersHelper);
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
