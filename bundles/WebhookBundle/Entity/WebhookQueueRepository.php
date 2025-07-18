@@ -2,7 +2,6 @@
 
 namespace Mautic\WebhookBundle\Entity;
 
-use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
@@ -49,7 +48,7 @@ class WebhookQueueRepository extends CommonRepository
             ->set('retries', 'retries + 1')
             ->set('date_modified', ':date_modified')
             ->setParameter('ids', $idList, Connection::PARAM_INT_ARRAY)
-            ->setParameter('date_modified', (new DateTimeImmutable())->format(DateTimeHelper::FORMAT_DB))
+            ->setParameter('date_modified', (new \DateTimeImmutable())->format(DateTimeHelper::FORMAT_DB))
             ->execute();
     }
 

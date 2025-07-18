@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\WebhookBundle\Service;
 
-use DateTimeImmutable;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\WebhookBundle\Entity\Webhook;
 use Mautic\WebhookBundle\Notificator\WebhookFailureNotificator;
@@ -12,15 +11,15 @@ use Mautic\WebhookBundle\Notificator\WebhookFailureNotificator;
 class WebhookService
 {
     public function __construct(private CoreParametersHelper $coreParametersHelper,
-                                private WebhookFailureNotificator $webhookFailureNotificator)
+        private WebhookFailureNotificator $webhookFailureNotificator)
     {
     }
 
-    public function getHealthyWebhookTime(): DateTimeImmutable
+    public function getHealthyWebhookTime(): \DateTimeImmutable
     {
         $webHookHealthCheckTime = $this->coreParametersHelper->get('webhook_health_check_time', 300);
 
-        return (new DateTimeImmutable())->modify(sprintf('-%d seconds', $webHookHealthCheckTime));
+        return (new \DateTimeImmutable())->modify(sprintf('-%d seconds', $webHookHealthCheckTime));
     }
 
     public function isWebhookHealthy(Webhook $webhook): bool
@@ -52,7 +51,7 @@ class WebhookService
             return false;
         }
         $webhookFailureNotificationTime = $this->coreParametersHelper->get('first_webhook_failure_notification_time', 3600);
-        $healthyWebhookTime             = (new DateTimeImmutable())->modify(sprintf('-%d seconds', $webhookFailureNotificationTime));
+        $healthyWebhookTime             = (new \DateTimeImmutable())->modify(sprintf('-%d seconds', $webhookFailureNotificationTime));
 
         return $webhook->getUnHealthySince() < $healthyWebhookTime;
     }
@@ -63,7 +62,7 @@ class WebhookService
             return true;
         }
         $webhookFailureNotificationInterval = $this->coreParametersHelper->get('webhook_failure_notification_interval', 86400);
-        $healthyWebhookTime                 = (new DateTimeImmutable())->modify(sprintf('-%d seconds', $webhookFailureNotificationInterval));
+        $healthyWebhookTime                 = (new \DateTimeImmutable())->modify(sprintf('-%d seconds', $webhookFailureNotificationInterval));
 
         return $webhook->getLastNotificationSentAt() < $healthyWebhookTime;
     }

@@ -2,8 +2,6 @@
 
 namespace Mautic\WebhookBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -89,9 +87,9 @@ class Webhook extends FormEntity implements SkipModifiedInterface
      */
     private $eventsOrderbyDir;
 
-    private ?DateTimeImmutable $markedUnhealthyAt      = null;
-    private ?DateTimeImmutable $unHealthySince         = null;
-    private ?DateTimeImmutable $lastNotificationSentAt = null;
+    private ?\DateTimeImmutable $markedUnhealthyAt      = null;
+    private ?\DateTimeImmutable $unHealthySince         = null;
+    private ?\DateTimeImmutable $lastNotificationSentAt = null;
 
     public function __construct()
     {
@@ -546,12 +544,12 @@ class Webhook extends FormEntity implements SkipModifiedInterface
         }
     }
 
-    public function getMarkedUnhealthyAt(): ?DateTimeImmutable
+    public function getMarkedUnhealthyAt(): ?\DateTimeImmutable
     {
         return $this->markedUnhealthyAt;
     }
 
-    public function setMarkedUnhealthyAt(?DateTimeImmutable $markedUnhealthyAt): Webhook
+    public function setMarkedUnhealthyAt(?\DateTimeImmutable $markedUnhealthyAt): Webhook
     {
         $this->isChanged('markedUnhealthyAt', $markedUnhealthyAt);
         $this->markedUnhealthyAt = $markedUnhealthyAt;
@@ -559,24 +557,24 @@ class Webhook extends FormEntity implements SkipModifiedInterface
         return $this;
     }
 
-    public function getUnHealthySince(): ?DateTimeImmutable
+    public function getUnHealthySince(): ?\DateTimeImmutable
     {
         return $this->unHealthySince;
     }
 
-    public function setUnHealthySince(?DateTimeImmutable $unHealthySince): self
+    public function setUnHealthySince(?\DateTimeImmutable $unHealthySince): self
     {
         $this->unHealthySince = $unHealthySince;
 
         return $this;
     }
 
-    public function getLastNotificationSentAt(): ?DateTimeImmutable
+    public function getLastNotificationSentAt(): ?\DateTimeImmutable
     {
         return $this->lastNotificationSentAt;
     }
 
-    public function setLastNotificationSentAt(?DateTimeImmutable $lastNotificationSentAt): self
+    public function setLastNotificationSentAt(?\DateTimeImmutable $lastNotificationSentAt): self
     {
         $this->lastNotificationSentAt = $lastNotificationSentAt;
 
