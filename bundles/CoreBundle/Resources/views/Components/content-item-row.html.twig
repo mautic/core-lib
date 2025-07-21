@@ -15,7 +15,7 @@
 
 {% set common_image_content %}
     {% if image is defined %}
-        <img src="{{ asset(image.path) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-32">
+        <img src="{{ asset(image.src) }}" alt="{{ image.alt|trans }}" title="{{ image.alt|trans }}" class="mb-sm mt-32">
     {% endif %}
 {% endset %}
 
