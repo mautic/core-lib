@@ -33,6 +33,12 @@ class DynamicFiltersType extends AbstractType
                     'required' => false,
                 ];
 
+                if (!empty($filter['value'])) {
+                    $args['attr']['placeholder'] = $filter['value'];
+                } elseif (!empty($definition['defaultValue'])) {
+                    $args['attr']['placeholder'] = $definition['defaultValue'];
+                }
+
                 switch ($definition['type']) {
                     case 'bool':
                     case 'boolean':
