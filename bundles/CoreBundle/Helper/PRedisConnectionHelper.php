@@ -91,7 +91,7 @@ class PRedisConnectionHelper
         $replication = $inputOptions['replication'] ?? null;
 
         if ('sentinel' === $replication) {
-            $inputOptions['aggregate'] = fn () => fn ($sentinels, $options): SentinelReplication => new SentinelReplication(
+            $inputOptions['aggregate'] = fn ($sentinels, $options): SentinelReplication => new SentinelReplication(
                 $options->service,
                 $sentinels,
                 $options->connections,
