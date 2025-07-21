@@ -691,9 +691,7 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         $this->getContainer()->get('mautic.report.model.report')->saveEntity($report);
 
         // Mock the ReportModel to add a defaultValue to the filter definition
-        $reportModel = $this->getMockBuilder(ReportModel::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $reportModel = $this->createMock(ReportModel::class);
 
         $filterDefinitions              = new \stdClass();
         $filterDefinitions->definitions = [
