@@ -163,6 +163,8 @@ trait OperatorListTrait
             return $processedTypes;
         }
 
+        $type = $this->normalizeType($type);
+
         $processedTypes[$type] = $this->getOperatorChoiceList($this->typeOperators[$type], $overrideHiddenTypes);
 
         return $processedTypes[$type];
@@ -203,5 +205,38 @@ trait OperatorListTrait
         }
 
         return array_flip($choices);
+    }
+
+    /**
+     * Normalize deprecated field type aliases to their current equivalents.
+     * These aliases are subscribed in the TypeOperatorSubscriber so this ensures backward compatibility.
+     */
+    protected function normalizeType(mixed $type): mixed
+    {
+        if (null === $type) {
+            return $type;
+        }
+
+        if ('boolean' === $type) {
+            return 'bool';
+        }
+
+        if (in_array($type, ['country', 'timezone', 'region', 'locale'])) {
+            return 'select';
+        }
+
+        if (in_array($type, ['lookup',  'text', 'email', 'url', 'email', 'tel'])) {
+            return 'text';
+        }
+
+        if ('datetime' === $type) {
+            return 'date';
+        }
+
+        if (!array_key_exists($type, $this->typeOperators)) {
+            return 'default';
+        }
+
+        return $type;
     }
 }
