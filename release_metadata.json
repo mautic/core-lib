@@ -1,5 +1,5 @@
 {
-  "version": "7.0.0-aplha",
+  "version": "7.0.0-alpha",
   "stability": "alpha",
   "minimum_php_version": "8.2.0",
   "maximum_php_version": "8.4.99",

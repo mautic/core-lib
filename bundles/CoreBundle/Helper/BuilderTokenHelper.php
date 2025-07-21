@@ -131,17 +131,4 @@ class BuilderTokenHelper
     {
         $this->permissionSet = $permissions;
     }
-
-    /**
-     * @deprecated 2.6.0 to be removed in 3.0
-     */
-    public static function getVisualTokenHtml($token, $description, $forPregReplace = false): string
-    {
-        if ($forPregReplace) {
-            return preg_quote('<strong contenteditable="false" data-token="', '/').'(.*?)'.preg_quote('">**', '/')
-            .'(.*?)'.preg_quote('**</strong>', '/');
-        }
-
-        return '<strong contenteditable="false" data-token="'.$token.'">**'.$description.'**</strong>';
-    }
 }
