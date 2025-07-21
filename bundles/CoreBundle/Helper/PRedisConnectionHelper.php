@@ -104,6 +104,13 @@ class PRedisConnectionHelper
             [Unlink::ID => Unlink::class]
         );
 
+        // Convert single-endpoint array to string to avoid Predis 3 aggregate connection error
+        // This is to maintain compatibility with Predis 3 which expects a string for single endpoint
+        // or an array of endpoints for multiple connections.
+        if (1 === count($endpoints) && is_string($endpoints[0])) {
+            $endpoints = $endpoints[0];
+        }
+
         $client  = new Client($endpoints, $inputOptions);
 
         $connection = $client->getConnection();
