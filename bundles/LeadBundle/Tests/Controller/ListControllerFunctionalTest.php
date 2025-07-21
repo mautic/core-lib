@@ -773,7 +773,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testActiveContactsStatExcludesDnc(): void
     {
-        $segment = $this->saveSegment('active-test', 'active-test');
+        $segment  = $this->saveSegment('active-test', 'active-test');
         $contact1 = new Lead();
         $contact1->setFirstname('Active');
         $this->em->persist($contact1);

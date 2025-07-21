@@ -331,8 +331,8 @@ class ListModelTest extends TestCase
     public function testGetActiveSegmentContactCount(): void
     {
         $segmentId = 123;
-        $total = 10;
-        $dnc = 3;
+        $total     = 10;
+        $dnc       = 3;
 
         $this->leadListRepositoryMock
             ->expects(self::once())
@@ -348,7 +348,7 @@ class ListModelTest extends TestCase
             ->willReturn($dnc);
 
         $reflection = new \ReflectionClass($this->model);
-        $property = $reflection->getProperty('doNotContactRepository');
+        $property   = $reflection->getProperty('doNotContactRepository');
         $property->setAccessible(true);
         $property->setValue($this->model, $doNotContactRepository);
 
