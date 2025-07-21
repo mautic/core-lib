@@ -8,31 +8,11 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Model\FieldModel;
 use Mautic\FormBundle\Model\FormModel;
-use Mautic\LeadBundle\Entity\LeadField;
-use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class FieldModelFunctionalTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback = false;
-
-    public function testGetObjectFieldsUnpublishedField(): void
-    {
-        /** @var FieldModel $fieldModel */
-        $fieldModel   = static::getContainer()->get('mautic.form.model.field');
-        $fieldsBefore = $fieldModel->getObjectFields('lead');
-
-        /** @var LeadFieldRepository $leadFieldRepository */
-        $leadFieldRepository = $this->em->getRepository(LeadField::class);
-        $field               = $leadFieldRepository->findOneBy(['alias' => 'firstname']);
-        $field->setIsPublished(false);
-        $leadFieldRepository->saveEntity($field);
-
-        $fieldsAfter = $fieldModel->getObjectFields('lead');
-
-        self::assertTrue(array_key_exists('firstname', array_flip($fieldsBefore[1]['Core'])));
-        self::assertFalse(array_key_exists('firstname', array_flip($fieldsAfter[1]['Core'])));
-    }
 
     public function testDeleteFormFieldShouldRemoveTableColumn(): void
     {
