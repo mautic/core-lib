@@ -69,9 +69,12 @@ class SortableValueLabelListType extends AbstractType
      */
     private function slugify(string $text): string
     {
+        $text = str_replace('&', 'and', $text);
+        if (function_exists('transliterator_transliterate')) {
+            $text = transliterator_transliterate('Any-Latin; Latin-ASCII; [\u0100-\u7fff] remove', $text);
+        }
         $text = preg_replace('~[^\pL\d]+~u', '_', $text);
-        $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text) ?: $text;
-        $text = preg_replace('~[^\w]+~', '', $text);
+        $text = preg_replace('/[^a-zA-Z0-9_]+/', '', $text);
         $text = trim($text, '_');
         $text = mb_strtolower($text, 'UTF-8');
 
