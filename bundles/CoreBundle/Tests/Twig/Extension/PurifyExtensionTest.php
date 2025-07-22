@@ -25,6 +25,9 @@ class PurifyExtensionTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<string, array{input: ?string, expected: string}>
+     */
     public function purifyHtmlDataProvider(): array
     {
         return [

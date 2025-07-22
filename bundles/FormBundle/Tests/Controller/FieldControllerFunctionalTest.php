@@ -106,6 +106,8 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
+     * @param array<string, mixed>|null $additionalValues
+     *
      * @dataProvider provideFieldTypesData
      */
     public function testFieldWithLinkInLabel(string $fieldType, ?array $additionalValues = null): void
@@ -141,6 +143,9 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertStringContainsString('<a href="https://example.com" target="_blank"', $response['fieldHtml']);
     }
 
+    /**
+     * @return array<string, array{0: string, 1: array<string, mixed>|null}>
+     */
     public function provideFieldTypesData(): array
     {
         return [
