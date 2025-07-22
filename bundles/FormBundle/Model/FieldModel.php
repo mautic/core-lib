@@ -66,29 +66,6 @@ class FieldModel extends CommonFormModel
     }
 
     /**
-     * @deprecated to be removed in Mautic 4. This method is not used anymore.
-     *
-     * @return array{mixed[], mixed[]}
-     */
-    public function getObjectFields($object = 'lead'): array
-    {
-        $fields  = $this->leadFieldModel->getFieldListWithProperties($object);
-        $choices = [];
-
-        foreach ($fields as $alias => $field) {
-            if (empty($field['isPublished'])) {
-                continue;
-            }
-            if (!isset($choices[$field['group_label']])) {
-                $choices[$field['group_label']] = [];
-            }
-            $choices[$field['group_label']][$field['label']] = $alias;
-        }
-
-        return [$fields, $choices];
-    }
-
-    /**
      * @return \Mautic\FormBundle\Entity\FieldRepository
      */
     public function getRepository()
