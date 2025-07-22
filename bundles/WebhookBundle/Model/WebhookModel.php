@@ -294,7 +294,7 @@ class WebhookModel extends FormModel
         // get the webhook payload
         $payload = $this->getWebhookPayload($webhook, $queue);
 
-        // if there wasn't a payload we can stop here and also move any failed queue entries to main queue.
+        // if there wasn't a payload we can stop here.
         if (empty($payload)) {
             return false;
         }
@@ -304,7 +304,6 @@ class WebhookModel extends FormModel
 
         try {
             $response = $this->httpClient->post($webhook->getWebhookUrl(), $payload, $webhook->getSecret());
-            //            dd($response);
             // remove successfully processed queues from the Webhook object so they won't get stored again
             $queueIds        = array_keys($this->webhookQueueIdList);
             $chunkedQueueIds = array_chunk($queueIds, self::DELETE_BATCH_LIMIT);
