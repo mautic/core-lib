@@ -64,6 +64,8 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
     #[Groups(['leadfield:read'])]
     private $id;
 
+    private bool $isCloned = false;
+
     /**
      * @var string
      */
@@ -195,7 +197,10 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
 
     public function __clone()
     {
-        $this->id = null;
+        $this->id         = null;
+        $this->isCloned   = true;
+        $this->order      =  0;
+        $this->isFixed    = false;
 
         parent::__clone();
     }
@@ -315,8 +320,8 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
             'message' => 'mautic.lead.field.alias.unique',
         ]));
 
-        $metadata->addConstraint(new Assert\Callback([
-            'callback' => function (LeadField $field, ExecutionContextInterface $context): void {
+        $metadata->addConstraint(new Assert\Callback(
+            function (LeadField $field, ExecutionContextInterface $context): void {
                 $violations = $context->getValidator()->validate($field, [new FieldAliasKeyword()]);
 
                 if ($violations->count() > 0) {
@@ -325,7 +330,7 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
                         ->addViolation();
                 }
             },
-        ]));
+        ));
 
         $metadata->addConstraint(new LeadFieldMinimumLength());
     }
@@ -379,6 +384,11 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getIsCloned(): bool
+    {
+        return $this->isCloned;
     }
 
     /**

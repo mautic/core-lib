@@ -284,8 +284,8 @@ class Notification extends FormEntity implements UuidInterface
             )
         );
 
-        $metadata->addConstraint(new Callback([
-            'callback' => function (Notification $notification, ExecutionContextInterface $context): void {
+        $metadata->addConstraint(new Callback(
+            function (Notification $notification, ExecutionContextInterface $context): void {
                 $type = $notification->getNotificationType();
                 if ('list' == $type) {
                     $validator  = $context->getValidator();
@@ -313,7 +313,7 @@ class Notification extends FormEntity implements UuidInterface
                     }
                 }
             },
-        ]));
+        ));
     }
 
     /**

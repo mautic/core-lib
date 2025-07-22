@@ -135,6 +135,8 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
      * @var bool
      *
      * @Groups({"report:read", "report:write"})
+     *
+     * @ApiProperty(readable=true)
      */
     private $isScheduled = false;
 
