@@ -104,4 +104,84 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertSame('Contact', $crawler->filter('select[id="formfield_mappedObject"]')->filter('option[selected]')->text());
         $this->assertSame('Primary company', $crawler->filter('select[id="formfield_mappedField"]')->filter('option[selected]')->text());
     }
+
+    /**
+     * @dataProvider provideFieldTypesData
+     */
+    public function testFieldWithLinkInLabel(string $fieldType, ?array $additionalValues = null): void
+    {
+        $this->client->xmlHttpRequest(
+            Request::METHOD_GET,
+            sprintf('/s/forms/field/new?type=%s&tmpl=field&formId=temporary_form_hash&inBuilder=1', $fieldType)
+        );
+        $this->assertResponseIsSuccessful();
+        $content     = $this->client->getResponse()->getContent();
+        $content     = json_decode($content)->newContent;
+        $crawler     = new Crawler($content, $this->client->getInternalRequest()->getUri());
+        $formCrawler = $crawler->filter('form[name=formfield]');
+        Assert::assertCount(1, $formCrawler, $this->client->getResponse()->getContent());
+        $form = $formCrawler->form();
+        $form->setValues(
+            [
+                'formfield[formId]' => 'temporary_form_hash',
+                'formfield[label]'  => 'Email <a href="https://example.com" target="_blank">link</a>',
+            ]
+        );
+
+        $values = $form->getPhpValues();
+        if ($additionalValues) {
+            $values = array_merge_recursive($values, $additionalValues);
+        }
+
+        $this->setCsrfHeader();
+        $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+        $this->assertResponseIsSuccessful();
+
+        $response = json_decode($this->client->getResponse()->getContent(), true);
+        $this->assertStringContainsString('<a href="https://example.com" target="_blank"', $response['fieldHtml']);
+    }
+
+    public function provideFieldTypesData(): array
+    {
+        return [
+            'email field' => [
+                'email',
+                null,
+            ],
+            'checkbox group field' => [
+                'checkboxgrp',
+                [
+                    'formfield' => [
+                        'properties' => [
+                            'optionlist' => [
+                                'list' => [
+                                    [
+                                        'label' => 'option1',
+                                        'value' => 'option1',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'select field' => [
+                'select',
+                [
+                    'formfield' => [
+                        'properties' => [
+                            'list' => [
+                                'list' => [
+                                    [
+                                        'label' => 'abc',
+                                        'value' => 'abc',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
 }
