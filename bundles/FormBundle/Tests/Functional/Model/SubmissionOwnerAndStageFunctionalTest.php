@@ -112,126 +112,6 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @return iterable<string, array<string, string|string[]|null>>
-     */
-    public static function ownerAndStageDataProvider(): iterable
-    {
-        yield 'owner by email' => [
-            'testName'                     => 'owner by email',
-            'contactEmail'                 => 'contact.owner.email@test.com',
-            'submissionDataPlaceholders'   => [
-                'email'          => 'contact.owner.email@test.com',
-                'owner_by_email' => '%sales_user_email%',
-            ],
-            'expectedOwnerUsername'        => 'sales',
-            'expectedStageName'            => null,
-        ];
-
-        yield 'owner by id' => [
-            'testName'                     => 'owner by id',
-            'contactEmail'                 => 'contact.owner.id@test.com',
-            'submissionDataPlaceholders'   => [
-                'email'       => 'contact.owner.id@test.com',
-                'owner_by_id' => '%sales_user_email%',
-            ],
-            'expectedOwnerUsername'        => 'sales',
-            'expectedStageName'            => null,
-        ];
-
-        yield 'stage' => [
-            'testName'                     => 'stage',
-            'contactEmail'                 => 'contact.stage.id@test.com',
-            'submissionDataPlaceholders'   => [
-                'email' => 'contact.stage.id@test.com',
-                'stage' => '%stage_name%',
-            ],
-            'expectedOwnerUsername'        => null,
-            'expectedStageName'            => 'Test Stage',
-        ];
-
-        yield 'owner by email and stage' => [
-            'testName'                     => 'owner by email and stage',
-            'contactEmail'                 => 'contact.owner.email.stage@test.com',
-            'submissionDataPlaceholders'   => [
-                'email'          => 'contact.owner.email.stage@test.com',
-                'owner_by_email' => '%sales_user_email%',
-                'stage'          => '%stage_name%',
-            ],
-            'expectedOwnerUsername'        => 'sales',
-            'expectedStageName'            => 'Test Stage',
-        ];
-
-        yield 'owner by id and stage' => [
-            'testName'                     => 'owner by id and stage',
-            'contactEmail'                 => 'contact.owner.id.stage@test.com',
-            'submissionDataPlaceholders'   => [
-                'email'       => 'contact.owner.id.stage@test.com',
-                'owner_by_id' => '%sales_user_email%',
-                'stage'       => '%stage_name%',
-            ],
-            'expectedOwnerUsername'        => 'sales',
-            'expectedStageName'            => 'Test Stage',
-        ];
-
-        yield 'owner by email and id (email has precedence)' => [
-            'testName'                     => 'owner by email and id',
-            'contactEmail'                 => 'contact.owner.email.id@test.com',
-            'submissionDataPlaceholders'   => [
-                'email'          => 'contact.owner.email.id@test.com',
-                'owner_by_email' => '%sales_user_email%',
-                'owner_by_id'    => '%admin_user_id%',
-            ],
-            'expectedOwnerUsername'        => 'sales',
-            'expectedStageName'            => null,
-        ];
-
-        yield 'invalid owner email' => [
-            'testName'                     => 'invalid owner email',
-            'contactEmail'                 => 'contact.invalid.owner.email@test.com',
-            'submissionDataPlaceholders'   => [
-                'email'          => 'contact.invalid.owner.email@test.com',
-                'owner_by_email' => 'nonexistent@email.com',
-            ],
-            'expectedOwnerUsername'        => null,
-            'expectedStageName'            => null,
-        ];
-
-        yield 'invalid owner id' => [
-            'testName'                     => 'invalid owner id',
-            'contactEmail'                 => 'contact.invalid.owner.id@test.com',
-            'submissionDataPlaceholders'   => [
-                'email'       => 'contact.invalid.owner.id@test.com',
-                'owner_by_id' => '99999',
-            ],
-            'expectedOwnerUsername'        => null,
-            'expectedStageName'            => null,
-        ];
-
-        yield 'invalid stage name' => [
-            'testName'                     => 'invalid stage name',
-            'contactEmail'                 => 'contact.invalid.stage.id@test.com',
-            'submissionDataPlaceholders'   => [
-                'email' => 'contact.invalid.stage.id@test.com',
-                'stage' => 'mautic',
-            ],
-            'expectedOwnerUsername'        => null,
-            'expectedStageName'            => null,
-        ];
-
-        yield 'empty owner and stage' => [
-            'testName'                   => 'empty owner and stage',
-            'contactEmail'               => 'contact.empty.fields@test.com',
-            'submissionDataPlaceholders' => [
-                'email'          => 'contact.empty.fields@test.com',
-                'owner_by_email' => '',
-                'stage'          => '',
-            ],
-            'expectedOwnerUsername' => null,
-            'expectedStageName'     => null,
-        ];
-    }
-
-    /**
      * @return array<int, string[]>
      */
     private function createFormFields(): array
@@ -256,5 +136,135 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
         return array_map(function ($value) use ($replacements) {
             return str_replace(array_keys($replacements), array_values($replacements), $value);
         }, $data);
+    }
+
+    /**
+     * @param string[] $submissionDataPlaceholders
+     *
+     * @return array<string, array<string>|string|null>
+     */
+    private static function generateTestCase(
+        string $testName,
+        string $contactEmail,
+        array $submissionDataPlaceholders,
+        ?string $expectedOwnerUsername = null,
+        ?string $expectedStageName = null,
+    ): array {
+        return [
+            'testName'                   => $testName,
+            'contactEmail'               => $contactEmail,
+            'submissionDataPlaceholders' => $submissionDataPlaceholders,
+            'expectedOwnerUsername'      => $expectedOwnerUsername,
+            'expectedStageName'          => $expectedStageName,
+        ];
+    }
+
+    /**
+     * @return iterable<string, array<string, string|string[]|null>>
+     */
+    public static function ownerAndStageDataProvider(): iterable
+    {
+        yield 'owner by email' => self::generateTestCase(
+            'owner by email',
+            'contact.owner.email@test.com',
+            [
+                'email'          => 'contact.owner.email@test.com',
+                'owner_by_email' => '%sales_user_email%',
+            ],
+            'sales'
+        );
+
+        yield 'owner by id' => self::generateTestCase(
+            'owner by id',
+            'contact.owner.id@test.com',
+            [
+                'email'       => 'contact.owner.id@test.com',
+                'owner_by_id' => '%sales_user_email%',
+            ],
+            'sales'
+        );
+
+        yield 'stage' => self::generateTestCase(
+            'stage',
+            'contact.stage.id@test.com',
+            [
+                'email' => 'contact.stage.id@test.com',
+                'stage' => '%stage_name%',
+            ],
+            null,
+            'Test Stage'
+        );
+
+        yield 'owner by email and stage' => self::generateTestCase(
+            'owner by email and stage',
+            'contact.owner.email.stage@test.com',
+            [
+                'email'          => 'contact.owner.email.stage@test.com',
+                'owner_by_email' => '%sales_user_email%',
+                'stage'          => '%stage_name%',
+            ],
+            'sales',
+            'Test Stage'
+        );
+
+        yield 'owner by id and stage' => self::generateTestCase(
+            'owner by id and stage',
+            'contact.owner.id.stage@test.com',
+            [
+                'email'       => 'contact.owner.id.stage@test.com',
+                'owner_by_id' => '%sales_user_email%',
+                'stage'       => '%stage_name%',
+            ],
+            'sales',
+            'Test Stage'
+        );
+
+        yield 'owner by email and id (email has precedence)' => self::generateTestCase(
+            'owner by email and id',
+            'contact.owner.email.id@test.com',
+            [
+                'email'          => 'contact.owner.email.id@test.com',
+                'owner_by_email' => '%sales_user_email%',
+                'owner_by_id'    => '%admin_user_id%',
+            ],
+            'sales'
+        );
+
+        yield 'invalid owner email' => self::generateTestCase(
+            'invalid owner email',
+            'contact.invalid.owner.email@test.com',
+            [
+                'email'          => 'contact.invalid.owner.email@test.com',
+                'owner_by_email' => 'nonexistent@email.com',
+            ]
+        );
+
+        yield 'invalid owner id' => self::generateTestCase(
+            'invalid owner id',
+            'contact.invalid.owner.id@test.com',
+            [
+                'email'       => 'contact.invalid.owner.id@test.com',
+                'owner_by_id' => '99999',
+            ]
+        );
+
+        yield 'invalid stage name' => self::generateTestCase(
+            'invalid stage name',
+            'contact.invalid.stage.id@test.com',
+            [
+                'email' => 'contact.invalid.stage.id@test.com',
+                'stage' => 'mautic',
+            ]
+        );
+
+        yield 'empty owner and stage' => self::generateTestCase(
+            'empty owner and stage',
+            'contact.empty.fields@test.com',
+            [
+                'email'          => 'contact.empty.fields@test.com',
+                'owner_by_email' => '',
+                'stage'          => '',
+            ]
+        );
     }
 }

@@ -319,11 +319,7 @@ class SubmissionModel extends CommonFormModel
 
         // Create/update lead
         if (!empty($leadFieldMatches)) {
-            try {
-                $lead = $this->createLeadFromSubmit($form, $leadFieldMatches, $leadFields);
-            } catch (\Exception $exception) {
-                return ['errors' => $exception->getMessage()];
-            }
+            $lead = $this->createLeadFromSubmit($form, $leadFieldMatches, $leadFields);
         }
 
         $trackedDevice = $this->deviceTrackingService->getTrackedDevice();
