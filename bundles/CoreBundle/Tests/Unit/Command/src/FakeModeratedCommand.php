@@ -31,7 +31,13 @@ class FakeModeratedCommand extends ModeratedCommand
     public function setLock(?LockInterface $lock = null): void
     {
         $reflection = new \ReflectionClass($this);
-        $property   = $reflection->getParentClass()->getProperty('lock');
-        $property->setValue($this, $lock);
+        $parentClass = $reflection->getParentClass();
+
+        if ($parentClass->hasProperty('lock')) {
+            $property = $parentClass->getProperty('lock');
+            $property->setValue($this, $lock);
+        } else {
+            throw new \RuntimeException("The 'lock' property does not exist in the parent class.");
+        }
     }
 }

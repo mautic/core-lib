@@ -46,7 +46,7 @@ class ModeratedCommandTest extends TestCase
         // Justification: The class under test has no public setter, and this setup is needed for accurate test coverage.
         $reflection = new \ReflectionClass($this->fakeModeratedCommand);
         $property   = $reflection->getProperty('lockFile');
-        // Defensive: setAccessible(true) ensures future-proofing if visibility changes to private.
+        // Defensive: setAccessible(true) allows access to non-public properties, including protected and private ones.
         $property->setAccessible(true);
         $property->setValue($this->fakeModeratedCommand, $this->lockFilePath);
     }

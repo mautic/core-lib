@@ -135,7 +135,7 @@ abstract class ModeratedCommand extends Command
         }
 
         // Attempt to keep things tidy
-        if ($this->lockFile && is_file($this->lockFile)) {
+        if ($this->lockFile && file_exists($this->lockFile)) {
             unlink($this->lockFile);
         }
     }
