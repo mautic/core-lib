@@ -44,7 +44,6 @@ use Mautic\LeadBundle\Deduplicate\ContactMerger;
 use Mautic\LeadBundle\Deduplicate\Exception\SameContactException;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\LeadBundle\Entity\StagesChangeLog;
 use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
 use Mautic\LeadBundle\Helper\CustomFieldValueHelper;
 use Mautic\LeadBundle\Helper\IdentifyCompanyHelper;
@@ -1061,37 +1060,45 @@ class SubmissionModel extends CommonFormModel
         // last active time
         $lead->setLastActive(new \DateTime());
 
-        // set stage
-        if (!empty($data['stage'])) {
-            $stage = $this->em->getRepository(Stage::class)->findByIdOrName($data['stage']);
-            if (empty($stage)) {
-                throw new ValidationException($this->translator->trans('mautic.lead.import.stage.not.exists', ['%id%' => $data['stage']]));
-            }
-            $lead->setStage($stage);
+        // Set stage.
+        if (!empty($data['contact_stage'])) {
+            $stage = $this->em->getRepository(Stage::class)->findByIdOrName($data['contact_stage']);
 
-            // add a contact stage change log
-            $log = new StagesChangeLog();
-            $log->setStage($stage);
-            $log->setEventName($stage->getId().':'.$stage->getName());
-            $log->setLead($lead);
-            $log->setActionName(
-                $this->translator->trans(
-                    'mautic.stage.import.action.name',
-                    [
-                        '%name%' => $this->userHelper->getUser()->getUsername(),
-                    ]
-                )
-            );
-            $log->setDateAdded(new \DateTime());
-            $lead->stageChangeLog($log);
+            if ($stage instanceof Stage) {
+                $lead->setStage($stage);
+
+                // Add a contact stage change log
+                $lead->stageChangeLogEntry(
+                    $stage,
+                    sprintf('%d:%s', $stage->getId(), $stage->getName()),
+                    $this->translator->trans(
+                        'mautic.stage.import.action.name',
+                        ['%name%' => $this->userHelper->getUser()->getUsername()]
+                    )
+                );
+            } else {
+                $this->logger->warning(sprintf(
+                    'Form: Associating stage failed as %s',
+                    $this->translator->trans(
+                        'mautic.lead.import.stage.not.exists',
+                        ['%id%' => $data['contact_stage']]
+                    )
+                ));
+            }
         }
 
-        // set owner
-        if (isset($data['owner']) || isset($data['ownerbyid'])) {
-            $userRepo  = $this->em->getRepository(User::class);
-            $condition = isset($data['owner']) ? ['email' => $data['owner']] : ['id' => $data['ownerbyid']];
-            $user      = $userRepo->findOneBy($condition);
-            if (isset($user)) {
+        // Set owner
+        $ownerEmail = null;
+        if (!empty($data['owner'])) {
+            $ownerEmail = $data['owner'];
+        } elseif (!empty($data['ownerbyid'])) {
+            $ownerEmail = $data['ownerbyid'];
+        }
+
+        if ($ownerEmail) {
+            $user = $this->em->getRepository(User::class)->findOneBy(['email' => $ownerEmail]);
+
+            if ($user instanceof User) {
                 $lead->setOwner($user);
             }
         }

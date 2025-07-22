@@ -1064,9 +1064,9 @@ class FieldModel extends FormModel
                 'properties'   => [],
                 'isPublished'  => true,
             ],
-            'stage' => [
+            'contact_stage' => [
                 'label'        => $this->translator->trans('mautic.lead.field.stage'),
-                'alias'        => 'stage',
+                'alias'        => 'contact_stage',
                 'type'         => 'text',
                 'group'        => 'core',
                 'group_label'  => $this->translator->trans('mautic.lead.field.group.core'),
