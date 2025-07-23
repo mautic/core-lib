@@ -67,7 +67,7 @@ Variables
             {% endif %}
         </div>
         <div class="row">
-                    <div class="panel">
+            <div class="panel">
             <div class="panel-heading mt-sm">
                 <div class="progress mt-lg" style="height:4px;">
                     <div class="progress-bar-import progress-bar {% if not complete %}active{% endif %} bg-{% if complete %}success{% endif %}"
@@ -132,10 +132,9 @@ Variables
                             </div>
                         {% endset %}
 
-                        {% include '@MauticCore/Components/tile--base.html.twig' with {
-                            tiles: [{
-                                content: tileContent
-                            }]
+                        {% include '@MauticCore/Components/tile.html.twig' with {
+                            type: 'base',
+                            content: tileContent
                         } %}
                     </div>
                 </div>
@@ -192,6 +191,7 @@ Variables
                                         label: 'mautic.lead.import.import_again',
                                         variant: 'link',
                                         href: path('mautic_import_action', {'object': 'contacts', 'objectAction': 'new'}),
+                                        size: 'xl',
                                         attributes: {
                                             'data-toggle': 'ajax'
                                         }
@@ -200,6 +200,7 @@ Variables
                                         label: 'mautic.lead.import.result.info'|trans({'%import%': import.name()}),
                                         variant: 'link',
                                         href: path('mautic_import_action', {'objectAction': 'view', 'objectId': import.id, 'object': object}),
+                                        size: 'xl',
                                         attributes: {
                                             'data-toggle': 'ajax'
                                         }
