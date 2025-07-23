@@ -19,14 +19,11 @@
                         <div class="small text-secondary"> {{ 'mautic.lead.import.start.instructions.format'|trans }}: CSV</div>
                         <div class="input-group well mt-xs">
                             {{ form_widget(form.file, {'label': 'mautic.lead.import.csv.parser.config'}) }}
-    
                             <span class="input-group-btn">
                                 {{ form_widget(form.start) }}
                             </span>
                         </div>
-    
                         <div class="row">
-    
                             {% set sampleContent %}
                                 <div class="d-flex fd-row-md fd-column fw-wrap fw-nowrap-md gap-md">
                                     {{ form_row(form.batchlimit) }}
@@ -59,7 +56,6 @@
                                     </div>
                                 </div>
                             {% endset %}
-    
                             {% include '@MauticCore/Helper/accordion.html.twig' with {
                                 'items': [
                                     {
@@ -69,11 +65,25 @@
                                 ]
                             } %}
                         </div>
-    
                         {{ form_end(form) }}
                     </div>
                 </div>
             </div>
+            {% if securityIsGranted('lead:lists:create') %}
+                {% include '@MauticCore/Components/card.html.twig' with {
+                    'type': 'feature',
+                    'image': {
+                        'src': 'app/bundles/LeadBundle/Assets/images/google-deepmind-KdjO4qoBb3E-unsplash.jpg',
+                        'alt': 'mautic.lead.import.segment.card.image.alt'|trans
+                    },
+                    'ctaType': 'new tab',
+                    'heading': 'mautic.lead.import.segment.card.heading'|trans,
+                    'href': path('mautic_segment_action', {'objectAction': 'new'}),
+                    'attributes': {
+                        'target': '_blank'
+                    }
+                } %}
+            {% endif %}
         </div>
     </div>
 </div>
