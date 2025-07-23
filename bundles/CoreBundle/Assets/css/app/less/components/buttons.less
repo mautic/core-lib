@@ -270,9 +270,10 @@
 
 // Make a button look and behave like a link
 .btn-link {
+  --btn-height: auto;
   font-weight: @btn-font-weight;
   color: var(--link-primary);
-  height: auto;
+  height: var(--btn-height);
   line-height: var(--btn-line-height);
   padding: 0 var(--spacing-05);
   &:hover,
