@@ -50,53 +50,42 @@ class Message extends FormEntity implements UuidInterface
     /**
      * @var ?int
      */
-    #[ORM\Column(name: 'id', type: 'integer')]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[Groups(['message:read'])]
     private $id;
 
     /**
      * @var string
      */
-    #[ORM\Column(name: 'name', type: 'string')]
     #[Groups(['message:read', 'message:write', 'channel:read'])]
     private $name;
 
     /**
      * @var ?string
      */
-    #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     #[Groups(['message:read', 'message:write'])]
     private $description;
 
     /**
      * @var ?\DateTimeInterface
      */
-    #[ORM\Column(name: 'publish_up', type: 'datetime', nullable: true)]
     #[Groups(['message:read', 'message:write'])]
     private $publishUp;
 
     /**
      * @var ?\DateTimeInterface
      */
-    #[ORM\Column(name: 'publish_down', type: 'datetime', nullable: true)]
     #[Groups(['message:read', 'message:write'])]
     private $publishDown;
 
     /**
      * @var ?Category
      */
-    #[ORM\ManyToOne(targetEntity: Category::class)]
-    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: true)]
     #[Groups(['message:read', 'message:write'])]
     private $category;
 
     /**
      * @var ArrayCollection<int,Channel>
      */
-    #[ORM\OneToMany(mappedBy: 'message', targetEntity: Channel::class, cascade: ['all'], orphanRemoval: true)]
-    #[ORM\OrderBy(['name' => 'ASC'])]
     #[Groups(['message:read', 'message:write'])]
     private $channels;
 
@@ -110,8 +99,8 @@ class Message extends FormEntity implements UuidInterface
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('messages')
-                ->setCustomRepositoryClass(MessageRepository::class)
-                ->addIndex(['date_added'], 'date_message_added');
+            ->setCustomRepositoryClass(MessageRepository::class)
+            ->addIndex(['date_added'], 'date_message_added');
 
         $builder
             ->addIdColumns()
