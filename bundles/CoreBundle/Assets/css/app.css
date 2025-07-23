@@ -3699,7 +3699,6 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
   color: var(--link-primary);
   height: auto;
   line-height: var(--btn-line-height);
-  color: var(--link-primary);
   padding: 0 var(--spacing-05);
 }
 .btn-link:hover,
