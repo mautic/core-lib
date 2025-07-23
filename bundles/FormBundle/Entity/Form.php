@@ -165,6 +165,7 @@ class Form extends FormEntity implements UuidInterface
         $this->fields      = new ArrayCollection();
         $this->actions     = new ArrayCollection();
         $this->submissions = new ArrayCollection();
+        $this->noIndex     = true;
         $this->initializeProjects();
     }
 
