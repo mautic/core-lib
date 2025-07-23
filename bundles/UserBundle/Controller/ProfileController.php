@@ -185,7 +185,7 @@ class ProfileController extends FormController
                     // Update timezone and locale
                     $tz = $me->getTimezone();
                     if (empty($tz)) {
-                        $tz = $this->coreParametersHelper->get('default_timezone');
+                        $tz = $this->coreParametersHelper->getDefaultTimezone();
                     }
                     $request->getSession()->set('_timezone', $tz);
 
