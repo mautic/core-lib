@@ -3,10 +3,10 @@
 namespace Mautic\ApiBundle\Controller;
 
 use Doctrine\Persistence\ManagerRegistry;
-use FOS\RestBundle\View\View;
 use Mautic\ApiBundle\ApiEvents;
 use Mautic\ApiBundle\Event\ApiEntityEvent;
 use Mautic\ApiBundle\Helper\EntityResultHelper;
+use Mautic\ApiBundle\Model\ApiLockAwareInterface;
 use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\AppVersion;
@@ -16,7 +16,6 @@ use Mautic\CoreBundle\Model\FormModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -245,6 +244,27 @@ class CommonApiController extends FetchCommonApiController
 
         if (!$this->checkEntityAccess($entity, 'edit')) {
             return $this->accessDenied();
+        }
+
+        if ($this->model instanceof ApiLockAwareInterface && $this->model->isApiLocked($entity)) {
+            $date = $entity->getCheckedOut();
+
+            return $this->returnError(
+                $this->translator->trans(
+                    'mautic.api.error.entity.locked',
+                    [
+                        '%name%' => $entity->getName(),
+                        '%user%' => $entity->getCheckedOutByUser(),
+                        '%date%' => $date->format($this->coreParametersHelper->get('date_format_dateonly')),
+                        '%time%' => $date->format($this->coreParametersHelper->get('date_format_timeonly')),
+                    ]
+                ),
+                Response::HTTP_CONFLICT,
+                [
+                    'checkedOutBy'     => $entity->getCheckedOutByUser(),
+                    'checkedOut'       => $entity->getCheckedOut()->format('Y-m-d H:i:s T'),
+                ]
+            );
         }
 
         return $this->processForm($request, $entity, $parameters, $method);
