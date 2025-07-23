@@ -249,10 +249,11 @@ final class FixtureHelper
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function createCampaignWithConditionalEmail(int $emailId, int $points = 1): Campaign
+    public function createCampaignWithConditionalEmail(int $emailId, int $points = 1, bool $allowRestart = false): Campaign
     {
         $campaign = new Campaign();
         $campaign->setName('Test conditional email');
+        $campaign->setAllowRestart($allowRestart);
 
         $this->em->persist($campaign);
         $this->em->flush();

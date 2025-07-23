@@ -140,6 +140,10 @@ class CampaignEventSubscriber implements EventSubscriberInterface
             );
         }
         $eventPreview->addEventStat('total_executions', $logStats->totalExecutions);
+        if ($eventPreview->isCampaignRestartAllowed()) {
+            $eventPreview->addEventStat('unique_executions', $logStats->uniqueExecutions);
+            $eventPreview->addEventStat('max_rotations', $logStats->maxRotations);
+        }
         $eventPreview->addEventStat('pending_executions', $logStats->pendingExecutions);
 
         if (in_array($eventPreview->event->getEventType(), ['condition', 'decision'])) {
