@@ -483,6 +483,9 @@ class IntervalTest extends \PHPUnit\Framework\TestCase
                 fn ($param, $default) => 'America/New_York'
             );
 
+        $coreParametersHelper->method('getDefaultTimezone')
+            ->willReturn('America/New_York');
+
         return new Interval(new NullLogger(), $coreParametersHelper);
     }
 
