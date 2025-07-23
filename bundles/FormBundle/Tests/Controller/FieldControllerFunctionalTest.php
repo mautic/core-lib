@@ -115,7 +115,7 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
         string $label,
         string $expectedHtmlFragment,
         string $helpMessage = '',
-        ?array $additionalValues = null
+        ?array $additionalValues = null,
     ): void {
         $this->client->xmlHttpRequest(
             Request::METHOD_GET,
@@ -130,8 +130,8 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
         $form = $formCrawler->form();
         $form->setValues(
             [
-                'formfield[formId]' => 'temporary_form_hash',
-                'formfield[label]'  => $label,
+                'formfield[formId]'       => 'temporary_form_hash',
+                'formfield[label]'        => $label,
                 'formfield[helpMessage]'  => $helpMessage,
             ]
         );
@@ -161,25 +161,25 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
     {
         return [
             'email field with link in label' => [
-                'fieldType' => 'email',
-                'label' => 'Email <a href="https://example.com" target="_blank">link</a>',
+                'fieldType'            => 'email',
+                'label'                => 'Email <a href="https://example.com" target="_blank">link</a>',
                 'expectedHtmlFragment' => '<a href="https://example.com" target="_blank" rel="noreferrer noopener">link</a>',
-                'helpMessage' => '',
-                'additionalValues' => null,
+                'helpMessage'          => '',
+                'additionalValues'     => null,
             ],
             'email field with link in helpMessage' => [
-                'fieldType' => 'email',
-                'label' => 'Email',
+                'fieldType'            => 'email',
+                'label'                => 'Email',
                 'expectedHtmlFragment' => '<a href="https://example.com" target="_blank" rel="noreferrer noopener">link</a>',
-                'helpMessage' => 'Find more info at <a href="https://example.com" target="_blank">link</a>',
-                'additionalValues' => null,
+                'helpMessage'          => 'Find more info at <a href="https://example.com" target="_blank">link</a>',
+                'additionalValues'     => null,
             ],
             'checkbox group field with link in label' => [
-                'fieldType' => 'checkboxgrp',
-                'label' => 'Checkbox Group <a href="https://example.com" target="_blank">link</a>',
+                'fieldType'            => 'checkboxgrp',
+                'label'                => 'Checkbox Group <a href="https://example.com" target="_blank">link</a>',
                 'expectedHtmlFragment' => '<a href="https://example.com" target="_blank" rel="noreferrer noopener">link</a>',
-                'helpMessage' => '',
-                'additionalValues' => [
+                'helpMessage'          => '',
+                'additionalValues'     => [
                     'formfield' => [
                         'properties' => [
                             'optionlist' => [
@@ -195,11 +195,11 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
                 ],
             ],
             'checkbox group field with link in helpMessage' => [
-                'fieldType' => 'checkboxgrp',
-                'label' => 'Checkbox Group',
+                'fieldType'            => 'checkboxgrp',
+                'label'                => 'Checkbox Group',
                 'expectedHtmlFragment' => '<a href="https://example.com" target="_blank" rel="noreferrer noopener">link</a>',
-                'helpMessage' => 'Find <a href="https://example.com" target="_blank">link</a>',
-                'additionalValues' => [
+                'helpMessage'          => 'Find <a href="https://example.com" target="_blank">link</a>',
+                'additionalValues'     => [
                     'formfield' => [
                         'properties' => [
                             'optionlist' => [
@@ -215,11 +215,11 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
                 ],
             ],
             'checkbox group field with link in option label' => [
-                'fieldType' => 'checkboxgrp',
-                'label' => 'Checkbox Group',
+                'fieldType'            => 'checkboxgrp',
+                'label'                => 'Checkbox Group',
                 'expectedHtmlFragment' => '<a href="https://example.com" target="_blank" rel="noreferrer noopener">terms and conditions</a>',
-                'helpMessage' => '',
-                'additionalValues' => [
+                'helpMessage'          => '',
+                'additionalValues'     => [
                     'formfield' => [
                         'properties' => [
                             'optionlist' => [
@@ -235,11 +235,11 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
                 ],
             ],
             'select field with link in label' => [
-                'fieldType' => 'select',
-                'label' => 'Select',
+                'fieldType'            => 'select',
+                'label'                => 'Select',
                 'expectedHtmlFragment' => '<a href="https://example.com" target="_blank" rel="noreferrer noopener">link</a>',
-                'helpMessage' => 'Get <a href="https://example.com" target="_blank" rel="noreferrer noopener">link</a>',
-                'additionalValues' => [
+                'helpMessage'          => 'Get <a href="https://example.com" target="_blank" rel="noreferrer noopener">link</a>',
+                'additionalValues'     => [
                     'formfield' => [
                         'properties' => [
                             'list' => [
@@ -255,11 +255,11 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
                 ],
             ],
             'select field with link in helpMessage' => [
-                'fieldType' => 'select',
-                'label' => 'Select <a href="https://example.com" target="_blank">link</a>',
+                'fieldType'            => 'select',
+                'label'                => 'Select <a href="https://example.com" target="_blank">link</a>',
                 'expectedHtmlFragment' => '<a href="https://example.com" target="_blank" rel="noreferrer noopener">link</a>',
-                'helpMessage' => '',
-                'additionalValues' => [
+                'helpMessage'          => '',
+                'additionalValues'     => [
                     'formfield' => [
                         'properties' => [
                             'list' => [
