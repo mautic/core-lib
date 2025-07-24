@@ -55,6 +55,7 @@ use Mautic\LeadBundle\Tracker\Service\DeviceTrackingService\DeviceTrackingServic
 use Mautic\PageBundle\Model\PageModel;
 use Mautic\StageBundle\Entity\Stage;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Entity\UserRepository;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Psr\Log\LoggerInterface;
@@ -1058,7 +1059,7 @@ class SubmissionModel extends CommonFormModel
 
         // Set stage.
         if (!empty($data['stagebyname'])) {
-            $stage = $this->em->getRepository(Stage::class)->findByIdOrName($data['stagebyname']);
+            $stage = $this->em->getRepository(Stage::class)->findOneBy(['name' => $data['stagebyname']]);
 
             if ($stage instanceof Stage) {
                 $lead->setStage($stage);
@@ -1085,9 +1086,11 @@ class SubmissionModel extends CommonFormModel
 
         // Set owner
         $userRepo = $this->em->getRepository(User::class);
+        assert($userRepo instanceof UserRepository);
+
         $user = null;
         if (!empty($data['ownerbyemail'])) {
-            $user = $userRepo->findOneBy(['email' => $data['ownerbyemail']);
+            $user = $userRepo->findOneBy(['email' => $data['ownerbyemail']]);
         } elseif (!$user && !empty($data['ownerbyid'])) {
             $user = $userRepo->find($data['ownerbyid']);
         }

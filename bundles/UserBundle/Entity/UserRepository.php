@@ -3,7 +3,6 @@
 namespace Mautic\UserBundle\Entity;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
@@ -43,20 +42,6 @@ class UserRepository extends CommonRepository
         $now  = new DateTimeHelper();
         $conn = $this->_em->getConnection();
         $conn->update(MAUTIC_TABLE_PREFIX.'users', ['last_active' => $now->toUtcString()], ['id' => (int) $user->getId()]);
-    }
-
-    /**
-     * @throws NonUniqueResultException
-     */
-    public function findOneByEmailOrId(int|string $value): ?User
-    {
-        return $this->createQueryBuilder('u')
-            ->where('u.email = :value')
-            ->orWhere('u.id = :idValue')
-            ->setParameter('value', $value)
-            ->setParameter('idValue', is_numeric($value) ? (int) $value : 0)
-            ->getQuery()
-            ->getOneOrNullResult();
     }
 
     /**
