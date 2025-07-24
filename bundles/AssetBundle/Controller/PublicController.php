@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Mautic\AssetBundle\Controller;
 
+use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\ORMException;
 use Mautic\AssetBundle\Entity\Asset;
 use Mautic\AssetBundle\Model\AssetModel;
 use Mautic\CoreBundle\Controller\AbstractFormController;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +35,7 @@ class PublicController extends AbstractFormController
     ): Response {
         try {
             $entity = $model->getRepository()->findByIdAndAlias($slug);
-        } catch (\Exception) {
+        } catch (NonUniqueResultException|EntityNotFoundException|\InvalidArgumentException) {
             return $this->notFound();
         }
 
@@ -107,7 +110,7 @@ class PublicController extends AbstractFormController
             $entity->setUploadDir($parametersHelper->get('upload_dir'));
             $contents = $entity->getFileContents();
             $model->trackDownload($entity, $request);
-        } catch (\Exception) {
+        } catch (FileNotFoundException|ORMException|\Exception) {
             $model->trackDownload($entity, $request, 404);
 
             return $this->notFound();
