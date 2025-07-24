@@ -1029,9 +1029,9 @@ class FieldModel extends FormModel
     public function getSpecialLeadFields(): array
     {
         return [
-            'owner' => [
-                'label'        => $this->translator->trans('mautic.lead.field.owner'),
-                'alias'        => 'owner',
+            'ownerbyemail' => [
+                'label'        => $this->translator->trans('mautic.lead.field.ownerbyemail'),
+                'alias'        => 'ownerbyemail',
                 'type'         => 'email',
                 'group'        => 'core',
                 'group_label'  => $this->translator->trans('mautic.lead.field.group.core'),
@@ -1049,9 +1049,9 @@ class FieldModel extends FormModel
                 'properties'   => [],
                 'isPublished'  => true,
             ],
-            'contact_stage' => [
-                'label'        => $this->translator->trans('mautic.lead.field.stage'),
-                'alias'        => 'contact_stage',
+            'stagebyname' => [
+                'label'        => $this->translator->trans('mautic.lead.field.stagebyname'),
+                'alias'        => 'stagebyname',
                 'type'         => 'text',
                 'group'        => 'core',
                 'group_label'  => $this->translator->trans('mautic.lead.field.group.core'),

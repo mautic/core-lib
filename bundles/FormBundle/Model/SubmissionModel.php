@@ -1057,8 +1057,8 @@ class SubmissionModel extends CommonFormModel
         $lead->setLastActive(new \DateTime());
 
         // Set stage.
-        if (!empty($data['contact_stage'])) {
-            $stage = $this->em->getRepository(Stage::class)->findByIdOrName($data['contact_stage']);
+        if (!empty($data['stagebyname'])) {
+            $stage = $this->em->getRepository(Stage::class)->findByIdOrName($data['stagebyname']);
 
             if ($stage instanceof Stage) {
                 $lead->setStage($stage);
@@ -1077,22 +1077,22 @@ class SubmissionModel extends CommonFormModel
                     'Form: Associating stage failed as %s',
                     $this->translator->trans(
                         'mautic.lead.import.stage.not.exists',
-                        ['%id%' => $data['contact_stage']]
+                        ['%id%' => $data['stagebyname']]
                     )
                 ));
             }
         }
 
         // Set owner
-        $ownerEmail = null;
-        if (!empty($data['owner'])) {
-            $ownerEmail = $data['owner'];
+        $ownerEmailOrId = null;
+        if (!empty($data['ownerbyemail'])) {
+            $ownerEmailOrId = $data['ownerbyemail'];
         } elseif (!empty($data['ownerbyid'])) {
-            $ownerEmail = $data['ownerbyid'];
+            $ownerEmailOrId = $data['ownerbyid'];
         }
 
-        if ($ownerEmail) {
-            $user = $this->em->getRepository(User::class)->findOneBy(['email' => $ownerEmail]);
+        if ($ownerEmailOrId) {
+            $user = $this->em->getRepository(User::class)->findOneByEmailOrId($ownerEmailOrId);
 
             if ($user instanceof User) {
                 $lead->setOwner($user);

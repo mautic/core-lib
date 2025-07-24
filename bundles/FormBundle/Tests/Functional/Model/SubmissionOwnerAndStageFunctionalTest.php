@@ -45,6 +45,7 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
 
         $submissionData = $this->replacePlaceholders($submissionDataPlaceholders, [
             '%sales_user_email%' => $salesUser->getEmail(),
+            '%sales_user_id%'    => $salesUser->getId(),
             '%admin_user_id%'    => (string) $adminUser->getId(),
             '%stage_name%'       => $stage->getName(),
         ]);
@@ -118,16 +119,16 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
     {
         return [
             ['label' => 'Email', 'type' => 'email', 'alias' => 'email', 'leadField' => 'email'],
-            ['label' => 'Owners Email', 'type' => 'text', 'alias' => 'owner_by_email', 'leadField' => 'owner'],
+            ['label' => 'Owners Email', 'type' => 'text', 'alias' => 'owner_by_email', 'leadField' => 'ownerbyemail'],
             ['label' => 'Owners id', 'type' => 'text', 'alias' => 'owner_by_id', 'leadField' => 'ownerbyid'],
-            ['label' => 'Stage', 'type' => 'text', 'alias' => 'stage', 'leadField' => 'contact_stage'],
+            ['label' => 'Stage', 'type' => 'text', 'alias' => 'stage', 'leadField' => 'stagebyname'],
             ['label' => 'Submit', 'type' => 'button'],
         ];
     }
 
     /**
-     * @param array<string, string> $data
-     * @param array<string, string> $replacements
+     * @param array<string, string>          $data
+     * @param array<string, int|string|null> $replacements
      *
      * @return array<string, string>
      */
@@ -179,7 +180,7 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
             'contact.owner.id@test.com',
             [
                 'email'       => 'contact.owner.id@test.com',
-                'owner_by_id' => '%sales_user_email%',
+                'owner_by_id' => '%sales_user_id%',
             ],
             'sales'
         );
@@ -212,7 +213,7 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
             'contact.owner.id.stage@test.com',
             [
                 'email'       => 'contact.owner.id.stage@test.com',
-                'owner_by_id' => '%sales_user_email%',
+                'owner_by_id' => '%sales_user_id%',
                 'stage'       => '%stage_name%',
             ],
             'sales',
