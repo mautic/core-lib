@@ -1084,19 +1084,16 @@ class SubmissionModel extends CommonFormModel
         }
 
         // Set owner
-        $ownerEmailOrId = null;
+        $userRepo = $this->em->getRepository(User::class);
+        $user = null;
         if (!empty($data['ownerbyemail'])) {
-            $ownerEmailOrId = $data['ownerbyemail'];
-        } elseif (!empty($data['ownerbyid'])) {
-            $ownerEmailOrId = $data['ownerbyid'];
+            $user = $userRepo->findOneBy(['email' => $data['ownerbyemail']);
+        } elseif (!$user && !empty($data['ownerbyid'])) {
+            $user = $userRepo->find($data['ownerbyid']);
         }
 
-        if ($ownerEmailOrId) {
-            $user = $this->em->getRepository(User::class)->findOneByEmailOrId($ownerEmailOrId);
-
-            if ($user instanceof User) {
-                $lead->setOwner($user);
-            }
+        if ($user instanceof User) {
+            $lead->setOwner($user);
         }
 
         // create a new lead
