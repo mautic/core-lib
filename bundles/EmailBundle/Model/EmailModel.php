@@ -2146,11 +2146,11 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         foreach ($results as $language => $emails) {
             if (!isset($options['name_is_key']) || empty($options['name_is_key'])) {
                 foreach ($emails as $name => $id) {
-                    $newResults[$language][$name] = sprintf('(%s) %s', $name, $id);
+                    $newResults[$language][$name] = sprintf('%s (%s)', $id, $name);
                 }
             } else {
                 foreach ($emails as $id => $name) {
-                    $newResults[$language][$id] = sprintf('(%s) %s', $id, $name);
+                    $newResults[$language][$id] = sprintf('%s (%s)', $name, $id);
                 }
             }
         }
