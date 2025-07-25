@@ -993,7 +993,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ]);
 
         $this->assertSame(
-            ['EN' => [123 => '(123) Email 123']],
+            ['EN' => [123 => 'Email 123 (123)']],
             $this->emailModel->getLookupResultsWithIdName('email', '', 0, 0)
         );
     }
