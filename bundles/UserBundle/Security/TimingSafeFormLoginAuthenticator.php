@@ -109,7 +109,7 @@ class TimingSafeFormLoginAuthenticator implements AuthenticatorInterface, Authen
         return $this->authenticator->onAuthenticationFailure($request, $exception);
     }
 
-    public function start(Request $request, AuthenticationException $authException = null): Response
+    public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return $this->authenticator->start($request, $authException);
     }
