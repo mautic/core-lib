@@ -177,13 +177,13 @@ class AbstractCampaignCommand extends MauticMysqlTestCase
         return $event;
     }
 
-    protected function createEventLog(Lead $lead, Event $event, Campaign $campaign): LeadEventLog
+    protected function createEventLog(Lead $lead, Event $event, Campaign $campaign, int $rotation): LeadEventLog
     {
         $leadEventLog = new LeadEventLog();
         $leadEventLog->setLead($lead);
         $leadEventLog->setEvent($event);
         $leadEventLog->setCampaign($campaign);
-        $leadEventLog->setRotation(0);
+        $leadEventLog->setRotation($rotation);
         $this->em->persist($leadEventLog);
 
         return $leadEventLog;

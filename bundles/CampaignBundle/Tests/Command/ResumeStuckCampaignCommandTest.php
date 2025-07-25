@@ -93,7 +93,7 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $this->createCampaignLead($campaign, $contact5);
         $this->createCampaignLead($campaign, $contact6);
 
-        $rootEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action');
+        $rootEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action', ['email' => '1']);
 
         $conditionEvent = $this->createEvent('Check Contact Field Value Condition', $campaign, 'lead.field_value', 'condition', [
             'field'    => 'points',
@@ -121,11 +121,11 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $noPathAction->setDecisionPath('no');
 
         // Fourth level events from YES path
-        $yesFollowupEmail = $this->createEvent('Yes Path Followup', $campaign, 'email.send', 'action');
+        $yesFollowupEmail = $this->createEvent('Yes Path Followup', $campaign, 'email.send', 'action', ['email' => '1']);
         $yesFollowupEmail->setParent($yesPathAction);
 
         // Fourth level events from NO path
-        $noFollowupEmail = $this->createEvent('No Path Followup', $campaign, 'email.send', 'action');
+        $noFollowupEmail = $this->createEvent('No Path Followup', $campaign, 'email.send', 'action', ['email' => '1']);
         $noFollowupEmail->setParent($noPathAction);
 
         $this->em->persist($conditionEvent);
@@ -236,10 +236,10 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $this->createCampaignLead($campaign, $contact4);
         $this->createCampaignLead($campaign, $contact5, true); // Manually removed
 
-        $welcomeEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action');
+        $welcomeEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action', ['email' => '1']);
         $addPoints    = $this->createEvent('Add Points', $campaign, 'lead.changepoints', 'action', ['points' => 10]);
         $addPoints->setParent($welcomeEmail);
-        $finalEmail = $this->createEvent('Final Email', $campaign, 'email.send', 'action');
+        $finalEmail = $this->createEvent('Final Email', $campaign, 'email.send', 'action', ['email' => '1']);
         $finalEmail->setParent($addPoints);
 
         $this->em->persist($addPoints);
@@ -335,11 +335,11 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $addPoints->setParent($welcomeEmail);
         $welcomeEmail->addChild($addPoints);
 
-        $deletedEmail = $this->createEvent('Deleted Event', $campaign, 'email.send', 'action', ['eventType' => 'action']);
+        $deletedEmail = $this->createEvent('Deleted Event', $campaign, 'email.send', 'action', ['email' => '1']);
         $deletedEmail->setParent($addPoints);
-        $deletedEmail->setDeleted();
+        $deletedEmail->setDeleted(null);
 
-        $finalEmail = $this->createEvent('Final Email', $campaign, 'email.send', 'action', ['eventType' => 'action']);
+        $finalEmail = $this->createEvent('Final Email', $campaign, 'email.send', 'action', ['email' => '1']);
         $finalEmail->setParent($addPoints);
         $addPoints->addChild($finalEmail);
 
