@@ -76,6 +76,8 @@ class ContactSegmentServiceFunctionalTest extends MauticMysqlTestCase
 
     public function testSegmentCountIsCorrect(): void
     {
+        $this->testSymfonyCommand('mautic:segments:update', ['--env' => 'test']);
+
         // purposively not using dataProvider here to avoid loading fixtures with each segment
         foreach ($this->provideSegments() as $segmentAlias => $expectedCount) {
             $reference       = $this->getReference($segmentAlias);
@@ -135,7 +137,7 @@ class ContactSegmentServiceFunctionalTest extends MauticMysqlTestCase
         // exclude the segment
         $segmentTest3Ref = $this->getReference('segment-test-3');
         $lastRebuiltDate = $segmentTest3Ref->getLastBuiltDate();
-        self::assertNotNull($lastRebuiltDate);
+        self::assertNull($lastRebuiltDate);
 
         $this->testSymfonyCommand(
             UpdateLeadListsCommand::NAME,

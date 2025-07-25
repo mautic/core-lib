@@ -18,7 +18,7 @@ class QueryBuilder extends BaseQueryBuilder
     private array $logicStack = [];
 
     public function __construct(
-        private Connection $connection
+        private Connection $connection,
     ) {
         parent::__construct($connection);
     }
@@ -442,7 +442,7 @@ class QueryBuilder extends BaseQueryBuilder
         return $this;
     }
 
-    public function createQueryBuilder(Connection $connection = null): QueryBuilder
+    public function createQueryBuilder(?Connection $connection = null): QueryBuilder
     {
         return new self($connection ?: $this->connection);
     }

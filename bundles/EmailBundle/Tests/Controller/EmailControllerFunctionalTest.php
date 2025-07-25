@@ -6,14 +6,19 @@ namespace Mautic\EmailBundle\Tests\Controller;
 
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\TransactionRequiredException;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Traits\ControllerTrait;
+use Mautic\DynamicContentBundle\DynamicContent\TypeList;
+use Mautic\DynamicContentBundle\Entity\DynamicContent;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
+use Mautic\ProjectBundle\Entity\Project;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bridge\Doctrine\DataCollector\DoctrineDataCollector;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,10 +28,11 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
     public function setUp(): void
     {
-        $this->configParams['mailer_from_name']      = 'Mautic Admin';
-        $this->configParams['mailer_from_email']     = 'admin@email.com';
-        $this->configParams['mailer_custom_headers'] = ['x-global-custom-header' => 'value123'];
-        $this->clientOptions                         = ['debug' => true];
+        $this->configParams['disable_trackable_urls'] = false;
+        $this->configParams['mailer_from_name']       = 'Mautic Admin';
+        $this->configParams['mailer_from_email']      = 'admin@email.com';
+        $this->configParams['mailer_custom_headers']  = ['x-global-custom-header' => 'value123'];
+        $this->clientOptions                          = ['debug' => true];
 
         parent::setUp();
     }
@@ -47,7 +53,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->request('GET', '/s/emails');
         $clientResponse = $this->client->getResponse();
-        $this->assertSame(200, $clientResponse->getStatusCode(), 'Return code must be 200');
+        $this->assertResponseIsSuccessful('Return code must be 200');
         $this->assertStringContainsString('February 7, 2020', $clientResponse->getContent());
         $this->assertStringContainsString('March 21, 2020', $clientResponse->getContent());
         $this->assertStringContainsString('Test User', $clientResponse->getContent());
@@ -68,7 +74,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     {
         $this->client->request('GET', '/s/emails?search=has%3Aresults&tmpl=list');
         $clientResponse = $this->client->getResponse();
-        $this->assertSame(200, $clientResponse->getStatusCode(), 'Return code must be 200.');
+        $this->assertResponseIsSuccessful('Return code must be 200.');
     }
 
     /**
@@ -334,6 +340,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($email);
         $this->em->flush();
 
+        $this->setCsrfHeader();
         $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
             'id'         => $email->getId(),
             'pending'    => 2,
@@ -449,6 +456,63 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertEquals($firstEmail->getId(), $secondEmail->getVariantParent()->getId());
     }
 
+    #[DataProvider('dwcTokenTypeDataProvider')]
+    public function testSaveEmailWithHtmlTypeDWC(string $type): void
+    {
+        $dwc            = $this->createDynamicContent($type);
+        $subject        = sprintf('Email with DWC {dwc=%s}', $dwc->getSlotName());
+        $crawler        = $this->client->request(Request::METHOD_GET, '/s/emails/new');
+        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $form           = $buttonCrawler->form();
+        $form['emailform[emailType]']->setValue('template');
+        $form['emailform[subject]']->setValue($subject);
+        $form['emailform[name]']->setValue('Email A');
+        $form['emailform[template]']->setValue('blank');
+        $form['emailform[customHtml]']->setValue('<html><body><p>some text</p></body></html>');
+        $form['emailform[isPublished]']->setValue('1');
+
+        $this->client->submit($form);
+        Assert::assertTrue($this->client->getResponse()->isOk());
+        $errString = sprintf('The Dynamic Content slot &#039;%s&#039; is not of type &#039;text&#039;.', $dwc->getSlotName());
+        if (TypeList::TEXT === $type) {
+            $this->assertStringNotContainsString($errString, $this->client->getResponse()->getContent());
+        } else {
+            $this->assertStringContainsString($errString, $this->client->getResponse()->getContent());
+        }
+    }
+
+    /**
+     * @return iterable<string, string[]>
+     */
+    public static function dwcTokenTypeDataProvider(): iterable
+    {
+        yield 'text' => [TypeList::TEXT];
+        yield 'html' => [TypeList::HTML];
+    }
+
+    public function testEmailWithProject(): void
+    {
+        $email = $this->createEmail('Email', 'Subject', 'template', 'blank', 'html');
+
+        $project = new Project();
+        $project->setName('Test Project');
+        $this->em->persist($project);
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $crawler = $this->client->request('GET', '/s/emails/edit/'.$email->getId());
+        $form    = $crawler->selectButton('Save')->form();
+        $form['emailform[projects]']->setValue((string) $project->getId());
+
+        $this->client->submit($form);
+
+        $this->assertResponseIsSuccessful();
+
+        $savedEmail = $this->em->find(Email::class, $email->getId());
+        Assert::assertSame($project->getId(), $savedEmail->getProjects()->first()->getId());
+    }
+
     private function createSegment(string $name, string $alias): LeadList
     {
         $segment = new LeadList();
@@ -463,7 +527,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @param mixed[]|null $varientSetting
      */
-    private function createEmail(string $name, string $subject, string $emailType, string $template, string $customHtml, LeadList $segment = null, ?array $varientSetting = []): Email
+    private function createEmail(string $name, string $subject, string $emailType, string $template, string $customHtml, ?LeadList $segment = null, ?array $varientSetting = []): Email
     {
         $email = new Email();
         $email->setName($name);
@@ -543,7 +607,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             'template' => $email->getId(),
         ];
 
-        $this->client->request('GET', '/s/ajax', $payload, [], $this->createAjaxHeaders());
+        $this->client->xmlHttpRequest('GET', '/s/ajax', $payload);
         $clientResponse = $this->client->getResponse();
 
         $this->assertTrue($clientResponse->isOk(), $clientResponse->getContent());
@@ -554,5 +618,137 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertNotEmpty($response['subject']);
         $this->assertEquals($email->getSubject(), $response['subject']);
         $this->assertNotEmpty($response['body']);
+    }
+
+    private function createDynamicContent(string $type): DynamicContent
+    {
+        $dynamicContent = new DynamicContent();
+        $dynamicContent->setName('Dynamic content');
+        $dynamicContent->setType($type);
+        $dynamicContent->setIsCampaignBased(false);
+        $dynamicContent->setSlotName('slot-name');
+        $dynamicContent->setContent('text content');
+        $dynamicContent->setFilters([
+            [
+                'glue'     => 'and',
+                'field'    => 'email',
+                'object'   => 'lead',
+                'type'     => 'email',
+                'filter'   => null,
+                'display'  => null,
+                'operator' => '!empty',
+            ],
+        ]);
+        $this->em->persist($dynamicContent);
+
+        return $dynamicContent;
+    }
+
+    /**
+     * @throws \Doctrine\ORM\Exception\ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     */
+    #[DataProvider('getEditEmailForTranslationProvider')]
+    public function testEditEmailForTranslation(
+        string $parentType,
+        string $childType,
+        string $parentField,
+        bool $useSegment,
+    ): void {
+        $segment = $useSegment ? $this->createSegment('Segment A', 'segment-a') : null;
+
+        $parentEmail = $this->createEmail('Parent Email', 'template', $parentType, 'blank', 'Test html', $segment);
+        $childEmail  = $this->createEmail('Child Email', 'template', $childType, 'blank', 'Test html', $segment);
+
+        $this->em->persist($parentEmail);
+        $this->em->persist($childEmail);
+        $this->em->flush();
+
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/edit/{$childEmail->getId()}");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Save')->form();
+        $form->setValues([
+            'emailform[name]'            => 'Child Email - Updated',
+            "emailform[$parentField]"    => $parentEmail->getId(),
+        ]);
+
+        $this->client->submit($form);
+        $this->assertResponseIsSuccessful();
+
+        /** @var Email $updatedChild */
+        $updatedChild      = $this->em->find(Email::class, $childEmail->getId());
+        $translationParent = $updatedChild->getTranslationParent();
+        \assert($translationParent instanceof Email || null === $translationParent);
+
+        $this->assertNotNull($translationParent, 'Translation parent should be set.');
+        $this->assertSame(
+            $parentEmail->getId(),
+            $translationParent->getId(),
+            'Child email should have the parent email set for translation.'
+        );
+    }
+
+    /**
+     * @return iterable<string, array{parentType: string, childType: string, parentField: string, useSegment: bool}>
+     */
+    public static function getEditEmailForTranslationProvider(): iterable
+    {
+        yield 'Segment email' => [
+            'parentType'   => 'list',
+            'childType'    => 'list',
+            'parentField'  => 'segmentTranslationParent',
+            'useSegment'   => true,
+        ];
+
+        yield 'Template email' => [
+            'parentType'   => 'template',
+            'childType'    => 'template',
+            'parentField'  => 'templateTranslationParent',
+            'useSegment'   => false,
+        ];
+    }
+
+    /**
+     * Test email name length validation (190 character limit).
+     */
+    public function testEmailNameLengthValidation(): void
+    {
+        $longName = str_repeat('a', Email::MAX_NAME_SUBJECT_LENGTH + 1); // 191 characters
+
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $form = $crawler->selectButton('emailform[buttons][save]')->form();
+        $form['emailform[name]']->setValue($longName);
+        $form['emailform[subject]']->setValue('Valid Subject');
+        $form['emailform[emailType]']->setValue('template');
+
+        $this->client->submit($form);
+
+        $response = $this->client->getResponse();
+        $this->assertStringContainsString('Email name maximum length is 190 characters', $response->getContent());
+    }
+
+    /**
+     * Test email subject length validation (190 character limit).
+     */
+    public function testEmailSubjectLengthValidation(): void
+    {
+        $longSubject = str_repeat('b', Email::MAX_NAME_SUBJECT_LENGTH + 1); // 191 characters
+
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $form = $crawler->selectButton('emailform[buttons][save]')->form();
+        $form['emailform[name]']->setValue('Valid Name');
+        $form['emailform[subject]']->setValue($longSubject);
+        $form['emailform[emailType]']->setValue('template');
+
+        $this->client->submit($form);
+
+        $response = $this->client->getResponse();
+        $this->assertStringContainsString('Email subject maximum length is 190 characters', $response->getContent());
     }
 }

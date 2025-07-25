@@ -4,13 +4,16 @@ namespace Mautic\FormBundle\Model;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Membership\MembershipManager;
 use Mautic\CampaignBundle\Model\CampaignModel;
+use Mautic\CoreBundle\Doctrine\Paginator\SimplePaginator;
 use Mautic\CoreBundle\Exception\FileUploadException;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\Chart\LineChart;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\CsvHelper;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
@@ -41,6 +44,7 @@ use Mautic\LeadBundle\Deduplicate\ContactMerger;
 use Mautic\LeadBundle\Deduplicate\Exception\SameContactException;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
 use Mautic\LeadBundle\Helper\CustomFieldValueHelper;
 use Mautic\LeadBundle\Helper\IdentifyCompanyHelper;
 use Mautic\LeadBundle\Model\CompanyModel;
@@ -82,6 +86,7 @@ class SubmissionModel extends CommonFormModel
         private DateHelper $dateHelper,
         private ContactTracker $contactTracker,
         private ContactMerger $contactMerger,
+        private FieldsWithUniqueIdentifier $fieldsWithUniqueIdentifier,
         EntityManager $em,
         CorePermissions $security,
         EventDispatcherInterface $dispatcher,
@@ -89,7 +94,7 @@ class SubmissionModel extends CommonFormModel
         Translator $translator,
         UserHelper $userHelper,
         LoggerInterface $mauticLogger,
-        CoreParametersHelper $coreParametersHelper
+        CoreParametersHelper $coreParametersHelper,
     ) {
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
@@ -231,10 +236,10 @@ class SubmissionModel extends CommonFormModel
                         } elseif (is_callable($params['valueFilter'])) {
                             $value = call_user_func_array($params['valueFilter'], [$f, $value]);
                         } else {
-                            $value = InputHelper::_($value, 'clean');
+                            $value = InputHelper::_($value, 'string');
                         }
                     } else {
-                        $value = InputHelper::_($value, 'clean');
+                        $value = InputHelper::_($value, 'string');
                     }
                 }
             } elseif (!empty($value)) {
@@ -403,6 +408,11 @@ class SubmissionModel extends CommonFormModel
         parent::deleteEntity($submission);
     }
 
+    /**
+     * @param array<string,mixed> $args
+     *
+     * @return Submission[]|array<int,Submission>|iterable<Submission>|\Doctrine\ORM\Internal\Hydration\IterableResult<Submission>|Paginator<Submission>|SimplePaginator<Submission>
+     */
     public function getEntities(array $args = [])
     {
         return $this->getRepository()->getEntities($args);
@@ -645,7 +655,7 @@ class SubmissionModel extends CommonFormModel
      */
     private function putCsvExportRow($handle, array $row): bool|int
     {
-        return fputcsv($handle, $row);
+        return CsvHelper::putCsv($handle, $row);
     }
 
     /**
@@ -760,7 +770,7 @@ class SubmissionModel extends CommonFormModel
         \DateTime $dateTo,
         $dateFormat = null,
         $filter = [],
-        $canViewOthers = true
+        $canViewOthers = true,
     ): array {
         $chart = new LineChart($unit, $dateFrom, $dateTo, $dateFormat);
         $query = new ChartQuery($this->em->getConnection(), $dateFrom, $dateTo);
@@ -786,10 +796,8 @@ class SubmissionModel extends CommonFormModel
      * @param string $dateTo
      * @param array  $filters
      * @param bool   $canViewOthers
-     *
-     * @return array
      */
-    public function getTopSubmissionReferrers($limit = 10, $dateFrom = null, $dateTo = null, $filters = [], $canViewOthers = true)
+    public function getTopSubmissionReferrers($limit = 10, $dateFrom = null, $dateTo = null, $filters = [], $canViewOthers = true): array
     {
         $q = $this->em->getConnection()->createQueryBuilder();
         $q->select('COUNT(DISTINCT t.id) AS submissions, t.referer')
@@ -819,10 +827,8 @@ class SubmissionModel extends CommonFormModel
      * @param string $dateTo
      * @param array  $filters
      * @param bool   $canViewOthers
-     *
-     * @return array
      */
-    public function getTopSubmitters($limit = 10, $dateFrom = null, $dateTo = null, $filters = [], $canViewOthers = true)
+    public function getTopSubmitters($limit = 10, $dateFrom = null, $dateTo = null, $filters = [], $canViewOthers = true): array
     {
         $q = $this->em->getConnection()->createQueryBuilder();
         $q->select('COUNT(DISTINCT t.id) AS submissions, t.lead_id, l.firstname, l.lastname, l.email')
@@ -867,7 +873,7 @@ class SubmissionModel extends CommonFormModel
      *
      * @throws ORMException
      */
-    protected function createLeadFromSubmit(Form $form, array $leadFieldMatches, $leadFields, Company $companyEntity = null): Lead
+    protected function createLeadFromSubmit(Form $form, array $leadFieldMatches, $leadFields, ?Company $companyEntity = null): Lead
     {
         // set the mapped data
         $inKioskMode   = $form->isInKioskMode();
@@ -892,7 +898,7 @@ class SubmissionModel extends CommonFormModel
             $this->logger->debug('FORM: In kiosk mode so assuming a new contact');
         }
 
-        $uniqueLeadFields = $this->leadFieldModel->getUniqueIdentifierFields();
+        $uniqueLeadFields = $this->fieldsWithUniqueIdentifier->getFieldsWithUniqueIdentifier();
 
         // Closure to get data and unique fields
         $getData = function ($currentFields, $uniqueOnly = false) use ($leadFields, $uniqueLeadFields): array {
@@ -955,7 +961,7 @@ class SubmissionModel extends CommonFormModel
         $this->logger->debug('FORM: Unique fields submitted include '.implode(', ', $uniqueFieldsWithData));
 
         // Check for duplicate lead
-        /** @var \Mautic\LeadBundle\Entity\Lead[] $leads */
+        /** @var Lead[] $leads */
         $leads = (!empty($uniqueFieldsWithData)) ? $this->em->getRepository(Lead::class)->getLeadsByUniqueFields(
             $uniqueFieldsWithData,
             $leadId
@@ -1081,7 +1087,9 @@ class SubmissionModel extends CommonFormModel
             $companyChangeLog                      = null;
             if ($leadAdded) {
                 $companyChangeLog = $lead->addCompanyChangeLogEntry('form', 'Identify Company', 'Lead added to the company, '.$company['companyname'], $company['id']);
-            } elseif ($companyEntity instanceof Company) {
+            }
+
+            if ($companyEntity instanceof Company) {
                 $this->companyModel->setFieldValues($companyEntity, $companyFieldMatches);
                 $this->companyModel->saveEntity($companyEntity);
             }

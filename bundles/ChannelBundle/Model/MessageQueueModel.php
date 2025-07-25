@@ -41,7 +41,7 @@ class MessageQueueModel extends FormModel
         UrlGeneratorInterface $router,
         Translator $translator,
         UserHelper $userHelper,
-        LoggerInterface $mauticLogger
+        LoggerInterface $mauticLogger,
     ) {
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
@@ -72,7 +72,7 @@ class MessageQueueModel extends FormModel
         $messageQueue = null,
         $statTableName = 'email_stats',
         $statContactColumn = 'lead_id',
-        $statSentColumn = 'date_sent'
+        $statSentColumn = 'date_sent',
     ): array {
         $leadIds = array_keys($leads);
         $leadIds = array_combine($leadIds, $leadIds);
@@ -136,7 +136,7 @@ class MessageQueueModel extends FormModel
         $maxAttempts = 1,
         $priority = 1,
         $campaignEventId = null,
-        $options = []
+        $options = [],
     ): bool {
         $messageQueues = [];
 
@@ -185,12 +185,10 @@ class MessageQueueModel extends FormModel
         foreach ($this->getRepository()->getQueuedMessages($limit, $processStarted, $channel, $channelId) as $queue) {
             $counter += $this->processMessageQueue($queue);
             $event   = $queue->getEvent();
-            $lead    = $queue->getLead();
 
             if ($event) {
                 $this->em->detach($event);
             }
-            $this->em->detach($lead);
             $this->em->detach($queue);
         }
 
@@ -316,19 +314,6 @@ class MessageQueueModel extends FormModel
     }
 
     /**
-     * @deprecated to be removed in 3.0; use reschedule method instead
-     *
-     * @param string $rescheduleInterval
-     * @param bool   $persist
-     */
-    public function rescheduleMessage($message, $rescheduleInterval = null, $leadId = null, $channel = null, $channelId = null, $persist = false): void
-    {
-        $rescheduleInterval = null == $rescheduleInterval ? self::DEFAULT_RESCHEDULE_INTERVAL : ('P'.$rescheduleInterval);
-
-        $this->reschedule($message, new \DateInterval($rescheduleInterval), $leadId, $channel, $channelId, $persist);
-    }
-
-    /**
      * @param array $channelIds
      */
     public function getQueuedChannelCount($channel, $channelIds = []): int
@@ -337,9 +322,11 @@ class MessageQueueModel extends FormModel
     }
 
     /**
+     * @param ?object $entity
+     *
      * @throws \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
      */
-    protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
     {
         switch ($action) {
             case 'process_message_queue':
