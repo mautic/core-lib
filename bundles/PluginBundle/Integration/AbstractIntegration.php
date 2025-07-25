@@ -114,7 +114,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         $this->cache                  = $cacheStorageHelper->getCache($this->getName());
         $this->request                = (!defined('IN_MAUTIC_CONSOLE')) ? $requestStack->getCurrentRequest() : null;
 
-        $this->setClientFactory(fn (array $options): \GuzzleHttp\Client => new Client([
+        $this->setClientFactory(fn (array $options): Client => new Client([
             'handler' => HandlerStack::create(new CurlHandler([
                 'options' => $options,
             ])),
