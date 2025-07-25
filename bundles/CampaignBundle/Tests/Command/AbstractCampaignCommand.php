@@ -138,13 +138,14 @@ class AbstractCampaignCommand extends MauticMysqlTestCase
         return $campaign;
     }
 
-    protected function createCampaignLead(Campaign $campaign, Lead $lead, bool $manuallyRemoved = false): CampaignLead
+    protected function createCampaignLead(Campaign $campaign, Lead $lead, bool $manuallyRemoved = false, int $rotation = 1): CampaignLead
     {
         $campaignLead = new CampaignLead();
         $campaignLead->setCampaign($campaign);
         $campaignLead->setLead($lead);
         $campaignLead->setDateAdded(new \DateTime());
         $campaignLead->setManuallyRemoved($manuallyRemoved);
+        $campaignLead->setRotation($rotation);
         $this->em->persist($campaignLead);
 
         return $campaignLead;
