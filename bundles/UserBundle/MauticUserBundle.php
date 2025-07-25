@@ -2,8 +2,8 @@
 
 namespace Mautic\UserBundle;
 
-use Mautic\UserBundle\DependencyInjection\Compiler\OAuthReplacePass;
 use Mautic\UserBundle\DependencyInjection\Compiler\FormLoginAuthenticatorOptionsPass;
+use Mautic\UserBundle\DependencyInjection\Compiler\OAuthReplacePass;
 use Mautic\UserBundle\DependencyInjection\Compiler\SsoAuthenticatorPass;
 use Mautic\UserBundle\DependencyInjection\Firewall\Factory\MauticSsoFactory;
 use Mautic\UserBundle\DependencyInjection\Firewall\Factory\PluginFactory;

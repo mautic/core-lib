@@ -13,21 +13,24 @@ use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
-use ReflectionMethod;
 
 class TimingSafeFormLoginAuthenticatorTest extends TestCase
 {
+    /**
+     * @return array<mixed>
+     */
     private function getCredentials(TimingSafeFormLoginAuthenticator $authenticator, Request $request): array
     {
-        $method = new ReflectionMethod(TimingSafeFormLoginAuthenticator::class, 'getCredentials');
+        $method = new \ReflectionMethod(TimingSafeFormLoginAuthenticator::class, 'getCredentials');
         $method->setAccessible(true);
 
         return $method->invoke($authenticator, $request);
     }
+
     public function testAuthenticateWithExistingUser(): void
     {
         $request = new Request([], ['username' => 'testuser', 'password' => 'password']);
-        $user = new User();
+        $user    = new User();
         $user->setUsername('testuser');
 
         /** @var UserProviderInterface|\PHPUnit\Framework\MockObject\MockObject $userProvider */
@@ -51,11 +54,11 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
             $userProvider,
             $passwordHasherFactory,
             [
-                'enable_csrf' => false,
+                'enable_csrf'        => false,
                 'username_parameter' => 'username',
                 'password_parameter' => 'password',
-                'csrf_parameter' => '_csrf_token',
-                'post_only' => true,
+                'csrf_parameter'     => '_csrf_token',
+                'post_only'          => true,
             ]
         );
 
@@ -63,8 +66,7 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
         $this->assertEquals('testuser', $credentials['username']);
         $this->assertEquals('password', $credentials['password']);
 
-        $passport = $authenticator->authenticate($request);
-        $this->assertNotNull($passport);
+        $authenticator->authenticate($request);
     }
 
     public function testAuthenticateWithNonExistingUser(): void
@@ -100,11 +102,11 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
             $userProvider,
             $passwordHasherFactory,
             [
-                'enable_csrf' => false,
+                'enable_csrf'        => false,
                 'username_parameter' => 'username',
                 'password_parameter' => 'password',
-                'csrf_parameter' => '_csrf_token',
-                'post_only' => true,
+                'csrf_parameter'     => '_csrf_token',
+                'post_only'          => true,
             ]
         );
 

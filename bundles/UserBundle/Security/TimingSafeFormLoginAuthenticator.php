@@ -7,47 +7,50 @@ namespace Mautic\UserBundle\Security;
 use Mautic\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\PasswordUpgradeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\SecurityRequestAttributes;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 class TimingSafeFormLoginAuthenticator implements AuthenticatorInterface, AuthenticationEntryPointInterface, InteractiveAuthenticatorInterface
 {
-    private $authenticator;
-    private $userProvider;
-    private $passwordHasherFactory;
-    private $options;
+    /**
+     * @var array<mixed>
+     */
+    private array $options;
 
-    public function __construct(FormLoginAuthenticator $authenticator, UserProviderInterface $userProvider, PasswordHasherFactoryInterface $passwordHasherFactory, array $options)
+    /**
+     * @param array<mixed> $options
+     */
+    public function __construct(private FormLoginAuthenticator $authenticator, private UserProviderInterface $userProvider, private PasswordHasherFactoryInterface $passwordHasherFactory, array $options)
     {
-        $this->authenticator = $authenticator;
-        $this->userProvider = $userProvider;
+        $this->authenticator         = $authenticator;
+        $this->userProvider          = $userProvider;
         $this->passwordHasherFactory = $passwordHasherFactory;
-        $this->options = array_merge([
+        $this->options               = array_merge([
             'username_parameter' => '_username',
             'password_parameter' => '_password',
-            'check_path' => '/login_check',
-            'post_only' => true,
-            'form_only' => false,
-            'enable_csrf' => false,
-            'csrf_parameter' => '_csrf_token',
-            'csrf_token_id' => 'authenticate',
+            'check_path'         => '/login_check',
+            'post_only'          => true,
+            'form_only'          => false,
+            'enable_csrf'        => false,
+            'csrf_parameter'     => '_csrf_token',
+            'csrf_token_id'      => 'authenticate',
         ], $options);
     }
 
@@ -58,7 +61,7 @@ class TimingSafeFormLoginAuthenticator implements AuthenticatorInterface, Authen
 
     public function authenticate(Request $request): Passport
     {
-        $credentials = $this->getCredentials($request);
+        $credentials           = $this->getCredentials($request);
         $passwordHasherFactory = $this->passwordHasherFactory;
         $userLoader            = function (string $identifier) use ($passwordHasherFactory, $credentials): UserInterface {
             try {
@@ -78,7 +81,7 @@ class TimingSafeFormLoginAuthenticator implements AuthenticatorInterface, Authen
         };
 
         $userBadge = new UserBadge($credentials['username'], $userLoader);
-        $passport = new Passport($userBadge, new PasswordCredentials($credentials['password']), [new RememberMeBadge()]);
+        $passport  = new Passport($userBadge, new PasswordCredentials($credentials['password']), [new RememberMeBadge()]);
 
         if ($this->options['enable_csrf']) {
             $passport->addBadge(new CsrfTokenBadge($this->options['csrf_token_id'], $credentials['csrf_token']));
@@ -116,9 +119,12 @@ class TimingSafeFormLoginAuthenticator implements AuthenticatorInterface, Authen
         return $this->authenticator->isInteractive();
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function getCredentials(Request $request): array
     {
-        $credentials = [];
+        $credentials               = [];
         $credentials['csrf_token'] = $request->get($this->options['csrf_parameter']);
 
         if ($this->options['post_only']) {
