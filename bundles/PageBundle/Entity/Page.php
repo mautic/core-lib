@@ -174,6 +174,11 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      */
     private ?bool $publicPreview = true;
 
+    /**
+     * @Groups({"page:read", "page:write", "download:read", "email:read"})
+     */
+    private bool $isDuplicate = false;
+
     public function __clone()
     {
         $this->cloneObjectId = $this->id;
@@ -917,5 +922,15 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
         $this->publicPreview = $publicPreview;
 
         return $this;
+    }
+
+    public function isDuplicate(): bool
+    {
+        return $this->isDuplicate;
+    }
+
+    public function setIsDuplicate(bool $isDuplicate): void
+    {
+        $this->isDuplicate = $isDuplicate;
     }
 }

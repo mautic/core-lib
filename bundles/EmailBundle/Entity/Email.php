@@ -314,6 +314,11 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
      */
     private $clonedId;
 
+    /**
+     * @Groups({"email:read", "email:write", "download:read"})
+     */
+    private bool $isDuplicate;
+
     public function __clone()
     {
         $this->isCloned          = true;
@@ -1428,5 +1433,15 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         }
 
         return $keys;
+    }
+
+    public function isDuplicate(): bool
+    {
+        return $this->isDuplicate;
+    }
+
+    public function setIsDuplicate(bool $isDuplicate): void
+    {
+        $this->isDuplicate = $isDuplicate;
     }
 }
