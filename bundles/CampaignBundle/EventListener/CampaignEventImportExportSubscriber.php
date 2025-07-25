@@ -128,7 +128,7 @@ final class CampaignEventImportExportSubscriber implements EventSubscriberInterf
 
         if ($channel && $channelId) {
             $dependencies[$channel] = (int) $channelId;
-            $subEvent               = new EntityExportEvent($channel, $channelId);
+            $subEvent               = new EntityExportEvent($channel, (int) $channelId);
             $this->dispatcher->dispatch($subEvent);
             $event->addDependencies($subEvent->getDependencies());
             $this->mergeExportData($data, $subEvent);
