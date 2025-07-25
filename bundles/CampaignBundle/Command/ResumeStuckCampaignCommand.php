@@ -78,7 +78,7 @@ final class ResumeStuckCampaignCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $campaignId    = (int) $input->getArgument('campaign-id');
         $batchLimit    = (int) $input->getOption('batch-limit');
