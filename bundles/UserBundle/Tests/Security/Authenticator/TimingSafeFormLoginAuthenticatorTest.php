@@ -8,6 +8,8 @@ use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Security\TimingSafeFormLoginAuthenticator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
@@ -30,6 +32,7 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
     public function testAuthenticateWithExistingUser(): void
     {
         $request = new Request([], ['username' => 'testuser', 'password' => 'password']);
+        $request->setSession(new Session(new MockArraySessionStorage()));
         $user    = new User();
         $user->setUsername('testuser');
 
@@ -66,7 +69,8 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
         $this->assertEquals('testuser', $credentials['username']);
         $this->assertEquals('password', $credentials['password']);
 
-        $authenticator->authenticate($request);
+        $passport = $authenticator->authenticate($request);
+        $passport->getUser();
     }
 
     public function testAuthenticateWithNonExistingUser(): void
@@ -74,6 +78,7 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
         $this->expectException(UserNotFoundException::class);
 
         $request = new Request([], ['username' => 'testuser', 'password' => 'password']);
+        $request->setSession(new Session(new MockArraySessionStorage()));
 
         /** @var UserProviderInterface|\PHPUnit\Framework\MockObject\MockObject $userProvider */
         $userProvider = $this->createMock(UserProviderInterface::class);
@@ -110,6 +115,7 @@ class TimingSafeFormLoginAuthenticatorTest extends TestCase
             ]
         );
 
-        $authenticator->authenticate($request);
+        $passport = $authenticator->authenticate($request);
+        $passport->getUser();
     }
 }
