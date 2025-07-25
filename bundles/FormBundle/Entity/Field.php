@@ -47,115 +47,115 @@ class Field implements UuidInterface
     /**
      * @var int
      */
-    #[Groups(['field:read'])]
+    #[Groups(['field:read', 'form:read', 'campaign:read', 'email:read'])]
     private $id;
 
     /**
      * @var string
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $label;
 
     /**
      * @var bool|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $showLabel = true;
 
     /**
      * @var string
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $alias;
 
     /**
      * @var string
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $type;
 
     /**
      * @var bool
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isCustom = false;
 
     /**
      * @var array
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $customParameters = [];
 
     /**
      * @var string|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $defaultValue;
 
     /**
      * @var bool
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isRequired = false;
 
     /**
      * @var string|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $validationMessage;
 
     /**
      * @var string|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $helpMessage;
 
     /**
      * @var int|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $order = 0;
 
     /**
      * @var array
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $properties = [];
 
     /**
      * @var array
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $validation = [];
 
     /**
      * @var array<string,mixed>|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $conditions = [];
 
     /**
      * @var Form|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $form;
 
     /**
      * @var string|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $labelAttributes;
 
     /**
      * @var string|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $inputAttributes;
 
     /**
      * @var string|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $containerAttributes;
 
     /**
@@ -163,25 +163,25 @@ class Field implements UuidInterface
      *
      * @deprecated, to be removed in Mautic 4. Use mappedObject and mappedField instead.
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $leadField;
 
     /**
      * @var bool|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $saveResult = true;
 
     /**
      * @var bool|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isAutoFill = false;
 
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private bool $isReadOnly = false;
 
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private string $fieldWidth = '100%';
 
     /**
@@ -194,37 +194,37 @@ class Field implements UuidInterface
     /**
      * @var bool|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $showWhenValueExists;
 
     /**
      * @var int|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $showAfterXSubmissions;
 
     /**
      * @var bool|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $alwaysDisplay;
 
     /**
      * @var string|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $parent;
 
     /**
      * @var string|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $mappedObject;
 
     /**
      * @var string|null
      */
-    #[Groups(['field:read', 'field:write'])]
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $mappedField;
 
     public ?int $deletedId;

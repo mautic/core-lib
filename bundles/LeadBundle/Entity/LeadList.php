@@ -38,6 +38,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
     normalizationContext: [
         'groups'                  => ['segment:read'],
         'swagger_definition_name' => 'Read',
+        'api_included'            => ['category'],
     ],
     denormalizationContext: [
         'groups'                  => ['segment:write'],
@@ -54,55 +55,55 @@ class LeadList extends FormEntity implements UuidInterface
     /**
      * @var int|null
      */
-    #[Groups(['segment:read'])]
+    #[Groups(['segment:read', 'campaign:read', 'email:read', 'sms:read'])]
     private $id;
 
     /**
      * @var string
      */
-    #[Groups(['segment:read', 'segment:write'])]
+    #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $name;
 
     /**
      * @var string
      */
-    #[Groups(['segment:read', 'segment:write'])]
+    #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $publicName;
 
     /**
      * @var Category|null
      **/
-    #[Groups(['segment:read', 'segment:write'])]
+    #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $category;
 
     /**
      * @var string|null
      */
-    #[Groups(['segment:read', 'segment:write'])]
+    #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $description;
 
     /**
      * @var string
      */
-    #[Groups(['segment:read', 'segment:write'])]
+    #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $alias;
 
     /**
      * @var array
      */
-    #[Groups(['segment:read', 'segment:write'])]
+    #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $filters = [];
 
     /**
      * @var bool
      */
-    #[Groups(['segment:read', 'segment:write'])]
+    #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $isGlobal = true;
 
     /**
      * @var bool
      */
-    #[Groups(['segment:read', 'segment:write'])]
+    #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $isPreferenceCenter = false;
 
     /**
@@ -113,13 +114,13 @@ class LeadList extends FormEntity implements UuidInterface
     /**
      * @var \DateTimeInterface|null
      */
-    #[Groups(['segment:read'])]
+    #[Groups(['segment:read', 'campaign:read', 'email:read', 'sms:read'])]
     private $lastBuiltDate;
 
     /**
      * @var float|null
      */
-    #[Groups(['segment:read'])]
+    #[Groups(['segment:read', 'campaign:read', 'email:read', 'sms:read'])]
     private $lastBuiltTime;
 
     public function __construct()

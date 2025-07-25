@@ -51,130 +51,130 @@ class Form extends FormEntity implements UuidInterface
     /**
      * @var int
      */
-    #[Groups(['form:read'])]
+    #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
     private $id;
 
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private ?string $language = null;
 
     /**
      * @var string
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $name;
 
     /**
      * @var string|null
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $formAttributes;
 
     /**
      * @var string|null
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $description;
 
     /**
      * @var string
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $alias;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category|null
      **/
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'campaign:read', 'email:read'])]
     private $category;
 
     /**
      * @var string|null
      */
-    #[Groups(['form:read'])]
+    #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
     private $cachedHtml;
 
     /**
      * @var string
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $postAction = 'message';
 
     /**
      * @var string|null
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $postActionProperty;
 
     /**
      * @var \DateTimeInterface
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $publishUp;
 
     /**
      * @var \DateTimeInterface
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $publishDown;
 
     /**
      * @var ArrayCollection<int, Field>
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $fields;
 
     /**
      * @var ArrayCollection<string, Action>
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $actions;
 
     /**
      * @var string|null
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $template;
 
     /**
      * @var bool|null
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $inKioskMode = false;
 
     /**
      * @var bool|null
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $renderStyle = false;
 
     /**
      * @var Collection<int, Submission>
      */
-    #[Groups(['form:read'])]
+    #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
     private Collection $submissions;
 
     /**
      * @var int
      */
-    #[Groups(['form:read'])]
+    #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
     public $submissionCount;
 
     /**
      * @var string|null
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $formType;
 
     /**
      * @var bool|null
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $noIndex;
 
     /**
      * @var int|null
      */
-    #[Groups(['form:read', 'form:write'])]
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $progressiveProfilingLimit;
 
     /**
