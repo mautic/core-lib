@@ -4,7 +4,6 @@ namespace Mautic\ConfigBundle\Form\Type;
 
 use Mautic\ConfigBundle\Form\Helper\RestrictionHelper;
 use Mautic\CoreBundle\Form\Type\FormButtonsType;
-use Mautic\CoreBundle\Loader\ParameterLoader;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -24,16 +23,17 @@ class ConfigType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $parameterLoader = new ParameterLoader();
-        $parameters      = $parameterLoader->getLocalParameterBag();
-
-        // fix for https://github.com/mautic/mautic/issues/8854
-        if (!$parameters->has('api_oauth2_access_token_lifetime')) {
-            $options['data']['apiconfig']['parameters']['api_oauth2_access_token_lifetime'] /= 60;
+        // TODO very dirty quick fix for https://github.com/mautic/mautic/issues/8854
+        if (isset($options['data']['apiconfig']['parameters']['api_oauth2_access_token_lifetime'])
+            && 3600 === $options['data']['apiconfig']['parameters']['api_oauth2_access_token_lifetime']
+        ) {
+            $options['data']['apiconfig']['parameters']['api_oauth2_access_token_lifetime'] = 60;
         }
 
-        if (!$parameters->has('api_oauth2_refresh_token_lifetime')) {
-            $options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime'] /= 60 * 60 * 24;
+        if (isset($options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime'])
+            && 1_209_600 === $options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime']
+        ) {
+            $options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime'] = 14;
         }
 
         foreach ($options['data'] as $config) {
