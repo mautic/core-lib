@@ -37,6 +37,9 @@ class EmailTest extends TestCase
         Assert::assertIsBool($email->isDuplicate());
     }
 
+    /**
+     * @return iterable<array{bool}>
+     */
     public static function setIsDuplicateDataProvider(): iterable
     {
         yield [true];

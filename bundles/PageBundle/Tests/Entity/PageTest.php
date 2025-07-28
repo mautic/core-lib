@@ -81,6 +81,9 @@ class PageTest extends \PHPUnit\Framework\TestCase
         Assert::assertIsBool($page->isDuplicate());
     }
 
+    /**
+     * @return iterable<array{bool}>
+     */
     public static function setIsDuplicateDataProvider(): iterable
     {
         yield [true];
