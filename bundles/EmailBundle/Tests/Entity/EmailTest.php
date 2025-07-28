@@ -6,6 +6,7 @@ namespace Mautic\EmailBundle\Tests\Entity;
 
 use Mautic\EmailBundle\Entity\Email;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class EmailTest extends TestCase
@@ -28,9 +29,7 @@ class EmailTest extends TestCase
         $this->assertNull($emailClone->getPlainText());
     }
 
-    /**
-     * @dataProvider setIsDuplicateDataProvider
-     */
+    #[DataProvider('setIsDuplicateDataProvider')]
     public function testIsDuplicate(bool $isDuplicate): void
     {
         $email = new Email();
@@ -38,7 +37,7 @@ class EmailTest extends TestCase
         Assert::assertIsBool($email->isDuplicate());
     }
 
-    public function setIsDuplicateDataProvider(): iterable
+    public static function setIsDuplicateDataProvider(): iterable
     {
         yield [true];
         yield [false];

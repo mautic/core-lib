@@ -317,7 +317,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     /**
      * @Groups({"email:read", "email:write", "download:read"})
      */
-    private bool $isDuplicate;
+    private bool $isDuplicate = false;
 
     public function __clone()
     {
