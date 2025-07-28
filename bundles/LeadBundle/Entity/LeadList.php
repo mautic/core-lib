@@ -22,7 +22,6 @@ use Mautic\LeadBundle\Form\Validator\Constraints\SegmentInUse;
 use Mautic\LeadBundle\Form\Validator\Constraints\UniqueUserAlias;
 use Mautic\LeadBundle\Validator\Constraints\SegmentUsedInCampaigns;
 use Mautic\ProjectBundle\Entity\ProjectTrait;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -48,9 +47,11 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 class LeadList extends FormEntity implements UuidInterface
 {
     use UuidTrait;
+
     use ProjectTrait;
 
-    public const TABLE_NAME = 'lead_lists';
+    public const TABLE_NAME  = 'lead_lists';
+    public const ENTITY_NAME = 'lists';
 
     /**
      * @var int|null

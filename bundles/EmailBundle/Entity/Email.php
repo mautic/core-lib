@@ -69,6 +69,8 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     use UuidTrait;
     use ProjectTrait;
 
+    public const ENTITY_NAME = 'email';
+
     public const MAX_NAME_SUBJECT_LENGTH = 190;
 
     /**
