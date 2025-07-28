@@ -30,12 +30,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('asset:assets:viewown')"),
+        new Post(security: "is_granted('asset:assets:create')"),
+        new Get(security: "is_granted('asset:assets:viewown')"),
+        new Put(security: "is_granted('asset:assets:editown')"),
+        new Patch(security: "is_granted('asset:assets:editother')"),
+        new Delete(security: "is_granted('asset:assets:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['asset:read'],
