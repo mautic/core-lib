@@ -212,9 +212,8 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
 
     /**
      * Test executing the command with a linear campaign with manually removed contacts.
-     *
-     * @runInSeparateProcess
      */
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
     public function testCampaignWithManuallyRemovedContacts(): void
     {
         $campaign = $this->createCampaign('Campaign with Manually Removed Contacts');
@@ -309,9 +308,8 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
 
     /**
      * Test executing the command with a linear campaign with deleted Events.
-     *
-     * @runInSeparateProcess
      */
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
     public function testCampaignWithDeletedEvents(): void
     {
         $campaign = $this->createCampaign('Campaign with Deleted Events');

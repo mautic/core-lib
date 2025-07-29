@@ -705,7 +705,7 @@ class CampaignRepository extends CommonRepository
 
         $query->setParameter('campaign_id', $campaignId);
 
-        $result = $query->execute();
+        $result = $query->executeQuery();
 
         return $result->fetchAllAssociative();
     }
