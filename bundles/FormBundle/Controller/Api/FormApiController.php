@@ -288,8 +288,6 @@ class FormApiController extends CommonApiController
                 $this->model->deleteActions($entity, $actionsToDelete);
             }
         }
-
-        return null;
     }
 
     /**
