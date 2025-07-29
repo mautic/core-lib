@@ -639,9 +639,10 @@
 
             {% set tileContent %}
             <div class="ma-neg-local">
-                {{ include('@MauticCore/Components/contained-list--interactive-actions.html.twig', {
+                {{ include('@MauticCore/Components/contained-list.html.twig', {
                     'title': 'mautic.lead.lead.companies'|trans,
-                    'items': companiesList
+                    'items': companiesList,
+                    'variant': 'interactive-actions'
                 }) }}
             </div>
             {% endset %}
