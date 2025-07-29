@@ -118,8 +118,9 @@ final class FormApiControllerTest extends MauticMysqlTestCase
         $this->assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true);
         
-        // Check for error response
-        $this->assertArrayHasKey('errors', $responseData);
+        // Check for error response with specific message
+        $this->assertArrayHasKey('error', $responseData);
+        $this->assertStringContainsString('duplicate_alias', $responseData['error']['message']);
     }
 
     public function testCreateFormWithInvalidFieldData(): void

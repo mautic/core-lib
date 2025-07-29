@@ -186,7 +186,7 @@ class FormApiController extends CommonApiController
                         'flashes'
                     );
 
-                    throw new InvalidArgumentException($msg, Response::HTTP_NOT_FOUND);
+                    return $this->returnError($msg, Response::HTTP_NOT_FOUND);
                 }
 
                 $fieldEntityArray                 = $fieldEntity->convertToArray();
@@ -208,7 +208,7 @@ class FormApiController extends CommonApiController
                 // Check that the alias is not already in use by another field
                 if (in_array($fieldEntityArray['alias'], $requestUsedAliases)) {
                     $msg = $this->translator->trans('mautic.form.field.alias.unique', ['%alias%' => $fieldEntityArray['alias']], 'validators');
-                    throw new InvalidArgumentException($msg, Response::HTTP_BAD_REQUEST);
+                    return $this->returnError($msg, Response::HTTP_BAD_REQUEST);
                 } else {
                     $requestUsedAliases[] = $fieldEntityArray['alias'];
                 }
@@ -220,7 +220,7 @@ class FormApiController extends CommonApiController
                     $formErrors = $this->getFormErrorMessages($fieldForm);
                     $msg        = $this->getFormErrorMessage($formErrors);
 
-                    throw new InvalidArgumentException($msg, Response::HTTP_BAD_REQUEST);
+                    return $this->returnError($msg, Response::HTTP_BAD_REQUEST);
                 }
             }
 
@@ -263,7 +263,7 @@ class FormApiController extends CommonApiController
                     $formErrors = $this->getFormErrorMessages($actionForm);
                     $msg        = $this->getFormErrorMessage($formErrors);
 
-                    throw new InvalidArgumentException($msg, Response::HTTP_BAD_REQUEST);
+                    return $this->returnError($msg, Response::HTTP_BAD_REQUEST);
                 }
                 $actions[] = $actionForm->getNormData();
             }
@@ -288,6 +288,8 @@ class FormApiController extends CommonApiController
                 $this->model->deleteActions($entity, $actionsToDelete);
             }
         }
+
+        return null;
     }
 
     /**
