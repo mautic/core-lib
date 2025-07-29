@@ -18,7 +18,6 @@ use Mautic\FormBundle\Model\ActionModel;
 use Mautic\FormBundle\Model\FieldModel;
 use Mautic\FormBundle\Model\FormModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\Exception\InvalidArgumentException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -208,6 +207,7 @@ class FormApiController extends CommonApiController
                 // Check that the alias is not already in use by another field
                 if (in_array($fieldEntityArray['alias'], $requestUsedAliases)) {
                     $msg = $this->translator->trans('mautic.form.field.alias.unique', ['%alias%' => $fieldEntityArray['alias']], 'validators');
+
                     return $this->returnError($msg, Response::HTTP_BAD_REQUEST);
                 } else {
                     $requestUsedAliases[] = $fieldEntityArray['alias'];
