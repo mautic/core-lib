@@ -255,6 +255,7 @@ final class OrphanEventsValidationFunctionalTest extends MauticMysqlTestCase
         $leadList = new LeadList();
         $leadList->setName('Test list');
         $leadList->setAlias('test-list');
+        $leadList->setPublicName('Test list');
         $this->em->persist($leadList);
 
         $campaign = new Campaign();
