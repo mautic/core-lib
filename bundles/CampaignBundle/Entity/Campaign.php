@@ -33,12 +33,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('campaign:campaigns:viewown')"),
+        new Post(security: "is_granted('campaign:campaigns:create')"),
+        new Get(security: "is_granted('campaign:campaigns:viewown')"),
+        new Put(security: "is_granted('campaign:campaigns:editown')"),
+        new Patch(security: "is_granted('campaign:campaigns:editother')"),
+        new Delete(security: "is_granted('campaign:campaigns:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['campaign:read'],

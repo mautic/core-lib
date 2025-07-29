@@ -26,12 +26,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new Get(),
-        new GetCollection(),
-        new Post(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('notification:notifications:viewown')"),
+        new Post(security: "is_granted('notification:notifications:create')"),
+        new Get(security: "is_granted('notification:notifications:viewown')"),
+        new Put(security: "is_granted('notification:notifications:editown')"),
+        new Patch(security: "is_granted('notification:notifications:editother')"),
+        new Delete(security: "is_granted('notification:notifications:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['notification:read'],

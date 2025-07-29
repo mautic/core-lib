@@ -23,12 +23,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new Get(),
-        new GetCollection(),
-        new Post(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('user:roles:viewown')"),
+        new Post(security: "is_granted('user:roles:create')"),
+        new Get(security: "is_granted('user:roles:viewown')"),
+        new Put(security: "is_granted('user:roles:editown')"),
+        new Patch(security: "is_granted('user:roles:editother')"),
+        new Delete(security: "is_granted('user:roles:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['role:read'],

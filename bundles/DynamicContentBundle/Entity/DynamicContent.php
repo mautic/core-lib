@@ -36,12 +36,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('dynamiccontent:dynamiccontents:viewown')"),
+        new Post(security: "is_granted('dynamiccontent:dynamiccontents:create')"),
+        new Get(security: "is_granted('dynamiccontent:dynamiccontents:viewown')"),
+        new Put(security: "is_granted('dynamiccontent:dynamiccontents:editown')"),
+        new Patch(security: "is_granted('dynamiccontent:dynamiccontents:editother')"),
+        new Delete(security: "is_granted('dynamiccontent:dynamiccontents:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['dynamicContent:read'],

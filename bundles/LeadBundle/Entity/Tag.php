@@ -19,12 +19,12 @@ use Mautic\CoreBundle\Helper\InputHelper;
 
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('lead:leads:viewown')"),
+        new Post(security: "is_granted('lead:leads:create')"),
+        new Get(security: "is_granted('lead:leads:viewown')"),
+        new Put(security: "is_granted('lead:leads:editown')"),
+        new Patch(security: "is_granted('lead:leads:editother')"),
+        new Delete(security: "is_granted('lead:leads:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['leadfield:read'],

@@ -20,12 +20,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('form:forms:viewown')"),
+        new Post(security: "is_granted('form:forms:create')"),
+        new Get(security: "is_granted('form:forms:viewown')"),
+        new Put(security: "is_granted('form:forms:editown')"),
+        new Patch(security: "is_granted('form:forms:editother')"),
+        new Delete(security: "is_granted('form:forms:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['action:read'],

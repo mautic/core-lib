@@ -28,12 +28,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('lead:lists:viewown')"),
+        new Post(security: "is_granted('lead:lists:create')"),
+        new Get(security: "is_granted('lead:lists:viewown')"),
+        new Put(security: "is_granted('lead:lists:editown')"),
+        new Patch(security: "is_granted('lead:lists:editother')"),
+        new Delete(security: "is_granted('lead:lists:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['segment:read'],

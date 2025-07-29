@@ -28,12 +28,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new Get(),
-        new GetCollection(),
-        new Post(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('sms:smses:viewown')"),
+        new Post(security: "is_granted('sms:smses:create')"),
+        new Get(security: "is_granted('sms:smses:viewown')"),
+        new Put(security: "is_granted('sms:smses:editown')"),
+        new Patch(security: "is_granted('sms:smses:editother')"),
+        new Delete(security: "is_granted('sms:smses:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['sms:read'],

@@ -32,12 +32,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new Get(),
-        new GetCollection(),
-        new Post(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('page:pages:viewown')"),
+        new Post(security: "is_granted('page:pages:create')"),
+        new Get(security: "is_granted('page:pages:viewown')"),
+        new Put(security: "is_granted('page:pages:editown')"),
+        new Patch(security: "is_granted('page:pages:editother')"),
+        new Delete(security: "is_granted('page:pages:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['page:read'],

@@ -44,12 +44,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Post(),
-        new Get(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('email:emails:viewown')"),
+        new Post(security: "is_granted('email:emails:create')"),
+        new Get(security: "is_granted('email:emails:viewown')"),
+        new Put(security: "is_granted('email:emails:editown')"),
+        new Patch(security: "is_granted('email:emails:editother')"),
+        new Delete(security: "is_granted('email:emails:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['email:read'],

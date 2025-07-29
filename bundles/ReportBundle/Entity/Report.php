@@ -27,12 +27,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
     operations: [
-        new Get(),
-        new GetCollection(),
-        new Post(),
-        new Put(),
-        new Patch(),
-        new Delete(),
+        new GetCollection(security: "is_granted('report:reports:viewown')"),
+        new Post(security: "is_granted('report:reports:create')"),
+        new Get(security: "is_granted('report:reports:viewown')"),
+        new Put(security: "is_granted('report:reports:editown')"),
+        new Patch(security: "is_granted('report:reports:editother')"),
+        new Delete(security: "is_granted('report:reports:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['report:read'],
