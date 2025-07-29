@@ -531,7 +531,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Get leads.
      *
-     * @return Lead[]|\Doctrine\Common\Collections\Collection
+     * @return Lead[]|Collection
      */
     public function getLeads()
     {
@@ -682,7 +682,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     /**
      * Get contact membership.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getContactMembership(Contact $contact)
     {
