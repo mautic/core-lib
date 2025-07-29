@@ -3,10 +3,12 @@
 namespace Mautic\CampaignBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
+use Mautic\CampaignBundle\Validator\Constraints\NoOrphanEvents;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\OptimisticLockInterface;
@@ -194,6 +196,8 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
                 ]
             )
         );
+
+        $metadata->addConstraint(new NoOrphanEvents());
     }
 
     /**
@@ -380,17 +384,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         );
         $events   = $this->getEvents()->matching($criteria);
 
-        // Doctrine loses the indexBy mapping definition when using matching so we have to manually reset them.
-        // @see https://github.com/doctrine/doctrine2/issues/4693
-        $keyedArrayCollection = new ArrayCollection();
-        /** @var Event $event */
-        foreach ($events as $event) {
-            $keyedArrayCollection->set($event->getId(), $event);
-        }
-
-        unset($events);
-
-        return $keyedArrayCollection;
+        return $this->reindexEventsByIdKey($events);
     }
 
     public function getInactionBasedEvents(): ArrayCollection
@@ -398,17 +392,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         $criteria = Criteria::create()->where(Criteria::expr()->eq('decisionPath', Event::PATH_INACTION));
         $events   = $this->getEvents()->matching($criteria);
 
-        // Doctrine loses the indexBy mapping definition when using matching so we have to manually reset them.
-        // @see https://github.com/doctrine/doctrine2/issues/4693
-        $keyedArrayCollection = new ArrayCollection();
-        /** @var Event $event */
-        foreach ($events as $event) {
-            $keyedArrayCollection->set($event->getId(), $event);
-        }
-
-        unset($events);
-
-        return $keyedArrayCollection;
+        return $this->reindexEventsByIdKey($events);
     }
 
     /**
@@ -421,17 +405,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         $criteria = Criteria::create()->where(Criteria::expr()->eq('eventType', $type));
         $events   = $this->getEvents()->matching($criteria);
 
-        // Doctrine loses the indexBy mapping definition when using matching so we have to manually reset them.
-        // @see https://github.com/doctrine/doctrine2/issues/4693
-        $keyedArrayCollection = new ArrayCollection();
-        /** @var Event $event */
-        foreach ($events as $event) {
-            $keyedArrayCollection->set($event->getId(), $event);
-        }
-
-        unset($events);
-
-        return $keyedArrayCollection;
+        return $this->reindexEventsByIdKey($events);
     }
 
     /**
@@ -639,6 +613,36 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         $this->canvasSettings = $canvasSettings;
     }
 
+    /**
+     * Check if there are any orphan events that are not connected to any parent node.
+     */
+    public function hasOrphanEvents(): bool
+    {
+        $canvasSettings = $this->getCanvasSettings() ?? [];
+
+        if (empty($canvasSettings['nodes'])) {
+            return false;
+        }
+
+        // Extract event IDs from canvas nodes (excludes 'lists' and other non-event nodes)
+        $eventIds = array_filter(
+            array_column($canvasSettings['nodes'], 'id'),
+            fn ($id) => 'lists' !== $id
+        );
+
+        if (empty($eventIds)) {
+            return false;
+        }
+
+        // Extract connected event IDs from connections
+        $connectedEventIds = [];
+        if (!empty($canvasSettings['connections'])) {
+            $connectedEventIds = array_filter(array_column($canvasSettings['connections'], 'targetId'));
+        }
+
+        return !empty(array_diff($eventIds, $connectedEventIds));
+    }
+
     public function getAllowRestart(): bool
     {
         return (bool) $this->allowRestart;
@@ -710,5 +714,24 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
             'data-confirm-text' => 'mautic.campaign.form.confirmation.confirm_text',
             'data-cancel-text'  => 'mautic.campaign.form.confirmation.cancel_text',
         ];
+    }
+
+    /**
+     * Re-index collection by event ID to work around Doctrine's indexBy mapping issue.
+     *
+     * @see https://github.com/doctrine/doctrine2/issues/4693
+     */
+    private function reindexEventsByIdKey(Collection $events): ArrayCollection
+    {
+        // Doctrine loses the indexBy mapping definition when using matching so we have to manually reset them.
+        // @see https://github.com/doctrine/doctrine2/issues/4693
+        $keyedArrayCollection = new ArrayCollection();
+        /** @var Event $event */
+        foreach ($events as $event) {
+            $keyedArrayCollection->set($event->getId(), $event);
+        }
+        unset($events);
+
+        return $keyedArrayCollection;
     }
 }

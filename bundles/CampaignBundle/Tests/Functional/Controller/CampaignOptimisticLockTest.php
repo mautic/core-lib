@@ -118,7 +118,11 @@ class CampaignOptimisticLockTest extends MauticMysqlTestCase
         $campaignEvent->setEventType('action');
         $campaignEvent->setProperties([]);
         $this->em->persist($campaignEvent);
+        $this->em->flush();
 
+        $canvasSettings = $this->createCanvasSettings($campaignEvent->getId());
+        $campaign->setCanvasSettings($canvasSettings);
+        $this->em->persist($campaign);
         $this->em->flush();
         $this->em->clear();
 
