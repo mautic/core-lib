@@ -235,7 +235,9 @@ final class ResumeStuckCampaignCommand extends Command
             }
 
             $recordsProcessed += count($nextEvents);
-            if ($recordsProcessed >= self::MAX_ALLOWED_RECORDS_EACH_PROCESS) {
+
+            if ($recordsProcessed >= self::MAX_ALLOWED_RECORDS_EACH_PROCESS
+                && $this->eventDispatcher->hasListeners(MaxAllowedRecordsReachedInSingleProcessEvent::class)) {
                 $output->writeln('<error>Maximum allowed records reached. Stopping execution.</error>');
 
                 $this->eventDispatcher->dispatch(new MaxAllowedRecordsReachedInSingleProcessEvent($campaignId));
