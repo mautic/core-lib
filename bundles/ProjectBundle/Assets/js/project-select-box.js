@@ -67,3 +67,38 @@ mQuery(document).on('chosen:no_results', 'select', function (event) {
         new ProjectSelectBox($select);
     }
 });
+
+// Handle entity selection modal opening for project details
+mQuery(document).on('change', '#project-entity-selector, #entity-type-selector', function(event) {
+    console.log('Select change event triggered');
+    const $select = mQuery(this);
+    const $selectedOption = $select.find('option:selected');
+    
+    console.log('Selected option value:', $selectedOption.val());
+    console.log('Selected option data-href:', $selectedOption.data('href'));
+    console.log('Selected option data-header:', $selectedOption.data('header'));
+    
+    if ($selectedOption.val() && $selectedOption.data('href')) {
+        // Get the URL and header from data attributes
+        const url = $selectedOption.data('href');
+        const header = $selectedOption.data('header');
+        
+        console.log('About to call Mautic.loadAjaxModal with URL:', url);
+        console.log('Modal target: #MauticSharedModal, Header:', header);
+        
+        // Use Mautic's loadAjaxModal function
+        Mautic.loadAjaxModal('#MauticSharedModal', url, 'GET', header);
+        
+        // Reset the select to placeholder after opening modal
+        $select.val('');
+        
+        // Update chosen if it's a chosen select
+        if ($select.hasClass('chosen-select')) {
+            $select.trigger('chosen:updated');
+        }
+        
+        console.log('Modal call completed, select reset');
+    } else {
+        console.log('No valid option selected or missing data attributes');
+    }
+});
