@@ -8,7 +8,6 @@ use Mautic\FormBundle\Form\Type\FormFieldSliderType;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Test\TypeTestCase;
 
@@ -37,23 +36,19 @@ final class FormFieldSliderTypeTest extends TypeTestCase
                 'step' => 1,
             ],
         ];
-        $matcher = $this->exactly(4);
+        $matcher = $this->exactly(3);
 
         $this->formBuilder->expects($matcher)
             ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
                 if (1 === $matcher->numberOfInvocations()) {
-                    $this->assertSame('placeholder', $parameters[0]);
-                    $this->assertSame(TextType::class, $parameters[1]);
-                }
-                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('min', $parameters[0]);
                     $this->assertSame(IntegerType::class, $parameters[1]);
                 }
-                if (3 === $matcher->numberOfInvocations()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('max', $parameters[0]);
                     $this->assertSame(IntegerType::class, $parameters[1]);
                 }
-                if (4 === $matcher->numberOfInvocations()) {
+                if (3 === $matcher->numberOfInvocations()) {
                     $this->assertSame('step', $parameters[0]);
                     $this->assertSame(IntegerType::class, $parameters[1]);
                 }
@@ -67,10 +62,9 @@ final class FormFieldSliderTypeTest extends TypeTestCase
     public function testSubmitValidData(): void
     {
         $formData = [
-            'placeholder' => 'test',
-            'min'         => 0,
-            'max'         => 50,
-            'step'        => 5,
+            'min'  => 0,
+            'max'  => 50,
+            'step' => 5,
         ];
         $form = $this->factory->create(FormFieldSliderType::class);
 
