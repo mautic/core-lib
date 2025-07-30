@@ -258,8 +258,10 @@ class ProjectEntityLoaderService
 
     /**
      * Simple model finder using entity type.
+     *
+     * @return FormModel
      */
-    private function findModelForEntityType(string $entityType): FormModel
+    private function findModelForEntityType(string $entityType)
     {
         // Map entity types to their model keys
         $modelKey = match ($entityType) {
@@ -269,6 +271,9 @@ class ProjectEntityLoaderService
             default   => $entityType,
         };
 
-        return $this->modelFactory->getModel($modelKey);
+        $model = $this->modelFactory->getModel($modelKey);
+        \assert($model instanceof FormModel);
+
+        return $model;
     }
 }

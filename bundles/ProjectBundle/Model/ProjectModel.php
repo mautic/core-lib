@@ -45,6 +45,11 @@ final class ProjectModel extends FormModel implements AjaxLookupModelInterface
     /**
      * {@inheritDoc}
      *
+     * @param mixed $type
+     * @param mixed $filter
+     * @param mixed $limit
+     * @param mixed $start
+     *
      * @return array<int|string, string>
      */
     public function getLookupResults($type, $filter = '', $limit = 10, $start = 0): array
