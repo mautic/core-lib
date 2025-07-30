@@ -7,6 +7,7 @@ namespace Mautic\ProjectBundle\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Mautic\CoreBundle\Factory\ModelFactory;
+use Mautic\CoreBundle\Model\FormModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\ProjectBundle\DTO\EntityTypeConfig;
 use Mautic\ProjectBundle\Entity\Project;
@@ -21,6 +22,11 @@ class ProjectEntityLoaderService
     {
     }
 
+    /**
+     * @param array<string, EntityTypeConfig> $entityTypes
+     *
+     * @return array<string, array<string, mixed>>
+     */
     public function getProjectEntities(Project $project, array $entityTypes): array
     {
         $results = [];
@@ -130,6 +136,10 @@ class ProjectEntityLoaderService
 
     /**
      * Get lookup results for entity type (used by EntityLookupType).
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getLookupResults(string $entityType, string $filter = '', int $limit = 10, int $start = 0, array $options = []): array
     {
@@ -145,7 +155,7 @@ class ProjectEntityLoaderService
         if (!$this->hasViewPermissionForEntityType($entityConfig)) {
             return [];
         }
-        $repository   = $this->em->getRepository($entityConfig->entityClass);
+        $repository   = $entityConfig->model->getRepository();
 
         // Get the label column for this entity type
         $labelColumn = $this->getEntityLabelColumn($entityType);
@@ -251,7 +261,7 @@ class ProjectEntityLoaderService
     /**
      * Simple model finder using entity type.
      */
-    private function findModelForEntityType(string $entityType): ?object
+    private function findModelForEntityType(string $entityType): FormModel
     {
         // Map entity types to their model keys
         $modelKey = match ($entityType) {
