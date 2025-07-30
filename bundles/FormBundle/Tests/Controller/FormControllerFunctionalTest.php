@@ -691,11 +691,11 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         // Create a slider field
         $sliderField = $this->createFormField([
             'label' => 'Test Slider',
-            'type' => 'slider',
+            'type'  => 'slider',
         ]);
         $sliderField->setProperties([
-            'min' => 0,
-            'max' => 100,
+            'min'  => 0,
+            'max'  => 100,
             'step' => 5,
         ]);
         $sliderField->setForm($form);
@@ -712,7 +712,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         // Check that the slider input has the oninput attribute
         $sliderInput = $crawler->filter('input[type="range"]');
         $this->assertCount(1, $sliderInput, 'Slider input should be present');
-        
+
         $oninputAttr = $sliderInput->attr('oninput');
         $this->assertNotNull($oninputAttr, 'Slider input should have oninput attribute');
         $this->assertStringContainsString('document.getElementById', $oninputAttr, 'Slider input should use getElementById to target output element');
