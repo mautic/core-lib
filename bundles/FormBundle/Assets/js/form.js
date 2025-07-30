@@ -149,6 +149,18 @@ Mautic.fetchFieldsOnObjectChange = function() {
     });
 };
 
+Mautic.formResultBatchSubmit = function () {
+    if (!mQuery('#lead_batch_ids').val()) {
+        return false;
+    }
+
+    if (mQuery('#lead_batch_add').val() || mQuery('#lead_batch_remove').val()) {
+        return true;
+    }
+
+    return false;
+};
+
 Mautic.updateFormFields = function () {
     Mautic.activateLabelLoadingIndicator('campaignevent_properties_field');
 
