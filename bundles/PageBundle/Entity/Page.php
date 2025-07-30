@@ -168,7 +168,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
 
     private bool $isCloned = false;
 
-    private ?int $cloneObjectId;
+    private int $cloneObjectId;
 
     /**
      * @Groups({"page:read", "page:write", "download:read", "email:read"})
@@ -182,7 +182,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
 
     public function __clone()
     {
-        $this->cloneObjectId = $this->id;
+        $this->cloneObjectId = (int) $this->id;
         $this->isCloned      = true;
         $this->id            = null;
         $this->clearTranslations();
