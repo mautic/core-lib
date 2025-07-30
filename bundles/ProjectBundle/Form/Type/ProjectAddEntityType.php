@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @extends AbstractType<mixed>
  */
-class ProjectAddEntityType extends AbstractType
+final class ProjectAddEntityType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
