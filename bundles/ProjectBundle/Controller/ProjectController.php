@@ -578,57 +578,64 @@ final class ProjectController extends AbstractFormController
             $isCancelled = $this->isFormCancelled($form);
             $isValid     = $this->isFormValid($form);
 
-            if (!$isCancelled && $isValid) {
-                $data      = $form->getData();
-                $entityIds = $data['entityIds'] ?? [];
-
-                if (!empty($entityIds)) {
-                    // Get entity types configuration
-                    $entityTypes = $entityLoader->getEntityTypesWithEditPermissions();
-                    if (!isset($entityTypes[$entityType])) {
-                        $flashes[] = [
-                            'type' => 'error',
-                            'msg'  => 'mautic.core.error.badrequest',
-                        ];
-
-                        return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
-                    }
-
-                    $entityConfig = $entityTypes[$entityType];
-                    $addedCount   = 0;
-
-                    foreach ($entityIds as $entityId) {
-                        $entity = $entityConfig->model->getEntity($entityId);
-                        if ($entity) {
-                            // Check if entity is not already in project
-                            if (!$entity->getProjects()->contains($project)) {
-                                $entity->addProject($project);
-                                $this->doctrine->getManager()->persist($entity);
-                                ++$addedCount;
-                            }
-                        }
-                    }
-
-                    if ($addedCount > 0) {
-                        $this->doctrine->getManager()->flush();
-                        $flashes[] = [
-                            'type'    => 'notice',
-                            'msg'     => 'mautic.project.notice.entities_added',
-                            'msgVars' => [
-                                '%count%'   => $addedCount,
-                                '%project%' => $project->getName(),
-                            ],
-                        ];
-                    } else {
-                        $flashes[] = [
-                            'type' => 'notice',
-                            'msg'  => 'mautic.project.notice.no_entities_added',
-                        ];
-                    }
-                }
+            if ($isCancelled || !$isValid) {
+                return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
             }
 
-            // Always redirect after POST (whether cancelled, valid, or invalid)
+            $data      = $form->getData();
+            $entityIds = $data['entityIds'] ?? [];
+
+            if (empty($entityIds)) {
+                return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+            }
+
+            // Get entity types configuration
+            $entityTypes = $entityLoader->getEntityTypesWithEditPermissions();
+            if (!isset($entityTypes[$entityType])) {
+                $flashes[] = [
+                    'type' => 'error',
+                    'msg'  => 'mautic.core.error.badrequest',
+                ];
+
+                return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
+            }
+
+            $entityConfig = $entityTypes[$entityType];
+            $addedCount   = 0;
+
+            foreach ($entityIds as $entityId) {
+                $entity = $entityConfig->model->getEntity($entityId);
+                if (!$entity) {
+                    continue;
+                }
+
+                // Check if entity is not already in project
+                if ($entity->getProjects()->contains($project)) {
+                    continue;
+                }
+
+                $entity->addProject($project);
+                $this->doctrine->getManager()->persist($entity);
+                ++$addedCount;
+            }
+
+            if ($addedCount > 0) {
+                $this->doctrine->getManager()->flush();
+                $flashes[] = [
+                    'type'    => 'notice',
+                    'msg'     => 'mautic.project.notice.entities_added',
+                    'msgVars' => [
+                        '%count%'   => $addedCount,
+                        '%project%' => $project->getName(),
+                    ],
+                ];
+            } else {
+                $flashes[] = [
+                    'type' => 'notice',
+                    'msg'  => 'mautic.project.notice.no_entities_added',
+                ];
+            }
+
             return $this->postActionRedirect(array_merge($postActionVars, ['flashes' => $flashes]));
         }
 
