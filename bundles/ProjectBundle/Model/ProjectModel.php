@@ -44,8 +44,12 @@ final class ProjectModel extends FormModel implements AjaxLookupModelInterface
 
     /**
      * {@inheritDoc}
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return array<int|string, string>
      */
-    public function getLookupResults($type, $filter = '', $limit = 10, $start = 0, $options = []): array
+    public function getLookupResults(string $type, string $filter = '', int $limit = 10, int $start = 0, array $options = []): array
     {
         // The entityType should be passed in options from the form configuration
         if (!isset($options['entityType'])) {
