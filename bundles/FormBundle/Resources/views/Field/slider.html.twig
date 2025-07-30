@@ -5,7 +5,7 @@
 {% set containerAttributes = htmlAttributesStringToArray(field.containerAttributes|default('')) %}
 
 {% if not (ignoreName is defined and ignoreName) %}
-    {% set inputName = 'mauticform[' ~ field.alias ~ ']' ~ (field.properties.multiple is defined ? '[]' : '') %}
+    {% set inputName = 'mauticform[' ~ field.alias ~ ']' %}
     {% set inputAttributes = inputAttributes|merge({'name': inputName}) %}
 {% endif %}
 
@@ -20,10 +20,6 @@
         'id': 'mauticform_label' ~ formName ~ '_' ~ field.alias,
         'for': inputId,
     }) %}
-{% endif %}
-
-{% if field.properties.placeholder is defined and field.properties.placeholder is not empty %}
-    {% set inputAttributes = inputAttributes|merge({'placeholder': field.properties.placeholder}) %}
 {% endif %}
 
 {% if inForm is defined and inForm %}
@@ -56,9 +52,6 @@
             'data-validate': field.alias,
             'data-validation-type': field.type,
         }) %}
-        {% if field.properties.multiple is defined and field.properties.multiple %}
-            {% set containerAttributes = containerAttributes|merge({'data-validate-multiple': 'true'}) %}
-        {% endif %}
     {% endif %}
     {% set containerAttributes = containerAttributes|merge({'class': containerAttributes.class|merge(['mauticform-required'])}) %}
 {% endif %}
