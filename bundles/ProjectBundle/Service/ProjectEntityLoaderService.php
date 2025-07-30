@@ -14,23 +14,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProjectEntityLoaderService
 {
-    private EntityManagerInterface $em;
-    private TranslatorInterface $translator;
-    private ModelFactory $modelFactory;
-    private CorePermissions $security;
     /** @var array<string, EntityTypeConfig> */
     private array $entityTypesCache = [];
 
-    public function __construct(
-        EntityManagerInterface $em,
-        TranslatorInterface $translator,
-        ModelFactory $modelFactory,
-        CorePermissions $security,
-    ) {
-        $this->em           = $em;
-        $this->translator   = $translator;
-        $this->modelFactory = $modelFactory;
-        $this->security     = $security;
+    public function __construct(private EntityManagerInterface $em, private TranslatorInterface $translator, private ModelFactory $modelFactory, private CorePermissions $security)
+    {
     }
 
     public function getProjectEntities(Project $project, array $entityTypes): array

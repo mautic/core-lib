@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mautic\ProjectBundle\Form\Type;
 
 use Mautic\CoreBundle\Form\Type\EntityLookupType;
-use Mautic\ProjectBundle\Service\ProjectEntityLoaderService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,9 +14,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ProjectListEntityType extends AbstractType
 {
-    public function __construct(
-        private ProjectEntityLoaderService $entityLoaderService,
-    ) {
+    public function __construct()
+    {
     }
 
     public function configureOptions(OptionsResolver $resolver): void

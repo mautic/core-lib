@@ -58,9 +58,8 @@ final class ProjectModel extends FormModel implements AjaxLookupModelInterface
         }
 
         $entityType = $options['entityType'];
-        $results    = $this->entityLoaderService->getLookupResults($entityType, $filter, $limit, $start, $options);
 
         // Results are already in the correct format (id => name)
-        return $results;
+        return $this->entityLoaderService->getLookupResults($entityType, $filter, $limit, $start, $options);
     }
 }
