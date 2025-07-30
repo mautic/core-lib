@@ -7,6 +7,7 @@ namespace Mautic\CampaignBundle\Command;
 use Doctrine\Common\Collections\ArrayCollection;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Event\MaxAllowedRecordsReachedInSingleProcessEvent;
+use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
 use Mautic\CampaignBundle\Executioner\EventExecutioner;
 use Mautic\CampaignBundle\Executioner\Result\Counter;
 use Mautic\CampaignBundle\Model\CampaignModel;
@@ -31,7 +32,7 @@ final class ResumeStuckCampaignCommand extends Command
 
     public const COMMAND_NAME = 'mautic:campaigns:resume-stuck';
 
-    private const MAX_ALLOWED_RECORDS_EACH_PROCESS = 10000;
+    private const MAX_ALLOWED_RECORDS_EACH_PROCESS = 5000;
 
     public function __construct(
         private TranslatorInterface $translator,
@@ -65,6 +66,20 @@ final class ResumeStuckCampaignCommand extends Command
                 'Find next events without executing them.'
             )
             ->addOption(
+                '--min-contact-id',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Fix contacts starting at a specific contact ID.',
+                null
+            )
+            ->addOption(
+                '--max-contact-id',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Fix contacts up to a specific contact ID.',
+                null
+            )
+            ->addOption(
                 '--batch-limit',
                 '-l',
                 InputOption::VALUE_OPTIONAL,
@@ -80,9 +95,13 @@ final class ResumeStuckCampaignCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $campaignId    = (int) $input->getArgument('campaign-id');
-        $batchLimit    = (int) $input->getOption('batch-limit');
-        $isDryRun      = (bool) $input->getOption('dry-run');
+        $campaignId     = (int) $input->getArgument('campaign-id');
+        $batchLimit     = (int) $input->getOption('batch-limit');
+        $isDryRun       = (bool) $input->getOption('dry-run');
+        $contactMinId   = $input->getOption('min-contact-id');
+        $contactMaxId   = $input->getOption('max-contact-id');
+
+        $contactLimiter = new ContactLimiter($batchLimit, null, $contactMinId, $contactMaxId);
         $this->processSignalService->registerSignalHandler(
             fn (int $signal) => $output->writeln(sprintf('Signal %d caught.', $signal))
         );
@@ -101,7 +120,7 @@ final class ResumeStuckCampaignCommand extends Command
                 return ExitCode::FAILURE;
             }
 
-            return $this->processEvents($campaignId, $batchLimit, $isDryRun, $output);
+            return $this->processEvents($campaignId, $batchLimit, $contactLimiter, $isDryRun, $output);
         } catch (SignalCaughtException) {
             return ExitCode::TERMINATED;
         }
@@ -210,11 +229,13 @@ final class ResumeStuckCampaignCommand extends Command
     /**
      * Process campaign events in batches.
      */
-    private function processEvents(int $campaignId, int $batchLimit, bool $isDryRun, OutputInterface $output): int
+    private function processEvents(int $campaignId, int $batchLimit, ContactLimiter $contactLimiter,
+        bool $isDryRun, OutputInterface $output): int
     {
         $recordsProcessed   = 0;
         $campaignRepository = $this->campaignModel->getRepository();
-        while ($nextEvents = $campaignRepository->findStuckEventsToExecute($campaignId, $batchLimit)) {
+        while ($nextEvents = $campaignRepository->findStuckEventsToExecute($campaignId, $batchLimit,
+            $contactLimiter->getMinContactId(), $contactLimiter->getMaxContactId())) {
             if ($isDryRun) {
                 $this->displayNextEvents($nextEvents, $output);
                 $output->writeln('<comment>Dry run only. No events were executed.</comment>');
@@ -224,6 +245,9 @@ final class ResumeStuckCampaignCommand extends Command
 
             $output->writeln('<info>Executing next events...</info>');
             $counter = $this->executeNextEvents($nextEvents, $output);
+
+            $lastContactId = max(array_column($nextEvents, 'contact_id'));
+            $contactLimiter->setBatchMinContactId($lastContactId);
 
             $this->writeCounts($output, $this->translator, $counter);
             $this->eventDispatcher->dispatch(new JobExtendTimeEvent());

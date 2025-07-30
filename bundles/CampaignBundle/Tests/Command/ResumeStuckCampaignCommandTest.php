@@ -358,8 +358,10 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
 
         $output = $this->executeCommand(
             [
-                'campaign-id'   => $campaignId,
-                '--dry-run'     => true,
+                'campaign-id'      => $campaignId,
+                '--dry-run'        => true,
+                '--min-contact-id' => $contact1->getId(),
+                '--max-contact-id' => $contact3->getId(),
             ]
         );
 

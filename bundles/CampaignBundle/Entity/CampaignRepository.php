@@ -624,7 +624,8 @@ class CampaignRepository extends CommonRepository
      *
      * @return array<mixed>
      */
-    public function findStuckEventsToExecute(int $campaignId, int $limit = 100): array
+    public function findStuckEventsToExecute(int $campaignId, int $limit = 100, ?int $minLeadId = 0,
+        ?int $maxLeadId = 0): array
     {
         $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $query->select(
@@ -697,8 +698,19 @@ class CampaignRepository extends CommonRepository
                     // For action events, always proceed
                     $query->expr()->eq('parent.event_type', $query->expr()->literal('action'))
                 )
-            )
-            ->orderBy('log.lead_id', 'ASC')
+            );
+
+        if ($minLeadId > 0) {
+            $query->andWhere('clr.lead_id >= :minLeadId')
+                ->setParameter('minLeadId', $minLeadId);
+        }
+
+        if ($maxLeadId > 0) {
+            $query->andWhere('clr.lead_id <= :maxLeadId')
+                ->setParameter('maxLeadId', $maxLeadId);
+        }
+
+        $query->orderBy('log.lead_id', 'ASC')
             ->addOrderBy('log.date_triggered', 'DESC')
             ->addOrderBy('ce.event_order', 'ASC')
             ->setMaxResults($limit);
