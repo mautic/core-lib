@@ -6,6 +6,7 @@ use Mautic\CoreBundle\Model\FormModel;
 use Mautic\LeadBundle\Entity\Tag;
 use Mautic\LeadBundle\Entity\TagRepository;
 use Mautic\LeadBundle\Event\TagEvent;
+use Mautic\LeadBundle\Event\TagMergeEvent;
 use Mautic\LeadBundle\Form\Type\TagEntityType;
 use Mautic\LeadBundle\LeadEvents;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -99,5 +100,40 @@ class TagModel extends FormModel
         }
 
         return null;
+    }
+
+    public function tagMerge(Tag $mainTag, Tag $secTag): Tag
+    {
+        $this->logger->debug('TAG: Merging tags');
+
+        if ($mainTag->getId() === $secTag->getId()) {
+            return $mainTag;
+        }
+
+        $conn = $this->em->getConnection();
+        $leadIds = $conn->createQueryBuilder()
+            ->select('lead_id')
+            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'ltx')
+            ->where('ltx.tag_id = :id')
+            ->setParameter('id', $secTag->getId())
+            ->executeQuery()
+            ->fetchFirstColumn();
+
+        if ($leadIds) {
+            $repo = $this->getRepository();
+            $repo->addTagsToLeads($leadIds, [$mainTag->getId()]);
+            $repo->removeTagsFromLeads($leadIds, [$secTag->getId()]);
+        }
+
+        $event = new TagMergeEvent($mainTag, $secTag);
+        $this->dispatcher->dispatch($event, LeadEvents::TAG_PRE_MERGE);
+
+        $this->saveEntity($mainTag, false);
+
+        $this->dispatcher->dispatch($event, LeadEvents::TAG_POST_MERGE);
+
+        $this->deleteEntity($secTag);
+
+        return $mainTag;
     }
 }
