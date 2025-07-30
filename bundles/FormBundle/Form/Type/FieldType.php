@@ -603,6 +603,16 @@ class FieldType extends AbstractType
                         ]
                     );
                     break;
+                case 'slider':
+                    $builder->add(
+                        'properties',
+                        FormFieldSliderType::class,
+                        [
+                            'label' => false,
+                            'data'  => $propertiesData,
+                        ]
+                    );
+                    break;
                 case 'date':
                 case 'email':
                 case 'text':
