@@ -44,18 +44,6 @@
     }) %}
 {% endif %}
 
-{% set validationMessage = '' %}
-{% if (field.isRequired is defined and field.isRequired) or (required is defined and required) %}
-    {% if field.isRequired is defined and field.isRequired %}
-        {% set validationMessage = field.validationMessage|default('mautic.form.field.generic.required'|trans([], 'validators', language|default(null))) %}
-        {% set containerAttributes = containerAttributes|merge({
-            'data-validate': field.alias,
-            'data-validation-type': field.type,
-        }) %}
-    {% endif %}
-    {% set containerAttributes = containerAttributes|merge({'class': containerAttributes.class|merge(['mauticform-required'])}) %}
-{% endif %}
-
 <div {% for attrName, attrValue in containerAttributes %}{{ attrName }}="{% if attrValue is iterable %}{{ attrValue|join(' ') }}{% else %}{{ attrValue }}{% endif %}"{% endfor %}>
     {% if field.showLabel %}
     <div>
@@ -77,6 +65,4 @@
     {% if not field.showLabel %}
     <output class="mauticform-slider-value" id="{{ inputId }}_value"></output>
     {% endif %}
-
-    <span class="mauticform-errormsg" style="display:none;">{{ validationMessage }}</span>
 </div>

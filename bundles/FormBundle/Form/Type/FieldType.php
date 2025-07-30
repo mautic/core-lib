@@ -141,6 +141,9 @@ class FieldType extends AbstractType
                 case 'file':
                     $addShowLabel = $addDefaultValue = $addBehaviorFields = false;
                     break;
+                case 'slider':
+                    $addIsRequired = false;
+                    break;
             }
         }
 
