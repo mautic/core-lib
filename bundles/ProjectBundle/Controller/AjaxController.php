@@ -21,7 +21,6 @@ final class AjaxController extends CommonAjaxController
     public function getLookupChoiceListAction(Request $request, ProjectModel $projectModel): JsonResponse
     {
         $entityType  = $request->query->get('entityType', 'email');
-        $projectId   = $request->query->get('projectId');
         $searchKey   = $request->query->get('searchKey', '');
         $searchValue = $request->query->get($searchKey, '');
         $filter      = $searchValue ?: $request->query->get('search', '');
