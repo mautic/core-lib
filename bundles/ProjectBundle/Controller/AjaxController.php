@@ -28,12 +28,7 @@ final class AjaxController extends CommonAjaxController
         $limit       = (int) $request->query->get('limit', 10);
         $start       = (int) $request->query->get('start', 0);
 
-        $options = [
-            'entityType' => $entityType,
-            'projectId'  => $projectId,
-        ];
-
-        $results = $projectModel->getLookupResults($entityType, $filter, $limit, $start, $options);
+        $results = $projectModel->getLookupResults($entityType, $filter, $limit, $start);
 
         // Format results to match AjaxLookupControllerTrait structure
         $dataArray = [];

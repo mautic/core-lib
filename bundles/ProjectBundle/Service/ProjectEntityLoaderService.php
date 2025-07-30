@@ -137,11 +137,9 @@ class ProjectEntityLoaderService
     /**
      * Get lookup results for entity type (used by EntityLookupType).
      *
-     * @param array<string, mixed> $options
-     *
-     * @return array<int, array<string, mixed>>
+     * @return array<int|string, string>
      */
-    public function getLookupResults(string $entityType, string $filter = '', int $limit = 10, int $start = 0, array $options = []): array
+    public function getLookupResults(string $entityType, string $filter = '', int $limit = 10, int $start = 0): array
     {
         $entityTypes = $this->getEntityTypes();
 

@@ -45,25 +45,19 @@ final class ProjectModel extends FormModel implements AjaxLookupModelInterface
     /**
      * {@inheritDoc}
      *
-     * @param array<string, mixed> $options
-     *
      * @return array<int|string, string>
      */
-    public function getLookupResults(string $type, string $filter = '', int $limit = 10, int $start = 0, array $options = []): array
+    public function getLookupResults($type, $filter = '', $limit = 10, $start = 0): array
     {
-        // The entityType should be passed in options from the form configuration
-        if (!isset($options['entityType'])) {
-            return [];
-        }
-
         // Convert filter to string if it's an array (happens when $data is replaced with actual data)
         if (is_array($filter)) {
             $filter = implode('|', $filter);
         }
 
-        $entityType = $options['entityType'];
+        // Use $type as entityType directly
+        $entityType = (string) $type;
 
         // Results are already in the correct format (id => name)
-        return $this->entityLoaderService->getLookupResults($entityType, $filter, $limit, $start, $options);
+        return $this->entityLoaderService->getLookupResults($entityType, (string) $filter, (int) $limit, (int) $start);
     }
 }
