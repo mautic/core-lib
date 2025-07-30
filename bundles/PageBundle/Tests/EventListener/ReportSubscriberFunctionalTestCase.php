@@ -42,7 +42,7 @@ class ReportSubscriberFunctionalTestCase extends AbstractReportSubscriberTestCas
         $this->verifyApiReport($report->getId(), $expectedReport);
     }
 
-    private function createPageHit(Lead $lead, int $times = 1, string $url = 'https://example.com', \DateTime $dateHit = null, \DateTime $dateLeft = null): void
+    private function createPageHit(Lead $lead, int $times = 1, string $url = 'https://example.com', ?\DateTime $dateHit = null, ?\DateTime $dateLeft = null): void
     {
         for ($i = 0; $i < $times; ++$i) {
             $pageHit = new Hit();
