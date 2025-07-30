@@ -4,7 +4,7 @@
 {% set inputId = 'mauticform_input' ~ (formName|default('')) ~ '_' ~ field.alias %}
 {% set fieldInputAttributes = htmlAttributesStringToArray(field.inputAttributes|default('')) %}
 {% set sliderInputAttributes = {
-    'oninput': 'this.nextElementSibling.value = this.value'
+    'oninput': 'document.getElementById(\'' ~ inputId ~ '_value\').value = this.value'
 } %}
 {% set mergedInputAttributes = fieldInputAttributes|merge(sliderInputAttributes) %}
 
