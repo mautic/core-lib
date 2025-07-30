@@ -25,8 +25,8 @@ final class AjaxController extends CommonAjaxController
         $searchKey   = $request->query->get('searchKey', '');
         $searchValue = $request->query->get($searchKey, '');
         $filter      = $searchValue ?: $request->query->get('search', '');
-        $limit       = (int) $request->query->get('limit', '10');
-        $start       = (int) $request->query->get('start', '0');
+        $limit       = (int) $request->query->get('limit', 10);
+        $start       = (int) $request->query->get('start', 0);
 
         $options = [
             'entityType' => $entityType,
