@@ -716,7 +716,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $oninputAttr = $sliderInput->attr('oninput');
         $this->assertNotNull($oninputAttr, 'Slider input should have oninput attribute');
         $this->assertStringContainsString('document.getElementById', $oninputAttr, 'Slider input should use getElementById to target output element');
-        $this->assertStringContainsString('.value = this.value', $oninputAttr, 'Slider input should set output value to input value');
+        $this->assertStringContainsString('.textContent = this.value', $oninputAttr, 'Slider input should set output value to input value');
     }
 
     private function createForm(string $name, string $alias): Form
