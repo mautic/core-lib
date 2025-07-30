@@ -51,7 +51,7 @@ final class ProjectListEntityType extends AbstractType
         $resolver->setAllowedTypes('projectId', ['int', 'string', 'null']);
     }
 
-    public function getParent(): ?string
+    public function getParent(): string
     {
         return EntityLookupType::class;
     }
