@@ -1,15 +1,11 @@
-{% set containerType = 'range' %}
 {% set formName = formName|default('') %}
 {% set inputId = 'mauticform_input' ~ formName ~ '_' ~ field.alias %}
 {% set inputAttributes = htmlAttributesStringToArray(field.inputAttributes|default('')) %}
 {% set labelAttributes = htmlAttributesStringToArray(field.labelAttributes|default('')) %}
 {% set containerAttributes = htmlAttributesStringToArray(field.containerAttributes|default('')) %}
 
-{% if ignoreName is not defined or not ignoreName %}
-    {% set inputName = 'mauticform[' ~ field.alias ~ ']' %}
-    {% if field.properties.multiple is defined %}
-        {% set inputName = inputName ~ '[]' %}
-    {% endif %}
+{% if not (ignoreName is defined and ignoreName) %}
+    {% set inputName = 'mauticform[' ~ field.alias ~ ']' ~ (field.properties.multiple is defined ? '[]' : '') %}
     {% set inputAttributes = inputAttributes|merge({'name': inputName}) %}
 {% endif %}
 
@@ -18,7 +14,7 @@
     'oninput': 'document.getElementById(\'' ~ inputId ~ '_value\').textContent = this.value'
 }) %}
 
-{% if ignoreId is not defined or not ignoreId %}
+{% if not (ignoreId is defined and ignoreId) %}
     {% set inputAttributes = inputAttributes|merge({'id': inputId}) %}
     {% set labelAttributes = labelAttributes|merge({
         'id': 'mauticform_label' ~ formName ~ '_' ~ field.alias,
@@ -30,15 +26,12 @@
     {% set inputAttributes = inputAttributes|merge({'placeholder': field.properties.placeholder}) %}
 {% endif %}
 
-{% set labelClass = ['mauticform-label'] %}
-{% set inputClass = ['mauticform-input'] %}
-
 {% if inForm is defined and inForm %}
     {% set inputAttributes = inputAttributes|merge({'disabled': 'disabled'}) %}
 {% endif %}
 
-{% set labelAttributes = labelAttributes|merge({'class': labelAttributes.class|default([])|merge(labelClass)}) %}
-{% set inputAttributes = inputAttributes|merge({'class': inputAttributes.class|default([])|merge(inputClass)}) %}
+{% set labelAttributes = labelAttributes|merge({'class': labelAttributes.class|default([])|merge(['mauticform-label'])}) %}
+{% set inputAttributes = inputAttributes|merge({'class': inputAttributes.class|default([])|merge(['mauticform-input'])}) %}
 
 {% set containerAttributes = containerAttributes|merge({
     'id': 'mauticform' ~ formName ~ '_' ~ id,
@@ -56,17 +49,17 @@
 {% endif %}
 
 {% set validationMessage = '' %}
-{% if field.isRequired is defined and field.isRequired %}
-    {% set validationMessage = field.validationMessage|default('mautic.form.field.generic.required'|trans([], 'validators', language|default(null))) %}
-    {% set containerAttributes = containerAttributes|merge({
-        'class': containerAttributes.class|merge(['mauticform-required']),
-        'data-validate': field.alias,
-        'data-validation-type': field.type,
-    }) %}
-    {% if field.properties.multiple is defined and field.properties.multiple %}
-        {% set containerAttributes = containerAttributes|merge({'data-validate-multiple': 'true'}) %}
+{% if (field.isRequired is defined and field.isRequired) or (required is defined and required) %}
+    {% if field.isRequired is defined and field.isRequired %}
+        {% set validationMessage = field.validationMessage|default('mautic.form.field.generic.required'|trans([], 'validators', language|default(null))) %}
+        {% set containerAttributes = containerAttributes|merge({
+            'data-validate': field.alias,
+            'data-validation-type': field.type,
+        }) %}
+        {% if field.properties.multiple is defined and field.properties.multiple %}
+            {% set containerAttributes = containerAttributes|merge({'data-validate-multiple': 'true'}) %}
+        {% endif %}
     {% endif %}
-{% elseif required is defined and required %}
     {% set containerAttributes = containerAttributes|merge({'class': containerAttributes.class|merge(['mauticform-required'])}) %}
 {% endif %}
 
@@ -82,7 +75,7 @@
         <span class="mauticform-helpmessage">{{ field.helpMessage|purify }}</span>
     {% endif %}
 
-    <input type="{{ containerType }}"
+    <input type="range"
            min="{{ field.properties.min|default(0) }}"
            max="{{ field.properties.max|default(100) }}"
            step="{{ field.properties.step|default(1) }}"
