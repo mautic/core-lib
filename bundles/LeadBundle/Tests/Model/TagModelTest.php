@@ -13,13 +13,11 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class TagModelTest extends TestCase
 {
-    private TagModel $tagModel;
     private EventDispatcher $eventDispatcher;
 
     protected function setUp(): void
     {
         $this->eventDispatcher = new EventDispatcher();
-        $this->tagModel        = $this->createMock(TagModel::class);
     }
 
     public function testTagMergeWithSameTags(): void
