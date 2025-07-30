@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @extends AbstractType<mixed>
  */
-class ProjectListEntityType extends AbstractType
+final class ProjectListEntityType extends AbstractType
 {
     public function __construct()
     {
