@@ -103,26 +103,15 @@
       <span class="mauticform-helpmessage">{{ field.helpMessage|purify }}</span>
     {% endif %}
 
-    <div>
+    <input type="{{ containerType }}"
+           min="{{ field.properties.min|default(0) }}"
+           max="{{ field.properties.max|default(100) }}"
+           step="{{ field.properties.step|default(1) }}"
+           {% for attrName, attrValue in inputAttributes %}{{ attrName }}="{% if attrValue is iterable %}{{ attrValue|join(' ') }}{% else %}{{ attrValue }}{% endif %}"{% endfor %}/>
+    
+    {% if not field.showLabel %}
+    <output class="mauticform-slider-value" id="{{ inputId }}_value"></output>
+    {% endif %}
 
-      {% if not field.showLabel %}
-      <div>
-        <input type="{{ containerType }}"
-            min="{{ field.properties.min|default(0) }}"
-            max="{{ field.properties.max|default(100) }}"
-            step="{{ field.properties.step|default(1) }}"
-            {% for attrName, attrValue in inputAttributes %}{{ attrName }}="{% if attrValue is iterable %}{{ attrValue|join(' ') }}{% else %}{{ attrValue }}{% endif %}"{% endfor %}/>
-        <output class="mauticform-slider-value" id="{{ inputId }}_value"></output>
-      </div>
-      {% else %}
-      <input type="{{ containerType }}"
-            min="{{ field.properties.min|default(0) }}"
-            max="{{ field.properties.max|default(100) }}"
-            step="{{ field.properties.step|default(1) }}"
-            {% for attrName, attrValue in inputAttributes %}{{ attrName }}="{% if attrValue is iterable %}{{ attrValue|join(' ') }}{% else %}{{ attrValue }}{% endif %}"{% endfor %}/>
-  
-      {% endif %}
-    </div>
     <span class="mauticform-errormsg" style="display:none;">{{ validationMessage }}</span>
 </div>
-
