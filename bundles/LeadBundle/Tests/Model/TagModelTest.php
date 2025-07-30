@@ -19,7 +19,7 @@ class TagModelTest extends TestCase
     protected function setUp(): void
     {
         $this->eventDispatcher = new EventDispatcher();
-        $this->tagModel = $this->createMock(TagModel::class);
+        $this->tagModel        = $this->createMock(TagModel::class);
     }
 
     public function testTagMergeWithSameTags(): void
@@ -27,12 +27,13 @@ class TagModelTest extends TestCase
         $tag = new Tag();
         $tag->setTag('Test Tag');
 
-        $this->tagModel->expects($this->once())
+        $tagModel = $this->createMock(TagModel::class);
+        $tagModel->expects($this->once())
             ->method('tagMerge')
             ->with($tag, $tag)
             ->willReturn($tag);
 
-        $result = $this->tagModel->tagMerge($tag, $tag);
+        $result = $tagModel->tagMerge($tag, $tag);
 
         $this->assertSame($tag, $result);
     }
@@ -60,4 +61,4 @@ class TagModelTest extends TestCase
 
         $this->assertTrue($eventDispatched);
     }
-} 
+}

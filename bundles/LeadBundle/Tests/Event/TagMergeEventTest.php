@@ -19,4 +19,4 @@ class TagMergeEventTest extends TestCase
         $this->assertEquals($victor, $event->getVictor());
         $this->assertEquals($loser, $event->getLoser());
     }
-} 
+}
