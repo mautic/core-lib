@@ -8,8 +8,8 @@
             {% for entityType, entityData in entityTypes %}
                 <div class="col-md-6 mb-sm">
                     {% include '@MauticCore/Components/tile.html.twig' with {
-                        type: 'mini',
-                        title: entityData.label|trans,
+                        type: 'clickable',
+                        content: '<div class="d-flex jc-space-between ai-center"><div class="tile-title">' ~ entityData.label|trans ~ '</div></div>',
                         href: path('mautic_project_action', {'objectAction': 'addEntity', 'objectId': project.getId(), 'entityType': entityType}),
                         icon: 'ri-add-line',
                         attributes: {
