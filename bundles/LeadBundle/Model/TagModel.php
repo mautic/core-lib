@@ -110,7 +110,7 @@ class TagModel extends FormModel
             return $mainTag;
         }
 
-        $conn = $this->em->getConnection();
+        $conn    = $this->em->getConnection();
         $leadIds = $conn->createQueryBuilder()
             ->select('lead_id')
             ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'ltx')
