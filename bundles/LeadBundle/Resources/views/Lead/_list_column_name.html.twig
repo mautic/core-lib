@@ -9,7 +9,8 @@
         {% endif %}
         {% set primaryIdentifier = item.isAnonymous ? item.primaryIdentifier|trans : item.primaryIdentifier|purify %}
         <div>
-            {{ primaryIdentifier }}
+            <span>{{ primaryIdentifier }}</span><br>
+            {{ customContent('lead.list.name', _context) }}
         </div>
         {% if 'company' in columns|keys and primaryIdentifier != item.secondaryIdentifier and item.secondaryIdentifier %}
             <div class="small">{{ item.secondaryIdentifier|purify }}</div>
