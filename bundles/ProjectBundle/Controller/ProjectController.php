@@ -62,24 +62,19 @@ final class ProjectController extends AbstractFormController
             $filter = ['string' => $search];
         }
 
-        // Handle entitiesCount ordering separately since it's calculated dynamically
-        $isEntitiesCountOrder = ('entitiesCount' === $orderBy);
-        $dbOrderBy            = $isEntitiesCountOrder ? 'p.dateModified' : $orderBy;
-
         $tmpl  = $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index';
         $items = $projectModel->getEntities(
             [
                 'start'      => $start,
                 'limit'      => $limit,
                 'filter'     => $filter,
-                'orderBy'    => $dbOrderBy,
+                'orderBy'    => $orderBy,
                 'orderByDir' => $orderByDir,
             ]
         );
 
         // Calculate entity counts for each project
-        $itemsWithCounts = [];
-        $entityTypes     = $entityLoader->getEntityTypesWithViewPermissions();
+        $entityTypes = $entityLoader->getEntityTypesWithViewPermissions();
         foreach ($items as $project) {
             $projectEntities = $entityLoader->getProjectEntities($project, $entityTypes);
             $totalCount      = 0;
@@ -87,19 +82,7 @@ final class ProjectController extends AbstractFormController
                 $totalCount += $entityData['count'];
             }
             $project->entitiesCount = $totalCount;
-            $itemsWithCounts[]      = $project;
         }
-
-        // Sort by entities count if requested
-        if ($isEntitiesCountOrder) {
-            usort($itemsWithCounts, function ($a, $b) use ($orderByDir) {
-                $comparison = $a->entitiesCount <=> $b->entitiesCount;
-
-                return 'DESC' === $orderByDir ? -$comparison : $comparison;
-            });
-        }
-
-        $items = $itemsWithCounts;
 
         $count = count($items);
 
