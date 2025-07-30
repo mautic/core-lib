@@ -1,0 +1,28 @@
+{#
+    This field relies on the `text.html.twig` implementation.
+#}
+{% set inputId = 'mauticform_input' ~ (formName|default('')) ~ '_' ~ field.alias %}
+{% set fieldInputAttributes = htmlAttributesStringToArray(field.inputAttributes|default('')) %}
+{% set sliderInputAttributes = {
+    'oninput': 'this.nextElementSibling.value = this.value'
+} %}
+{% set mergedInputAttributes = fieldInputAttributes|merge(sliderInputAttributes) %}
+
+{% set modifiedField = field|merge({
+    'inputAttributes': mergedInputAttributes|map((value, key) => key ~ '="' ~ (value is iterable ? value|join(' ') : value) ~ '"')|join(' ')
+}) %}
+
+{{- include([theme|default('') ~ 'text.html.twig', '@MauticForm/Field/text.html.twig'], {
+        'field': modifiedField,
+        'fields': fields|default([]),
+        'inForm': inForm|default(false),
+        'type': 'range',
+        'id': id,
+        'formId': formId|default(0),
+        'formName': formName|default(''),
+        'step': field.properties.step|default(1),
+        'min': field.properties.min|default(0),
+        'max': field.properties.max|default(100)
+}) -}}
+<output class="mauticform-slider-value" id="{{ inputId }}_value"></output>
+
