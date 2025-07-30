@@ -45,14 +45,15 @@ final class ProjectModel extends FormModel implements AjaxLookupModelInterface
     /**
      * {@inheritDoc}
      *
-     * @param mixed $type
-     * @param mixed $filter
-     * @param mixed $limit
-     * @param mixed $start
+     * @param mixed        $type
+     * @param mixed        $filter
+     * @param mixed        $limit
+     * @param mixed        $start
+     * @param array<mixed> $options
      *
      * @return array<int|string, string>
      */
-    public function getLookupResults($type, $filter = '', $limit = 10, $start = 0): array
+    public function getLookupResults($type, $filter = '', $limit = 10, $start = 0, $options = []): array
     {
         // Convert filter to string if it's an array (happens when $data is replaced with actual data)
         if (is_array($filter)) {
@@ -62,7 +63,10 @@ final class ProjectModel extends FormModel implements AjaxLookupModelInterface
         // Use $type as entityType directly
         $entityType = (string) $type;
 
+        // Extract projectId from options if provided
+        $projectId = $options['projectId'] ?? null;
+
         // Results are already in the correct format (id => name)
-        return $this->entityLoaderService->getLookupResults($entityType, (string) $filter, (int) $limit, (int) $start);
+        return $this->entityLoaderService->getLookupResults($entityType, (string) $filter, (int) $limit, (int) $start, $projectId);
     }
 }

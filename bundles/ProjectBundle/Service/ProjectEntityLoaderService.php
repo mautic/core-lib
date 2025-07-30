@@ -139,7 +139,7 @@ class ProjectEntityLoaderService
      *
      * @return array<int|string, string>
      */
-    public function getLookupResults(string $entityType, string $filter = '', int $limit = 10, int $start = 0): array
+    public function getLookupResults(string $entityType, string $filter = '', int $limit = 10, int $start = 0, ?int $projectId = null): array
     {
         $entityTypes = $this->getEntityTypes();
 
@@ -166,10 +166,18 @@ class ProjectEntityLoaderService
             $qb->setMaxResults($limit);
         }
 
-        // Exclude entities already assigned to any project using QueryBuilder
-        // Use LEFT JOIN to find entities that are NOT in any project
-        $qb->leftJoin('e.projects', 'p')
-           ->andWhere('p.id IS NULL');
+        // Exclude entities already assigned to the specific project if projectId is provided
+        if ($projectId) {
+            // Use LEFT JOIN to find entities that are NOT in the specific project
+            $qb->leftJoin('e.projects', 'p', 'WITH', 'p.id = :projectId')
+               ->andWhere('p.id IS NULL')
+               ->setParameter('projectId', $projectId);
+        } else {
+            // Exclude entities already assigned to any project using QueryBuilder
+            // Use LEFT JOIN to find entities that are NOT in any project
+            $qb->leftJoin('e.projects', 'p')
+               ->andWhere('p.id IS NULL');
+        }
 
         // Add filter if provided
         if (!empty($filter)) {

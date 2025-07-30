@@ -518,6 +518,32 @@ final class ProjectController extends AbstractFormController
             return $this->accessDenied();
         }
 
+        // Validate entity type
+        $entityTypes = $entityLoader->getEntityTypesWithEditPermissions();
+        if (!isset($entityTypes[$entityType])) {
+            $returnUrl = $this->generateUrl(self::ROUTE_ACTION, [
+                'objectAction' => 'view',
+                'objectId'     => $projectId,
+            ]);
+
+            return $this->postActionRedirect([
+                'returnUrl'       => $returnUrl,
+                'viewParameters'  => ['objectAction' => 'view', 'objectId' => $projectId],
+                'contentTemplate' => 'Mautic\ProjectBundle\Controller\ProjectController::viewAction',
+                'passthroughVars' => [
+                    'closeModal' => 1,
+                    'route'      => false,
+                ],
+                'flashes' => [
+                    [
+                        'type'    => 'error',
+                        'msg'     => 'mautic.project.error.invalid_entity_type',
+                        'msgVars' => ['%type%' => $entityType],
+                    ],
+                ],
+            ]);
+        }
+
         // Generate the form action URL
         $action = $this->generateUrl('mautic_project_action', [
             'objectAction' => 'addEntity',
