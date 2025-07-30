@@ -264,12 +264,7 @@ class ProjectEntityLoaderService
         return $translated;
     }
 
-    /**
-     * Simple model finder using entity type.
-     *
-     * @return FormModel
-     */
-    private function findModelForEntityType(string $entityType)
+    private function findModelForEntityType(string $entityType): FormModel
     {
         // Map entity types to their model keys
         $modelKey = match ($entityType) {
