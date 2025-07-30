@@ -27,7 +27,7 @@
 {% endif %}
 
 {% set labelAttributes = labelAttributes|merge({'class': labelAttributes.class|default([])|merge(['mauticform-label'])}) %}
-{% set inputAttributes = inputAttributes|merge({'class': inputAttributes.class|default([])|merge(['mauticform-input'])}) %}
+{% set inputAttributes = inputAttributes|merge({'class': inputAttributes.class|default([])|merge(['mauticform-input', 'mauticform-slider'])}) %}
 
 {% set containerAttributes = containerAttributes|merge({
     'id': 'mauticform' ~ formName ~ '_' ~ id,
