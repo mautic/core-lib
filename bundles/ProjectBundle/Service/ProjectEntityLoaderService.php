@@ -53,45 +53,6 @@ class ProjectEntityLoaderService
     }
 
     /**
-     * @return array<string, EntityTypeConfig>
-     */
-    private function getEntityTypes(): array
-    {
-        if (!empty($this->entityTypesCache)) {
-            return $this->entityTypesCache;
-        }
-
-        $allMetadata = $this->em->getMetadataFactory()->getAllMetadata();
-
-        foreach ($allMetadata as $metadata) {
-            $entityClass = $metadata->getName();
-
-            foreach ($metadata->getAssociationMappings() as $association) {
-                if (
-                    ClassMetadataInfo::MANY_TO_MANY === $association['type']
-                    && Project::class === $association['targetEntity']
-                ) {
-                    $shortName  = $metadata->getReflectionClass()->getShortName();
-                    $entityType = $this->normalizeEntityType(strtolower($shortName));
-
-                    $this->entityTypesCache[$entityType] = new EntityTypeConfig(
-                        entityClass: $entityClass,
-                        label: $this->getEntityLabel($entityType),
-                        model: $this->findModelForEntityType($entityType),
-                    );
-
-                    break;
-                }
-            }
-        }
-
-        // Sort entity types alphabetically by label
-        uasort($this->entityTypesCache, fn (EntityTypeConfig $a, EntityTypeConfig $b) => strcasecmp($a->label, $b->label));
-
-        return $this->entityTypesCache;
-    }
-
-    /**
      * Get entity types filtered by user view permissions.
      *
      * @return array<string, EntityTypeConfig>
@@ -109,29 +70,6 @@ class ProjectEntityLoaderService
     public function getEntityTypesWithEditPermissions(): array
     {
         return $this->filterEntityTypesByPermission('edit');
-    }
-
-    /**
-     * Filter entity types by permission type.
-     *
-     * @return array<string, EntityTypeConfig>
-     */
-    private function filterEntityTypesByPermission(string $permissionType): array
-    {
-        $allEntityTypes     = $this->getEntityTypes();
-        $allowedEntityTypes = [];
-
-        foreach ($allEntityTypes as $entityType => $config) {
-            $hasPermission = 'view' === $permissionType
-                ? $this->hasViewPermissionForEntityType($config)
-                : $this->hasEditPermissionForEntityType($config);
-
-            if ($hasPermission) {
-                $allowedEntityTypes[$entityType] = $config;
-            }
-        }
-
-        return $allowedEntityTypes;
     }
 
     /**
@@ -197,6 +135,96 @@ class ProjectEntityLoaderService
     }
 
     /**
+     * Check if user has view permission for entity type config.
+     */
+    public function hasViewPermissionForEntityType(EntityTypeConfig $config): bool
+    {
+        $permissionBase = $config->model->getPermissionBase();
+        $permissions    = [
+            $permissionBase.':viewown',
+            $permissionBase.':viewother',
+        ];
+
+        return $this->security->isGranted($permissions, 'MATCH_ONE');
+    }
+
+    /**
+     * Check if user has edit permission for entity type config.
+     */
+    public function hasEditPermissionForEntityType(EntityTypeConfig $config): bool
+    {
+        $permissionBase = $config->model->getPermissionBase();
+        $permissions    = [
+            $permissionBase.':editown',
+            $permissionBase.':editother',
+        ];
+
+        return $this->security->isGranted($permissions, 'MATCH_ONE');
+    }
+
+    /**
+     * @return array<string, EntityTypeConfig>
+     */
+    private function getEntityTypes(): array
+    {
+        if (!empty($this->entityTypesCache)) {
+            return $this->entityTypesCache;
+        }
+
+        $allMetadata = $this->em->getMetadataFactory()->getAllMetadata();
+
+        foreach ($allMetadata as $metadata) {
+            $entityClass = $metadata->getName();
+
+            foreach ($metadata->getAssociationMappings() as $association) {
+                if (
+                    ClassMetadataInfo::MANY_TO_MANY === $association['type']
+                    && Project::class === $association['targetEntity']
+                ) {
+                    $shortName  = $metadata->getReflectionClass()->getShortName();
+                    $entityType = $this->normalizeEntityType(strtolower($shortName));
+
+                    $this->entityTypesCache[$entityType] = new EntityTypeConfig(
+                        entityClass: $entityClass,
+                        label: $this->getEntityLabel($entityType),
+                        model: $this->findModelForEntityType($entityType),
+                    );
+
+                    break;
+                }
+            }
+        }
+
+        // Sort entity types alphabetically by label
+        uasort($this->entityTypesCache, fn (EntityTypeConfig $a, EntityTypeConfig $b) => strcasecmp($a->label, $b->label));
+
+        return $this->entityTypesCache;
+    }
+
+    /**
+     * Filter entity types by permission type.
+     *
+     * @return array<string, EntityTypeConfig>
+     */
+    private function filterEntityTypesByPermission(string $permissionType): array
+    {
+        $allEntityTypes     = $this->getEntityTypes();
+        $allowedEntityTypes = [];
+
+        foreach ($allEntityTypes as $entityType => $config) {
+            $hasPermission = 'view' === $permissionType
+                ? $this->hasViewPermissionForEntityType($config)
+                : $this->hasEditPermissionForEntityType($config);
+
+            if ($hasPermission) {
+                $allowedEntityTypes[$entityType] = $config;
+            }
+        }
+
+        return $allowedEntityTypes;
+    }
+
+    /**
      * Get the label column name for an entity type.
      */
     private function getEntityLabelColumn(string $entityType): string
@@ -234,34 +262,6 @@ class ProjectEntityLoaderService
 
         // Return the actual translation
         return $translated;
-    }
-
-    /**
-     * Check if user has view permission for entity type config.
-     */
-    public function hasViewPermissionForEntityType(EntityTypeConfig $config): bool
-    {
-        $permissionBase = $config->model->getPermissionBase();
-        $permissions    = [
-            $permissionBase.':viewown',
-            $permissionBase.':viewother',
-        ];
-
-        return $this->security->isGranted($permissions, 'MATCH_ONE');
-    }
-
-    /**
-     * Check if user has edit permission for entity type config.
-     */
-    public function hasEditPermissionForEntityType(EntityTypeConfig $config): bool
-    {
-        $permissionBase = $config->model->getPermissionBase();
-        $permissions    = [
-            $permissionBase.':editown',
-            $permissionBase.':editother',
-        ];
-
-        return $this->security->isGranted($permissions, 'MATCH_ONE');
     }
 
     /**
