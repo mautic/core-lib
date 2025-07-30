@@ -423,6 +423,11 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         if ($this->twig->getLoader()->exists('@themes/'.$theme.'/html/MauticFormBundle/Builder/_style.html.twig')) {
             $styleToRender = '@themes/'.$theme.'/html/MauticFormBundle/Builder/_style.html.twig';
         }
+
+        if ($this->twig->getLoader()->exists('@themes/'.$theme.'/html/MauticFormBundle/Builder/style.html.twig')) {
+            $styleToRender = '@themes/'.$theme.'/html/MauticFormBundle/Builder/style.html.twig';
+        }
+
         if ($this->twig->getLoader()->exists('@themes/'.$theme.'/html/MauticFormBundle/Builder/form.html.twig')) {
             $formToRender = '@themes/'.$theme.'/html/MauticFormBundle/Builder/form.html.twig';
         }
