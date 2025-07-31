@@ -175,11 +175,11 @@ class MessageQueueModel extends FormModel
         return true;
     }
 
-    public function sendMessages($channel = null, $channelId = null): int
+    public function sendMessages($channel = null, $channelId = null, $batchSize = 50): int
     {
         // Note when the process started for batch purposes
         $processStarted = new \DateTime();
-        $limit          = 50;
+        $limit          = $batchSize;
         $counter        = 0;
 
         foreach ($this->getRepository()->getQueuedMessages($limit, $processStarted, $channel, $channelId) as $queue) {
