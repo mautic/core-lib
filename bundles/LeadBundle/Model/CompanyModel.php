@@ -1012,15 +1012,10 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
      */
     private function getCleanedFieldData(mixed $entityField, array $fieldData): array
     {
-        if ('html' == $entityField['type']) {
-            $fieldData[$entityField['alias']] = htmlspecialchars(
-                $fieldData[$entityField['alias']],
-                ENT_QUOTES,
-                'UTF-8'
-            );
-        } else {
-            $fieldData[$entityField['alias']] = InputHelper::_($fieldData[$entityField['alias']], 'string');
-        }
+        $fieldData[$entityField['alias']] = InputHelper::_(
+            $fieldData[$entityField['alias']],
+            'html' === $entityField['type'] ? 'html' : 'string'
+        );
 
         return $fieldData;
     }

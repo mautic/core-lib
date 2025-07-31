@@ -2431,11 +2431,10 @@ class LeadModel extends FormModel
             if (array_key_exists($importField, $data) && !is_null($data[$importField]) && '' != $data[$importField]) {
                 $fieldEntity = $this->leadFieldModel->getEntityByAlias($leadField);
 
-                if ($fieldEntity instanceof LeadField && 'html' == $fieldEntity->getType()) {
-                    $fieldData[$leadField] = htmlspecialchars($data[$importField], ENT_QUOTES, 'UTF-8');
-                    continue;
-                }
-                $fieldData[$leadField] = InputHelper::_($data[$importField], 'string');
+                $fieldData[$leadField] = InputHelper::_(
+                    $data[$importField],
+                    $fieldEntity instanceof LeadField && 'html' === $fieldEntity->getType() ? 'html' : 'string'
+                );
             }
         }
 
