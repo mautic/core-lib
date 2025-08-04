@@ -3695,11 +3695,12 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
   outline: 2px var(--outline-style) var(--focus);
 }
 .btn-link {
+  --btn-height: auto;
   font-weight: normal;
   color: var(--link-primary);
-  height: auto;
-  line-height: normal;
-  padding: 0;
+  height: var(--btn-height);
+  line-height: var(--btn-line-height);
+  padding: 0 var(--spacing-05);
 }
 .btn-link:hover,
 .btn-link:focus {
