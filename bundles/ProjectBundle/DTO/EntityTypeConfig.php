@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\ProjectBundle\DTO;
 
-readonly class EntityTypeConfig
+final readonly class EntityTypeConfig
 {
     public function __construct(
         public string $entityClass,
