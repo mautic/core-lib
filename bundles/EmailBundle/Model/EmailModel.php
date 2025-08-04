@@ -2129,6 +2129,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     }
 
     /**
+     * @param array<string,mixed> $options
+     *
      * @return array<string,array<string,string>>
      */
     public function getLookupResultsWithIdName(
