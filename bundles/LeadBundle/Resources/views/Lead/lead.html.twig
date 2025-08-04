@@ -20,10 +20,9 @@
 
 {% block headerTitle %}
     {{ avatar }}<div class="pull-left mt-5">
-    <span class="span-block">{{ leadName|purify }}</span><br>
-    {{ customContent('lead.detail.name', _context) }}
-    <span class="span-block small ml-sm">{{ lead.secondaryIdentifier|purify }}</span>
+    <span class="span-block">{{ leadName|purify }}</span><span class="span-block small ml-sm">{{ lead.secondaryIdentifier|purify }}</span>
     </div>
+    <div class="small" style="clear: left;">{{ customContent('lead.name.after', _context) }}</div>
 {% endblock %}
 
 {% block preHeader %}

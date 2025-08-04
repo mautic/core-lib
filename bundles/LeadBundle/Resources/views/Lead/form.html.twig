@@ -13,8 +13,8 @@
       {% set primaryIdentifier = lead.isAnonymous ? lead.primaryIdentifier|trans : lead.primaryIdentifier %}
     {{ 'mautic.lead.lead.header.edit'|trans({
         '%name%': primaryIdentifier,
-    }) }}<br>
-      {{ customContent('lead.form.name', _context) }}
+    }) }}
+      <span class="small">{{ customContent('lead.name.after', _context) }}</span>
   {% else %}
     {{ 'mautic.lead.lead.header.new'|trans }}
   {% endif %}
