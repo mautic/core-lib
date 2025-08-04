@@ -40,16 +40,9 @@
         {% set lastDate = null %}
         {% for event in events.events %}
             {% set eventDate = dateToDate(event.timestamp, 'local', 'Y-m-d H:i:s') %}
-            {% set todayDate = "now"|date('Y-m-d') %}
-            {% set yesterdayDate = "yesterday"|date('Y-m-d') %}
             
             {% if lastDate != eventDate %}
-                {% set dateLabel = 'Today' %}
-                {% if eventDate == yesterdayDate %}
-                    {% set dateLabel = 'Yesterday' %}
-                {% elseif eventDate != todayDate %}
-                    {% set dateLabel = event.timestamp|date('j. m. Y') %}
-                {% endif %}
+                {% set dateLabel = dateToTextShort(event.timestamp, 'local', 'Y-m-d H:i:s') %}
                 
                 <tr class="timeline-date-header">
                     <td colspan="5" class=text-center>
