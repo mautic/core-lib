@@ -488,7 +488,7 @@ final class ProjectController extends AbstractFormController
         /** @var ?Project $project */
         $project = $projectModel->getEntity($projectId);
         if (!$project instanceof Project) {
-            return $this->accessDenied();
+            return $this->notFound();
         }
 
         // Get available entity types
