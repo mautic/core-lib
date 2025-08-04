@@ -2129,8 +2129,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     }
 
     /**
-     * @param string|array<string>       $filter
-     * @param array<string,mixed> $options
+     * @param string|array<string> $filter
+     * @param array<string,mixed>  $options
      *
      * @return array<string,array<string,string>>
      */
