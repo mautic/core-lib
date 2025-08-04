@@ -14,10 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class ProjectListEntityType extends AbstractType
 {
-    public function __construct()
-    {
-    }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
