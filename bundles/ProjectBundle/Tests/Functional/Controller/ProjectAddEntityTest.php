@@ -58,7 +58,7 @@ final class ProjectAddEntityTest extends MauticMysqlTestCase
         $this->client->request('GET', '/s/projects/selectEntityType/99999');
         $response = $this->client->getResponse();
 
-        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode());
     }
 
     public function testAddEntityActionGetRequest(): void
@@ -149,7 +149,7 @@ final class ProjectAddEntityTest extends MauticMysqlTestCase
         $this->client->request('GET', '/s/projects/addEntity/99999?entityType=email');
         $response = $this->client->getResponse();
 
-        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame(404, $response->getStatusCode());
     }
 
     public function testAddEntityActionWithoutPermission(): void
