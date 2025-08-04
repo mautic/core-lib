@@ -13,7 +13,7 @@ use Mautic\ProjectBundle\DTO\EntityTypeConfig;
 use Mautic\ProjectBundle\Entity\Project;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ProjectEntityLoaderService
+final class ProjectEntityLoaderService
 {
     /** @var array<string, EntityTypeConfig> */
     private array $entityTypesCache = [];
