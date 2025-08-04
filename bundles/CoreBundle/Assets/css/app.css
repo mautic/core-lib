@@ -3695,22 +3695,16 @@ fieldset[disabled] .btn-ghost.btn-icon.focus i {
   outline: 2px var(--outline-style) var(--focus);
 }
 .btn-link {
+  --btn-height: auto;
   font-weight: normal;
   color: var(--link-primary);
-  gap: var(--spacing-02);
-  height: auto;
-  line-height: normal;
-  padding: 0;
-  outline: 2px var(--outline-style) transparent;
-  outline-offset: -2px;
+  height: var(--btn-height);
+  line-height: var(--btn-line-height);
+  padding: 0 var(--spacing-05);
 }
-.btn-link:hover {
-  outline: 2px var(--outline-style) transparent;
-}
-.btn-link:focus,
-.btn-link.focus,
-.btn-link:focus-visible {
-  outline: 2px var(--outline-style) var(--focus);
+.btn-link:hover,
+.btn-link:focus {
+  text-decoration: none;
 }
 .btn-link span {
   position: relative;
