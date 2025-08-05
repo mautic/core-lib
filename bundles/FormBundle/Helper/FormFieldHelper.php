@@ -210,8 +210,8 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 break;
             case 'rating':
                 $value = $this->sanitizeValue($value);
-                if (preg_match('/<input(.*?)id="mauticform_rating_radio_'.$alias.'(.*?)"(.*?)value="'.$value.'"(.*?)\/?>/i', $formHtml, $match)) {
-                    $replace  = '<input'.$match[1].'id="mauticform_rating_radio_'.$alias.$match[2].'"'.$match[3].'value="'.$value.'"'.$match[4].' checked />';
+                if (preg_match('/<input(.*?)id="mauticform_radiogrp_radio_'.$alias.'(.*?)"(.*?)value="'.$value.'"(.*?)\/?>/i', $formHtml, $match)) {
+                    $replace  = '<input'.$match[1].'id="mauticform_radiogrp_radio_'.$alias.$match[2].'"'.$match[3].'value="'.$value.'"'.$match[4].' checked />';
                     $formHtml = str_replace($match[0], $replace, $formHtml);
                 }
                 break;
