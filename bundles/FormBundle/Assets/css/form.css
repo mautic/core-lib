@@ -248,3 +248,23 @@ input[type="radio"].mauticform-radiogrp-radio {
 .mauticform-pagebreak-wrapper .mauticform-button-wrapper {
     display: inline;
 }
+/* Rating field styles */
+.mauticform-rating .mauticform-radiogrp-row {
+    direction: rtl;
+    display: inline-flex;
+}
+.mauticform-rating .mauticform-radiogrp-radio {
+    display: none;
+}
+.mauticform-rating .mauticform-radiogrp-label {
+    font-size: 1.5em;
+    color: #ccc;
+    cursor: pointer;
+    padding: 0 2px;
+}
+.mauticform-rating .mauticform-radiogrp-radio:checked ~ label.mauticform-radiogrp-label,
+.mauticform-rating .mauticform-radiogrp-label:hover,
+.mauticform-rating .mauticform-radiogrp-label:hover ~ label.mauticform-radiogrp-label {
+    color: #f5b301;
+}
+

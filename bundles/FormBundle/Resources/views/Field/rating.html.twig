@@ -1,0 +1,19 @@
+{# Rating field rendering using stars #}
+{% set type = 'radio' %}
+{% set max = field.properties.star_count|default(5) %}
+{% set list = {} %}
+{% for i in range(max, 1, -1) %}
+  {% set list = list|merge({ (i): '★' }) %}
+{% endfor %}
+{{- include('@MauticForm/Field/group.html.twig', {
+    'field': field,
+    'fields': fields|default([]),
+    'inForm': inForm|default(false),
+    'id': id,
+    'formId': formId|default(0),
+    'formName': formName|default(''),
+    'type': type,
+    'list': list,
+    'containerClass': 'rating',
+    'mappedFields': mappedFields|default([]),
+}) -}}

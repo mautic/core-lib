@@ -569,6 +569,16 @@ class FieldType extends AbstractType
                         ]
                     );
                     break;
+                case 'rating':
+                    $builder->add(
+                        'properties',
+                        FormFieldRatingType::class,
+                        [
+                            'label' => false,
+                            'data'  => $propertiesData,
+                        ]
+                    );
+                    break;
                 case 'freetext':
                     $builder->add(
                         'properties',
