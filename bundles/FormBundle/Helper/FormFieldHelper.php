@@ -197,15 +197,20 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 foreach ($value as $val) {
                     $val          = $this->sanitizeValue($val);
                     $escapedAlias = preg_quote($alias, '/');
-                    $escapedVal   = preg_quote($val, '/');
-                    if (preg_match(
-                        '/<input(.*?)id="mauticform_checkboxgrp_checkbox_'.$escapedAlias.'(.*?)"(.*?)value="'.$escapedVal.'"'.$inputClosePattern.'/i',
+                    if (preg_match_all(
+                        '/<input(.*?)id="mauticform_checkboxgrp_checkbox_'.$escapedAlias.'(.*?)"(.*?)value="([^"]*)"'.$inputClosePattern.'/i',
                         $formHtml,
-                        $match
+                        $matches,
+                        PREG_SET_ORDER
                     )) {
-                        $replace = '<input'.$match[1].'id="mauticform_checkboxgrp_checkbox_'.$alias.$match[2].'"'.$match[3].'value="'.$val.'"'
-                            .$match[4].' checked />';
-                        $formHtml = str_replace($match[0], $replace, $formHtml);
+                        foreach ($matches as $match) {
+                            if ($match[4] === $val) {
+                                $replace = '<input'.$match[1].'id="mauticform_checkboxgrp_checkbox_'.$alias.$match[2].'"'.$match[3].'value="'.$val.'"'
+                                    .$match[5].' checked />';
+                                $formHtml = str_replace($match[0], $replace, $formHtml);
+                                break;
+                            }
+                        }
                     }
                 }
                 break;
@@ -213,11 +218,16 @@ class FormFieldHelper extends AbstractFormFieldHelper
             case 'rating':
                 $value        = $this->sanitizeValue($value);
                 $escapedAlias = preg_quote($alias, '/');
-                $escapedValue = preg_quote($value, '/');
-                if (preg_match('/<input(.*?)id="mauticform_radiogrp_radio_'.$escapedAlias.'(.*?)"(.*?)value="'.$escapedValue.'"'.$inputClosePattern.'/i', $formHtml, $match)) {
-                    $replace = '<input'.$match[1].'id="mauticform_radiogrp_radio_'.$alias.$match[2].'"'.$match[3].'value="'.$value.'"'.$match[4]
-                        .' checked />';
-                    $formHtml = str_replace($match[0], $replace, $formHtml);
+                // Use a safer approach: find all radio inputs for this alias and check their values
+                if (preg_match_all('/<input(.*?)id="mauticform_radiogrp_radio_'.$escapedAlias.'(.*?)"(.*?)value="([^"]*)"'.$inputClosePattern.'/i', $formHtml, $matches, PREG_SET_ORDER)) {
+                    foreach ($matches as $match) {
+                        if ($match[4] === $value) {
+                            $replace = '<input'.$match[1].'id="mauticform_radiogrp_radio_'.$alias.$match[2].'"'.$match[3].'value="'.$value.'"'.$match[5]
+                                .' checked />';
+                            $formHtml = str_replace($match[0], $replace, $formHtml);
+                            break;
+                        }
+                    }
                 }
                 break;
             case 'select':
