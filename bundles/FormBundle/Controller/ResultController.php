@@ -171,6 +171,7 @@ class ResultController extends CommonFormController
                         $form->getCreatedBy()
                     ),
                     'enableExportPermission'=> $this->security->isAdmin() || $this->security->isGranted('form:export:enable', 'MATCH_ONE'),
+                    'security'              => $this->security,
                 ],
                 'contentTemplate' => '@MauticForm/Result/list.html.twig',
                 'passthroughVars' => [
