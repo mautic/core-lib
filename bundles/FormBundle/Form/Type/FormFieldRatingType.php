@@ -7,6 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Rating field properties form.
@@ -15,6 +16,13 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class FormFieldRatingType extends AbstractType
 {
+    private TranslatorInterface $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add(
@@ -40,18 +48,14 @@ class FormFieldRatingType extends AbstractType
                 'label'      => 'mautic.form.field.form.rating_symbol',
                 'label_attr' => ['class' => 'control-label'],
                 'choices'    => [
-                    '✦ Star (sparkle)'    => '✦',
-                    '★ Star (filled)'     => '★',
-                    '☆ Star (outline)'    => '☆',
-                    '♡ Heart'             => '♡',
-                    '✧ Star (diamond)'    => '✧',
-                    '● Circle (filled)'   => '●',
-                    '○ Circle (outline)'  => '○',
-                    '◆ Diamond (filled)'  => '◆',
-                    '◇ Diamond (outline)' => '◇',
-                    '⍟ Star (asterisk)'   => '⍟',
-                    '✪ Star (filled)'     => '✪',
-                    '🞵 Square'            => '🞵',
+                    '★ '.$this->translator->trans('mautic.form.field.form.rating_symbol.star_filled')     => '★',
+                    '✪ '.$this->translator->trans('mautic.form.field.form.rating_symbol.star_filled_alt') => '✪',
+                    '⍟ '.$this->translator->trans('mautic.form.field.form.rating_symbol.asterisk')        => '⍟',
+                    '🞵 '.$this->translator->trans('mautic.form.field.form.rating_symbol.square')          => '🞵',
+                    '✦ '.$this->translator->trans('mautic.form.field.form.rating_symbol.sparkle')         => '✦',
+                    '♡ '.$this->translator->trans('mautic.form.field.form.rating_symbol.heart')           => '♡',
+                    '● '.$this->translator->trans('mautic.form.field.form.rating_symbol.circle_filled')   => '●',
+                    '◆ '.$this->translator->trans('mautic.form.field.form.rating_symbol.diamond_filled')  => '◆',
                 ],
                 'attr'       => [
                     'class'   => 'form-control',
