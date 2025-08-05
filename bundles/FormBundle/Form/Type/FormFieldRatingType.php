@@ -49,6 +49,24 @@ class FormFieldRatingType extends AbstractType
                 'required' => false,
             ]
         );
+
+        $builder->add(
+            'base_color',
+            TextType::class,
+            [
+                'label'      => 'mautic.form.field.form.rating_base_color',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'        => 'form-control minicolors-input',
+                    'tooltip'      => 'mautic.form.field.help.rating_base_color',
+                    'data-toggle'  => 'color',
+                    'autocomplete' => 'false',
+                    'size'         => '7',
+                ],
+                'data'     => $options['data']['base_color'] ?? '#cccccc',
+                'required' => false,
+            ]
+        );
     }
 
     public function getBlockPrefix(): string

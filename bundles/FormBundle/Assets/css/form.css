@@ -258,7 +258,7 @@ input[type="radio"].mauticform-radiogrp-radio {
 }
 .mauticform-rating .mauticform-rating-label {
     font-size: 1.5em;
-    color: #ccc;
+    color: var(--base-color, #ccc);
     cursor: pointer;
     padding: 0 2px;
 }

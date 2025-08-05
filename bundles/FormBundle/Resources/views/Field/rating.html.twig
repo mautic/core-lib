@@ -76,6 +76,7 @@
 {% endif %}
 
 {% set starColor = field.properties.star_color|default('f5b301') %}
+{% set baseColor = field.properties.base_color|default('cccccc') %}
 {% set containerAttributes = containerAttributes|merge({
         'id': 'mauticform' ~ formName|default('') ~ '_' ~ id,
         'class': containerAttributes.class|default([])|merge([
@@ -83,7 +84,7 @@
           'mauticform-' ~ containerClass,
           'mauticform-field-' ~ order,
         ]),
-        'style': 'width: ' ~ field.fieldWidth ~ '; --star-color: #' ~ starColor
+        'style': 'width: ' ~ field.fieldWidth ~ '; --star-color: #' ~ starColor ~ '; --base-color: #' ~ baseColor
 }) %}
 {% if field.parent and fields[field.parent] is defined %}
   {% set values = field.conditions.values|join('|') %}
