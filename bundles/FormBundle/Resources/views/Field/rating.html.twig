@@ -2,6 +2,7 @@
 {% set max = field.properties.star_count|default(5) %}
 {% set starColor = field.properties.star_color|default('f5b301') %}
 {% set baseColor = field.properties.base_color|default('cccccc') %}
+{% set symbol = field.properties.symbol|default('★') %}
 
 {# Essential variables only #}
 {% set containerType = 'rating' %}
@@ -79,7 +80,7 @@
       {% endif %}
 
       <input {% for attrName, attrValue in listInputAttributes %}{{ attrName }}="{% if attrValue is iterable %}{{ attrValue|join(' ') }}{% else %}{{ attrValue }}{% endif %}"{% endfor %} />
-      <label class="mauticform-rating-label" id="mauticform_{{ containerType }}_label_{{ id }}" for="mauticform_{{ containerType }}_{{ type }}_{{ id }}">★</label>
+      <label class="mauticform-rating-label" id="mauticform_{{ containerType }}_label_{{ id }}" for="mauticform_{{ containerType }}_{{ type }}_{{ id }}">{{ symbol }}</label>
     {% endfor %}
   </div>
 

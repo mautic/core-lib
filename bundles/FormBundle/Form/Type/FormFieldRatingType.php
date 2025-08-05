@@ -3,6 +3,7 @@
 namespace Mautic\FormBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,6 +29,35 @@ class FormFieldRatingType extends AbstractType
                     'min'     => 1,
                 ],
                 'data'     => $options['data']['star_count'] ?? 5,
+                'required' => false,
+            ]
+        );
+
+        $builder->add(
+            'symbol',
+            ChoiceType::class,
+            [
+                'label'      => 'mautic.form.field.form.rating_symbol',
+                'label_attr' => ['class' => 'control-label'],
+                'choices'    => [
+                    '✦ Star (sparkle)'    => '✦',
+                    '★ Star (filled)'     => '★',
+                    '☆ Star (outline)'    => '☆',
+                    '♡ Heart'             => '♡',
+                    '✧ Star (diamond)'    => '✧',
+                    '● Circle (filled)'   => '●',
+                    '○ Circle (outline)'  => '○',
+                    '◆ Diamond (filled)'  => '◆',
+                    '◇ Diamond (outline)' => '◇',
+                    '⍟ Star (asterisk)'   => '⍟',
+                    '✪ Star (filled)'     => '✪',
+                    '🞵 Square'            => '🞵',
+                ],
+                'attr'       => [
+                    'class'   => 'form-control',
+                    'tooltip' => 'mautic.form.field.help.rating_symbol',
+                ],
+                'data'     => $options['data']['symbol'] ?? '★',
                 'required' => false,
             ]
         );
