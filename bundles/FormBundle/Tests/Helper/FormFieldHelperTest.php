@@ -171,7 +171,12 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(6, $starCount, 'HTML should contain exactly 6 star symbols');
     }
 
-    private function simulateFormFieldParseList($parseList)
+    /**
+     * @param array<int, string> $parseList
+     *
+     * @return array<int, array{value: int, label: string}>
+     */
+    private function simulateFormFieldParseList(array $parseList): array
     {
         // Simulate the formFieldParseList function behavior
         $list = [];
@@ -185,7 +190,10 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         return $list;
     }
 
-    private function simulateTemplateRendering($list)
+    /**
+     * @param array<int, array{value: int, label: string}> $list
+     */
+    private function simulateTemplateRendering(array $list): string
     {
         $html = '<div class="mauticform-row mauticform-rating">';
         $html .= '<div class="mauticform-radiogrp-row">';
@@ -285,7 +293,7 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $loopIndex = 0;
 
         foreach ($list as $listValue => $listLabel) {
-            $id = $field->getAlias().'_'.preg_replace('/[^a-zA-Z0-9]/', '', $listValue).$loopIndex;
+            $id = $field->getAlias().'_'.preg_replace('/[^a-zA-Z0-9]/', '', (string) $listValue).$loopIndex;
             $html .= "<input type=\"radio\" value=\"$listValue\" id=\"$id\">";
             $html .= "<label>$listLabel</label>";
             ++$loopIndex;
@@ -329,7 +337,7 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
             $listValue           = $i;
             $listLabel           = '★';
             $id                  = $field->getAlias().'_'.$listValue. 0; // Using 0 as loop.index0
-            $checkboxBrackets    = ('checkbox' == $type) ? '[]' : '';
+            $checkboxBrackets    = ''; // For radio buttons, no brackets needed
             $listInputAttributes = [
                 'name'  => 'mauticform['.$field->getAlias().']'.$checkboxBrackets,
                 'id'    => 'mauticform_'.$containerType.'_'.$type.'_'.$id,
