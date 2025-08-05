@@ -101,13 +101,15 @@ class ContactSegmentFilterCrate
     public function getFilter()
     {
         $excludeTypecastOperators = [
-            OperatorOptions::IN,
-            OperatorOptions::NOT_IN,
+            OperatorOptions::INCLUDING_ANY,
+            OperatorOptions::EXCLUDING_ANY,
+            OperatorOptions::INCLUDING_ALL,
+            OperatorOptions::EXCLUDING_ALL,
             OperatorOptions::REGEXP,
             OperatorOptions::NOT_REGEXP,
         ];
 
-        if (!in_array($this->operator, $excludeTypecastOperators)) {
+        if (!in_array($this->operator, $excludeTypecastOperators, true)) {
             switch ($this->getType()) {
                 case 'number':
                     return (float) $this->filter;
