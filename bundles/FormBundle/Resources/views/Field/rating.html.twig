@@ -140,7 +140,7 @@
   {% if field.helpMessage is not empty %}<span class="mauticform-helpmessage">{{ field.helpMessage|purify }}</span>{% endif %}
 
   <div class="mauticform-radiogrp-row">
-    {% for i in range(1, max) %}
+    {% for i in range(max, 1, -1) %}
       {% set id = field.alias ~ '_' ~ i ~ loop.index0 %}
       {% set checkboxBrackets = ('checkbox' == type) ? '[]' : '' %}
       {% set listInputAttributes = inputAttributes|merge({

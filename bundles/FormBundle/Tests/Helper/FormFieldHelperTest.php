@@ -295,13 +295,12 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $radioCount = substr_count($html, 'type="radio"');
         $this->assertEquals(6, $radioCount, 'Template iteration should generate 6 radio inputs');
 
-        // Check that we have the correct values
-        $this->assertStringContainsString('value="1"', $html, 'Should have radio with value 1');
-        $this->assertStringContainsString('value="2"', $html, 'Should have radio with value 2');
-        $this->assertStringContainsString('value="3"', $html, 'Should have radio with value 3');
-        $this->assertStringContainsString('value="4"', $html, 'Should have radio with value 4');
-        $this->assertStringContainsString('value="5"', $html, 'Should have radio with value 5');
         $this->assertStringContainsString('value="6"', $html, 'Should have radio with value 6');
+        $this->assertStringContainsString('value="5"', $html, 'Should have radio with value 5');
+        $this->assertStringContainsString('value="4"', $html, 'Should have radio with value 4');
+        $this->assertStringContainsString('value="3"', $html, 'Should have radio with value 3');
+        $this->assertStringContainsString('value="2"', $html, 'Should have radio with value 2');
+        $this->assertStringContainsString('value="1"', $html, 'Should have radio with value 1');
     }
 
     public function testActualTemplateLogic(): void
@@ -316,14 +315,17 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
             $list[$i] = '★';
         }
 
-        // Simulate the exact template logic
+        // Simulate the exact template logic (now in descending order)
         $containerType = 'radiogrp';
         $type = 'radio';
         $html = '';
 
-        // Simulate the template's foreach loop
-        foreach ($list as $listValue => $listLabel) {
-            $id = $field->getAlias() . '_' . preg_replace('/[^a-zA-Z0-9]/', '', $listValue) . 0; // Using 0 as loop.index0
+        // Simulate the template's foreach loop (now in descending order: 6,5,4,3,2,1)
+        $max = $field->getProperties()['star_count'] ?? 5;
+        for ($i = $max; $i >= 1; $i--) {
+            $listValue = $i;
+            $listLabel = '★';
+            $id = $field->getAlias() . '_' . $listValue . 0; // Using 0 as loop.index0
             $checkboxBrackets = ('checkbox' == $type) ? '[]' : '';
             $listInputAttributes = [
                 'name' => 'mauticform[' . $field->getAlias() . ']' . $checkboxBrackets,
@@ -348,13 +350,12 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $radioCount = substr_count($html, 'type="radio"');
         $this->assertEquals(6, $radioCount, 'Template logic should generate 6 radio inputs');
 
-        // Check that we have the correct values
-        $this->assertStringContainsString('value="1"', $html, 'Should have radio with value 1');
-        $this->assertStringContainsString('value="2"', $html, 'Should have radio with value 2');
-        $this->assertStringContainsString('value="3"', $html, 'Should have radio with value 3');
-        $this->assertStringContainsString('value="4"', $html, 'Should have radio with value 4');
-        $this->assertStringContainsString('value="5"', $html, 'Should have radio with value 5');
         $this->assertStringContainsString('value="6"', $html, 'Should have radio with value 6');
+        $this->assertStringContainsString('value="5"', $html, 'Should have radio with value 5');
+        $this->assertStringContainsString('value="4"', $html, 'Should have radio with value 4');
+        $this->assertStringContainsString('value="3"', $html, 'Should have radio with value 3');
+        $this->assertStringContainsString('value="2"', $html, 'Should have radio with value 2');
+        $this->assertStringContainsString('value="1"', $html, 'Should have radio with value 1');
     }
 
     /**
