@@ -207,21 +207,13 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 }
                 break;
             case 'radiogrp':
+            case 'rating':
                 $value        = $this->sanitizeValue($value);
                 $escapedAlias = preg_quote($alias, '/');
                 $escapedValue = preg_quote($value, '/');
                 if (preg_match('/<input(.*?)id="mauticform_radiogrp_radio_'.$escapedAlias.'(.*?)"(.*?)value="'.$escapedValue.'"(.*?)\/?>/i', $formHtml, $match)) {
                     $replace = '<input'.$match[1].'id="mauticform_radiogrp_radio_'.$alias.$match[2].'"'.$match[3].'value="'.$value.'"'.$match[4]
                         .' checked />';
-                    $formHtml = str_replace($match[0], $replace, $formHtml);
-                }
-                break;
-            case 'rating':
-                $value        = $this->sanitizeValue($value);
-                $escapedAlias = preg_quote($alias, '/');
-                $escapedValue = preg_quote($value, '/');
-                if (preg_match('/<input(.*?)id="mauticform_radiogrp_radio_'.$escapedAlias.'(.*?)"(.*?)value="'.$escapedValue.'"(.*?)\/?>/i', $formHtml, $match)) {
-                    $replace  = '<input'.$match[1].'id="mauticform_radiogrp_radio_'.$alias.$match[2].'"'.$match[3].'value="'.$value.'"'.$match[4].' checked />';
                     $formHtml = str_replace($match[0], $replace, $formHtml);
                 }
                 break;

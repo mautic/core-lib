@@ -614,16 +614,9 @@ var t,e;t=this,e=function(){"use strict";function t(t,e){var n=Object.keys(t);if
                         if (typeof theForm.elements[name] != 'undefined') {
                             switch (field.type) {
                                 case 'radiogrp':
-                                    var elOptions = theForm.elements[name];
-                                    valid = validator.validateOptions(elOptions);
-                                    break;
                                 case 'rating':
-                                    var elOptions = theForm.elements[name];
-                                    valid = validator.validateOptions(elOptions);
-                                    break;
-
                                 case 'checkboxgrp':
-                                    var elOptions = theForm.elements[name];
+                                    const elOptions = theForm.elements[name];
                                     valid = validator.validateOptions(elOptions);
                                     break;
 

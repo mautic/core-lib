@@ -116,9 +116,9 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $field->setProperties(['star_count' => 6]);
 
         // Test the rating template logic directly
-        $max = $field->getProperties()['star_count'] ?? 5;
+        $max  = $field->getProperties()['star_count'] ?? 5;
         $list = [];
-        for ($i = 1; $i <= $max; $i++) {
+        for ($i = 1; $i <= $max; ++$i) {
             $list[$i] = '★';
         }
 
@@ -145,26 +145,27 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $field->setProperties(['star_count' => 6]);
 
         // Simulate the template logic step by step
-        $max = $field->getProperties()['star_count'] ?? 5;
+        $max  = $field->getProperties()['star_count'] ?? 5;
         $list = [];
-        for ($i = 1; $i <= $max; $i++) {
+        for ($i = 1; $i <= $max; ++$i) {
             $list[$i] = '★';
         }
 
         // Simulate the formFieldParseList function
-        $parseList = $list;
+        $parseList  = $list;
         $parsedList = $this->simulateFormFieldParseList($parseList);
 
         // Verify the parsed list
         $this->assertEquals(6, count($parsedList), 'Parsed list should have 6 items');
-        
+
         // Simulate the template rendering
-        $html = $this->simulateTemplateRendering($field, $parsedList);
-        
+        $html = $this->simulateTemplateRendering($parsedList);
+
         // Count radio inputs in the HTML
-        $radioCount = substr_count($html, 'type="radio"');
+        $radioType  = 'type="radio"';
+        $radioCount = substr_count($html, $radioType);
         $this->assertEquals(6, $radioCount, 'HTML should contain exactly 6 radio inputs');
-        
+
         // Count star labels
         $starCount = substr_count($html, '★');
         $this->assertEquals(6, $starCount, 'HTML should contain exactly 6 star symbols');
@@ -180,22 +181,23 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
                 'label' => $value,
             ];
         }
+
         return $list;
     }
 
-    private function simulateTemplateRendering($field, $list)
+    private function simulateTemplateRendering($list)
     {
         $html = '<div class="mauticform-row mauticform-rating">';
         $html .= '<div class="mauticform-radiogrp-row">';
-        
+
         foreach ($list as $item) {
-            $html .= '<input type="radio" value="' . $item['value'] . '">';
-            $html .= '<label>' . $item['label'] . '</label>';
+            $html .= '<input type="radio" value="'.$item['value'].'">';
+            $html .= '<label>'.$item['label'].'</label>';
         }
-        
+
         $html .= '</div>';
         $html .= '</div>';
-        
+
         return $html;
     }
 
@@ -205,23 +207,24 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $field->setProperties(['star_count' => 6]);
 
         // Generate the expected list
-        $max = $field->getProperties()['star_count'] ?? 5;
+        $max  = $field->getProperties()['star_count'] ?? 5;
         $list = [];
-        for ($i = 1; $i <= $max; $i++) {
+        for ($i = 1; $i <= $max; ++$i) {
             $list[$i] = '★';
         }
 
         // Simulate the template rendering
-        $html = $this->simulateTemplateRendering($field, $this->simulateFormFieldParseList($list));
+        $html = $this->simulateTemplateRendering($this->simulateFormFieldParseList($list));
 
         // The expected HTML should have 6 radio inputs and 6 star labels
         $expectedRadioCount = 6;
-        $expectedStarCount = 6;
-        $expectedRowCount = 1;
+        $expectedStarCount  = 6;
+        $expectedRowCount   = 1;
 
-        $actualRadioCount = substr_count($html, 'type="radio"');
-        $actualStarCount = substr_count($html, '★');
-        $actualRowCount = substr_count($html, '<div class="mauticform-radiogrp-row">');
+        $radioType        = 'type="radio"';
+        $actualRadioCount = substr_count($html, $radioType);
+        $actualStarCount  = substr_count($html, '★');
+        $actualRowCount   = substr_count($html, '<div class="mauticform-radiogrp-row">');
 
         $this->assertEquals($expectedRadioCount, $actualRadioCount, 'HTML should contain exactly 6 radio inputs');
         $this->assertEquals($expectedStarCount, $actualStarCount, 'HTML should contain exactly 6 star symbols');
@@ -229,7 +232,7 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
 
         // Debug output
         echo "\nExpected HTML structure for rating field with 6 stars:\n";
-        echo $html . "\n";
+        echo $html."\n";
         echo "Radio inputs found: $actualRadioCount\n";
         echo "Star symbols found: $actualStarCount\n";
         echo "Row divs found: $actualRowCount\n";
@@ -241,9 +244,9 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $field->setProperties(['star_count' => 6]);
 
         // Generate the list as the template does
-        $max = $field->getProperties()['star_count'] ?? 5;
+        $max  = $field->getProperties()['star_count'] ?? 5;
         $list = [];
-        for ($i = 1; $i <= $max; $i++) {
+        for ($i = 1; $i <= $max; ++$i) {
             $list[$i] = '★';
         }
 
@@ -257,9 +260,9 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
 
         // The parsed list should have 6 items
         $this->assertEquals(6, count($parsedList), 'Parsed list should have 6 items');
-        
+
         // Each item should have the correct value and label
-        for ($i = 1; $i <= 6; $i++) {
+        for ($i = 1; $i <= 6; ++$i) {
             $this->assertArrayHasKey($i, $parsedList, "Parsed list should have key $i");
             $this->assertEquals('★', $parsedList[$i], "Item $i should have label ★");
         }
@@ -271,25 +274,25 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $field->setProperties(['star_count' => 6]);
 
         // Generate the list as the template does
-        $max = $field->getProperties()['star_count'] ?? 5;
+        $max  = $field->getProperties()['star_count'] ?? 5;
         $list = [];
-        for ($i = 1; $i <= $max; $i++) {
+        for ($i = 1; $i <= $max; ++$i) {
             $list[$i] = '★';
         }
 
         // Simulate the template iteration logic
-        $html = '';
+        $html      = '';
         $loopIndex = 0;
-        
+
         foreach ($list as $listValue => $listLabel) {
-            $id = $field->getAlias() . '_' . preg_replace('/[^a-zA-Z0-9]/', '', $listValue) . $loopIndex;
+            $id = $field->getAlias().'_'.preg_replace('/[^a-zA-Z0-9]/', '', $listValue).$loopIndex;
             $html .= "<input type=\"radio\" value=\"$listValue\" id=\"$id\">";
             $html .= "<label>$listLabel</label>";
-            $loopIndex++;
+            ++$loopIndex;
         }
 
         echo "\nSimulated template iteration output:\n";
-        echo $html . "\n";
+        echo $html."\n";
 
         // Count the radio inputs
         $radioCount = substr_count($html, 'type="radio"');
@@ -309,42 +312,42 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $field->setProperties(['star_count' => 6]);
 
         // Generate the list as the template does
-        $max = $field->getProperties()['star_count'] ?? 5;
+        $max  = $field->getProperties()['star_count'] ?? 5;
         $list = [];
-        for ($i = 1; $i <= $max; $i++) {
+        for ($i = 1; $i <= $max; ++$i) {
             $list[$i] = '★';
         }
 
         // Simulate the exact template logic (now in descending order)
         $containerType = 'radiogrp';
-        $type = 'radio';
-        $html = '';
+        $type          = 'radio';
+        $html          = '';
 
         // Simulate the template's foreach loop (now in descending order: 6,5,4,3,2,1)
         $max = $field->getProperties()['star_count'] ?? 5;
-        for ($i = $max; $i >= 1; $i--) {
-            $listValue = $i;
-            $listLabel = '★';
-            $id = $field->getAlias() . '_' . $listValue . 0; // Using 0 as loop.index0
-            $checkboxBrackets = ('checkbox' == $type) ? '[]' : '';
+        for ($i = $max; $i >= 1; --$i) {
+            $listValue           = $i;
+            $listLabel           = '★';
+            $id                  = $field->getAlias().'_'.$listValue. 0; // Using 0 as loop.index0
+            $checkboxBrackets    = ('checkbox' == $type) ? '[]' : '';
             $listInputAttributes = [
-                'name' => 'mauticform[' . $field->getAlias() . ']' . $checkboxBrackets,
-                'id' => 'mauticform_' . $containerType . '_' . $type . '_' . $id,
-                'type' => $type,
+                'name'  => 'mauticform['.$field->getAlias().']'.$checkboxBrackets,
+                'id'    => 'mauticform_'.$containerType.'_'.$type.'_'.$id,
+                'type'  => $type,
                 'value' => $listValue,
             ];
 
             $html .= '<input ';
             foreach ($listInputAttributes as $attrName => $attrValue) {
-                $html .= $attrName . '="' . $attrValue . '" ';
+                $html .= $attrName.'="'.$attrValue.'" ';
             }
             $html .= '/>';
 
-            $html .= '<label>' . $listLabel . '</label>';
+            $html .= '<label>'.$listLabel.'</label>';
         }
 
         echo "\nActual template logic simulation:\n";
-        echo $html . "\n";
+        echo $html."\n";
 
         // Count the radio inputs
         $radioCount = substr_count($html, 'type="radio"');
