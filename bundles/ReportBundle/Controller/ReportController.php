@@ -633,7 +633,7 @@ class ReportController extends FormController
             }
 
             $column     = $filter['column'] ?? null;
-            $definition = ($column !== null) ? ($filterDefinitions->definitions[$column] ?? []) : [];
+            $definition = (null !== $column) ? ($filterDefinitions->definitions[$column] ?? []) : [];
             $alias      = $definition['alias'] ?? null;
 
             if (null === $alias || isset($filterSettings[$alias])) {
