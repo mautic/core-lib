@@ -2,7 +2,7 @@
 {% set max = field.properties.star_count|default(5) %}
 
 {# Custom rating field layout #}
-{% set containerType = 'radiogrp' %}
+{% set containerType = 'rating' %}
 {% set type = 'radio' %}
 {% set defaultInputClass = containerType ~ '-' ~ type %}
 {% set ignoreId = true %}
@@ -75,6 +75,7 @@
   }) %}
 {% endif %}
 
+{% set starColor = field.properties.star_color|default('f5b301') %}
 {% set containerAttributes = containerAttributes|merge({
         'id': 'mauticform' ~ formName|default('') ~ '_' ~ id,
         'class': containerAttributes.class|default([])|merge([
@@ -82,7 +83,7 @@
           'mauticform-' ~ containerClass,
           'mauticform-field-' ~ order,
         ]),
-        'style': 'width: ' ~ field.fieldWidth
+        'style': 'width: ' ~ field.fieldWidth ~ '; --star-color: #' ~ starColor
 }) %}
 {% if field.parent and fields[field.parent] is defined %}
   {% set values = field.conditions.values|join('|') %}
@@ -139,7 +140,7 @@
   {% endif %}
   {% if field.helpMessage is not empty %}<span class="mauticform-helpmessage">{{ field.helpMessage|purify }}</span>{% endif %}
 
-  <div class="mauticform-radiogrp-row">
+  <div class="mauticform-{{ containerType }}-row">
     {% for i in range(max, 1, -1) %}
       {% set id = field.alias ~ '_' ~ i ~ loop.index0 %}
       {% set checkboxBrackets = ('checkbox' == type) ? '[]' : '' %}
