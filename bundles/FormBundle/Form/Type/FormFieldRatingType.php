@@ -35,6 +35,7 @@ class FormFieldRatingType extends AbstractType
                     'class'   => 'form-control',
                     'tooltip' => 'mautic.form.field.help.rating_star_count',
                     'min'     => 1,
+                    'max'     => 10,
                 ],
                 'data'     => $options['data']['star_count'] ?? 5,
                 'required' => false,
