@@ -615,10 +615,11 @@ var t,e;t=this,e=function(){"use strict";function t(t,e){var n=Object.keys(t);if
                             switch (field.type) {
                                 case 'radiogrp':
                                 case 'rating':
-                                case 'checkboxgrp':
+                                case 'checkboxgrp': {
                                     const elOptions = theForm.elements[name];
                                     valid = validator.validateOptions(elOptions);
                                     break;
+                                }
 
                                 case 'email':
                                     valid = validator.validateEmail(theForm.elements[name].value);

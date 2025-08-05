@@ -149,6 +149,9 @@ class FormFieldHelper extends AbstractFormFieldHelper
     {
         $alias = $field->getAlias();
 
+        // Common regex patterns
+        $inputClosePattern = '(.*?)\/?>';
+
         // Adds the "readonly" attribute to a field if it is configured as read-only with auto-fill enabled and a sanitized value exists.
         $fieldAttributeReadOnly = fn ($field, $sanitizedValue) => ($field->isAutoFillReadOnly() && $sanitizedValue) ? ' readonly ' : '';
 
@@ -168,7 +171,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 }
                 $escapedFormName = preg_quote($formName, '/');
                 $escapedAlias    = preg_quote($alias, '/');
-                if (preg_match('/<input(.*?)value="(.*?)"(.*?)id="mauticform_input_'.$escapedFormName.'_'.$escapedAlias.'"(.*?)\/?>/i', $formHtml, $match)) {
+                if (preg_match('/<input(.*?)value="(.*?)"(.*?)id="mauticform_input_'.$escapedFormName.'_'.$escapedAlias.'"'.$inputClosePattern.'/i', $formHtml, $match)) {
                     $replace = '<input'.$match[1].'id="mauticform_input_'.$formName.'_'.$alias.'"'.$match[3].'value="'.$sanitizedValue.'"'
                         .$match[4].$fieldAttributeReadOnly($field, $sanitizedValue).'/>';
                     $formHtml = str_replace($match[0], $replace, $formHtml);
@@ -196,7 +199,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
                     $escapedAlias = preg_quote($alias, '/');
                     $escapedVal   = preg_quote($val, '/');
                     if (preg_match(
-                        '/<input(.*?)id="mauticform_checkboxgrp_checkbox_'.$escapedAlias.'(.*?)"(.*?)value="'.$escapedVal.'"(.*?)\/?>/i',
+                        '/<input(.*?)id="mauticform_checkboxgrp_checkbox_'.$escapedAlias.'(.*?)"(.*?)value="'.$escapedVal.'"'.$inputClosePattern.'/i',
                         $formHtml,
                         $match
                     )) {
@@ -211,7 +214,7 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 $value        = $this->sanitizeValue($value);
                 $escapedAlias = preg_quote($alias, '/');
                 $escapedValue = preg_quote($value, '/');
-                if (preg_match('/<input(.*?)id="mauticform_radiogrp_radio_'.$escapedAlias.'(.*?)"(.*?)value="'.$escapedValue.'"(.*?)\/?>/i', $formHtml, $match)) {
+                if (preg_match('/<input(.*?)id="mauticform_radiogrp_radio_'.$escapedAlias.'(.*?)"(.*?)value="'.$escapedValue.'"'.$inputClosePattern.'/i', $formHtml, $match)) {
                     $replace = '<input'.$match[1].'id="mauticform_radiogrp_radio_'.$alias.$match[2].'"'.$match[3].'value="'.$value.'"'.$match[4]
                         .' checked />';
                     $formHtml = str_replace($match[0], $replace, $formHtml);

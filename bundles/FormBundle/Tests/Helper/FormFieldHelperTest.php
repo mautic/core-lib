@@ -9,6 +9,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
 {
+    private const RADIO_TYPE = 'type="radio"';
+
     /**
      * @var FormFieldHelper
      */
@@ -162,8 +164,7 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $html = $this->simulateTemplateRendering($parsedList);
 
         // Count radio inputs in the HTML
-        $radioType  = 'type="radio"';
-        $radioCount = substr_count($html, $radioType);
+        $radioCount = substr_count($html, self::RADIO_TYPE);
         $this->assertEquals(6, $radioCount, 'HTML should contain exactly 6 radio inputs');
 
         // Count star labels
@@ -229,8 +230,7 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
         $expectedStarCount  = 6;
         $expectedRowCount   = 1;
 
-        $radioType        = 'type="radio"';
-        $actualRadioCount = substr_count($html, $radioType);
+        $actualRadioCount = substr_count($html, self::RADIO_TYPE);
         $actualStarCount  = substr_count($html, '★');
         $actualRowCount   = substr_count($html, '<div class="mauticform-radiogrp-row">');
 
