@@ -61,6 +61,18 @@
         {% endif %}
     {% endif %}
 
+  {% if security.hasEntityAccess('form:forms:editown', 'form:forms:editother', form.createdBy) %}
+      {% set buttons = buttons|merge([{
+          'attr': {
+              'class': 'btn btn-ghost',
+              'href': path('mautic_form_action', {'objectAction': 'edit', 'objectId': form.id}),
+              'data-toggle': 'ajax',
+          },
+          'iconClass': 'ri-edit-line',
+          'btnText': 'mautic.core.form.edit'|trans,
+      }]) %}
+  {% endif %}
+
   {% set buttons = buttons|merge([{
       'attr': {
           'class': 'btn btn-ghost',
