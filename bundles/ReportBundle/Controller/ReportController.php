@@ -628,20 +628,28 @@ class ReportController extends FormController
         }
 
         foreach ($entity->getFilters() as $filter) {
-            if (isset($filter['dynamic']) && 1 === $filter['dynamic']) {
-                $column = $filter['column'];
-                $alias  = $filterDefinitions->definitions[$column]['alias'];
+            if (!isset($filter['dynamic']) || 1 !== $filter['dynamic']) {
+                continue;
+            }
 
-                if (!isset($filterSettings[$alias])) {
-                    if (isset($filter['value']) && '' !== $filter['value']) {
-                        $filterSettings[$alias] = $filter['value'];
-                    } else {
-                        $definition = $filterDefinitions->definitions[$column];
-                        if (isset($definition['defaultValue']) && '' !== $definition['defaultValue']) {
-                            $filterSettings[$alias] = $definition['defaultValue'];
-                        }
-                    }
+            $column     = $filter['column'] ?? null;
+            $definition = ($column !== null) ? ($filterDefinitions->definitions[$column] ?? []) : [];
+            $alias      = $definition['alias'] ?? null;
+
+            if (null === $alias || isset($filterSettings[$alias])) {
+                continue;
+            }
+
+            $value = $filter['value'] ?? null;
+            if ('' === $value || null === $value) {
+                $default = $definition['defaultValue'] ?? null;
+                if ('' !== $default && null !== $default) {
+                    $value = $default;
                 }
+            }
+
+            if ('' !== $value && null !== $value) {
+                $filterSettings[$alias] = $value;
             }
         }
 
