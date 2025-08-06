@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mautic\CampaignBundle\Event;
 
 use Mautic\CampaignBundle\DTO\EventPreviewStatDto;
-use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 
 final class EventPreview
@@ -13,7 +12,7 @@ final class EventPreview
     /** @var array<string, EventPreviewStatDto> */
     public array $eventStats = [];
 
-    public function __construct(public Event $event, public Campaign $campaign)
+    public function __construct(public Event $event)
     {
     }
 
@@ -24,7 +23,7 @@ final class EventPreview
 
     public function isCampaignRestartAllowed(): bool
     {
-        return $this->campaign->getAllowRestart();
+        return $this->event->getCampaign()->getAllowRestart();
     }
 
     public function addEventStat(string $key, mixed $value, ?string $tooltip = null): void

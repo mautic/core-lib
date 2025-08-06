@@ -719,8 +719,8 @@ SQL;
             maxRotations: $maxRotations,
             negativePathCount: (int) ($result['negative_path_count'] ?? 0),
             positivePathCount: (int) ($result['positive_path_count'] ?? 0),
-            firstExecutionDate: $result['first_execution_date'] ? new \DateTime($result['first_execution_date']) : null,
-            lastExecutionDate: $result['last_execution_date'] ? new \DateTime($result['last_execution_date']) : null
+            firstExecutionDate: $result['first_execution_date'] ? new \DateTimeImmutable($result['first_execution_date']) : null,
+            lastExecutionDate: $result['last_execution_date'] ? new \DateTimeImmutable($result['last_execution_date']) : null
         );
     }
 }

@@ -13,8 +13,8 @@ final readonly class EventLogStatsDto
         public int $maxRotations = 0,
         public int $negativePathCount = 0,
         public int $positivePathCount = 0,
-        public ?\DateTime $firstExecutionDate = null,
-        public ?\DateTime $lastExecutionDate = null,
+        public ?\DateTimeImmutable $firstExecutionDate = null,
+        public ?\DateTimeImmutable $lastExecutionDate = null,
     ) {
     }
 }

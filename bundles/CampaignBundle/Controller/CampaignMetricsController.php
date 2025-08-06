@@ -115,7 +115,6 @@ class CampaignMetricsController extends AbstractController
         int $objectId,
     ): JsonResponse {
         $event    = $eventModel->getEntity($objectId);
-        $campaign = $event->getCampaign();
 
         if (!$event) {
             return $this->json([
@@ -123,7 +122,7 @@ class CampaignMetricsController extends AbstractController
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $eventDetailsAction = new EventPreview($event, $campaign);
+        $eventDetailsAction = new EventPreview($event);
         $eventDispatcher->dispatch($eventDetailsAction);
 
         return $this->json($eventDetailsAction->eventStats);
