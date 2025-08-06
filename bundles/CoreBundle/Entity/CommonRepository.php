@@ -843,8 +843,13 @@ class CommonRepository extends ServiceEntityRepository
         $set        = [];
         $update     = [];
         $hasId      = $metadata->containsForeignIdentifier;
+        $fieldNames = $metadata->getFieldNames();
 
-        foreach ($metadata->getFieldNames() as $fieldName) {
+        if ($entity instanceof OptimisticLockInterface) {
+            $fieldNames = array_diff($fieldNames, [$entity->getVersionField()]);
+        }
+
+        foreach ($fieldNames as $fieldName) {
             $value = $metadata->getFieldValue($entity, $fieldName);
             if ($metadata->isIdentifier($fieldName)) {
                 if ($value) {
