@@ -110,7 +110,7 @@ class PublicController extends AbstractFormController
             $entity->setUploadDir($parametersHelper->get('upload_dir'));
             $contents = $entity->getFileContents();
             $model->trackDownload($entity, $request);
-        } catch (FileNotFoundException|ORMException|\Exception) {
+        } catch (FileNotFoundException) {
             $model->trackDownload($entity, $request, 404);
 
             return $this->notFound();
