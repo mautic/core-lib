@@ -61,10 +61,7 @@ class ReportSubscriberTest extends AbstractMauticTestCase
 
     private ReportSubscriber $subscriber;
 
-    /**
-     * @var DncReportService|MockObject
-     */
-    private MockObject $dncReportService;
+    private MockObject&DncReportService $dncReportService;
 
     public function setUp(): void
     {

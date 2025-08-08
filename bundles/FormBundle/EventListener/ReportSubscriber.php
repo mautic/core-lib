@@ -288,7 +288,6 @@ class ReportSubscriber implements EventSubscriberInterface
         }
 
         $event->setData($data);
-        unset($data);
     }
 
     /**

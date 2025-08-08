@@ -34,10 +34,7 @@ class ReportSubscriberTest extends TestCase
      */
     private \PHPUnit\Framework\MockObject\MockObject $translator;
 
-    /**
-     * @var DncReportService|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private \PHPUnit\Framework\MockObject\MockObject $dncReportService;
+    private \PHPUnit\Framework\MockObject\MockObject&DncReportService $dncReportService;
 
     private ReportSubscriber $subscriber;
 

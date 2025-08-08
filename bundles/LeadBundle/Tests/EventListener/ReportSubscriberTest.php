@@ -137,10 +137,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
     private ReportSubscriber $reportSubscriber;
 
-    /**
-     * @var DncReportService|MockObject
-     */
-    private MockObject $dncReportService;
+    private MockObject&DncReportService $dncReportService;
 
     /**
      * @var array
