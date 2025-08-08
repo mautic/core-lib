@@ -51,7 +51,7 @@ class ConfigSubscriberTest extends MauticMysqlTestCase
 
     private function getConfigPath(): string
     {
-        return self::$container->get('kernel')->getLocalConfigFile();
+        return self::getContainer()->get('kernel')->getLocalConfigFile();
     }
 
     public function testFailConfigMediaPathWithDots(): void
