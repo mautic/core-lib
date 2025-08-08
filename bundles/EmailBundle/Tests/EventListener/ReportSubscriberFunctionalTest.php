@@ -396,7 +396,7 @@ class ReportSubscriberFunctionalTest extends MauticMysqlTestCase
         return $crawler->filter('tr')->each(fn ($tr) => $tr->filter('td')->each(fn ($td) => trim($td->text())));
     }
 
-    private function createDnc(string $channel, Lead $contact, int $reason, int $channelId = null): DoNotContact
+    private function createDnc(string $channel, Lead $contact, int $reason, ?int $channelId = null): DoNotContact
     {
         $dnc = new DoNotContact();
         $dnc->setChannel($channel);
