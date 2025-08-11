@@ -29,6 +29,12 @@ final class FormFieldSliderType extends AbstractType
             'required'   => false,
             'attr'       => ['class' => 'form-control'],
             'data'       => $options['data']['max'] ?? 100,
+            'constraints' => [
+                new \Symfony\Component\Validator\Constraints\Expression([
+                    'expression' => 'this.getParent()["min"].getData() < value',
+                    'message' => 'mautic.form.field.form.slider_max_gt_min_error'
+                ])
+            ]
         ]);
 
         $builder->add('step', IntegerType::class, [
@@ -41,6 +47,10 @@ final class FormFieldSliderType extends AbstractType
                 new \Symfony\Component\Validator\Constraints\Range([
                     'min' => 1,
                     'minMessage' => 'mautic.form.field.form.slider_step_min_error'
+                ]),
+                new \Symfony\Component\Validator\Constraints\Expression([
+                    'expression' => 'value < this.getParent()["max"].getData()',
+                    'message' => 'mautic.form.field.form.slider_step_lt_max_error'
                 ])
             ]
         ]);
