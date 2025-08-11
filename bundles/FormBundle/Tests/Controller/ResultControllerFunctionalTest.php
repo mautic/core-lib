@@ -100,14 +100,14 @@ final class ResultControllerFunctionalTest extends MauticMysqlTestCase
         $form     = $response['form'];
         $formId   = $form['id'];
 
-        $crawler = $this->client->request(Request::METHOD_GET, "/s/forms/results/{$formId}");
+        $crawler  = $this->client->request(Request::METHOD_GET, "/s/forms/results/{$formId}");
         $response = $this->client->getResponse();
-        
+
         if (!$response->isOk()) {
-            $this->fail('Response is not OK. Status: ' . $response->getStatusCode() . ', Content: ' . $response->getContent());
+            $this->fail('Response is not OK. Status: '.$response->getStatusCode().', Content: '.$response->getContent());
         }
 
-        $editButton = $crawler->filter('a[href*="/s/forms/edit/' . $formId . '"]');
+        $editButton = $crawler->filter('a[href*="/s/forms/edit/'.$formId.'"]');
         $this->assertCount(1, $editButton, 'Edit button should be present on form results page');
     }
 
