@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\CoreBundle\Twig\Extension;
 
 use Mautic\CoreBundle\Helper\ThemeHelper;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -12,6 +13,7 @@ class ThemeExtension extends AbstractExtension
 {
     public function __construct(
         private ThemeHelper $themeHelper,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -27,6 +29,11 @@ class ThemeExtension extends AbstractExtension
      */
     public function getThemeName(string $theme = 'current'): string
     {
+        // Special case for Code Mode
+        if ('mautic_code_mode' === $theme) {
+            return $this->translator->trans('mautic.core.code.mode');
+        }
+
         $themeConfig = $this->themeHelper->getTheme($theme)->getConfig();
 
         return $themeConfig['name'] ?? $theme;
