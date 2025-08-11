@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\FormBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -9,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 /**
  * @extends AbstractType<FormFieldSliderType>
  */
-class FormFieldSliderType extends AbstractType
+final class FormFieldSliderType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -36,10 +38,5 @@ class FormFieldSliderType extends AbstractType
             'attr'       => ['class' => 'form-control'],
             'data'       => $options['data']['step'] ?? 1,
         ]);
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return 'formfield_slider';
     }
 }
