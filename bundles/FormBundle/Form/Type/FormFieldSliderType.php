@@ -37,6 +37,12 @@ final class FormFieldSliderType extends AbstractType
             'required'   => false,
             'attr'       => ['class' => 'form-control'],
             'data'       => $options['data']['step'] ?? 1,
+            'constraints' => [
+                new \Symfony\Component\Validator\Constraints\Range([
+                    'min' => 1,
+                    'minMessage' => 'mautic.form.field.form.slider_step_min_error'
+                ])
+            ]
         ]);
     }
 }
