@@ -136,6 +136,28 @@ class PageRepository extends CommonRepository
         $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
 
         switch ($command) {
+            case $this->translator->trans('mautic.page.searchcommand.isexpired'):
+            case $this->translator->trans('mautic.page.searchcommand.isexpired', [], null, 'en_US'):
+                $conditions = [
+                    (string) $q->expr()->eq('p.isPublished', ":$unique"),
+                    (string) $q->expr()->isNotNull('p.publishDown'),
+                    (string) $q->expr()->neq('p.publishDown', $q->expr()->literal('')),
+                    (string) $q->expr()->lt('p.publishDown', 'CURRENT_TIMESTAMP()'),
+                ];
+                $expr            = '('.implode(' AND ', $conditions).')';
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.page.searchcommand.ispending'):
+            case $this->translator->trans('mautic.page.searchcommand.ispending', [], null, 'en_US'):
+                $conditions = [
+                    (string) $q->expr()->eq('p.isPublished', ":$unique"),
+                    (string) $q->expr()->isNotNull('p.publishUp'),
+                    (string) $q->expr()->neq('p.publishUp', $q->expr()->literal('')),
+                    (string) $q->expr()->gt('p.publishUp', 'CURRENT_TIMESTAMP()'),
+                ];
+                $expr            = '('.implode(' AND ', $conditions).')';
+                $forceParameters = [$unique => true];
+                break;
             case $this->translator->trans('mautic.core.searchcommand.lang'):
             case $this->translator->trans('mautic.core.searchcommand.lang', [], null, 'en_US'):
                 $langUnique      = $this->generateRandomParameterName();
@@ -144,10 +166,7 @@ class PageRepository extends CommonRepository
                     $langUnique => $langValue,
                     $unique     => $filter->string,
                 ];
-                $expr = $q->expr()->or(
-                    $q->expr()->eq('p.language', ":$unique"),
-                    $q->expr()->like('p.language', ":$langUnique")
-                );
+                $expr            = '('.(string) $q->expr()->eq('p.language', ":$unique").' OR '.(string) $q->expr()->like('p.language', ":$langUnique").')';
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.page.searchcommand.isprefcenter'):
@@ -191,6 +210,8 @@ class PageRepository extends CommonRepository
             'mautic.core.searchcommand.isunpublished',
             'mautic.core.searchcommand.isuncategorized',
             'mautic.core.searchcommand.ismine',
+            'mautic.page.searchcommand.isexpired',
+            'mautic.page.searchcommand.ispending',
             'mautic.core.searchcommand.category',
             'mautic.core.searchcommand.lang',
             'mautic.page.searchcommand.isprefcenter',

@@ -91,6 +91,28 @@ class AssetRepository extends CommonRepository
         $unique          = $this->generateRandomParameterName();
         $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
         switch ($command) {
+            case $this->translator->trans('mautic.asset.asset.searchcommand.isexpired'):
+            case $this->translator->trans('mautic.asset.asset.searchcommand.isexpired', [], null, 'en_US'):
+                $conditions = [
+                    (string) $q->expr()->eq('a.isPublished', ":$unique"),
+                    (string) $q->expr()->isNotNull('a.publishDown'),
+                    (string) $q->expr()->neq('a.publishDown', $q->expr()->literal('')),
+                    (string) $q->expr()->lt('a.publishDown', 'CURRENT_TIMESTAMP()'),
+                ];
+                $expr            = '('.implode(' AND ', $conditions).')';
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.asset.asset.searchcommand.ispending'):
+            case $this->translator->trans('mautic.asset.asset.searchcommand.ispending', [], null, 'en_US'):
+                $conditions = [
+                    (string) $q->expr()->eq('a.isPublished', ":$unique"),
+                    (string) $q->expr()->isNotNull('a.publishUp'),
+                    (string) $q->expr()->neq('a.publishUp', $q->expr()->literal('')),
+                    (string) $q->expr()->gt('a.publishUp', 'CURRENT_TIMESTAMP()'),
+                ];
+                $expr            = '('.implode(' AND ', $conditions).')';
+                $forceParameters = [$unique => true];
+                break;
             case $this->translator->trans('mautic.asset.asset.searchcommand.lang'):
                 $langUnique      = $this->generateRandomParameterName();
                 $langValue       = $filter->string.'_%';
@@ -98,10 +120,7 @@ class AssetRepository extends CommonRepository
                     $langUnique => $langValue,
                     $unique     => $filter->string,
                 ];
-                $expr = $q->expr()->or(
-                    $q->expr()->eq('a.language', ":$unique"),
-                    $q->expr()->like('a.language', ":$langUnique")
-                );
+                $expr            = '('.(string) $q->expr()->eq('a.language', ":$unique").' OR '.(string) $q->expr()->like('a.language', ":$langUnique").')';
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.project.searchcommand.name'):
@@ -142,6 +161,8 @@ class AssetRepository extends CommonRepository
             'mautic.core.searchcommand.isunpublished',
             'mautic.core.searchcommand.isuncategorized',
             'mautic.core.searchcommand.ismine',
+            'mautic.asset.asset.searchcommand.isexpired',
+            'mautic.asset.asset.searchcommand.ispending',
             'mautic.core.searchcommand.category',
             'mautic.asset.asset.searchcommand.lang',
             'mautic.project.searchcommand.name',

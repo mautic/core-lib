@@ -554,6 +554,28 @@ class EmailRepository extends CommonRepository
         $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
 
         switch ($command) {
+            case $this->translator->trans('mautic.email.email.searchcommand.isexpired'):
+            case $this->translator->trans('mautic.email.email.searchcommand.isexpired', [], null, 'en_US'):
+                $conditions = [
+                    (string) $q->expr()->eq('e.isPublished', ":$unique"),
+                    (string) $q->expr()->isNotNull('e.publishDown'),
+                    (string) $q->expr()->neq('e.publishDown', $q->expr()->literal('')),
+                    (string) $q->expr()->lt('e.publishDown', 'CURRENT_TIMESTAMP()'),
+                ];
+                $expr            = '('.implode(' AND ', $conditions).')';
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.email.email.searchcommand.ispending'):
+            case $this->translator->trans('mautic.email.email.searchcommand.ispending', [], null, 'en_US'):
+                $conditions = [
+                    (string) $q->expr()->eq('e.isPublished', ":$unique"),
+                    (string) $q->expr()->isNotNull('e.publishUp'),
+                    (string) $q->expr()->neq('e.publishUp', $q->expr()->literal('')),
+                    (string) $q->expr()->gt('e.publishUp', 'CURRENT_TIMESTAMP()'),
+                ];
+                $expr            = '('.implode(' AND ', $conditions).')';
+                $forceParameters = [$unique => true];
+                break;
             case $this->translator->trans('mautic.core.searchcommand.lang'):
                 $langUnique      = $this->generateRandomParameterName();
                 $langValue       = $filter->string.'_%';
@@ -561,10 +583,7 @@ class EmailRepository extends CommonRepository
                     $langUnique => $langValue,
                     $unique     => $filter->string,
                 ];
-                $expr = $q->expr()->or(
-                    $q->expr()->eq('e.language', ":$unique"),
-                    $q->expr()->like('e.language', ":$langUnique")
-                );
+                $expr            = '('.(string) $q->expr()->eq('e.language', ":$unique").' OR '.(string) $q->expr()->like('e.language', ":$langUnique").')';
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.project.searchcommand.name'):
@@ -603,6 +622,8 @@ class EmailRepository extends CommonRepository
             'mautic.core.searchcommand.isunpublished',
             'mautic.core.searchcommand.isuncategorized',
             'mautic.core.searchcommand.ismine',
+            'mautic.email.email.searchcommand.isexpired',
+            'mautic.email.email.searchcommand.ispending',
             'mautic.core.searchcommand.category',
             'mautic.core.searchcommand.lang',
             'mautic.project.searchcommand.name',
