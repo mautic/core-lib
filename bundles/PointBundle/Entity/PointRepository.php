@@ -3,12 +3,15 @@
 namespace Mautic\PointBundle\Entity;
 
 use Mautic\CoreBundle\Entity\CommonRepository;
+use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 
 /**
  * @extends CommonRepository<Point>
  */
 class PointRepository extends CommonRepository
 {
+    use ProjectRepositoryTrait;
+
     public function getEntities(array $args = [])
     {
         $q = $this->_em
@@ -119,7 +122,20 @@ class PointRepository extends CommonRepository
 
     protected function addSearchCommandWhereClause($q, $filter): array
     {
-        return $this->addStandardSearchCommandWhereClause($q, $filter);
+        switch ($filter->command) {
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'point_id',
+                    'point_projects_xref',
+                    $this->getTableAlias(),
+                    $filter->string,
+                    $filter->not
+                );
+            default:
+                return $this->addStandardSearchCommandWhereClause($q, $filter);
+        }
     }
 
     /**
@@ -127,6 +143,6 @@ class PointRepository extends CommonRepository
      */
     public function getSearchCommands(): array
     {
-        return $this->getStandardSearchCommands();
+        return array_merge(['mautic.project.searchcommand.name'], $this->getStandardSearchCommands());
     }
 }

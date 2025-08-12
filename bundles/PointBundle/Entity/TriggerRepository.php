@@ -4,12 +4,15 @@ namespace Mautic\PointBundle\Entity;
 
 use Doctrine\Common\Collections\Order;
 use Mautic\CoreBundle\Entity\CommonRepository;
+use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 
 /**
  * @extends CommonRepository<Trigger>
  */
 class TriggerRepository extends CommonRepository
 {
+    use ProjectRepositoryTrait;
+
     public function getEntities(array $args = [])
     {
         $q = $this->_em
@@ -56,7 +59,21 @@ class TriggerRepository extends CommonRepository
 
     protected function addSearchCommandWhereClause($q, $filter): array
     {
-        return $this->addStandardSearchCommandWhereClause($q, $filter);
+        switch ($filter->command) {
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'point_trigger_id',
+                    'point_trigger_projects_xref',
+                    $this->getTableAlias(),
+                    $filter->string,
+                    $filter->not
+                );
+            default:
+                // Handle standard search commands
+                return $this->addStandardSearchCommandWhereClause($q, $filter);
+        }
     }
 
     /**
@@ -64,6 +81,6 @@ class TriggerRepository extends CommonRepository
      */
     public function getSearchCommands(): array
     {
-        return $this->getStandardSearchCommands();
+        return array_merge(['mautic.project.searchcommand.name'], $this->getStandardSearchCommands());
     }
 }
