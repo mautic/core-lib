@@ -8,6 +8,7 @@ use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\CsvHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
+use Mautic\CoreBundle\Model\NotificationModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Service\FlashBag;
 use Mautic\CoreBundle\Translation\Translator;
@@ -153,6 +154,16 @@ class ImportController extends FormController
         }
 
         $this->resetImport($object);
+
+        /** @var NotificationModel $notificationModel */
+        $notificationModel = $this->getModel('core.notification');
+
+        $fileName = basename($fullPath);
+        $message = $import && $import->getId()
+            ? $this->translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()])
+            : $this->translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
+        $notificationModel->addNotification($message, 'warning');
+
         $this->removeImportFile($fullPath);
         $this->logger->log(LogLevel::INFO, "Import for file {$fullPath} was canceled.");
 
