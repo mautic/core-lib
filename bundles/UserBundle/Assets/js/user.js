@@ -8,6 +8,10 @@ Mautic.userOnLoad = function (container) {
         if (mQuery(container + ' #list-search').length) {
             Mautic.activateSearchAutocomplete('list-search', 'user.user');
         }
+
+        if (mQuery('#InviteUserModal').length && mQuery('#InviteUserModal').data('auto-open')) {
+            mQuery('#InviteUserModal').modal('show');
+        }
     }
 
     /**

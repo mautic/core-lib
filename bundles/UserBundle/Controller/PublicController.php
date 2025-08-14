@@ -6,6 +6,8 @@ use Mautic\CoreBundle\Controller\FormController;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Form\Type\PasswordResetConfirmType;
 use Mautic\UserBundle\Form\Type\PasswordResetType;
+use Mautic\UserBundle\Form\Type\UserInviteRegistrationType;
+use Mautic\UserBundle\Model\RoleModel;
 use Mautic\UserBundle\Model\UserModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -134,6 +136,105 @@ class PublicController extends FormController
                 'form' => $form->createView(),
             ],
             'contentTemplate' => '@MauticUser/Security/resetconfirm.html.twig',
+            'passthroughVars' => [
+                'route' => $action,
+            ],
+        ]);
+    }
+
+    public function inviteAction(Request $request, UserPasswordHasherInterface $hasher): mixed
+    {
+        /** @var UserModel $model */
+        $model = $this->getModel('user');
+
+        $token  = $request->get('token');
+        $invite = $model->getInvite($token);
+        if (null === $invite) {
+            $this->addFlashMessage('mautic.user.invite.invalid', [], 'error', 'flashes');
+
+            return $this->redirectToRoute('login');
+        }
+
+        $user = new User();
+        $user->setEmail($invite->getEmail());
+
+        if ($invite->getRole()) {
+            $user->setRole($invite->getRole());
+        } else {
+            /** @var RoleModel $roleModel */
+            $roleModel = $this->getModel('user.role');
+            $role      = $roleModel->getRepository()->findOneBy([], ['id' => 'ASC']);
+            if (null !== $role) {
+                $user->setRole($role);
+            }
+        }
+
+        $action = $this->generateUrl('mautic_user_invite_register', ['token' => $token]);
+        $form   = $this->formFactory->create(UserInviteRegistrationType::class, [], [
+            'action' => $action,
+        ]);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            // Check if user already exists before form validation
+            $existingUser = $model->getRepository()->findOneBy(['email' => $invite->getEmail()]);
+            if ($existingUser) {
+                $this->addFlashMessage('mautic.user.invite.error.email_exists', [], 'error', 'flashes');
+
+                return $this->delegateView([
+                    'viewParameters' => [
+                        'form' => $form->createView(),
+                    ],
+                    'contentTemplate' => '@MauticUser/Security/register.html.twig',
+                    'passthroughVars' => [
+                        'route' => $action,
+                    ],
+                ]);
+            }
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                try {
+                    $formData = $form->getData();
+
+                    // Create user from form data
+                    $user = new User();
+                    $user->setUsername($formData['username']);
+                    $user->setFirstName($formData['firstName']);
+                    $user->setLastName($formData['lastName']);
+                    $user->setEmail($invite->getEmail());
+                    $user->setPlainPassword($formData['plainPassword']);
+
+                    if ($invite->getRole()) {
+                        $user->setRole($invite->getRole());
+                    } else {
+                        /** @var RoleModel $roleModel */
+                        $roleModel = $this->getModel('user.role');
+                        $role      = $roleModel->getRepository()->findOneBy([], ['id' => 'ASC']);
+                        if (null !== $role) {
+                            $user->setRole($role);
+                        }
+                    }
+
+                    $encoded = $model->checkNewPassword($user, $hasher, $user->getPlainPassword());
+                    $user->setPassword($encoded);
+
+                    $model->saveEntity($user);
+                    $model->markInviteUsed($invite);
+                    $this->addFlashMessage('mautic.user.invite.account_created', [], 'notice', 'flashes');
+
+                    return $this->redirectToRoute('login');
+                } catch (\Exception) {
+                    $this->addFlashMessage('mautic.user.invite.error.generic', [], 'error', 'flashes');
+                }
+            }
+        }
+
+        return $this->delegateView([
+            'viewParameters' => [
+                'form' => $form->createView(),
+            ],
+            'contentTemplate' => '@MauticUser/Security/register.html.twig',
             'passthroughVars' => [
                 'route' => $action,
             ],

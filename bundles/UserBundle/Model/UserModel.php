@@ -12,6 +12,7 @@ use Mautic\CoreBundle\Translation\Translator;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Entity\UserInvite;
 use Mautic\UserBundle\Entity\UserRepository;
 use Mautic\UserBundle\Entity\UserToken;
 use Mautic\UserBundle\Enum\UserTokenAuthorizator;
@@ -390,5 +391,55 @@ class UserModel extends FormModel implements GlobalSearchInterface
     public function getOwnerListChoices(): array
     {
         return $this->getRepository()->getOwnerListChoices();
+    }
+
+    public function createInvite(string $email, int $roleId): UserInvite
+    {
+        $role = $this->em->getRepository(Role::class)->find($roleId);
+        if (!$role) {
+            throw new \InvalidArgumentException('Invalid role ID provided');
+        }
+
+        $token  = bin2hex(random_bytes(32));
+        $invite = (new UserInvite())
+            ->setEmail($email)
+            ->setToken($token)
+            ->setExpiration((new \DateTime())->add(new \DateInterval('PT48H')))
+            ->setRole($role);
+        $this->em->persist($invite);
+        $this->em->flush();
+
+        $link   = $this->router->generate('mautic_user_invite_register', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
+        $mailer = $this->mailHelper->getMailer();
+        $mailer->setTo([$email => $email]);
+        $mailer->setSubject($this->translator->trans('mautic.user.invite.subject'));
+        $text = $this->translator->trans('mautic.user.invite.email.body', ['%invite_link%' => '<a href="'.$link.'">'.$link.'</a>']);
+        $text = str_replace('\\n', "\n", $text);
+        $html = nl2br($text);
+        $mailer->setBody($html);
+        $mailer->send();
+
+        return $invite;
+    }
+
+    public function getInvite(string $token): ?UserInvite
+    {
+        /** @var UserInvite|null $invite */
+        $invite = $this->em->getRepository(UserInvite::class)->findOneBy(['token' => $token, 'used' => false]);
+        if (null === $invite) {
+            return null;
+        }
+        if ($invite->getExpiration() < new \DateTime()) {
+            return null;
+        }
+
+        return $invite;
+    }
+
+    public function markInviteUsed(UserInvite $invite): void
+    {
+        $invite->setUsed(true);
+        $this->em->persist($invite);
+        $this->em->flush();
     }
 }

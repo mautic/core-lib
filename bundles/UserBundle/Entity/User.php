@@ -223,6 +223,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
                 'fields'           => ['email'],
                 'message'          => 'mautic.user.user.email.unique',
                 'repositoryMethod' => 'checkUniqueUsernameEmail',
+                'groups'           => ['User', 'SecondPass'],
             ]
         ));
 

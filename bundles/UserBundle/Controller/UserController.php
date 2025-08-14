@@ -12,8 +12,10 @@ use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\CoreBundle\Model\FormModel;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\UserBundle\Form\Type\ContactType;
+use Mautic\UserBundle\Form\Type\UserInviteType;
 use Mautic\UserBundle\Model\RoleModel;
 use Mautic\UserBundle\Model\UserModel;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -25,7 +27,7 @@ class UserController extends FormController
      *
      * @param int $page
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
+     * @return JsonResponse|Response
      */
     public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, $page = 1)
     {
@@ -81,6 +83,12 @@ class UserController extends FormController
 
         $pageHelper->rememberPage($page);
 
+        $inviteForm = null;
+        if ($this->security->isGranted('user:users:create')) {
+            $action     = $this->generateUrl('mautic_user_action', ['objectAction' => 'invite']);
+            $inviteForm = $this->createForm(UserInviteType::class, [], ['action' => $action]);
+        }
+
         return $this->delegateView([
             'viewParameters'  => [
                 'items'         => $users,
@@ -94,6 +102,7 @@ class UserController extends FormController
                     'edit'   => $this->security->isGranted('user:users:editother'),
                     'delete' => $this->security->isGranted('user:users:deleteother'),
                 ],
+                'inviteForm'    => $inviteForm ? $inviteForm->createView() : null,
             ],
             'contentTemplate' => '@MauticUser/User/list.html.twig',
             'passthroughVars' => [
@@ -106,9 +115,70 @@ class UserController extends FormController
     /**
      * Generate's form and processes new post data.
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
+     * @return JsonResponse|Response
      */
-    public function newAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher)
+    public function inviteAction(Request $request)
+    {
+        if (!$this->security->isGranted('user:users:create')) {
+            return $this->accessDenied();
+        }
+
+        /** @var UserModel $model */
+        $model = $this->getModel('user.user');
+
+        $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'invite']);
+        $form   = $this->createForm(UserInviteType::class, [], ['action' => $action]);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $data  = $form->getData();
+                $email = $data['email'];
+                $role  = $data['role'];
+
+                $model->createInvite($email, $role->getId());
+                $this->addFlashMessage('mautic.user.invite.flash.sent', ['%email%' => $email], 'notice', 'flashes');
+
+                if ($request->isXmlHttpRequest()) {
+                    return new JsonResponse([
+                        'closeModal' => 1,
+                        'redirect'   => $this->generateUrl('mautic_user_index'),
+                    ]);
+                }
+
+                return $this->redirect($this->generateUrl('mautic_user_index'));
+            }
+
+            return $this->delegateView([
+                'viewParameters' => [
+                    'form' => $form->createView(),
+                ],
+                'contentTemplate' => '@MauticUser/User/invite.html.twig',
+                'passthroughVars' => [
+                    'route'              => $action,
+                    'mauticContent'      => 'user',
+                    'header'             => $this->translator->trans('mautic.user.invite.title'),
+                    'target'             => '#InviteUserModal .modal-body-content',
+                    'updateModalContent' => 1,
+                ],
+            ]);
+        }
+
+        return $this->delegateView([
+            'viewParameters' => [
+                'form' => $form->createView(),
+            ],
+            'contentTemplate' => '@MauticUser/User/invite.html.twig',
+            'passthroughVars' => [
+                'route'         => $action,
+                'mauticContent' => 'user',
+                'header'        => $this->translator->trans('mautic.user.invite.title'),
+            ],
+        ]);
+    }
+
+    public function newAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher): Response
     {
         if (!$this->security->isGranted('user:users:create')) {
             return $this->accessDenied();
@@ -212,7 +282,7 @@ class UserController extends FormController
      * @param int  $objectId
      * @param bool $ignorePost
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
+     * @return JsonResponse|Response
      */
     public function editAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, $objectId, $ignorePost = false)
     {
