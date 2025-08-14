@@ -1280,7 +1280,11 @@ Mautic.removeBounceStatus = function (el, dncId, channel) {
     });
 };
 
-Mautic.removeTagFromLead = function (el, leadId, tagId) {
+Mautic.removeTagFromLead = function (el, leadId, tagId, event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
     mQuery(el).removeClass('ri-close-line').addClass('ri-loader-3-line ri-spin');
 
     Mautic.ajaxActionRequest('lead:removeTagFromLead', {'leadId': leadId, 'tagId': tagId}, function() {
