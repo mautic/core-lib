@@ -818,9 +818,11 @@ Mautic.onPageUnload = function (container, response) {
 
         if (ckEditors.size > 0) {
             ckEditors.forEach(function(value, key, map){
-                map.get(key).destroy()
-            })
-            ckEditors.clear();
+                if (container === '#app-content' || container === 'body' || mQuery(container).find(key).length > 0 || mQuery(key).closest(container).length > 0) {
+                    map.get(key).destroy();
+                    map.delete(key);
+                }
+            });
         }
 
         mQuery(container + " input[data-toggle='color']").each(function() {
@@ -1748,14 +1750,18 @@ Mautic.processCsvContactExport = function (route) {
  * @param {string} text
  */
 Mautic.copyToClipboard = function (text) {
-    navigator.clipboard.writeText(text).then(function () {
-        var message = Mautic.translate('mautic.core.notice.copiedtoclipboard');
-        var flashMessage = Mautic.addInfoFlashMessage(message);
+    const textArea = document.createElement('textarea');
+    textArea.innerHTML = text;
+    const decodedText = textArea.value || textArea.innerText;
+
+    navigator.clipboard.writeText(decodedText).then(function () {
+        const message = Mautic.translate('mautic.core.notice.copiedtoclipboard');
+        const flashMessage = Mautic.addInfoFlashMessage(message);
         Mautic.setFlashes(flashMessage);
     }).catch(function (err) {
         console.error('Clipboard write error:', err);
-        var message = Mautic.translate('mautic.core.error.copyfailed');
-        var flashMessage = Mautic.addErrorFlashMessage(message);
+        const message = Mautic.translate('mautic.core.error.copyfailed');
+        const flashMessage = Mautic.addErrorFlashMessage(message);
         Mautic.setFlashes(flashMessage);
     });
 };
