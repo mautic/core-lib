@@ -227,7 +227,7 @@ var t,e;t=this,e=function(){"use strict";function t(t,e){var n=Object.keys(t);if
                         Array.prototype.forEach.call(inputs, function(input) {
                             if (input.tagName.toLowerCase() !== 'textarea') {
                                 input.addEventListener('keydown', function(e) {
-                                    if (e.key === 'Enter' || e.keyCode === 13) {
+                                    if (e.key === 'Enter') {
                                         e.preventDefault();
                                         return false;
                                     }
