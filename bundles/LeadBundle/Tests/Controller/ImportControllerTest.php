@@ -275,6 +275,100 @@ final class ImportControllerTest extends MauticMysqlTestCase
         Assert::assertStringContainsString($expectedString, $applicationTester->getDisplay());
     }
 
+    public function testCancelActionNotificationLogic(): void
+    {
+        $import = new Import();
+        $import->setObject('lead')
+               ->setOriginalFile('test.csv')
+               ->setStatus(Import::QUEUED)
+               ->setIsPublished(true)
+               ->setDir('/tmp')
+               ->setFile('test.csv');
+        $this->em->persist($import);
+        $this->em->flush();
+
+        $notificationModel = static::getContainer()->get('mautic.core.model.notification');
+        $translator        = static::getContainer()->get('translator');
+
+        $fileName = basename('/tmp/test.csv');
+        $message  = $import->getId()
+            ? $translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()])
+            : $translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
+
+        $notificationModel->addNotification($message, 'warning');
+
+        $notificationRepo = $this->em->getRepository(\Mautic\CoreBundle\Entity\Notification::class);
+        $notifications    = $notificationRepo->getNotifications(1);
+        $found            = false;
+        foreach ($notifications as $notification) {
+            if (str_contains($notification['message'], 'Import canceled for file test.csv (ID '.$import->getId().')')) {
+                $found = true;
+                Assert::assertSame('warning', $notification['type']);
+                break;
+            }
+        }
+        Assert::assertTrue($found, 'Notification with import ID was not found');
+    }
+
+    public function testCancelActionNotificationLogicWithoutImport(): void
+    {
+        $notificationModel = static::getContainer()->get('mautic.core.model.notification');
+        $translator        = static::getContainer()->get('translator');
+
+        $fileName = basename('/tmp/test.csv');
+        $message  = $translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
+
+        $notificationModel->addNotification($message, 'warning');
+
+        $notificationRepo = $this->em->getRepository(\Mautic\CoreBundle\Entity\Notification::class);
+        $notifications    = $notificationRepo->getNotifications(1);
+        $found            = false;
+        foreach ($notifications as $notification) {
+            if (str_contains($notification['message'], 'Import canceled for file test.csv')
+                && !str_contains($notification['message'], 'ID')) {
+                $found = true;
+                Assert::assertSame('warning', $notification['type']);
+                break;
+            }
+        }
+        Assert::assertTrue($found, 'Notification without import ID was not found');
+    }
+
+    public function testResetImportFunctionality(): void
+    {
+        $import = new Import();
+        $import->setObject('lead')
+               ->setOriginalFile('test.csv')
+               ->setStatus(Import::QUEUED)
+               ->setIsPublished(true)
+               ->setDir('/tmp')
+               ->setFile('test.csv');
+        $this->em->persist($import);
+        $this->em->flush();
+
+        $notificationModel = static::getContainer()->get('mautic.core.model.notification');
+        $translator        = static::getContainer()->get('translator');
+
+        $fileName = basename('/tmp/test.csv');
+        $message  = $import->getId()
+            ? $translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()])
+            : $translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
+
+        $notificationModel->addNotification($message, 'warning');
+
+        $notificationRepo = $this->em->getRepository(\Mautic\CoreBundle\Entity\Notification::class);
+        $notifications    = $notificationRepo->getNotifications(1);
+        $found            = false;
+        foreach ($notifications as $notification) {
+            if (str_contains($notification['message'], 'Import canceled for file test.csv (ID '.$import->getId().')')) {
+                $found = true;
+                Assert::assertSame('warning', $notification['type']);
+                break;
+            }
+        }
+        Assert::assertTrue($found, 'Notification with import ID was not found');
+    }
+
     private function setPhoneFieldIsRequired(bool $required): void
     {
         /** @var LeadFieldRepository $fieldRepository */

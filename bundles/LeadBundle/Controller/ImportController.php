@@ -159,7 +159,7 @@ class ImportController extends FormController
         $notificationModel = $this->getModel('core.notification');
 
         $fileName = basename($fullPath);
-        $message = $import && $import->getId()
+        $message  = $import && $import->getId()
             ? $this->translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()])
             : $this->translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
         $notificationModel->addNotification($message, 'warning');
