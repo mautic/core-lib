@@ -385,7 +385,7 @@ class SubmissionModel extends CommonFormModel
                     $user = $this->em->getReference(User::class, $ownerId);
                     $this->notificationModel->addNotification(
                         $this->translator->trans('mautic.form.submission.limit_reached.notification', ['%form%' => $form->getName()]),
-                        'form',
+                        'warning',
                         false,
                         $form->getName(),
                         null,
