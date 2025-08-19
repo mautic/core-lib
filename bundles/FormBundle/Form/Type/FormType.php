@@ -17,6 +17,7 @@ use Mautic\ProjectBundle\Form\Type\ProjectType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -171,7 +172,7 @@ class FormType extends AbstractType
         $builder->add('publishUp', PublishUpDateType::class);
         $builder->add('publishDown', PublishDownDateType::class);
 
-        $builder->add('submissionLimit', TextType::class, [
+        $builder->add('submissionLimit', IntegerType::class, [
             'label'      => 'mautic.form.submission.limit',
             'attr'       => [
                 'class' => 'form-control',
