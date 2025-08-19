@@ -204,6 +204,17 @@
               {{ form_row(form.renderStyle) }}
               {{ form_row(form.template) }}
               {{ form_row(form.language) }}
+              <h3 class="mt-32 type-heading-02">Advanced options</h3>
+
+              {% set submissionLimitAccordion = {
+                  'id': 'submission_limit',
+                  'title': 'mautic.form.submission.limit_settings',
+                  'content': form_row(form.submissionLimit) ~ form_row(form.submissionLimitMessage)
+              } %}
+
+              {{ include('@MauticCore/Helper/accordion.html.twig', {
+                  'items': [submissionLimitAccordion]
+              }) }}
           </div>
       </div>
   </div>
