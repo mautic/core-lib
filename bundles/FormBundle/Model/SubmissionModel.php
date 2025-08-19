@@ -356,7 +356,7 @@ class SubmissionModel extends CommonFormModel
             if ($stats && null !== $stats['submission_limit'] && (int) $stats['submission_limit'] > 0 && (int) $stats['submission_count'] >= (int) $stats['submission_limit']) {
                 $conn->rollBack();
 
-                return ['errors' => [$form->getSubmissionLimitMessage() ?? $this->translator->trans('mautic.form.submission.limit_reached')]];
+                return ['errors' => $form->getSubmissionLimitMessage() ?? $this->translator->trans('mautic.form.submission.limit_reached')];
             }
 
             // Save the submission

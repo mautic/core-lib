@@ -95,9 +95,11 @@ class PublicController extends CommonFormController
                         if ($messengerMode || $isAjax) {
                             $error = $result['errors'];
                         } else {
-                            $error = ($result['errors']) ?
-                                $this->translator->trans('mautic.form.submission.errors').'<br /><ol><li>'.
-                                implode('</li><li>', $result['errors']).'</li></ol>' : false;
+                            if (is_array($result['errors'])) {
+                                $error = $this->translator->trans('mautic.form.submission.errors').'<br /><ol><li>'.implode('</li><li>', $result['errors']).'</li></ol>';
+                            } else {
+                                $error = (string) $result['errors'];
+                            }
                         }
                     } elseif (!empty($result['callback'])) {
                         /** @var SubmissionEvent $submissionEvent */
