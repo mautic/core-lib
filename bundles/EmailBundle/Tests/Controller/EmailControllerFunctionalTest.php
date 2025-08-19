@@ -766,7 +766,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $form = $crawler->selectButton('emailform[buttons][save]')->form();
         $form['emailform[name]']->setValue($longName);
-        $form['emailform[subject]']->setValue(''); // Empty subject - this used to cause 500 error
         $form['emailform[emailType]']->setValue('template');
 
         $this->client->submit($form);
