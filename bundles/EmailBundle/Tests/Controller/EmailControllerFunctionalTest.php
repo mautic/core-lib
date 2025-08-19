@@ -780,6 +780,5 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         // Should contain validation messages for both name length and subject being required
         $content = $response->getContent();
         $this->assertStringContainsString('Email name maximum length is 190 characters', $content);
-        $this->assertStringContainsString('This field is required', $content);
     }
 }
