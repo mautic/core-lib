@@ -168,7 +168,7 @@
             <div class="pa-md">
                 <div class="row">
                     <div class="col-sm-12">
-                        {% set stats = [
+                        {{ include('@MauticCore/Modules/stat--icon.html.twig', {'stats': [
                             {
                                 'title': 'mautic.form.stats.submission_counts.total',
                                 'value': submissionCounts['total'],
@@ -181,17 +181,7 @@
                                 'tooltip': 'mautic.form.stats.submission_counts.unique.desc',
                                 'icon': 'ri-user-6-line'
                             }
-                        ] %}
-                        {% if activeForm.submissionLimit is not null %}
-                            {% set limitTooltip = 'mautic.form.submission.limit_status'|trans({'%current%': submissionCounts['total'], '%limit%': activeForm.submissionLimit}) %}
-                            {% set stats = stats|merge([{
-                                'title': 'mautic.form.submission.limit',
-                                'value': activeForm.submissionLimit,
-                                'tooltip': limitTooltip,
-                                'icon': 'ri-error-warning-line'
-                            }]) %}
-                        {% endif %}
-                        {{ include('@MauticCore/Modules/stat--icon.html.twig', {'stats': stats}) }}
+                        ]}) }}
                         <div class="panel">
                             <div class="panel-body box-layout">
                                 <div class="col-xs-6 va-m">
