@@ -1197,4 +1197,25 @@ class SubmissionModel extends CommonFormModel
 
         return implode(', ', $value);
     }
+
+    /**
+     * Delete multiple entities and ensure submission count is decremented for each.
+     *
+     * @param mixed[] $ids
+     *
+     * @return mixed[]
+     */
+    public function deleteEntities($ids): array
+    {
+        $entities = [];
+        foreach ($ids as $id) {
+            $entity = $this->getEntity($id);
+            if ($entity) {
+                $entities[$id] = $entity;
+                $this->deleteEntity($entity);
+            }
+        }
+
+        return $entities;
+    }
 }
