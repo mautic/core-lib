@@ -2,6 +2,7 @@
 
 namespace Mautic\FormBundle\Tests\Model;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Mautic\CampaignBundle\Membership\MembershipManager;
 use Mautic\CampaignBundle\Model\CampaignModel;
@@ -206,7 +207,18 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         );
         $this->userHelper                 = $this->createMock(UserHelper::class);
         $this->fieldsWithUniqueIdentifier = $this->createMock(FieldsWithUniqueIdentifier::class);
+        $this->notificationModel          = $this->createMock(\Mautic\CoreBundle\Model\NotificationModel::class);
         $this->entityManager              = $this->createMock(EntityManager::class);
+        $this->connection                 = $this->createMock(Connection::class);
+        $this->entityManager->method('getConnection')->willReturn($this->connection);
+        $this->connection->method('beginTransaction')->willReturn(true);
+        $this->connection->method('commit')->willReturn(true);
+        $this->connection->method('rollBack')->willReturn(true);
+        $this->connection->method('executeStatement')->willReturn(1);
+        $this->connection->method('fetchAssociative')->willReturn(['submission_limit' => null, 'submission_count' => 0]);
+        $classMetadata = $this->createMock(\Doctrine\ORM\Mapping\ClassMetadata::class);
+        $classMetadata->method('getTableName')->willReturn('forms');
+        $this->entityManager->method('getClassMetadata')->willReturn($classMetadata);
         $this->submissioRepository        = $this->createMock(SubmissionRepository::class);
         $this->leadRepository             = $this->createMock(LeadRepository::class);
         $this->mockLogger                 = $this->createMock(Logger::class);
@@ -239,6 +251,7 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
             $this->contactTracker,
             $this->contactMerger,
             $this->fieldsWithUniqueIdentifier,
+            $this->notificationModel,
             $this->entityManager,
             $this->createMock(CorePermissions::class),
             $this->dispatcher,

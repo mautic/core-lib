@@ -128,6 +128,21 @@ class Form extends FormEntity implements UuidInterface
     private $progressiveProfilingLimit;
 
     /**
+     * @var int|null
+     */
+    private $submissionLimit;
+
+    /**
+     * @var string|null
+     */
+    private $submissionLimitMessage;
+
+    /**
+     * @var int
+     */
+    private $submissionCount = 0;
+
+    /**
      * This var is used to cache the result once gained from the loop.
      *
      * @var bool
@@ -220,6 +235,15 @@ class Form extends FormEntity implements UuidInterface
             ->setOrderBy(['dateSubmitted' => 'DESC'])
             ->mappedBy('form')
             ->fetchExtraLazy()
+            ->build();
+
+        $builder->addNullableField('submissionLimit', Types::INTEGER, 'submission_limit');
+        $builder->createField('submissionLimitMessage', 'text')
+            ->columnName('submission_limit_message')
+            ->nullable()
+            ->build();
+        $builder->createField('submissionCount', 'integer')
+            ->columnName('submission_count')
             ->build();
 
         $builder->addNullableField('formType', 'string', 'form_type');
@@ -879,5 +903,48 @@ class Form extends FormEntity implements UuidInterface
     public function getProgressiveProfilingLimit()
     {
         return $this->progressiveProfilingLimit;
+    }
+
+    public function setSubmissionLimit(?int $submissionLimit): self
+    {
+        $this->isChanged('submissionLimit', $submissionLimit);
+        $this->submissionLimit = $submissionLimit;
+
+        return $this;
+    }
+
+    public function getSubmissionLimit(): ?int
+    {
+        return $this->submissionLimit;
+    }
+
+    public function setSubmissionLimitMessage(?string $message): self
+    {
+        $this->isChanged('submissionLimitMessage', $message);
+        $this->submissionLimitMessage = $message;
+
+        return $this;
+    }
+
+    public function getSubmissionLimitMessage(): ?string
+    {
+        return $this->submissionLimitMessage;
+    }
+
+    public function getSubmissionCount(): int
+    {
+        return $this->submissionCount;
+    }
+
+    public function setSubmissionCount(int $count): self
+    {
+        $this->submissionCount = $count;
+
+        return $this;
+    }
+
+    public function isSubmissionLimitReached(): bool
+    {
+        return null !== $this->submissionLimit && $this->submissionLimit > 0 && $this->submissionCount >= $this->submissionLimit;
     }
 }

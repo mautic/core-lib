@@ -353,6 +353,12 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
      */
     public function getContent(Form $form, $withScript = true, $useCache = true): string
     {
+        if ($form->isSubmissionLimitReached()) {
+            $message = $form->getSubmissionLimitMessage() ?? $this->translator->trans('mautic.form.submission.limit_reached');
+
+            return sprintf('<div class="mautic-form-message">%s</div>', $message);
+        }
+
         $html = $this->getFormHtml($form, $useCache);
 
         if ($withScript) {

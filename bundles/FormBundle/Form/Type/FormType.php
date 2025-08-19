@@ -171,6 +171,24 @@ class FormType extends AbstractType
         $builder->add('publishUp', PublishUpDateType::class);
         $builder->add('publishDown', PublishDownDateType::class);
 
+        $builder->add('submissionLimit', TextType::class, [
+            'label'      => 'mautic.form.submission.limit',
+            'attr'       => [
+                'class' => 'form-control',
+                'style' => 'width:100px;',
+            ],
+            'required'   => false,
+        ]);
+
+        $builder->add('submissionLimitMessage', TextareaType::class, [
+            'label'      => 'mautic.form.submission.limit_message',
+            'attr'       => [
+                'class' => 'form-control',
+                'rows'  => 3,
+            ],
+            'required'   => false,
+        ]);
+
         $builder->add('postAction', ChoiceType::class, [
             'choices' => [
                 'mautic.form.form.postaction.message'  => 'message',
