@@ -2,6 +2,7 @@
 
 namespace Mautic\ReportBundle\Tests\Form\DataTransformer;
 
+use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\ReportBundle\Form\DataTransformer\ReportFilterDataTransformer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -21,9 +22,14 @@ class ReportFilterDataTransformerTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->originalTimezone = date_default_timezone_get();
+
+        // Force the timezone using reflection
+        $reflection = new \ReflectionClass(DateTimeHelper::class);
+        $property   = $reflection->getProperty('defaultLocalTimezone');
+        $property->setAccessible(true);
+        $property->setValue(null, self::LOCAL_TIMEZONE);
+
         date_default_timezone_set(self::LOCAL_TIMEZONE);
 
         $this->columns = [
@@ -35,6 +41,8 @@ class ReportFilterDataTransformerTest extends TestCase
             'c.email'       => ['type' => 'email'],
             'c.name'        => ['type' => 'text'],
         ];
+
+        parent::setUp();
     }
 
     protected function tearDown(): void
