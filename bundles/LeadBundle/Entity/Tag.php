@@ -19,12 +19,12 @@ use Mautic\CoreBundle\Helper\InputHelper;
 
 #[ApiResource(
     operations: [
-        new GetCollection(security: "is_granted('lead:leads:viewown')"),
-        new Post(security: "is_granted('lead:leads:create')"),
-        new Get(security: "is_granted('lead:leads:viewown')"),
-        new Put(security: "is_granted('lead:leads:editown')"),
-        new Patch(security: "is_granted('lead:leads:editother')"),
-        new Delete(security: "is_granted('lead:leads:deleteown')"),
+        new GetCollection(security: "is_granted('tagManager:tagManager:view')"),
+        new Post(security: "is_granted('tagManager:tagManager:create')"),
+        new Get(security: "is_granted('tagManager:tagManager:view')"),
+        new Put(security: "is_granted('tagManager:tagManager:edit')"),
+        new Patch(security: "is_granted('tagManager:tagManager:edit')"),
+        new Delete(security: "is_granted('tagManager:tagManager:delete')"),
     ],
     normalizationContext: [
         'groups'                  => ['leadfield:read'],
