@@ -201,13 +201,20 @@ class StageController extends AbstractFormController
             $themes[] = $actions['actions'][$actionType]['formTheme'];
         }
 
+        $stageWeights = $model->getRepository()->createQueryBuilder('s')
+            ->select('s.id, s.name, s.weight')
+            ->orderBy('s.weight', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
         return $this->delegateView(
             [
                 'viewParameters' => [
-                    'tmpl'      => $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index',
-                    'entity'    => $entity,
-                    'form'      => $form->createView(),
-                    'actions'   => $actions['actions'],
+                    'tmpl'         => $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index',
+                    'entity'       => $entity,
+                    'form'         => $form->createView(),
+                    'actions'      => $actions['actions'],
+                    'stageWeights' => $stageWeights,
                 ],
                 'contentTemplate' => '@MauticStage/Stage/form.html.twig',
                 'passthroughVars' => [
@@ -352,13 +359,20 @@ class StageController extends AbstractFormController
             $themes[] = $actions['actions'][$actionType]['formTheme'];
         }
 
+        $stageWeights = $model->getRepository()->createQueryBuilder('s')
+            ->select('s.id, s.name, s.weight')
+            ->orderBy('s.weight', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
         return $this->delegateView(
             [
                 'viewParameters' => [
-                    'tmpl'    => $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index',
-                    'entity'  => $entity,
-                    'form'    => $form->createView(),
-                    'actions' => $actions['actions'],
+                    'tmpl'         => $request->isXmlHttpRequest() ? $request->get('tmpl', 'index') : 'index',
+                    'entity'       => $entity,
+                    'form'         => $form->createView(),
+                    'actions'      => $actions['actions'],
+                    'stageWeights' => $stageWeights,
                 ],
                 'contentTemplate' => '@MauticStage/Stage/form.html.twig',
                 'passthroughVars' => [
