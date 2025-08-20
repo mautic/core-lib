@@ -226,10 +226,10 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $htmlLine2    = $crawler->filter('.email-list > tbody > tr:nth-child(2)')->html();
         $htmlLine3    = $crawler->filter('.email-list > tbody > tr:nth-child(3)')->html();
 
-        Assert::assertStringContainsString('ri-translate-2', $htmlLine1);
-        Assert::assertStringContainsString('ri-translate fs-14', $htmlLine2);
+        Assert::assertStringContainsString('ri-translate fs-14', $htmlLine1);
         Assert::assertStringContainsString('ri-translate-2', $htmlLine2);
-        Assert::assertStringContainsString('ri-translate fs-14', $htmlLine3);
+        Assert::assertStringContainsString('ri-translate fs-14', $htmlLine2);
+        Assert::assertStringContainsString('ri-translate-2', $htmlLine3);
     }
 
     public function testSegmentEmailSend(): void
