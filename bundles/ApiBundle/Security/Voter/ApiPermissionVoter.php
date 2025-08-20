@@ -9,11 +9,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ApiPermissionVoter extends Voter
 {
-    private CorePermissions $security;
-
-    public function __construct(CorePermissions $security)
+    public function __construct(private CorePermissions $security)
     {
-        $this->security = $security;
     }
 
     protected function supports(string $attribute, mixed $subject): bool
