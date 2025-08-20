@@ -125,13 +125,10 @@ class PageControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->submit($form);
 
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         $this->em->clear();
 
-        $pageDetail = $this->em->getRepository(Page::class)->find($pageId);
-        \assert($pageDetail instanceof Page);
-
-        Assert::assertEquals('New Page', $pageDetail->getTitle());
+        Assert::assertEquals('New Page', $this->em->find(Page::class, $pageId)->getTitle());
     }
 }

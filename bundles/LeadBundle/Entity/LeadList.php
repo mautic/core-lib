@@ -27,13 +27,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ApiResource(
+    shortName: 'Segments',
     operations: [
-        new GetCollection(security: "is_granted('lead:lists:viewown')"),
-        new Post(security: "is_granted('lead:lists:create')"),
-        new Get(security: "is_granted('lead:lists:viewown')"),
-        new Put(security: "is_granted('lead:lists:editown')"),
-        new Patch(security: "is_granted('lead:lists:editother')"),
-        new Delete(security: "is_granted('lead:lists:deleteown')"),
+        new GetCollection(uriTemplate: '/segments', security: "is_granted('lead:lists:viewown')"),
+        new Post(uriTemplate: '/segments', security: "is_granted('lead:lists:create')"),
+        new Get(uriTemplate: '/segments/{id}', security: "is_granted('lead:lists:viewown')"),
+        new Put(uriTemplate: '/segments/{id}', security: "is_granted('lead:lists:editown')"),
+        new Patch(uriTemplate: '/segments/{id}', security: "is_granted('lead:lists:editother')"),
+        new Delete(uriTemplate: '/segments/{id}', security: "is_granted('lead:lists:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['segment:read'],

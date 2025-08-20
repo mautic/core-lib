@@ -155,11 +155,8 @@ class Form extends FormEntity implements UuidInterface
     #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
     private Collection $submissions;
 
-    /**
-     * @var int
-     */
     #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
-    public $submissionCount;
+    public int $submission_count = 0;
 
     /**
      * @var string|null
