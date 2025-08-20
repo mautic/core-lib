@@ -48,6 +48,13 @@ class ReportFilterDataTransformerTest extends TestCase
     protected function tearDown(): void
     {
         date_default_timezone_set($this->originalTimezone);
+
+        // Reset the static property to null so it gets recalculated
+        $reflection = new \ReflectionClass(DateTimeHelper::class);
+        $property   = $reflection->getProperty('defaultLocalTimezone');
+        $property->setAccessible(true);
+        $property->setValue(null, null);
+
         parent::tearDown();
     }
 
