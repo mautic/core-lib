@@ -196,7 +196,7 @@ trait VariantEntityTrait
      */
     public function hasVariants(): int
     {
-        $children = $this->getTranslationChildren();
+        $children = $this->getVariantChildren();
 
         return count($children);
     }
