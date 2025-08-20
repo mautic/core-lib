@@ -32,7 +32,7 @@
             <div class="pr-lg pl-lg pt-md pb-md">
                 {{ form_row(form.weight) }}
                 {% if stageWeights is defined and stageWeights|length %}
-                    <div class="table-responsive mt-sm mb-lg" id="stage-weight-sequence"
+                    <div class="table-responsive mt-sm mb-32" id="stage-weight-sequence"
                          data-weights='{{ stageWeights|json_encode|raw }}'
                          data-weight-field-id="{{ form.weight.vars.id }}"
                          data-entity-id="{% if entity.getId() %}{{ entity.getId() }}{% endif %}">
