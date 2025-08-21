@@ -35,7 +35,7 @@ class StageControllerFunctionalTest extends MauticMysqlTestCase
 
         $crawler = $this->client->request('GET', '/s/stages/edit/'.$stage->getId());
         $form    = $crawler->selectButton('Save')->form();
-        $form['stage[projects]']->setValue([$project->getId()]);
+        $form['stage[projects]']->setValue((string) $project->getId());
 
         $this->client->submit($form);
 

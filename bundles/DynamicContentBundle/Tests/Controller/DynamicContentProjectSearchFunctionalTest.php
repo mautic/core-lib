@@ -37,7 +37,7 @@ final class DynamicContentProjectSearchFunctionalTest extends AbstractProjectSea
     /**
      * @return \Generator<string, array{searchTerm: string, expectedEntities: array<string>, unexpectedEntities: array<string>}>
      */
-    public function searchDataProvider(): \Generator
+    public static function searchDataProvider(): \Generator
     {
         yield 'search by one project' => [
             'searchTerm'          => 'project:"Project Two"',
