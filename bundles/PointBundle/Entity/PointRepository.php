@@ -122,20 +122,17 @@ class PointRepository extends CommonRepository
 
     protected function addSearchCommandWhereClause($q, $filter): array
     {
-        switch ($filter->command) {
-            case $this->translator->trans('mautic.project.searchcommand.name'):
-            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
-                return $this->handleProjectFilter(
-                    $this->_em->getConnection()->createQueryBuilder(),
-                    'point_id',
-                    'point_projects_xref',
-                    $this->getTableAlias(),
-                    $filter->string,
-                    $filter->not
-                );
-            default:
-                return $this->addStandardSearchCommandWhereClause($q, $filter);
-        }
+        return match ($filter->command) {
+            $this->translator->trans('mautic.project.searchcommand.name'), $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US') => $this->handleProjectFilter(
+                $this->_em->getConnection()->createQueryBuilder(),
+                'point_id',
+                'point_projects_xref',
+                $this->getTableAlias(),
+                $filter->string,
+                $filter->not
+            ),
+            default => $this->addStandardSearchCommandWhereClause($q, $filter),
+        };
     }
 
     /**

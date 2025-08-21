@@ -9,9 +9,7 @@ use Mautic\StageBundle\Entity\Stage;
 
 final class StageProjectSearchFunctionalTest extends AbstractProjectSearchTestCase
 {
-    /**
-     * @dataProvider searchDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('searchDataProvider')]
     public function testProjectSearch(string $searchTerm, array $expectedEntities, array $unexpectedEntities): void
     {
         $projectOne   = $this->createProject('Project One');
