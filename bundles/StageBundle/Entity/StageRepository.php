@@ -11,6 +11,7 @@ use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 class StageRepository extends CommonRepository
 {
     use ProjectRepositoryTrait;
+
     public function getEntities(array $args = [])
     {
         $q = $this
