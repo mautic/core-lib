@@ -97,11 +97,11 @@ final class TriggerModelTest extends \PHPUnit\Framework\TestCase
             $this->createMock(CoreParametersHelper::class)
         );
 
-        // reset private static property events in TriggerModel
+        // reset private property cachedEvents in TriggerModel instance
         $reflectionClass = new \ReflectionClass(TriggerModel::class);
-        $property        = $reflectionClass->getProperty('events');
+        $property        = $reflectionClass->getProperty('cachedEvents');
         $property->setAccessible(true);
-        $property->setValue(null, []);
+        $property->setValue($this->triggerModel, []);
     }
 
     public function testTriggerEvent(): void
@@ -139,12 +139,12 @@ final class TriggerModelTest extends \PHPUnit\Framework\TestCase
                         ]
                     );
 
-                    return true;
+                    return $event;
                 } elseif (EmailEvents::ON_SENT_EMAIL_TO_USER === $eventName) {
                     Assert::assertSame($contact, $event->getLead());
                     Assert::assertSame($triggerEvent, $event->getTriggerEvent());
 
-                    return true;
+                    return $event;
                 } else {
                     $this->fail("Unexpected event name: $eventName");
                 }
