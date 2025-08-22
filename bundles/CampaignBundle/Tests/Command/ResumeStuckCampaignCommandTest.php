@@ -402,6 +402,114 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $this->assertCount(1, $contact3Logs, 'Active contact 3 should have progressed to add points event');
     }
 
+    public function testDecisionTypeEventsAreIgnored(): void
+    {
+        $campaign = $this->createCampaign('Complex Campaign');
+        $campaign->setIsPublished(true);
+        $this->em->persist($campaign);
+        $this->em->flush();
+
+        $campaignId = $campaign->getId();
+
+        $contact1 = $this->createLead('Complex Contact 1');
+        $contact2 = $this->createLead('Complex Contact 2');
+        $contact3 = $this->createLead('Complex Contact 3');
+
+        $this->createCampaignLead($campaign, $contact1);
+        $this->createCampaignLead($campaign, $contact2);
+        $this->createCampaignLead($campaign, $contact3);
+
+        $rootEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action');
+
+        $decisionEvent = $this->createEvent('Asset Download Decision', $campaign, 'asset.download', 'decision', []);
+        $decisionEvent->setParent($rootEmail);
+
+        // Third level events - YES path from decision
+        $yesPathAction = $this->createEvent('Yes Path - Add Tag', $campaign, 'lead.changetags', 'action', [
+            'add_tags' => [
+                'greater than 4',
+            ],
+        ]);
+        $yesPathAction->setParent($decisionEvent);
+        $yesPathAction->setDecisionPath('yes');
+
+        // Third level events - NO path from decision
+        $noPathAction = $this->createEvent('No Path - Add Tag', $campaign, 'lead.changetags', 'action', [
+            'remove_tags' => [
+                'less than 4',
+            ],
+        ]);
+        $noPathAction->setParent($decisionEvent);
+        $noPathAction->setDecisionPath('no');
+
+        // Fourth level events from YES path
+        $yesFollowupEmail = $this->createEvent('Yes Path Followup', $campaign, 'email.send', 'action');
+        $yesFollowupEmail->setParent($yesPathAction);
+
+        // Fourth level events from NO path
+        $noFollowupEmail = $this->createEvent('No Path Followup', $campaign, 'email.send', 'action');
+        $noFollowupEmail->setParent($noPathAction);
+
+        $this->em->persist($decisionEvent);
+        $this->em->persist($yesPathAction);
+        $this->em->persist($noPathAction);
+        $this->em->persist($yesFollowupEmail);
+        $this->em->persist($noFollowupEmail);
+
+        // Create event logs to simulate events that have already been executed
+        // Contact 1 - executed root email and wait event, ready for decision
+        $this->createEventLog($contact1, $rootEmail, $campaign, 1);
+
+        // Contact 2 - executed decision event with yes path, stuck at yes path action
+        $this->createEventLog($contact2, $rootEmail, $campaign, 1);
+        $log = $this->createEventLog($contact2, $decisionEvent, $campaign, 1);
+        $log->setNonActionPathTaken(false); // Yes path
+
+        // Contact 3 - executed decision event with no path, stuck at no path action
+        $this->createEventLog($contact3, $rootEmail, $campaign, 1);
+        $log = $this->createEventLog($contact3, $decisionEvent, $campaign, 1);
+        $log->setNonActionPathTaken(true); // No path
+
+        $this->em->flush();
+
+        $output = $this->executeCommand(
+            [
+                'campaign-id'   => $campaignId,
+                '--dry-run'     => true,
+            ]
+        );
+
+        // Verify we found stuck contacts
+        $this->assertStringContainsString('Next Event ID', $output);
+        $this->assertStringContainsString('Next Event Name', $output);
+        $this->assertStringNotContainsString('Asset Download Decision', $output);
+        $this->assertStringContainsString('Yes Path - Add Tag', $output);
+        $this->assertStringContainsString('No Path - Add Tag', $output);
+
+        $output = $this->executeCommand(
+            [
+                'campaign-id' => $campaignId,
+            ]
+        );
+        $this->em->flush();
+
+        $this->assertStringContainsString('Executing next events', $output);
+        $this->assertStringContainsString('total events were executed', $output);
+
+        $contact1Logs = $this->findLeadEventLogs($campaign, $contact1->getId(), $decisionEvent->getId());
+        $this->assertCount(0, $contact1Logs, 'Contact 1 should NOT have progressed to the decision event');
+        $contact1Logs = $this->findLeadEventLogs($campaign, $contact1->getId(), $yesPathAction->getId());
+        $this->assertCount(0, $contact1Logs, 'Contact 1 should NOT have progressed to the yes path event');
+        $contact1Logs = $this->findLeadEventLogs($campaign, $contact1->getId(), $noPathAction->getId());
+        $this->assertCount(0, $contact1Logs, 'Contact 1 should NOT have progressed to the no path event');
+
+        $contact2Logs = $this->findLeadEventLogs($campaign, $contact2->getId(), $yesPathAction->getId());
+        $this->assertCount(1, $contact2Logs, 'Contact 2 should have progressed through yes path action');
+
+        $contact3Logs = $this->findLeadEventLogs($campaign, $contact3->getId(), $noPathAction->getId());
+        $this->assertCount(1, $contact3Logs, 'Contact 3 should have progressed through no path action');
+    }
+
     private function createStuckContactsTestData(): void
     {
         $campaign = $this->em->getRepository(Campaign::class)->find(1);
