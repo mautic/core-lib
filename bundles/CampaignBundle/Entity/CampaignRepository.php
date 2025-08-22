@@ -658,8 +658,8 @@ class CampaignRepository extends CommonRepository
                 'parent',
                 MAUTIC_TABLE_PREFIX.'campaign_events',
                 'ce',
-                'ce.campaign_id = :campaign_id AND ce.parent_id = parent.id AND ce.deleted IS NULL AND
-                 log.is_scheduled = 0'
+                "ce.campaign_id = :campaign_id AND ce.parent_id = parent.id AND ce.deleted IS NULL AND
+                 ce.event_type != 'decision' AND log.is_scheduled = 0"
             )
             // Check the executed events for the current rotation
             ->leftJoin(
