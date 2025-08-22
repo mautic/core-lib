@@ -184,8 +184,9 @@
     <!--/ left section -->
 
     <!-- right section -->
-    <div class="col-md-3 bdr-l height-auto">
+    <div class="col-md-3 height-auto">
         <!-- activity feed -->
+        <div class="mb-48" style="zoom: 0.8;">{{ include('@MauticSms/Sms/preview.html.twig') }}</div>
         {{- include('@MauticCore/Helper/recentactivity.html.twig', {'logs' : logs}) -}}
     </div>
     <!--/ right section -->
