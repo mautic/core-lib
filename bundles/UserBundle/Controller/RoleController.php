@@ -71,18 +71,11 @@ class RoleController extends FormController
             ]);
         }
 
-        $roleIds = [];
-
-        foreach ($items as $role) {
-            $roleIds[] = $role->getId();
-        }
-
         $pageHelper->rememberPage($page);
 
         return $this->delegateView([
             'viewParameters'  => [
                 'items'       => $items,
-                'userCounts'  => (!empty($roleIds)) ? $model->getRepository()->getUserCount($roleIds) : [],
                 'searchValue' => $filter,
                 'page'        => $page,
                 'limit'       => $limit,

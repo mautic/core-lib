@@ -18,6 +18,14 @@ class RoleRepository extends CommonRepository
     public function getEntities(array $args = [])
     {
         $q = $this->createQueryBuilder('r');
+        $q->select('r');
+
+        $sq = $this->_em->createQueryBuilder()
+            ->select('count(u.id)')
+            ->from(User::class, 'u')
+            ->where('u.role = r');
+
+        $q->addSelect('('.$sq->getDql().') as user_count');
 
         $args['qb'] = $q;
 
