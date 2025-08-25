@@ -431,7 +431,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     public function testImportWithTagsInCsvFile(): void
     {
         $mockLeadModel = $this->createMockLeadModelStub(['saveEntity', 'checkForDuplicateContact', 'modifyTags']);
-        $this->setupFieldModelReflection($mockLeadModel);
+        $this->setProperty($mockLeadModel, LeadModel::class, 'leadFieldModel', $this->fieldModelMock);
         $this->setupMockLeadModelForImport($mockLeadModel);
 
         $mockLeadModel->expects($this->once())->method('checkForDuplicateContact')->willReturn(new Lead());
@@ -450,7 +450,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $lead->setId(21);
 
         $mockLeadModel = $this->createMockLeadModelStub(['saveEntity', 'getEntity']);
-        $this->setupFieldModelReflection($mockLeadModel);
+        $this->setProperty($mockLeadModel, LeadModel::class, 'leadFieldModel', $this->fieldModelMock);
         $this->setupMockLeadModelForImport($mockLeadModel);
 
         $mockLeadModel->expects($this->once())->method('getEntity')->willReturn($lead);
@@ -842,17 +842,6 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $this->setProperty($mockLeadModel, LeadModel::class, 'leadFields', [
             ['alias' => 'email', 'type' => 'email', 'defaultValue' => ''],
         ]);
-    }
-
-    /**
-     * Sets up field model reflection property for a mock LeadModel.
-     */
-    private function setupFieldModelReflection(MockObject $mockLeadModel): void
-    {
-        $reflection         = new \ReflectionClass($mockLeadModel);
-        $reflectionProperty = $reflection->getProperty('leadFieldModel');
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($mockLeadModel, $this->fieldModelMock);
     }
 
     /**
