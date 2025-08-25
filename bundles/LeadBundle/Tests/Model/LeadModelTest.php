@@ -788,8 +788,9 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     /**
      * Creates and configures a mock UserHelper with a User.
      */
-    private function createMockUserHelper(): MockObject
+    private function createMockUserHelper(): UserHelper&MockObject
     {
+        /** @var UserHelper&MockObject $mockUserModel */
         $mockUserModel = $this->createMock(UserHelper::class);
         $mockUserModel->method('getUser')->willReturn(new User());
 
