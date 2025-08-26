@@ -42,32 +42,6 @@ return [
 
     'services' => [
         'others' => [
-            'mautic.webhook.notificator.webhookkillnotificator' => [
-                'class'     => Mautic\WebhookBundle\Notificator\WebhookKillNotificator::class,
-                'arguments' => [
-                    'mautic.webhook.notificator.webhooknotificationsender',
-                    'translator',
-                ],
-            ],
-            'mautic.webhook.notificator.webhookfailurenotificator' => [
-                'class'     => Mautic\WebhookBundle\Notificator\WebhookFailureNotificator::class,
-                'arguments' => [
-                    'mautic.webhook.notificator.webhooknotificationsender',
-                    'translator',
-                ],
-            ],
-            'mautic.webhook.notificator.webhooknotificationsender' => [
-                'class'     => Mautic\WebhookBundle\Notificator\WebhookNotificationSender::class,
-                'arguments' => [
-                    'twig',
-                    'mautic.core.model.notification',
-                    'doctrine.orm.entity_manager',
-                    'mautic.helper.mailer',
-                    'mautic.helper.core_parameters',
-                    'mautic.user.repository',
-                    'event_dispatcher',
-                ],
-            ],
             'mautic.webhook.campaign.helper' => [
                 'class'     => Mautic\WebhookBundle\Helper\CampaignHelper::class,
                 'arguments' => [
