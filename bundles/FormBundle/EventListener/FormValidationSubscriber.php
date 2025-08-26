@@ -44,7 +44,9 @@ class FormValidationSubscriber implements EventSubscriberInterface
             ]
         );
 
-        if (!empty($this->coreParametersHelper->get('do_not_submit_emails'))) {
+        if (!empty($this->coreParametersHelper->get('do_not_submit_emails'))
+            || !empty($this->coreParametersHelper->get('blocked_free_email_providers'))
+        ) {
             $event->addValidator(
                 'email.validation',
                 [
@@ -84,12 +86,26 @@ class FormValidationSubscriber implements EventSubscriberInterface
     {
         $field = $event->getField();
         $value = $event->getValue();
-        if ('email' === $field->getType() && !empty($field->getValidation()['donotsubmit'])) {
+
+        if ('email' !== $field->getType()) {
+            return;
+        }
+
+        if (!empty($field->getValidation()['donotsubmit'])) {
             // Check the domains using shell wildcard patterns
             $donotSubmitFilter  = fn ($doNotSubmitArray): bool => fnmatch($doNotSubmitArray, $value, FNM_CASEFOLD);
             $notNotSubmitEmails = $this->coreParametersHelper->get('do_not_submit_emails');
             if (array_filter($notNotSubmitEmails, $donotSubmitFilter)) {
                 $event->failedValidation(ArrayHelper::getValue('donotsubmit_validationmsg', $field->getValidation()));
+            }
+        }
+
+        if (!empty($field->getValidation()['blockfreeemail'])) {
+            $blockedProviders = $this->coreParametersHelper->get('blocked_free_email_providers') ?? [];
+            $domain           = strtolower((string) substr(strrchr($value, '@'), 1));
+            $blockedProviders = array_map('strtolower', $blockedProviders);
+            if ($domain && in_array($domain, $blockedProviders, true)) {
+                $event->failedValidation(ArrayHelper::getValue('blockfreeemail_validationmsg', $field->getValidation()));
             }
         }
     }
