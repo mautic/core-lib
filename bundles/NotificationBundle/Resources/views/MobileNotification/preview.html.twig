@@ -4,37 +4,37 @@
 #}
 
 {% set notificationWrapper %}
-<div class="notification-preview">
-  <div class="notification-preview__body animation--grow">
-      <div class="notification-preview__container">
-        <div class="notification-preview__notification">
-          <span class="notification-preview__before"></span>
-          <header class="notification-preview__header">
-            <div class="notification-preview__heading tt-u">{{ configGetParameter('brand_name') }}</div>
-            <span class="notification-preview__timestamp">{{ 'mautic.core.now'|trans }}</span>
+<div class="mobile-notification-preview">
+  <div class="mobile-notification-preview__body animation--grow">
+      <div class="mobile-notification-preview__container">
+        <div class="mobile-notification-preview__notification">
+          <span class="mobile-notification-preview__before"></span>
+          <header class="mobile-notification-preview__header">
+            <div class="mobile-notification-preview__heading tt-u">{{ configGetParameter('brand_name') }}</div>
+            <span class="mobile-notification-preview__timestamp">{{ 'mautic.core.now'|trans }}</span>
           </header>
-          <div class="notification-preview__content">
-            <span class="notification-preview__title fw-sb">{{ notification.heading }}</span>
+          <div class="mobile-notification-preview__content">
+            <span class="mobile-notification-preview__title fw-sb">{{ notification.heading }}</span>
             {% if notification.mobileSettings.ios_subtitle %}
-            <span class="notification-preview__subtitle fw-sb">{{ notification.mobileSettings.ios_subtitle }}</span>
+            <span class="mobile-notification-preview__subtitle fw-sb">{{ notification.mobileSettings.ios_subtitle }}</span>
             {% endif %}
-            <span class="notification-preview__message">{{ notification.message }}</span>
-            <span class="notification-preview__more">{{ 'mautic.notification.preview.more_notifications'|trans }}</span>
+            <span class="mobile-notification-preview__message">{{ notification.message }}</span>
+            <span class="mobile-notification-preview__more">{{ 'mautic.notification.preview.more_notifications'|trans }}</span>
           </div>
         </div>
       </div>
     </div>
-    <div class="notification-preview__body">
-      <div class="notification-preview__container">
-        <div class="notification-preview__notification">
-          <span class="notification-preview__before" style="top: -294.15px;"></span>
+    <div class="mobile-notification-preview__body">
+      <div class="mobile-notification-preview__container">
+        <div class="mobile-notification-preview__notification">
+          <span class="mobile-notification-preview__before" style="top: -294.15px;"></span>
         </div>
       </div>
     </div>
-    <div class="notification-preview__body">
-      <div class="notification-preview__container">
-      <div class="notification-preview__notification">
-        <span class="notification-preview__before" style="top: -310.625px;"></span>
+    <div class="mobile-notification-preview__body">
+      <div class="mobile-notification-preview__container">
+      <div class="mobile-notification-preview__notification">
+        <span class="mobile-notification-preview__before" style="top: -310.625px;"></span>
       </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
 {% endset %}
 
 {% if notification.url %}
-<a href="{{ notification.url }}" class="notification-wrapper" target="_blank">
+<a href="{{ notification.url }}" class="mobile-notification-wrapper" target="_blank">
     {{ notificationWrapper }}
 </a>
 {% else %}
