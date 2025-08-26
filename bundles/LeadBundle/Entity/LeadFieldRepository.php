@@ -383,7 +383,7 @@ class LeadFieldRepository extends CommonRepository
         $q->select('l.id')
             ->from(MAUTIC_TABLE_PREFIX.'leads', 'l')
             ->where(
-                $q->expr()->andX(
+                $q->expr()->and(
                     $q->expr()->eq('l.id', ':lead'),
                     ('empty' === $operatorExpr) ?
                         $q->expr()->isNull($property)

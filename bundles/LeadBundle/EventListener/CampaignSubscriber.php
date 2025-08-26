@@ -526,9 +526,9 @@ class CampaignSubscriber implements EventSubscriberInterface
             } else {
                 $operators = OperatorOptions::getFilterExpressionFunctions();
                 $field     = $event->getConfig()['field'];
-                $value     = $event->getConfig()['value'];
+                $value     = $event->getConfig()['value'] ?? '';
                 $operator  = $event->getConfig()['operator'];
-                $fields    = $lead->getFields(true);
+                $fields    = $this->getFields($lead);
 
                 $fieldType  = '';
                 $fieldValue = $value;
@@ -538,7 +538,6 @@ class CampaignSubscriber implements EventSubscriberInterface
                 }
 
                 // Preventing date/datetime fields to fail on empty/notEmpty
-                // check.
                 if (in_array($fieldType, ['date', 'datetime']) && in_array($operator, ['empty', '!empty'])) {
                     $result     = $this->leadFieldModel->getRepository()->compareEmptyDateValue(
                         $lead->getId(),

@@ -8,15 +8,18 @@ use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\FormBundle\Model\FieldModel;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadDevice;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\EventListener\CampaignSubscriber;
+use Mautic\LeadBundle\Model\FieldModel;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class CampaignSubscriberTest extends MauticMysqlTestCase
 {
+    protected $useCleanupRollback = false;
+
     private CampaignSubscriber $campaignSubscriber;
 
     protected function setUp(): void
@@ -86,7 +89,10 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
         Assert::assertTrue($result->getResult());
     }
 
-    public function dataEventProperties(): iterable
+    /**
+     * @return iterable<array{0: array<string, string>, 1: array<string, string>, 2: bool}>
+     */
+    public static function dataEventProperties(): iterable
     {
         yield [
             ['type' => 'datetime', 'alias' => 'date_field'],
@@ -106,8 +112,10 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
     }
 
     /**
-     * @dataProvider dataEventProperties
+     * @param array<string, string> $field
+     * @param array<string, string> $properties
      */
+    #[DataProvider('dataEventProperties')]
     public function testOnCampaignTriggerConditionReturnsCorrectResultsForLeadFieldContext(array $field, array $properties, bool $expected): void
     {
         $this->makeField($field);
@@ -138,12 +146,15 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
             'eventSettings'   => [],
         ];
 
-        $campaignExecutionEvent = new CampaignExecutionEvent($eventProperties, false);
+        $campaignExecutionEvent = new CampaignExecutionEvent($eventProperties, false); // @phpstan-ignore new.deprecated
         $result                 = $this->campaignSubscriber->onCampaignTriggerCondition($campaignExecutionEvent);
-        $this->assertInstanceOf(CampaignExecutionEvent::class, $result);
+        $this->assertInstanceOf(CampaignExecutionEvent::class, $result); // @phpstan-ignore classConstant.deprecatedClass
         $this->assertSame($expected, $result->getResult());
     }
 
+    /**
+     * @param array<string, string> $fieldDetails
+     */
     private function makeField(array $fieldDetails): void
     {
         // Create a field and add it to the lead object.
@@ -155,10 +166,13 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
         $field->setAlias($fieldDetails['alias']);
 
         /** @var FieldModel $fieldModel */
-        $fieldModel = $this->container->get('mautic.lead.model.field');
+        $fieldModel = $this->getContainer()->get('mautic.lead.model.field');
         $fieldModel->saveEntity($field);
     }
 
+    /**
+     * @param array<string, string> $fieldDetails
+     */
     private function createTestLead(array $fieldDetails): Lead
     {
         // Create a contact

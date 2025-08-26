@@ -11,6 +11,7 @@ use Doctrine\ORM\QueryBuilder as OrmQueryBuilder;
 use Mautic\CoreBundle\Test\Doctrine\RepositoryConfiguratorTrait;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadFieldRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -364,6 +365,9 @@ final class LeadFieldRepositoryTest extends TestCase
         return $query;
     }
 
+    /**
+     * @return iterable<array{0: string, 1: array<string, int>|array<empty>, 2: bool}>
+     */
     public static function dataGetEmptyOperators(): iterable
     {
         yield ['empty', ['id' => 123],  true];
@@ -373,8 +377,9 @@ final class LeadFieldRepositoryTest extends TestCase
     }
 
     /**
-     * @dataProvider dataGetEmptyOperators
+     * @param array<string, int>|array<empty> $returnValue
      */
+    #[DataProvider('dataGetEmptyOperators')]
     public function testCompareEmptyDateValueForContactField(string $operator, array $returnValue, bool $expected): void
     {
         $contactId        = 12;
