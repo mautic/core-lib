@@ -2,28 +2,10 @@
   Variables
     - notification
 #}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">
-            {{ notification.heading }}
-            {% if notification.url %}
-            <span class="pull-right">
-                <a href="{{ notification.url }}" target="_blank"><span class="ri-external-link-line"></span></a>
-            </span>
-            {% endif %}
-        </h3>
-    </div>
-    <div class="panel-body">
-        <p>{{ notification.message }}</p>
-        {% if notification.url and notification.button %}
-            <br>
-            <p><a href="{{ notification.url }}" class="btn btn-primary">{{ notification.button }}</a></p>
-        {% endif %}
-    </div>
-</div>
 
+{% set notificationWrapper %}
 <div class="notification-preview">
-  <div class="notification-preview__body">
+  <div class="notification-preview__body animation--grow">
       <div class="notification-preview__container">
         <div class="notification-preview__notification">
           <span class="notification-preview__before"></span>
@@ -56,3 +38,12 @@
         </div>
     </div>
 </div>
+{% endset %}
+
+{% if notification.url %}
+<a href="{{ notification.url }}" class="notification-wrapper" target="_blank">
+    {{ notificationWrapper }}
+</a>
+{% else %}
+    {{ notificationWrapper }}
+{% endif %}
