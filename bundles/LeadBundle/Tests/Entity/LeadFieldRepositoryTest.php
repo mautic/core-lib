@@ -362,7 +362,9 @@ final class LeadFieldRepositoryTest extends TestCase
         $query->method('setMaxResults')->willReturnSelf();
 
         return $query;
-    public function dataGetEmptyOperators(): iterable
+    }
+
+    public static function dataGetEmptyOperators(): iterable
     {
         yield ['empty', ['id' => 123],  true];
         yield ['!empty', ['id' => 123],  true];
@@ -380,8 +382,8 @@ final class LeadFieldRepositoryTest extends TestCase
         $value            = '';
         $builderAlias     = $this->createMock(QueryBuilder::class);
         $builderCompare   = $this->createMock(QueryBuilder::class);
-        $statementAlias   = $this->createMock(Statement::class);
-        $statementCompare = $this->createMock(Statement::class);
+        $statementAlias   = $this->createMock(Result::class);
+        $statementCompare = $this->createMock(Result::class);
         $exprCompare      = $this->createMock(ExpressionBuilder::class);
 
         $this->entityManager->method('getConnection')->willReturn($this->connection);
@@ -390,7 +392,7 @@ final class LeadFieldRepositoryTest extends TestCase
 
         $this->connection->expects($this->exactly(2))
             ->method('createQueryBuilder')
-            ->will($this->onConsecutiveCalls($builderCompare, $builderAlias));
+            ->willReturnOnConsecutiveCalls($builderCompare, $builderAlias);
 
         $builderAlias->expects($this->once())
             ->method('select')
@@ -417,12 +419,12 @@ final class LeadFieldRepositoryTest extends TestCase
             ->willReturnSelf();
 
         $builderAlias->expects($this->once())
-            ->method('execute')
+            ->method('executeQuery')
             ->willReturn($statementAlias);
 
         // No company column found. Therefore it's a contact field.
         $statementAlias->expects($this->once())
-            ->method('fetchAll')
+            ->method('fetchAllAssociative')
             ->willReturn([]);
 
         $exprCompare->expects($this->once())
@@ -458,12 +460,12 @@ final class LeadFieldRepositoryTest extends TestCase
             ->willReturnSelf();
 
         $builderCompare->expects($this->once())
-            ->method('execute')
+            ->method('executeQuery')
             ->willReturn($statementCompare);
 
         // No contact ID was found by the value so the result should be false.
         $statementCompare->expects($this->once())
-            ->method('fetch')
+            ->method('fetchAssociative')
             ->willReturn($returnValue);
 
         $this->assertSame($expected, $this->repository->compareEmptyDateValue($contactId, $fieldAlias, $operator));

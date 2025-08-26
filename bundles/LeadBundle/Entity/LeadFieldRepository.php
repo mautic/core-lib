@@ -392,7 +392,7 @@ class LeadFieldRepository extends CommonRepository
                 )
             )
             ->setParameter('lead', $lead, \PDO::PARAM_INT);
-        $result = $q->execute()->fetch();
+        $result = $q->executeQuery()->fetchAssociative();
 
         return !empty($result['id']);
     }
