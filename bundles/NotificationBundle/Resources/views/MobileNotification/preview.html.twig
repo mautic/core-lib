@@ -23,154 +23,36 @@
 </div>
 
 <div class="notification-preview">
-<div class="notification-preview__body">
-    <div class="notification-preview__container">
-      <div class="notification-preview__notification" style="color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0.5);">
-        <span class="notification-preview__before" style="top: -275.039px; opacity: 1;"></span>
-        <span class="notification-preview__after" style="top: -275.039px; opacity: 0;"></span>
-        <header class="notification-preview__header">
-          <div class="notification-preview__heading">{{ configGetParameter('brand_name') }}</div>
-          <span class="notification-preview__timestamp">Now</span>
-        </header>
-        <div class="notification-preview__content">
-          <span class="notification-preview__sender">{{ notification.heading }}</span>
-          <span class="notification-preview__message">{{ notification.message }}</span>
-          <span class="notification-preview__more">2 more notifications</span>
+  <div class="notification-preview__body">
+      <div class="notification-preview__container">
+        <div class="notification-preview__notification">
+          <span class="notification-preview__before"></span>
+          <header class="notification-preview__header">
+            <div class="notification-preview__heading tt-u">{{ configGetParameter('brand_name') }}</div>
+            <span class="notification-preview__timestamp">{{ 'mautic.core.now'|trans }}</span>
+          </header>
+          <div class="notification-preview__content">
+            <span class="notification-preview__title fw-sb">{{ notification.heading }}</span>
+            <span class="notification-preview__subtitle fw-sb">{{ notification.mobileSettings.ios_subtitle }}</span>
+
+            <span class="notification-preview__message">{{ notification.message }}</span>
+            <span class="notification-preview__more">{{ 'mautic.notification.preview.more_notifications'|trans }}</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="notification-preview__body">
-    <div class="notification-preview__container">
-      <div class="notification-preview__notification" style="color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0.4);">
-        <span class="notification-preview__before" style="top: -294.15px; opacity: 1;"></span>
-        <span class="notification-preview__after" style="top: -294.15px; opacity: 0;"></span>
+    <div class="notification-preview__body">
+      <div class="notification-preview__container">
+        <div class="notification-preview__notification">
+          <span class="notification-preview__before" style="top: -294.15px;"></span>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="notification-preview__body">
-    <div class="notification-preview__container">
-      <div class="notification-preview__notification" style="color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0.3);">
-        <span class="notification-preview__before" style="top: -310.625px; opacity: 1;"></span>
-        <span class="notification-preview__after" style="top: -310.625px; opacity: 0;"></span>
+    <div class="notification-preview__body">
+      <div class="notification-preview__container">
+      <div class="notification-preview__notification">
+        <span class="notification-preview__before" style="top: -310.625px;"></span>
       </div>
         </div>
     </div>
 </div>
-
-  <style>
-
-.notification-preview__before, .notification-preview__after {
-	will-change: opacity;
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-}
-.notification-preview__before {
-	z-index: -1;
-	background: #151F33 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/345377/mojave-night.jpg') no-repeat center center / cover;
-}
-.notification-preview__after {
-	z-index: -2;
-	background: #B27247 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/345377/mojave-day.jpg') no-repeat center center / cover;
-}
-.notification-preview {
-    opacity: 1;
-    transform: matrix(1, 0, 0, 1, 0, 0);
-    will-change: opacity, transform;
-    perspective: 800px;
-    margin-bottom: 16px;
-
-	.notification-preview__body {
-		position: relative;
-		padding: 8px;
-		&:not(:first-child) {
-			position: absolute;
-			width: 100%;
-			top: 0;
-			left: 0;
-			.notification-preview__notification {
-				.notification-preview__before, .notification-preview__after {
-					filter: blur($p);
-				}
-			}
-		}
-		&:nth-child(1) {
-			z-index: 3;
-			.notification-preview__notification {
-				background-color: rgba(white, 0.7);
-				.notification-preview__before, .notification-preview__after {
-					filter: saturate(130%) blur(16px);
-				}
-			}
-		}
-		&:nth-child(2) {
-			transform: translateY(16px) translateZ(calc(-16px*4));
-			z-index: 2;
-			.notification-preview__notification {
-				background-color: rgba(white, 0.6);
-			}
-		}
-		&:nth-child(3) {
-			transform: translateY(32px) translateZ(calc(-16px*8));
-			z-index: 1;
-			.notification-preview__notification {
-				background-color: rgba(white, 0.5);
-			}
-		}
-	}
-}
-
-.notification-preview__container {
-	clip-path: inset(0 0 0 0 round 16px 16px 16px 16px);
-}
-
-.notification-preview__notification {
-	position: relative;
-	overflow: hidden;
-	height: 116px;
-	padding: 16px;
-	border-radius: 16px;
-	background-color: rgba(white, 0.9);
-	color: black;
-	.notification-preview__header, .notification-preview__more {
-		opacity: 0.75;
-	}
-	.notification-preview__header {
-		display: flex;
-		justify-content: space-between;
-		padding-bottom: 8px;
-		font-size: 12px;
-		.notification-preview__heading {
-			text-transform: uppercase;
-		}
-		.notification-preview__timestamp {
-			text-transform: lowercase;
-		}
-	}
-	.notification-preview__content {
-		span {
-			display: block;
-			line-height: 1.4;
-		}
-		.notification-preview__message {
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-		.notification-preview__sender, .notification-preview__event {
-			font-weight: 600;
-		}
-		.notification-preview__more {
-			margin-top: 4px;
-			font-size: 12px;
-		}
-	}
-	.notification-preview__before, .notification-preview__after {
-		left: calc(50% - 50vw);
-	}
-}
-  </style>
