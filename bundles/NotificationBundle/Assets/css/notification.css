@@ -1,4 +1,4 @@
-.mobile-notification-preview__before {
+.notification-preview__before {
 	top: -275.039px;
 	left: calc(50% - 50vw);
 	position: absolute;
@@ -9,56 +9,56 @@
 	background: #B27247 url('../img/sand-dunes-day-GeReAnOMiZ8.jpg') no-repeat center center / cover;
 }
 
-:root[theme="dark"] .mobile-notification-preview__before {
+:root[theme="dark"] .notification-preview__before {
 	background: #151F33 url('../img/sand-dunes-night-0O6ZE9oX68k.jpg') no-repeat center center / cover;
 }
 
-.mobile-notification-preview {
+.notification-preview {
     will-change: opacity, transform;
     perspective: 800px;
 }
 
-.mobile-notification-preview__body {
+.notification-preview__body {
 	position: relative;
 }
 
-.mobile-notification-preview__body:nth-child(1) {
+.notification-preview__body:nth-child(1) {
 	z-index: 3;
 }
 
-.mobile-notification-preview__body:nth-child(1) .mobile-notification-preview__notification {
+.notification-preview__body:nth-child(1) .notification-preview__notification {
 	background-color: rgba(0, 0, 0, 0.5);
 }
 
-.mobile-notification-preview__body:nth-child(1) .mobile-notification-preview__notification .mobile-notification-preview__before {
+.notification-preview__body:nth-child(1) .notification-preview__notification .notification-preview__before {
 	filter: saturate(160%);
 }
 
-.mobile-notification-preview__body:nth-child(2) {
+.notification-preview__body:nth-child(2) {
     margin-top: -100px;
 	transform: translateZ(calc(-16px*4));
 	z-index: 2;
 }
 
-.mobile-notification-preview__body:nth-child(2) .mobile-notification-preview__notification {
+.notification-preview__body:nth-child(2) .notification-preview__notification {
 	background-color: rgba(0, 0, 0, 0.4);
 }
 
-.mobile-notification-preview__body:nth-child(3) {
+.notification-preview__body:nth-child(3) {
     margin-top: -100px;
 	transform: translateZ(calc(-16px*8));
 	z-index: 1;
 }
 
-.mobile-notification-preview__body:nth-child(3) .mobile-notification-preview__notification {
+.notification-preview__body:nth-child(3) .notification-preview__notification {
 	background-color: rgba(0, 0, 0, 0.3);
 }
 
-.mobile-notification-preview__container {
+.notification-preview__container {
 	clip-path: inset(0 0 0 0 round 16px 16px 16px 16px);
 }
 
-.mobile-notification-preview__notification {
+.notification-preview__notification {
 	position: relative;
 	overflow: hidden;
 	min-height: 116px;
@@ -68,34 +68,34 @@
 	color: white;
 }
 
-.mobile-notification-preview__header,
-.mobile-notification-preview__more {
+.notification-preview__header,
+.notification-preview__more {
 	opacity: 0.75;
 }
 
-.mobile-notification-preview__header {
+.notification-preview__header {
 	display: flex;
 	justify-content: space-between;
 	padding-bottom: 8px;
 	font-size: 12px;
 }
 
-.mobile-notification-preview__timestamp {
+.notification-preview__timestamp {
 	text-transform: lowercase;
 }
 
-.mobile-notification-preview__content span {
+.notification-preview__content span {
 	display: block;
 	line-height: 1.4;
 }
 
-.mobile-notification-preview__message {
+.notification-preview__message {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-.mobile-notification-preview__more {
+.notification-preview__more {
 	margin-top: 4px;
 	font-size: 12px;
 }
