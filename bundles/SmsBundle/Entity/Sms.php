@@ -166,10 +166,6 @@ class Sms extends FormEntity implements UuidInterface
 
         $builder->addIdColumns();
 
-//        $builder->createField('language', 'string')
-//            ->columnName('lang')
-//            ->build();
-
         $builder->createField('message', 'text')
             ->build();
 

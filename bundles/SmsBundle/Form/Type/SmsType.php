@@ -30,7 +30,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SmsType extends AbstractType
 {
     public function __construct(
-        private EntityManager $em,
+        private readonly EntityManager $em,
     ) {
     }
 
@@ -164,7 +164,6 @@ class SmsType extends AbstractType
                 $event->setData($data);
             }
         );
-
 
         $builder->add('smsType', HiddenType::class);
         $builder->add('buttons', FormButtonsType::class);
