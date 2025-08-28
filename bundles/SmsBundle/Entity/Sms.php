@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
+use Mautic\CoreBundle\Entity\TranslationEntityInterface;
+use Mautic\CoreBundle\Entity\TranslationEntityTrait;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Validator\EntityEvent;
@@ -49,6 +51,7 @@ class Sms extends FormEntity implements UuidInterface
 {
     use UuidTrait;
     use ProjectTrait;
+    use TranslationEntityTrait;
 
     /**
      * @var int
@@ -133,6 +136,8 @@ class Sms extends FormEntity implements UuidInterface
         $this->stats     = new ArrayCollection();
         $this->sentCount = 0;
 
+        $this->clearTranslations();
+
         parent::__clone();
     }
 
@@ -141,6 +146,7 @@ class Sms extends FormEntity implements UuidInterface
         $this->lists = new ArrayCollection();
         $this->stats = new ArrayCollection();
         $this->initializeProjects();
+        $this->translationChildren = new ArrayCollection();
     }
 
     /**
@@ -160,9 +166,9 @@ class Sms extends FormEntity implements UuidInterface
 
         $builder->addIdColumns();
 
-        $builder->createField('language', 'string')
-            ->columnName('lang')
-            ->build();
+//        $builder->createField('language', 'string')
+//            ->columnName('lang')
+//            ->build();
 
         $builder->createField('message', 'text')
             ->build();
@@ -194,6 +200,8 @@ class Sms extends FormEntity implements UuidInterface
             ->cascadePersist()
             ->fetchExtraLazy()
             ->build();
+
+        self::addTranslationMetadata($builder, self::class);
 
         static::addUuidField($builder);
         self::addProjectsField($builder, 'sms_projects_xref', 'sms_id');
@@ -364,25 +372,6 @@ class Sms extends FormEntity implements UuidInterface
     {
         $this->isChanged('message', $message);
         $this->message = $message;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLanguage()
-    {
-        return $this->language;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setLanguage($language)
-    {
-        $this->isChanged('language', $language);
-        $this->language = $language;
-
-        return $this;
     }
 
     /**
