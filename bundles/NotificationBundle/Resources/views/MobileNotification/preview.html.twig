@@ -10,12 +10,12 @@
         <div class="notification-preview__notification">
           <span class="notification-preview__before"></span>
           <header class="notification-preview__header">
-            <div class="notification-preview__heading tt-u">{{ configGetParameter('brand_name') }}</div>
+            <div class="notification-preview__heading tt-u">{{ configGetParameter('brand_name')|default('') }}</div>
             <span class="notification-preview__timestamp">{{ 'mautic.core.now'|trans }}</span>
           </header>
           <div class="notification-preview__content">
             <span class="notification-preview__title fw-sb">{{ notification.heading }}</span>
-            {% if notification.mobileSettings.ios_subtitle %}
+            {% if notification.mobileSettings.ios_subtitle is defined %}
             <span class="notification-preview__subtitle fw-sb">{{ notification.mobileSettings.ios_subtitle }}</span>
             {% endif %}
             <span class="notification-preview__message">{{ notification.message }}</span>
