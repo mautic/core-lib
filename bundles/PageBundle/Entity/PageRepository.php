@@ -166,7 +166,7 @@ class PageRepository extends CommonRepository
                     $langUnique => $langValue,
                     $unique     => $filter->string,
                 ];
-                $expr            = '('.(string) $q->expr()->eq('p.language', ":$unique").' OR '.(string) $q->expr()->like('p.language', ":$langUnique").')';
+                $expr            = '('.$q->expr()->eq('p.language', ":$unique").' OR '.$q->expr()->like('p.language', ":$langUnique").')';
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.page.searchcommand.isprefcenter'):

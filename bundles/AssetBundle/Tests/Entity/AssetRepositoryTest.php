@@ -31,9 +31,7 @@ class AssetRepositoryTest extends TestCase
         return $repository;
     }
 
-    /**
-     * @dataProvider dataExpirationFilters
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataExpirationFilters')]
     public function testAddSearchCommandWhereClauseHandlesExpirationFilters(string $command, string $expected): void
     {
         $repository = $this->getRepository();
@@ -49,6 +47,9 @@ class AssetRepositoryTest extends TestCase
         self::assertSame(['par1' => true], $params);
     }
 
+    /**
+     * @return iterable<array{0: string, 1: string}>
+     */
     public static function dataExpirationFilters(): iterable
     {
         yield ['is:expired', "(a.isPublished = :par1 AND a.publishDown IS NOT NULL AND a.publishDown <> '' AND a.publishDown < CURRENT_TIMESTAMP())"];

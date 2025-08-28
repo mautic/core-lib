@@ -120,7 +120,7 @@ class AssetRepository extends CommonRepository
                     $langUnique => $langValue,
                     $unique     => $filter->string,
                 ];
-                $expr            = '('.(string) $q->expr()->eq('a.language', ":$unique").' OR '.(string) $q->expr()->like('a.language', ":$langUnique").')';
+                $expr            = '('.$q->expr()->eq('a.language', ":$unique").' OR '.$q->expr()->like('a.language', ":$langUnique").')';
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.project.searchcommand.name'):

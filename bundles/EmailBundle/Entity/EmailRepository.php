@@ -583,7 +583,7 @@ class EmailRepository extends CommonRepository
                     $langUnique => $langValue,
                     $unique     => $filter->string,
                 ];
-                $expr            = '('.(string) $q->expr()->eq('e.language', ":$unique").' OR '.(string) $q->expr()->like('e.language', ":$langUnique").')';
+                $expr            = '('.$q->expr()->eq('e.language', ":$unique").' OR '.$q->expr()->like('e.language', ":$langUnique").')';
                 $returnParameter = true;
                 break;
             case $this->translator->trans('mautic.project.searchcommand.name'):
