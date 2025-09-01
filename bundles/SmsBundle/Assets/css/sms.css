@@ -335,6 +335,9 @@
   .phone-preview__message-content {
     z-index: 1;
     position: relative;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .phone-preview__message--to:before {
