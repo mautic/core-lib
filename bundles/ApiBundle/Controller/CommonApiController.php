@@ -356,7 +356,6 @@ class CommonApiController extends FetchCommonApiController
     }
 
     /**
-     * @param        $parameters
      * @param bool   $prepareForSerialization
      * @param string $requestIdColumn
      * @param null   $model
@@ -470,8 +469,6 @@ class CommonApiController extends FetchCommonApiController
 
     /**
      * Get a model instance from the service container.
-     *
-     * @param $modelNameKey
      *
      * @return AbstractCommonModel
      */
@@ -732,13 +729,10 @@ class CommonApiController extends FetchCommonApiController
     }
 
     /**
-     * @param       $key
-     * @param       $msg
-     * @param       $code
      * @param array $entities
      * @param null  $entity
      */
-    protected function setBatchError($key, $msg, $code, &$errors, &$entities = [], $entity = null)
+    protected function setBatchError($key, $msg, $code, &$errors, &$entities = [], $entity = null): void
     {
         unset($entities[$key]);
         if ($entity) {
@@ -757,7 +751,7 @@ class CommonApiController extends FetchCommonApiController
      *
      * @param View $view
      */
-    protected function setSerializationContext($view)
+    protected function setSerializationContext($view): void
     {
         $context = $view->getContext();
         if (!empty($this->serializerGroups)) {
@@ -789,12 +783,7 @@ class CommonApiController extends FetchCommonApiController
         $view->setContext($context);
     }
 
-    /**
-     * @param $parameters
-     *
-     * @return array|bool|Response
-     */
-    protected function validateBatchPayload($parameters)
+    protected function validateBatchPayload($parameters): bool|array|Response
     {
         $batchLimit = (int) $this->get('mautic.config')->getParameter('api_batch_max_limit', 200);
         if (count($parameters) > $batchLimit) {
@@ -810,7 +799,7 @@ class CommonApiController extends FetchCommonApiController
      * @param null $data
      * @param null $statusCode
      */
-    protected function view($data = null, $statusCode = null, array $headers = [])
+    protected function view($data = null, $statusCode = null, array $headers = []): View
     {
         if ($data instanceof Paginator) {
             // Get iterator out of Paginator class so that the entities are properly serialized by the serializer
