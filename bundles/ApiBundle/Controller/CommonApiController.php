@@ -2,16 +2,11 @@
 
 namespace Mautic\ApiBundle\Controller;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\RestBundle\View\View;
 use Mautic\ApiBundle\ApiEvents;
 use Mautic\ApiBundle\Event\ApiEntityEvent;
-use Mautic\ApiBundle\Helper\BatchIdToEntityHelper;
 use Mautic\ApiBundle\Helper\EntityResultHelper;
-use Mautic\ApiBundle\Serializer\Exclusion\ParentChildrenExclusionStrategy;
-use Mautic\ApiBundle\Serializer\Exclusion\PublishDetailsExclusionStrategy;
 use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\AppVersion;
