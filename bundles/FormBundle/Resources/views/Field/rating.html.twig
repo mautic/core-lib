@@ -1,17 +1,14 @@
-{# Rating field rendering using stars #}
 {% set max = field.properties.star_count|default(5) %}
 {% set starColor = field.properties.star_color|default('f5b301') %}
 {% set baseColor = field.properties.base_color|default('cccccc') %}
 {% set symbol = field.properties.symbol|default('★') %}
 
-{# Essential variables only #}
 {% set containerType = 'rating' %}
 {% set type = 'radio' %}
 {% set formName = formName|default('') %}
 {% set order = field.order|default(0) %}
 {% set validationMessage = '' %}
 
-{# Input attributes - simplified for rating #}
 {% set inputAttributes = htmlAttributesStringToArray(field.inputAttributes|default('')) %}
 {% set labelAttributes = htmlAttributesStringToArray(field.labelAttributes|default('')) %}
 {% set inputAttributes = inputAttributes|merge({
@@ -23,7 +20,6 @@
         'for': 'mauticform_input' ~ formName ~ '_' ~ field.alias,
 }) %}
 
-{# Container attributes #}
 {% set containerAttributes = htmlAttributesStringToArray(field.containerAttributes|default('')) %}
 {% set containerAttributes = containerAttributes|merge({
         'id': 'mauticform' ~ formName ~ '_' ~ id,
@@ -35,7 +31,6 @@
         'style': 'width: ' ~ field.fieldWidth ~ '; --star-color: #' ~ starColor ~ '; --base-color: #' ~ baseColor
 }) %}
 
-{# Conditional field support #}
 {% if field.parent and fields[field.parent] is defined %}
   {% set values = field.conditions.values|join('|') %}
   {%- if field.conditions.any != false and 'notIn' != field.conditions.expr -%}
@@ -48,7 +43,6 @@
   }) %}
 {% endif %}
 
-{# Required field support #}
 {% if field.isRequired is defined and field.isRequired %}
   {% set validationMessage = field.validationMessage %}
   {% if validationMessage is empty %}

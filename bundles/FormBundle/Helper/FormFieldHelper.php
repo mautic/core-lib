@@ -149,7 +149,6 @@ class FormFieldHelper extends AbstractFormFieldHelper
     {
         $alias = $field->getAlias();
 
-        // Common regex patterns
         $inputClosePattern = '(.*?)\/?>';
         $escapedFormName   = preg_quote($formName, '/');
         $escapedAlias      = preg_quote($alias, '/');
@@ -214,7 +213,6 @@ class FormFieldHelper extends AbstractFormFieldHelper
             case 'radiogrp':
             case 'rating':
                 $value        = $this->sanitizeValue($value);
-                // Use a safer approach: find all radio inputs for this alias and check their values
                 if (preg_match_all('/<input(.*?)id="mauticform_radiogrp_radio_'.$escapedAlias.'(.*?)"(.*?)value="([^"]*)"'.$inputClosePattern.'/i', $formHtml, $matches, PREG_SET_ORDER)) {
                     foreach ($matches as $match) {
                         if ($match[4] === $value) {
