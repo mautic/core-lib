@@ -2,7 +2,13 @@
 
 namespace Mautic\EmailBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -24,9 +30,11 @@ use Mautic\CoreBundle\Helper\UrlHelper;
 use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\EmailBundle\Validator\EmailLists;
 use Mautic\EmailBundle\Validator\EmailOrEmailTokenList;
+use Mautic\EmailBundle\Validator\TextOnlyDynamicContent;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\PageBundle\Entity\Page;
+use Mautic\ProjectBundle\Entity\ProjectTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
@@ -34,32 +42,36 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "email:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"category", "asset", "page", "translationChildren", "unsubscribeForm", "fields", "actions", "lists", "preferenceCenter", "assetAttachments"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "email:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new GetCollection(security: "is_granted('email:emails:viewown')"),
+        new Post(security: "is_granted('email:emails:create')"),
+        new Get(security: "is_granted('email:emails:viewown')"),
+        new Put(security: "is_granted('email:emails:editown')"),
+        new Patch(security: "is_granted('email:emails:editother')"),
+        new Delete(security: "is_granted('email:emails:deleteown')"),
+    ],
+    normalizationContext: [
+        'groups'                  => ['email:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included'            => ['category', 'asset', 'page', 'translationChildren', 'unsubscribeForm', 'fields', 'actions', 'lists', 'excludedLists', 'preferenceCenter', 'assetAttachments', 'variantChildren'],
+    ],
+    denormalizationContext: [
+        'groups'                  => ['email:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class Email extends FormEntity implements VariantEntityInterface, TranslationEntityInterface, UuidInterface
 {
     use VariantEntityTrait;
     use TranslationEntityTrait;
     use DynamicContentEntityTrait;
     use UuidTrait;
+    use ProjectTrait;
+
+    public const ENTITY_NAME = 'email';
+
+    public const MAX_NAME_SUBJECT_LENGTH = 190;
 
     /**
      * @var int
@@ -304,6 +316,11 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
      */
     private $clonedId;
 
+    /**
+     * @Groups({"email:read", "email:write", "download:read"})
+     */
+    private bool $isDuplicate = false;
+
     public function __clone()
     {
         $this->isCloned          = true;
@@ -338,6 +355,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         $this->assetAttachments    = new ArrayCollection();
         $this->setDateAdded(new \DateTime());
         $this->setDateModified(new \DateTime());
+        $this->initializeProjects();
     }
 
     public function clearStats(): void
@@ -429,6 +447,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
             ->build();
 
         static::addUuidField($builder);
+        self::addProjectsField($builder, 'email_projects_xref', 'email_id');
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
@@ -438,6 +457,16 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
             new NotBlank(
                 [
                     'message' => 'mautic.core.name.required',
+                ]
+            )
+        );
+
+        $metadata->addPropertyConstraint(
+            'name',
+            new Length(
+                [
+                    'max'        => self::MAX_NAME_SUBJECT_LENGTH,
+                    'maxMessage' => 'mautic.email.name.length',
                 ]
             )
         );
@@ -455,7 +484,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
             'subject',
             new Length(
                 [
-                    'max'        => 190,
+                    'max'        => self::MAX_NAME_SUBJECT_LENGTH,
                     'maxMessage' => 'mautic.email.subject.length',
                 ]
             )
@@ -494,11 +523,13 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
             )
         );
 
+        $metadata->addPropertyConstraint('subject', new TextOnlyDynamicContent());
+
         $metadata->addConstraint(new EmailLists());
         $metadata->addConstraint(new EntityEvent());
 
-        $metadata->addConstraint(new Callback([
-            'callback' => function (Email $email, ExecutionContextInterface $context): void {
+        $metadata->addConstraint(new Callback(
+            function (Email $email, ExecutionContextInterface $context): void {
                 if ($email->isVariant()) {
                     // Get a summation of weights
                     $parent   = $email->getVariantParent();
@@ -517,7 +548,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
                     }
                 }
             },
-        ]));
+        ));
     }
 
     /**
@@ -569,6 +600,8 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
                 ]
             )
             ->build();
+
+        self::addProjectsInLoadApiMetadata($metadata, 'email');
     }
 
     protected function isChanged($prop, $val)
@@ -1126,7 +1159,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     /**
      * @return $this
      */
-    public function setUnsubscribeForm(Form $unsubscribeForm = null)
+    public function setUnsubscribeForm(?Form $unsubscribeForm = null)
     {
         $this->unsubscribeForm = $unsubscribeForm;
 
@@ -1144,7 +1177,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     /**
      * @return $this
      */
-    public function setPreferenceCenter(Page $preferenceCenter = null)
+    public function setPreferenceCenter(?Page $preferenceCenter = null)
     {
         $this->preferenceCenter = $preferenceCenter;
 
@@ -1402,5 +1435,15 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         }
 
         return $keys;
+    }
+
+    public function isDuplicate(): bool
+    {
+        return $this->isDuplicate;
+    }
+
+    public function setIsDuplicate(bool $isDuplicate): void
+    {
+        $this->isDuplicate = $isDuplicate;
     }
 }

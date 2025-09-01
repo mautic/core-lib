@@ -26,7 +26,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
     protected function setUp(): void
     {
         // Disable API just for specific test.
-        $this->configParams['api_enabled'] = 'testDisabledApi' !== $this->getName();
+        $this->configParams['api_enabled'] = 'testDisabledApi' !== $this->name();
 
         static::getContainer()->set(
             'session',
@@ -881,6 +881,47 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request(Request::METHOD_DELETE, "/api/contacts/$contactId/delete");
         $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testBatchEditEndpointSameContact(): void
+    {
+        $contact1 = new Lead();
+        $contact1->setEmail('batcheditcontact1@gmail.com');
+        $this->em->persist($contact1);
+
+        $contact2 = new Lead();
+        $contact2->setEmail('batcheditcontact2@gmail.com');
+        $this->em->persist($contact2);
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $payload = [
+            ['points' => 1, 'id' => $contact1->getId()],
+            ['points' => 1, 'id' => $contact2->getId()],
+            ['points' => 2, 'id' => $contact1->getId()],
+        ];
+
+        $this->client->request(Request::METHOD_PATCH, '/api/contacts/batch/edit', $payload);
+        $clientResponse = $this->client->getResponse();
+
+        self::assertResponseIsSuccessful($clientResponse->getContent());
+
+        $response = json_decode($clientResponse->getContent(), true);
+
+        self::assertCount(3, $response['contacts']);
+
+        $this->assertEquals(Response::HTTP_OK, $response['statusCodes'][0]);
+        $this->assertSame($contact1->getId(), $response['contacts'][0]['id']);
+        $this->assertSame(2, $response['contacts'][0]['points']);
+
+        $this->assertEquals(Response::HTTP_OK, $response['statusCodes'][1]);
+        $this->assertSame($contact2->getId(), $response['contacts'][1]['id']);
+        $this->assertSame(1, $response['contacts'][1]['points']);
+
+        $this->assertEquals(Response::HTTP_OK, $response['statusCodes'][2]);
+        $this->assertSame($contact1->getId(), $response['contacts'][2]['id']);
+        $this->assertSame(2, $response['contacts'][2]['points']);
     }
 
     public function testAddAndRemoveDncToExistingContact(): void

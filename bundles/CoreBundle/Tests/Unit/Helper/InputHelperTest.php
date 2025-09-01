@@ -6,13 +6,10 @@ use Mautic\CoreBundle\Helper\InputHelper;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
+#[\PHPUnit\Framework\Attributes\CoversClass(InputHelper::class)]
 class InputHelperTest extends TestCase
 {
-    /**
-     * @testdox The html returns correct values
-     *
-     * @covers \Mautic\CoreBundle\Helper\InputHelper::html
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('The html returns correct values')]
     public function testHtmlFilter(): void
     {
         $outlookXML = '<!--[if gte mso 9]><xml>
@@ -39,15 +36,16 @@ class InputHelperTest extends TestCase
         $unicode = '<a href="https://m3.mautibox.com/3.x/media/images/testá.png">test with unicode</a>';
 
         $samples = [
-            $outlookXML                     => $outlookXML,
-            $html5Doctype                   => $html5Doctype,
-            $html5DoctypeWithContent        => $html5DoctypeWithContent,
-            $html5DoctypeWithUnicodeContent => $html5DoctypeWithUnicodeContent,
-            $xhtml1Doctype                  => $xhtml1Doctype,
-            $cdata                          => $cdata,
-            $script                         => $script,
-            $unicode                        => $unicode,
-            '<applet>content</applet>'      => 'content',
+            $outlookXML                             => $outlookXML,
+            $html5Doctype                           => $html5Doctype,
+            $html5DoctypeWithContent                => $html5DoctypeWithContent,
+            $html5DoctypeWithUnicodeContent         => $html5DoctypeWithUnicodeContent,
+            $xhtml1Doctype                          => $xhtml1Doctype,
+            $cdata                                  => $cdata,
+            $script                                 => $script,
+            $unicode                                => $unicode,
+            '<applet>content</applet>'              => 'content',
+            '<p>👍</p>'                             => '<p>👍</p>',
         ];
 
         foreach ($samples as $sample => $expected) {
@@ -56,11 +54,7 @@ class InputHelperTest extends TestCase
         }
     }
 
-    /**
-     * @testdox The email returns value without double period
-     *
-     * @covers \Mautic\CoreBundle\Helper\InputHelper::email
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('The email returns value without double period')]
     public function testEmailFilterRemovesDoublePeriods(): void
     {
         $clean = InputHelper::email('john..doe@email.com');
@@ -68,11 +62,7 @@ class InputHelperTest extends TestCase
         $this->assertEquals('john..doe@email.com', $clean);
     }
 
-    /**
-     * @testdox The email returns value without surrounding white spaces
-     *
-     * @covers \Mautic\CoreBundle\Helper\InputHelper::email
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('The email returns value without surrounding white spaces')]
     public function testEmailFilterRemovesWhitespace(): void
     {
         $clean = InputHelper::email('    john.doe@email.com  ');
@@ -80,31 +70,19 @@ class InputHelperTest extends TestCase
         $this->assertEquals('john.doe@email.com', $clean);
     }
 
-    /**
-     * @testdox The array is cleaned
-     *
-     * @covers \Mautic\CoreBundle\Helper\InputHelper::cleanArray
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('The array is cleaned')]
     public function testCleanArrayWithEmptyValue(): void
     {
         $this->assertEquals([], InputHelper::cleanArray(null));
     }
 
-    /**
-     * @testdox The string is converted to an array
-     *
-     * @covers \Mautic\CoreBundle\Helper\InputHelper::cleanArray
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('The string is converted to an array')]
     public function testCleanArrayWithStringValue(): void
     {
         $this->assertEquals(['kuk'], InputHelper::cleanArray('kuk'));
     }
 
-    /**
-     * @testdox Javascript is encoded
-     *
-     * @covers \Mautic\CoreBundle\Helper\InputHelper::cleanArray
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Javascript is encoded')]
     public function testCleanArrayWithJS(): void
     {
         $this->assertEquals(
@@ -113,11 +91,7 @@ class InputHelperTest extends TestCase
         );
     }
 
-    /**
-     * @testdox Test that filename handles some UTF8 chars
-     *
-     * @covers \Mautic\CoreBundle\Helper\InputHelper::filename
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Test that filename handles some UTF8 chars')]
     public function testFilename(): void
     {
         $this->assertSame(
@@ -126,11 +100,7 @@ class InputHelperTest extends TestCase
         );
     }
 
-    /**
-     * @testdox Test that filename handles some UTF8 chars
-     *
-     * @covers \Mautic\CoreBundle\Helper\InputHelper::filename
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Test that filename handles some UTF8 chars')]
     public function testFilenameWithChangingDir(): void
     {
         $this->assertSame(
@@ -139,11 +109,7 @@ class InputHelperTest extends TestCase
         );
     }
 
-    /**
-     * @testdox Test filename with extension
-     *
-     * @covers \Mautic\CoreBundle\Helper\InputHelper::filename
-     */
+    #[\PHPUnit\Framework\Attributes\TestDox('Test filename with extension')]
     public function testFilenameWithExtension(): void
     {
         $this->assertSame(
@@ -164,9 +130,7 @@ class InputHelperTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testUrlSanitization(string $inputUrl, string $outputUrl, bool $ignoreFragment = false): void
     {
         $cleanedUrl = InputHelper::url($inputUrl, false, null, null, [], $ignoreFragment);
@@ -219,9 +183,7 @@ class InputHelperTest extends TestCase
         yield ['http://www.mautic.org#abc123', 'http://www.mautic.org', true];
     }
 
-    /**
-     * @dataProvider filenameProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('filenameProvider')]
     public function testFilenameSanitization(string $inputFilename, string $outputFilename): void
     {
         $cleanedUrl = InputHelper::transliterateFilename($inputFilename);
@@ -265,9 +227,7 @@ class InputHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider minifyHTMLProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('minifyHTMLProvider')]
     public function testMinifyHTML(string $html, string $expected): void
     {
         $this->assertEquals($expected, InputHelper::minifyHTML($html));
@@ -299,9 +259,7 @@ class InputHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider underscoreProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('underscoreProvider')]
     public function testUndersore(mixed $provided, mixed $expected): void
     {
         $this->assertSame($expected, InputHelper::_($provided));

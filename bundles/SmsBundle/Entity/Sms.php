@@ -2,6 +2,13 @@
 
 namespace Mautic\SmsBundle\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -12,83 +19,95 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Form\Validator\Constraints\LeadListAccess;
+use Mautic\ProjectBundle\Entity\ProjectTrait;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "sms:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"category"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "sms:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new GetCollection(security: "is_granted('sms:smses:viewown')"),
+        new Post(security: "is_granted('sms:smses:create')"),
+        new Get(security: "is_granted('sms:smses:viewown')"),
+        new Put(security: "is_granted('sms:smses:editown')"),
+        new Patch(security: "is_granted('sms:smses:editother')"),
+        new Delete(security: "is_granted('sms:smses:deleteown')"),
+    ],
+    normalizationContext: [
+        'groups'                  => ['sms:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included'            => ['category'],
+    ],
+    denormalizationContext: [
+        'groups'                  => ['sms:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class Sms extends FormEntity implements UuidInterface
 {
     use UuidTrait;
+    use ProjectTrait;
 
     /**
      * @var int
      */
+    #[Groups(['sms:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $description;
 
     /**
      * @var string
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $language = 'en';
 
     /**
      * @var string
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $message;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $publishUp;
 
     /**
      * @var \DateTimeInterface
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $publishDown;
 
     /**
      * @var int
      */
+    #[Groups(['sms:read'])]
     private $sentCount = 0;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category|null
      **/
+    #[Groups(['sms:read', 'sms:write'])]
     private $category;
 
     /**
      * @var ArrayCollection<int, LeadList>
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $lists;
 
     /**
@@ -99,11 +118,13 @@ class Sms extends FormEntity implements UuidInterface
     /**
      * @var string|null
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private $smsType = 'template';
 
     /**
      * @var int
      */
+    #[Groups(['sms:read'])]
     private $pendingCount = 0;
 
     public function __clone()
@@ -119,6 +140,7 @@ class Sms extends FormEntity implements UuidInterface
     {
         $this->lists = new ArrayCollection();
         $this->stats = new ArrayCollection();
+        $this->initializeProjects();
     }
 
     /**
@@ -174,6 +196,7 @@ class Sms extends FormEntity implements UuidInterface
             ->build();
 
         static::addUuidField($builder);
+        self::addProjectsField($builder, 'sms_projects_xref', 'sms_id');
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
@@ -187,8 +210,8 @@ class Sms extends FormEntity implements UuidInterface
             )
         );
 
-        $metadata->addConstraint(new Callback([
-            'callback' => function (Sms $sms, ExecutionContextInterface $context): void {
+        $metadata->addConstraint(new Callback(
+            function (Sms $sms, ExecutionContextInterface $context): void {
                 $type = $sms->getSmsType();
                 if ('list' == $type) {
                     $validator  = $context->getValidator();
@@ -211,7 +234,7 @@ class Sms extends FormEntity implements UuidInterface
                     }
                 }
             },
-        ]));
+        ));
 
         $metadata->addConstraint(new EntityEvent());
     }
@@ -239,6 +262,8 @@ class Sms extends FormEntity implements UuidInterface
                 ]
             )
             ->build();
+
+        self::addProjectsInLoadApiMetadata($metadata, 'sms');
     }
 
     protected function isChanged($prop, $val)
