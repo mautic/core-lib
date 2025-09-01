@@ -72,6 +72,18 @@
         {% endif %}
     {% endif %}
 
+  {% if securityHasEntityAccess('form:forms:editown', 'form:forms:editother', form.createdBy) %}
+      {% set buttons = buttons|merge([{
+          'attr': {
+              'class': 'btn btn-ghost',
+              'href': path('mautic_form_action', {'objectAction': 'edit', 'objectId': form.id}),
+              'data-toggle': 'ajax',
+          },
+          'iconClass': 'ri-edit-line',
+          'btnText': 'mautic.core.form.edit'|trans,
+      }]) %}
+  {% endif %}
+
   {{ include('@MauticCore/Helper/page_actions.html.twig', {'customButtons': buttons}) }}
 {% endblock %}
 
