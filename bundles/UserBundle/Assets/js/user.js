@@ -49,14 +49,16 @@ Mautic.userOnLoad = function (container) {
         });
     });
 
-    document.querySelector('[id^="user_buttons_save_toolbar"]').addEventListener('click', function() {
-        // Re-apply all current preferences after clicking save
-        document.querySelectorAll('input[type="radio"][data-attribute-toggle]:checked').forEach(radio => {
-            const attributeToggle = radio.dataset.attributeToggle;
-            const attributeValue = radio.dataset.attributeValue;
-            document.documentElement.setAttribute(attributeToggle, attributeValue);
+    const saveButton = document.querySelector('[id^="user_buttons_save_toolbar"]');
+    if (saveButton) {
+        saveButton.addEventListener('click', function() {
+            document.querySelectorAll('input[type="radio"][data-attribute-toggle]:checked').forEach(radio => {
+                const attributeToggle = radio.dataset.attributeToggle;
+                const attributeValue = radio.dataset.attributeValue;
+                document.documentElement.setAttribute(attributeToggle, attributeValue);
+            });
         });
-    });
+    }
 
 };
 
