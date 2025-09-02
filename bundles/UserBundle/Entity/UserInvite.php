@@ -50,7 +50,12 @@ class UserInvite
             ->build();
     }
 
-    public function getEmail(): string
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -62,7 +67,7 @@ class UserInvite
         return $this;
     }
 
-    public function getToken(): string
+    public function getToken(): ?string
     {
         return $this->token;
     }
@@ -74,7 +79,7 @@ class UserInvite
         return $this;
     }
 
-    public function getExpiration(): \DateTimeInterface
+    public function getExpiration(): ?\DateTimeInterface
     {
         return $this->expiration;
     }
