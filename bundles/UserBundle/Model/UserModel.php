@@ -217,7 +217,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
      *
      * @param string $newPassword
      */
-    public function resetPassword(User $user, UserPasswordHasher $hasher, $newPassword): void
+    public function resetPassword(User $user, UserPasswordHasherInterface $hasher, $newPassword): void
     {
         $hashedPassword = $this->checkNewPassword($user, $hasher, $newPassword);
 

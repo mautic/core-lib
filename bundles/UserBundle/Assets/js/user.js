@@ -9,7 +9,7 @@ Mautic.userOnLoad = function (container) {
             Mautic.activateSearchAutocomplete('list-search', 'user.user');
         }
 
-        if (mQuery('#InviteUserModal').length && mQuery('#InviteUserModal').data('auto-open')) {
+        if (mQuery('#InviteUserModal').data('auto-open')) {
             mQuery('#InviteUserModal').modal('show');
         }
     }
@@ -23,17 +23,15 @@ Mautic.userOnLoad = function (container) {
         const attributeName = radio.dataset.attributeToggle;
         const hiddenInput = document.getElementById(`user_preferences_${attributeName.replace('-', '_')}`);
 
-        if (hiddenInput && hiddenInput.value) {
+        if (hiddenInput?.value) {
             // If hidden input has a value, set the corresponding radio
             const correspondingRadio = document.querySelector(
                 `input[name="${attributeName}"][data-attribute-value="${hiddenInput.value}"]`
             );
             if (correspondingRadio) correspondingRadio.checked = true;
-        } else if (radio.checked) {
+        } else if (radio.checked && hiddenInput) {
             // Use the checked state from the HTML as the default
-            if (hiddenInput) {
-                hiddenInput.value = radio.dataset.attributeValue;
-            }
+            hiddenInput.value = radio.dataset.attributeValue;
         }
     });
 
@@ -44,7 +42,6 @@ Mautic.userOnLoad = function (container) {
                 const attributeName = this.dataset.attributeToggle;
                 const hiddenInput = document.getElementById(`user_preferences_${attributeName.replace('-', '_')}`);
 
-                // Update hidden input value
                 if (hiddenInput) {
                     hiddenInput.value = this.dataset.attributeValue;
                 }
