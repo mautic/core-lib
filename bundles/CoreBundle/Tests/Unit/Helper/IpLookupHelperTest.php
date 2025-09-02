@@ -140,6 +140,6 @@ class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
                 }
             );
 
-        return new IpLookupHelper($requestStack, $mockEm, $mockCoreParametersHelper, null, $this->deviceDetectorFactory);
+        return new IpLookupHelper($requestStack, $mockEm, $mockCoreParametersHelper, $this->deviceDetectorFactory, null);
     }
 }
