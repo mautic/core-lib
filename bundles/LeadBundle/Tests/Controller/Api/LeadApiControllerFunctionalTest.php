@@ -229,7 +229,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
             $this->em->find(Lead::class, $contactId2Created)
         );
 
-        // Merge contact 103 into 104.
+        // Merge contact 104 into 103.
         $contactMerger->merge(
             $this->em->find(Lead::class, $contactId3Created),
             $this->em->find(Lead::class, $contactId4Created)

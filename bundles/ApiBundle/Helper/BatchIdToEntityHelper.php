@@ -78,7 +78,7 @@ class BatchIdToEntityHelper
             if (!isset($entitiesKeyedById[$id])) {
                 $hasPreviousId = array_filter(
                     $entities,
-                    fn ($entity) => $id === $entity->getPreviousId()
+                    fn ($entity) => $id == $entity->getPreviousId()
                 );
 
                 if ($hasPreviousId) {
