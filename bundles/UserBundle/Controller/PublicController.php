@@ -180,10 +180,6 @@ class PublicController extends FormController
             return $this->redirectToRoute('login');
         }
 
-        $user = new User();
-        $user->setEmail($invite->getEmail());
-        $user->setRole($invite->getRole());
-
         $action = $this->generateUrl('mautic_user_invite_register', ['token' => $token]);
         $form   = $this->formFactory->create(UserInviteRegistrationType::class, [], [
             'action' => $action,

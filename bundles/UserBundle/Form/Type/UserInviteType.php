@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\UserBundle\Form\Type;
 
-use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\EntityRepository;
 use Mautic\UserBundle\Entity\Role;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -57,7 +56,7 @@ final class UserInviteType extends AbstractType
                 'choice_label'  => 'name',
                 'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('r')
                     ->where('r.isPublished = true')
-                    ->orderBy('r.name', Order::Ascending->value),
+                    ->orderBy('r.name', 'ASC'),
                 'constraints' => [
                     new NotBlank([
                         'message' => 'mautic.user.invite.error.role_required',
