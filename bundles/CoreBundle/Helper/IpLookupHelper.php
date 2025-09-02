@@ -162,6 +162,7 @@ class IpLookupHelper
 
                 // second check for bots  https://github.com/matomo-org/device-detector
                 $deviceDetector = $this->deviceDetectorFactory->create($userAgent);
+                $deviceDetector->parse();
                 if ($deviceDetector->isBot()) {
                     $doNotTrack[] = $ip;
                     $ipAddress->setDoNotTrackList($doNotTrack);
