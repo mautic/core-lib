@@ -397,15 +397,14 @@ class UserModel extends FormModel implements GlobalSearchInterface
     {
         $role = $this->em->getRepository(Role::class)->find($roleId);
         if (!$role) {
-            throw new \InvalidArgumentException('Invalid role ID provided');
+            throw new \InvalidArgumentException($this->translator->trans('mautic.user.invite.error.invalid_role', [], 'validators'));
         }
 
         $token  = bin2hex(random_bytes(32));
-        $invite = (new UserInvite())
+        $invite = (new UserInvite($role))
             ->setEmail($email)
             ->setToken($token)
-            ->setExpiration((new \DateTime())->add(new \DateInterval('PT48H')))
-            ->setRole($role);
+            ->setExpiration((new \DateTime())->add(new \DateInterval('PT48H')));
         $this->em->persist($invite);
         $this->em->flush();
 

@@ -2,18 +2,46 @@
 
 namespace Mautic\UserBundle\Controller;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Mautic\CoreBundle\Controller\FormController;
+use Mautic\CoreBundle\Factory\ModelFactory;
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\UserHelper;
+use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\CoreBundle\Service\FlashBag;
+use Mautic\CoreBundle\Translation\Translator;
+use Mautic\FormBundle\Helper\FormFieldHelper;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Form\Type\PasswordResetConfirmType;
 use Mautic\UserBundle\Form\Type\PasswordResetType;
 use Mautic\UserBundle\Form\Type\UserInviteRegistrationType;
-use Mautic\UserBundle\Model\RoleModel;
 use Mautic\UserBundle\Model\UserModel;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class PublicController extends FormController
 {
+    public function __construct(
+        FormFactoryInterface $formFactory,
+        FormFieldHelper $fieldHelper,
+        ManagerRegistry $managerRegistry,
+        ModelFactory $modelFactory,
+        UserHelper $userHelper,
+        CoreParametersHelper $coreParametersHelper,
+        EventDispatcherInterface $dispatcher,
+        Translator $translator,
+        FlashBag $flashBag,
+        RequestStack $requestStack,
+        CorePermissions $security,
+        private LoggerInterface $logger,
+    ) {
+        parent::__construct($formFactory, $fieldHelper, $managerRegistry, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
+    }
+
     /**
      * Generates a new password for the user and emails it to them.
      */
@@ -142,7 +170,7 @@ class PublicController extends FormController
         ]);
     }
 
-    public function inviteAction(Request $request, UserPasswordHasherInterface $hasher, UserModel $model, RoleModel $roleModel): mixed
+    public function inviteAction(Request $request, UserPasswordHasherInterface $hasher, UserModel $model): mixed
     {
         $token  = $request->get('token');
         $invite = $model->getInvite($token);
@@ -154,15 +182,7 @@ class PublicController extends FormController
 
         $user = new User();
         $user->setEmail($invite->getEmail());
-
-        if ($invite->getRole()) {
-            $user->setRole($invite->getRole());
-        } else {
-            $role      = $roleModel->getRepository()->findOneBy([], ['id' => 'ASC']);
-            if (null !== $role) {
-                $user->setRole($role);
-            }
-        }
+        $user->setRole($invite->getRole());
 
         $action = $this->generateUrl('mautic_user_invite_register', ['token' => $token]);
         $form   = $this->formFactory->create(UserInviteRegistrationType::class, [], [
@@ -199,14 +219,10 @@ class PublicController extends FormController
                     $user->setLastName($formData['lastName']);
                     $user->setEmail($invite->getEmail());
                     $user->setPlainPassword($formData['plainPassword']);
+                    $user->setRole($invite->getRole());
 
-                    if ($invite->getRole()) {
-                        $user->setRole($invite->getRole());
-                    } else {
-                        $role      = $roleModel->getRepository()->findOneBy([], ['id' => 'ASC']);
-                        if (null !== $role) {
-                            $user->setRole($role);
-                        }
+                    if (!empty($formData['locale'])) {
+                        $user->setLocale($formData['locale']);
                     }
 
                     $encoded = $model->checkNewPassword($user, $hasher, $user->getPlainPassword());
@@ -217,8 +233,12 @@ class PublicController extends FormController
                     $this->addFlashMessage('mautic.user.invite.account_created', [], 'notice', 'flashes');
 
                     return $this->redirectToRoute('login');
-                } catch (\Exception) {
-                    $this->addFlashMessage('mautic.user.invite.error.generic', [], 'error', 'flashes');
+                } catch (\Doctrine\DBAL\Exception $e) {
+                    $this->logger->error('Database error during user invitation registration: '.$e->getMessage());
+                    $this->addFlashMessage('mautic.user.invite.error.database', [], 'error', 'flashes');
+                } catch (\Exception $e) {
+                    $this->logger->error('Unexpected error during user invitation registration: '.$e->getMessage());
+                    throw $e;
                 }
             }
         }

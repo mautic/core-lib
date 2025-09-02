@@ -19,7 +19,9 @@ class UserInvite
 
     private bool $used = false;
 
-    private ?Role $role;
+    public function __construct(private Role $role)
+    {
+    }
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
@@ -33,7 +35,7 @@ class UserInvite
             ->build();
 
         $builder->createField('token', 'string')
-            ->length(120)
+            ->length(64)
             ->unique()
             ->build();
 
@@ -44,7 +46,7 @@ class UserInvite
             ->build();
 
         $builder->createManyToOne('role', Role::class)
-            ->addJoinColumn('role_id', 'id', true, false, 'CASCADE')
+            ->addJoinColumn('role_id', 'id', false, false, 'CASCADE')
             ->build();
     }
 
@@ -96,12 +98,12 @@ class UserInvite
         return $this;
     }
 
-    public function getRole(): ?Role
+    public function getRole(): Role
     {
         return $this->role;
     }
 
-    public function setRole(?Role $role): self
+    public function setRole(Role $role): self
     {
         $this->role = $role;
 
