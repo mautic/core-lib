@@ -64,7 +64,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
     public function saveEntity($entity, $unlock = true): void
     {
         if (!$entity instanceof User) {
-            throw new MethodNotAllowedHttpException(['User'], 'Entity must be of class User()');
+            throw new MethodNotAllowedHttpException(['User'], $this->translator->trans('mautic.user.entity.must.be.user', [], 'validators'));
         }
 
         parent::saveEntity($entity, $unlock);
@@ -110,7 +110,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
     public function createForm($entity, FormFactoryInterface $formFactory, $action = null, $options = []): \Symfony\Component\Form\FormInterface
     {
         if (!$entity instanceof User) {
-            throw new MethodNotAllowedHttpException(['User'], 'Entity must be of class User()');
+            throw new MethodNotAllowedHttpException(['User'], $this->translator->trans('mautic.user.entity.must.be.user', [], 'validators'));
         }
         if (!empty($action)) {
             $options['action'] = $action;
@@ -158,7 +158,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
     protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
     {
         if (!$entity instanceof User) {
-            throw new MethodNotAllowedHttpException(['User'], 'Entity must be of class User()');
+            throw new MethodNotAllowedHttpException(['User'], $this->translator->trans('mautic.user.entity.must.be.user', [], 'validators'));
         }
 
         switch ($action) {
@@ -265,9 +265,9 @@ class UserModel extends FormModel implements GlobalSearchInterface
         $this->em->persist($resetToken);
         try {
             $this->em->flush();
-        } catch (\Exception $exception) {
-            $this->logger->error($exception->getMessage());
-            throw new \RuntimeException();
+        } catch (\Doctrine\DBAL\Exception $exception) {
+            $this->logger->error($this->translator->trans('mautic.user.password.reset.token.creation.database.error', [], 'messages').': '.$exception->getMessage());
+            throw new \RuntimeException($this->translator->trans('mautic.user.password.reset.token.creation.failed'), 0, $exception);
         }
         $resetLink  = $this->router->generate('mautic_user_passwordresetconfirm', ['token' => $resetToken->getSecret()], UrlGeneratorInterface::ABSOLUTE_URL);
 

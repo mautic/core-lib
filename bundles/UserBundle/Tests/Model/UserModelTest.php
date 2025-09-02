@@ -120,17 +120,24 @@ class UserModelTest extends TestCase
 
     public function testThatDatabaseErrorThrowsRuntimeExceptionAndItIsLoggedWhenWeTryToSaveTokenToTheDatabaseWhenWeSendResetPasswordEmail(): void
     {
-        $errorMessage = 'Some error message';
+        $errorMessage = 'Database connection failed';
 
         $this->expectException(\RuntimeException::class);
 
         $this->entityManager->expects($this->once())
             ->method('flush')
-            ->willThrowException(new \Exception($errorMessage));
+            ->willThrowException(new \Doctrine\DBAL\Exception($errorMessage));
+
+        $this->translator->expects($this->exactly(2))
+            ->method('trans')
+            ->willReturnMap([
+                ['mautic.user.password.reset.token.creation.database.error', [], 'messages', null, 'Database error during password reset token creation'],
+                ['mautic.user.password.reset.token.creation.failed', [], null, null, 'Failed to create password reset token'],
+            ]);
 
         $this->logger->expects($this->once())
             ->method('error')
-            ->with($errorMessage);
+            ->with('Database error during password reset token creation: '.$errorMessage);
 
         $this->userModel->sendResetEmail($this->user);
     }

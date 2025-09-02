@@ -73,7 +73,8 @@ class PublicController extends FormController
                         $model->sendResetEmail($user);
                     }
                     $this->addFlashMessage('mautic.user.user.notice.passwordreset');
-                } catch (\Exception) {
+                } catch (\RuntimeException $e) {
+                    $this->logger->error($this->translator->trans('mautic.user.password.reset.email.failed', [], 'messages').': '.$e->getMessage());
                     $this->addFlashMessage('mautic.user.user.notice.passwordreset.error', [], 'error');
                 }
 
@@ -230,11 +231,8 @@ class PublicController extends FormController
 
                     return $this->redirectToRoute('login');
                 } catch (\Doctrine\DBAL\Exception $e) {
-                    $this->logger->error('Database error during user invitation registration: '.$e->getMessage());
+                    $this->logger->error($this->translator->trans('mautic.user.invite.registration.database.error', [], 'messages').': '.$e->getMessage());
                     $this->addFlashMessage('mautic.user.invite.error.database', [], 'error', 'flashes');
-                } catch (\Exception $e) {
-                    $this->logger->error('Unexpected error during user invitation registration: '.$e->getMessage());
-                    throw $e;
                 }
             }
         }
