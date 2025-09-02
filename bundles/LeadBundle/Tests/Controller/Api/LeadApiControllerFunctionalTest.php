@@ -68,10 +68,83 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertArrayHasKey('limit', json_decode($this->client->getResponse()->getContent(), true));
         Assert::assertArrayHasKey('maxPages', json_decode($this->client->getResponse()->getContent(), true));
     }
-    /**
-     * @dataProvider singleEndpointDataProvider
-     */
-    public function testSingleEndpointCanHandleMergedContacts(string $method, string $email, callable $assertResponse): void
+
+    public function testSingleEndpointCanHandleMergedContactsPost(): void
+    {
+        $this->doTestSingleEndpointCanHandleMergedContacts(
+            'POST',
+            'batchemail202-updated@email.com',
+            Response::HTTP_CREATED,
+            function (Response $clientResponse, int $contactId1, int $contactId2) {
+                $responseArray = json_decode($clientResponse->getContent(), true);
+
+                // POST should not update by ID but always create new contact.
+                // It would merge with existing contact by email if those would be the same.
+                $this->assertNotEquals($contactId1, $responseArray['contact']['id'], $clientResponse->getContent());
+                $this->assertNotEquals($contactId2, $responseArray['contact']['id'], $clientResponse->getContent());
+                $this->assertEquals(null, $responseArray['contact']['fields']['all']['firstname'], $clientResponse->getContent());
+                $this->assertEquals('batchemail202-updated@email.com', $responseArray['contact']['fields']['all']['email'], $clientResponse->getContent());
+                $this->assertEquals('Prčice', $responseArray['contact']['fields']['all']['city'], $clientResponse->getContent());
+            }
+        );
+    }
+
+    public function testSingleEndpointCanHandleMergedContactsPostSameEmail(): void
+    {
+        $this->doTestSingleEndpointCanHandleMergedContacts(
+            'POST',
+            'batchemail202@email.com',
+            Response::HTTP_OK,
+            function (Response $clientResponse, int $contactId1) {
+                $responseArray = json_decode($clientResponse->getContent(), true);
+
+                // POST should not update by ID but always create new contact.
+                // But in this case it will merge by email which is unique identifier.
+                $this->assertEquals($contactId1, $responseArray['contact']['id'], $clientResponse->getContent());
+                $this->assertEquals('BatchUpdate2', $responseArray['contact']['fields']['all']['firstname'], $clientResponse->getContent());
+                $this->assertEquals('batchemail202@email.com', $responseArray['contact']['fields']['all']['email'], $clientResponse->getContent());
+                $this->assertEquals('Prčice', $responseArray['contact']['fields']['all']['city'], $clientResponse->getContent());
+            }
+        );
+    }
+
+    public function testSingleEndpointCanHandleMergedContactsPut(): void
+    {
+        $this->doTestSingleEndpointCanHandleMergedContacts(
+            'PUT',
+            'batchemail202-updated@email.com',
+            Response::HTTP_OK,
+            function (Response $clientResponse, int $contactId1) {
+                $responseArray = json_decode($clientResponse->getContent(), true);
+
+                // PUT should update by ID and overwrite the original contact values.
+                $this->assertEquals($contactId1, $responseArray['contact']['id'], $clientResponse->getContent());
+                $this->assertEquals(null, $responseArray['contact']['fields']['all']['firstname'], $clientResponse->getContent());
+                $this->assertEquals('batchemail202-updated@email.com', $responseArray['contact']['fields']['all']['email'], $clientResponse->getContent());
+                $this->assertEquals('Prčice', $responseArray['contact']['fields']['all']['city'], $clientResponse->getContent());
+            }
+        );
+    }
+
+    public function testSingleEndpointCanHandleMergedContactsPatch(): void
+    {
+        $this->doTestSingleEndpointCanHandleMergedContacts(
+            'PATCH',
+            'batchemail202-updated@email.com',
+            Response::HTTP_OK,
+            function (Response $clientResponse, int $contactId1) {
+                $responseArray = json_decode($clientResponse->getContent(), true);
+
+                // PATCH should update by ID and leave the original contact values.
+                $this->assertEquals($contactId1, $responseArray['contact']['id'], $clientResponse->getContent());
+                $this->assertEquals('BatchUpdate2', $responseArray['contact']['fields']['all']['firstname'], $clientResponse->getContent());
+                $this->assertEquals('batchemail202-updated@email.com', $responseArray['contact']['fields']['all']['email'], $clientResponse->getContent());
+                $this->assertEquals('Prčice', $responseArray['contact']['fields']['all']['city'], $clientResponse->getContent());
+            }
+        );
+    }
+
+    private function doTestSingleEndpointCanHandleMergedContacts(string $method, string $email, int $expectedStatusCode, callable $assertResponse): void
     {
         $contact1 = new Lead();
         $contact1->setEmail('batchemail201@email.com');
@@ -86,7 +159,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         /** @var ContactMerger $contactMerger */
-        $contactMerger = self::$container->get('mautic.lead.merger');
+        $contactMerger = static::getContainer()->get('mautic.lead.merger');
 
         $contactMerger->merge($contact1, $contact2);
 
@@ -100,80 +173,9 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $route = 'POST' === $method ? '/api/contacts/new' : "/api/contacts/{$contact2->deletedId}/edit";
 
         $this->client->request($method, $route, $payload);
+
+        $this->assertSame($expectedStatusCode, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
         $assertResponse($this->client->getResponse(), $contact1->getId(), $contact2->deletedId);
-    }
-
-    /**
-     * @return iterable<mixed>
-     */
-    public function singleEndpointDataProvider(): iterable
-    {
-        yield [
-            'POST',
-            'batchemail202-updated@email.com',
-            function (Response $clientResponse, int $contactId1, int $contactId2) {
-                $this->assertSame(Response::HTTP_CREATED, $clientResponse->getStatusCode(), $clientResponse->getContent());
-
-                $responseArray = json_decode($clientResponse->getContent(), true);
-
-                // POST should not update by ID but always create new contact.
-                // It would merge with existing contact by email if those would be the same.
-                $this->assertNotEquals($contactId1, $responseArray['contact']['id'], $clientResponse->getContent());
-                $this->assertNotEquals($contactId2, $responseArray['contact']['id'], $clientResponse->getContent());
-                $this->assertEquals(null, $responseArray['contact']['fields']['all']['firstname'], $clientResponse->getContent());
-                $this->assertEquals('batchemail202-updated@email.com', $responseArray['contact']['fields']['all']['email'], $clientResponse->getContent());
-                $this->assertEquals('Prčice', $responseArray['contact']['fields']['all']['city'], $clientResponse->getContent());
-            },
-        ];
-
-        yield [
-            'POST',
-            'batchemail202@email.com',
-            function (Response $clientResponse, int $contactId1) {
-                $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
-
-                $responseArray = json_decode($clientResponse->getContent(), true);
-
-                // POST should not update by ID but always create new contact.
-                // But in this case it will merge by email which is unique identifier.
-                $this->assertEquals($contactId1, $responseArray['contact']['id'], $clientResponse->getContent());
-                $this->assertEquals('BatchUpdate2', $responseArray['contact']['fields']['all']['firstname'], $clientResponse->getContent());
-                $this->assertEquals('batchemail202@email.com', $responseArray['contact']['fields']['all']['email'], $clientResponse->getContent());
-                $this->assertEquals('Prčice', $responseArray['contact']['fields']['all']['city'], $clientResponse->getContent());
-            },
-        ];
-
-        yield [
-            'PUT',
-            'batchemail202-updated@email.com',
-            function (Response $clientResponse, int $contactId1) {
-                $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
-
-                $responseArray = json_decode($clientResponse->getContent(), true);
-
-                // PUT should update by ID and overwrite the original contact values.
-                $this->assertEquals($contactId1, $responseArray['contact']['id'], $clientResponse->getContent());
-                $this->assertEquals(null, $responseArray['contact']['fields']['all']['firstname'], $clientResponse->getContent());
-                $this->assertEquals('batchemail202-updated@email.com', $responseArray['contact']['fields']['all']['email'], $clientResponse->getContent());
-                $this->assertEquals('Prčice', $responseArray['contact']['fields']['all']['city'], $clientResponse->getContent());
-            },
-        ];
-
-        yield [
-            'PATCH',
-            'batchemail202-updated@email.com',
-            function (Response $clientResponse, int $contactId1) {
-                $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
-
-                $responseArray = json_decode($clientResponse->getContent(), true);
-
-                // PATCH should update by ID and leave the original contact values.
-                $this->assertEquals($contactId1, $responseArray['contact']['id'], $clientResponse->getContent());
-                $this->assertEquals('BatchUpdate2', $responseArray['contact']['fields']['all']['firstname'], $clientResponse->getContent());
-                $this->assertEquals('batchemail202-updated@email.com', $responseArray['contact']['fields']['all']['email'], $clientResponse->getContent());
-                $this->assertEquals('Prčice', $responseArray['contact']['fields']['all']['city'], $clientResponse->getContent());
-            },
-        ];
     }
 
     public function testBatchPutEndpointCanHandleMergedContacts(): void
@@ -219,7 +221,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $contactId4Created = $response['contacts'][3]['id'];
 
         /** @var ContactMerger $contactMerger */
-        $contactMerger = self::$container->get('mautic.lead.merger');
+        $contactMerger = static::getContainer()->get('mautic.lead.merger');
 
         // Merge contact 102 into 101.
         $contactMerger->merge(
