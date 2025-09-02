@@ -158,14 +158,14 @@ class IpLookupHelper
                         $ipAddress->setDoNotTrackList($doNotTrack);
                         break;
                     }
+                }
 
-                    // second check for bots  https://github.com/matomo-org/device-detector
-                    $deviceDetector = $this->deviceDetectorFactory->create($userAgent);
-                    $deviceDetector->parse();
-                    if ($deviceDetector->isBot()) {
-                        $doNotTrack[] = $ip;
-                        $ipAddress->setDoNotTrackList($doNotTrack);
-                    }
+                // second check for bots  https://github.com/matomo-org/device-detector
+                $deviceDetector = $this->deviceDetectorFactory->create($userAgent);
+                $deviceDetector->parse();
+                if ($deviceDetector->isBot()) {
+                    $doNotTrack[] = $ip;
+                    $ipAddress->setDoNotTrackList($doNotTrack);
                 }
             }
 
