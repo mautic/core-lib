@@ -117,15 +117,11 @@ class UserController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function inviteAction(Request $request)
+    public function inviteAction(Request $request, UserModel $model)
     {
         if (!$this->security->isGranted('user:users:create')) {
             return $this->accessDenied();
         }
-
-        /** @var UserModel $model */
-        $model = $this->getModel('user.user');
-
         $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'invite']);
         $form   = $this->createForm(UserInviteType::class, [], ['action' => $action]);
 

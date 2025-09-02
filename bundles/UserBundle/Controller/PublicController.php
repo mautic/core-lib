@@ -142,11 +142,8 @@ class PublicController extends FormController
         ]);
     }
 
-    public function inviteAction(Request $request, UserPasswordHasherInterface $hasher): mixed
+    public function inviteAction(Request $request, UserPasswordHasherInterface $hasher, UserModel $model, RoleModel $roleModel): mixed
     {
-        /** @var UserModel $model */
-        $model = $this->getModel('user');
-
         $token  = $request->get('token');
         $invite = $model->getInvite($token);
         if (null === $invite) {
@@ -161,8 +158,6 @@ class PublicController extends FormController
         if ($invite->getRole()) {
             $user->setRole($invite->getRole());
         } else {
-            /** @var RoleModel $roleModel */
-            $roleModel = $this->getModel('user.role');
             $role      = $roleModel->getRepository()->findOneBy([], ['id' => 'ASC']);
             if (null !== $role) {
                 $user->setRole($role);
@@ -208,8 +203,6 @@ class PublicController extends FormController
                     if ($invite->getRole()) {
                         $user->setRole($invite->getRole());
                     } else {
-                        /** @var RoleModel $roleModel */
-                        $roleModel = $this->getModel('user.role');
                         $role      = $roleModel->getRepository()->findOneBy([], ['id' => 'ASC']);
                         if (null !== $role) {
                             $user->setRole($role);

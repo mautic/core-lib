@@ -24,7 +24,7 @@ final class Version20250127092203 extends PreUpAssertionMigration
         $table = $schema->createTable($this->prefix.'user_invites');
         $table->addColumn('id', 'integer', ['autoincrement' => true, 'unsigned' => true, 'notnull' => true]);
         $table->addColumn('email', 'string', ['length' => 191, 'notnull' => true]);
-        $table->addColumn('token', 'string', ['length' => 120, 'notnull' => true]);
+        $table->addColumn('token', 'string', ['length' => 32, 'notnull' => true]);
         $table->addColumn('expiration', 'datetime', ['notnull' => true]);
         $table->addColumn('used', 'boolean', ['notnull' => true, 'default' => false]);
 

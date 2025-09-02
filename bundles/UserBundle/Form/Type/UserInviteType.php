@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\UserBundle\Form\Type;
 
 use Doctrine\Common\Collections\Order;
@@ -16,7 +18,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 /**
  * @extends AbstractType<array<string, mixed>>
  */
-class UserInviteType extends AbstractType
+final class UserInviteType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

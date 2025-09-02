@@ -9,35 +9,17 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class UserInvite
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id;
 
-    /**
-     * @var string
-     */
-    private $email;
+    private ?string $email;
 
-    /**
-     * @var string
-     */
-    private $token;
+    private ?string $token;
 
-    /**
-     * @var \DateTimeInterface
-     */
-    private $expiration;
+    private ?\DateTimeInterface $expiration;
 
-    /**
-     * @var bool
-     */
-    private $used = false;
+    private bool $used = false;
 
-    /**
-     * @var Role|null
-     */
-    private $role;
+    private ?Role $role;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
