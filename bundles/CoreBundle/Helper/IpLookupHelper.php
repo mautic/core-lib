@@ -43,7 +43,7 @@ class IpLookupHelper
         protected EntityManager $em,
         CoreParametersHelper $coreParametersHelper,
         protected ?AbstractLookup $ipLookup = null,
-        private ?DeviceDetectorFactoryInterface $deviceDetectorFactory = null,
+        private DeviceDetectorFactoryInterface $deviceDetectorFactory,
     ) {
         $this->doNotTrackIps         = $coreParametersHelper->get('do_not_track_ips');
         $this->doNotTrackBots        = $coreParametersHelper->get('do_not_track_bots');
@@ -158,14 +158,14 @@ class IpLookupHelper
                         $ipAddress->setDoNotTrackList($doNotTrack);
                         break;
                     }
-                }
 
-                // second check for bots  https://github.com/matomo-org/device-detector
-                $deviceDetector = $this->deviceDetectorFactory->create($userAgent);
-                $deviceDetector->parse();
-                if ($deviceDetector->isBot()) {
-                    $doNotTrack[] = $ip;
-                    $ipAddress->setDoNotTrackList($doNotTrack);
+                    // second check for bots  https://github.com/matomo-org/device-detector
+                    $deviceDetector = $this->deviceDetectorFactory->create($userAgent);
+                    $deviceDetector->parse();
+                    if ($deviceDetector->isBot()) {
+                        $doNotTrack[] = $ip;
+                        $ipAddress->setDoNotTrackList($doNotTrack);
+                    }
                 }
             }
 
