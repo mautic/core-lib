@@ -137,15 +137,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
         self::addProjectsField($builder, 'company_projects_xref', 'company_id');
     }
 
-    public static function loadValidatorMetadata(ClassMetadata $metadata): void
-    {
-        $metadata->addConstraint(new UniqueCustomField(['object' => 'company']));
-        $metadata->addPropertyConstraint('score', new Assert\Range([
-            'min' => 0,
-            'max' => 2147483647,
-        ]));
-    }
-
     /**
      * Prepares the metadata for API usage.
      */
@@ -181,6 +172,15 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
             ->build();
 
         self::addProjectsInLoadApiMetadata($metadata, 'company');
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata): void
+    {
+        $metadata->addConstraint(new UniqueCustomField(['object' => 'company']));
+        $metadata->addPropertyConstraint('score', new Assert\Range([
+            'min' => 0,
+            'max' => 2147483647,
+        ]));
     }
 
     public static function getDefaultIdentifierFields(): array
