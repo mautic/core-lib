@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CoreBundle\Doctrine\AbstractMauticMigration;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\UserBundle\Entity\Permission;
@@ -74,6 +75,9 @@ final class Version20211209022550 extends AbstractMauticMigration
         }
     }
 
+    /**
+     * @param string[] $perms
+     */
     private function getPermissionBitwise(array $perms): int
     {
         $permBitwise = [
@@ -100,6 +104,9 @@ final class Version20211209022550 extends AbstractMauticMigration
      */
     private function setBitwise(Role $role, int $bit, array $rawPermissions): void
     {
+        $entityManager = $this->container->get('doctrine.orm.entity_manager');
+        \assert($entityManager instanceof EntityManagerInterface);
+
         $isPresent = false;
         /** @var Permission $permission */
         foreach ($role->getPermissions()->getIterator() as $permission) {
@@ -109,7 +116,7 @@ final class Version20211209022550 extends AbstractMauticMigration
             $isPresent = true;
 
             $permission->setBitwise($bit);
-            $this->entityManager->persist($permission);
+            $entityManager->persist($permission);
             break;
         }
 
@@ -118,13 +125,13 @@ final class Version20211209022550 extends AbstractMauticMigration
             $permission->setBundle('lead');
             $permission->setName('lists');
             $permission->setBitwise($bit);
-            $this->entityManager->persist($permission);
+            $entityManager->persist($permission);
 
             $role->addPermission($permission);
         }
 
         $role->setRawPermissions($rawPermissions);
-        $this->entityManager->persist($role);
-        $this->entityManager->flush();
+        $entityManager->persist($role);
+        $entityManager->flush();
     }
 }
