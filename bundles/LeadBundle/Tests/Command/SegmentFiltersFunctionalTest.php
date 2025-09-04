@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Command;
 
-use Exception;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\FormBundle\Model\FieldModel;
 use Mautic\LeadBundle\Entity\Lead;
@@ -25,12 +24,12 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
      * @param array<string, mixed> $fieldDetails
      * @param array<string, mixed> $segmentData
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function testFiltersHasCorrectContactsIncludedInSegment(
         array $fieldDetails,
         array $segmentData,
-        callable $checkValidContact
+        callable $checkValidContact,
     ): void {
         $this->saveCustomField($fieldDetails);
         $contacts  = $this->saveContacts();
@@ -75,10 +74,11 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
         $field->setObject('lead');
         $field->setGroup('core');
         $field->setAlias($fieldDetails['alias']);
+        $field->setPublicName($fieldDetails['label']);
         $field->setProperties($fieldDetails['properties']);
 
         /** @var FieldModel $fieldModel */
-        $fieldModel = self::$container->get('mautic.lead.model.field');
+        $fieldModel = static::getContainer()->get('mautic.lead.model.field');
         $fieldModel->saveEntity($field);
     }
 
@@ -109,7 +109,7 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
                         ],
                     ],
                 ]);
-                $leadModel = self::$container->get('mautic.lead.model.lead');
+                $leadModel = static::getContainer()->get('mautic.lead.model.lead');
                 $leadModel->setFieldValues($contact, [self::FIELD_NAME => [$cars[$i % 3]]]);
             }
             $contacts[] = $contact;
@@ -149,7 +149,7 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<int, mixed>
      */
-    public function filtersSegmentsContacts(): iterable
+    public static function filtersSegmentsContacts(): iterable
     {
         $customField = [
             'label'               => 'Cars',
@@ -192,9 +192,8 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
             $segmentData,
             function ($contact): bool {
                 return
-                    empty($contact->getFields()) ||
-                    !in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2'])
-                ;
+                    empty($contact->getFields())
+                    || !in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2']);
             },
         ];
 
@@ -218,9 +217,8 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
             $segmentData,
             function ($contact): bool {
                 return
-                    !empty($contact->getFields()) &&
-                    in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2'])
-                ;
+                    !empty($contact->getFields())
+                    && in_array($contact->getField(self::FIELD_NAME)['value'], ['value1', 'value2']);
             },
         ];
     }
