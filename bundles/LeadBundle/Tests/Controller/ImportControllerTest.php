@@ -16,10 +16,10 @@ use Mautic\LeadBundle\Entity\LeadEventLogRepository;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Mautic\LeadBundle\Entity\LeadRepository;
+use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\UserBundle\Entity\Permission;
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
-use Mautic\LeadBundle\Model\FieldModel;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
@@ -371,25 +371,6 @@ final class ImportControllerTest extends MauticMysqlTestCase
         return $lead;
     }
 
-    private function createCompanyForLead(Lead $lead, string $companyName): void
-    {
-        $company = new Company();
-        $company->setName($companyName);
-        $this->em->persist($company);
-
-        // add company to lead
-        $lead->setCompany($companyName);
-        $this->em->persist($lead);
-
-        // set primary company for lead
-        $companyLead = new CompanyLead();
-        $companyLead->setCompany($company);
-        $companyLead->setLead($lead);
-        $companyLead->setDateAdded(new \DateTime());
-        $companyLead->setPrimary(true);
-        $this->em->persist($companyLead);
-    }
-
     /**
      * @param array<mixed> $permission
      */
@@ -433,7 +414,9 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
     private function createBooleanField(): void
     {
-        $this->loginUser('admin');
+        $user = $this->em->getRepository(User::class)
+            ->findOneBy(['username' => $this->clientServer['PHP_AUTH_USER'] ?? 'admin']);
+        $this->loginUser($user);
         $field = new LeadField();
         $field->setType('boolean');
         $field->setObject('lead');

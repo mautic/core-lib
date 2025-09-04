@@ -1224,12 +1224,7 @@ class LeadModel extends FormModel
         // Modifies the data array
         $company                           = null;
         [$companyFields, $companyData]     = $this->companyModel->extractCompanyDataFromImport($fields, $data);
-
-        if (!empty($companyData)) {
-            $company       = $this->companyModel->importCompany(array_flip($companyFields), $companyData);
-        }
-
-        $fieldData = $this->getCleanedFieldData($fields, $data);
+        $fieldData                         = $this->getCleanedFieldData($fields, $data);
 
         if (array_key_exists('id', $fieldData)) {
             $lead = $this->getEntity($fieldData['id']);
