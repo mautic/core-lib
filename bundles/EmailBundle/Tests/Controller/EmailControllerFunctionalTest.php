@@ -6,6 +6,7 @@ namespace Mautic\EmailBundle\Tests\Controller;
 
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\TransactionRequiredException;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Traits\ControllerTrait;
 use Mautic\DynamicContentBundle\DynamicContent\TypeList;
@@ -17,6 +18,7 @@ use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
 use Mautic\ProjectBundle\Entity\Project;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bridge\Doctrine\DataCollector\DoctrineDataCollector;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,6 +28,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
     public function setUp(): void
     {
+        $this->configParams['legacy_builder_enabled'] = true;
         $this->configParams['disable_trackable_urls'] = false;
         $this->configParams['mailer_from_name']       = 'Mautic Admin';
         $this->configParams['mailer_from_email']      = 'admin@email.com';
@@ -196,7 +199,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
         $html    = $crawler->filterXPath("//select[@id='emailform_segmentTranslationParent']//optgroup")->html();
-        self::assertSame('<option value="'.$email->getId().'">'.$email->getName().'</option>', trim($html));
+        self::assertSame('<option value="'.$email->getId().'">'.$email->getName().' ('.$email->getId().')</option>', trim($html));
     }
 
     public function testSegmentEmailSend(): void
@@ -454,7 +457,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertEquals($firstEmail->getId(), $secondEmail->getVariantParent()->getId());
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('dwcTokenTypeDataProvider')]
+    #[DataProvider('dwcTokenTypeDataProvider')]
     public function testSaveEmailWithHtmlTypeDWC(string $type): void
     {
         $dwc            = $this->createDynamicContent($type);
@@ -525,7 +528,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @param mixed[]|null $varientSetting
      */
-    private function createEmail(string $name, string $subject, string $emailType, string $template, string $customHtml, LeadList $segment = null, ?array $varientSetting = []): Email
+    private function createEmail(string $name, string $subject, string $emailType, string $template, string $customHtml, ?LeadList $segment = null, ?array $varientSetting = []): Email
     {
         $email = new Email();
         $email->setName($name);
@@ -640,5 +643,142 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($dynamicContent);
 
         return $dynamicContent;
+    }
+
+    /**
+     * @throws \Doctrine\ORM\Exception\ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     */
+    #[DataProvider('getEditEmailForTranslationProvider')]
+    public function testEditEmailForTranslation(
+        string $parentType,
+        string $childType,
+        string $parentField,
+        bool $useSegment,
+    ): void {
+        $segment = $useSegment ? $this->createSegment('Segment A', 'segment-a') : null;
+
+        $parentEmail = $this->createEmail('Parent Email', 'template', $parentType, 'blank', 'Test html', $segment);
+        $childEmail  = $this->createEmail('Child Email', 'template', $childType, 'blank', 'Test html', $segment);
+
+        $this->em->persist($parentEmail);
+        $this->em->persist($childEmail);
+        $this->em->flush();
+
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/edit/{$childEmail->getId()}");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Save')->form();
+        $form->setValues([
+            'emailform[name]'            => 'Child Email - Updated',
+            "emailform[$parentField]"    => $parentEmail->getId(),
+        ]);
+
+        $this->client->submit($form);
+        $this->assertResponseIsSuccessful();
+
+        /** @var Email $updatedChild */
+        $updatedChild      = $this->em->find(Email::class, $childEmail->getId());
+        $translationParent = $updatedChild->getTranslationParent();
+        \assert($translationParent instanceof Email || null === $translationParent);
+
+        $this->assertNotNull($translationParent, 'Translation parent should be set.');
+        $this->assertSame(
+            $parentEmail->getId(),
+            $translationParent->getId(),
+            'Child email should have the parent email set for translation.'
+        );
+    }
+
+    /**
+     * @return iterable<string, array{parentType: string, childType: string, parentField: string, useSegment: bool}>
+     */
+    public static function getEditEmailForTranslationProvider(): iterable
+    {
+        yield 'Segment email' => [
+            'parentType'   => 'list',
+            'childType'    => 'list',
+            'parentField'  => 'segmentTranslationParent',
+            'useSegment'   => true,
+        ];
+
+        yield 'Template email' => [
+            'parentType'   => 'template',
+            'childType'    => 'template',
+            'parentField'  => 'templateTranslationParent',
+            'useSegment'   => false,
+        ];
+    }
+
+    /**
+     * Test email name length validation (190 character limit).
+     */
+    public function testEmailNameLengthValidation(): void
+    {
+        $longName = str_repeat('a', Email::MAX_NAME_SUBJECT_LENGTH + 1); // 191 characters
+
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $form = $crawler->selectButton('emailform[buttons][save]')->form();
+        $form['emailform[name]']->setValue($longName);
+        $form['emailform[subject]']->setValue('Valid Subject');
+        $form['emailform[emailType]']->setValue('template');
+
+        $this->client->submit($form);
+
+        $response = $this->client->getResponse();
+        $this->assertStringContainsString('Email name maximum length is 190 characters', $response->getContent());
+    }
+
+    /**
+     * Test email subject length validation (190 character limit).
+     */
+    public function testEmailSubjectLengthValidation(): void
+    {
+        $longSubject = str_repeat('b', Email::MAX_NAME_SUBJECT_LENGTH + 1); // 191 characters
+
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $form = $crawler->selectButton('emailform[buttons][save]')->form();
+        $form['emailform[name]']->setValue('Valid Name');
+        $form['emailform[subject]']->setValue($longSubject);
+        $form['emailform[emailType]']->setValue('template');
+
+        $this->client->submit($form);
+
+        $response = $this->client->getResponse();
+        $this->assertStringContainsString('Email subject maximum length is 190 characters', $response->getContent());
+    }
+
+    /**
+     * Test that long email name with empty subject doesn't cause server error.
+     * This addresses issue #15394 where TextOnlyDynamicContentValidator
+     * threw UnexpectedTypeException for null subject values.
+     */
+    public function testLongNameWithEmptySubjectValidation(): void
+    {
+        $longName = str_repeat('a', Email::MAX_NAME_SUBJECT_LENGTH + 1); // 191 characters
+
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
+        $this->assertTrue($this->client->getResponse()->isOk());
+
+        $form = $crawler->selectButton('emailform[buttons][save]')->form();
+        $form['emailform[name]']->setValue($longName);
+        $form['emailform[emailType]']->setValue('template');
+
+        $this->client->submit($form);
+
+        $response = $this->client->getResponse();
+
+        // Should return validation errors, NOT a 500 server error
+        $this->assertTrue($response->isOk() || $response->isClientError());
+        $this->assertFalse($response->isServerError(), 'Should not return 500 server error for empty subject with long name');
+
+        // Should contain validation messages for both name length and subject being required
+        $content = $response->getContent();
+        $this->assertStringContainsString('Email name maximum length is 190 characters', $content);
     }
 }

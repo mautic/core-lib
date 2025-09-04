@@ -339,6 +339,7 @@ class CampaignRepository extends CommonRepository
                         $sq->expr()->in('e.event_id', $pendingEvents)
                     )
                 );
+            $this->updateQueryFromContactLimiter('e', $sq, $limiter, true);
 
             $q->andWhere(
                 sprintf('NOT EXISTS (%s)', $sq->getSQL())
@@ -418,7 +419,7 @@ class CampaignRepository extends CommonRepository
      *
      * @throws \Doctrine\DBAL\Cache\CacheException
      */
-    public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [], \DateTimeInterface $dateFrom = null, \DateTimeInterface $dateTo = null): int
+    public function getCampaignLeadCount($campaignId, $leadId = null, $pendingEvents = [], ?\DateTimeInterface $dateFrom = null, ?\DateTimeInterface $dateTo = null): int
     {
         $q = $this->getReplicaConnection()->createQueryBuilder();
 

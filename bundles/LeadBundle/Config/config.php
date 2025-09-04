@@ -670,6 +670,7 @@ return [
                     'mautic.lead.model.list',
                     'mautic.user.model.user',
                     'mautic.lead.model.lead',
+                    'mautic.lead.report.dnc_report_service',
                 ],
             ],
             'mautic.lead.factory.device_detector_factory' => [
@@ -796,16 +797,6 @@ return [
             'mautic.lead.query.builder.complex_relation.value' => [
                 'class'     => Mautic\LeadBundle\Segment\Query\Filter\ComplexRelationValueFilterQueryBuilder::class,
                 'arguments' => ['mautic.lead.model.random_parameter_name', 'event_dispatcher'],
-            ],
-            'mautic.lead.query.builder.special.leadlist' => [
-                'class'     => Mautic\LeadBundle\Segment\Query\Filter\SegmentReferenceFilterQueryBuilder::class,
-                'arguments' => [
-                    'mautic.lead.model.random_parameter_name',
-                    'mautic.lead.repository.lead_segment_query_builder',
-                    'doctrine.orm.entity_manager',
-                    'mautic.lead.model.lead_segment_filter_factory',
-                    'event_dispatcher',
-                ],
             ],
             'mautic.lead.query.builder.channel_click.value' => [
                 'class'     => Mautic\LeadBundle\Segment\Query\Filter\ChannelClickQueryBuilder::class,
