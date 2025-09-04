@@ -46,7 +46,11 @@ class FormFieldCheckboxGroupType extends AbstractType
             [
                 'label'      => 'mautic.form.field.checkboxgrp.min_message',
                 'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'attr'       => [
+                    'class'         => 'form-control',
+                    'placeholder'   => $this->translator->trans('mautic.form.field.checkboxgrp.min_message.placeholder'),
+                    'tooltip'       => 'mautic.form.field.checkboxgrp.min_message.tooltip',
+                ],
                 'required'   => false,
                 'data'       => $options['data']['min_message'] ?? null,
             ]
@@ -75,7 +79,11 @@ class FormFieldCheckboxGroupType extends AbstractType
             [
                 'label'      => 'mautic.form.field.checkboxgrp.max_message',
                 'label_attr' => ['class' => 'control-label'],
-                'attr'       => ['class' => 'form-control'],
+                'attr'       => [
+                    'class'         => 'form-control',
+                    'placeholder'   => $this->translator->trans('mautic.form.field.checkboxgrp.max_message.placeholder'),
+                    'tooltip'       => 'mautic.form.field.checkboxgrp.max_message.tooltip',
+                ],
                 'required'   => false,
                 'data'       => $options['data']['max_message'] ?? null,
             ]

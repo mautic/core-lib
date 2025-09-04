@@ -156,6 +156,14 @@
                           {%- if form.isRequired is defined %}<div class="col-md-4">{{ form_row(form.isRequired) }}</div>{% endif %}
                           {%- if form.validationMessage is defined %}<div class="col-md-8">{{ form_row(form.validationMessage) }}</div>{% endif %}
                       </div>
+                      <div class="row">
+                        <div class="col-md-4">{{form_row(form.validation.minimum)}}</div>
+                        <div class="col-md-8">{{form_row(form.validation.min_message)}}</div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-4">{{form_row(form.validation.maximum)}}</div>
+                        <div class="col-md-8">{{form_row(form.validation.max_message)}}</div>
+                      </div>
                   <div class="row">
                       {% for name, property in validation %}
                           {% if not form.validation[name].isRendered and 'labelAttributes' != name %}
