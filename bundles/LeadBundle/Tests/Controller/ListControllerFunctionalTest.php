@@ -644,7 +644,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
         $segmentWithOldLastRebuildDate->setLastBuiltDate(new \DateTime('-1 year'));
         $segmentWithFreshLastRebuildDate->setLastBuiltDate(new \DateTime('now'));
-        $segmentWithOldLastRebuildDateUnpublished->isPublished(false);
+        $segmentWithOldLastRebuildDateUnpublished->setIsPublished(false);
 
         $this->em->persist($segmentWithOldLastRebuildDate);
         $this->em->persist($segmentWithFreshLastRebuildDate);
