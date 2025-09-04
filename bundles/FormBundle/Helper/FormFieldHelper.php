@@ -30,7 +30,9 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 Blank::class => ['message' => 'mautic.form.submission.captcha.invalid'],
             ],
         ],
-        'checkboxgrp' => [],
+        'checkboxgrp' => [
+            'filter' => 'raw',
+        ],
         'country'     => [],
         'date'        => [],
         'datetime'    => [],
@@ -49,8 +51,12 @@ class FormFieldHelper extends AbstractFormFieldHelper
         ],
         'pagebreak' => [],
         'password'  => [],
-        'radiogrp'  => [],
-        'select'    => [],
+        'radiogrp'  => [
+            'filter' => 'raw',
+        ],
+        'select'    => [
+            'filter' => 'raw',
+        ],
         'tel'       => [],
         'text'      => [],
         'textarea'  => [],
