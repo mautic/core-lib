@@ -102,9 +102,4 @@ class FormFieldCheckboxGroupType extends AbstractType
             }
         });
     }
-
-    public function getBlockPrefix(): string
-    {
-        return 'formfield_checkboxgroup_validation';
-    }
 }
