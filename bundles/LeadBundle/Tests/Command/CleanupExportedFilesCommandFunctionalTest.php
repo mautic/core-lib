@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Command;
 
-use Exception;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Command\CleanupExportedFilesCommand;
@@ -25,13 +24,13 @@ final class CleanupExportedFilesCommandFunctionalTest extends MauticMysqlTestCas
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function testCleanupContactExportFiles(): void
     {
         $filePath = $this->exportContactToCsvFile();
 
-        $this->runCommand(CleanupExportedFilesCommand::COMMAND_NAME);
+        $this->testSymfonyCommand(CleanupExportedFilesCommand::COMMAND_NAME);
         Assert::assertFileDoesNotExist($filePath);
     }
 
@@ -47,10 +46,10 @@ final class CleanupExportedFilesCommandFunctionalTest extends MauticMysqlTestCas
         $contactExportSchedulerRows = $this->checkContactExportScheduler(1);
         /** @var ContactExportScheduler $contactExportScheduler */
         $contactExportScheduler     = $contactExportSchedulerRows[0];
-        $this->runCommand(ContactScheduledExportCommand::COMMAND_NAME, ['--ids' => $contactExportScheduler->getId()]);
+        $this->testSymfonyCommand(ContactScheduledExportCommand::COMMAND_NAME, ['--ids' => $contactExportScheduler->getId()]);
 
         /** @var CoreParametersHelper $coreParametersHelper */
-        $coreParametersHelper    = self::$container->get('mautic.helper.core_parameters');
+        $coreParametersHelper    = self::getContainer()->get('mautic.helper.core_parameters');
         $zipFileName             = 'contacts_export_'.$contactExportScheduler->getScheduledDateTime()
                 ->format('Y_m_d_H_i_s').'.zip';
         $filePath = $coreParametersHelper->get('contact_export_dir').'/'.$zipFileName;
@@ -72,7 +71,7 @@ final class CleanupExportedFilesCommandFunctionalTest extends MauticMysqlTestCas
             $contacts[] = $contact;
         }
 
-        $leadModel = self::$container->get('mautic.lead.model.lead');
+        $leadModel = self::getContainer()->get('mautic.lead.model.lead');
         $leadModel->saveEntities($contacts);
     }
 
