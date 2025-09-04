@@ -7,6 +7,7 @@ namespace Mautic\CampaignBundle\Tests\Functional\Controller;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use PHPUnit\Framework\Assert;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 final class CampaignBuilderEditFieldValueConditionTest extends MauticMysqlTestCase
 {
     use CampaignControllerTrait;
+    use CreateTestEntitiesTrait;
 
     public function testCampaignBuilderFormForFieldValueConditionForInOperator(): void
     {
@@ -79,10 +81,11 @@ final class CampaignBuilderEditFieldValueConditionTest extends MauticMysqlTestCa
         Assert::assertJson($response->getContent());
 
         // transform the update form and change the values
-        $content     = $response->getContent();
-        $content     = json_decode($content)->newContent;
-        $crawler     = new Crawler($content, $this->client->getInternalRequest()->getUri());
-        $formCrawler = $crawler->filter('form');
+        $content      = $response->getContent();
+        $responseData = json_decode($content, true);
+        $content      = $responseData['newContent'];
+        $crawler      = new Crawler($content, $this->client->getInternalRequest()->getUri());
+        $formCrawler  = $crawler->filter('form');
         $this->assertSame(1, $formCrawler->count());
         $form                                               = $formCrawler->form();
         $payload                                            = $form->getPhpValues();
@@ -107,6 +110,7 @@ final class CampaignBuilderEditFieldValueConditionTest extends MauticMysqlTestCa
     {
         $leadList = new LeadList();
         $leadList->setName('Test list');
+        $leadList->setPublicName('Test list');
         $leadList->setAlias('test-list');
         $this->em->persist($leadList);
 
