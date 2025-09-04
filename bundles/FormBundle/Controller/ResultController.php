@@ -465,10 +465,8 @@ class ResultController extends CommonFormController
         return $formId;
     }
 
-    public function addToSegmentAction(Request $request, int $objectId): Response
+    public function addToSegmentAction(Request $request, int $objectId, FormModel $formModel, SubmissionModel $model, ListModel $segmentModel): Response
     {
-        /** @var FormModel $formModel */
-        $formModel = $this->getModel('form.form');
         $form      = $formModel->getEntity($objectId);
         $session   = $request->getSession();
         $formPage  = $session->get('mautic.form.page', 1);
@@ -499,8 +497,6 @@ class ResultController extends CommonFormController
         $orderByDir = $session->get('mautic.formresult.'.$objectId.'.orderbydir', 'DESC');
         $filters    = $session->get('mautic.formresult.'.$objectId.'.filters', []);
 
-        /** @var SubmissionModel $model */
-        $model          = $this->getModel('form.submission');
         $viewOnlyFields = $formModel->getCustomComponents()['viewOnlyFields'];
 
         $entities = $model->getEntities([
@@ -525,9 +521,6 @@ class ResultController extends CommonFormController
         }
 
         $contactIds = array_values(array_unique($contactIds));
-
-        /** @var ListModel $segmentModel */
-        $segmentModel = $this->getModel('lead.list');
 
         $lists = $segmentModel->getUserLists();
         $items = [];

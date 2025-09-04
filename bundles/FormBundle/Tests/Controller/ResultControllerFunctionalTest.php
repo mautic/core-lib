@@ -106,16 +106,12 @@ final class ResultControllerFunctionalTest extends MauticMysqlTestCase
             'mauticform[formId]' => $formId,
             'mauticform[return]' => '',
         ]);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         // Call the addToSegmentAction
         $this->client->request('GET', "/s/forms/results/{$formId}/add-to-segment");
         $response = $this->client->getResponse();
-        if (!$response->isOk()) {
-            echo '\nDEBUG: Status code: '.$response->getStatusCode();
-            echo '\nDEBUG: Content: '.$response->getContent();
-        }
-        $this->assertTrue($response->isOk());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('form', $response->getContent());
         $this->assertStringContainsString('batch', $response->getContent());
     }
