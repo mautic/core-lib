@@ -99,7 +99,10 @@ class EmailControllerTest extends TestCase
 
     private RequestStack $requestStack;
 
-    private EventDispatcherInterface $dispatcher;
+    /**
+     * @var MockObject|EventDispatcherInterface
+     */
+    private MockObject $dispatcher;
 
     protected function setUp(): void
     {
