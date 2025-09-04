@@ -16,17 +16,14 @@ class CleanupExportedFilesCommand extends Command
 {
     public const COMMAND_NAME = 'mautic:contacts:cleanup_exported_files';
 
-    private CoreParametersHelper $coreParametersHelper;
-
     /**
      * @var string
      */
     private const CLEANUP_DAYS = 'cleanupAfterDays';
 
-    public function __construct(CoreParametersHelper $coreParametersHelper)
-    {
-        $this->coreParametersHelper = $coreParametersHelper;
-
+    public function __construct(
+        private CoreParametersHelper $coreParametersHelper,
+    ) {
         parent::__construct();
     }
 
