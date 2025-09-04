@@ -422,7 +422,7 @@ class PageController extends FormController
                         }
                     } catch (InvalidRenderedHtmlException $e) {
                         $valid = false;
-                        $this->addFlash($e->getMessage(), [], 'error');
+                        $this->addFlash('error', $e->getMessage());
                     }
                 }
             } else {
@@ -570,7 +570,7 @@ class PageController extends FormController
                         ]);
                     } catch (InvalidRenderedHtmlException $e) {
                         $valid = false;
-                        $this->addFlash($e->getMessage(), [], 'error');
+                        $this->addFlash('error', $e->getMessage());
                     }
                 }
             } else {

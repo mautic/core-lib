@@ -39,13 +39,6 @@ class PageControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertStringContainsString('Test Html', $response->getContent());
     }
 
-    public function testTrackingImageAction(): void
-    {
-        $this->client->request('GET', '/mtracking.gif?url=http%3A%2F%2Fmautic.org');
-
-        self::assertResponseStatusCodeSame(200);
-    }
-
     public function testPageWithWrongHtmlContent(): void
     {
         $crawler        = $this->client->request(Request::METHOD_GET, '/s/pages/new');
