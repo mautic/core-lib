@@ -39,6 +39,76 @@ class PageControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertStringContainsString('Test Html', $response->getContent());
     }
 
+    public function testTrackingImageAction(): void
+    {
+        $this->client->request('GET', '/mtracking.gif?url=http%3A%2F%2Fmautic.org');
+
+        self::assertResponseStatusCodeSame(200);
+    }
+
+    public function testPageWithWrongHtmlContent(): void
+    {
+        $crawler        = $this->client->request(Request::METHOD_GET, '/s/pages/new');
+        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $form           = $buttonCrawler->form();
+        $form['page[title]']->setValue('Page B clone');
+        $form['page[template]']->setValue('blank');
+        $someArr        = ['content' => 'json'];
+        $beefreeContent = [
+            'css'      => 'the css',
+            'html'     => 'the html',
+            'rendered' => json_encode($someArr),
+        ];
+
+        $form['page[customHtml]']->setValue(json_encode($beefreeContent));
+        $form['page[isPublished]']->setValue(true);
+        $this->client->submit($form);
+        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertStringContainsString('Something went wrong with html content, Please refresh the page and try again.', $this->client->getResponse()->getContent());
+    }
+
+    public function testWrongContentInCloneAction(): void
+    {
+        $page   = $this->createPage();
+
+        $crawler        = $this->client->request(Request::METHOD_GET, "/s/pages/clone/{$page->getId()}");
+        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $form           = $buttonCrawler->form();
+        $someArr        = ['content' => 'json'];
+        $beefreeContent = [
+            'css'      => 'the css',
+            'html'     => 'the html',
+            'rendered' => json_encode($someArr),
+        ];
+
+        $form['page[customHtml]']->setValue(json_encode($beefreeContent));
+        $this->client->submit($form);
+        $this->client->submit($form);
+        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertStringContainsString('Something went wrong with html content, Please refresh the page and try again.', $this->client->getResponse()->getContent());
+    }
+
+    public function testWrongContentInEditAction(): void
+    {
+        $page   = $this->createPage();
+
+        $crawler        = $this->client->request(Request::METHOD_GET, "/s/pages/edit/{$page->getId()}");
+        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $form           = $buttonCrawler->form();
+        $someArr        = ['content' => 'json'];
+        $beefreeContent = [
+            'css'      => 'the css',
+            'html'     => 'the html',
+            'rendered' => json_encode($someArr),
+        ];
+
+        $form['page[customHtml]']->setValue(json_encode($beefreeContent));
+        $this->client->submit($form);
+        $this->client->submit($form);
+        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertStringContainsString('Something went wrong with html content, Please refresh the page and try again.', $this->client->getResponse()->getContent());
+    }
+
     private function createSegment(): LeadList
     {
         $segment = new LeadList();
