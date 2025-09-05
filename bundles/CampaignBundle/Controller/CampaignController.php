@@ -760,9 +760,6 @@ class CampaignController extends AbstractStandardFormController
     /**
      * This method is called before and after form is submitted.
      *
-     * @param      $entity
-     * @param      $action
-     * @param      $isPost
      * @param null $objectId
      * @param bool $isClone
      */

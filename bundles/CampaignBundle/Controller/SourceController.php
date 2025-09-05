@@ -16,7 +16,7 @@ class SourceController extends CommonFormController
      * @var string[]
      */
     private array $supportedSourceTypes = ['lists', 'forms'];
-    
+
     /**
      * @var mixed
      */
