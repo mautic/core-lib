@@ -1096,13 +1096,6 @@ class Event implements ChannelInterface, UuidInterface
         return $this;
     }
 
-    /**
-     * @return ?int
-     */
-    public function getFailedCount()
-    {
-        return $this->failedCount;
-    }
 
     public function setDeleted($deleted = 'now'): Event
     {

@@ -73,9 +73,9 @@ class EventController extends CommonFormController
     {
         $success = 0;
         $valid   = $cancelled   = false;
-        $this->setCampaignElements($this->request->request);
-        if ('1' === $this->request->request->get('submit')) {
-            $event                = $this->request->request->get('campaignevent');
+        $this->setCampaignElements($request->request);
+        if ('1' === $request->request->get('submit')) {
+            $event                = $request->request->get('campaignevent');
             $type                 = $event['type'];
             $eventType            = $event['eventType'];
             $campaignId           = $event['campaignId'];
@@ -128,7 +128,7 @@ class EventController extends CommonFormController
         $form->get('campaignId')->setData($campaignId);
 
         // Check for a submitted form and process it
-        if ('1' === $this->request->request->get('submit')) {
+        if ('1' === $request->request->get('submit')) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success = 1;
@@ -209,19 +209,19 @@ class EventController extends CommonFormController
     public function editAction(Request $request, $objectId)
     {
         $valid         = $cancelled = false;
-        $method        = $this->request->getMethod();
-        $campaignEvent = $this->request->request->get('campaignevent', []);
+        $method        = $request->getMethod();
+        $campaignEvent = $request->request->get('campaignevent', []);
         $campaignId    = 'POST' === $method && !empty($campaignEvent['campaignId'])
             ? $campaignEvent['campaignId']
-            : $this->request->query->get('campaignId');
+            : $request->query->get('campaignId');
 
-        $this->setCampaignElements($this->request->request);
+        $this->setCampaignElements($request->request);
         $event = $this->modifiedEvents[$objectId] ?? [];
         if (empty($event)) {
             $event = $this->getModel('campaign.event')->getEntity($objectId)->convertToArray();
         }
 
-        if ('1' === $this->request->request->get('submit')) {
+        if ('1' === $request->request->get('submit')) {
             $event = array_merge($event, [
                 'anchor'          => $campaignEvent['anchor'] ?? '',
                 'anchorEventType' => $campaignEvent['anchorEventType'] ?? '',
@@ -287,7 +287,7 @@ class EventController extends CommonFormController
         $modifiedEvents = $this->getModifiedEvents();
 
         // Check for a submitted form and process it
-        if ('1' === $this->request->request->get('submit')) {
+        if ('1' === $request->request->get('submit')) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $formData = $form->getData();
@@ -354,7 +354,7 @@ class EventController extends CommonFormController
      */
     public function deleteAction(Request $request, $objectId)
     {
-        $this->setCampaignElements($this->request->request);
+        $this->setCampaignElements($request->request);
         $modifiedEvents = $this->getModifiedEvents();
         $deletedEvents  = $this->deletedEvents;
 
@@ -413,8 +413,8 @@ class EventController extends CommonFormController
      */
     public function undeleteAction(Request $request, $objectId)
     {
-        $campaignId     = $this->request->query->get('campaignId');
-        $this->setCampaignElements($this->request->request);
+        $campaignId     = $request->query->get('campaignId');
+        $this->setCampaignElements($request->request);
         $modifiedEvents = $this->getModifiedEvents();
         $deletedEvents  = $this->deletedEvents;
 
