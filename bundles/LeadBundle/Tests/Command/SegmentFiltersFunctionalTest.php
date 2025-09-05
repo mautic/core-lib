@@ -18,6 +18,16 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
 {
     private const FIELD_NAME = 'car';
 
+    protected $useCleanupRollback = false;
+
+    private string $testIdentifier;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->testIdentifier = 'test_'.uniqid();
+    }
+
     /**
      * @dataProvider filtersSegmentsContacts
      *
@@ -47,7 +57,7 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
         }
 
         // update the segment
-        $this->runCommand('mautic:segments:update', ['-i' => $segmentId]);
+        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId]);
 
         // get the lead list leads stored in db after the segment update
         $leadListLeads = $this->em->getRepository(ListLead::class)->findBy(['list' => $segment]);
@@ -74,7 +84,6 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
         $field->setObject('lead');
         $field->setGroup('core');
         $field->setAlias($fieldDetails['alias']);
-        $field->setPublicName($fieldDetails['label']);
         $field->setProperties($fieldDetails['properties']);
 
         /** @var FieldModel $fieldModel */
@@ -89,7 +98,6 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
     {
         $numberOfContacts               = 8;
         $numberOfContactsWithBlankValue = 2;
-
         /** @var LeadRepository $contactRepo */
         $contactRepo = $this->em->getRepository(Lead::class);
         $contacts    = [];
@@ -99,6 +107,7 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
         for ($i = 1; $i <= $numberOfContacts; ++$i) {
             $contact = new Lead();
             $contact->setFirstname('Contact '.$i);
+            $contact->setLastname($this->testIdentifier); // Use lastname to identify test contacts
 
             if ($i > $numberOfContactsWithBlankValue) {
                 $contact->setFields([
@@ -106,6 +115,7 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
                         self::FIELD_NAME => [
                             'value' => '',
                             'type'  => 'multiselect',
+                            'alias' => self::FIELD_NAME,
                         ],
                     ],
                 ]);
@@ -129,18 +139,31 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
         $segment     = new LeadList();
 
         $filterToSave = $segmentData['filterToSave'];
-        $filters      = [[
-            'glue'     => 'and',
-            'field'    => $filterToSave['field'],
-            'object'   => 'lead',
-            'type'     => 'multiselect',
-            'filter'   => $filterToSave['filter'],
-            'display'  => null,
-            'operator' => $filterToSave['operator'],
-        ]];
+        $filters      = [
+            [
+                'glue'     => 'and',
+                'field'    => $filterToSave['field'],
+                'object'   => 'lead',
+                'type'     => 'multiselect',
+                'filter'   => $filterToSave['filter'],
+                'display'  => null,
+                'operator' => $filterToSave['operator'],
+            ],
+            [
+                'glue'     => 'and',
+                'field'    => 'lastname',
+                'object'   => 'lead',
+                'type'     => 'text',
+                'filter'   => $this->testIdentifier,
+                'display'  => null,
+                'operator' => '=',
+            ],
+        ];
+
         $segment->setName($segmentData['name'])
             ->setFilters($filters)
-            ->setAlias($segmentData['alias']);
+            ->setAlias($segmentData['alias'])
+            ->setPublicName($segmentData['name']);
         $segmentRepo->saveEntity($segment);
 
         return $segment;

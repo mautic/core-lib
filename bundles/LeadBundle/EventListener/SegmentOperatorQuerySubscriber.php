@@ -97,33 +97,25 @@ final class SegmentOperatorQuerySubscriber implements EventSubscriberInterface
         }
 
         $leadsTableAlias = $event->getLeadsTableAlias();
+        $operator        = 'multiselect' === $event->getFilter()->getOperator() ? 'regexp' : 'notRegexp';
+        $queryBuilder    = $event->getQueryBuilder();
+        $field           = $leadsTableAlias.'.'.$event->getFilter()->getField();
 
-        $operator    = 'multiselect' === $event->getFilter()->getOperator() ? 'regexp' : 'notRegexp';
         $expressions = [];
-
-        $queryBuilder = $event->getQueryBuilder();
-
         foreach ($event->getParameterHolder() as $parameter) {
-            $expressions[] = $queryBuilder->expr()->$operator($leadsTableAlias.'.'.$event->getFilter()->getField(), $parameter);
+            $expressions[] = $queryBuilder->expr()->$operator($field, $parameter);
         }
 
         if ('notRegexp' === $operator) {
-            $expressions = [$queryBuilder->expr()->or(
-                $queryBuilder->expr()->and(...$expressions),
-                $queryBuilder->expr()->isNull($leadsTableAlias.'.'.$event->getFilter()->getField()),
-            )];
-        }
-
-        // add OR between include / AND between exclude
-        if ('multiselect' === $event->getFilter()->getOperator()) {
-            $event->addExpression($event->getQueryBuilder()->expr()->OrX($expressions));
+            // Build and() from all expressions, then or() with isNull
+            $andExpr    = $queryBuilder->expr()->and(...$expressions);
+            $isNullExpr = $queryBuilder->expr()->isNull($field);
+            $finalExpr  = $queryBuilder->expr()->or($andExpr, $isNullExpr);
         } else {
-            // adding is null to account for empty entries, can be over-ridden with another filter
-            $event->addExpression($event->getQueryBuilder()->expr()->OrX(
-                $event->getQueryBuilder()->expr()->AndX($expressions),
-                $event->getQueryBuilder()->expr()->isNull($leadsTableAlias.'.'.$event->getFilter()->getField())
-            ));
+            // For 'multiselect', or() with all expressions
+            $finalExpr = $queryBuilder->expr()->or(...$expressions);
         }
+        $event->addExpression($finalExpr);
         $event->stopPropagation();
     }
 
