@@ -10,7 +10,7 @@ trait ClientMockTrait
 {
     private function getClientMockHandler(): MockHandler
     {
-        $clientMockHandler = self::$container->get('mautic.http.client.mock_handler');
+        $clientMockHandler = self::getContainer()->get(MockHandler::class);
         \assert($clientMockHandler instanceof MockHandler);
 
         return $clientMockHandler;
