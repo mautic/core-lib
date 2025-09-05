@@ -48,47 +48,47 @@ class CampaignController extends AbstractStandardFormController
     use EntityContactsTrait;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $campaignElements = [];
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $addedSources = [];
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $campaignEvents = [];
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $campaignSources = [];
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $connections = [];
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $deletedEvents = [];
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $deletedSources = [];
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $listFilters = [];
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $modifiedEvents = [];
 
@@ -609,9 +609,7 @@ class CampaignController extends AbstractStandardFormController
                         'viewParameters'  => $viewParameters,
                         'contentTemplate' => $template,
                         'passthroughVars' => $passthrough,
-                        'entity'          => $campaign,
-                    ],
-                    'new'
+                    ]
                 );
             } elseif ($valid && $this->isFormApplied($form)) {
                 return $this->editAction($request, $campaign->getId(), true);
@@ -769,7 +767,7 @@ class CampaignController extends AbstractStandardFormController
 
         if ($isPost) {
             // fetch data from form
-            $campaign         = $this->request->request->get('campaign', []);
+            $campaign         = $this->requestStack->getCurrentRequest()->request->get('campaign', []);
             $campaignElements = $campaign['campaignElements'] ?? [];
 
             // set global elements
@@ -917,7 +915,7 @@ class CampaignController extends AbstractStandardFormController
     {
         $session        = $this->getCurrentRequest()->getSession();
         $currentFilters = $session->get('mautic.campaign.list_filters', []);
-        $updatedFilters = $this->requestStack->getCurrentRequest()->get('filters', false);
+        $updatedFilters = $this->requestStack->getCurrentRequest()->get('filters', null);
 
         $sourceLists = $this->getCampaignModel()->getSourceLists();
         $listFilters = [
@@ -1005,23 +1003,10 @@ class CampaignController extends AbstractStandardFormController
         return 'campaign';
     }
 
-    private function setCampaignElements(string $campaignElements, bool $isClone = false): void
-    {
-        // sets the global campaignElements
-        $this->campaignElements = json_decode($campaignElements, true);
-
-        // set added/updated events - comes from global campaignElements which was set above
-        $this->setCampaignEvents();
-        // set added/updated sources - comes from global campaignElements which was set above
-        $this->setCampaignSources($isClone);
-
-        $this->connections = $this->campaignElements['canvasSettings'];
-    }
-
     /**
      * Set events from form data.
      */
-    private function setCampaignEvents()
+    private function setCampaignEvents(): void
     {
         $this->modifiedEvents = (array) ($this->campaignElements['modifiedEvents'] ?? []);
         $this->deletedEvents  = (array) ($this->campaignElements['deletedEvents'] ?? []);
@@ -1031,7 +1016,7 @@ class CampaignController extends AbstractStandardFormController
     /**
      * Set sources from form data.
      */
-    private function setCampaignSources($isClone = false)
+    private function setCampaignSources(bool $isClone = false): void
     {
         $campaignSources = (array) ($this->campaignElements['campaignSources'] ?? []);
         $modifiedSources = (array) ($this->campaignElements['modifiedSources'] ?? []);
@@ -1091,10 +1076,10 @@ class CampaignController extends AbstractStandardFormController
                     $args['viewParameters'],
                     [
                         'campaign'         => $entity,
-                        'eventSettings'    => $eventCollector->getEventsArray(),
+                        'eventSettings'    => $this->eventCollector->getEventsArray(),
                         'sources'          => $this->getCampaignModel()->getLeadSources($entity),
                         'campaignSources'  => $this->campaignSources,
-                        'campaignEvents'   => $events,
+                        'campaignEvents'   => $events ?? [],
                         'dateRangeForm'    => $dateRangeForm->createView(),
                         'campaignElements' => $this->campaignElements,
                     ]
@@ -1106,7 +1091,7 @@ class CampaignController extends AbstractStandardFormController
                 $args['viewParameters'] = array_merge(
                     $args['viewParameters'],
                     [
-                        'eventSettings'    => $eventCollector->getEventsArray(),
+                        'eventSettings'    => $this->eventCollector->getEventsArray(),
                         'campaignEvents'   => $this->campaignEvents,
                         'campaignSources'  => $this->campaignSources,
                         'deletedEvents'    => $this->deletedEvents,
