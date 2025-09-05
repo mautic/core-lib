@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Tests\Command;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\FormBundle\Model\FieldModel;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\LeadListRepository;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\Entity\ListLead;
+use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Segment\OperatorOptions;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
 {
@@ -29,13 +30,12 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @dataProvider filtersSegmentsContacts
-     *
      * @param array<string, mixed> $fieldDetails
      * @param array<string, mixed> $segmentData
      *
      * @throws \Exception
      */
+    #[DataProvider('filtersSegmentsContacts')]
     public function testFiltersHasCorrectContactsIncludedInSegment(
         array $fieldDetails,
         array $segmentData,
@@ -46,13 +46,15 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
         $segment   = $this->saveSegment($segmentData);
         $segmentId = $segment->getId();
 
+        /** @var array<int> $contactIds */
         $contactIds       = [];
+        /** @var array<int> $leadListLeadsIds */
         $leadListLeadsIds = [];
 
         // get contacts with valid filter
         foreach ($contacts as $contact) {
             if ($checkValidContact($contact)) {
-                $contactIds[] = $contact->getId();
+                $contactIds[] = (int) $contact->getId();
             }
         }
 
@@ -62,7 +64,7 @@ class SegmentFiltersFunctionalTest extends MauticMysqlTestCase
         // get the lead list leads stored in db after the segment update
         $leadListLeads = $this->em->getRepository(ListLead::class)->findBy(['list' => $segment]);
         foreach ($leadListLeads as $listLead) {
-            $leadListLeadsIds[] = $listLead->getLead()->getId();
+            $leadListLeadsIds[] = (int) $listLead->getLead()->getId();
         }
 
         sort($leadListLeadsIds);
