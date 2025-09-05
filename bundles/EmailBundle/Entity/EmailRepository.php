@@ -556,24 +556,22 @@ class EmailRepository extends CommonRepository
         switch ($command) {
             case $this->translator->trans('mautic.email.email.searchcommand.isexpired'):
             case $this->translator->trans('mautic.email.email.searchcommand.isexpired', [], null, 'en_US'):
-                $conditions = [
+                $expr = $q->expr()->and(
                     (string) $q->expr()->eq('e.isPublished', ":$unique"),
                     (string) $q->expr()->isNotNull('e.publishDown'),
                     (string) $q->expr()->neq('e.publishDown', $q->expr()->literal('')),
                     (string) $q->expr()->lt('e.publishDown', 'CURRENT_TIMESTAMP()'),
-                ];
-                $expr            = '('.implode(' AND ', $conditions).')';
+                );
                 $forceParameters = [$unique => true];
                 break;
             case $this->translator->trans('mautic.email.email.searchcommand.ispending'):
             case $this->translator->trans('mautic.email.email.searchcommand.ispending', [], null, 'en_US'):
-                $conditions = [
+                $expr = $q->expr()->and(
                     (string) $q->expr()->eq('e.isPublished', ":$unique"),
                     (string) $q->expr()->isNotNull('e.publishUp'),
                     (string) $q->expr()->neq('e.publishUp', $q->expr()->literal('')),
                     (string) $q->expr()->gt('e.publishUp', 'CURRENT_TIMESTAMP()'),
-                ];
-                $expr            = '('.implode(' AND ', $conditions).')';
+                );
                 $forceParameters = [$unique => true];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.lang'):

@@ -93,24 +93,22 @@ class AssetRepository extends CommonRepository
         switch ($command) {
             case $this->translator->trans('mautic.asset.asset.searchcommand.isexpired'):
             case $this->translator->trans('mautic.asset.asset.searchcommand.isexpired', [], null, 'en_US'):
-                $conditions = [
+                $expr = $q->expr()->and(
                     (string) $q->expr()->eq('a.isPublished', ":$unique"),
                     (string) $q->expr()->isNotNull('a.publishDown'),
                     (string) $q->expr()->neq('a.publishDown', $q->expr()->literal('')),
                     (string) $q->expr()->lt('a.publishDown', 'CURRENT_TIMESTAMP()'),
-                ];
-                $expr            = '('.implode(' AND ', $conditions).')';
+                );
                 $forceParameters = [$unique => true];
                 break;
             case $this->translator->trans('mautic.asset.asset.searchcommand.ispending'):
             case $this->translator->trans('mautic.asset.asset.searchcommand.ispending', [], null, 'en_US'):
-                $conditions = [
+                $expr = $q->expr()->and(
                     (string) $q->expr()->eq('a.isPublished', ":$unique"),
                     (string) $q->expr()->isNotNull('a.publishUp'),
                     (string) $q->expr()->neq('a.publishUp', $q->expr()->literal('')),
                     (string) $q->expr()->gt('a.publishUp', 'CURRENT_TIMESTAMP()'),
-                ];
-                $expr            = '('.implode(' AND ', $conditions).')';
+                );
                 $forceParameters = [$unique => true];
                 break;
             case $this->translator->trans('mautic.asset.asset.searchcommand.lang'):

@@ -271,10 +271,9 @@ class CampaignRepository extends CommonRepository
             return [$expr, $parameters];
         }
 
-        $command = $filter->command;
         $unique  = $this->generateRandomParameterName();
 
-        switch ($command) {
+        switch ($filter->command) {
             case $this->translator->trans('mautic.campaign.campaign.searchcommand.isexpired'):
             case $this->translator->trans('mautic.campaign.campaign.searchcommand.isexpired', [], null, 'en_US'):
                 $expr = $q->expr()->and(

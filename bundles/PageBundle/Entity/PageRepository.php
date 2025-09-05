@@ -138,24 +138,22 @@ class PageRepository extends CommonRepository
         switch ($command) {
             case $this->translator->trans('mautic.page.searchcommand.isexpired'):
             case $this->translator->trans('mautic.page.searchcommand.isexpired', [], null, 'en_US'):
-                $conditions = [
+                $expr = $q->expr()->and(
                     (string) $q->expr()->eq('p.isPublished', ":$unique"),
                     (string) $q->expr()->isNotNull('p.publishDown'),
                     (string) $q->expr()->neq('p.publishDown', $q->expr()->literal('')),
                     (string) $q->expr()->lt('p.publishDown', 'CURRENT_TIMESTAMP()'),
-                ];
-                $expr            = '('.implode(' AND ', $conditions).')';
+                );
                 $forceParameters = [$unique => true];
                 break;
             case $this->translator->trans('mautic.page.searchcommand.ispending'):
             case $this->translator->trans('mautic.page.searchcommand.ispending', [], null, 'en_US'):
-                $conditions = [
+                $expr = $q->expr()->and(
                     (string) $q->expr()->eq('p.isPublished', ":$unique"),
                     (string) $q->expr()->isNotNull('p.publishUp'),
                     (string) $q->expr()->neq('p.publishUp', $q->expr()->literal('')),
                     (string) $q->expr()->gt('p.publishUp', 'CURRENT_TIMESTAMP()'),
-                ];
-                $expr            = '('.implode(' AND ', $conditions).')';
+                );
                 $forceParameters = [$unique => true];
                 break;
             case $this->translator->trans('mautic.core.searchcommand.lang'):
