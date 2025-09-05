@@ -5,18 +5,28 @@ declare(strict_types=1);
 namespace Mautic\LeadBundle\Tests\Model;
 
 use Doctrine\ORM\Exception\ORMException;
+use Mautic\CoreBundle\Helper\UserHelper;
+use Mautic\CoreBundle\Model\NotificationModel;
+use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
+use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\LeadBundle\Entity\Import;
 use Mautic\LeadBundle\Entity\ImportRepository;
+use Mautic\LeadBundle\Entity\LeadEventLog;
 use Mautic\LeadBundle\Entity\LeadEventLogRepository;
 use Mautic\LeadBundle\Event\ImportProcessEvent;
 use Mautic\LeadBundle\Exception\ImportDelayedException;
 use Mautic\LeadBundle\Exception\ImportFailedException;
 use Mautic\LeadBundle\Helper\Progress;
 use Mautic\LeadBundle\LeadEvents;
+use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\ImportModel;
+use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Tests\StandardImportTestHelper;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ImportModelTest extends StandardImportTestHelper
 {
@@ -421,27 +431,20 @@ class ImportModelTest extends StandardImportTestHelper
 
     public function testWhenImportUnpublishedInBetweenImportProcess(): void
     {
-        $model = $this->initImportModel();
+        $translator           = $this->getTranslatorMock();
+        $pathsHelper          = $this->getPathsHelperMock();
+        $this->entityManager  = $this->getEntityManagerMock();
+        $coreParametersHelper = $this->getCoreParametersHelperMock();
 
-        $this->dispatcher->expects($this->exactly(4))
-            ->method('dispatch')
-            ->with(
-                LeadEvents::IMPORT_ON_PROCESS,
-                $this->callback(function (ImportProcessEvent $event) {
-                    // Emulate a subscriber.
-                    $event->setWasMerged(false);
+        /** @var MockObject&UserHelper */
+        $userHelper = $this->createMock(UserHelper::class);
 
-                    return true;
-                })
-            );
-
-        /** @var MockObject&LeadEventLogRepository $logRepository */
+        /** @var MockObject&LeadEventLogRepository */
         $logRepository = $this->createMock(LeadEventLogRepository::class);
 
-        /** @var MockObject&ImportRepository $importRepository */
+        /** @var MockObject&ImportRepository */
         $importRepository = $this->createMock(ImportRepository::class);
 
-        // it will return false for is_published value.
         $importRepository->expects($this->exactly(3))->method('getValue')
             ->willReturnOnConsecutiveCalls(true, false, false);
 
@@ -449,14 +452,66 @@ class ImportModelTest extends StandardImportTestHelper
             ->method('getRepository')
             ->willReturnMap(
                 [
-                    ['MauticLeadBundle:LeadEventLog', $logRepository],
-                    ['MauticLeadBundle:Import', $importRepository],
+                    [LeadEventLog::class, $logRepository],
+                    [Import::class, $importRepository],
                 ]
             );
 
         $this->entityManager->expects($this->any())
             ->method('isOpen')
             ->willReturn(true);
+
+        /** @var MockObject&LeadModel $leadModel */
+        $leadModel = $this->getMockBuilder(LeadModel::class)
+            ->disableOriginalConstructor()
+            ->setConstructorArgs([16 => $this->entityManager])
+            ->getMock();
+
+        $leadModel->expects($this->any())
+            ->method('getEventLogRepository')
+            ->willReturn($logRepository);
+
+        /** @var MockObject&CompanyModel $companyModel */
+        $companyModel = $this->getMockBuilder(CompanyModel::class)
+            ->disableOriginalConstructor()
+            ->setConstructorArgs([3 => $this->entityManager])
+            ->getMock();
+
+        /** @var MockObject&NotificationModel $notificationModel */
+        $notificationModel = $this->getMockBuilder(NotificationModel::class)
+            ->disableOriginalConstructor()
+            ->setConstructorArgs([3 => $this->entityManager])
+            ->getMock();
+
+        $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
+
+        $this->dispatcher->expects($this->exactly(4))
+            ->method('dispatch')
+            ->with(
+                $this->callback(function (ImportProcessEvent $event) {
+                    // Emulate a subscriber.
+                    $event->setWasMerged(false);
+
+                    return true;
+                }),
+                LeadEvents::IMPORT_ON_PROCESS,
+            );
+
+        $importModel = new ImportModel(
+            $pathsHelper,
+            $leadModel,
+            $notificationModel,
+            $coreParametersHelper,
+            $companyModel,
+            $this->entityManager,
+            $this->createMock(CorePermissions::class),
+            $this->dispatcher,
+            $this->createMock(UrlGeneratorInterface::class),
+            $translator,
+            $userHelper,
+            $this->createMock(LoggerInterface::class),
+            new ProcessSignalService()
+        );
 
         $this->setUpBeforeClass();
 
@@ -469,7 +524,7 @@ class ImportModelTest extends StandardImportTestHelper
         ]);
 
         $entity->start();
-        $model->process($entity, new Progress());
+        $importModel->process($entity, new Progress());
         $entity->end();
 
         Assert::assertSame(4, $entity->getInsertedCount());
