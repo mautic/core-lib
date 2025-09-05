@@ -7,6 +7,7 @@ use Doctrine\ORM\Exception\ORMException;
 use Mautic\AssetBundle\Entity\Asset;
 use Mautic\AssetBundle\Model\AssetModel;
 use Mautic\CoreBundle\Factory\ModelFactory;
+use Mautic\CoreBundle\Helper\ClickthroughHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
@@ -389,6 +390,7 @@ class MailHelper
             try {
                 if (!$this->skip) {
                     $this->mailer->send($this->message);
+                    $this->message->clearMetadata();
                 }
                 $this->skip = false;
             } catch (TransportExceptionInterface $exception) {
@@ -1399,7 +1401,7 @@ class MailHelper
                     'idHash' => $this->idHash,
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            ).'?ct='.ClickthroughHelper::encodeArrayForUrl(['sent_time' => time()]);
         } else {
             $tokens['{tracking_pixel}'] = self::getBlankPixel();
         }
@@ -2021,52 +2023,6 @@ class MailHelper
 
         // 4. Set the reply to address from the global config if nothing from above is set.
         $this->setMessageReplyTo($this->getReplyTo());
-    }
-
-    /**
-     * @return bool|array
-     *
-     * @deprecated
-     */
-    protected function getContactOwner(&$contact)
-    {
-        if (!is_array($contact)) {
-            return false;
-        }
-
-        if (!isset($contact['id'])) {
-            return false;
-        }
-
-        if (!isset($contact['owner_id'])) {
-            $contact['owner_id'] = 0;
-
-            return false;
-        }
-
-        try {
-            return $this->fromEmailHelper->getContactOwner($contact['owner_id']);
-        } catch (OwnerNotFoundException) {
-            return false;
-        }
-    }
-
-    /**
-     * @deprecated; use FromEmailHelper::getUserSignature
-     */
-    protected function getContactOwnerSignature($owner): string
-    {
-        if (empty($owner['id'])) {
-            return '';
-        }
-
-        try {
-            $this->fromEmailHelper->getContactOwner($owner['id']);
-        } catch (OwnerNotFoundException) {
-            return '';
-        }
-
-        return $this->fromEmailHelper->getSignature();
     }
 
     private function getMessageInstance(): MauticMessage

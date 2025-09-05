@@ -350,7 +350,7 @@ class TriggerController extends FormController
 
                 if ($valid = $this->isFormValid($form)) {
                     // make sure that at least one field is selected
-                    if (empty($addEvents)) {
+                    if (empty($events)) {
                         // set the error
                         $form->addError(new FormError(
                             $this->translator->trans('mautic.core.value.required', [], 'validators')
@@ -368,6 +368,9 @@ class TriggerController extends FormController
                             \assert($triggerEventModel instanceof TriggerEventModel);
                             $triggerEventModel->deleteEntities($deletedEvents);
                         }
+
+                        $session->set('mautic.point.'.$objectId.'.triggerevents.modified', $events);
+                        $session->set('mautic.point.'.$objectId.'.triggerevents.deleted', []);
 
                         $this->addFlashMessage('mautic.core.notice.updated', [
                             '%name%'      => $entity->getName(),
@@ -400,8 +403,8 @@ class TriggerController extends FormController
                     ])
                 );
             } elseif ($form->get('buttons')->get('apply')->isClicked()) {
-                // rebuild everything to include new ids
-                $cleanSlate = true;
+                // do not clear session, just reload view with updated session
+                $cleanSlate = false;
             }
         } else {
             $cleanSlate = true;
@@ -410,12 +413,13 @@ class TriggerController extends FormController
             $model->lockEntity($entity);
         }
 
+        $triggerEvents   = [];
+
         if ($cleanSlate) {
             // clean slate
             $this->clearSessionComponents($request, $objectId);
 
             // load existing events into session
-            $triggerEvents   = [];
             $existingActions = $entity->getEvents()->toArray();
             foreach ($existingActions as $a) {
                 $id     = $a->getId();
