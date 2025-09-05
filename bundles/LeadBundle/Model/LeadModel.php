@@ -324,6 +324,42 @@ class LeadModel extends FormModel
     }
 
     /**
+     * @param array<mixed> $args
+     *
+     * @return array|Paginator|mixed
+     */
+    public function getEntities(array $args = [])
+    {
+        $entities   = parent::getEntities($args);
+        $contactIds = $this->getContactIdsFromArgs($args);
+
+        for ($i = 0; $i < count($contactIds); ++$i) {
+            $contactId = $contactIds[$i];
+            if (empty($entities[$contactId])) {
+                if ($entity = $this->getMergeRecordRepository()->findMergedContact($contactId)) {
+                    $entity->setPreviousId($contactId);
+
+                    if (isset($entities[$entity->getId()])) {
+                        // The entity is already in the array, so skip the field hydration.
+                        continue;
+                    }
+
+                    // Hydrate fields with custom field data
+                    $fields = $this->getRepository()->getFieldValues($entity->getId());
+                    $entity->setFields($fields);
+
+                    // Add the entity to the array to the right place.
+                    $entities = array_slice($entities, $i, 0, true) + [$entity->getId() => $entity] + $entities;
+                }
+            }
+        }
+
+        return $entities;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
      * @throws MethodNotAllowedHttpException
      */
     protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
@@ -748,7 +784,7 @@ class LeadModel extends FormModel
     /**
      * Obtains a list of leads based a list of IDs.
      *
-     * @return Paginator
+     * @return array<mixed>
      */
     public function getLeadsByIds(array $ids)
     {
@@ -2384,6 +2420,28 @@ class LeadModel extends FormModel
             $lead->removeTag($tag);
             $this->saveEntity($lead);
         }
+    }
+
+    /**
+     * @param mixed[] $args
+     *
+     * @return int[]
+     */
+    private function getContactIdsFromArgs(array $args): array
+    {
+        if (empty($args['filter']['force']) || !is_array($args['filter']['force'])) {
+            return [];
+        }
+        $idFilters = array_values(array_filter(
+            $args['filter']['force'],
+            fn ($filter) => is_array($filter) && isset($filter['column']) && 'l.id' === $filter['column']
+        ));
+
+        if (isset($idFilters[0]['value']) && is_array($idFilters[0]['value'])) {
+            return $idFilters[0]['value'];
+        }
+
+        return [];
     }
 
     /**
