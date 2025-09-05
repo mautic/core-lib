@@ -57,11 +57,11 @@ final class AnalyseCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
                 'expected' => 255,
             ],
             'range' => [
-                'label' => 'Range',
-                'alias' => 'range',
-                'type'  => 'text',
-                'limit' => 64,
-                'value' => '',
+                'label'    => 'Range',
+                'alias'    => 'range',
+                'type'     => 'text',
+                'limit'    => 64,
+                'value'    => '',
                 'expected' => 64,
             ],
         ];
@@ -86,9 +86,7 @@ final class AnalyseCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
             $this->assertStringContainsString($alias, $output->getDisplay());
             $this->assertStringContainsString($field['label'], $output->getDisplay());
             $this->assertStringContainsString((string) $field['limit'], $output->getDisplay());
-            if (isset($field['expected'])) {
-                $this->assertStringContainsString((string) $field['expected'], $output->getDisplay());
-            }
+            $this->assertStringContainsString((string) $field['expected'], $output->getDisplay());
         }
 
         $this->assertStringNotContainsString($extraField['label'], $output->getDisplay());
@@ -99,9 +97,7 @@ final class AnalyseCustomFieldCommandFunctionalTest extends MauticMysqlTestCase
             $this->assertStringContainsString($alias, $output->getDisplay());
             $this->assertStringContainsString($field['label'], $output->getDisplay());
             $this->assertStringContainsString((string) $field['limit'], $output->getDisplay());
-            if (isset($field['expected'])) {
-                $this->assertStringContainsString((string) $field['expected'], $output->getDisplay());
-            }
+            $this->assertStringContainsString((string) $field['expected'], $output->getDisplay());
         }
     }
 
