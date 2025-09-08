@@ -8,6 +8,9 @@ Mautic.campaignOnLoad = function (container, response) {
     Mautic.lazyLoadGraphStatsOnCampaignDetail();
     Mautic.lazyLoadContactListOnCampaignDetail();
     Mautic.lazyLoadEventStatsOnCampaignDetail();
+    const $flashes = mQuery('#flashes');
+    const $builder = mQuery('#campaign-builder');
+    const isCampaignPreview = $builder.hasClass('preview');
     Mautic.campaignBuilderPostData = [];
     let extraData = {};
 
@@ -521,6 +524,11 @@ Mautic.campaignEventOnLoad = function (container, response) {
                 domEventId+'_top'
             ]
         });
+    }
+
+    if (response.hasOwnProperty('clearCloneStorage')) {
+        Mautic.hideCampaignEventPanel();
+        Mautic.clearCampaignEventClone();
     }
 
     if(response.modifiedEvents) {

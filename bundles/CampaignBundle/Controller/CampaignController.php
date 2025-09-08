@@ -50,7 +50,7 @@ class CampaignController extends AbstractStandardFormController
     /**
      * @var array<string, mixed>
      */
-    protected $campaignElements = [];
+    protected array $campaignElements = [];
 
     /**
      * @var array<string, mixed>
@@ -483,15 +483,17 @@ class CampaignController extends AbstractStandardFormController
             $returnUrl = $this->generateUrl('mautic_campaign_index', ['page' => $lastPage]);
 
             return $this->postActionRedirect(
-                [
-                    'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $lastPage],
-                    'contentTemplate' => 'Mautic\CampaignBundle\Controller\CampaignController::indexAction',
-                    'passthroughVars' => [
-                        'mauticContent' => 'campaign',
+                $this->getPostActionRedirectArguments(
+                    [
+                        'returnUrl'       => $returnUrl,
+                        'viewParameters'  => ['page' => $lastPage],
+                        'contentTemplate' => 'Mautic\CampaignBundle\Controller\CampaignController::indexAction',
+                        'passthroughVars' => [
+                            'mauticContent' => 'campaign',
+                        ],
                     ],
-                ],
-                'index'
+                    'index'
+                )
             );
         }
 
@@ -604,12 +606,16 @@ class CampaignController extends AbstractStandardFormController
                 }
 
                 return $this->postActionRedirect(
-                    [
-                        'returnUrl'       => $returnUrl,
-                        'viewParameters'  => $viewParameters,
-                        'contentTemplate' => $template,
-                        'passthroughVars' => $passthrough,
-                    ]
+                    $this->getPostActionRedirectArguments(
+                        [
+                            'returnUrl'       => $returnUrl,
+                            'viewParameters'  => $viewParameters,
+                            'contentTemplate' => $template,
+                            'passthroughVars' => $passthrough,
+                            'entity'          => $campaign,
+                        ],
+                        'new'
+                    )
                 );
             } elseif ($valid && $this->isFormApplied($form)) {
                 return $this->editAction($request, $campaign->getId(), true);
@@ -758,7 +764,6 @@ class CampaignController extends AbstractStandardFormController
     /**
      * This method is called before and after form is submitted.
      *
-     * @param null $objectId
      * @param bool $isClone
      */
     protected function beforeFormProcessed($entity, FormInterface $form, $action, $isPost, $objectId = null, $isClone = false)
@@ -767,7 +772,7 @@ class CampaignController extends AbstractStandardFormController
 
         if ($isPost) {
             // fetch data from form
-            $campaign         = $this->requestStack->getCurrentRequest()->request->get('campaign', []);
+            $campaign         = $this->requestStack->getCurrentRequest()->request->get('campaign');
             $campaignElements = $campaign['campaignElements'] ?? [];
 
             // set global elements
@@ -915,7 +920,7 @@ class CampaignController extends AbstractStandardFormController
     {
         $session        = $this->getCurrentRequest()->getSession();
         $currentFilters = $session->get('mautic.campaign.list_filters', []);
-        $updatedFilters = $this->requestStack->getCurrentRequest()->get('filters', null);
+        $updatedFilters = $this->requestStack->getCurrentRequest()->get('filters', false);
 
         $sourceLists = $this->getCampaignModel()->getSourceLists();
         $listFilters = [
@@ -1076,10 +1081,8 @@ class CampaignController extends AbstractStandardFormController
                     $args['viewParameters'],
                     [
                         'campaign'         => $entity,
-                        'eventSettings'    => $this->eventCollector->getEventsArray(),
                         'sources'          => $this->getCampaignModel()->getLeadSources($entity),
-                        'campaignSources'  => $this->campaignSources,
-                        'campaignEvents'   => $events ?? [],
+                        'showEmailStats'   => $showEmailStats,
                         'dateRangeForm'    => $dateRangeForm->createView(),
                         'campaignElements' => $this->campaignElements,
                     ]
@@ -1095,6 +1098,7 @@ class CampaignController extends AbstractStandardFormController
                         'campaignEvents'   => $this->campaignEvents,
                         'campaignSources'  => $this->campaignSources,
                         'deletedEvents'    => $this->deletedEvents,
+                        'hasEventClone'    => $session->has('mautic.campaign.events.clone.storage'),
                         'campaignElements' => $this->campaignElements,
                     ]
                 );
@@ -1197,6 +1201,8 @@ class CampaignController extends AbstractStandardFormController
     }
 
     /**
+     * @return array<string, array<int|string, array<int|string, int|string>>>
+     *
      * @throws CacheException
      */
     private function processCampaignLogCounts(int $id, ?\DateTimeImmutable $dateFrom, ?\DateTimeImmutable $dateToPlusOne): array
