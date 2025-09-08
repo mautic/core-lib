@@ -1,19 +1,12 @@
 <?php
 
 declare(strict_types=1);
-/**
- * @copyright   2021 Mautic, Inc. All rights reserved
- * @author      Mautic
- *
- * @see         https://mautic.org
- *
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
 
 namespace Mautic\CampaignBundle\Tests\Controller;
 
 use function GuzzleHttp\json_decode;
 use function GuzzleHttp\json_encode;
+
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;

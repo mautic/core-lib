@@ -1096,7 +1096,6 @@ class Event implements ChannelInterface, UuidInterface
         return $this;
     }
 
-
     public function setDeleted($deleted = 'now'): Event
     {
         if (is_array($deleted) && array_key_exists('date', $deleted)) {
