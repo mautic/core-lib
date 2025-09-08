@@ -2,50 +2,22 @@
 
 namespace Mautic\UserBundle\Controller;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Mautic\CoreBundle\Controller\FormController;
-use Mautic\CoreBundle\Factory\ModelFactory;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Mautic\CoreBundle\Helper\UserHelper;
-use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\CoreBundle\Service\FlashBag;
-use Mautic\CoreBundle\Translation\Translator;
-use Mautic\FormBundle\Helper\FormFieldHelper;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Form\Type\PasswordResetConfirmType;
 use Mautic\UserBundle\Form\Type\PasswordResetType;
 use Mautic\UserBundle\Form\Type\UserInviteRegistrationType;
 use Mautic\UserBundle\Model\UserModel;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class PublicController extends FormController
 {
-    public function __construct(
-        FormFactoryInterface $formFactory,
-        FormFieldHelper $fieldHelper,
-        ManagerRegistry $managerRegistry,
-        ModelFactory $modelFactory,
-        UserHelper $userHelper,
-        CoreParametersHelper $coreParametersHelper,
-        EventDispatcherInterface $dispatcher,
-        Translator $translator,
-        FlashBag $flashBag,
-        RequestStack $requestStack,
-        CorePermissions $security,
-        private LoggerInterface $logger,
-    ) {
-        parent::__construct($formFactory, $fieldHelper, $managerRegistry, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
-    }
-
     /**
      * Generates a new password for the user and emails it to them.
      */
-    public function passwordResetAction(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function passwordResetAction(Request $request, LoggerInterface $logger): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var UserModel $model */
         $model = $this->getModel('user');
@@ -74,7 +46,7 @@ class PublicController extends FormController
                     }
                     $this->addFlashMessage('mautic.user.user.notice.passwordreset');
                 } catch (\RuntimeException $e) {
-                    $this->logger->error($this->translator->trans('mautic.user.password.reset.email.failed', [], 'messages').': '.$e->getMessage());
+                    $logger->error($this->translator->trans('mautic.user.password.reset.email.failed', [], 'messages').': '.$e->getMessage());
                     $this->addFlashMessage('mautic.user.user.notice.passwordreset.error', [], 'error');
                 }
 
@@ -171,7 +143,7 @@ class PublicController extends FormController
         ]);
     }
 
-    public function inviteAction(Request $request, UserPasswordHasherInterface $hasher, UserModel $model): mixed
+    public function inviteAction(Request $request, UserPasswordHasherInterface $hasher, UserModel $model, LoggerInterface $logger): mixed
     {
         $token  = $request->get('token');
         $invite = $model->getInvite($token);
@@ -231,7 +203,7 @@ class PublicController extends FormController
 
                     return $this->redirectToRoute('login');
                 } catch (\Doctrine\DBAL\Exception $e) {
-                    $this->logger->error($this->translator->trans('mautic.user.invite.registration.database.error', [], 'messages').': '.$e->getMessage());
+                    $logger->error($this->translator->trans('mautic.user.invite.registration.database.error', [], 'messages').': '.$e->getMessage());
                     $this->addFlashMessage('mautic.user.invite.error.database', [], 'error', 'flashes');
                 }
             }
