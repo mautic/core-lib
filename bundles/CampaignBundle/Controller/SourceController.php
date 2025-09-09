@@ -31,9 +31,9 @@ class SourceController extends CommonFormController
     {
         $success = 0;
         $valid   = $cancelled   = false;
-        $this->setCampaignElements($this->request->request);
-        if ('1' === $this->request->request->get('submit')) {
-            $source     = $this->request->request->get('campaign_leadsource');
+        $this->setCampaignElements($request->request);
+        if ('1' === $request->request->get('submit')) {
+            $source     = $request->request->all()['campaign_leadsource'] ?? [];
             $sourceType = $source['sourceType'];
         } else {
             $sourceType = $request->query->get('sourceType');
@@ -74,7 +74,7 @@ class SourceController extends CommonFormController
 
         $modifiedSources = $this->modifiedSources;
         // Check for a submitted form and process it
-        if ('1' === $this->request->request->get('submit')) {
+        if ('1' === $request->request->get('submit')) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success                      = 1;
@@ -134,11 +134,11 @@ class SourceController extends CommonFormController
      */
     public function editAction(Request $request, $objectId)
     {
-        $this->setCampaignElements($this->request->request);
+        $this->setCampaignElements($request->request);
         $modifiedSources = $this->modifiedSources;
 
-        if ('1' === $this->request->request->get('submit')) {
-            $source     = $this->request->request->get('campaign_leadsource');
+        if ('1' === $request->request->get('submit')) {
+            $source     = $request->request->all()['campaign_leadsource'] ?? [];
             $sourceType = $source['sourceType'];
         } else {
             $sourceType = $request->query->get('sourceType');
@@ -181,7 +181,7 @@ class SourceController extends CommonFormController
         );
 
         // Check for a submitted form and process it
-        if ('1' === $this->request->request->get('submit')) {
+        if ('1' === $request->request->get('submit')) {
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success = 1;
@@ -246,9 +246,9 @@ class SourceController extends CommonFormController
      */
     public function deleteAction(Request $request, $objectId)
     {
-        $this->setCampaignElements($this->request->request);
+        $this->setCampaignElements($request->request);
         $modifiedSources = $this->modifiedSources;
-        $sourceType      = $this->request->get('sourceType');
+        $sourceType      = $request->get('sourceType');
 
         // ajax only for form fields
         if (!$request->isXmlHttpRequest()
