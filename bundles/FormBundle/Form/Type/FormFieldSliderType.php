@@ -4,38 +4,11 @@ declare(strict_types=1);
 
 namespace Mautic\FormBundle\Form\Type;
 
+use Mautic\FormBundle\Validator\Constraint\SliderMaxGreaterThanMin;
+use Mautic\FormBundle\Validator\Constraint\SliderStepLessThanMax;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraint;
-
-/**
- * Custom IntegerType that supports constraints.
- */
-final class ConstrainedIntegerType extends IntegerType
-{
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        parent::configureOptions($resolver);
-
-        $resolver->setDefined('constraints');
-        $resolver->setAllowedTypes('constraints', ['array']);
-        $resolver->setAllowedValues('constraints', function ($constraints) {
-            if (!is_array($constraints)) {
-                return false;
-            }
-
-            foreach ($constraints as $constraint) {
-                if (!$constraint instanceof Constraint) {
-                    return false;
-                }
-            }
-
-            return true;
-        });
-    }
-}
+use Symfony\Component\Validator\Constraints\Range;
 
 /**
  * @extends AbstractType<mixed>
@@ -59,9 +32,8 @@ final class FormFieldSliderType extends AbstractType
             'attr'        => ['class' => 'form-control'],
             'data'        => $options['data']['max'] ?? 100,
             'constraints' => [
-                new \Symfony\Component\Validator\Constraints\Expression([
-                    'expression' => 'this.getParent()["min"].getData() < value',
-                    'message'    => 'mautic.form.field.form.slider_max_gt_min_error',
+                new SliderMaxGreaterThanMin([
+                    'message' => 'mautic.form.field.form.slider_max_gt_min_error',
                 ]),
             ],
         ]);
@@ -73,13 +45,12 @@ final class FormFieldSliderType extends AbstractType
             'attr'        => ['class' => 'form-control'],
             'data'        => $options['data']['step'] ?? 1,
             'constraints' => [
-                new \Symfony\Component\Validator\Constraints\Range([
+                new Range([
                     'min'        => 1,
                     'minMessage' => 'mautic.form.field.form.slider_step_min_error',
                 ]),
-                new \Symfony\Component\Validator\Constraints\Expression([
-                    'expression' => 'value < this.getParent()["max"].getData()',
-                    'message'    => 'mautic.form.field.form.slider_step_lt_max_error',
+                new SliderStepLessThanMax([
+                    'message' => 'mautic.form.field.form.slider_step_lt_max_error',
                 ]),
             ],
         ]);
