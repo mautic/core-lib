@@ -226,9 +226,9 @@ var t,e;t=this,e=function(){"use strict";function t(t,e){var n=Object.keys(t);if
         };
 
         Form.syncSliderOutputs = function(formId) {
-            var theForm = document.getElementById('mauticform_' + formId);
+            const theForm = document.getElementById('mauticform_' + formId);
             if (!theForm) return;
-            var outputs = theForm.querySelectorAll('output.mauticform-slider-value');
+            const outputs = theForm.querySelectorAll('output.mauticform-slider-value');
             [].forEach.call(outputs, function(out) { out.textContent = ''; });
         };
 
