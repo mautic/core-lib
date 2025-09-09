@@ -275,7 +275,7 @@ class EventController extends CommonFormController
         $supportedEvents = $this->eventCollector->getEventsArray()[$event['eventType']];
         $form            = $this->formFactory->create(
             EventType::class,
-            $event,
+            (array) $event,
             [
                 'action'   => $this->generateUrl('mautic_campaignevent_action', ['objectAction' => 'edit', 'objectId' => $objectId]),
                 'settings' => $supportedEvents[$event['type']],
