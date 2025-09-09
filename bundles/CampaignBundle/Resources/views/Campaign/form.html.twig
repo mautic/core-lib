@@ -45,6 +45,7 @@
     </div>
 </div>
 
+<input type="hidden" name="submit" value="1">
 {{ form_end(form) }}
 {{- include('@MauticCampaign/Campaign/_builder.html.twig', {
     'campaignId': form.sessionId.vars['data'],

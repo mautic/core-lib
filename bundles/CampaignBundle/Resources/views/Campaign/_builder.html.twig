@@ -8,7 +8,10 @@
     - canvasSettings
 #}
 <div id="campaign-builder" class="hide builder campaign-builder live animation--slide-in-down">
-    <div id="builder-errors" class="alert alert-danger" role="alert" style="display: none;">test</div>
+    <div id="builder-errors" class="alert alert-danger" role="alert" style="display: none;">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"><i class="fa fa-times"></i></button>
+        <span></span>
+    </div>
     {% include '@MauticCore/Components/uishell.html.twig' with {
         Header: {
             ariaLabel: 'mautic.campaign.builder',
