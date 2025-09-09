@@ -634,6 +634,6 @@ class CampaignRepository extends CommonRepository
                 [\PDO::PARAM_INT]
             )->fetchAssociative();
 
-        return $result ?? [];
+        return $result ?: [];
     }
 }
