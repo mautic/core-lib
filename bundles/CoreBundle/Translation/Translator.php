@@ -3,8 +3,8 @@
 namespace Mautic\CoreBundle\Translation;
 
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
-use Symfony\Component\Translation\MessageCatalogueInterface;
 use Symfony\Component\Translation\Exception\InvalidArgumentException as TranslatorInvalidArgumentException;
+use Symfony\Component\Translation\MessageCatalogueInterface;
 use Symfony\Component\Translation\TranslatorBagInterface;
 use Symfony\Contracts\Translation\LocaleAwareInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -41,7 +41,11 @@ class Translator implements TranslatorInterface, WarmableInterface, TranslatorBa
      */
     public function trans(string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string
     {
-        return $this->translator->trans($id, $parameters, $domain, $locale);
+        try {
+            return $this->translator->trans($id, $parameters, $domain, $locale);
+        } catch (TranslatorInvalidArgumentException) {
+            return $this->translator->trans($id, $parameters, $domain, 'EN');
+        }
     }
 
     public function warmUp(string $cacheDir, ?string $buildDir = null): array
@@ -119,19 +123,5 @@ class Translator implements TranslatorInterface, WarmableInterface, TranslatorBa
         $jsLang = array_merge($defaultMessages, $messages, $oldKeys);
 
         return json_encode($jsLang, JSON_PRETTY_PRINT | JSON_FORCE_OBJECT);
-    }
-
-    /**
-     * @param array<mixed> $parameters
-     *
-     * return mixed
-     */
-    public function trans($id, array $parameters = [], $domain = null, $locale = null)
-    {
-        try {
-            return parent::trans($id, $parameters, $domain, $locale);
-        } catch (TranslatorInvalidArgumentException) {
-            return parent::trans($id, $parameters, $domain, 'EN');
-        }
     }
 }
