@@ -777,7 +777,12 @@ class CampaignController extends AbstractStandardFormController
 
             $campaignElements = $campaign['campaignElements'] ?? [];
 
-            // set global elements
+            // First load existing events to ensure we have complete data
+            if (!$isClone && $entity->getId()) {
+                $this->prepareCampaignEventsForEdit($entity, $sessionId, $isClone);
+            }
+
+            // set global elements (this may override some events with form data)
             $this->setCampaignElements($campaignElements, $isClone);
 
             $this->getCampaignModel()->setCanvasSettings($entity, $this->connections, false, $this->modifiedEvents);
@@ -806,19 +811,25 @@ class CampaignController extends AbstractStandardFormController
     }
 
     /**
-     * Method to take JSON string of campaignElements and set all global variables.
+     * Method to take JSON string or array of campaignElements and set all global variables.
+     *
+     * @param string|array<string, mixed> $campaignElements
      */
-    private function setCampaignElements(string $campaignElements, bool $isClone = false): void
+    private function setCampaignElements(string|array $campaignElements, bool $isClone = false): void
     {
         // sets the global campaignElements
-        $this->campaignElements = json_decode($campaignElements, true);
+        if (is_string($campaignElements)) {
+            $this->campaignElements = json_decode($campaignElements, true);
+        } else {
+            $this->campaignElements = $campaignElements;
+        }
 
         // set added/updated events - comes from global campaignElements which was set above
         $this->setCampaignEvents();
         // set added/updated sources - comes from global campaignElements which was set above
         $this->setCampaignSources($isClone);
 
-        $this->connections = $this->campaignElements['canvasSettings'];
+        $this->connections = $this->campaignElements['canvasSettings'] ?? [];
     }
 
     /**
