@@ -785,10 +785,7 @@ class Event implements ChannelInterface, UuidInterface
         return $this->triggerDate;
     }
 
-    /**
-     * @param \DateTime|string|array<string,string> $triggerDate
-     */
-    public function setTriggerDate(array|\DateTime|string $triggerDate = 'now'): void
+    public function setTriggerDate(mixed $triggerDate = 'now'): void
     {
         if (is_array($triggerDate) && array_key_exists('date', $triggerDate)) {
             $triggerDate = new \DateTime($triggerDate['date']);
@@ -1096,10 +1093,7 @@ class Event implements ChannelInterface, UuidInterface
         return $this;
     }
 
-    /**
-     * @param \DateTime|string|array<string,string> $deleted
-     */
-    public function setDeleted(array|\DateTime|string $deleted = 'now'): Event
+    public function setDeleted(mixed $deleted = 'now'): Event
     {
         if (is_array($deleted) && array_key_exists('date', $deleted)) {
             $deleted = new \DateTime($deleted['date']);
