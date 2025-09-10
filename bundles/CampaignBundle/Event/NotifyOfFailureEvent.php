@@ -17,18 +17,8 @@ class NotifyOfFailureEvent extends Event
         return $this->lead;
     }
 
-    public function setLead(Lead $lead): void
-    {
-        $this->lead = $lead;
-    }
-
     public function getFailedEvent(): CampaignEvent
     {
         return $this->failedEvent;
-    }
-
-    public function setFailedEvent(CampaignEvent $failedEvent): void
-    {
-        $this->failedEvent = $failedEvent;
     }
 }

@@ -15,9 +15,4 @@ class NotifyOfUnpublishEvent extends Event
     {
         return $this->failedEvent;
     }
-
-    public function setFailedEvent(CampaignEvent $failedEvent): void
-    {
-        $this->failedEvent = $failedEvent;
-    }
 }
