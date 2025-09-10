@@ -8,8 +8,5 @@ use Symfony\Component\Validator\Constraint;
 
 final class SliderStepLessThanMax extends Constraint
 {
-    /**
-     * @var string
-     */
-    public $message = 'mautic.form.field.form.slider_step_lt_max_error';
+    public string $message = 'mautic.form.field.form.slider_step_lt_max_error';
 }

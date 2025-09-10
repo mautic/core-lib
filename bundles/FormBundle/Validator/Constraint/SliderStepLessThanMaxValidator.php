@@ -17,10 +17,6 @@ final class SliderStepLessThanMaxValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, SliderStepLessThanMax::class);
         }
 
-        if (null === $value || '' === $value) {
-            return;
-        }
-
         $form = $this->resolveParentForm();
         if (!$form instanceof FormInterface) {
             return;
