@@ -196,7 +196,7 @@ Mautic.resetForm = function(form) {
  * @param form
  * @param callback
  */
-Mautic.postForm = function (form, callback) {
+Mautic.postForm = function (form, callback, extraData = {}) {
     form = mQuery(form);
 
     var modalParent = form.closest('.modal');
@@ -211,6 +211,7 @@ Mautic.postForm = function (form, callback) {
     var showLoading = (!inMain || form.attr('data-hide-loadingbar')) ? false : true;
 
     form.ajaxSubmit({
+        data: extraData,
         showLoadingBar: showLoading,
         success: function (data) {
             form.trigger('submit:success', [action, data, inMain]);

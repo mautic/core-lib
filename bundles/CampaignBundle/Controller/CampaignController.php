@@ -771,8 +771,10 @@ class CampaignController extends AbstractStandardFormController
         $sessionId = $this->getCampaignSessionId($entity, $action, $objectId);
 
         if ($isPost) {
-            // fetch data from form
-            $campaign         = $this->requestStack->getCurrentRequest()->request->get('campaign');
+            // fetch data from form - use all() to get array data
+            $requestData = $this->requestStack->getCurrentRequest()->request->all();
+            $campaign    = $requestData['campaign'] ?? [];
+
             $campaignElements = $campaign['campaignElements'] ?? [];
 
             // set global elements
