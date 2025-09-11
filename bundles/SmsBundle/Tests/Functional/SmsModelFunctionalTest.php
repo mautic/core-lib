@@ -9,14 +9,13 @@ use Mautic\LeadBundle\Entity\Lead;
 use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Model\SmsModel;
 use Mautic\SmsBundle\Sms\TransportChain;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class SmsModelFunctionalTest extends MauticMysqlTestCase
 {
     use CreateEntitiesTrait;
 
-    /**
-     * @dataProvider smsTranslationDataProvider
-     */
+    #[DataProvider('smsTranslationDataProvider')]
     public function testSmsTranslationBasedOnLocale(string $contactLocale, string $expectedMessage): void
     {
         // 1. Create SMS with translation
