@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Controller;
 
+use Mautic\CampaignBundle\Entity\Campaign;
+use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Request;
 
 final class EventControllerFunctionalTest extends MauticMysqlTestCase
 {
@@ -261,5 +264,113 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
 
         // Assert the field email_type === "marketing"
         Assert::assertEquals('marketing', $form['campaignevent[properties][email_type]']->getValue(), 'The default email type should be "marketing"');
+    }
+
+    public function testEventsAreNotAccessibleWithXhr(): void
+    {
+        $campaign = $this->createCampaign();
+        $event1   = $this->createEvent('Event1', $campaign);
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/s/campaigns/events/edit/'.$event1->getId().'?campaignId='.$campaign->getId(),
+            [],
+            [],
+            [],
+            '{}'
+        );
+
+        $response = $this->client->getResponse();
+        $response = json_decode($response->getContent(), true);
+        Assert::assertSame(
+            'You do not have access to the requested area/action.',
+            $response['error']
+        );
+    }
+
+    public function testEventsAreAccessible(): void
+    {
+        $campaign = $this->createCampaign();
+        $event1   = $this->createEvent('Event1', $campaign);
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/s/campaigns/events/edit/'.$event1->getId().'?campaignId='.$campaign->getId(),
+            [],
+            [],
+            $this->createAjaxHeaders(),
+            '{}'
+        );
+
+        $response = $this->client->getResponse();
+        $response = json_decode($response->getContent(), true);
+        Assert::assertSame(
+            $event1->getId(),
+            $response['eventId']
+        );
+        Assert::assertSame(
+            $event1->getName(),
+            $response['event']['name']
+        );
+    }
+
+    public function testEventsAreDeleted(): void
+    {
+        $campaign = $this->createCampaign();
+        $event1   = $this->createEvent('Event1', $campaign);
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/s/campaigns/events/delete/'.$event1->getId(),
+            [
+                'modifiedEvents' => json_encode([
+                    $event1->getId() => [
+                        'id'        => $event1->getId(),
+                        'eventType' => $event1->getEventType(),
+                        'type'      => $event1->getType(),
+                    ],
+                ]),
+            ],
+            [],
+            $this->createAjaxHeaders(),
+            '{}'
+        );
+
+        $response = $this->client->getResponse();
+        $response = json_decode($response->getContent(), true);
+        Assert::assertSame(
+            1,
+            $response['success']
+        );
+        Assert::assertContains(
+            (string) $event1->getId(),
+            $response['deletedEvents']
+        );
+    }
+
+    private function createCampaign(): Campaign
+    {
+        $campaign = new Campaign();
+        $campaign->setName('My campaign');
+        $campaign->setIsPublished(true);
+        $this->em->persist($campaign);
+        $this->em->flush();
+
+        return $campaign;
+    }
+
+    private function createEvent(string $name, Campaign $campaign): Event
+    {
+        $event = new Event();
+        $event->setName($name);
+        $event->setCampaign($campaign);
+        $event->setType('email.send');
+        $event->setEventType('action');
+        $event->setTriggerInterval(1);
+        $event->setTriggerMode('immediate');
+        $this->em->persist($event);
+        $this->em->flush();
+
+        return $event;
     }
 }
