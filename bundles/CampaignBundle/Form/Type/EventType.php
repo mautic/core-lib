@@ -61,9 +61,10 @@ class EventType extends AbstractType
                 $choices['optimized'] = 'mautic.campaign.form.type.optimized';
             }
 
-            if ('no' == $options['data']['anchor'] && 'condition' != $options['data']['anchorEventType']
-                && 'condition' != $options['data']['eventType']
-            ) {
+            if (isset($options['data']['anchor']) && isset($options['data']['anchorEventType'])
+                && 'no' === $options['data']['anchor']
+                && 'condition' !== $options['data']['anchorEventType']
+                && 'condition' !== $options['data']['eventType']) {
                 $label .= '_inaction';
 
                 unset($choices['immediate']);
