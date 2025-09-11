@@ -222,8 +222,8 @@ class SmsRepository extends CommonRepository
         int $limit = 10,
         int $start = 0,
         bool $viewOther = false,
-        string $smsType = null,
-        string $topLevel = null,
+        ?string $smsType = null,
+        ?string $topLevel = null,
         array $ignoreIds = [],
     ) {
         $q = $this->createQueryBuilder('e');
