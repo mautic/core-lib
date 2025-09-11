@@ -18,6 +18,7 @@ use Mautic\CoreBundle\Entity\TranslationEntityInterface;
 use Mautic\CoreBundle\Entity\TranslationEntityTrait;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
+use Mautic\CoreBundle\Entity\VariantEntityTrait;
 use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Form\Validator\Constraints\LeadListAccess;
@@ -52,6 +53,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     use UuidTrait;
     use ProjectTrait;
     use TranslationEntityTrait;
+    use VariantEntityTrait;
 
     /**
      * @var int
@@ -402,12 +404,9 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSentCount()
+    public function getSentCount($includeVariants = false): mixed
     {
-        return $this->sentCount;
+        return ($includeVariants) ? $this->getAccumulativeVariantCount('getSentCount') : $this->sentCount;
     }
 
     /**

@@ -138,7 +138,7 @@
                         {{ include('@MauticCore/Modules/stat--icon.html.twig', {'stats': [
                             {
                                 'title': 'mautic.lead.lead.contacts.sms_sent',
-                                'value': sms.getSentCount(true),
+                                'value': sms.sentCount,
                                 'link': path('mautic_contact_index', {
                                     'search': ('mautic.lead.lead.searchcommand.sms_sent'|trans) ~ ':' ~ sms.id
                                 }),
