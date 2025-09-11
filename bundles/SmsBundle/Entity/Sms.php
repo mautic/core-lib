@@ -47,7 +47,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
         'swagger_definition_name' => 'Write',
     ]
 )]
-class Sms extends FormEntity implements UuidInterface
+class Sms extends FormEntity implements UuidInterface, TranslationEntityInterface
 {
     use UuidTrait;
     use ProjectTrait;
@@ -70,12 +70,6 @@ class Sms extends FormEntity implements UuidInterface
      */
     #[Groups(['sms:read', 'sms:write'])]
     private $description;
-
-    /**
-     * @var string
-     */
-    #[Groups(['sms:read', 'sms:write'])]
-    private $language = 'en';
 
     /**
      * @var string
