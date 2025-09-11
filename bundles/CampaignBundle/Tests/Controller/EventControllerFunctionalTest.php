@@ -126,11 +126,12 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertSame(1, $responseData['closeModal']);
         $this->assertArrayHasKey('eventHtml', $responseData);
         $this->assertArrayNotHasKey('updateHtml', $responseData);
-        $eventId = $responseData['event']['id'];
+        $eventId        = $responseData['event']['id'];
+        $modifiedEvents = $responseData['modifiedEvents'] ?? [];
 
         // GET EDIT FORM
         $uri = "/s/campaigns/events/edit/{$eventId}?campaignId=mautic_89f7f52426c1dff3daa3beaea708a6b39fe7a775&anchor=no&anchorEventType=condition";
-        $this->client->xmlHttpRequest('GET', $uri);
+        $this->client->xmlHttpRequest('GET', $uri, ['modifiedEvents' => json_encode($modifiedEvents)]);
         $response = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
 
@@ -160,7 +161,9 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
 
-        $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues());
+        $formData                   = $form->getPhpValues();
+        $formData['modifiedEvents'] = json_encode($modifiedEvents);
+        $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $formData);
         $response = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
         $responseData = json_decode($response->getContent(), true);

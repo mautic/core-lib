@@ -146,6 +146,7 @@ class EventController extends CommonFormController
                         $event['name'] = $this->translator->trans($event['settings']['label']);
                     }
                     $modifiedEvents[$keyId] = $event;
+                    $this->modifiedEvents   = $modifiedEvents;
                 } else {
                     $success = 0;
                 }
@@ -218,7 +219,11 @@ class EventController extends CommonFormController
         $this->setCampaignElements($request->request);
         $event = $this->modifiedEvents[$objectId] ?? [];
         if (empty($event)) {
-            $event = $this->getModel('campaign.event')->getEntity($objectId)->convertToArray();
+            $eventEntity = $this->getModel('campaign.event')->getEntity($objectId);
+            if (null === $eventEntity) {
+                return $this->modalAccessDenied();
+            }
+            $event = $eventEntity->convertToArray();
         }
 
         if ('1' === $request->request->get('submit')) {
@@ -477,7 +482,8 @@ class EventController extends CommonFormController
     {
         $campaignId     = $request->query->get('campaignId');
         $session        = $request->getSession();
-        $modifiedEvents = $session->get('mautic.campaign.'.$campaignId.'.events.modified', []);
+        $this->setCampaignElements($request->request);
+        $modifiedEvents = $this->getModifiedEvents();
         $campaign       = $this->campaignModel->getEntity($campaignId);
 
         // ajax only for form fields
@@ -522,7 +528,7 @@ class EventController extends CommonFormController
     {
         $campaignId     = $request->query->get('campaignId');
         $session        = $request->getSession();
-        $modifiedEvents = $session->get('mautic.campaign.'.$campaignId.'.events.modified', []);
+        $this->setCampaignElements($request->request);
         $event          = $session->get('mautic.campaign.events.clone.storage');
 
         if (empty($event)) {
@@ -536,7 +542,7 @@ class EventController extends CommonFormController
         $event['id']    = $event['tempId'] = $keyId;
 
         $modifiedEvents[$keyId] = $event;
-        $session->set('mautic.campaign.'.$campaignId.'.events.modified', $modifiedEvents);
+        $this->modifiedEvents   = $modifiedEvents;
 
         $passThroughVars               = [
             'mauticContent'     => 'campaignEvent',
