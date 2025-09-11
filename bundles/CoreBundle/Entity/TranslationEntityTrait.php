@@ -29,7 +29,7 @@ trait TranslationEntityTrait
     private $translationParent;
 
     /**
-     * @Groups({"page:read", "download:read", "email:read", 'sms:read'})
+     * @Groups({"page:read", "download:read", "email:read"})
      */
     private string $language = 'en';
 
