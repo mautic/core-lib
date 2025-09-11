@@ -9,8 +9,9 @@ use Mautic\FormBundle\Entity\Form;
 
 class SourceControllerTest extends MauticMysqlTestCase
 {
-    private const ACCESS_DENIED    = 'You do not have access to the requested area\/action';
-    private const NEW_FORMS_URL    = '/s/campaigns/sources/new/1?sourceType=forms';
+    private const ACCESS_DENIED      = 'You do not have access to the requested area\/action';
+    private const NEW_FORMS_URL      = '/s/campaigns/sources/new/1?sourceType=forms';
+    private const DELETE_FORMS_URL   = '/s/campaigns/sources/delete/1?sourceType=forms';
 
     public function testNewActionWithInvalidSourceType(): void
     {
@@ -74,6 +75,21 @@ class SourceControllerTest extends MauticMysqlTestCase
             $this->assertJsonResponseEquals('success', 0, $json);
             $this->assertArrayHasKey('mauticContent', $json, 'Response should contain mauticContent key');
             $this->assertArrayHasKey('newContent', $json, 'Response should contain form HTML when validation fails');
+        } else {
+            $this->fail('Response is not valid JSON: '.$response->getContent());
+        }
+    }
+
+    public function testDeleteActionWithGetRequest(): void
+    {
+        $this->client->xmlHttpRequest('GET', self::DELETE_FORMS_URL);
+        $response = $this->client->getResponse();
+        $this->assertResponseIsSuccessful();
+
+        $json = json_decode($response->getContent(), true);
+        if (is_array($json)) {
+            $this->assertArrayHasKey('success', $json, 'Response should contain success key');
+            $this->assertJsonResponseEquals('success', 0, $json);
         } else {
             $this->fail('Response is not valid JSON: '.$response->getContent());
         }
