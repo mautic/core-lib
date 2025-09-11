@@ -33,7 +33,7 @@ trait CampaignControllerTrait
         Crawler $crawler,
         Campaign $campaign,
         int $expectedVersion,
-        array $formValues = []
+        array $formValues = [],
     ): Crawler {
         $form = $crawler->selectButton('Save')->form();
         $form->setValues($formValues);
@@ -88,7 +88,7 @@ trait CampaignControllerTrait
     private function createCanvasSettingsWithMultipleEvents(
         int $firstEventId,
         int $secondEventId,
-        string $sourceType = 'lists'
+        string $sourceType = 'lists',
     ): array {
         return [
             'nodes' => [
