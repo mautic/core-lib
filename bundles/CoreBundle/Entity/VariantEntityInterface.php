@@ -4,6 +4,9 @@ namespace Mautic\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * @method int|null getId()
+ */
 interface VariantEntityInterface
 {
     public function getVariantParent(): ?VariantEntityInterface;
@@ -26,7 +29,7 @@ interface VariantEntityInterface
 
     public function getVariantSettings(): array;
 
-    public function getVariantStartDate(): ?\DateTimeInterface;
+    public function getVariantStartDate(): mixed;
 
     /**
      * @return array<int, mixed>

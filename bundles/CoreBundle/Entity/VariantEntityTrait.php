@@ -150,7 +150,7 @@ trait VariantEntityTrait
         return $this->variantSettings;
     }
 
-    public function getVariantStartDate(): ?\DateTimeInterface
+    public function getVariantStartDate(): mixed
     {
         return $this->variantStartDate;
     }
