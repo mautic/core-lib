@@ -13,15 +13,11 @@ final class EntityTypeModelMappingEvent extends Event
 {
     public const NAME = 'mautic.project.entity_type_model_mapping';
 
-    /** @var array<string, string> */
-    private array $mappings = [];
-
     /**
-     * @param array<string, string> $defaultMappings
+     * @param array<string, string> $mappings
      */
-    public function __construct(array $defaultMappings = [])
+    public function __construct(private array $mappings = [])
     {
-        $this->mappings = $defaultMappings;
     }
 
     /**
