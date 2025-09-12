@@ -36,7 +36,7 @@ class FieldTemplateTest extends MauticMysqlTestCase
             'inputClass'     => 'input',
         ]);
 
-        $this->assertStringContainsString('mauticform-half-width', $html);
+        $this->assertStringContainsString('mauticform-50', $html);
         $this->assertStringNotContainsString('style="width: 50%"', $html);
     }
 
@@ -65,18 +65,18 @@ class FieldTemplateTest extends MauticMysqlTestCase
             'inputClass'     => 'input',
         ]);
 
-        $this->assertStringContainsString('mauticform-full-width', $html);
+        $this->assertStringContainsString('mauticform-100', $html);
     }
 
     public function testFieldTemplateMapsAllWidthValuesCorrectly(): void
     {
         $widthMappings = [
-            '100%'   => 'mauticform-full-width',
-            '75%'    => 'mauticform-three-quarters-width',
-            '66.66%' => 'mauticform-two-thirds-width',
-            '50%'    => 'mauticform-half-width',
-            '33.33%' => 'mauticform-one-third-width',
-            '25%'    => 'mauticform-one-quarter-width',
+            '100%'   => 'mauticform-100',
+            '75%'    => 'mauticform-75',
+            '66.66%' => 'mauticform-66',
+            '50%'    => 'mauticform-50',
+            '33.33%' => 'mauticform-33',
+            '25%'    => 'mauticform-25',
         ];
 
         foreach ($widthMappings as $percentage => $expectedClass) {
