@@ -9,7 +9,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * Event dispatched to allow bundles to extend entity type to model key mappings.
  */
-class EntityTypeModelMappingEvent extends Event
+final class EntityTypeModelMappingEvent extends Event
 {
     public const NAME = 'mautic.project.entity_type_model_mapping';
 

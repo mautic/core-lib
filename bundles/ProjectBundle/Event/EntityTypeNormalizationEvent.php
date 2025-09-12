@@ -9,7 +9,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * Event dispatched to allow bundles to extend entity type normalization mappings.
  */
-class EntityTypeNormalizationEvent extends Event
+final class EntityTypeNormalizationEvent extends Event
 {
     public const NAME = 'mautic.project.entity_type_normalization';
 
