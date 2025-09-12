@@ -13,7 +13,6 @@ use Mautic\ProjectBundle\DTO\EntityTypeConfig;
 use Mautic\ProjectBundle\Entity\Project;
 use Mautic\ProjectBundle\Event\EntityTypeModelMappingEvent;
 use Mautic\ProjectBundle\Event\EntityTypeNormalizationEvent;
-use Mautic\ProjectBundle\ProjectEvents;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -258,7 +257,7 @@ final class ProjectEntityLoaderService
         ]);
 
         // Dispatch event to allow bundles to add their mappings
-        $this->eventDispatcher->dispatch($event, ProjectEvents::ENTITY_TYPE_NORMALIZATION);
+        $this->eventDispatcher->dispatch($event);
 
         // Return normalized type or original if no mapping exists
         return $event->getNormalizedType($entityType);
@@ -293,7 +292,7 @@ final class ProjectEntityLoaderService
         ]);
 
         // Dispatch event to allow bundles to add their model mappings
-        $this->eventDispatcher->dispatch($event, ProjectEvents::ENTITY_TYPE_MODEL_MAPPING);
+        $this->eventDispatcher->dispatch($event);
 
         // Get model key from event or use entity type as fallback
         $modelKey = $event->getModelKey($entityType);

@@ -11,8 +11,6 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class EntityTypeNormalizationEvent extends Event
 {
-    public const NAME = 'mautic.project.entity_type_normalization';
-
     /**
      * @param array<string, string> $mappings
      */

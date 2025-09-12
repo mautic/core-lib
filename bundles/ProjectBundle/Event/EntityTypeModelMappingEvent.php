@@ -11,8 +11,6 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 final class EntityTypeModelMappingEvent extends Event
 {
-    public const NAME = 'mautic.project.entity_type_model_mapping';
-
     /**
      * @param array<string, string> $mappings
      */
