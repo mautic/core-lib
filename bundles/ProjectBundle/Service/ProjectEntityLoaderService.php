@@ -27,7 +27,7 @@ final class ProjectEntityLoaderService
         private TranslatorInterface $translator,
         private ModelFactory $modelFactory,
         private CorePermissions $security,
-        private EventDispatcherInterface $eventDispatcher
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
