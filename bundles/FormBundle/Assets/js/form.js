@@ -154,7 +154,7 @@ Mautic.formResultBatchSubmit = function () {
         return false;
     }
 
-    return mQuery('#lead_batch_add').val() || mQuery('#lead_batch_remove').val());
+    return mQuery('#lead_batch_add').val() || mQuery('#lead_batch_remove').val();
 };
 
 Mautic.updateFormFields = function () {
