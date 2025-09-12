@@ -27,6 +27,9 @@ interface VariantEntityInterface
 
     public function removeVariantChild(VariantEntityInterface $child): void;
 
+    /**
+     * @return array<mixed>
+     */
     public function getVariantSettings(): array;
 
     public function getVariantStartDate(): mixed;
