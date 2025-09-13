@@ -82,8 +82,10 @@ trait VariantEntityTrait
 
     /**
      * Get variantChildren.
+     *
+     * @return Collection|array<VariantEntityInterface|object>
      */
-    public function getVariantChildren(): ArrayCollection|Collection
+    public function getVariantChildren(): Collection|array
     {
         if (null === $this->variantChildren) {
             $this->variantChildren = new ArrayCollection();

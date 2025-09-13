@@ -18,7 +18,10 @@ interface VariantEntityInterface
 
     public function removeVariantParent(): void;
 
-    public function getVariantChildren(): Collection;
+    /**
+     * @return Collection|array<VariantEntityInterface|object>
+     */
+    public function getVariantChildren(): Collection|array;
 
     /**
      * @return $this
