@@ -12,9 +12,11 @@ trait TranslationEntityTrait
     /**
      * Set by AbstractCommonModel::getEntityBySlugs() if a language slug was used to fetch the entity.
      *
+     * @var string
+     *
      * @Groups({"page:read", "download:read", "email:read"})
      */
-    public string $languageSlug;
+    public $languageSlug;
 
     /**
      * @var mixed
