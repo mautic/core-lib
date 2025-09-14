@@ -13,9 +13,8 @@ final class Version20250828070131 extends PreUpAssertionMigration
 
     protected function preUpAssertions(): void
     {
-        foreach (['translation_parent_id'] as $column) {
-            $this->skipAssertion(fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn($column), "Column {$this->prefix}sms_messages.{$column} already exists");
-        }
+        $column = 'translation_parent_id';
+        $this->skipAssertion(fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName())->hasColumn($column), "Column {$this->prefix}sms_messages.{$column} already exists");
     }
 
     public function up(Schema $schema): void
