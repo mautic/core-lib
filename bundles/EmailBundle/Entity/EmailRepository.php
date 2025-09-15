@@ -556,21 +556,17 @@ class EmailRepository extends CommonRepository
         switch ($command) {
             case $this->translator->trans('mautic.email.email.searchcommand.isexpired'):
             case $this->translator->trans('mautic.email.email.searchcommand.isexpired', [], null, 'en_US'):
-                $expr = $q->expr()->and(
-                    (string) $q->expr()->eq('e.isPublished', ":$unique"),
-                    (string) $q->expr()->isNotNull('e.publishDown'),
-                    (string) $q->expr()->neq('e.publishDown', $q->expr()->literal('')),
-                    (string) $q->expr()->lt('e.publishDown', 'CURRENT_TIMESTAMP()'),
+                $expr = sprintf(
+                    "(e.isPublished = :%1\$s AND e.publishDown IS NOT NULL AND e.publishDown <> '' AND e.publishDown < CURRENT_TIMESTAMP())",
+                    $unique
                 );
                 $forceParameters = [$unique => true];
                 break;
             case $this->translator->trans('mautic.email.email.searchcommand.ispending'):
             case $this->translator->trans('mautic.email.email.searchcommand.ispending', [], null, 'en_US'):
-                $expr = $q->expr()->and(
-                    (string) $q->expr()->eq('e.isPublished', ":$unique"),
-                    (string) $q->expr()->isNotNull('e.publishUp'),
-                    (string) $q->expr()->neq('e.publishUp', $q->expr()->literal('')),
-                    (string) $q->expr()->gt('e.publishUp', 'CURRENT_TIMESTAMP()'),
+                $expr = sprintf(
+                    "(e.isPublished = :%1\$s AND e.publishUp IS NOT NULL AND e.publishUp <> '' AND e.publishUp > CURRENT_TIMESTAMP())",
+                    $unique
                 );
                 $forceParameters = [$unique => true];
                 break;
