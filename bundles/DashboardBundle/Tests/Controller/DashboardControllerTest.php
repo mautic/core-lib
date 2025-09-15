@@ -21,6 +21,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\InputBag;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -294,21 +295,19 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->containerMock->expects($this->exactly(2))
             ->method('get')
             ->willReturnCallback(function (...$parameters) {
-                if ('router' === $parameters[0]) {
+                if ($parameters[0] === 'router') {
                     return $this->routerMock;
                 }
-                if ('form.factory' === $parameters[0]) {
+                if ($parameters[0] === 'form.factory') {
                     return $this->createMock(FormFactoryInterface::class);
                 }
-                if ('twig' === $parameters[0]) {
+                if ($parameters[0] === 'twig') {
                     $twigMock = $this->createMock(Environment::class);
                     $twigMock->expects($this->once())
                         ->method('render')
                         ->willReturn('<div>Flash messages</div>');
-
                     return $twigMock;
                 }
-
                 return null;
             });
 
@@ -348,21 +347,19 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->containerMock->expects($this->atLeastOnce())
             ->method('get')
             ->willReturnCallback(function (...$parameters) {
-                if ('router' === $parameters[0]) {
+                if ($parameters[0] === 'router') {
                     return $this->routerMock;
                 }
-                if ('form.factory' === $parameters[0]) {
+                if ($parameters[0] === 'form.factory') {
                     return $this->createMock(FormFactoryInterface::class);
                 }
-                if ('twig' === $parameters[0]) {
+                if ($parameters[0] === 'twig') {
                     $twigMock = $this->createMock(Environment::class);
                     $twigMock->expects($this->exactly(2))
                         ->method('render')
                         ->willReturn('<div>Widget HTML</div>');
-
                     return $twigMock;
                 }
-
                 return null;
             });
 
@@ -418,7 +415,7 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
 
         $this->flashBagMock->expects($this->once())
             ->method('add')
-            ->with('mautic.dashboard.widget.created', [], FlashBag::LEVEL_NOTICE, 'flashes', false);
+            ->with('mautic.dashboard.widget.created', [], \Mautic\CoreBundle\Service\FlashBag::LEVEL_NOTICE, 'flashes', false);
 
         $response = $this->controller->newAction($this->requestMock, $this->createMock(FormFactoryInterface::class));
 
@@ -444,13 +441,12 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->containerMock->expects($this->exactly(2))
             ->method('get')
             ->willReturnCallback(function (...$parameters) {
-                if ('router' === $parameters[0]) {
+                if ($parameters[0] === 'router') {
                     return $this->routerMock;
                 }
-                if ('form.factory' === $parameters[0]) {
+                if ($parameters[0] === 'form.factory') {
                     return $this->createMock(FormFactoryInterface::class);
                 }
-
                 return null;
             });
 
@@ -513,13 +509,12 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->containerMock->expects($this->exactly(2))
             ->method('get')
             ->willReturnCallback(function (...$parameters) {
-                if ('router' === $parameters[0]) {
+                if ($parameters[0] === 'router') {
                     return $this->routerMock;
                 }
-                if ('form.factory' === $parameters[0]) {
+                if ($parameters[0] === 'form.factory') {
                     return $this->createMock(FormFactoryInterface::class);
                 }
-
                 return null;
             });
 
@@ -584,13 +579,12 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->containerMock->expects($this->exactly(2))
             ->method('get')
             ->willReturnCallback(function (...$parameters) {
-                if ('router' === $parameters[0]) {
+                if ($parameters[0] === 'router') {
                     return $this->routerMock;
                 }
-                if ('form.factory' === $parameters[0]) {
+                if ($parameters[0] === 'form.factory') {
                     return $this->createMock(FormFactoryInterface::class);
                 }
-
                 return null;
             });
 
@@ -629,21 +623,19 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->containerMock->expects($this->exactly(3))
             ->method('get')
             ->willReturnCallback(function (...$parameters) {
-                if ('router' === $parameters[0]) {
+                if ($parameters[0] === 'router') {
                     return $this->routerMock;
                 }
-                if ('form.factory' === $parameters[0]) {
+                if ($parameters[0] === 'form.factory') {
                     return $this->createMock(FormFactoryInterface::class);
                 }
-                if ('twig' === $parameters[0]) {
+                if ($parameters[0] === 'twig') {
                     $twigMock = $this->createMock(Environment::class);
                     $twigMock->expects($this->once())
                         ->method('render')
                         ->willReturn('<div>Widget HTML</div>');
-
                     return $twigMock;
                 }
-
                 return null;
             });
 
