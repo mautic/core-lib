@@ -115,7 +115,7 @@ final class ResumeStuckCampaignCommand extends Command
             }
 
             if (!$campaign->isPublished() || $campaign->isDeleted()) {
-                $output->writeln('<error>Campaign with ID '.$campaignId.' is not published or deleted.</error>');
+                $output->writeln('<error>Campaign with ID '.$campaignId.' is not published or is deleted.</error>');
 
                 return ExitCode::FAILURE;
             }
