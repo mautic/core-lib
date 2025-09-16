@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace Mautic\CampaignBundle\Command;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Mautic\CampaignBundle\Entity\CampaignRepository;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Event\MaxAllowedRecordsReachedInSingleProcessEvent;
 use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
 use Mautic\CampaignBundle\Executioner\EventExecutioner;
 use Mautic\CampaignBundle\Executioner\Result\Counter;
-use Mautic\CampaignBundle\Model\CampaignModel;
 use Mautic\CampaignBundle\Model\EventModel;
 use Mautic\CoreBundle\Event\JobExtendTimeEvent;
 use Mautic\CoreBundle\Helper\ExitCode;
 use Mautic\CoreBundle\ProcessSignal\Exception\SignalCaughtException;
 use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
 use Mautic\LeadBundle\Model\LeadModel;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,18 +27,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[AsCommand(
+    name: ResumeStuckCampaignCommand::COMMAND_NAME,
+    description: 'Resume execution for contacts stuck in campaign workflows.'
+)]
 final class ResumeStuckCampaignCommand extends Command
 {
     use WriteCountTrait;
 
-    public const COMMAND_NAME = 'mautic:campaigns:resume-stuck';
-
+    public const COMMAND_NAME                      = 'mautic:campaigns:resume-stuck';
     private const MAX_ALLOWED_RECORDS_EACH_PROCESS = 5000;
 
     public function __construct(
         private TranslatorInterface $translator,
         private EventModel $eventModel,
-        private CampaignModel $campaignModel,
+        private CampaignRepository $campaignRepository,
         private LeadModel $leadModel,
         private EventExecutioner $eventExecutioner,
         private ProcessSignalService $processSignalService,
@@ -51,14 +55,11 @@ final class ResumeStuckCampaignCommand extends Command
      */
     protected function configure(): void
     {
-        $this
-            ->setName(self::COMMAND_NAME)
-            ->setDescription('Resume execution for contacts stuck in campaign workflows.')
-            ->addArgument(
-                'campaign-id',
-                InputArgument::REQUIRED,
-                'The ID of the campaign to resume.'
-            )
+        $this->addArgument(
+            'campaign-id',
+            InputArgument::REQUIRED,
+            'The ID of the campaign to resume.'
+        )
             ->addOption(
                 '--dry-run',
                 null,
@@ -98,8 +99,8 @@ final class ResumeStuckCampaignCommand extends Command
         $campaignId     = (int) $input->getArgument('campaign-id');
         $batchLimit     = (int) $input->getOption('batch-limit');
         $isDryRun       = (bool) $input->getOption('dry-run');
-        $contactMinId   = $input->getOption('min-contact-id');
-        $contactMaxId   = $input->getOption('max-contact-id');
+        $contactMinId   = (int) $input->getOption('min-contact-id');
+        $contactMaxId   = (int) $input->getOption('max-contact-id');
 
         $contactLimiter = new ContactLimiter($batchLimit, null, $contactMinId, $contactMaxId);
         $this->processSignalService->registerSignalHandler(
@@ -107,17 +108,17 @@ final class ResumeStuckCampaignCommand extends Command
         );
 
         try {
-            $campaign = $this->campaignModel->getEntity($campaignId);
+            $campaign = $this->campaignRepository->getEntity($campaignId);
             if (!$campaign) {
                 $output->writeln('<error>Campaign with ID '.$campaignId.' not found.</error>');
 
-                return ExitCode::FAILURE;
+                return Command::FAILURE;
             }
 
             if (!$campaign->isPublished() || $campaign->isDeleted()) {
                 $output->writeln('<error>Campaign with ID '.$campaignId.' is not published or is deleted.</error>');
 
-                return ExitCode::FAILURE;
+                return Command::FAILURE;
             }
 
             return $this->processEvents($campaignId, $batchLimit, $contactLimiter, $isDryRun, $output);
@@ -233,14 +234,13 @@ final class ResumeStuckCampaignCommand extends Command
         bool $isDryRun, OutputInterface $output): int
     {
         $recordsProcessed   = 0;
-        $campaignRepository = $this->campaignModel->getRepository();
-        while ($nextEvents = $campaignRepository->findStuckEventsToExecute($campaignId, $batchLimit,
+        while ($nextEvents = $this->campaignRepository->findStuckEventsToExecute($campaignId, $batchLimit,
             $contactLimiter->getMinContactId(), $contactLimiter->getMaxContactId())) {
             if ($isDryRun) {
                 $this->displayNextEvents($nextEvents, $output);
                 $output->writeln('<comment>Dry run only. No events were executed.</comment>');
 
-                return ExitCode::SUCCESS;
+                return Command::SUCCESS;
             }
 
             $output->writeln('<info>Executing next events...</info>');
@@ -255,7 +255,7 @@ final class ResumeStuckCampaignCommand extends Command
             if (count($nextEvents) < $batchLimit) {
                 $output->writeln('<info>All next events processed.</info>');
 
-                return ExitCode::SUCCESS;
+                return Command::SUCCESS;
             }
 
             $recordsProcessed += count($nextEvents);
@@ -266,11 +266,11 @@ final class ResumeStuckCampaignCommand extends Command
 
                 $this->eventDispatcher->dispatch(new MaxAllowedRecordsReachedInSingleProcessEvent($campaignId));
 
-                return ExitCode::SUCCESS;
+                return Command::SUCCESS;
             }
         }
 
-        return ExitCode::SUCCESS;
+        return Command::SUCCESS;
     }
 
     /**
