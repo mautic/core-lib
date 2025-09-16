@@ -12,7 +12,7 @@ trait VariantEntityTrait
 {
     /**
      * @var mixed
-     **/
+     */
     #[Groups(['email:read', 'email:write', 'download:read'])]
     private $variantChildren;
 
@@ -66,7 +66,7 @@ trait VariantEntityTrait
     public function addVariantChild(VariantEntityInterface $child): static
     {
         if (!$this->getVariantChildren()->contains($child)) {
-            $this->variantChildren[] = $child;
+            $this->variantChildren->add($child);
         }
 
         return $this;
@@ -82,15 +82,9 @@ trait VariantEntityTrait
 
     /**
      * Get variantChildren.
-     *
-     * @return Collection|array<VariantEntityInterface|object>
      */
-    public function getVariantChildren(): Collection|array
+    public function getVariantChildren(): ArrayCollection|Collection
     {
-        if (null === $this->variantChildren) {
-            $this->variantChildren = new ArrayCollection();
-        }
-
         return $this->variantChildren;
     }
 

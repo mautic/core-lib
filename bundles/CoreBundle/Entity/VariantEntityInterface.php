@@ -2,6 +2,7 @@
 
 namespace Mautic\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 /**
@@ -18,10 +19,7 @@ interface VariantEntityInterface
 
     public function removeVariantParent(): void;
 
-    /**
-     * @return Collection|array<VariantEntityInterface|object>
-     */
-    public function getVariantChildren(): Collection|array;
+    public function getVariantChildren(): ArrayCollection|Collection;
 
     /**
      * @return $this
