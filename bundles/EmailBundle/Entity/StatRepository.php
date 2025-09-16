@@ -84,7 +84,7 @@ class StatRepository extends CommonRepository
             ->from(MAUTIC_TABLE_PREFIX.'email_stats', 's')
             ->leftJoin('s', MAUTIC_TABLE_PREFIX.'emails', 'e', 's.email_id = e.id')
             ->addSelect('e.name AS email_name')
-            ->leftJoin('s', MAUTIC_TABLE_PREFIX.'page_hits', 'ph', 'ph.source = "email" and ph.source_id = s.email_id and ph.lead_id = s.lead_id')
+            ->leftJoin('s', MAUTIC_TABLE_PREFIX.'page_hits', 'ph', 'ph.source = \'email\' and ph.source_id = s.email_id and ph.lead_id = s.lead_id')
             ->addSelect('COUNT(ph.id) AS link_hits');
 
         if (null !== $createdByUserId) {
@@ -624,25 +624,6 @@ class StatRepository extends CommonRepository
             ->setParameter('emailId', (int) $emailId)
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * @deprecated to be removed as it is not used anywhere
-     *
-     * @return mixed
-     */
-    public function checkContactsSentEmail($contacts, $emailId)
-    {
-        $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $query->from(MAUTIC_TABLE_PREFIX.'email_stats', 's');
-        $query->select('id, lead_id')
-            ->where('s.email_id = :email')
-            ->andWhere('s.lead_id in (:contacts)')
-            ->andWhere('is_failed = 0')
-            ->setParameter('email', $emailId)
-            ->setParameter('contacts', $contacts);
-
-        return $query->executeQuery()->fetchAssociative();
     }
 
     public function checkContactSentEmail(int $contactId, int $emailId): bool

@@ -3,6 +3,7 @@
 namespace Mautic\CampaignBundle\Entity;
 
 use Doctrine\DBAL\Cache\QueryCacheProfile;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query\Expr;
 use Mautic\CampaignBundle\Entity\Result\CountResult;
@@ -339,6 +340,7 @@ class CampaignRepository extends CommonRepository
                         $sq->expr()->in('e.event_id', $pendingEvents)
                     )
                 );
+            $this->updateQueryFromContactLimiter('e', $sq, $limiter, true);
 
             $q->andWhere(
                 sprintf('NOT EXISTS (%s)', $sq->getSQL())
@@ -720,5 +722,22 @@ class CampaignRepository extends CommonRepository
         $result = $query->executeQuery();
 
         return $result->fetchAllAssociative();
+    }
+  
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
+    public function getCampaignPublishAndVersionData(int $campaignId): array
+    {
+        $result = $this->getEntityManager()->getConnection()
+            ->executeQuery(
+                'SELECT is_published, version FROM '.MAUTIC_TABLE_PREFIX.'campaigns WHERE id = ? FOR UPDATE',
+                [$campaignId],
+                [\PDO::PARAM_INT]
+            )->fetchAssociative();
+
+        return $result ?: [];
     }
 }
