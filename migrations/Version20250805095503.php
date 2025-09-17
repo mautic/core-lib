@@ -22,8 +22,7 @@ final class Version20250805095503 extends PreUpAssertionMigration
 
     public function up(Schema $schema): void
     {
-        $table = $schema->getTable($this->getPrefixedTableName());
-        $table->addColumn('uuid', 'guid', ['nullable' => true]);
+        $this->addSql("ALTER TABLE `{$this->getPrefixedTableName()}` ADD `uuid` CHAR(36) NULL DEFAULT NULL");
         $this->addSql("UPDATE `{$this->getPrefixedTableName()}` SET `uuid` = UUID() WHERE `uuid` IS NULL");
     }
 }
