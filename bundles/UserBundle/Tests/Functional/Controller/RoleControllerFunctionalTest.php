@@ -55,16 +55,18 @@ class RoleControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testIndexActionCanSortByUserCount(): void
     {
+        $uniquePrefix = 'TestRole'.uniqid();
+
         $role1 = new Role();
-        $role1->setName('Role 1');
+        $role1->setName($uniquePrefix.' 1');
         $this->em->persist($role1);
 
         $role2 = new Role();
-        $role2->setName('Role 2');
+        $role2->setName($uniquePrefix.' 2');
         $this->em->persist($role2);
 
         $role3 = new Role();
-        $role3->setName('Role 3');
+        $role3->setName($uniquePrefix.' 3');
         $this->em->persist($role3);
 
         $this->em->flush();
@@ -74,17 +76,19 @@ class RoleControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($this->createUser('user3', $role2));
         $this->em->flush();
 
-        $crawler = $this->client->request('GET', '/s/roles?tmpl=list&name=role&orderby=user_count&orderbydir=DESC');
+        $crawler = $this->client->request('GET', '/s/roles?tmpl=list&search='.$uniquePrefix.'&orderby=user_count&orderbydir=DESC');
         $rows    = $crawler->filter('#roleTable tbody tr');
-        $this->assertSame('Role 1', trim($rows->eq(0)->filter('td')->eq(1)->text()));
-        $this->assertSame('Role 2', trim($rows->eq(1)->filter('td')->eq(1)->text()));
-        $this->assertSame('Role 3', trim($rows->eq(2)->filter('td')->eq(1)->text()));
+        
+        $this->assertSame($uniquePrefix.' 1', trim($rows->eq(0)->filter('td')->eq(1)->text()));
+        $this->assertSame($uniquePrefix.' 2', trim($rows->eq(1)->filter('td')->eq(1)->text()));
+        $this->assertSame($uniquePrefix.' 3', trim($rows->eq(2)->filter('td')->eq(1)->text()));
 
-        $crawler = $this->client->request('GET', '/s/roles?tmpl=list&name=role&orderby=user_count&orderbydir=ASC');
+        $crawler = $this->client->request('GET', '/s/roles?tmpl=list&search='.$uniquePrefix.'&orderby=user_count&orderbydir=ASC');
         $rows    = $crawler->filter('#roleTable tbody tr');
-        $this->assertSame('Role 3', trim($rows->eq(0)->filter('td')->eq(1)->text()));
-        $this->assertSame('Role 2', trim($rows->eq(1)->filter('td')->eq(1)->text()));
-        $this->assertSame('Role 1', trim($rows->eq(2)->filter('td')->eq(1)->text()));
+        
+        $this->assertSame($uniquePrefix.' 3', trim($rows->eq(0)->filter('td')->eq(1)->text()));
+        $this->assertSame($uniquePrefix.' 2', trim($rows->eq(1)->filter('td')->eq(1)->text()));
+        $this->assertSame($uniquePrefix.' 1', trim($rows->eq(2)->filter('td')->eq(1)->text()));
     }
 
     private function createUser(string $username, Role $role): User
