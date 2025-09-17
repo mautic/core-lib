@@ -437,7 +437,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         /** @var DoctrineDataCollector $dbCollector */
         $dbCollector = $profile->getCollector('db');
         $queries     = $dbCollector->getQueries();
-        $prefix      = self::$container->getParameter('mautic.db_table_prefix');
+        $prefix      = self::getContainer()->getParameter('mautic.db_table_prefix');
 
         $pendingCountQuery = array_filter(
             $queries['default'],
