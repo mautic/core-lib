@@ -114,15 +114,16 @@ final class ProjectEntityLoaderService
 
         // Exclude entities already assigned to the specific project if projectId is provided
         if ($projectId) {
-            // Use LEFT JOIN to find entities that are NOT in the specific project
-            $qb->leftJoin('e.projects', 'p', 'WITH', 'p.id = :projectId')
-               ->andWhere('p.id IS NULL')
-               ->setParameter('projectId', $projectId);
-        } else {
-            // Exclude entities already assigned to any project using QueryBuilder
-            // Use LEFT JOIN to find entities that are NOT in any project
-            $qb->leftJoin('e.projects', 'p')
-               ->andWhere('p.id IS NULL');
+            // Use subQuery to handle many to many join scenario to find entities that are NOT in the specific project
+            $qb->andWhere($qb->expr()->notIn('e.id',
+                $this->em->createQueryBuilder()
+                    ->select('e2.id')
+                    ->from($entityConfig->entityClass, 'e2')
+                    ->join('e2.projects', 'p2')
+                    ->where('p2.id = :projectId')
+                    ->getDQL()
+            ))
+            ->setParameter('projectId', $projectId);
         }
 
         // Add filter if provided
@@ -265,19 +266,21 @@ final class ProjectEntityLoaderService
 
     private function getEntityLabel(string $entityType): string
     {
-        // Create the translation key
-        $translationKeyString = "mautic.{$entityType}.{$entityType}";
+        // Try possible translation keys in order
+        $keys = [
+            "mautic.project.$entityType",
+            "mautic.$entityType.$entityType",
+        ];
 
-        // Get the translation
-        $translated = $this->translator->trans($translationKeyString);
-
-        // If translation doesn't exist (returns the key itself), return capitalized entity type
-        if ($translated === $translationKeyString) {
-            return ucfirst($entityType);
+        foreach ($keys as $key) {
+            $translated = $this->translator->trans($key);
+            if ($translated !== $key) {
+                return $translated;
+            }
         }
 
-        // Return the actual translation
-        return $translated;
+        // Fallback: Capitalize the entity type if no translation was found
+        return ucfirst($entityType);
     }
 
     private function findModelForEntityType(string $entityType): FormModel

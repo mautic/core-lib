@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block headerTitle %}
-	{{ project.getName() }}
+	{{ project.getName()|e }}
 {% endblock %}
 
 {% block actions %}
