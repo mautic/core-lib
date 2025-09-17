@@ -207,29 +207,10 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $segment = $this->createSegment('Segment A', 'segment-a');
         $email   = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
 
-        foreach (['contact@one.email', 'contact@two.email'] as $emailAddress) {
-            $contact = new Lead();
-            $contact->setEmail($emailAddress);
-
-            $member = new ListLead();
-            $member->setLead($contact);
-            $member->setList($segment);
-            $member->setDateAdded(new \DateTime());
-
-            $this->em->persist($member);
-            $this->em->persist($contact);
-        }
+        $this->addContactsToSegment($segment, ['contact@one.email', 'contact@two.email']);
         $this->em->flush();
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
-            'id'         => $email->getId(),
-            'pending'    => 2,
-            'batchLimit' => 10,
-        ]);
-
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
-        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
-        $this->assertQueuedEmailCount(2);
+        $this->sendBatchEmail($email);
 
         $email = $this->getMailerMessage();
 
@@ -268,32 +249,12 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
 
-        foreach (['contact@one.email', 'contact@two.email'] as $emailAddress) {
-            $contact = new Lead();
-            $contact->setEmail($emailAddress);
-
-            $member = new ListLead();
-            $member->setLead($contact);
-            $member->setList($segment);
-            $member->setDateAdded(new \DateTime());
-
-            $this->em->persist($member);
-            $this->em->persist($contact);
-        }
-
+        $this->addContactsToSegment($segment, ['contact@one.email', 'contact@two.email']);
         $this->em->persist($segment);
         $this->em->persist($email);
         $this->em->flush();
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
-            'id'         => $email->getId(),
-            'pending'    => 2,
-            'batchLimit' => 10,
-        ]);
-
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
-        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
-        $this->assertQueuedEmailCount(2);
+        $this->sendBatchEmail($email);
 
         $email = $this->getMailerMessage();
 
@@ -322,35 +283,20 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $email->setFromName('{contactfield=address1}');
         $email->setReplyToAddress('custom@replyto.address');
 
-        foreach (['contact@one.email', 'contact@two.email'] as $emailAddress) {
-            $contact = new Lead();
-            $contact->setEmail($emailAddress);
-            $contact->setAddress1('address1 name for '.$emailAddress);
-            $contact->setAddress2('address2+'.$emailAddress);
-
-            $member = new ListLead();
-            $member->setLead($contact);
-            $member->setList($segment);
-            $member->setDateAdded(new \DateTime());
-
-            $this->em->persist($member);
-            $this->em->persist($contact);
-        }
+        $this->addContactsToSegment(
+            $segment,
+            ['contact@one.email', 'contact@two.email'],
+            function (Lead $contact, string $emailAddress) {
+                $contact->setAddress1('address1 name for '.$emailAddress);
+                $contact->setAddress2('address2+'.$emailAddress);
+            }
+        );
 
         $this->em->persist($segment);
         $this->em->persist($email);
         $this->em->flush();
 
-        $this->setCsrfHeader();
-        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
-            'id'         => $email->getId(),
-            'pending'    => 2,
-            'batchLimit' => 10,
-        ]);
-
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
-        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
-        $this->assertQueuedEmailCount(2);
+        $this->sendBatchEmail($email, 2, 10, true);
 
         $messages   = self::getMailerMessages();
         $messageOne = array_values(array_filter($messages, fn ($message) => 'contact@one.email' === $message->getTo()[0]->getAddress()))[0];
@@ -542,6 +488,49 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $savedEmail = $this->em->find(Email::class, $email->getId());
         Assert::assertSame($project->getId(), $savedEmail->getProjects()->first()->getId());
+    }
+
+    /**
+     * Helper method to add contacts to a segment with optional contact customization.
+     */
+    private function addContactsToSegment(LeadList $segment, array $emails, ?callable $contactCallback = null): void
+    {
+        foreach ($emails as $emailAddress) {
+            $contact = new Lead();
+            $contact->setEmail($emailAddress);
+
+            if ($contactCallback) {
+                $contactCallback($contact, $emailAddress);
+            }
+
+            $member = new ListLead();
+            $member->setLead($contact);
+            $member->setList($segment);
+            $member->setDateAdded(new \DateTime());
+
+            $this->em->persist($member);
+            $this->em->persist($contact);
+        }
+    }
+
+    /**
+     * Helper method to send batch email and assert common response expectations.
+     */
+    private function sendBatchEmail(Email $email, int $pending = 2, int $batchLimit = 10, bool $setCsrf = false): void
+    {
+        if ($setCsrf) {
+            $this->setCsrfHeader();
+        }
+
+        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
+            'id'         => $email->getId(),
+            'pending'    => $pending,
+            'batchLimit' => $batchLimit,
+        ]);
+
+        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
+        $this->assertQueuedEmailCount(2);
     }
 
     private function createSegment(string $name, string $alias): LeadList
