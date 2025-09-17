@@ -29,12 +29,12 @@ use Mautic\LeadBundle\Controller\EntityContactsTrait;
 use Mautic\LeadBundle\Helper\FakeContactHelper;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Model\ListModel;
+use Mautic\PageBundle\Exception\InvalidRenderedHtmlException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Mautic\PageBundle\Exception\InvalidRenderedHtmlException;
 
 class EmailController extends FormController
 {
@@ -612,13 +612,13 @@ class EmailController extends FormController
         return $this->delegateView(
             [
                 'viewParameters' => [
-                    'form'          => $form->createView(),
-                    'isVariant'     => $entity->isVariant(true),
-                    'email'         => $entity,
-                    'themes'        => $themeHelper->getInstalledThemes('email', true),
-                    'updateSelect'  => $updateSelect,
-                    'permissions'   => $permissions,
-                    'invalidHtmlError' => $this->invalidHtmlError,
+                    'form'              => $form->createView(),
+                    'isVariant'         => $entity->isVariant(true),
+                    'email'             => $entity,
+                    'themes'            => $themeHelper->getInstalledThemes('email', true),
+                    'updateSelect'      => $updateSelect,
+                    'permissions'       => $permissions,
+                    'invalidHtmlError'  => $this->invalidHtmlError,
                 ],
                 'contentTemplate' => '@MauticEmail/Email/form.html.twig',
                 'passthroughVars' => [
@@ -1030,12 +1030,12 @@ class EmailController extends FormController
         return $this->delegateView(
             [
                 'viewParameters' => [
-                    'form'          => $form->createView(),
-                    'isVariant'     => $entity->isVariant(true),
-                    'email'         => $entity,
-                    'themes'        => $themeHelper->getInstalledThemes('email', true),
-                    'permissions'   => $permissions,
-                    'invalidHtmlError'   => $this->invalidHtmlError,
+                    'form'              => $form->createView(),
+                    'isVariant'         => $entity->isVariant(true),
+                    'email'             => $entity,
+                    'themes'            => $themeHelper->getInstalledThemes('email', true),
+                    'permissions'       => $permissions,
+                    'invalidHtmlError'  => $this->invalidHtmlError,
                 ],
                 'contentTemplate' => '@MauticEmail/Email/form.html.twig',
                 'passthroughVars' => [
