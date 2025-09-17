@@ -723,7 +723,7 @@ class CampaignRepository extends CommonRepository
 
         return $result->fetchAllAssociative();
     }
-  
+
     /**
      * @return array<string, mixed>
      *
