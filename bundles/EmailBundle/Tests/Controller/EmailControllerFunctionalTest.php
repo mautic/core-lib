@@ -492,6 +492,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
     /**
      * @param array<mixed> $emails
+     *
      * @throws \Doctrine\ORM\Exception\ORMException
      */
     private function addContactsToSegment(LeadList $segment, array $emails, ?callable $contactCallback = null): void
