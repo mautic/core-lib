@@ -550,7 +550,7 @@ class EmailController extends FormController
                     } catch (InvalidRenderedHtmlException $e) {
                         $valid                  = false;
                         $this->invalidHtmlError = true;
-                        $this->addFlash($e->getMessage(), [], 'error');
+                        $this->addFlashMessage($e->getMessage(), [], 'error');
                     }
                 }
             } else {
@@ -753,7 +753,7 @@ class EmailController extends FormController
                     } catch (InvalidRenderedHtmlException $e) {
                         $valid                  = false;
                         $this->invalidHtmlError = true;
-                        $this->addFlash($e->getMessage(), [], 'error');
+                        $this->addFlashMessage($e->getMessage(), [], 'error');
                     }
                 }
             } else {
@@ -990,7 +990,7 @@ class EmailController extends FormController
                     } catch (InvalidRenderedHtmlException $e) {
                         $valid                  = false;
                         $this->invalidHtmlError = true;
-                        $this->addFlash($e->getMessage(), [], 'error');
+                        $this->addFlashMessage($e->getMessage(), [], 'error');
                     }
                 }
             } else {

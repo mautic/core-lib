@@ -344,7 +344,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $form['emailform[emailType]']->setValue('list');
         $form['emailform[subject]']->setValue('Email B Subject clone');
         $form['emailform[name]']->setValue('Email B clone');
-        $form['emailform[isPublished]']->setValue(true);
+        $form['emailform[isPublished]']->setValue('1');
 
         $this->client->submit($form);
         Assert::assertTrue($this->client->getResponse()->isOk());
@@ -410,7 +410,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $form['emailform[name]']->setValue('Email B var 2');
         $form['emailform[variantSettings][weight]']->setValue((string) $varientSetting['totalWeight']);
         $form['emailform[variantSettings][winnerCriteria]']->setValue($varientSetting['winnerCriteria']);
-        $form['emailform[isPublished]']->setValue(true);
+        $form['emailform[isPublished]']->setValue('1');
 
         $this->client->submit($form);
         Assert::assertTrue($this->client->getResponse()->isOk());
@@ -491,7 +491,8 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * Helper method to add contacts to a segment with optional contact customization.
+     * @param array<mixed> $emails
+     * @throws \Doctrine\ORM\Exception\ORMException
      */
     private function addContactsToSegment(LeadList $segment, array $emails, ?callable $contactCallback = null): void
     {
