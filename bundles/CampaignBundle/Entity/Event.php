@@ -503,6 +503,7 @@ class Event implements ChannelInterface, UuidInterface
 
             return true;
         }
+
         return false;
     }
 

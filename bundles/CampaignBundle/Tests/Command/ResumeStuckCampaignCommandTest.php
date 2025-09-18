@@ -92,7 +92,7 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $this->createCampaignLead($campaign, $contact7);
         $this->createCampaignLead($campaign, $contact8);
 
-        sleep(1); //wait 1 second so that compare timestamp
+        sleep(1); // wait 1 second so that compare timestamp
 
         $rootEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action', ['email' => '1']);
 

@@ -627,7 +627,7 @@ class CampaignRepository extends CommonRepository
      * @return array<mixed>
      */
     public function findStuckEventsToExecute(int $campaignId, int $limit = 100, ?int $minLeadId = 0,
-                                             ?int $maxLeadId = 0, ?string $recordsAfter = null): array
+        ?int $maxLeadId = 0, ?string $recordsAfter = null): array
     {
         $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $query->select(
@@ -771,12 +771,12 @@ class CampaignRepository extends CommonRepository
         )
             ->from(MAUTIC_TABLE_PREFIX.'campaigns', 'c')
             ->where('c.deleted IS NULL')
-            ->andWhere(($this->getPublishedByDateExpression($query)))
+            ->andWhere($this->getPublishedByDateExpression($query))
             ->andWhere(
                 sprintf('EXISTS (%s)', $innerQuery->getSQL())
             )
             ->setParameter('minDateForUnStuck', $recordsAfter);
 
-        return $query->execute()->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 }
