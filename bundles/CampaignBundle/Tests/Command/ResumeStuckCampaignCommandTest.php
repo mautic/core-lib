@@ -15,6 +15,7 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
 {
     protected function setUp(): void
     {
+        $this->configParams['campaigns_resume_stuck_records_after'] = '2025-08-01 00:00:00';
         parent::setUp();
 
         $this->createStuckContactsTestData();
@@ -85,13 +86,13 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $contact4 = $this->createLead('Complex Contact 4');
         $contact5 = $this->createLead('Complex Contact 5');
         $contact6 = $this->createLead('Complex Contact 6');
+        $contact7 = $this->createLead('Complex Contact 7');
+        $contact8 = $this->createLead('Complex Contact 8');
 
-        $this->createCampaignLead($campaign, $contact1);
-        $this->createCampaignLead($campaign, $contact2);
-        $this->createCampaignLead($campaign, $contact3);
-        $this->createCampaignLead($campaign, $contact4);
-        $this->createCampaignLead($campaign, $contact5);
-        $this->createCampaignLead($campaign, $contact6);
+        $this->createCampaignLead($campaign, $contact7);
+        $this->createCampaignLead($campaign, $contact8);
+
+        sleep(1); //wait 1 second so that compare timestamp
 
         $rootEmail = $this->createEvent('Welcome Email', $campaign, 'email.send', 'action', ['email' => '1']);
 
@@ -134,6 +135,13 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $this->em->persist($yesFollowupEmail);
         $this->em->persist($noFollowupEmail);
 
+        $this->createCampaignLead($campaign, $contact1);
+        $this->createCampaignLead($campaign, $contact2);
+        $this->createCampaignLead($campaign, $contact3);
+        $this->createCampaignLead($campaign, $contact4);
+        $this->createCampaignLead($campaign, $contact5);
+        $this->createCampaignLead($campaign, $contact6);
+
         // Create event logs to simulate events that have already been executed
         // Contact 1 - executed root email and wait event, ready for decision
         $this->createEventLog($contact1, $rootEmail, $campaign, 1);
@@ -165,7 +173,16 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $log = $this->createEventLog($contact6, $conditionEvent, $campaign, 1);
         $log->setIsScheduled(true);
 
+        // Contact 7 - Not executed any executed root event.
+
+        // Contact 8 - Not Stuck as event is added after first event is executed
+        $this->createEventLog($contact8, $rootEmail, $campaign, 1);
+        $log = $this->createEventLog($contact8, $conditionEvent, $campaign, 1);
+        $log->setDateTriggered((new \DateTime())->modify('-5 minutes'));
+
         $this->em->flush();
+
+        sleep(1);
 
         $output = $this->executeCommand(
             [
@@ -180,6 +197,7 @@ final class ResumeStuckCampaignCommandTest extends AbstractCampaignCommand
         $this->assertStringContainsString('Check Contact Field Value Condition', $output);
         $this->assertStringContainsString('Yes Path - Add Tag', $output);
         $this->assertStringContainsString('No Path - Add Tag', $output);
+        $this->assertStringNotContainsString((string) $contact8->getId(), $output);
 
         $output = $this->executeCommand(
             [

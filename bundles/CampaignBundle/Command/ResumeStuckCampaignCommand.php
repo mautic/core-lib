@@ -10,9 +10,11 @@ use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Event\MaxAllowedRecordsReachedInSingleProcessEvent;
 use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
 use Mautic\CampaignBundle\Executioner\EventExecutioner;
+use Mautic\CampaignBundle\Executioner\Exception\NoContactsFoundException;
 use Mautic\CampaignBundle\Executioner\Result\Counter;
 use Mautic\CampaignBundle\Model\EventModel;
 use Mautic\CoreBundle\Event\JobExtendTimeEvent;
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\ExitCode;
 use Mautic\CoreBundle\ProcessSignal\Exception\SignalCaughtException;
 use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
@@ -46,6 +48,7 @@ final class ResumeStuckCampaignCommand extends Command
         private EventExecutioner $eventExecutioner,
         private ProcessSignalService $processSignalService,
         private EventDispatcherInterface $eventDispatcher,
+        private CoreParametersHelper $coreParametersHelper,
     ) {
         parent::__construct();
     }
@@ -234,8 +237,9 @@ final class ResumeStuckCampaignCommand extends Command
         bool $isDryRun, OutputInterface $output): int
     {
         $recordsProcessed   = 0;
+        $recordsAfter       = $this->coreParametersHelper->get('campaigns_resume_stuck_records_after');
         while ($nextEvents = $this->campaignRepository->findStuckEventsToExecute($campaignId, $batchLimit,
-            $contactLimiter->getMinContactId(), $contactLimiter->getMaxContactId())) {
+            $contactLimiter->getMinContactId(), $contactLimiter->getMaxContactId(), $recordsAfter)) {
             if ($isDryRun) {
                 $this->displayNextEvents($nextEvents, $output);
                 $output->writeln('<comment>Dry run only. No events were executed.</comment>');
@@ -247,7 +251,13 @@ final class ResumeStuckCampaignCommand extends Command
             $counter = $this->executeNextEvents($nextEvents, $output);
 
             $lastContactId = max(array_column($nextEvents, 'contact_id'));
-            $contactLimiter->setBatchMinContactId($lastContactId);
+            try {
+                $contactLimiter->setBatchMinContactId($lastContactId);
+            } catch (NoContactsFoundException) {
+                $output->writeln('<error>No contacts found for the next events.</error>');
+
+                return ExitCode::SUCCESS;
+            }
 
             $this->writeCounts($output, $this->translator, $counter);
             $this->eventDispatcher->dispatch(new JobExtendTimeEvent());

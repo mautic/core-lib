@@ -222,7 +222,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
 
         foreach ($sessionEvents as $properties) {
             $isNew = (!empty($properties['id']) && isset($existingEvents[$properties['id']])) ? false : true;
-            $event = !$isNew ? $existingEvents[$properties['id']] : new Event();
+            $event = !$isNew ? $existingEvents[$properties['id']] : new Event(new \DateTime());
 
             foreach ($properties as $f => $v) {
                 if ('id' == $f && str_starts_with($v, 'new')) {
@@ -230,7 +230,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
                     $event->setTempId($v);
                 }
 
-                if (in_array($f, ['id', 'parent'])) {
+                if (in_array($f, ['id', 'parent', 'campaign', 'dateAdded', 'dateLinked'])) {
                     continue;
                 }
 

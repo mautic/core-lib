@@ -627,7 +627,7 @@ class CampaignRepository extends CommonRepository
      * @return array<mixed>
      */
     public function findStuckEventsToExecute(int $campaignId, int $limit = 100, ?int $minLeadId = 0,
-        ?int $maxLeadId = 0): array
+                                             ?int $maxLeadId = 0, ?string $recordsAfter = null): array
     {
         $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $query->select(
@@ -661,7 +661,7 @@ class CampaignRepository extends CommonRepository
                 MAUTIC_TABLE_PREFIX.'campaign_events',
                 'ce',
                 "ce.campaign_id = :campaign_id AND ce.parent_id = parent.id AND ce.deleted IS NULL AND
-                 ce.event_type != 'decision' AND log.is_scheduled = 0"
+                 ce.event_type != 'decision' AND log.is_scheduled = 0 AND ce.date_linked <= log.date_triggered"
             )
             // Check the executed events for the current rotation
             ->leftJoin(
@@ -712,6 +712,11 @@ class CampaignRepository extends CommonRepository
                 ->setParameter('maxLeadId', $maxLeadId);
         }
 
+        if ($recordsAfter) {
+            $query->andWhere('clr.date_added >= :minDateForUnStuck')
+                ->setParameter('minDateForUnStuck', $recordsAfter);
+        }
+
         $query->orderBy('log.lead_id', 'ASC')
             ->addOrderBy('log.date_triggered', 'DESC')
             ->addOrderBy('ce.event_order', 'ASC')
@@ -739,5 +744,39 @@ class CampaignRepository extends CommonRepository
             )->fetchAssociative();
 
         return $result ?: [];
+    }
+
+    /**
+     * Get campaigns that have events stuck in the queue.
+     *
+     * @return array<mixed>
+     */
+    public function getCampaignsToUnStuckEvents(string $recordsAfter): array
+    {
+        $innerQuery = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $innerQuery->select('1')
+            ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', 'clr')
+            ->where(
+                $innerQuery->expr()->and(
+                    $innerQuery->expr()->eq('clr.campaign_id', 'c.id'),
+                    $innerQuery->expr()->eq('clr.manually_removed', '0'),
+                    $innerQuery->expr()->gte('clr.date_added', ':minDateForUnStuck')
+                )
+            );
+
+        $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $query->select(
+            'c.id AS id',
+            'c.name AS name'
+        )
+            ->from(MAUTIC_TABLE_PREFIX.'campaigns', 'c')
+            ->where('c.deleted IS NULL')
+            ->andWhere(($this->getPublishedByDateExpression($query)))
+            ->andWhere(
+                sprintf('EXISTS (%s)', $innerQuery->getSQL())
+            )
+            ->setParameter('minDateForUnStuck', $recordsAfter);
+
+        return $query->execute()->fetchAllAssociative();
     }
 }

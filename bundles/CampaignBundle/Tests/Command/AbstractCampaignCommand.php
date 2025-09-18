@@ -164,7 +164,7 @@ class AbstractCampaignCommand extends MauticMysqlTestCase
 
     protected function createEvent(string $name, Campaign $campaign, string $type, string $eventType, ?array $property = null): Event
     {
-        $event = new Event();
+        $event = new Event(new \DateTime());
         $event->setName($name);
         $event->setCampaign($campaign);
         $event->setType($type);
@@ -184,6 +184,7 @@ class AbstractCampaignCommand extends MauticMysqlTestCase
         $leadEventLog->setEvent($event);
         $leadEventLog->setCampaign($campaign);
         $leadEventLog->setRotation($rotation);
+        $leadEventLog->setDateTriggered(new \DateTime());
         $this->em->persist($leadEventLog);
 
         return $leadEventLog;
