@@ -8,7 +8,7 @@ use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\WebhookBundle\Entity\Webhook;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class WebhookKillNotificator
+class WebhookFailureNotificator
 {
     public function __construct(
         private WebhookNotificationSender $sender,
@@ -21,7 +21,9 @@ class WebhookKillNotificator
      */
     public function send(Webhook $webhook, string $reason): void
     {
-        $subject = $this->translator->trans('mautic.webhook.stopped');
+        $subject = $this->translator->trans('mautic.webhook.failing', [
+            '%webhook%' => $webhook->getName(),
+        ]);
         $reason  = $this->translator->trans($reason);
         $details = [
             'reason'              => $reason,
@@ -30,6 +32,6 @@ class WebhookKillNotificator
             'signature_from_name' => $this->sender->getFromNameForSignature(),
         ];
 
-        $this->sender->send($webhook, $subject, '@MauticWebhook/Notifications/webhook-killed.html.twig', $details);
+        $this->sender->send($webhook, $subject, '@MauticWebhook/Notifications/webhook-failing.html.twig', $details);
     }
 }
