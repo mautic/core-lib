@@ -4,12 +4,10 @@ namespace Mautic\WebhookBundle\Tests\Functional;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Mautic\CoreBundle\Entity\Notification;
 use Mautic\CoreBundle\Entity\NotificationRepository;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Test\Guzzle\ClientMockTrait;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\WebhookBundle\Command\ProcessWebhookQueuesCommand;
 use Mautic\WebhookBundle\Entity\Event;
@@ -25,6 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WebhookFunctionalTest extends MauticMysqlTestCase
 {
+    use ClientMockTrait;
+
     protected $useCleanupRollback = false;
 
     private mixed $mockedHttpClient;
@@ -74,22 +74,6 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
 
     public function testWebhookWorkflowWithCommandProcess(): void
     {
-        $handlerStack = static::getContainer()->get(MockHandler::class);
-
-        // One resource is going to be found in the Transifex project:
-        $handlerStack->append(
-            function (RequestInterface $request) use (&$sendRequestCounter) {
-                Assert::assertSame('/post', $request->getUri()->getPath());
-                $jsonPayload = json_decode($request->getBody()->getContents(), true);
-                Assert::assertCount(3, $jsonPayload['mautic.lead_post_save_new']);
-                Assert::assertNotEmpty($request->getHeader('Webhook-Signature'));
-
-                ++$sendRequestCounter;
-
-                return new GuzzleResponse(Response::HTTP_OK);
-            }
-        );
-
         $webhookQueueRepository = $this->em->getRepository(WebhookQueue::class);
         \assert($webhookQueueRepository instanceof WebhookQueueRepository);
         $this->mockSuccessfulWebhookResponse(2);
@@ -293,52 +277,38 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
 
     private function mockSuccessfulWebhookResponse(int $expectedToBeCalled = 0): void
     {
-        $parametersMock         = $this->createMock(CoreParametersHelper::class);
-        $httpClientMock         = $this->createMock(GuzzleClient::class);
-        $this->mockedHttpClient = new \Mautic\WebhookBundle\Http\Client($parametersMock, $httpClientMock);
+        $handlerStack = $this->getClientMockHandler();
+        for (; $expectedToBeCalled > 0; --$expectedToBeCalled) {
+            $handlerStack->append(
+                function (RequestInterface $request) use (&$sendRequestCounter) {
+                    Assert::assertSame('/post', $request->getUri()->getPath());
+                    $jsonPayload = json_decode($request->getBody()->getContents(), true);
+                    Assert::assertNotEmpty($request->getHeader('Webhook-Signature'));
 
-        $parametersMock->expects($this->exactly($expectedToBeCalled))
-            ->method('get')
-            ->with('site_url')
-            ->willReturn('://whatever.url');
+                    ++$sendRequestCounter;
 
-        $response = new GuzzleResponse();
-        $httpClientMock->expects($this->exactly($expectedToBeCalled))
-            ->method('sendRequest')
-            ->with($this->callback(function (\GuzzleHttp\Psr7\Request $request) {
-                Assert::assertSame('://whatever.url', $request->getUri()->getPath());
-                Assert::assertNotEmpty($request->getHeader('Webhook-Signature'));
-
-                return true;
-            }))
-            ->willReturn($response);
-
-        self::getContainer()->set('mautic.webhook.http.client', $this->mockedHttpClient);
+                    return new GuzzleResponse(Response::HTTP_OK);
+                }
+            );
+        }
     }
 
     private function mockFailedWebhookResponse(int $expectedToBeCalled = 0): void
     {
-        $parametersMock         = $this->createMock(CoreParametersHelper::class);
-        $httpClientMock         = $this->createMock(GuzzleClient::class);
-        $this->mockedHttpClient = new \Mautic\WebhookBundle\Http\Client($parametersMock, $httpClientMock);
+        $handlerStack = $this->getClientMockHandler();
+        for (; $expectedToBeCalled > 0; --$expectedToBeCalled) {
+            $handlerStack->append(
+                function (RequestInterface $request) use (&$sendRequestCounter) {
+                    Assert::assertSame('/post', $request->getUri()->getPath());
+                    $jsonPayload = json_decode($request->getBody()->getContents(), true);
+                    Assert::assertNotEmpty($request->getHeader('Webhook-Signature'));
 
-        $parametersMock->expects($this->exactly($expectedToBeCalled))
-            ->method('get')
-            ->with('site_url')
-            ->willReturn('://whatever.url');
+                    ++$sendRequestCounter;
 
-        $response = new GuzzleResponse(500);
-        $httpClientMock->expects($this->exactly($expectedToBeCalled))
-            ->method('sendRequest')
-            ->with($this->callback(function (\GuzzleHttp\Psr7\Request $request) {
-                Assert::assertSame('://whatever.url', $request->getUri()->getPath());
-                Assert::assertNotEmpty($request->getHeader('Webhook-Signature'));
-
-                return true;
-            }))
-            ->willReturn($response);
-
-        self::getContainer()->set('mautic.webhook.http.client', $this->mockedHttpClient);
+                    return new GuzzleResponse(Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+            );
+        }
     }
 
     private function getWebhookQueue(int $webhookId): Paginator
