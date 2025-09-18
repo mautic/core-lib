@@ -300,7 +300,7 @@ class WebhookModel extends FormModel
         }
 
         $start            = microtime(true);
-        $logged = false;
+        $logged           = false;
         $webhookQueueRepo = $this->getQueueRepository();
 
         try {
@@ -346,7 +346,7 @@ class WebhookModel extends FormModel
 
             if (!$logged) {
                 // log that the request failed to display it to the user
-                $this->addLog($webhook, 'N/A', (microtime(true) - $start), $message);
+                $this->addLog($webhook, 'N/A', microtime(true) - $start, $message);
             }
 
             return false;
@@ -674,13 +674,13 @@ class WebhookModel extends FormModel
      */
     private function setConfigProps(CoreParametersHelper $coreParametersHelper): void
     {
-        $this->webhookLimit     = (int) $coreParametersHelper->get('webhook_limit', 10);
-        $this->webhookTimeLimit = (int) $coreParametersHelper->get('webhook_time_limit', 600);
-        $this->disableLimit     = (int) $coreParametersHelper->get('webhook_disable_limit', 100);
-        $this->webhookTimeout   = (int) $coreParametersHelper->get('webhook_timeout', 15);
-        $this->logMax           = (int) $coreParametersHelper->get('webhook_log_max', self::WEBHOOK_LOG_MAX);
-        $this->queueMode        = $coreParametersHelper->get('queue_mode');
-        $this->eventsOrderByDir = $coreParametersHelper->get('events_orderby_dir', Order::Ascending->value);
+        $this->webhookLimit         = (int) $coreParametersHelper->get('webhook_limit', 10);
+        $this->webhookTimeLimit     = (int) $coreParametersHelper->get('webhook_time_limit', 600);
+        $this->disableLimit         = (int) $coreParametersHelper->get('webhook_disable_limit', 100);
+        $this->webhookTimeout       = (int) $coreParametersHelper->get('webhook_timeout', 15);
+        $this->logMax               = (int) $coreParametersHelper->get('webhook_log_max', self::WEBHOOK_LOG_MAX);
+        $this->queueMode            = $coreParametersHelper->get('queue_mode');
+        $this->eventsOrderByDir     = $coreParametersHelper->get('events_orderby_dir', Order::Ascending->value);
         $this->disableAutoUnpublish = (bool) $coreParametersHelper->get('disable_auto_unpublish');
     }
 }

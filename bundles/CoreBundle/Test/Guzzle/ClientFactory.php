@@ -31,7 +31,7 @@ class ClientFactory
                 $this->client = $client;
             }
 
-            public function create(ClientInterface $client = null): ClientAdapter
+            public function create(?ClientInterface $client = null): ClientAdapter
             {
                 return new ClientAdapter($this->client);
             }

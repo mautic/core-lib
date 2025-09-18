@@ -2,18 +2,8 @@
 
 declare(strict_types=1);
 
-/*
- * @copyright   2021 Mautic Contributors. All rights reserved
- * @author      Mautic
- *
- * @link        https://mautic.org
- *
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 namespace Mautic\WebhookBundle\Tests\Model;
 
-use DateTime;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
@@ -39,11 +29,11 @@ final class WebhookModelProcessFailureTest extends MauticMysqlTestCase
     protected function setUp(): void
     {
         $this->configParams['queue_mode']             = WebhookModel::IMMEDIATE_PROCESS;
-        $this->configParams['disable_auto_unpublish'] = 'testDisableAutoUnpublishIsEnabled' === $this->getName();
+        $this->configParams['disable_auto_unpublish'] = 'testDisableAutoUnpublishIsEnabled' === $this->name();
         parent::setUp();
 
-        $this->webhookModel      = $this->container->get('mautic.webhook.model.webhook');
-        $this->clientMockHandler = $this->container->get('mautic.http.client.mock_handler');
+        $this->webhookModel      = $this->getContainer()->get('mautic.webhook.model.webhook');
+        $this->clientMockHandler = $this->getContainer()->get('mautic.http.client.mock_handler');
     }
 
     /**
@@ -64,7 +54,7 @@ final class WebhookModelProcessFailureTest extends MauticMysqlTestCase
         $this->assertNumberOfLogs($expectedNumberOfLogs);
     }
 
-    public function dataFailureWithPreviousLogs(): iterable
+    public static function dataFailureWithPreviousLogs(): iterable
     {
         yield 'no previous logs' => [[], true, 1];
         yield 'at least one successful previous log' => [[200, 403], true, 3];
@@ -88,7 +78,7 @@ final class WebhookModelProcessFailureTest extends MauticMysqlTestCase
     public function testWebhookIsNotUnpublishedIfModifiedRecently(): void
     {
         $webhook = $this->createWebhook();
-        $webhook->setDateModified(new DateTime('-1 day'));
+        $webhook->setDateModified(new \DateTime('-1 day'));
         $this->createWebhookLog($webhook, 401);
 
         $this->em->flush();
@@ -119,7 +109,7 @@ final class WebhookModelProcessFailureTest extends MauticMysqlTestCase
         $webhook->setName('Test');
         $webhook->setWebhookUrl('http://domain.tld');
         $webhook->setSecret('secret');
-        $webhook->setDateModified(new DateTime('-1 week'));
+        $webhook->setDateModified(new \DateTime('-1 week'));
         $this->em->persist($webhook);
 
         return $webhook;
