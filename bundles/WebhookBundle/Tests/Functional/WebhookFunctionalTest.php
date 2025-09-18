@@ -27,8 +27,6 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
 
     protected $useCleanupRollback = false;
 
-    private mixed $mockedHttpClient;
-
     /**
      * @var WebhookQueueRepository
      */
