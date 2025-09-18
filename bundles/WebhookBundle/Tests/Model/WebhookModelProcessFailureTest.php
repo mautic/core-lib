@@ -107,7 +107,7 @@ final class WebhookModelProcessFailureTest extends MauticMysqlTestCase
         $webhook = new Webhook();
         $webhook->setCreatedBy($user);
         $webhook->setName('Test');
-        $webhook->setWebhookUrl('http://domain.tld');
+        $webhook->setWebhookUrl('https://domain.tld');
         $webhook->setSecret('secret');
         $webhook->setDateModified(new \DateTime('-1 week'));
         $this->em->persist($webhook);
