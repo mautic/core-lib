@@ -14,7 +14,7 @@ final class Version20250904111834 extends PreUpAssertionMigration
     /**
      * @var string
      */
-    protected static $tableName = Event::TABLE_NAME;
+    protected const TABLE_NAME = Event::TABLE_NAME;
 
     protected function preUpAssertions(): void
     {
