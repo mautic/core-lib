@@ -6,10 +6,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\IpAddress;
+use Mautic\CoreBundle\Entity\OptimisticLockInterface;
+use Mautic\CoreBundle\Entity\OptimisticLockTrait;
 use Mautic\LeadBundle\Entity\Lead as LeadEntity;
 
-class LeadEventLog implements ChannelInterface
+class LeadEventLog implements ChannelInterface, OptimisticLockInterface
 {
+    use OptimisticLockTrait;
+
     public const TABLE_NAME = 'campaign_lead_event_log';
 
     /**
@@ -168,6 +172,8 @@ class LeadEventLog implements ChannelInterface
             ->fetchExtraLazy()
             ->cascadeAll()
             ->build();
+
+        self::addVersionField($builder);
     }
 
     /**
