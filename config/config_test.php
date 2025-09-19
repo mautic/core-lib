@@ -157,4 +157,3 @@ $container->register('test.service_container', Mautic\CoreBundle\Test\Container\
     ->setArgument('$kernel', new Reference('kernel'))
     ->setArgument('$privateServicesLocatorId', 'test.private_services_locator')
     ->setPublic(true);
-
