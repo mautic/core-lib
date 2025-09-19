@@ -5,11 +5,13 @@ namespace Mautic\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
-/**
- * @method int|null getId()
- */
 interface VariantEntityInterface
 {
+    /**
+     * @return int|null
+     */
+    public function getId();
+
     public function getVariantParent(): ?VariantEntityInterface;
 
     /**
