@@ -236,13 +236,11 @@ Mautic.selectEmailType = function(emailType) {
         mQuery('#segmentTranslationParent').removeClass('hide');
         mQuery('#templateTranslationParent').addClass('hide');
         mQuery('.page-header h3').text(mauticLang.newListEmail);
-        mQuery('#scheduleOptions').addClass('hide');
     } else {
         mQuery('#segmentTranslationParent').addClass('hide');
         mQuery('#templateTranslationParent').removeClass('hide');
         mQuery('#leadList').addClass('hide');
         mQuery('.page-header h3').text(mauticLang.newTemplateEmail);
-        mQuery('#scheduleOptions').removeClass('hide');
     }
 
     mQuery('#emailform_emailType').val(emailType);
