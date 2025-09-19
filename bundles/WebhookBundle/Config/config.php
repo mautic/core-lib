@@ -69,6 +69,5 @@ return [
         'first_webhook_failure_notification_time'  => 3600, // 1 hour
         'webhook_failure_notification_interval'    => 86400, // 1 day
         'webhook_allowed_private_addresses'        => [],
-        'disable_auto_unpublish'                   => false, // If enabled, webhooks will not be automatically unpublished on errors
     ],
 ];
