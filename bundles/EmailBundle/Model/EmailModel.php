@@ -663,7 +663,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 $this->translator->trans('mautic.email.sent'),
                 $this->translator->trans('mautic.email.read'),
                 $this->translator->trans('mautic.email.failed'),
-                $this->translator->trans('mautic.email.clicked'),
+                $this->translator->trans('mautic.email.unique_clicked'),
                 $this->translator->trans('mautic.email.unsubscribed'),
                 $this->translator->trans('mautic.email.bounced'),
             ]
@@ -878,7 +878,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         );
 
         $chart->setDataset(
-            $this->translator->trans('mautic.email.clicked'),
+            $this->translator->trans('mautic.email.unique_clicked'),
             $this->statsCollectionHelper->fetchClickedStats($dateFrom, $dateTo, $fetchOptions)
         );
 
