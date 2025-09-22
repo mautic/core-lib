@@ -6,6 +6,7 @@ namespace Mautic\UserBundle\Tests\Traits;
 
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 trait CreateEntityTrait
 {
@@ -27,8 +28,8 @@ trait CreateEntityTrait
         $user->setLastName('Doe');
         $user->setUsername($userName);
         $user->setEmail($email);
-        $encoder = $this->getContainer()->get('security.encoder_factory')->getEncoder($user);
-        $user->setPassword($encoder->encodePassword($password, null));
+        $encoder = $this->getContainer()->get(UserPasswordHasherInterface::class);
+        $user->setPassword($encoder->hashPassword($user, $password));
         $user->setRole($role);
         $this->em->persist($user);
 

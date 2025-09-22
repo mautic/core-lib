@@ -6,6 +6,7 @@ use Mautic\CoreBundle\Controller\FormController;
 use Mautic\CoreBundle\Helper\LanguageHelper;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Model\UserModel;
+use Mautic\UserBundle\Security\SAML\Helper as SAMLHelper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -16,7 +17,8 @@ class ProfileController extends FormController
     /**
      * Generate's account profile.
      */
-    public function indexAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, TokenStorageInterface $tokenStorage): \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse
+    public function indexAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, TokenStorageInterface $tokenStorage,
+        SAMLHelper $samlHelper): \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         // get current user
         $me = $tokenStorage->getToken()->getUser();
@@ -219,7 +221,7 @@ class ProfileController extends FormController
         }
         $request->getSession()->set('formProcessed', 0);
 
-        $isSamlUser    = $this->get('mautic.security.saml.helper')->isSamlSession();
+        $isSamlUser    = $samlHelper->isSamlSession();
         // check if this user is logged in via SAML
         if ($isSamlUser) {
             $form->remove('plainPassword');

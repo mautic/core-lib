@@ -149,10 +149,10 @@ return [
                 ],
             ],
             'mautic.security.saml.helper' => [
-                'class'     => \Mautic\UserBundle\Security\SAML\Helper::class,
+                'class'     => Mautic\UserBundle\Security\SAML\Helper::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
-                    'session',
+                    'request_stack',
                 ],
             ],
             'mautic.security.logout_handler' => [

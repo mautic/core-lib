@@ -5,23 +5,23 @@ declare(strict_types=1);
 namespace Mautic\UserBundle\Security\SAML;
 
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class Helper
 {
-    private SessionInterface $session;
+    private RequestStack $request;
 
     private CoreParametersHelper $coreParametersHelper;
 
-    public function __construct(CoreParametersHelper $coreParametersHelper, SessionInterface $session)
+    public function __construct(CoreParametersHelper $coreParametersHelper, RequestStack $request)
     {
         $this->coreParametersHelper = $coreParametersHelper;
-        $this->session              = $session;
+        $this->request              = $request;
     }
 
     public function isSamlSession(): bool
     {
-        return $this->isSamlEnabled() && $this->session->has('samlsso');
+        return $this->isSamlEnabled() && $this->request->getSession()->has('samlsso');
     }
 
     public function isSamlEnabled(): bool

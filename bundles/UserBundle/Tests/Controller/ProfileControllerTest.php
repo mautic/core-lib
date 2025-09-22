@@ -11,11 +11,12 @@ use Symfony\Component\HttpFoundation\Request;
 class ProfileControllerTest extends MauticMysqlTestCase
 {
     use CreateEntityTrait;
+    use LoginUserWithSamlTrait;
 
     protected function setUp(): void
     {
-        if (strpos($this->getName(false), 'WithSaml') > 0) {
-            $this->configParams['saml_idp_metadata'] = 'any_string';
+        if (strpos($this->name(), 'WithSaml') > 0) {
+            $this->configParams['saml_idp_metadata'] = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48bWQ6RW50aXR5RGVzY3JpcHRvciB4bWxuczptZD0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOm1ldGFkYXRhIiBlbnRpdHlJRD0iaHR0cHM6Ly9tYXV0aWMtZGV2LWVkLm15LnNhbGVzZm9yY2UuY29tIiB2YWxpZFVudGlsPSIyMDI5LTEyLTI4VDE0OjUyOjA2LjIyMFoiIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIj4KICAgPG1kOklEUFNTT0Rlc2NyaXB0b3IgcHJvdG9jb2xTdXBwb3J0RW51bWVyYXRpb249InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpwcm90b2NvbCI';
         }
         parent::setUp();
     }
@@ -25,11 +26,8 @@ class ProfileControllerTest extends MauticMysqlTestCase
         $user = $this->createUser($this->createRole(), 'test@example.com');
         $this->em->flush();
         $this->em->clear();
-        $session  = self::$container->get('session');
-        $session->set('samlsso', true);
-        $session->save();
 
-        $this->loginUser($user->getUsername());
+        $this->loginUserWithSaml($user);
 
         $this->client->request(Request::METHOD_GET, 's/account');
 
@@ -44,8 +42,7 @@ class ProfileControllerTest extends MauticMysqlTestCase
         $user = $this->createUser($this->createRole(), 'test@example.com');
         $this->em->flush();
         $this->em->clear();
-
-        $this->loginUser($user->getUsername());
+        $this->loginUser($user);
 
         $this->client->request(Request::METHOD_GET, 's/account');
 

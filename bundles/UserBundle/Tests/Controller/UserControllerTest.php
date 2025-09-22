@@ -11,10 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 class UserControllerTest extends MauticMysqlTestCase
 {
     use CreateEntityTrait;
+    use LoginUserWithSamlTrait;
 
     protected function setUp(): void
     {
-        if (strpos($this->getName(false), 'WithSaml') > 0) {
+        if (strpos($this->name(), 'WithSaml') > 0) {
             $this->configParams['saml_idp_metadata'] = 'any_string';
         }
         parent::setUp();
@@ -27,11 +28,7 @@ class UserControllerTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $session  = self::$container->get('session');
-        $session->set('samlsso', true);
-        $session->save();
-
-        $this->loginUser($user2->getUsername());
+        $this->loginUserWithSaml($user2);
 
         $this->client->request(Request::METHOD_GET, 's/users/edit/'.$user1->getId());
 

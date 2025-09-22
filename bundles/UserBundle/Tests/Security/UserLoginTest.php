@@ -15,7 +15,7 @@ class UserLoginTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        if (strpos($this->getName(false), 'WithSaml') > 0) {
+        if (strpos($this->name(), 'WithSaml') > 0) {
             $this->configParams['saml_idp_metadata'] = 'any_string';
         }
         parent::setUp();
@@ -26,12 +26,13 @@ class UserLoginTest extends MauticMysqlTestCase
      */
     public function testSuccessfulLoginWithAcquiaUserWithSaml(): void
     {
+        $this->logoutUser();
         $password = Uuid::uuid4()->toString();
-        $user     = $this->createUser($this->createRole(), 'test@acquia.com', $password);
+        $this->createUser($this->createRole(), 'test@acquia.com', $password);
         $this->em->flush();
         $this->em->clear();
 
-        $crawler = $this->client->request(Request::METHOD_GET, 's/login');
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/login');
 
         // Get the form
         $form = $crawler->filter('form')->form();

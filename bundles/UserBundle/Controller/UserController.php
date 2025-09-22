@@ -14,6 +14,7 @@ use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\UserBundle\Form\Type\ContactType;
 use Mautic\UserBundle\Model\RoleModel;
 use Mautic\UserBundle\Model\UserModel;
+use Mautic\UserBundle\Security\SAML\Helper as SAMLHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -108,7 +109,7 @@ class UserController extends FormController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
      */
-    public function newAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher)
+    public function newAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper)
     {
         if (!$this->security->isGranted('user:users:create')) {
             return $this->accessDenied();
@@ -191,7 +192,7 @@ class UserController extends FormController
                     ],
                 ]);
             } elseif ($valid && !$cancelled) {
-                return $this->editAction($request, $languageHelper, $hasher, $user->getId(), true);
+                return $this->editAction($request, $languageHelper, $hasher, $samlHelper, $user->getId(), true);
             }
         }
 
@@ -214,7 +215,7 @@ class UserController extends FormController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
      */
-    public function editAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, $objectId, $ignorePost = false)
+    public function editAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper, $objectId, $ignorePost = false)
     {
         if (!$this->security->isGranted('user:users:edit')) {
             return $this->accessDenied();
@@ -271,7 +272,7 @@ class UserController extends FormController
         $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
         $form   = $model->createForm($user, $this->formFactory, $action);
 
-        $isSamlUser    = $this->get('mautic.security.saml.helper')->isSamlSession();
+        $isSamlUser    = $samlHelper->isSamlSession();
         // check if this user is logged in via SAML
         if ($isSamlUser) {
             $form->remove('plainPassword');
@@ -349,11 +350,11 @@ class UserController extends FormController
 
         return $this->delegateView([
             'viewParameters'  => [
-                'form'          => $form->createView(),
-                'logs'          => $userActivity,
-                'users'         => $users,
-                'roles'         => $roles,
-                'editAction'    => true,
+                'form'                   => $form->createView(),
+                'logs'                   => $userActivity,
+                'users'                  => $users,
+                'roles'                  => $roles,
+                'editAction'             => true,
                 'isSamlUser'             => $isSamlUser,
             ],
             'contentTemplate' => '@MauticUser/User/form.html.twig',
