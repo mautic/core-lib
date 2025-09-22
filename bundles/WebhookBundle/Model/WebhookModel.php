@@ -742,6 +742,5 @@ class WebhookModel extends FormModel
         $this->eventsOrderByDir        = $coreParametersHelper->get('events_orderby_dir', Order::Ascending);
         $this->disableAutoUnpublish    = (bool) $coreParametersHelper->get('disable_auto_unpublish');
         $this->webhookRetryDelay       = (int) $coreParametersHelper->get('webhook_retry_delay', 3600);
-        $this->disableAutoUnpublish    = (bool) $coreParametersHelper->get('disable_auto_unpublish');
     }
 }
