@@ -82,7 +82,7 @@ final class ScheduleSendType extends AbstractType
                 FormButtonsType::class,
                 [
                     'save_text'  => 'mautic.email.send.schedule',
-                    'save_icon'  => 'ri-calendar-schedule-fill',
+                    'save_icon'  => null,
                     'apply_text' => false,
                 ]
             );
@@ -92,12 +92,13 @@ final class ScheduleSendType extends AbstractType
                 FormButtonsType::class,
                 [
                     'save_text'   => 'mautic.email.send.schedule.update',
-                    'save_icon'   => 'ri-calendar-schedule-line',
+                    'save_icon'   => null,
                     'save_class'  => 'btn btn-primary',
                     'apply_text'  => 'mautic.email.send.schedule.cancel',
-                    'apply_icon'  => 'ri-close-line',
+                    'apply_icon'  => null,
                     'apply_class' => 'btn btn-secondary btn-cancel',
                     'cancel_text' => 'mautic.core.close',
+                    'cancel_icon' => null,
                 ]
             );
         }
