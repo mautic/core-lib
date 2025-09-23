@@ -15,7 +15,7 @@ class EntityDescriptorProviderFactory
         string $ownEntityId,
         RouterInterface $router,
         ?string $acsRouteName,
-        CredentialStoreInterface $ownCredentialStore
+        CredentialStoreInterface $ownCredentialStore,
     ): SimpleEntityDescriptorBuilder {
         /** @var X509Credential[] $arrOwnCredentials */
         $arrOwnCredentials = $ownCredentialStore->getByEntityId($ownEntityId);

@@ -192,8 +192,8 @@ return [
             ],
 
             'mautic.security.saml.entity_descriptor_provider' => [
-                'class'     => \LightSaml\Builder\EntityDescriptor\SimpleEntityDescriptorBuilder::class,
-                'factory'   => [\Mautic\UserBundle\Security\SAML\EntityDescriptorProviderFactory::class, 'build'],
+                'class'     => LightSaml\Builder\EntityDescriptor\SimpleEntityDescriptorBuilder::class,
+                'factory'   => [Mautic\UserBundle\Security\SAML\EntityDescriptorProviderFactory::class, 'build'],
                 'arguments' => [
                     '%lightsaml.own.entity_id%',
                     'router',
