@@ -22,7 +22,7 @@ trait CreateEntityTrait
 
     public function createUser(Role $role, string $email = 'test@acquia.com', string $password = 'mautic'): User
     {
-        $userName = explode('@', $email)[0].rand();
+        $userName = explode('@', $email)[0].random_int(1000, 9999);
         $user     = new User();
         $user->setFirstName('John');
         $user->setLastName('Doe');
