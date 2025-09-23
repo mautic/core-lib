@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\UserBundle\Controller;
 
 use Doctrine\Persistence\ManagerRegistry;
@@ -12,7 +14,7 @@ use Mautic\CoreBundle\Service\FlashBag;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\PluginBundle\Helper\IntegrationHelper;
 use Mautic\UserBundle\Exception\WeakPasswordException;
-use Mautic\UserBundle\Security\SAML\Helper as SAMLHepler;
+use Mautic\UserBundle\Security\SAML\Helper as SAMLHelper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -128,14 +130,13 @@ class SecurityController extends CommonController implements EventSubscriberInte
         return new RedirectResponse($this->generateUrl('login'));
     }
 
-    public function samlLoginRetryAction(Request $request, SAMLHepler $samlHelper, SessionInterface $session): Response
+    public function samlLoginRetryAction(Request $request, SAMLHelper $samlHelper, SessionInterface $session): Response
     {
         $isSamlUser = $samlHelper->isSamlEnabled();
         if (!$isSamlUser) {
             return new RedirectResponse($this->generateUrl('login'));
         }
 
-        // invalidating the session
         $session->invalidate();
 
         $this->addFlashMessage('mautic.user.security.saml.clearsession', [], FlashBag::LEVEL_ERROR);

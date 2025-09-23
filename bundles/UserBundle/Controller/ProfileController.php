@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\UserBundle\Controller;
 
 use Mautic\CoreBundle\Controller\FormController;
@@ -224,7 +226,6 @@ class ProfileController extends FormController
         $request->getSession()->set('formProcessed', 0);
 
         $isSamlUser    = $samlHelper->isSamlSession();
-        // check if this user is logged in via SAML
         if ($isSamlUser) {
             $form->remove('plainPassword');
         }
