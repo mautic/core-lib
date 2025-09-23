@@ -103,6 +103,7 @@
     "symfony/twig-bundle": "^7.3",
     "symfony/validator": "^7.3",
     "twilio/sdk": "^5.25",
+    "twig/string-extra": "^3.21",
     "wikimedia/less.php": "^5.4"
   },
   "conflict": {
