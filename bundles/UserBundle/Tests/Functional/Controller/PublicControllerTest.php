@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PublicControllerTest extends MauticMysqlTestCase
 {
+    private const PASSWORD_RESET_URI = '/passwordreset';
+
     protected function setUp(): void
     {
         if (strpos($this->name(), 'WithSaml') > 0) {
@@ -22,7 +24,7 @@ class PublicControllerTest extends MauticMysqlTestCase
      */
     public function testXssFilterOnPasswordReset(): void
     {
-        $this->client->request(Request::METHOD_GET, '/passwordreset?bundle=%27-alert("XSS%20TEST%20Mautic")-%27');
+        $this->client->request(Request::METHOD_GET, self::PASSWORD_RESET_URI.'?bundle=%27-alert("XSS%20TEST%20Mautic")-%27');
         $clientResponse = $this->client->getResponse();
         $this->assertSame(200, $clientResponse->getStatusCode(), 'Return code must be 200.');
         $responseData = $clientResponse->getContent();
@@ -34,7 +36,7 @@ class PublicControllerTest extends MauticMysqlTestCase
 
     public function testPasswordResetPage(): void
     {
-        $this->client->request(Request::METHOD_GET, '/passwordreset');
+        $this->client->request(Request::METHOD_GET, self::PASSWORD_RESET_URI);
         $clientResponse = $this->client->getResponse();
         $this->assertSame(200, $clientResponse->getStatusCode(), 'Return code must be 200.');
         $responseData = $clientResponse->getContent();
@@ -43,7 +45,7 @@ class PublicControllerTest extends MauticMysqlTestCase
 
     public function testPasswordResetAction(): void
     {
-        $crawler    = $this->client->request(Request::METHOD_GET, '/passwordreset');
+        $crawler    = $this->client->request(Request::METHOD_GET, self::PASSWORD_RESET_URI);
         $saveButton = $crawler->selectButton('Reset password');
         $form       = $saveButton->form();
         $form['passwordreset[identifier]']->setValue('test@example.com');
@@ -58,7 +60,7 @@ class PublicControllerTest extends MauticMysqlTestCase
 
     public function testPasswordResetActionWithoutUserWithSaml(): void
     {
-        $crawler = $this->client->request(Request::METHOD_GET, '/passwordreset');
+        $crawler = $this->client->request(Request::METHOD_GET, self::PASSWORD_RESET_URI);
 
         // Get the form
         $form = $crawler->filter('form')->form();

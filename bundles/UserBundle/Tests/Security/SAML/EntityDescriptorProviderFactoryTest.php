@@ -18,15 +18,17 @@ class EntityDescriptorProviderFactoryTest extends TestCase
     {
         $router          = $this->createMock(RouterInterface::class);
         $credentialStore = $this->createMock(CredentialStoreInterface::class);
+        $entityId        = 'https://example.com';
+        $samlRoute       = '/saml/login';
 
         $router->expects($this->once())
             ->method('generate')
-            ->with('/saml/login')
-            ->willReturn('/saml/login');
+            ->with($samlRoute)
+            ->willReturn($samlRoute);
 
         $credentialStore->expects($this->once())
             ->method('getByEntityId')
-            ->with('https://example.com')
+            ->with($entityId)
             ->willReturn([$credential = $this->createMock(X509Credential::class)]);
 
         $credential->expects($this->once())
@@ -34,9 +36,9 @@ class EntityDescriptorProviderFactoryTest extends TestCase
             ->willReturn(new X509Certificate());
 
         $builder = EntityDescriptorProviderFactory::build(
-            'https://example.com',
+            $entityId,
             $router,
-            '/saml/login',
+            $samlRoute,
             $credentialStore
         );
 
@@ -49,7 +51,7 @@ class EntityDescriptorProviderFactoryTest extends TestCase
         );
 
         Assert::assertEquals(
-            'https://example.com',
+            $entityId,
             $entityDescriptor->getEntityID(),
             'The entity ID should be set to the passed entity ID'
         );
