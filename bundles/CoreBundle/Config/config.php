@@ -685,6 +685,10 @@ return [
                     'doctrine.fixtures.loader',
                 ],
             ],
+            'mautic.form.extension.normalize' => [
+                'class'     => Mautic\CoreBundle\Form\Extension\NormalizeFormExtension::class,
+                'tag'       => 'form.type_extension',
+            ],
             // Schema
             'mautic.schema.helper.column' => [
                 'class'     => Mautic\CoreBundle\Doctrine\Helper\ColumnSchemaHelper::class,

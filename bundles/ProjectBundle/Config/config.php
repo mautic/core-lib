@@ -12,6 +12,15 @@ return [
                 'controller' => 'Mautic\ProjectBundle\Controller\ProjectController::executeAction',
             ],
         ],
+        'validators' => [
+            'project.unique_name.validator' => [
+                'class'     => Mautic\ProjectBundle\Validator\Constraints\UniqueNameValidator::class,
+                'arguments' => [
+                    'mautic.project.repository.project',
+                ],
+                'tag'   => 'validator.constraint_validator',
+            ],
+        ],
     ],
     'menu' => [
         'main' => [

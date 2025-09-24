@@ -18,6 +18,13 @@ final class AjaxController extends CommonAjaxController
 {
     use AjaxLookupControllerTrait;
 
+    public function __construct(
+        private ProjectModel $projectModel,
+        private ProjectRepository $projectRepository,
+        private CorePermissions $corePermissions,
+    ) {
+    }
+
     public function getLookupChoiceListAction(Request $request, ProjectModel $projectModel): JsonResponse
     {
         $entityType  = $request->query->get('entityType');
@@ -59,8 +66,8 @@ final class AjaxController extends CommonAjaxController
             foreach ($newProjectNames as $projectName) {
                 $project = new Project();
                 $project->setName($projectName);
-                $projectModel->saveEntity($project);
-                $existingProjectIds[] = $project->getId();
+
+                $existingProjectIds[] = $this->createProjectIfNotExists(trim($projectName));
             }
         }
 
@@ -74,5 +81,18 @@ final class AjaxController extends CommonAjaxController
         }
 
         return $this->sendJsonResponse(['projects' => $projectOptions]);
+    }
+
+    private function createProjectIfNotExists(string $name): int
+    {
+        if ($project = $this->projectRepository->findOneBy(['name' => $name])) {
+            return $project->getId();
+        }
+
+        $project = new Project();
+        $project->setName($name);
+        $this->projectModel->saveEntity($project);
+
+        return $project->getId();
     }
 }
