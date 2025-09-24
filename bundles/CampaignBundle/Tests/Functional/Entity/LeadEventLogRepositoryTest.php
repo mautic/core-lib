@@ -73,8 +73,7 @@ class LeadEventLogRepositoryTest extends MauticMysqlTestCase
     private function createCampaign(): Campaign
     {
         $campaign = new Campaign();
-        $campaign->setName('Test campaign');
-        $campaign->setIsPublished(true);
+        $campaign->setName('Campaign');
         $this->em->persist($campaign);
 
         return $campaign;
@@ -83,10 +82,10 @@ class LeadEventLogRepositoryTest extends MauticMysqlTestCase
     private function createEvent(Campaign $campaign): Event
     {
         $event = new Event();
-        $event->setName('Test event');
+        $event->setName('Event');
         $event->setCampaign($campaign);
-        $event->setType('lead.changepoints');
-        $event->setEventType(Event::TYPE_ACTION);
+        $event->setType('page.devicehit');
+        $event->setEventType(Event::TYPE_DECISION);
         $this->em->persist($event);
 
         return $event;
