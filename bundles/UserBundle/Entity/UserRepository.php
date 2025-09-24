@@ -325,4 +325,16 @@ class UserRepository extends CommonRepository
     {
         return 'u';
     }
+
+    /**
+     * @return User[]
+     */
+    public function getAllAdminUsers(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->join('u.role', 'r')
+            ->where('r.isAdmin = 1')
+            ->getQuery()
+            ->getResult();
+    }
 }
