@@ -14,16 +14,16 @@ class EntityDescriptorProviderFactory
     public static function build(
         string $ownEntityId,
         RouterInterface $router,
-        ?string $acsRouteName,
+        ?string $routeName,
         CredentialStoreInterface $ownCredentialStore,
     ): SimpleEntityDescriptorBuilder {
         /** @var X509Credential[] $arrOwnCredentials */
         $arrOwnCredentials = $ownCredentialStore->getByEntityId($ownEntityId);
-        $route             = $acsRouteName ? $router->generate($acsRouteName, [], RouterInterface::ABSOLUTE_PATH) : '';
+        $route             = $routeName ? $router->generate($routeName, [], RouterInterface::ABSOLUTE_PATH) : '';
 
         return new SimpleEntityDescriptorBuilder(
             $ownEntityId,
-            empty($route) ? '' : sprintf('%s%s', $ownEntityId, $route),
+            $route ? sprintf('%s%s', $ownEntityId, $route) : '',
             '',
             $arrOwnCredentials[0]->getCertificate()
         );

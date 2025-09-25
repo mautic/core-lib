@@ -132,8 +132,7 @@ class SecurityController extends CommonController implements EventSubscriberInte
 
     public function samlLoginRetryAction(Request $request, SAMLHelper $samlHelper, SessionInterface $session): Response
     {
-        $isSamlUser = $samlHelper->isSamlEnabled();
-        if (!$isSamlUser) {
+        if (!$samlHelper->isSamlEnabled()) {
             return new RedirectResponse($this->generateUrl('login'));
         }
 
