@@ -14,16 +14,6 @@ use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 class UserLogoutFunctionalTest extends MauticMysqlTestCase
 {
-    protected function setUp(): void
-    {
-        $this->configParams += [
-            'saml_idp_metadata'          => 'any_string',
-            'saml_idp_own_private_key'   => 'any_string',
-            'saml_idp_own_certificate'   => 'any_string',
-            'saml_idp_single_logout_url' => 'any_string',
-        ];
-        parent::setUp();
-    }
     public function testLogout(): void
     {
         $role = new Role();
