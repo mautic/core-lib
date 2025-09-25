@@ -1255,6 +1255,7 @@ class EmailController extends FormController
 
             // setting parent here, as the parent will be removed by the code below.
             $parent = $entity->getVariantParent() ?? $entity;
+            \assert($parent instanceof Email);
 
             $model->convertVariant($entity);
 
