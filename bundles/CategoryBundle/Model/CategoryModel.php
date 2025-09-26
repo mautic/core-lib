@@ -11,6 +11,7 @@ use Mautic\CategoryBundle\Event\CategoryTypeEntityEvent;
 use Mautic\CategoryBundle\Form\Type\CategoryType;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
+use Mautic\CoreBundle\Model\AjaxLookupModelInterface;
 use Mautic\CoreBundle\Model\FormModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
@@ -25,7 +26,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * @extends FormModel<Category>
  */
-class CategoryModel extends FormModel
+class CategoryModel extends FormModel implements AjaxLookupModelInterface
 {
     /**
      * @var array<string,mixed[]>
@@ -171,21 +172,36 @@ class CategoryModel extends FormModel
     /**
      * Get list of entities for autopopulate fields.
      *
-     * @param string $bundle
-     * @param string $filter
-     * @param int    $limit
-     *
-     * @return mixed[]
+     * @param mixed               $type
+     * @param mixed               $filter
+     * @param int                 $limit
+     * @param int                 $start
+     * @param array<mixed, mixed> $options
      */
-    public function getLookupResults($bundle, $filter = '', $limit = 10): array
+    public function getLookupResults($type, $filter = '', $limit = 10, $start = 0, array $options = []): array
     {
-        $key = $bundle.$filter.$limit;
+        $filterString = is_array($filter) ? implode('.', $filter) : $filter;
+        $key          = $type.$filterString.$limit;
 
-        if (!empty($this->categoriesByBundleCache[$key])) {
+        if (!isset($options['for_lookup']) && !empty($this->categoriesByBundleCache[$key])) {
             return $this->categoriesByBundleCache[$key];
         }
 
-        return $this->categoriesByBundleCache[$key] = $this->getRepository()->getCategoryList($bundle, $filter, $limit, 0);
+        $result = $this->getRepository()->getCategoryList($type, $filter, $limit, $start);
+
+        if (!isset($options['for_lookup'])) {
+            return $this->categoriesByBundleCache[$key] = $result;
+        }
+
+        $data = [];
+        foreach ($result as $entity) {
+            $data[] = [
+                'label' => $entity['title'],
+                'value' => $entity['id'],
+            ];
+        }
+
+        return $data;
     }
 
     /**
