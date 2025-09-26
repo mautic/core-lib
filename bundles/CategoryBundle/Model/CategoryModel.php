@@ -9,6 +9,7 @@ use Mautic\CategoryBundle\Entity\CategoryRepository;
 use Mautic\CategoryBundle\Event\CategoryEvent;
 use Mautic\CategoryBundle\Event\CategoryTypeEntityEvent;
 use Mautic\CategoryBundle\Form\Type\CategoryType;
+use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Model\AjaxLookupModelInterface;
@@ -47,7 +48,10 @@ class CategoryModel extends FormModel implements AjaxLookupModelInterface
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
 
-    public function getRepository(): CategoryRepository
+    /**
+     * @return CommonRepository
+     */
+    public function getRepository()
     {
         $repository = $this->em->getRepository(Category::class);
         \assert($repository instanceof CategoryRepository);
@@ -177,6 +181,8 @@ class CategoryModel extends FormModel implements AjaxLookupModelInterface
      * @param int                 $limit
      * @param int                 $start
      * @param array<mixed, mixed> $options
+     *
+     * @return array<mixed>
      */
     public function getLookupResults($type, $filter = '', $limit = 10, $start = 0, array $options = []): array
     {

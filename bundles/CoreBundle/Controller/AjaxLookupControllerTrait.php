@@ -19,6 +19,7 @@ trait AjaxLookupControllerTrait
         $search    = $request->query->get(str_replace('.', '_', $modelName));
         $limit     = (int) $request->query->get('limit', '0');
         $start     = (int) $request->query->get('start', '0');
+        $options   = $request->query->all();
 
         if (!$modelName) {
             throw new BadRequestException('The searchKey parameter is required.');
@@ -34,7 +35,7 @@ trait AjaxLookupControllerTrait
             throw new BadRequestException("The model {$modelName} must implement the AjaxLookupModelInterface.");
         }
 
-        $results = $model->getLookupResults($modelName, $search, $limit, $start);
+        $results = $model->getLookupResults($modelName, $search, $limit, $start, $options);
 
         foreach ($results as $group => $result) {
             $option = [];

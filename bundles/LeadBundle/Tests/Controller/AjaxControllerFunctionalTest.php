@@ -763,13 +763,13 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
                 'action'            => 'lead:getLookupChoiceList',
                 'for_lookup'        => 1,
                 'searchKey'         => 'category.category',
-                'category.category' => 'GC11',
+                'category_category' => 'GC11',
             ]
         );
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        Assert::assertSame($category1->getTitle(), $response[0]['items']['title']);
+        Assert::assertSame($category1->getTitle(), $response[0]['text']);
 
         // Search global category with array of ids
         $this->client->request(
@@ -783,7 +783,6 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
         $clientResponse = $this->client->getResponse();
-        dd($clientResponse);
         $response       = json_decode($clientResponse->getContent(), true);
 
         Assert::assertCount(2, $response);

@@ -361,7 +361,7 @@ return [
                 ],
             ],
             'mautic.segment.filter.typeahead.subscriber' => [
-                'class'     => \Mautic\LeadBundle\EventListener\SegmentFilterTypeaheadSubscriber::class,
+                'class'     => Mautic\LeadBundle\EventListener\SegmentFilterTypeaheadSubscriber::class,
                 'arguments' => [
                     'mautic.model.factory',
                 ],

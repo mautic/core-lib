@@ -4,7 +4,6 @@ namespace Mautic\LeadBundle\EventListener;
 
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\LeadBundle\Event\ListTypeaheadEvent;
-use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\LeadModel;
@@ -12,11 +11,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
 {
-    private ModelFactory $modelFactory;
-
-    public function __construct(ModelFactory $modelFactory)
+    public function __construct(private ModelFactory $modelFactory)
     {
-        $this->modelFactory = $modelFactory;
     }
 
     /**

@@ -6,19 +6,13 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ListTypeaheadEvent extends Event
 {
-    private string $fieldAlias;
-
-    private string $filter;
-
     /**
      * @var mixed[]
      */
     private array $dataArray = [];
 
-    public function __construct(string $fieldAlias, string $filter)
+    public function __construct(private string $fieldAlias, private string $filter)
     {
-        $this->fieldAlias = $fieldAlias;
-        $this->filter     = $filter;
     }
 
     public function getFieldAlias(): string
