@@ -267,7 +267,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
                         $newValue = implode('|', $newValue);
                     }
 
-                    if ($curValue !== $newValue && (strlen($newValue) > 0 || $overwriteWithBlank)) {
+                    if ($curValue !== $newValue && (strlen((string) $newValue) > 0 || $overwriteWithBlank)) {
                         $field['value'] = $newValue;
                         $company->addUpdatedField($alias, $newValue, $curValue);
                     }
@@ -629,7 +629,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     /**
      * @throws MethodNotAllowedHttpException
      */
-    protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
     {
         if (!$entity instanceof Company) {
             throw new MethodNotAllowedHttpException(['Email']);
@@ -888,7 +888,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
             }
 
             if (isset($fieldData[$entityField['alias']])) {
-                $fieldData[$entityField['alias']] = InputHelper::_($fieldData[$entityField['alias']], 'string');
+                $fieldData = $this->getCleanedFieldData($entityField, $fieldData);
 
                 if ('NULL' === $fieldData[$entityField['alias']]) {
                     $fieldData[$entityField['alias']] = null;
@@ -1003,5 +1003,20 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
         $uniqueData = $this->companyDeduper->getUniqueData($updateData);
 
         return (bool) array_diff_assoc($updateData, $uniqueData);
+    }
+
+    /**
+     * @param array<mixed> $fieldData
+     *
+     * @return array<mixed>
+     */
+    private function getCleanedFieldData(mixed $entityField, array $fieldData): array
+    {
+        $fieldData[$entityField['alias']] = InputHelper::_(
+            $fieldData[$entityField['alias']],
+            'html' === $entityField['type'] ? 'html' : 'string'
+        );
+
+        return $fieldData;
     }
 }
