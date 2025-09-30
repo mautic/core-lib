@@ -45,10 +45,9 @@ class MatchFilterForLeadTraitTest extends TestCase
     }
 
     /**
-     * @dataProvider regionFilterDataProvider
-     *
      * @param string|array<int, string> $filter
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('regionFilterDataProvider')]
     public function testMatchFilterForLeadWithRegionFilter(string|array $filter, string $operator, bool $expected): void
     {
         $this->assertSame(
@@ -75,7 +74,7 @@ class MatchFilterForLeadTraitTest extends TestCase
     /**
      * @return iterable<string, array{filter: string|string[], operator: string, expected: bool}>
      */
-    public function regionFilterDataProvider(): iterable
+    public static function regionFilterDataProvider(): iterable
     {
         yield 'Region equals by state name is the same' => [
             'filter'   => 'California',

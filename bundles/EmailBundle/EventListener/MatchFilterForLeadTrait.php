@@ -3,7 +3,6 @@
 namespace Mautic\EmailBundle\EventListener;
 
 use Mautic\LeadBundle\Entity\LeadListRepository;
-use Mautic\LeadBundle\Exception\OperatorsNotFoundException;
 use Mautic\LeadBundle\Helper\FormFieldHelper;
 use Mautic\LeadBundle\Segment\OperatorOptions;
 
