@@ -171,13 +171,13 @@ class CategoryModel extends FormModel implements AjaxLookupModelInterface
     }
 
     /**
-     * Get list of entities for autopopulate fields.
+     * {@inheritDoc}
      *
-     * @param mixed               $type
-     * @param mixed               $filter
-     * @param int                 $limit
-     * @param int                 $start
-     * @param array<mixed, mixed> $options
+     * @param string               $type
+     * @param string               $filter
+     * @param int                  $limit
+     * @param int                  $start
+     * @param array<string, mixed> $options
      *
      * @return array<mixed>
      */
