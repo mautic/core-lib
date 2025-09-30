@@ -9,7 +9,6 @@ use Mautic\CategoryBundle\Entity\CategoryRepository;
 use Mautic\CategoryBundle\Event\CategoryEvent;
 use Mautic\CategoryBundle\Event\CategoryTypeEntityEvent;
 use Mautic\CategoryBundle\Form\Type\CategoryType;
-use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Model\AjaxLookupModelInterface;
@@ -48,10 +47,8 @@ class CategoryModel extends FormModel implements AjaxLookupModelInterface
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
 
-    /**
-     * @return CommonRepository
-     */
-    public function getRepository()
+    // @phpstan-ignore-next-line method.childReturnType
+    public function getRepository(): CategoryRepository
     {
         $repository = $this->em->getRepository(Category::class);
         \assert($repository instanceof CategoryRepository);
