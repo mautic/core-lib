@@ -311,7 +311,7 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($emailStat);
     }
 
-    private function createDnc(string $channel, Lead $contact, int $reason, int $channelId = null): DoNotContact
+    private function createDnc(string $channel, Lead $contact, int $reason, ?int $channelId = null): DoNotContact
     {
         $dnc = new DoNotContact();
         $dnc->setChannel($channel);

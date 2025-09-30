@@ -167,9 +167,7 @@ class MailboxTest extends \PHPUnit\Framework\TestCase
 
     public function testIsConnectedReturnsFalseOnValueError(): void
     {
-        $parametersHelper = $this->getMockBuilder(CoreParametersHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $parametersHelper = $this->createMock(CoreParametersHelper::class);
         $parametersHelper->method('get')->willReturn(
             [
                 'general' => [
@@ -181,9 +179,7 @@ class MailboxTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
-        $pathsHelper = $this->getMockBuilder(PathsHelper::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $pathsHelper = $this->createMock(PathsHelper::class);
 
         $mailbox = new \Mautic\EmailBundle\MonitoredEmail\Mailbox($parametersHelper, $pathsHelper);
 

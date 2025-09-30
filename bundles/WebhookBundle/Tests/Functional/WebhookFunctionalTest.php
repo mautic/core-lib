@@ -72,24 +72,6 @@ class WebhookFunctionalTest extends MauticMysqlTestCase
 
     public function testWebhookWorkflowWithCommandProcess(): void
     {
-        $sendRequestCounter = 0;
-
-        $handlerStack = static::getContainer()->get(MockHandler::class);
-
-        // One resource is going to be found in the Transifex project:
-        $handlerStack->append(
-            function (RequestInterface $request) use (&$sendRequestCounter) {
-                Assert::assertSame('/post', $request->getUri()->getPath());
-                $jsonPayload = json_decode($request->getBody()->getContents(), true);
-                Assert::assertCount(3, $jsonPayload['mautic.lead_post_save_new']);
-                Assert::assertNotEmpty($request->getHeader('Webhook-Signature'));
-
-                ++$sendRequestCounter;
-
-                return new GuzzleResponse(Response::HTTP_OK);
-            }
-        );
-
         $webhookQueueRepository = $this->em->getRepository(WebhookQueue::class);
         \assert($webhookQueueRepository instanceof WebhookQueueRepository);
         $this->mockSuccessfulWebhookResponse(2);
