@@ -162,9 +162,7 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideEmptyMultiSelectValue
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideEmptyMultiSelectValue')]
     public function testMultiselectSetDefaultValue(mixed $defaultFieldValue): void
     {
         $fieldAlias = 'test_multi';
@@ -276,9 +274,7 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
         yield 'empty array with null value' => [[null]];
     }
 
-    /**
-     * @dataProvider provideEmptySelectValue
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideEmptySelectValue')]
     public function testSelectSetDefaultValue(mixed $defaultFieldValue): void
     {
         $fieldAlias = 'test_single';
