@@ -105,7 +105,7 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, $readCount], $result['datasets'][1]['data']);
         $this->assertEquals('Failed emails', $result['datasets'][2]['label']);
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 1], $result['datasets'][2]['data']);
-        $this->assertEquals('Clicked', $result['datasets'][3]['label']);
+        $this->assertEquals('Unique Clicked', $result['datasets'][3]['label']);
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 2], $result['datasets'][3]['data']);
         $this->assertEquals('Unsubscribed', $result['datasets'][4]['label']);
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 1], $result['datasets'][4]['data']);
