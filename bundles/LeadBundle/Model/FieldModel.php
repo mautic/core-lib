@@ -520,14 +520,6 @@ class FieldModel extends FormModel
     }
 
     /**
-     * @return LeadField[]|array<int,mixed>|iterable<LeadField>|\Doctrine\ORM\Internal\Hydration\IterableResult<LeadField>|Paginator<LeadField>|SimplePaginator<LeadField>
-     */
-    public function getEntities(array $args = [])
-    {
-        return $this->getRepository()->getEntities($args);
-    }
-
-    /**
      * @return array
      */
     public function getLeadFields()
