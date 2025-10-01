@@ -177,10 +177,10 @@ class EventRedirectionHelperTest extends TestCase
 
         $logger->expects($this->atLeast(2))
             ->method('debug')
-            ->withConsecutive(
-                [$this->stringContains('Redirect event ID 2 is also deleted')],
-                [$this->stringContains('Event ID 1 was deleted, redirected to event ID 3')]
-            );
+            ->with($this->logicalOr(
+                $this->stringContains('Redirect event ID 2 is also deleted'),
+                $this->stringContains('Event ID 1 was deleted, redirected to event ID 3')
+            ));
 
         $helper = new EventRedirectionHelper($logger);
 

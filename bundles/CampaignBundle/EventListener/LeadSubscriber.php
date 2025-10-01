@@ -96,13 +96,13 @@ class LeadSubscriber implements EventSubscriberInterface
                 // Case 1: This event was executed as a redirect because original event was deleted
                 // Show "Rescheduled from" message when:
                 // - Check metadata for rescheduled event information
-                if (!empty($log['metadata']) &&
-                    is_array($log['metadata']) &&
-                    !empty($log['metadata']['redirect_applied']) &&
-                    !empty($log['metadata']['originalEventName'])) {
+                if (!empty($log['metadata'])
+                    && is_array($log['metadata'])
+                    && !empty($log['metadata']['redirect_applied'])
+                    && !empty($log['metadata']['originalEventName'])) {
                     $label = $log['event_name'].' / '.$log['campaign_name'].
                         ' <span class="small">'.$this->translator->trans('mautic.campaign.event.redirected',
-                        ['%original%' => $log['metadata']['originalEventName']]).'</span>';
+                            ['%original%' => $log['metadata']['originalEventName']]).'</span>';
                 }
 
                 // Case 2: Event executed before being deleted - show "Deleted" label

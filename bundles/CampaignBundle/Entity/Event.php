@@ -58,96 +58,112 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @var int
+     *
      * @Groups({"event:read", "campaign:read"})
      */
     private $id;
 
     /**
      * @var string
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $name;
 
     /**
      * @var string
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $description;
 
     /**
      * @var string
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $type;
 
     /**
      * @var string
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $eventType;
 
     /**
      * @var int
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $order = 0;
 
     /**
      * @var array
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $properties = [];
 
     /**
      * @var \DateTime|null
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $triggerDate;
 
     /**
      * @var int
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $triggerInterval = 0;
 
     /**
      * @var string
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $triggerIntervalUnit;
 
     /**
      * @var \DateTime|null
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $triggerHour;
 
     /**
      * @var \DateTime|null
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $triggerRestrictedStartHour;
 
     /**
      * @var \DateTime|null
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $triggerRestrictedStopHour;
 
     /**
      * @var array|null
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $triggerRestrictedDaysOfWeek = [];
 
     /**
      * @var string
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $triggerMode;
 
     /**
      * @var Campaign
+     *
      * @Groups({"event:write"})
      */
     private $campaign;
@@ -164,18 +180,21 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @var string
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      **/
     private $decisionPath;
 
     /**
      * @var string
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      **/
     private $tempId;
 
     /**
      * @var ArrayCollection
+     *
      * @Groups("event:read")
      */
     private $log;
@@ -184,18 +203,21 @@ class Event implements ChannelInterface, UuidInterface
      * Used by API to house contact specific logs.
      *
      * @var array
+     *
      * @Groups({"event:read", "event:write"})
      */
     private $contactLog = [];
 
     /**
      * @var string|null
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $channel;
 
     /**
      * @var string|null
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $channelId;
@@ -207,12 +229,14 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @var int
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $failedCount = 0;
 
     /**
      * @var \DateTime|null
+     *
      * @Groups({"event:read", "event:write", "campaign:read"})
      */
     private $deleted;
@@ -369,8 +393,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * Prepares the metadata for API usage.
-     *
-     * @param $metadata
      */
     public static function loadApiMetadata(ApiMetadataDriver $metadata)
     {
@@ -430,9 +452,9 @@ class Event implements ChannelInterface, UuidInterface
                      'triggerInterval',
                      'triggerIntervalUnit',
                      'triggerHour',
-                    'triggerRestrictedStartHour',
-                    'triggerRestrictedStopHour',
-                    'triggerRestrictedDaysOfWeek',
+                     'triggerRestrictedStartHour',
+                     'triggerRestrictedStopHour',
+                     'triggerRestrictedDaysOfWeek',
                      'triggerMode',
                      'children',
                      'parent',
@@ -587,7 +609,7 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * Get campaign.
      *
-     * @return \Mautic\CampaignBundle\Entity\Campaign
+     * @return Campaign
      */
     public function getCampaign()
     {
@@ -710,8 +732,6 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * Get log for a contact and a rotation.
      *
-     * @param $rotation
-     *
      * @return LeadEventLog|null
      */
     public function getLogByContactAndRotation(Contact $contact, $rotation)
@@ -733,8 +753,6 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * Add children.
      *
-     * @param \Mautic\CampaignBundle\Entity\Event $children
-     *
      * @return Event
      */
     public function addChild(Event $children)
@@ -746,8 +764,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * Remove children.
-     *
-     * @param \Mautic\CampaignBundle\Entity\Event $children
      */
     public function removeChild(Event $children)
     {
@@ -785,8 +801,6 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @param $type
-     *
      * @return ArrayCollection
      */
     public function getChildrenByType($type)
@@ -797,8 +811,6 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @param $type
-     *
      * @return ArrayCollection
      */
     public function getChildrenByEventType($type)
@@ -811,11 +823,9 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * Set parent.
      *
-     * @param \Mautic\CampaignBundle\Entity\Event $parent
-     *
      * @return Event
      */
-    public function setParent(Event $parent = null)
+    public function setParent(?Event $parent = null)
     {
         $this->isChanged('parent', $parent);
         $this->parent = $parent;
@@ -835,7 +845,7 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * Get parent.
      *
-     * @return \Mautic\CampaignBundle\Entity\Event|null
+     * @return Event|null
      */
     public function getParent()
     {
@@ -937,8 +947,6 @@ class Event implements ChannelInterface, UuidInterface
     }
 
     /**
-     * @param $eventType
-     *
      * @return $this
      */
     public function setEventType($eventType)
@@ -1011,7 +1019,7 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * @param mixed $channel
      */
-    public function setChannel($channel)
+    public function setChannel($channel): void
     {
         $this->isChanged('channel', $channel);
         $this->channel = $channel;
@@ -1028,7 +1036,7 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * @param string $channelId
      */
-    public function setChannelId($channelId)
+    public function setChannelId($channelId): void
     {
         $this->isChanged('channelId', $channelId);
         $this->channelId = (string) $channelId;
@@ -1039,7 +1047,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return LeadEventLog[]|\Doctrine\Common\Collections\Collection|static
      */
-    public function getContactLog(Contact $contact = null)
+    public function getContactLog(?Contact $contact = null)
     {
         if ($this->contactLog) {
             return $this->contactLog;
@@ -1162,7 +1170,7 @@ class Event implements ChannelInterface, UuidInterface
      *
      * @return self
      */
-    public function setTriggerRestrictedDaysOfWeek(array $triggerRestrictedDaysOfWeek = null)
+    public function setTriggerRestrictedDaysOfWeek(?array $triggerRestrictedDaysOfWeek = null)
     {
         $this->triggerRestrictedDaysOfWeek = $triggerRestrictedDaysOfWeek;
         $this->isChanged('triggerRestrictedDaysOfWeek', $triggerRestrictedDaysOfWeek);
