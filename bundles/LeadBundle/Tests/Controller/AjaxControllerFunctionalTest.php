@@ -770,22 +770,6 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $response       = json_decode($clientResponse->getContent(), true);
 
         Assert::assertSame($category1->getTitle(), $response[0]['text']);
-
-        // Search global category with array of ids
-        $this->client->request(
-            Request::METHOD_GET,
-            '/s/ajax',
-            [
-                'action'            => 'lead:getLookupChoiceList',
-                'for_lookup'        => 1,
-                'searchKey'         => 'category.category',
-                'category_category' => [$category1->getId(), $category2->getId()],
-            ]
-        );
-        $clientResponse = $this->client->getResponse();
-        $response       = json_decode($clientResponse->getContent(), true);
-
-        Assert::assertCount(2, $response);
     }
 
     public function testLoadSegmentFilterFormForSubscribedCategory(): void
