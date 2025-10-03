@@ -200,11 +200,12 @@ class NotificationRepository extends CommonRepository
     }
 
     /**
-     * @param array<mixed> $options
+     * @param string|array<mixed> $search
+     * @param array<mixed>        $options
      *
-     * @return array
+     * @return array<int, array<string, int|string>>
      */
-    public function getMobileNotificationList(mixed $search = '', int $limit = 10, int $start = 0, bool $viewOther = false, array $options = [])
+    public function getMobileNotificationList(string|array $search = '', int $limit = 10, int $start = 0, bool $viewOther = false, array $options = []): array
     {
         $q = $this->createQueryBuilder('e');
         $q->select('partial e.{id, name, language}');

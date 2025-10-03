@@ -146,7 +146,7 @@ class MobileNotificationType extends AbstractType
 
         $builder->add(
             'translationParentSelector', // This is a non-mapped field
-            MobileNotificationListType::class, // A new form type to be created
+            MobileNotificationListType::class,
             [
                 'label'      => 'mautic.core.form.translation_parent',
                 'label_attr' => ['class' => 'control-label'],
