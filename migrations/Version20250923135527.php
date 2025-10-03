@@ -21,7 +21,6 @@ final class Version20250923135527 extends PreUpAssertionMigration
     {
         $table = $schema->getTable($this->getPrefixedTableName());
 
-        // translation_parent_id
         if (!$table->hasColumn(self::COLUMN_NAME)) {
             $table->addColumn(self::COLUMN_NAME, 'integer', [
                 'unsigned' => true,
