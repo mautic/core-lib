@@ -240,9 +240,7 @@ class DateTimeHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($originalDate, $originalDateTime->format(DateTimeHelper::FORMAT_DB));
     }
 
-    /**
-     * @dataProvider setTimeIfMissingDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('setTimeIfMissingDataProvider')]
     public function testSetTimeIfMissing(string $input, string $defaultTime, string $timezone, string $expectedOutput, string $expectedTimezone): void
     {
         $result = DateTimeHelper::setTimeIfMissing($input, $defaultTime, $timezone);
@@ -255,7 +253,7 @@ class DateTimeHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return \Generator<string, array{string, string, string, string, string}>
      */
-    public function setTimeIfMissingDataProvider(): \Generator
+    public static function setTimeIfMissingDataProvider(): \Generator
     {
         // [input, defaultTime, timezone, expectedOutput, expectedTimezone]
 
