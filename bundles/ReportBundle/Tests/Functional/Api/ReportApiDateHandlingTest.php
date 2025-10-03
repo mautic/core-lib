@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\ReportBundle\Tests\Functional\Api;
 
-use DateTime;
-use DateTimeZone;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Entity\Submission;
@@ -41,12 +39,12 @@ final class ReportApiDateHandlingTest extends MauticMysqlTestCase
     public function testApiReportWithDateFromAndDateToParameters(): void
     {
         // Arrange: Create submissions at specific times
-        $yesterday   = new DateTime('2025-08-16 06:30:00', new DateTimeZone('UTC')); // Yesterday
-        $targetTime1 = new DateTime('2025-08-15 06:30:00', new DateTimeZone('UTC')); // Within range
-        $targetTime2 = new DateTime('2025-08-15 07:00:00', new DateTimeZone('UTC')); // Within range
-        $beforeTime  = new DateTime('2025-08-15 06:00:00', new DateTimeZone('UTC'));  // Before range
-        $afterTime   = new DateTime('2025-08-15 08:00:00', new DateTimeZone('UTC'));   // After range
-        $tomorrow    = new DateTime('2025-08-16 08:00:00', new DateTimeZone('UTC'));   // After range
+        $yesterday   = new \DateTime('2025-08-16 06:30:00', new \DateTimeZone('UTC')); // Yesterday
+        $targetTime1 = new \DateTime('2025-08-15 06:30:00', new \DateTimeZone('UTC')); // Within range
+        $targetTime2 = new \DateTime('2025-08-15 07:00:00', new \DateTimeZone('UTC')); // Within range
+        $beforeTime  = new \DateTime('2025-08-15 06:00:00', new \DateTimeZone('UTC'));  // Before range
+        $afterTime   = new \DateTime('2025-08-15 08:00:00', new \DateTimeZone('UTC'));   // After range
+        $tomorrow    = new \DateTime('2025-08-16 08:00:00', new \DateTimeZone('UTC'));   // After range
 
         $submission0 = $this->createSubmission($yesterday);
         $submission1 = $this->createSubmission($targetTime1);
@@ -110,7 +108,7 @@ final class ReportApiDateHandlingTest extends MauticMysqlTestCase
     public function testApiReportWithTimezoneConversion(): void
     {
         // Arrange: Create submission at specific UTC time
-        $utcTime    = new DateTime('2025-08-15 14:30:00', new DateTimeZone('UTC'));
+        $utcTime    = new \DateTime('2025-08-15 14:30:00', new \DateTimeZone('UTC'));
         $submission = $this->createSubmission($utcTime);
         $this->em->persist($submission);
         $this->em->flush();
@@ -134,9 +132,9 @@ final class ReportApiDateHandlingTest extends MauticMysqlTestCase
 
     public function testApiReportWithoutTime(): void
     {
-        $this->em->persist($this->createSubmission(new DateTime('2025-08-14 23:59:59', new DateTimeZone('UTC'))));
-        $this->em->persist($this->createSubmission(new DateTime('2025-08-15 14:30:00', new DateTimeZone('UTC'))));
-        $this->em->persist($this->createSubmission(new DateTime('2025-08-16 00:00:00', new DateTimeZone('UTC'))));
+        $this->em->persist($this->createSubmission(new \DateTime('2025-08-14 23:59:59', new \DateTimeZone('UTC'))));
+        $this->em->persist($this->createSubmission(new \DateTime('2025-08-15 14:30:00', new \DateTimeZone('UTC'))));
+        $this->em->persist($this->createSubmission(new \DateTime('2025-08-16 00:00:00', new \DateTimeZone('UTC'))));
         $this->em->flush();
 
         $this->client->request(
@@ -153,7 +151,7 @@ final class ReportApiDateHandlingTest extends MauticMysqlTestCase
         Assert::assertEquals(1, $responseData['totalResults'], 'Should include submission within timezone-converted range');
     }
 
-    private function createSubmission(DateTime $dateSubmitted): Submission
+    private function createSubmission(\DateTime $dateSubmitted): Submission
     {
         $submission = new Submission();
         $submission->setForm($this->form);
