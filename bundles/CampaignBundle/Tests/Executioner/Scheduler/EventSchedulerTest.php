@@ -66,10 +66,8 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
     {
         $this->logger              = new NullLogger();
         $this->coreParamtersHelper = $this->createMock(CoreParametersHelper::class);
-        $this->coreParamtersHelper->method('get')
-            ->willReturnCallback(
-                fn () => 'America/New_York'
-            );
+        $this->coreParamtersHelper->method('getDefaultTimezone')
+            ->willReturn('America/New_York');
         $this->eventLogger                = $this->createMock(EventLogger::class);
         $this->peakInteractionTimer       = $this->createMock(PeakInteractionTimer::class);
         $this->intervalScheduler          = new Interval($this->logger, $this->coreParamtersHelper);
