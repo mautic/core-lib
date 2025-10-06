@@ -2,7 +2,6 @@
 
 namespace Mautic\ReportBundle\Model;
 
-use DateTime;
 use Doctrine\DBAL\Connections\PrimaryReadReplicaConnection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
@@ -447,13 +446,13 @@ class ReportModel extends FormModel implements GlobalSearchInterface
     public function getReportData(Report $entity, ?FormFactoryInterface $formFactory = null, array $options = []): array
     {
         // Clone dateFrom/dateTo because they handled separately in charts
-        $chartDateFrom = isset($options['dateFrom']) ? clone $options['dateFrom'] : (new DateTime('-30 days'));
-        $chartDateTo   = isset($options['dateTo']) ? clone $options['dateTo'] : (new DateTime());
+        $chartDateFrom = isset($options['dateFrom']) ? clone $options['dateFrom'] : (new \DateTime('-30 days'));
+        $chartDateTo   = isset($options['dateTo']) ? clone $options['dateTo'] : (new \DateTime());
 
         $debugData = [];
 
         if (isset($options['dateFrom'])) {
-            $now = new DateTime();
+            $now = new \DateTime();
 
             if (!isset($options['dateTo'])) {
                 $options['dateTo'] = $now;
