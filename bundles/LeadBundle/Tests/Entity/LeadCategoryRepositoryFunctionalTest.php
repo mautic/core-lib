@@ -39,7 +39,7 @@ class LeadCategoryRepositoryFunctionalTest extends MauticMysqlTestCase
     {
         parent::setUp();
 
-        $this->model = self::$container->get('mautic.lead.model.lead');
+        $this->model = self::getContainer()->get('mautic.lead.model.lead');
         $this->lead  = $this->createLead('John', 'Doe', 'john@doe.com');
 
         // Add three categories to the lead.
