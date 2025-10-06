@@ -46,8 +46,7 @@ class CategoryModel extends FormModel implements AjaxLookupModelInterface
     ) {
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
-
-    // @phpstan-ignore-next-line method.childReturnType
+    
     public function getRepository(): CategoryRepository
     {
         $repository = $this->em->getRepository(Category::class);

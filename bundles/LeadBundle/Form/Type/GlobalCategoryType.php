@@ -40,20 +40,12 @@ class GlobalCategoryType extends AbstractType
                     ];
                 },
                 'is_published' => true,
-            ]
+
         );
     }
 
     /**
-     * @return string
-     */
-    public function getBlockPrefix()
-    {
-        return 'global_category_list';
-    }
-
-    /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getParent()
     {
