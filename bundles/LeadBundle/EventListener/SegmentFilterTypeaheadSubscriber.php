@@ -11,7 +11,7 @@ use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\LeadModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
+final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
 {
     public function __construct(private ModelFactory $modelFactory)
     {
