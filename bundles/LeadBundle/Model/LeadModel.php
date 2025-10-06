@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\Model;
 
 use Doctrine\DBAL\Exception as DBALException;
@@ -1146,11 +1148,11 @@ class LeadModel extends FormModel
     }
 
     /**
-     * @param bool $subscribedFlag
+     * @param array<int|Category> $categories
      *
      * @return mixed[]
      */
-    public function addToCategory(Lead $lead, $categories, $subscribedFlag = true): array
+    public function addToCategory(Lead $lead, array $categories, bool $subscribedFlag = true): array
     {
         $results = [];
         foreach ($categories as $category) {
