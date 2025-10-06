@@ -15,6 +15,7 @@ use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\ImportModel;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
+use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\HttpFoundation\Request;
 
 class ImportControllerFunctionalTest extends MauticMysqlTestCase
@@ -22,22 +23,6 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
     protected $useCleanupRollback = false;
 
     private string $csvFile;
-
-    /**
-     * @var array|string[][]
-     */
-    private array $csvRows = [
-        ['file', 'email', 'firstname', 'lastname', 'state_from'],
-        ['test1.pdf', 'john1@doe.email', 'John', 'Doe1', 'MP'],
-        ['test2.pdf', 'john2@doe.email', 'John', 'Doe2', 'MP'],
-        ['test3.pdf', 'john3@doe.email', 'John', 'Doe3', 'MP'],
-    ];
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->generateSmallCSV();
-    }
 
     protected function beforeTearDown(): void
     {
@@ -48,6 +33,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testScheduleImport(): void
     {
+        $this->generateSmallCSV();
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->loginUser($user);
         $tagName = 'tag1';
@@ -85,9 +71,22 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame([$tagName], $importProperty['defaults']['tags']);
     }
 
+    /**
+     * @dataProvider commandOutputStringProvider
+     * @return mixed[]
+     */
+    public function dataImportCSV(): iterable
+    {
+        //verify all are created successfully with select field value
+        yield [false, '4 lines were processed, 3 items created, 0 items updated, 1 items ignored', 3, 3, 3];
+        //verify contact updated successfully with select field value
+        yield [true, '4 lines were processed, 2 items created, 1 items updated, 1 items ignored', 2, 3, 3];
+    }
+
     #[\PHPUnit\Framework\Attributes\DataProvider('commandOutputStringProvider')]
     public function testImportCSV(bool $createLead, string $expectedOutput, int $created, int $identified, int $imported): void
     {
+        $this->generateSmallCSV();
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->client->loginUser($user, 'mautic');
 
@@ -115,30 +114,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         $import = $this->createCsvContactImport();
 
         // Show mapping page.
-        $crawler      = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
-        $uploadButton = $crawler->selectButton('Upload');
-        $form         = $uploadButton->form();
-        $form->setValues(
-            [
-                'lead_import[file]'       => $this->csvFile,
-                'lead_import[batchlimit]' => 100,
-                'lead_import[delimiter]'  => ',',
-                'lead_import[enclosure]'  => '"',
-                'lead_import[escape]'     => '\\',
-            ]
-        );
-        $html = $this->client->submit($form);
-        Assert::assertStringContainsString(
-            'Match the columns from the imported file to Mautic\'s contact fields.',
-            $html->text(null, false)
-        );
-
-        // Run command to import CSV.
-        $output = $this->testSymfonyCommand('mautic:import', [
-            '-e'      => 'dev',
-            '--id'    => $import->getId(),
-            '--limit' => 10000,
-        ]);
+        $output = $this->createAndExecuteImport($import);
         Assert::assertStringContainsString(
             $expectedOutput,
             $output->getDisplay()
@@ -228,12 +204,77 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @return mixed[]
      */
-    public static function commandOutputStringProvider(): iterable
+    public static function dataImportWithInvalidDates(): iterable
     {
-        // verify all are created successfully with select field value
-        yield [false, '4 lines were processed, 3 items created, 0 items updated, 1 items ignored', 3, 3, 3];
-        // verify contact updated successfully with select field value
-        yield [true, '4 lines were processed, 2 items created, 1 items updated, 1 items ignored', 2, 3, 3];
+        yield [false, '7 lines were processed, 2 items created, 0 items updated, 5 items ignored', 2, 2, 2];
+        yield [true,  '7 lines were processed, 1 items created, 1 items updated, 5 items ignored', 1, 2, 2];
+    }
+
+    /**
+     * @dataProvider dataImportWithInvalidDates
+     */
+    public function testImportWithInvalidDates(bool $createLead, string $expectedOutput, int $created, int $identified, int $imported): void
+    {
+        $this->generateSmallCSV([
+            ['file', 'email', 'firstname', 'lastname', 'state_from', 'birth_date'],
+            ['test1.pdf', 'john1@doe.email', 'John', 'Doe1', 'MP', '2025-08-01 09:05:59'],
+            ['test2.pdf', 'john2@doe.email', 'John', 'Doe2', 'MP', '2025-07-22 09:05:59'],
+            ['test3.pdf', 'john3@doe.email', 'John', 'Doe3', 'MP', '01-08-2025'],
+            ['test4.pdf', 'john4@doe.email', 'John', 'Doe4', 'MP', '2025/08/01'],
+            ['test5.pdf', 'john5@doe.email', 'John', 'Doe5', 'MP', '2025/08/01 09:05:59'],
+            ['test6.pdf', 'john6@doe.email', 'John', 'Doe6', 'MP', '2025'],
+        ]);
+        $lead= null;
+        if ($createLead) {
+            $lead = $this->createLead('john1@doe.email');
+        }
+        $eventSourceRepository = $this->em->getRepository(EventSource::class);
+        \assert($eventSourceRepository instanceof EventSourceRepository);
+
+        // Create 'file' field.
+        $this->createField('text', 'file');
+        $stateProperties = [
+            'list' => [
+                    [
+                        'label' => 'MH',
+                        'value' => 'MH',
+                    ],
+                    [
+                        'label' => 'MP',
+                        'value' => 'MP',
+                    ],
+                ],
+        ];
+        $this->createField('select', 'state_from', $stateProperties);
+        $this->createField('datetime', 'birth_date');
+        // Create contact import.
+        $import = $this->createCsvContactImport();
+        $output = $this->createAndExecuteImport($import);
+
+        Assert::assertStringContainsString(
+            $expectedOutput,
+            $output->getDisplay()
+        );
+        /** @var LeadRepository $leadRepository */
+        $leadRepository = $this->em->getRepository(Lead::class);
+        $leadCount      = $leadRepository->count(['firstname' => 'John']);
+        Assert::assertSame(2, $leadCount);
+
+        if ($createLead && $lead instanceof Lead) {
+            $contact = $leadRepository->getEntity($lead->getId());
+            Assert::assertSame('MP', $contact->getFieldValue('state_from'));
+        }
+        // ✅ fetch import entity again to check ignored count
+        $importEntity = $this->em->getRepository(Import::class)->find($import->getId());
+        $this->assertSame(
+            5,
+            $importEntity->getIgnoredCount(),
+            'Expected exactly 5 rows to be ignored due to invalid date values'
+        );
+
+        Assert::assertCount($created, $eventSourceRepository->findBy(['eventType' => 'lead.create']));
+        Assert::assertCount($identified, $eventSourceRepository->findBy(['eventType' => 'lead.identified']));
+        Assert::assertCount($imported, $eventSourceRepository->findBy(['eventType' => 'lead.imported']));
     }
 
     /**
@@ -276,6 +317,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
                 'firstname'  => 'firstname',
                 'lastname'   => 'lastname',
                 'state_from' => 'state_from',
+                'birth_date' => 'birth_date',
             ],
             'parser'   => [
                 'escape'     => '\\',
@@ -289,6 +331,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
                 'firstname',
                 'lastname',
                 'state_from',
+                'birth_date',
             ],
             'defaults' => [
                 'list'  => null,
@@ -306,17 +349,57 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         return $import;
     }
 
-    private function generateSmallCSV(): void
+    /**
+     * @param string[][]|null $csvRows
+     */
+    private function generateSmallCSV(array $csvRows = null): void
     {
+        $csvRows = $csvRows ?: [
+            ['file', 'email', 'firstname', 'lastname', 'state_from'],
+            ['test1.pdf', 'john1@doe.email', 'John', 'Doe1', 'MP'],
+            ['test2.pdf', 'john2@doe.email', 'John', 'Doe2', 'MP'],
+            ['test3.pdf', 'john3@doe.email', 'John', 'Doe3', 'MP'],
+        ];
         $tmpFile = tempnam(sys_get_temp_dir(), 'mautic_import_test_').'.csv';
         $file    = fopen($tmpFile, 'wb');
 
-        foreach ($this->csvRows as $line) {
+        foreach ($csvRows as $line) {
             CsvHelper::putCsv($file, $line);
         }
 
         fclose($file);
         $this->csvFile = $tmpFile;
+    }
+
+    private function createAndExecuteImport(Import $import): CommandTester
+    {
+        // Show mapping page.
+        $crawler      = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
+        $uploadButton = $crawler->selectButton('Upload');
+        $form         = $uploadButton->form();
+        $form->setValues(
+            [
+                'lead_import[file]'       => $this->csvFile,
+                'lead_import[batchlimit]' => 100,
+                'lead_import[delimiter]'  => ',',
+                'lead_import[enclosure]'  => '"',
+                'lead_import[escape]'     => '\\',
+            ]
+        );
+        $html = $this->client->submit($form);
+        Assert::assertStringContainsString(
+            'Match the columns from the imported file to Mautic\'s contact fields.',
+            $html->text()
+        );
+
+        // Run command to import CSV.
+        $output = $this->testSymfonyCommand('mautic:import', [
+            '-e'      => 'dev',
+            '--id'    => $import->getId(),
+            '--limit' => 10000,
+        ]);
+
+        return $output;
     }
 
     private function createTag(string $tagName): Tag

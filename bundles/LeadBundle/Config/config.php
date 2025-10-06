@@ -360,6 +360,12 @@ return [
                     'mautic.lead.model.export_scheduler',
                 ],
             ],
+            'mautic.lead.import.date_validation.subscriber' => [
+                'class'     => Mautic\LeadBundle\EventListener\ImportDateValidationSubscriber::class,
+                'arguments' => [
+                    'mautic.lead.model.field',
+                ],
+            ],
         ],
         'other' => [
             'mautic.validator.leadlistaccess' => [
