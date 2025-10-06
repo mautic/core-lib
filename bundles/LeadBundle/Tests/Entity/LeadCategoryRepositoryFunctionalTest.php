@@ -26,7 +26,7 @@ class LeadCategoryRepositoryFunctionalTest extends MauticMysqlTestCase
         'three' => true,
     ];
 
-    private ?LeadModel $model;
+    private LeadModel $model;
 
     private Lead $lead;
 

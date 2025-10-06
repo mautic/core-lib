@@ -1146,7 +1146,6 @@ class LeadModel extends FormModel
     }
 
     /**
-     * @param $categories
      * @param bool $subscribedFlag
      *
      * @return mixed[]
