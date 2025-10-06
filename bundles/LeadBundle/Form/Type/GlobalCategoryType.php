@@ -42,6 +42,7 @@ final class GlobalCategoryType extends AbstractType
                     ];
                 },
                 'is_published' => true,
+            ]
 
         );
     }
