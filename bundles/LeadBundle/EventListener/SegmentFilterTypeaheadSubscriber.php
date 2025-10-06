@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\EventListener;
 
-use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\LeadBundle\Event\ListTypeaheadEvent;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\FieldModel;
@@ -13,7 +12,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private ModelFactory $modelFactory)
+    public function __construct(private LeadModel $leadModel, private FieldModel $fieldModel, private CompanyModel $companyModel)
     {
     }
 
@@ -52,9 +51,7 @@ final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
             return;
         }
 
-        /** @var LeadModel $leadModel */
-        $leadModel = $this->modelFactory->getModel('lead.lead');
-        $results   = $leadModel->getLookupResults('user', $event->getFilter());
+        $results   = $this->leadModel->getLookupResults('user', $event->getFilter());
 
         $dataArray = [];
         foreach ($results as $r) {
@@ -71,8 +68,7 @@ final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
 
     public function onSegmentFilterFieldEmpty(ListTypeaheadEvent $event): void
     {
-        $fieldModel = $this->modelFactory->getModel('lead.field');
-        $field      = $fieldModel->getEntityByAlias($event->getFieldAlias());
+        $field      = $this->fieldModel->getEntityByAlias($event->getFieldAlias());
 
         if (!empty($field)) {
             return;
@@ -83,8 +79,7 @@ final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
 
     public function onSegmentFilterCanProvideTypeahead(ListTypeaheadEvent $event): void
     {
-        $fieldModel = $this->modelFactory->getModel('lead.field');
-        $field      = $fieldModel->getEntityByAlias($event->getFieldAlias());
+        $field      = $this->fieldModel->getEntityByAlias($event->getFieldAlias());
 
         // Select field types that make sense to provide typeahead for.
         $isLookup     = in_array($field->getType(), ['lookup']);
@@ -102,9 +97,7 @@ final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
         $fieldAlias = $event->getFieldAlias();
         $filter     = $event->getFilter();
 
-        /** @var FieldModel $fieldModel */
-        $fieldModel = $this->modelFactory->getModel('lead.field');
-        $field      = $fieldModel->getEntityByAlias($fieldAlias);
+        $field      = $this->fieldModel->getEntityByAlias($fieldAlias);
 
         $dataArray = [];
         if ('lookup' === $field->getType() && !empty($field->getProperties()['list'])) {
@@ -113,15 +106,13 @@ final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
             }
         }
 
-        /** @var CompanyModel $companyModel */
-        $companyModel = $this->modelFactory->getModel('lead.company');
         if ('company' === $field->getObject()) {
-            $results = $companyModel->getLookupResults('companyfield', [$fieldAlias, $filter]);
+            $results = $this->companyModel->getLookupResults('companyfield', [$fieldAlias, $filter]);
             foreach ($results as $r) {
                 $dataArray[] = ['value' => $r['label']];
             }
         } elseif ('lead' === $field->getObject()) {
-            $results = $fieldModel->getLookupResults($fieldAlias, $filter);
+            $results = $this->fieldModel->getLookupResults($fieldAlias, $filter);
             foreach ($results as $r) {
                 $dataArray[] = ['value' => $r[$fieldAlias]];
             }

@@ -360,12 +360,6 @@ return [
                     'mautic.lead.model.export_scheduler',
                 ],
             ],
-            'mautic.segment.filter.typeahead.subscriber' => [
-                'class'     => Mautic\LeadBundle\EventListener\SegmentFilterTypeaheadSubscriber::class,
-                'arguments' => [
-                    'mautic.model.factory',
-                ],
-            ],
         ],
         'other' => [
             'mautic.validator.leadlistaccess' => [
