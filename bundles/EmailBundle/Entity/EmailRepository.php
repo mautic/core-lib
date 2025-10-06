@@ -9,12 +9,14 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Mautic\ChannelBundle\Entity\MessageQueue;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\LeadBundle\Entity\DoNotContact;
+use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 
 /**
  * @extends CommonRepository<Email>
  */
 class EmailRepository extends CommonRepository
 {
+    use ProjectRepositoryTrait;
     public const EMAILS_PREFIX        = 'e';
 
     public const DNC_PREFIX           = 'dnc';
@@ -110,7 +112,7 @@ class EmailRepository extends CommonRepository
             ->createQueryBuilder()
             ->select('e')
             ->from(Email::class, 'e', 'e.id');
-        if (empty($args['iterator_mode']) && empty($args['iterable_mode'])) {
+        if (empty($args['iterable_mode'])) {
             $q->leftJoin('e.category', 'c');
 
             if (empty($args['ignoreListJoin']) && (!isset($args['email_type']) || 'list' == $args['email_type'])) {
@@ -169,8 +171,8 @@ class EmailRepository extends CommonRepository
         $maxContactId = null,
         $countWithMaxMin = false,
         $maxDate = null,
-        int $maxThreads = null,
-        int $threadId = null,
+        ?int $maxThreads = null,
+        ?int $threadId = null,
     ) {
         // Do not include leads in the do not contact table
         $dncQb = $this->getEntityManager()->getConnection()->createQueryBuilder();
@@ -318,8 +320,8 @@ class EmailRepository extends CommonRepository
         $minContactId = null,
         $maxContactId = null,
         $countWithMaxMin = false,
-        int $maxThreads = null,
-        int $threadId = null,
+        ?int $maxThreads = null,
+        ?int $threadId = null,
     ) {
         $q = $this->getEmailPendingQuery(
             $emailId,
@@ -552,6 +554,22 @@ class EmailRepository extends CommonRepository
         $returnParameter = false; // returning a parameter that is not used will lead to a Doctrine error
 
         switch ($command) {
+            case $this->translator->trans('mautic.email.email.searchcommand.isexpired'):
+            case $this->translator->trans('mautic.email.email.searchcommand.isexpired', [], null, 'en_US'):
+                $expr = sprintf(
+                    "(e.isPublished = :%1\$s AND e.publishDown IS NOT NULL AND e.publishDown <> '' AND e.publishDown < CURRENT_TIMESTAMP())",
+                    $unique
+                );
+                $forceParameters = [$unique => true];
+                break;
+            case $this->translator->trans('mautic.email.email.searchcommand.ispending'):
+            case $this->translator->trans('mautic.email.email.searchcommand.ispending', [], null, 'en_US'):
+                $expr = sprintf(
+                    "(e.isPublished = :%1\$s AND e.publishUp IS NOT NULL AND e.publishUp <> '' AND e.publishUp > CURRENT_TIMESTAMP())",
+                    $unique
+                );
+                $forceParameters = [$unique => true];
+                break;
             case $this->translator->trans('mautic.core.searchcommand.lang'):
                 $langUnique      = $this->generateRandomParameterName();
                 $langValue       = $filter->string.'_%';
@@ -559,12 +577,19 @@ class EmailRepository extends CommonRepository
                     $langUnique => $langValue,
                     $unique     => $filter->string,
                 ];
-                $expr = $q->expr()->or(
-                    $q->expr()->eq('e.language', ":$unique"),
-                    $q->expr()->like('e.language', ":$langUnique")
-                );
+                $expr            = '('.$q->expr()->eq('e.language', ":$unique").' OR '.$q->expr()->like('e.language', ":$langUnique").')';
                 $returnParameter = true;
                 break;
+            case $this->translator->trans('mautic.project.searchcommand.name'):
+            case $this->translator->trans('mautic.project.searchcommand.name', [], null, 'en_US'):
+                return $this->handleProjectFilter(
+                    $this->_em->getConnection()->createQueryBuilder(),
+                    'email_id',
+                    'email_projects_xref',
+                    $this->getTableAlias(),
+                    $filter->string,
+                    $filter->not
+                );
         }
 
         if ($expr && $filter->not) {
@@ -591,8 +616,11 @@ class EmailRepository extends CommonRepository
             'mautic.core.searchcommand.isunpublished',
             'mautic.core.searchcommand.isuncategorized',
             'mautic.core.searchcommand.ismine',
+            'mautic.email.email.searchcommand.isexpired',
+            'mautic.email.email.searchcommand.ispending',
             'mautic.core.searchcommand.category',
             'mautic.core.searchcommand.lang',
+            'mautic.project.searchcommand.name',
         ];
 
         return array_merge($commands, parent::getSearchCommands());
@@ -636,49 +664,6 @@ class EmailRepository extends CommonRepository
                 $qb->expr()->in('id', $relatedIds)
             )
             ->executeStatement();
-    }
-
-    /**
-     * Up the read/sent counts.
-     *
-     * @deprecated use upCountSent or incrementRead method
-     *
-     * @param int        $id
-     * @param string     $type
-     * @param int        $increaseBy
-     * @param bool|false $variant
-     */
-    public function upCount($id, $type = 'sent', $increaseBy = 1, $variant = false): void
-    {
-        if (!$increaseBy) {
-            return;
-        }
-
-        $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
-
-        $q->update(MAUTIC_TABLE_PREFIX.'emails');
-        $q->set($type.'_count', $type.'_count + '.(int) $increaseBy);
-        $q->where('id = '.(int) $id);
-
-        if ($variant) {
-            $q->set('variant_'.$type.'_count', 'variant_'.$type.'_count + '.(int) $increaseBy);
-        }
-
-        // Try to execute 3 times before throwing the exception
-        // to increase the chance the update will do its stuff.
-        $retrialLimit = 3;
-        while ($retrialLimit >= 0) {
-            try {
-                $q->executeStatement();
-
-                return;
-            } catch (Exception $e) {
-                --$retrialLimit;
-                if (0 === $retrialLimit) {
-                    throw $e;
-                }
-            }
-        }
     }
 
     public function upCountSent(int $id, int $increaseBy = 1, bool $variant = false): void
@@ -759,16 +744,6 @@ class EmailRepository extends CommonRepository
     }
 
     /**
-     * @depreacated The method is replaced by getPublishedBroadcastsIterable
-     *
-     * @param int|null $id
-     */
-    public function getPublishedBroadcasts($id = null): \Doctrine\ORM\Internal\Hydration\IterableResult
-    {
-        return $this->getPublishedBroadcastsQuery($id)->iterate();
-    }
-
-    /**
      * @return iterable<Email>
      */
     public function getPublishedBroadcastsIterable(?int $id = null): iterable
@@ -815,27 +790,6 @@ class EmailRepository extends CommonRepository
         }
 
         return $q;
-    }
-
-    /**
-     * Is one of emails unpublished?
-     *
-     * @deprecated to be removed in 6.0 with no replacement
-     */
-    public function isOneUnpublished(array $ids): bool
-    {
-        $result = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select($this->getTableAlias().'.id')
-            ->from(Email::class, $this->getTableAlias(), $this->getTableAlias().'.id')
-            ->where($this->getTableAlias().'.id IN (:ids)')
-            ->setParameter('ids', $ids)
-            ->andWhere('e.isPublished = 0')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        return (bool) $result;
     }
 
     private function getCategoryUnsubscribedLeadsQuery(int $emailId): QueryBuilder

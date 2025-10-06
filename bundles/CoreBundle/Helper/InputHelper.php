@@ -303,8 +303,9 @@ class InputHelper
                 }
             }
 
-            // http_build_query urlencodes by default
-            $parts['query'] = http_build_query($query);
+            // http_build_query urlencodes to RFC 1738 by default
+            // We change the encoding_type to RFC 3986 so that spaces are encoded as %20 instead of +
+            $parts['query'] = http_build_query($query, '', null, PHP_QUERY_RFC3986);
         }
 
         return
@@ -587,5 +588,17 @@ class InputHelper
     private static function filter_string_polyfill(string $string): string
     {
         return preg_replace('/\x00|<[^>]*>?/', '', $string);
+    }
+
+    /**
+     * Strip disallowed HTML tags from a string.
+     *
+     * @param string[] $allowedTags
+     */
+    public static function stripTags(string $input, array $allowedTags = []): string
+    {
+        $allowed = implode('', array_map(fn ($tag) => "<$tag>", $allowedTags));
+
+        return strip_tags($input, $allowed);
     }
 }

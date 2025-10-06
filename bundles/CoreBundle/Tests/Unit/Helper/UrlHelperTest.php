@@ -83,7 +83,7 @@ class UrlHelperTest extends \PHPUnit\Framework\TestCase
     public function testSanitizeAbsoluteUrlSanitizeQuery(): void
     {
         $this->assertEquals(
-            'http://username:password@hostname:9090/path?ar_g1=value&arg2=some+email%40address.com#anchor',
+            'http://username:password@hostname:9090/path?ar_g1=value&arg2=some%20email%40address.com#anchor',
             UrlHelper::sanitizeAbsoluteUrl(
                 'http://username:password@hostname:9090/path?ar g1=value&arg2=some+email@address.com#anchor'
             )
@@ -188,9 +188,7 @@ STRING
         $this->assertFalse(UrlHelper::isValidUrl('notvalidurlé'));
     }
 
-    /**
-     * @dataProvider dataDecodeAmpersands
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataDecodeAmpersands')]
     public function testDecodeAmpersands(string $value, string $expected): void
     {
         $this->assertSame($expected, UrlHelper::decodeAmpersands($value));
@@ -199,7 +197,7 @@ STRING
     /**
      * @return iterable<array<string>>
      */
-    public function dataDecodeAmpersands(): iterable
+    public static function dataDecodeAmpersands(): iterable
     {
         yield 'With html encoded ampersands' => ['https://example.org/?utm_source=mautic&amp;utm_medium=phpunit&amp;utm_campaign=tests', 'https://example.org/?utm_source=mautic&utm_medium=phpunit&utm_campaign=tests'];
         yield 'With decimal encoded ampersands' => ['https://example.org/?utm_source=mautic&#38;utm_medium=phpunit&#38;utm_campaign=tests', 'https://example.org/?utm_source=mautic&utm_medium=phpunit&utm_campaign=tests'];
