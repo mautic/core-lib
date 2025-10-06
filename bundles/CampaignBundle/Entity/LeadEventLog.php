@@ -2,6 +2,7 @@
 
 namespace Mautic\CampaignBundle\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -103,6 +104,8 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
      */
     private $rescheduleInterval;
 
+    private ?\DateTime $dateQueued = null;
+
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
         $builder = new ClassMetadataBuilder($metadata);
@@ -171,6 +174,11 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
             ->mappedBy('log')
             ->fetchExtraLazy()
             ->cascadeAll()
+            ->build();
+
+        $builder->createField('dateQueued', Types::DATETIME_MUTABLE)
+            ->columnName('date_queued')
+            ->nullable()
             ->build();
 
         self::addVersionField($builder);
@@ -542,5 +550,17 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
     public function getRescheduleInterval(): ?\DateInterval
     {
         return $this->rescheduleInterval;
+    }
+
+    public function getDateQueued(): ?\DateTime
+    {
+        return $this->dateQueued;
+    }
+
+    public function setDateQueued(?\DateTime $dateQueued): LeadEventLog
+    {
+        $this->dateQueued = $dateQueued;
+
+        return $this;
     }
 }
