@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\EventListener;
 
 use Mautic\CoreBundle\Factory\ModelFactory;
@@ -9,7 +11,7 @@ use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\LeadModel;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
+final class SegmentFilterTypeaheadSubscriber implements EventSubscriberInterface
 {
     public function __construct(private ModelFactory $modelFactory)
     {
