@@ -6,7 +6,7 @@ namespace Mautic\LeadBundle\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 
-class ListTypeaheadEvent extends Event
+final class ListTypeaheadEvent extends Event
 {
     /**
      * @var mixed[]
