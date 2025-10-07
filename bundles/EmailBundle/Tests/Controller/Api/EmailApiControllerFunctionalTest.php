@@ -13,10 +13,10 @@ use Mautic\LeadBundle\DataFixtures\ORM\LoadCategoryData;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Mailer;
@@ -414,8 +414,8 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
             'permissions'         => ['editother', 'publishown'],
             'expectedIsPublished' => false,
             'expectedPublishUp'   => null,
-            'expectedPublshDown'  => null, ]
-        ;
+            'expectedPublshDown'  => null,
+        ];
     }
 
     public function testReplyAction(): void

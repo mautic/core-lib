@@ -30,6 +30,7 @@ trait TranslationEntityTrait
 
     /**
      * @var TranslationEntityInterface|null
+     *
      * @phpstan-var T|null
      *
      * @Groups({"page:read", "page:write", "download:read", "download:write", "email:read", "email:write", "dynamicContent:read", "dynamicContent:write"})

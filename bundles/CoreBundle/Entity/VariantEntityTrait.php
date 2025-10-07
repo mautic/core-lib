@@ -4,7 +4,6 @@ namespace Mautic\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping\Entity;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -21,6 +20,7 @@ trait VariantEntityTrait
 
     /**
      * @var VariantEntityInterface|null
+     *
      * @phpstan-var T|null
      *
      * @Groups({"email:read", "email:write", "download:read"})

@@ -480,7 +480,7 @@ class EmailController extends FormController
         EmailConfig $emailConfig,
         EmailModel $model,
         ThemeHelper $themeHelper,
-        $entity = null
+        $entity = null,
     ) {
         if (!($entity instanceof Email)) {
             $entity = $model->getEntity();
@@ -724,7 +724,7 @@ class EmailController extends FormController
 
                     $this->unpublishIfLackingPermission($entity, $corePermissions);
 
-                    //form is valid so process the data
+                    // form is valid so process the data
                     try {
                         $model->saveEntity($entity, $this->getFormButton($form, ['buttons', 'save'])->isClicked());
 
@@ -828,7 +828,7 @@ class EmailController extends FormController
             }
         }
 
-        $assets     = $form['assetAttachments']->getData();
+        $assets         = $form['assetAttachments']->getData();
         $attachmentSize = $assetModel->getTotalFilesize($assets);
 
         $routeParams = [
@@ -1182,12 +1182,12 @@ class EmailController extends FormController
      * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function abtestAction(
-        Request $request, 
-        AssetModel $assetModel, 
-        CorePermissions $corePermissions, 
-        EmailConfig $emailConfig, 
-        EmailModel $model, 
-        ThemeHelper $themeHelper, $objectId
+        Request $request,
+        AssetModel $assetModel,
+        CorePermissions $corePermissions,
+        EmailConfig $emailConfig,
+        EmailModel $model,
+        ThemeHelper $themeHelper, $objectId,
     ) {
         $entity = $model->getEntity($objectId);
 
