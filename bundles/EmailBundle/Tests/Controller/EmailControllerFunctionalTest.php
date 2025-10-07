@@ -573,7 +573,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         // Set user to be able to create emails, but not publish them.
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'sales']);
         $this->setPermission($user->getRole(), ['email:emails' => $permissions]);
-        $this->loginUser('sales');
+        $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', 'sales');
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
@@ -609,7 +609,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, mixed[]>
      */
-    public function createPermissionDataProvider(): iterable
+    public static function createPermissionDataProvider(): iterable
     {
         yield 'user cannot publish without publish permission' => [
             'permissioins'       => ['create'],
@@ -664,7 +664,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         // Set user to be able to create emails, but not publish them.
         $loggedInUser = $this->em->getRepository(User::class)->findOneBy(['username' => $user]);
         $this->setPermission($loggedInUser->getRole(), ['email:emails' => $permissions]);
-        $this->loginUser($user);
+        $this->loginUser($loggedInUser);
         $this->client->setServerParameter('PHP_AUTH_USER', $user);
 
         // Check that the publish button is disabled and set to unpublish for the sales user.
@@ -674,12 +674,12 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $isUnpublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="0"]');
         Assert::assertCount(1, $isUnpublishedInput, 'The unpublished field should be found.');
         Assert::assertSame($expectDisabled, !is_null($isUnpublishedInput->attr('disabled')));
-        Assert::assertSame(true, is_null($isUnpublishedInput->attr('checked')));
+        Assert::assertTrue(is_null($isUnpublishedInput->attr('checked')));
 
         $isPublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="1"]');
         Assert::assertCount(1, $isPublishedInput, 'The unpublished field should be found.');
         Assert::assertSame($expectDisabled, !is_null($isPublishedInput->attr('disabled')));
-        Assert::assertSame(true, !is_null($isPublishedInput->attr('checked')));
+        Assert::assertTrue(!is_null($isPublishedInput->attr('checked')));
 
         $publishUpInput   = $crawler->filter('input[name="emailform[publishUp]"]');
         $publishDownInput = $crawler->filter('input[name="emailform[publishDown]"]');
@@ -691,7 +691,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $form['emailform[subject]']->setValue('Email publish test');
         $form['emailform[name]']->setValue('Email publish test');
         $form['emailform[template]']->setValue('blank');
-        $form['emailform[isPublished]']->setValue(false); // Tries to change the email to unpublished.
+        $form['emailform[isPublished]']->setValue('0'); // Tries to change the email to unpublished.
 
         $this->client->submit($form);
         Assert::assertTrue($this->client->getResponse()->isOk());
@@ -703,7 +703,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, mixed[]>
      */
-    public function editPermissionDataProvider(): iterable
+    public static function editPermissionDataProvider(): iterable
     {
         yield 'user cannot publish without publish permission' => [
             'owner'            => 'sales',
@@ -977,7 +977,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
      */
     private function setPermission(Role $role, array $permissions): void
     {
-        $roleModel = self::$container->get('mautic.user.model.role');
+        $roleModel = $this->getContainer()->get('mautic.user.model.role');
         $roleModel->setRolePermissions($role, $permissions);
         $this->em->persist($role);
         $this->em->flush();

@@ -329,7 +329,7 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, mixed[]>
      */
-    public function publishNewPermissionProvider(): iterable
+    public static function publishNewPermissionProvider(): iterable
     {
         yield 'User without the publish permission cannot publish' => [['create'], false, null, null];
         yield 'User with the publish permission can publish other ownly' => [['create', 'publishother'], false, null, null];
@@ -367,7 +367,7 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, mixed[]>
      */
-    public function publishExistingPermissionProvider(): iterable
+    public static function publishExistingPermissionProvider(): iterable
     {
         yield 'Sales user without the publish permission cannot publish own email' => [
             'creatorUsername'     => 'sales',
@@ -770,5 +770,27 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
                 'name' => 'Updated Child Email',
             ],
         ];
+    }
+
+    private function getUser(string $userName): ?User
+    {
+        $repository = $this->em->getRepository(User::class);
+        $user       = $repository->findOneBy(['username' => $userName]);
+        if (!$user instanceof User) {
+            return null;
+        }
+
+        return $user;
+    }
+
+    /**
+     * @param array<string, string[]> $permissions
+     */
+    private function setPermission(Role $role, array $permissions): void
+    {
+        $roleModel = $this->getContainer()->get('mautic.user.model.role');
+        $roleModel->setRolePermissions($role, $permissions);
+        $this->em->persist($role);
+        $this->em->flush();
     }
 }

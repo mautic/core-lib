@@ -17,6 +17,7 @@ use Mautic\CoreBundle\Form\Type\ThemeListType;
 use Mautic\CoreBundle\Form\Type\YesNoButtonGroupType;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\ThemeHelperInterface;
+use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Helper\EmailConfigInterface;
 use Mautic\FormBundle\Form\Type\FormListType;
@@ -53,6 +54,7 @@ class EmailType extends AbstractType
         private StageModel $stageModel,
         private CoreParametersHelper $coreParametersHelper,
         private ThemeHelperInterface $themeHelper,
+        private CorePermissions $corePermissions,
         EmailConfigInterface $emailConfig,
     ) {
         $this->isDraftEnabled = $emailConfig->isDraftEnabled();

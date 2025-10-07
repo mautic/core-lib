@@ -9,13 +9,10 @@ use Mautic\CoreBundle\Event\DetermineWinnerEvent;
 use Mautic\CoreBundle\Factory\PageHelperFactoryInterface;
 use Mautic\CoreBundle\Form\Type\ContentPreviewSettingsType;
 use Mautic\CoreBundle\Form\Type\DateRangeType;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\CoreBundle\Translation\Translator;
-use Mautic\CoreBundle\Twig\Helper\AssetsHelper;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Event\EmailEditSubmitEvent;
@@ -34,7 +31,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class EmailController extends FormController
 {
@@ -477,8 +473,15 @@ class EmailController extends FormController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function newAction(Request $request, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, EmailConfig $emailConfig, EmailModel $model, ThemeHelper $themeHelper, $entity = null)
-    {
+    public function newAction(
+        Request $request,
+        AssetModel $assetModel,
+        CorePermissions $corePermissions,
+        EmailConfig $emailConfig,
+        EmailModel $model,
+        ThemeHelper $themeHelper,
+        $entity = null
+    ) {
         if (!($entity instanceof Email)) {
             $entity = $model->getEntity();
         }
@@ -516,7 +519,7 @@ class EmailController extends FormController
 
                     $entity->setCustomHtml($content);
 
-                    $this->unpublishIfLackingPermission($entity);
+                    $this->unpublishIfLackingPermission($entity, $corePermissions);
 
                     try {
                         // form is valid so process the data
@@ -546,7 +549,7 @@ class EmailController extends FormController
                             $template  = 'Mautic\EmailBundle\Controller\EmailController::viewAction';
                         } else {
                             // return edit view so that all the session stuff is loaded
-                            return $this->editAction($request, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $emailConfig, $model, $themeHelper, $entity->getId(), true);
+                            return $this->editAction($request, $assetModel, $corePermissions, $emailConfig, $model, $themeHelper, $entity->getId(), true);
                         }
                     } catch (InvalidRenderedHtmlException $e) {
                         $valid                  = false;
@@ -641,10 +644,8 @@ class EmailController extends FormController
      */
     public function editAction(
         Request $request,
-        AssetsHelper $assetsHelper,
-        Translator $translator,
-        RouterInterface $routerHelper,
-        CoreParametersHelper $coreParametersHelper,
+        AssetModel $assetModel,
+        CorePermissions $corePermissions,
         EmailConfig $emailConfig,
         EmailModel $model,
         ThemeHelper $themeHelper,
@@ -721,7 +722,7 @@ class EmailController extends FormController
                     $content = $entity->getCustomHtml();
                     $entity->setCustomHtml($content);
 
-                    $this->unpublishIfLackingPermission($entity);
+                    $this->unpublishIfLackingPermission($entity, $corePermissions);
 
                     //form is valid so process the data
                     try {
@@ -828,8 +829,6 @@ class EmailController extends FormController
         }
 
         $assets     = $form['assetAttachments']->getData();
-        $assetModel = $this->getModel('asset');
-        \assert($assetModel instanceof AssetModel);
         $attachmentSize = $assetModel->getTotalFilesize($assets);
 
         $routeParams = [
@@ -894,7 +893,7 @@ class EmailController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction(Request $request, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, EmailModel $model, ThemeHelper $themeHelper, $objectId)
+    public function cloneAction(Request $request, EmailModel $model, ThemeHelper $themeHelper, $objectId)
     {
         $emailEntity  = $model->getEntity($objectId);
         $entity       = null;
@@ -1182,8 +1181,14 @@ class EmailController extends FormController
      *
      * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function abtestAction(Request $request, AssetsHelper $assetsHelper, Translator $translator, RouterInterface $routerHelper, CoreParametersHelper $coreParametersHelper, EmailConfig $emailConfig, EmailModel $model, ThemeHelper $themeHelper, $objectId)
-    {
+    public function abtestAction(
+        Request $request, 
+        AssetModel $assetModel, 
+        CorePermissions $corePermissions, 
+        EmailConfig $emailConfig, 
+        EmailModel $model, 
+        ThemeHelper $themeHelper, $objectId
+    ) {
         $entity = $model->getEntity($objectId);
 
         if (null != $entity) {
@@ -1209,7 +1214,7 @@ class EmailController extends FormController
             $clone->setVariantParent($entity);
         }
 
-        return $this->newAction($request, $assetsHelper, $translator, $routerHelper, $coreParametersHelper, $emailConfig, $model, $themeHelper, $clone);
+        return $this->newAction($request, $assetModel, $corePermissions, $emailConfig, $model, $themeHelper, $clone);
     }
 
     /**
@@ -1688,11 +1693,9 @@ class EmailController extends FormController
         $clonedEmail->setDraft($cloningEmail->getDraft());
     }
 
-    private function unpublishIfLackingPermission(Email $entity): Email
+    private function unpublishIfLackingPermission(Email $entity, CorePermissions $corePermissions): Email
     {
-        $security = $this->get('mautic.security');
-        \assert($security instanceof CorePermissions);
-        $canPublish = $security->hasPublishAccessForEntity(
+        $canPublish = $corePermissions->hasPublishAccessForEntity(
             $entity,
             'email:emails:publishown',
             'email:emails:publishother'

@@ -77,11 +77,6 @@ trait TranslationEntityTrait
         return $this->translationChildren;
     }
 
-    /**
-     * @param (TranslationEntityInterface&self)|null $parent
-     *
-     * @return $this
-     */
     public function setTranslationParent(?TranslationEntityInterface $parent = null): self
     {
         if (method_exists($this, 'isChanged')) {
