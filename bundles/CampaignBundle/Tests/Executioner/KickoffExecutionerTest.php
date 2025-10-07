@@ -10,6 +10,7 @@ use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Executioner\ContactFinder\KickoffContactFinder;
 use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
 use Mautic\CampaignBundle\Executioner\EventExecutioner;
+use Mautic\CampaignBundle\Executioner\Helper\EventRedirectionHelper;
 use Mautic\CampaignBundle\Executioner\KickoffExecutioner;
 use Mautic\CampaignBundle\Executioner\Result\Counter;
 use Mautic\CampaignBundle\Executioner\Scheduler\EventScheduler;
@@ -18,6 +19,7 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\LeadBundle\Entity\Lead;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\NullLogger;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -26,29 +28,44 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|KickoffContactFinder
+     * @var MockObject&KickoffContactFinder
      */
     private MockObject $kickoffContactFinder;
 
     /**
-     * @var MockObject|Translator
+     * @var MockObject&Translator
      */
     private MockObject $translator;
 
     /**
-     * @var MockObject|EventExecutioner
+     * @var MockObject&EventExecutioner
      */
     private MockObject $executioner;
 
     /**
-     * @var MockObject|EventScheduler
+     * @var MockObject&EventScheduler
      */
     private MockObject $scheduler;
 
     /**
-     * @var CoreParametersHelper&MockObject
+     * @var MockObject&CoreParametersHelper
      */
     private MockObject $coreParametersHelper;
+
+    /**
+     * @var MockObject&EventRedirectionHelper
+     */
+    private MockObject $redirectionHelper;
+
+    /**
+     * @var MockObject&EntityManagerInterface
+     */
+    private MockObject $entityManager;
+
+    /**
+     * @var MockObject&EventDispatcherInterface
+     */
+    private MockObject $eventDispatcher;
 
     protected function setUp(): void
     {
@@ -57,6 +74,9 @@ class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
         $this->executioner          = $this->createMock(EventExecutioner::class);
         $this->scheduler            = $this->createMock(EventScheduler::class);
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+        $this->redirectionHelper    = $this->createMock(EventRedirectionHelper::class);
+        $this->entityManager        = $this->createMock(EntityManagerInterface::class);
+        $this->eventDispatcher      = $this->createMock(EventDispatcherInterface::class);
     }
 
     public function testNoContactsResultInEmptyResults(): void
@@ -116,14 +136,12 @@ class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
         $callbackCounter = 0;
         $this->scheduler->expects($this->exactly(4))
             ->method('validateAndScheduleEventForContacts')
-            ->willReturnCallback(
-                function () use (&$callbackCounter): void {
-                    ++$callbackCounter;
-                    if (in_array($callbackCounter, [3, 4])) {
-                        throw new NotSchedulableException();
-                    }
+            ->willReturnCallback(function () use (&$callbackCounter) {
+                ++$callbackCounter;
+                if (in_array($callbackCounter, [3, 4])) {
+                    throw new NotSchedulableException();
                 }
-            );
+            });
 
         $this->executioner->expects($this->exactly(1))
             ->method('executeEventsForContacts')->willReturnCallback(function (...$parameters) {
@@ -148,7 +166,9 @@ class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
             $this->scheduler,
             $this->createMock(ProcessSignalService::class),
             $this->coreParametersHelper,
-            $this->createMock(EventDispatcherInterface::class),
+            $this->eventDispatcher,
+            $this->redirectionHelper,
+            $this->entityManager,
         );
     }
 }
