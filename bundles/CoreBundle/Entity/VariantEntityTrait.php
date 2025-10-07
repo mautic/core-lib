@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping\Entity;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @template T of VariantEntityInterface
+ */
 trait VariantEntityTrait
 {
     /**
@@ -17,7 +20,8 @@ trait VariantEntityTrait
     private $variantChildren;
 
     /**
-     * @var (VariantEntityInterface&self)|null
+     * @var VariantEntityInterface|null
+     * @phpstan-var T|null
      *
      * @Groups({"email:read", "email:write", "download:read"})
      **/

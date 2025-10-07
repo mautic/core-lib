@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @template T of TranslationEntityInterface
+ */
 trait TranslationEntityTrait
 {
     /**
@@ -26,7 +29,8 @@ trait TranslationEntityTrait
     private $translationChildren;
 
     /**
-     * @var (TranslationEntityInterface&self)|null
+     * @var TranslationEntityInterface|null
+     * @phpstan-var T|null
      *
      * @Groups({"page:read", "page:write", "download:read", "download:write", "email:read", "email:write", "dynamicContent:read", "dynamicContent:write"})
      **/
