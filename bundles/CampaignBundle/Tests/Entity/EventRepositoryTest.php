@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Entity;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr;
 use Mautic\CampaignBundle\Entity\Event;
@@ -114,7 +116,7 @@ final class EventRepositoryTest extends TestCase
         $connMock          = $this->createMock(Connection::class);
         $queryBuilderMock  = $this->createMock(QueryBuilder::class);
         $selectBuilderMock = $this->createMock(QueryBuilder::class);
-        $statementMock     = $this->createMock(\Doctrine\DBAL\Statement::class);
+        $statementMock     = $this->createMock(Result::class);
 
         // We expect one call to getConnection - the connection is retrieved once and reused
         $emMock->expects($this->once())
@@ -154,12 +156,12 @@ final class EventRepositoryTest extends TestCase
 
         $selectBuilderMock->expects($this->once())
             ->method('setParameter')
-            ->with('eventIds', [123, 789, 101, 303], Connection::PARAM_INT_ARRAY)
+            ->with('eventIds', [123, 789, 101, 303], ArrayParameterType::INTEGER)
             ->willReturnSelf();
 
         // Mock the execute and fetchAllAssociative
         $selectBuilderMock->expects($this->once())
-            ->method('execute')
+            ->method('executeQuery')
             ->willReturn($statementMock);
 
         $statementMock->expects($this->once())
@@ -208,8 +210,18 @@ final class EventRepositoryTest extends TestCase
         $queryBuilderMock->expects($this->exactly(2))
             ->method('execute');
 
-        $class           = new ClassMetadata(Event::class);
-        $eventRepository = new EventRepository($emMock, $class);
+        $eventRepository = $this->configureRepository(Event::class, $emMock);
+        $this->connection->method('createQueryBuilder')
+            ->willReturnCallback(function () use ($selectBuilderMock, $queryBuilderMock) {
+                static $callCount = 0;
+                ++$callCount;
+                if (1 === $callCount) {
+                    return $selectBuilderMock;
+                }
+
+                return $queryBuilderMock;
+            });
+
         $eventRepository->setEventsAsDeletedWithRedirect($eventData);
     }
 }

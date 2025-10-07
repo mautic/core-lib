@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\CampaignBundle\Tests\Executioner;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
@@ -18,6 +19,7 @@ use Mautic\CampaignBundle\Executioner\Scheduler\EventScheduler;
 use Mautic\CoreBundle\ProcessSignal\ProcessSignalService;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\LeadBundle\Entity\LeadRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -60,6 +62,16 @@ class ScheduledExecutionerTest extends TestCase
      */
     private $redirectionHelper;
 
+    /**
+     * @var MockObject&EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
+     * @var MockObject&LeadRepository
+     */
+    private $leadRepository;
+
     protected function setUp(): void
     {
         $this->repository           = $this->createMock(LeadEventLogRepository::class);
@@ -69,6 +81,8 @@ class ScheduledExecutionerTest extends TestCase
         $this->contactFinder        = $this->createMock(ScheduledContactFinder::class);
         $this->processSignalService = $this->createMock(ProcessSignalService::class);
         $this->redirectionHelper    = $this->createMock(EventRedirectionHelper::class);
+        $this->entityManager        = $this->createMock(EntityManagerInterface::class);
+        $this->leadRepository       = $this->createMock(LeadRepository::class);
 
         // Configure the redirection helper mock to return the event it receives
         $this->redirectionHelper->method('handleEventRedirection')
@@ -252,7 +266,9 @@ class ScheduledExecutionerTest extends TestCase
             $this->scheduler,
             $this->contactFinder,
             $this->processSignalService,
-            $this->redirectionHelper
+            $this->entityManager,
+            $this->redirectionHelper,
+            $this->leadRepository
         );
     }
 }

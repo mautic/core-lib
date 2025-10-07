@@ -96,18 +96,11 @@ class EventModelTest extends TestCase
             ['id' => $idToDelete, 'redirectEvent' => null],
         ];
 
-        $eventRepositoryMock = $this->createMock(EventRepository::class);
-        $entityManagerMock   = $this->createMock(EntityManagerInterface::class);
-
-        $entityManagerMock->expects($this->any())
-            ->method('getRepository')
-            ->willReturn($eventRepositoryMock);
-
-        $eventRepositoryMock->expects($this->once())
+        $this->eventRepositoryMock->expects($this->once())
             ->method('nullEventRelationships')
             ->with([$idToDelete]);
 
-        $eventRepositoryMock->expects($this->once())
+        $this->eventRepositoryMock->expects($this->once())
             ->method('setEventsAsDeletedWithRedirect')
             ->with([
                 [
@@ -116,15 +109,11 @@ class EventModelTest extends TestCase
                 ],
             ]);
 
-        $dispatcherMock = $this->createMock(EventDispatcherInterface::class);
-        $dispatcherMock
+        $this->dispatcherMock
             ->expects($this->once())
             ->method('dispatch')
             ->with(new DeleteEvent([$idToDelete]), CampaignEvents::ON_EVENT_DELETE);
 
-        // Use our local mocks instead of the class properties
-        $this->eventModel->setEntityManager($entityManagerMock);
-        $this->eventModel->setDispatcher($dispatcherMock);
         $this->eventModel->deleteEvents($currentEvents, $deletedEvents);
     }
 
@@ -158,14 +147,11 @@ class EventModelTest extends TestCase
                 ],
             ]);
 
-        $dispatcherMock = $this->createMock(EventDispatcherInterface::class);
-        $dispatcherMock
+        $this->dispatcherMock
             ->expects($this->once())
             ->method('dispatch')
             ->with(new DeleteEvent(['old1']), CampaignEvents::ON_EVENT_DELETE);
 
-        $this->eventModel->setEntityManager($this->entityManagerMock);
-        $this->eventModel->setDispatcher($dispatcherMock);
         $this->eventModel->deleteEvents($currentEvents, $deletedEvents);
     }
 

@@ -35,8 +35,7 @@ class EventRedirectionHelper
     public function handleEventRedirection(Event $event, ?Collection $events, mixed $key): Event
     {
         $visited       = [];
-        $depth         = 0;
-        $redirectEvent = $this->findRedirectEventInCampaign($event, $visited, $depth + 1);
+        $redirectEvent = $this->findRedirectEventInCampaign($event, $visited, 1);
 
         if (!$redirectEvent) {
             return $event;

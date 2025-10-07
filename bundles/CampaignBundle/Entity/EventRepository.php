@@ -271,7 +271,6 @@ class EventRepository extends CommonRepository
             ->execute();
     }
 
-
     /**
      * Sets events as deleted and updates their redirectEvent in a single operation.
      *

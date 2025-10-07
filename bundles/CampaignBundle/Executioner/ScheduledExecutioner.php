@@ -382,7 +382,7 @@ class ScheduledExecutioner implements ExecutionerInterface, ResetInterface
             $rotation = $this->leadRepository->getContactRotations(
                 [$contactId], $redirectEvent->getCampaign()->getId());
             $rotationValue = $rotation[$contactId]['rotation'] ?? 0;
-            $newRotation   = ($rotationValue ?? 0) + 1;
+            $newRotation   = $rotationValue + 1;
 
             // 2. Update the log entity with new event, campaign, rotation, and metadata
             $log->setEvent($redirectEvent);
