@@ -82,6 +82,8 @@
                                             {% endif %}
                                             {% if cellVal is not empty and cellVal is not null %}
                                                 {% if 'datetime' is same as cellType %}
+                                                    {{ dateToFullConcat(cellVal, 'UTC') }}
+                                                {% elseif 'date' is same as cellType %}
                                                     {{ dateToShort(cellVal, 'UTC') }}
                                                 {% else %}
                                                     {% set value = format(cellVal, cellType)|purify %}
