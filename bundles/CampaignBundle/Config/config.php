@@ -247,6 +247,7 @@ return [
                     'mautic.campaign.scheduler',
                     'mautic.tracker.contact',
                     'mautic.campaign.helper.decision',
+                    'mautic.campaign.helper.event_redirection',
                 ],
             ],
             'mautic.campaign.helper.decision' => [
@@ -277,6 +278,12 @@ return [
                     'translator',
                     'router',
                     'mautic.helper.core_parameters',
+                ],
+            ],
+            'mautic.campaign.helper.event_redirection' => [
+                'class'     => Mautic\CampaignBundle\Executioner\Helper\EventRedirectionHelper::class,
+                'arguments' => [
+                    'monolog.logger.mautic',
                 ],
             ],
             // @deprecated 2.13.0 for BC support; to be removed in 3.0
