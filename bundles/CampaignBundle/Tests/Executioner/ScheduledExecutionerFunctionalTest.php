@@ -337,7 +337,7 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $originalEvent->setRedirectEvent($redirectEvent);
 
         // Add contact to campaign with initial rotation 0
-        $campaignMember = new \Mautic\CampaignBundle\Entity\Lead();
+        $campaignMember = new CampaignLead();
         $campaignMember->setCampaign($campaign);
         $campaignMember->setLead($contact);
         $campaignMember->setDateAdded(new \DateTime());
@@ -422,7 +422,7 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
     }
 
     private function createScheduledLog(Event $event, Lead $contact, ?\DateTime $triggerDate = null,
-                                        int $rotation = 1): LeadEventLog
+        int $rotation = 1): LeadEventLog
     {
         $log = new LeadEventLog();
         $log->setEvent($event);

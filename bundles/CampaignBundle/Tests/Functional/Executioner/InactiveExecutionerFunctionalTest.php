@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Functional\Executioner;
 
-use DateTime;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
@@ -42,7 +41,7 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $originalDecision->addChild($negativeAction);
 
         // Set up redirection: decision redirects to already executed action
-        $originalDecision->setDeleted(new DateTime());
+        $originalDecision->setDeleted(new \DateTime());
         $originalDecision->setRedirectEvent($targetAction);
 
         // Log: Parent event was executed successfully
@@ -112,7 +111,7 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $redirectAction = $this->createActionEvent($campaign, 'Redirect Action');
 
         // Set up redirection: decision is deleted and redirects to action
-        $originalDecision->setDeleted(new DateTime());
+        $originalDecision->setDeleted(new \DateTime());
         $originalDecision->setRedirectEvent($redirectAction);
 
         // Log: Parent event was executed successfully
@@ -173,7 +172,7 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $redirectCondition = $this->createConditionEvent($campaign, 'Redirect Condition');
 
         // Set up redirection: original decision redirects to condition
-        $originalDecision->setDeleted(new DateTime());
+        $originalDecision->setDeleted(new \DateTime());
         $originalDecision->setRedirectEvent($redirectCondition);
 
         // Log: Parent event was executed successfully
@@ -246,7 +245,7 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $campaignLead = new CampaignLead();
         $campaignLead->setCampaign($campaign);
         $campaignLead->setLead($contact);
-        $campaignLead->setDateAdded(new DateTime('-2 days'));
+        $campaignLead->setDateAdded(new \DateTime('-2 days'));
         $campaignLead->setManuallyAdded(false);
         $campaignLead->setManuallyRemoved(false);
         $campaignLead->setRotation(1);
@@ -261,7 +260,7 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $eventLog->setEvent($event);
         $eventLog->setLead($contact);
         $eventLog->setRotation(1);
-        $eventLog->setDateTriggered(new DateTime('-1 day'));
+        $eventLog->setDateTriggered(new \DateTime('-1 day'));
         $eventLog->setIsScheduled(false);
 
         return $eventLog;
@@ -283,8 +282,8 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         return $event;
     }
 
-    private function createActionEvent(Campaign $campaign, string $name, Event $parent = null,
-                                       string $decisionPath = null): Event
+    private function createActionEvent(Campaign $campaign, string $name, ?Event $parent = null,
+        ?string $decisionPath = null): Event
     {
         $event = new Event();
         $event->setCampaign($campaign);
@@ -305,7 +304,7 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         return $event;
     }
 
-    private function createConditionEvent(Campaign $campaign, string $name, Event $parent = null): Event
+    private function createConditionEvent(Campaign $campaign, string $name, ?Event $parent = null): Event
     {
         $event = new Event();
         $event->setCampaign($campaign);

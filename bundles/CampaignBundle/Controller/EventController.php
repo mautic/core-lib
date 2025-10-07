@@ -386,7 +386,12 @@ class EventController extends CommonFormController
             if (!in_array($objectId, $deletedEvents)) {
                 // If event is new don't add to deleted list
                 if (!str_contains($objectId, 'new')) {
-                    $deletedEvents[] = $objectId;
+                    $redirectEvent = $request->get('redirectTo');
+
+                    $deletedEvents[] = [
+                        'id'            => $objectId,
+                        'redirectEvent' => $redirectEvent ?: null,
+                    ];
                 }
 
                 // Always remove from modified list if deleted
@@ -443,9 +448,11 @@ class EventController extends CommonFormController
             $event['settings'] = $events[$event['eventType']][$event['type']];
 
             // add the field to the delete list
-            if (in_array($objectId, $deletedEvents)) {
-                $key = array_search($objectId, $deletedEvents);
-                unset($deletedEvents[$key]);
+            foreach ($deletedEvents as $key => $deleteInfo) {
+                if (isset($deleteInfo['id']) && $deleteInfo['id'] === $objectId) {
+                    unset($deletedEvents[$key]);
+                    break;
+                }
             }
 
             $template = (empty($event['settings']['template'])) ? '@MauticCampaign/Event/_generic.html.twig'
