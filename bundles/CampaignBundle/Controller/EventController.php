@@ -379,8 +379,10 @@ class EventController extends CommonFormController
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
 
         if ('POST' == $request->getMethod() && null !== $event) {
-            $events            = $this->eventCollector->getEventsArray();
-            $event['settings'] = $events[$event['eventType']][$event['type']];
+            $events = $this->eventCollector->getEventsArray();
+            if (isset($event['eventType'], $event['type']) && isset($events[$event['eventType']][$event['type']])) {
+                $event['settings'] = $events[$event['eventType']][$event['type']];
+            }
 
             // Add the field to the delete list
             if (!in_array($objectId, $deletedEvents)) {
@@ -444,8 +446,10 @@ class EventController extends CommonFormController
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
 
         if ('POST' == $request->getMethod() && null !== $event) {
-            $events            = $this->eventCollector->getEventsArray();
-            $event['settings'] = $events[$event['eventType']][$event['type']];
+            $events = $this->eventCollector->getEventsArray();
+            if (isset($event['eventType'], $event['type']) && isset($events[$event['eventType']][$event['type']])) {
+                $event['settings'] = $events[$event['eventType']][$event['type']];
+            }
 
             // add the field to the delete list
             foreach ($deletedEvents as $key => $deleteInfo) {
