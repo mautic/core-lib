@@ -206,9 +206,9 @@ final class EventRepositoryTest extends TestCase
             ->method('setParameter')
             ->willReturnSelf();
 
-        // Execute should be called for each update (2 events - only the non-deleted ones)
+        // executeStatement should be called for each update (2 events - only the non-deleted ones)
         $queryBuilderMock->expects($this->exactly(2))
-            ->method('execute');
+            ->method('executeStatement');
 
         $eventRepository = $this->configureRepository(Event::class, $emMock);
         $this->connection->method('createQueryBuilder')
