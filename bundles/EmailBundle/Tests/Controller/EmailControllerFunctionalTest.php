@@ -677,12 +677,12 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $isUnpublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="0"]');
         Assert::assertCount(1, $isUnpublishedInput, 'The unpublished field should be found.');
         Assert::assertSame($expectDisabled, !is_null($isUnpublishedInput->attr('disabled')));
-        Assert::assertSame(true, is_null($isUnpublishedInput->attr('checked')));
+        Assert::assertTrue(is_null($isUnpublishedInput->attr('checked')));
 
         $isPublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="1"]');
         Assert::assertCount(1, $isPublishedInput, 'The unpublished field should be found.');
         Assert::assertSame($expectDisabled, !is_null($isPublishedInput->attr('disabled')));
-        Assert::assertSame(true, !is_null($isPublishedInput->attr('checked')));
+        Assert::assertTrue(!is_null($isPublishedInput->attr('checked')));
 
         $publishUpInput   = $crawler->filter('input[name="emailform[publishUp]"]');
         $publishDownInput = $crawler->filter('input[name="emailform[publishDown]"]');

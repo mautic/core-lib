@@ -222,18 +222,16 @@ class EmailType extends AbstractType
 
         $canPublish = $this->corePermissions->hasPublishAccessForEntity($emailEntity, 'email:emails:publishown', 'email:emails:publishother');
 
-        $builder->add(
-            'isPublished',
-            YesNoButtonGroupType::class,
-            [
-                'data'     => $emailEntity->isNew() ? $canPublish : $emailEntity->getIsPublished(),
-                'disabled' => !$canPublish, // Duplicated here for Symfony validations
-                'attr'     => [
-                    'disabled' => !$canPublish, // Duplicated here for the JS switch library
-                ],
-            ]
-        );
+        $isPublishOptions = [
+            'data' => $emailEntity->isNew() ? $canPublish : $emailEntity->getIsPublished(),
+        ];
 
+        if (!$canPublish) {
+            $isPublishOptions['disabled'] = true; // Duplicated here for Symfony validations
+            $isPublishOptions['attr']     = ['disabled' => true]; // Duplicated here for the JS switch library
+        }
+
+        $builder->add('isPublished', YesNoButtonGroupType::class, $isPublishOptions);
         $builder->add('publishUp', PublishUpDateType::class, ['disabled' => !$canPublish]);
         $builder->add('publishDown', PublishDownDateType::class, ['disabled' => !$canPublish]);
 

@@ -424,7 +424,7 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
             return $this->security->hasPublishAccessForEntity($entity, $ownPerm, $otherPerm);
         }
 
-        if ('create' !== $action && method_exists($entity, 'getCreatedBy')) {
+        if ('create' !== $action && is_object($entity) && method_exists($entity, 'getCreatedBy')) {
             $owner = (method_exists($entity, 'getPermissionUser')) ? $entity->getPermissionUser() : $entity->getCreatedBy();
 
             return $this->security->hasEntityAccess($ownPerm, $otherPerm, $owner);
