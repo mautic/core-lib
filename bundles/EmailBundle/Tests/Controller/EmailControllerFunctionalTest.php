@@ -541,8 +541,8 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
         Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
-        $isUnpublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="0"]:not([disabled="disabled"][checked="checked"])');
-        $isPublishedInput   = $crawler->filter('input[name="emailform[isPublished]"][value="1"][checked="checked"]:not([disabled="disabled"])');
+        $isUnpublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="0"]:not([disabled="disabled"][checked])');
+        $isPublishedInput   = $crawler->filter('input[name="emailform[isPublished]"][value="1"][checked]:not([disabled="disabled"])');
         $publishUpInput     = $crawler->filter('input[name="emailform[publishUp]"]:not([disabled="disabled"])');
         $publishDownInput   = $crawler->filter('input[name="emailform[publishDown]"]:not([disabled="disabled"])');
         Assert::assertCount(1, $isUnpublishedInput, 'The unpublished field should be found, unchecked and enabled.');
@@ -575,6 +575,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->setPermission($user->getRole(), ['email:emails' => $permissions]);
         $this->loginUser($user);
         $this->client->setServerParameter('PHP_AUTH_USER', 'sales');
+        $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
         $this->assertResponseIsSuccessful();
@@ -612,21 +613,21 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     public static function createPermissionDataProvider(): iterable
     {
         yield 'user cannot publish without publish permission' => [
-            'permissioins'       => ['create'],
+            'permissions'        => ['create'],
             'expectDisabled'     => true,
             'publishedByDefault' => false,
             'publishAfterSave'   => false,
         ];
 
         yield 'user can publish other with just publish own permission' => [
-            'permissioins'       => ['create', 'publishown'],
+            'permissions'        => ['create', 'publishown'],
             'expectDisabled'     => false,
             'publishedByDefault' => true,
             'publishAfterSave'   => true,
         ];
 
         yield 'user cannot publish own with just publish other permission' => [
-            'permissioins'       => ['create', 'publishother'],
+            'permissions'        => ['create', 'publishother'],
             'expectDisabled'     => true,
             'publishedByDefault' => false,
             'publishAfterSave'   => false,
@@ -639,8 +640,8 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/edit/{$email->getId()}");
         Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
-        $isUnpublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="0"]:not([disabled="disabled"][checked="checked"])');
-        $isPublishedInput   = $crawler->filter('input[name="emailform[isPublished]"][value="1"][checked="checked"]:not([disabled="disabled"])');
+        $isUnpublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="0"]:not([disabled="disabled"][checked])');
+        $isPublishedInput   = $crawler->filter('input[name="emailform[isPublished]"][value="1"][checked]:not([disabled="disabled"])');
         $publishUpInput     = $crawler->filter('input[name="emailform[publishUp]"]:not([disabled="disabled"])');
         $publishDownInput   = $crawler->filter('input[name="emailform[publishDown]"]:not([disabled="disabled"])');
         Assert::assertCount(1, $isUnpublishedInput, 'The unpublished field should be found, unchecked and enabled.');
@@ -664,22 +665,24 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         // Set user to be able to create emails, but not publish them.
         $loggedInUser = $this->em->getRepository(User::class)->findOneBy(['username' => $user]);
         $this->setPermission($loggedInUser->getRole(), ['email:emails' => $permissions]);
+
         $this->loginUser($loggedInUser);
-        $this->client->setServerParameter('PHP_AUTH_USER', $user);
+        $this->client->setServerParameter('PHP_AUTH_USER', $loggedInUser->getUserIdentifier());
+        $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
 
         // Check that the publish button is disabled and set to unpublish for the sales user.
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/edit/{$email->getId()}");
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
 
         $isUnpublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="0"]');
         Assert::assertCount(1, $isUnpublishedInput, 'The unpublished field should be found.');
         Assert::assertSame($expectDisabled, !is_null($isUnpublishedInput->attr('disabled')));
-        Assert::assertTrue(is_null($isUnpublishedInput->attr('checked')));
+        Assert::assertSame(true, is_null($isUnpublishedInput->attr('checked')));
 
         $isPublishedInput = $crawler->filter('input[name="emailform[isPublished]"][value="1"]');
         Assert::assertCount(1, $isPublishedInput, 'The unpublished field should be found.');
         Assert::assertSame($expectDisabled, !is_null($isPublishedInput->attr('disabled')));
-        Assert::assertTrue(!is_null($isPublishedInput->attr('checked')));
+        Assert::assertSame(true, !is_null($isPublishedInput->attr('checked')));
 
         $publishUpInput   = $crawler->filter('input[name="emailform[publishUp]"]');
         $publishDownInput = $crawler->filter('input[name="emailform[publishDown]"]');
@@ -694,7 +697,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $form['emailform[isPublished]']->setValue('0'); // Tries to change the email to unpublished.
 
         $this->client->submit($form);
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         $email = $this->em->getRepository(Email::class)->findOneBy(['name' => 'Email publish test']);
         Assert::assertSame($publishAfterSave, $email->getIsPublished());
@@ -708,7 +711,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         yield 'user cannot publish without publish permission' => [
             'owner'            => 'sales',
             'user'             => 'sales',
-            'permissioins'     => ['editown', 'editother'],
+            'permissions'      => ['editown', 'editother'],
             'expectDisabled'   => true,
             'publishAfterSave' => true,
         ];
@@ -716,7 +719,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         yield 'user cannot publish other with just publish own permission' => [
             'owner'            => 'admin',
             'user'             => 'sales',
-            'permissioins'     => ['editown', 'editother', 'publishown'],
+            'permissions'      => ['editown', 'editother', 'publishown'],
             'expectDisabled'   => true,
             'publishAfterSave' => true,
         ];
@@ -724,7 +727,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         yield 'user cannot publish own with just publish other permission' => [
             'owner'            => 'sales',
             'user'             => 'sales',
-            'permissioins'     => ['editown', 'editother', 'publishother'],
+            'permissions'      => ['editown', 'editother', 'publishother'],
             'expectDisabled'   => true,
             'publishAfterSave' => true,
         ];
@@ -732,7 +735,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         yield 'user can publish own with just publish own permission' => [
             'owner'            => 'sales',
             'user'             => 'sales',
-            'permissioins'     => ['editown', 'editother', 'publishown'],
+            'permissions'      => ['editown', 'editother', 'publishown'],
             'expectDisabled'   => false,
             'publishAfterSave' => false,
         ];
@@ -740,7 +743,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         yield 'user can publish other with just publish other permission' => [
             'owner'            => 'admin',
             'user'             => 'sales',
-            'permissioins'     => ['editown', 'editother', 'publishother'],
+            'permissions'      => ['editown', 'editother', 'publishother'],
             'expectDisabled'   => false,
             'publishAfterSave' => false,
         ];
