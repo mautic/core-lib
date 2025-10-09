@@ -105,7 +105,7 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, $readCount], $result['datasets'][1]['data']);
         $this->assertEquals('Failed emails', $result['datasets'][2]['label']);
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 1], $result['datasets'][2]['data']);
-        $this->assertEquals('Clicked', $result['datasets'][3]['label']);
+        $this->assertEquals('Unique Clicked', $result['datasets'][3]['label']);
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 2], $result['datasets'][3]['data']);
         $this->assertEquals('Unsubscribed', $result['datasets'][4]['label']);
         $this->assertEquals([0, 0, 0, 0, 0, 0, 0, 1], $result['datasets'][4]['data']);
@@ -184,7 +184,6 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->addContactsToSegment($contacts, $segment);
         $email = $this->createEmail($segment);
 
-        $emailModel                                             =  static::getContainer()->get('mautic.email.model.email');
         [$sentCount, $failedCount, $failedRecipientsByList]     = $this->emailModel->sendEmailToLists($email, [$segment], 4, 2);
         $this->assertEquals($sentCount, 4);
         [$sentCount, $failedCount, $failedRecipientsByList] = $this->emailModel->sendEmailToLists($email, [$segment], 3, 2);
@@ -233,10 +232,8 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->em->detach($parentEmail);
         $this->em->detach($childrenEmail);
 
-        $emailModel = static::getContainer()->get('mautic.email.model.email');
-        \assert($emailModel instanceof EmailModel);
         $parentEmail->setName('Test change');
-        $emailModel->saveEntity($parentEmail);
+        $this->emailModel->saveEntity($parentEmail);
 
         self::assertSame($customHtmlParent, $parentEmail->getCustomHtml());
         self::assertSame($customHtmlChildren, $childrenEmail->getCustomHtml());
@@ -314,7 +311,7 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($emailStat);
     }
 
-    private function createDnc(string $channel, Lead $contact, int $reason, int $channelId = null): DoNotContact
+    private function createDnc(string $channel, Lead $contact, int $reason, ?int $channelId = null): DoNotContact
     {
         $dnc = new DoNotContact();
         $dnc->setChannel($channel);
@@ -439,9 +436,6 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
      */
     public function testGetContextEntity(): void
     {
-        /** @var EmailModel $emailModel */
-        $emailModel   = $this->getContainer()->get('mautic.email.model.email');
-
         $email = new Email();
         $email->setName('Test email');
         $this->em->persist($email);

@@ -2,6 +2,13 @@
 
 namespace Mautic\FormBundle\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
@@ -11,143 +18,172 @@ use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\FormBundle\ProgressiveProfiling\DisplayManager;
 use Mautic\LeadBundle\Entity\Lead;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "field:read"
- *        },
- *       "swagger_definition_name"="Read"
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "field:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new GetCollection(security: "is_granted('form:forms:viewown')"),
+        new Post(security: "is_granted('form:forms:create')"),
+        new Get(security: "is_granted('form:forms:viewown')"),
+        new Put(security: "is_granted('form:forms:editown')"),
+        new Patch(security: "is_granted('form:forms:editother')"),
+        new Delete(security: "is_granted('form:forms:deleteown')"),
+    ],
+    normalizationContext: [
+        'groups'                  => ['field:read'],
+        'swagger_definition_name' => 'Read',
+    ],
+    denormalizationContext: [
+        'groups'                  => ['field:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class Field implements UuidInterface
 {
     use UuidTrait;
 
-    public const TABLE_NAME = 'form_fields';
+    public const TABLE_NAME  = 'form_fields';
+    public const ENTITY_NAME = 'form_field';
 
     /**
      * @var int
      */
+    #[Groups(['field:read', 'form:read', 'campaign:read', 'email:read'])]
     private $id;
 
     /**
      * @var string
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $label;
 
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $showLabel = true;
 
     /**
      * @var string
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $alias;
 
     /**
      * @var string
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $type;
 
     /**
      * @var bool
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isCustom = false;
 
     /**
      * @var array
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $customParameters = [];
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $defaultValue;
 
     /**
      * @var bool
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isRequired = false;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $validationMessage;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $helpMessage;
 
     /**
      * @var int|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $order = 0;
 
     /**
      * @var array
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $properties = [];
 
     /**
      * @var array
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $validation = [];
 
     /**
      * @var array<string,mixed>|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $conditions = [];
 
     /**
      * @var Form|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $form;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $labelAttributes;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $inputAttributes;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $containerAttributes;
 
     /**
      * @var string|null
+     *
+     * @deprecated, to be removed in Mautic 4. Use mappedObject and mappedField instead.
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $leadField;
 
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $saveResult = true;
 
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isAutoFill = false;
 
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private bool $isReadOnly = false;
+
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
+    private string $fieldWidth = '100%';
 
     /**
      * @var array
@@ -159,32 +195,40 @@ class Field implements UuidInterface
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $showWhenValueExists;
 
     /**
      * @var int|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $showAfterXSubmissions;
 
     /**
      * @var bool|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $alwaysDisplay;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $parent;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $mappedObject;
 
     /**
      * @var string|null
      */
+    #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $mappedField;
+
+    public ?int $deletedId;
 
     /**
      * Reset properties on clone.
@@ -243,6 +287,11 @@ class Field implements UuidInterface
         $builder->addNullableField('alwaysDisplay', Types::BOOLEAN, 'always_display');
         $builder->addNullableField('mappedObject', Types::STRING, 'mapped_object');
         $builder->addNullableField('mappedField', Types::STRING, 'mapped_field');
+        $builder->createField('fieldWidth', Types::STRING)
+            ->columnName('field_width')
+            ->length(50)
+            ->option('default', '100%')
+            ->build();
         static::addUuidField($builder);
     }
 
@@ -277,6 +326,7 @@ class Field implements UuidInterface
                     'isReadOnly',
                     'mappedObject',
                     'mappedField',
+                    'fieldWidth',
                 ]
             )
             ->build();
@@ -841,7 +891,7 @@ class Field implements UuidInterface
      *
      * @param array|null $submissions
      */
-    public function showForContact($submissions = null, Lead $lead = null, Form $form = null, DisplayManager $displayManager = null): bool
+    public function showForContact($submissions = null, ?Lead $lead = null, ?Form $form = null, ?DisplayManager $displayManager = null): bool
     {
         // Always show in the kiosk mode
         if (null !== $form && true === $form->getInKioskMode()) {
@@ -1042,12 +1092,31 @@ class Field implements UuidInterface
             return;
         }
 
+        /**
+         * Ignoring this line because the leadField is deprecated and will be removed in Mautic 4.
+         * Todo: Use mappedObject or mappedField instead.
+         *
+         * @phpstan-ignore-next-line
+         */
         $this->leadField = null;
     }
 
     public function isAutoFillReadOnly(): bool
     {
         return $this->isAutoFill && $this->isReadOnly;
+    }
+
+    public function getFieldWidth(): string
+    {
+        return empty($this->fieldWidth) ? '100%' : $this->fieldWidth;
+    }
+
+    public function setFieldWidth(?string $fieldWidth): Field
+    {
+        $this->isChanged('fieldWidth', $fieldWidth);
+        $this->fieldWidth = $fieldWidth;
+
+        return $this;
     }
 
     public function setIsReadOnly(?bool $isReadOnly): void

@@ -15,6 +15,11 @@ use Mautic\CoreBundle\Helper\InputHelper;
 class LeadFieldRepository extends CommonRepository
 {
     /**
+     * @var array<int|string, array<string,mixed>>|null
+     */
+    private ?array $fields = null;
+
+    /**
      * Retrieves array of aliases used to ensure unique alias for new fields.
      *
      * @param int    $exludingId
@@ -63,6 +68,26 @@ class LeadFieldRepository extends CommonRepository
     }
 
     /**
+     * @return array<int|string, array<string, mixed>>
+     */
+    public function getFields(): array
+    {
+        if (!isset($this->fields)) {
+            $fq = $this->getEntityManager()->getConnection()->createQueryBuilder();
+            $fq->select('f.id, f.label, f.alias, f.type, f.field_group as "group", f.object, f.is_fixed, f.properties, f.default_value')
+                ->from(MAUTIC_TABLE_PREFIX.'lead_fields', 'f')
+                ->where('f.is_published = :published')
+                ->setParameter('published', true, 'boolean')
+                ->addOrderBy('f.field_order', 'asc');
+            $results = $fq->executeQuery()->fetchAllAssociative();
+
+            $this->fields = array_column($results, null, 'alias');
+        }
+
+        return $this->fields;
+    }
+
+    /**
      * @return LeadField[]
      */
     public function getFieldsForObject(string $object): array
@@ -79,27 +104,11 @@ class LeadFieldRepository extends CommonRepository
     }
 
     /**
-     * @return array<int|string, array<string, mixed>>
-     */
-    public function getFields(): array
-    {
-        $fq = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $fq->select('f.id, f.label, f.alias, f.type, f.field_group as "group", f.object, f.is_fixed, f.properties, f.default_value')
-            ->from(MAUTIC_TABLE_PREFIX.'lead_fields', 'f')
-            ->where('f.is_published = :published')
-            ->setParameter('published', true, 'boolean')
-            ->addOrderBy('f.field_order', 'asc');
-        $results = $fq->executeQuery()->fetchAllAssociative();
-
-        return array_column($results, null, 'alias');
-    }
-
-    /**
      * Retrieves the aliases of searchable fields that are indexed and published.
      *
      * @return string[]
      */
-    public function getSearchableFieldAliases(string $object = null): array
+    public function getSearchableFieldAliases(?string $object = null): array
     {
         $fq = $this->createQueryBuilder($this->getTableAlias());
         $fq->select($this->getTableAlias().'.alias')
@@ -362,6 +371,30 @@ class LeadFieldRepository extends CommonRepository
 
             return !empty($result['id']);
         }
+    }
+
+    /**
+     * Compare a form result value with empty value for defined lead.
+     */
+    public function compareEmptyDateValue(int $lead, string $field, string $operatorExpr): bool
+    {
+        $q        = $this->_em->getConnection()->createQueryBuilder();
+        $property = $this->getPropertyByField($field, $q);
+        $q->select('l.id')
+            ->from(MAUTIC_TABLE_PREFIX.'leads', 'l')
+            ->where(
+                $q->expr()->and(
+                    $q->expr()->eq('l.id', ':lead'),
+                    ('empty' === $operatorExpr) ?
+                        $q->expr()->isNull($property)
+                        :
+                        $q->expr()->isNotNull($property)
+                )
+            )
+            ->setParameter('lead', $lead, \PDO::PARAM_INT);
+        $result = $q->executeQuery()->fetchAssociative();
+
+        return !empty($result['id']);
     }
 
     /**
