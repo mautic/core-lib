@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
+use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
@@ -52,7 +53,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @var int
-     * @Groups({"form:read", "download:read", "campaign:read", "email:read"})
      */
     #[Groups(['form:read', 'download:read', 'campaign:read', 'email:read'])]
     private $id;
@@ -62,7 +62,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @var string
-     * @Groups({"form:read", "form:write", "download:read", "campaign:read", "email:read"})
      */
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $name;
@@ -81,13 +80,12 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @var string
-     * @Groups({"form:read", "form:write", "download:read", "campaign:read", "email:read"})
      */
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $alias;
 
     /**
-     * @var \Mautic\CategoryBundle\Entity\Category|null
+     * @var Category|null
      **/
     #[Groups(['form:read', 'form:write', 'campaign:read', 'email:read'])]
     private $category;
@@ -100,7 +98,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @var string
-     * @Groups({"form:read", "form:write", "download:read", "campaign:read", "email:read"})
      */
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $postAction = 'message';
@@ -184,8 +181,8 @@ class Form extends FormEntity implements UuidInterface
      * This var is used to cache the result once gained from the loop.
      *
      * @var bool
-     * @Groups({"form:read", "form:write", "download:read", "campaign:read"})
      */
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read'])]
     private $usesProgressiveProfiling;
 
     public function __clone()
@@ -640,7 +637,6 @@ class Form extends FormEntity implements UuidInterface
     }
 
     /**
-     * Set alias.
      * Loops trough the form fields and returns a simple array of mapped object keys if any.
      *
      * @return string[]

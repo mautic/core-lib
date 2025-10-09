@@ -71,107 +71,119 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @var int
-     * @Groups({"event:read", "campaign:read"})
      */
+    #[Groups(['event:read', 'campaign:read'])]
     private $id;
 
     /**
      * @var string
-     * @Groups({"event:read", "event:write", "campaign:read"})
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $name;
 
     /**
      * @var string|null
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $description;
 
     /**
      * @var string
-     * @Groups({"event:read", "event:write", "campaign:read"})
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $type;
 
     /**
      * @var string
-     * @Groups({"event:read", "event:write", "campaign:read"})
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $eventType;
 
     /**
      * @var int
-     * @Groups({"event:read", "event:write", "campaign:read"})
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $order = 0;
 
     /**
      * @var array
-     * @Groups({"event:read", "event:write", "campaign:read"})
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $properties = [];
 
     /**
      * @var \DateTimeInterface|null
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $triggerDate;
 
     /**
      * @var int|null
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $triggerInterval = 0;
 
     /**
      * @var string|null
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $triggerIntervalUnit;
 
     /**
      * @var \DateTimeInterface|null
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $triggerHour;
 
     /**
      * @var \DateTimeInterface|null
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $triggerRestrictedStartHour;
 
     /**
      * @var \DateTimeInterface|null
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $triggerRestrictedStopHour;
 
     /**
      * @var array|null
-     * @Groups({"event:read", "event:write", "campaign:read"})
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $triggerRestrictedDaysOfWeek = [];
 
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private ?int $triggerWindow;
 
     /**
      * @var string|null
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $triggerMode;
 
     /**
      * @var Campaign
-     * @Groups({"event:write"})
      */
+    #[Groups(['event:write'])]
     private $campaign;
 
     /**
      * @var ArrayCollection<int, Event>
      **/
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $children;
 
     /**
      * @var Event|null
      **/
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $parent;
 
     /**
      * @var string|null
      **/
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $decisionPath;
 
     /**
@@ -188,21 +200,20 @@ class Event implements ChannelInterface, UuidInterface
      * Used by API to house contact specific logs.
      *
      * @var array
-     * @Groups({"event:read", "event:write"})
      */
+    #[Groups(['event:read', 'event:write'])]
     private $contactLog = [];
 
     /**
      * @var string|null
-     * @Groups({"event:read", "event:write", "campaign:read"})
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $channel;
 
     /**
      * @var string|null
-     *
-     * @Groups({"event:read", "event:write", "campaign:read"})
      */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private $channelId;
 
     /**
@@ -210,6 +221,7 @@ class Event implements ChannelInterface, UuidInterface
      */
     private $changes = [];
 
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private ?\DateTimeInterface $deleted = null;
 
     private int $failedCount = 0;
@@ -220,9 +232,6 @@ class Event implements ChannelInterface, UuidInterface
         $this->children = new ArrayCollection();
     }
 
-    /**
-     * Clean up after clone.
-     */
     public function __clone()
     {
         $this->tempId    = null;

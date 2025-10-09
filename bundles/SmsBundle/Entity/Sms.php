@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
+use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\TranslationEntityInterface;
@@ -62,14 +63,12 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
     /**
      * @var int
-     * @Groups("sms:read")
      */
     #[Groups(['sms:read'])]
     private $id;
 
     /**
      * @var string
-     * @Groups({"sms:read", "sms:write"})
      */
     #[Groups(['sms:read', 'sms:write'])]
     private $name;
@@ -82,7 +81,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
     /**
      * @var string
-     * @Groups({"sms:read", "sms:write"})
      */
     #[Groups(['sms:read', 'sms:write'])]
     private $message;
@@ -101,13 +99,12 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
     /**
      * @var int
-     * @Groups({"sms:read", "sms:write"})
      */
     #[Groups(['sms:read'])]
     private $sentCount = 0;
 
     /**
-     * @var \Mautic\CategoryBundle\Entity\Category|null
+     * @var Category|null
      **/
     #[Groups(['sms:read', 'sms:write'])]
     private $category;
@@ -154,9 +151,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         $this->translationChildren = new ArrayCollection();
     }
 
-    /**
-     * Clear stats.
-     */
     public function clearStats(): void
     {
         $this->stats = new ArrayCollection();
@@ -330,8 +324,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     }
 
     /**
-     * Get id.
-     *
      * @return int
      */
     public function getId()
@@ -437,8 +429,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     }
 
     /**
-     * Add list.
-     *
      * @return Sms
      */
     public function addList(LeadList $list)
@@ -448,9 +438,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         return $this;
     }
 
-    /**
-     * Remove list.
-     */
     public function removeList(LeadList $list): void
     {
         $this->lists->removeElement($list);

@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
+use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
@@ -48,14 +49,12 @@ class Trigger extends FormEntity implements UuidInterface
 
     /**
      * @var int
-     * @Groups({"trigger:read", "trigger_event:read"})
      */
     #[Groups(['trigger:read'])]
     private $id;
 
     /**
      * @var string
-     * @Groups({"trigger:read", "trigger:write"})
      */
     #[Groups(['trigger:read', 'trigger:write'])]
     private $name;
@@ -80,27 +79,24 @@ class Trigger extends FormEntity implements UuidInterface
 
     /**
      * @var int
-     * @Groups({"trigger:read", "trigger:write"})
      */
     #[Groups(['trigger:read', 'trigger:write'])]
     private $points = 0;
 
     /**
      * @var string
-     * @Groups({"trigger:read", "trigger:write"})
      */
     #[Groups(['trigger:read', 'trigger:write'])]
     private $color = 'a0acb8';
 
     /**
      * @var bool
-     * @Groups({"trigger:read", "trigger:write"})
      */
     #[Groups(['trigger:read', 'trigger:write'])]
     private $triggerExistingLeads = false;
 
     /**
-     * @var \Mautic\CategoryBundle\Entity\Category|null
+     * @var Category|null
      **/
     #[Groups(['trigger:read', 'trigger:write'])]
     private $category;

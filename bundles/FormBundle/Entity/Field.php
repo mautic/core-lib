@@ -47,14 +47,12 @@ class Field implements UuidInterface
 
     /**
      * @var int
-     * @Groups({"field:read", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'form:read', 'campaign:read', 'email:read'])]
     private $id;
 
     /**
      * @var string
-     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $label;
@@ -67,28 +65,24 @@ class Field implements UuidInterface
 
     /**
      * @var string
-     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $alias;
 
     /**
      * @var string
-     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $type;
 
     /**
      * @var bool
-     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isCustom = false;
 
     /**
      * @var array
-     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $customParameters = [];
@@ -101,7 +95,6 @@ class Field implements UuidInterface
 
     /**
      * @var bool
-     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $isRequired = false;
@@ -126,14 +119,12 @@ class Field implements UuidInterface
 
     /**
      * @var array
-     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $properties = [];
 
     /**
      * @var array
-     * @Groups({"field:read", "field:write", "form:read", "campaign:read", "email:read"})
      */
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $validation = [];
@@ -239,9 +230,6 @@ class Field implements UuidInterface
 
     public ?int $deletedId;
 
-    /**
-     * Reset properties on clone.
-     */
     public function __clone()
     {
         $this->id   = null;
@@ -361,8 +349,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get id.
-     *
      * @return int
      */
     public function getId()
@@ -371,8 +357,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Set label.
-     *
      * @param string $label
      *
      * @return Field
@@ -386,8 +370,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get label.
-     *
      * @return string
      */
     public function getLabel()
@@ -396,8 +378,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Set alias.
-     *
      * @param string $alias
      *
      * @return Field
@@ -411,8 +391,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get alias.
-     *
      * @return string
      */
     public function getAlias()
@@ -421,8 +399,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Set type.
-     *
      * @param string $type
      *
      * @return Field
@@ -436,8 +412,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get type.
-     *
      * @return string
      */
     public function getType()
@@ -446,8 +420,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Set defaultValue.
-     *
      * @param string $defaultValue
      *
      * @return Field
@@ -461,8 +433,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get defaultValue.
-     *
      * @return string
      */
     public function getDefaultValue()
@@ -471,8 +441,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Set isRequired.
-     *
      * @param bool $isRequired
      *
      * @return Field
@@ -486,8 +454,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get isRequired.
-     *
      * @return bool
      */
     public function getIsRequired()
@@ -506,8 +472,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Set order.
-     *
      * @param int $order
      *
      * @return Field
@@ -521,8 +485,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get order.
-     *
      * @return int
      */
     public function getOrder()
@@ -531,8 +493,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Set properties.
-     *
      * @param array $properties
      *
      * @return Field
@@ -546,8 +506,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get properties.
-     *
      * @return array
      */
     public function getProperties()
@@ -556,8 +514,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Set validation.
-     *
      * @param array $validation
      *
      * @return Field
@@ -571,8 +527,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get validation.
-     *
      * @return array
      */
     public function getValidation()
@@ -581,8 +535,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Set validationMessage.
-     *
      * @param string $validationMessage
      *
      * @return Field
@@ -596,8 +548,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get validationMessage.
-     *
      * @return string
      */
     public function getValidationMessage()
@@ -616,8 +566,6 @@ class Field implements UuidInterface
     }
 
     /**
-     * Get form.
-     *
      * @return Form|null
      */
     public function getForm()

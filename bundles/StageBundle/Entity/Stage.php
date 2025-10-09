@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
+use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
@@ -47,14 +48,12 @@ class Stage extends FormEntity implements UuidInterface
 
     /**
      * @var int
-     * @Groups("stage:read")
      */
     #[Groups(['stage:read'])]
     private $id;
 
     /**
      * @var string
-     * @Groups({"stage:read", "stage:write"})
      */
     #[Groups(['stage:read', 'stage:write'])]
     private $name;
@@ -67,7 +66,6 @@ class Stage extends FormEntity implements UuidInterface
 
     /**
      * @var int
-     * @Groups({"stage:read", "stage:write"})
      */
     #[Groups(['stage:read', 'stage:write'])]
     private $weight = 0;
@@ -90,7 +88,7 @@ class Stage extends FormEntity implements UuidInterface
     private $log;
 
     /**
-     * @var \Mautic\CategoryBundle\Entity\Category|null
+     * @var Category|null
      **/
     #[Groups(['stage:read', 'stage:write'])]
     private $category;
@@ -207,8 +205,6 @@ class Stage extends FormEntity implements UuidInterface
     }
 
     /**
-     * Get description.
-     *
      * @return string
      */
     public function getDescription()
@@ -228,8 +224,6 @@ class Stage extends FormEntity implements UuidInterface
     }
 
     /**
-     * Get name.
-     *
      * @return string
      */
     public function getName()
@@ -288,8 +282,6 @@ class Stage extends FormEntity implements UuidInterface
     }
 
     /**
-     * Get publishDown.
-     *
      * @return \DateTimeInterface
      */
     public function getPublishDown()

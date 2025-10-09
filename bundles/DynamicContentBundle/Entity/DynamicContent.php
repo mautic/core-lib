@@ -70,21 +70,16 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
 
     /**
      * @var int
-     * @Groups("dynamicContent:read")
      */
     #[Groups(['dynamicContent:read'])]
     private $id;
 
     /**
      * @var string
-     * @Groups({"dynamicContent:read", "dynamicContent:write"})
      */
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $name;
 
-    /**
-     * @Groups({"dynamicContent:read", "dynamicContent:write"})
-     */
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private string $type = TypeList::HTML;
 
@@ -94,9 +89,6 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $description;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category|null
-     **/
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $category;
 
@@ -126,7 +118,6 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
 
     /**
      * @var int
-     * @Groups({"dynamicContent:read", "dynamicContent:write"})
      */
     #[Groups(['dynamicContent:read'])]
     private $sentCount = 0;
@@ -139,7 +130,6 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
 
     /**
      * @var bool
-     * @Groups({"dynamicContent:read", "dynamicContent:write"})
      */
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private $isCampaignBased = true;

@@ -2,7 +2,13 @@
 
 namespace Mautic\WebhookBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -14,74 +20,75 @@ use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\SkipModifiedInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "webhook:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"category"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "webhook:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    shortName: 'Webhooks',
+    operations: [
+        new GetCollection(uriTemplate: '/webhooks', security: "is_granted('webhook:webhooks:viewown')"),
+        new Post(uriTemplate: '/webhooks', security: "is_granted('webhook:webhooks:create')"),
+        new Get(uriTemplate: '/webhooks/{id}', security: "is_granted('webhook:webhooks:viewown')"),
+        new Put(uriTemplate: '/webhooks/{id}', security: "is_granted('webhook:webhooks:editown')"),
+        new Patch(uriTemplate: '/webhooks/{id}', security: "is_granted('webhook:webhooks:editother')"),
+        new Delete(uriTemplate: '/webhooks/{id}', security: "is_granted('webhook:webhooks:deleteown')"),
+    ],
+    normalizationContext: [
+        'groups'                  => ['webhook:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included'            => ['category'],
+    ],
+    denormalizationContext: [
+        'groups'                  => ['webhook:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class Webhook extends FormEntity implements SkipModifiedInterface
 {
     public const LOGS_DISPLAY_LIMIT = 100;
 
     /**
      * @var ?int
-     * @Groups("webhook:read")
      */
+    #[Groups(['webhook:read'])]
     private $id;
 
     /**
      * @var ?string
-     * @Groups({"webhook:read", "webhook:write"})
      */
+    #[Groups(['webhook:read', 'webhook:write'])]
     private $name;
 
     /**
      * @var string|null
-     * @Groups({"webhook:read", "webhook:write"})
      */
+    #[Groups(['webhook:read', 'webhook:write'])]
     private $description;
 
     /**
      * @var ?string
-     * @Groups({"webhook:read", "webhook:write"})
      */
+    #[Groups(['webhook:read', 'webhook:write'])]
     private $webhookUrl;
 
     /**
      * @var ?string
      */
+    #[Groups(['webhook:read', 'webhook:write'])]
     private $secret;
 
     /**
      * @var Category|null
-     * @Groups({"webhook:read", "webhook:write"})
      **/
+    #[Groups(['webhook:read', 'webhook:write'])]
     private $category;
 
     /**
      * @var Collection<int, Event>
-     * @Groups({"webhook:read", "webhook:write"})
      */
+    #[Groups(['webhook:read', 'webhook:write'])]
     private $events;
 
     /**
@@ -96,8 +103,8 @@ class Webhook extends FormEntity implements SkipModifiedInterface
 
     /**
      * @var mixed[]
-     * @Groups({"webhook:read", "webhook:write"})
      */
+    #[Groups(['webhook:read', 'webhook:write'])]
     private $payload;
 
     /**
@@ -105,8 +112,8 @@ class Webhook extends FormEntity implements SkipModifiedInterface
      * It's used for API serializaiton.
      *
      * @var array
-     * @Groups({"webhook:read", "webhook:write"})
      */
+    #[Groups(['webhook:read', 'webhook:write'])]
     private $triggers = [];
 
     /**
@@ -114,8 +121,8 @@ class Webhook extends FormEntity implements SkipModifiedInterface
      * Null means use the global default.
      *
      * @var string|null
-     * @Groups({"webhook:read", "webhook:write"})
      */
+    #[Groups(['webhook:read', 'webhook:write'])]
     private $eventsOrderbyDir;
 
     private ?\DateTimeImmutable $markedUnhealthyAt      = null;

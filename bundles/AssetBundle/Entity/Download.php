@@ -2,7 +2,9 @@
 
 namespace Mautic\AssetBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -11,94 +13,89 @@ use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\Lead;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "download:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"asset", "ipaddress", "email"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "download:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    operations: [
+        new GetCollection(security: "is_granted('asset:assets:viewown')"),
+        new Get(security: "is_granted('asset:assets:viewown')"),
+    ],
+    normalizationContext: [
+        'groups'                  => ['download:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included'            => ['asset', 'ipaddress', 'email'],
+    ],
+    denormalizationContext: [
+        'groups'                  => ['download:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class Download
 {
     public const TABLE_NAME = 'asset_downloads';
 
     /**
      * @var string
-     * @Groups("download:read")
      */
+    #[Groups(['download:read'])]
     private $id;
 
     /**
      * @var \DateTimeInterface
-     * @Groups({"download:read", "download:write"})
      */
+    #[Groups(['download:read', 'download:write'])]
     private $dateDownload;
 
     /**
      * @var Asset|null
-     * @Groups({"download:read", "download:write"})
      */
+    #[Groups(['download:read', 'download:write'])]
     private $asset;
 
     /**
      * @var IpAddress|null
-     * @Groups({"download:read", "download:write"})
      */
+    #[Groups(['download:read', 'download:write'])]
     private $ipAddress;
 
     /**
      * @var Lead|null
-     * @Groups({"download:read", "download:write"})
      */
-    private $lead;
+    #[Groups(['download:read', 'download:write'])]
+    private ?Lead $lead;
 
     /**
      * @var int
-     * @Groups({"download:read", "download:write"})
      */
+    #[Groups(['download:read', 'download:write'])]
     private $code;
 
     /**
      * @var string|null
-     * @Groups({"download:read", "download:write"})
      */
+    #[Groups(['download:read', 'download:write'])]
     private $referer;
 
     /**
      * @var string
-     * @Groups({"download:read", "download:write"})
      */
+    #[Groups(['download:read', 'download:write'])]
     private $trackingId;
 
     /**
      * @var string|null
-     * @Groups({"download:read", "download:write"})
      */
+    #[Groups(['download:read', 'download:write'])]
     private $source;
 
     /**
      * @var int|null
-     * @Groups({"download:read", "download:write"})
      */
+    #[Groups(['download:read', 'download:write'])]
     private $sourceId;
 
     /**
      * @var Email|null
-     * @Groups({"download:read", "download:write"})
      */
+    #[Groups(['download:read', 'download:write'])]
     private $email;
 
     private ?string $utmCampaign = null;
@@ -184,17 +181,12 @@ class Download
             ->build();
     }
 
-    /**
-     * Get id.
-     */
     public function getId(): int
     {
         return (int) $this->id;
     }
 
     /**
-     * Set dateDownload.
-     *
      * @param \DateTime $dateDownload
      *
      * @return Download
@@ -207,8 +199,6 @@ class Download
     }
 
     /**
-     * Get dateDownload.
-     *
      * @return \DateTimeInterface
      */
     public function getDateDownload()
@@ -217,8 +207,6 @@ class Download
     }
 
     /**
-     * Set code.
-     *
      * @param int $code
      *
      * @return Download
@@ -231,8 +219,6 @@ class Download
     }
 
     /**
-     * Get code.
-     *
      * @return int
      */
     public function getCode()
@@ -241,8 +227,6 @@ class Download
     }
 
     /**
-     * Set referer.
-     *
      * @param string $referer
      *
      * @return Download
@@ -255,8 +239,6 @@ class Download
     }
 
     /**
-     * Get referer.
-     *
      * @return string
      */
     public function getReferer()
@@ -265,8 +247,6 @@ class Download
     }
 
     /**
-     * Set asset.
-     *
      * @return Download
      */
     public function setAsset(?Asset $asset = null)
@@ -277,8 +257,6 @@ class Download
     }
 
     /**
-     * Get asset.
-     *
      * @return Asset
      */
     public function getAsset()
@@ -305,8 +283,6 @@ class Download
     }
 
     /**
-     * Set trackingId.
-     *
      * @param int $trackingId
      *
      * @return Download
@@ -319,8 +295,6 @@ class Download
     }
 
     /**
-     * Get trackingId.
-     *
      * @return int
      */
     public function getTrackingId()

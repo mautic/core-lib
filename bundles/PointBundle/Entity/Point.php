@@ -50,14 +50,12 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @var int
-     * @Groups({"point:read"})
      */
     #[Groups(['point:read'])]
     private $id;
 
     /**
      * @var string
-     * @Groups({"point:read", "point:write"})
      */
     #[Groups(['point:read', 'point:write'])]
     private $name;
@@ -70,14 +68,12 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @var string
-     * @Groups({"point:read", "point:write"})
      */
     #[Groups(['point:read', 'point:write'])]
     private $type;
 
     /**
      * @var bool
-     * @Groups({"point:read", "point:write"})
      */
     #[Groups(['point:read', 'point:write'])]
     private $repeatable = false;
@@ -96,14 +92,12 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @var int
-     * @Groups({"point:read", "point:write"})
      */
     #[Groups(['point:read', 'point:write'])]
     private $delta = 0;
 
     /**
      * @var array
-     * @Groups({"point:read", "point:write"})
      */
     #[Groups(['point:read', 'point:write'])]
     private $properties = [];

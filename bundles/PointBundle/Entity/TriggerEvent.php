@@ -47,7 +47,6 @@ class TriggerEvent implements UuidInterface
 
     /**
      * @var string
-     * @Groups({"trigger_event:read", "trigger_event:write", "trigger:read"})
      */
     #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $name;
@@ -60,28 +59,24 @@ class TriggerEvent implements UuidInterface
 
     /**
      * @var string
-     * @Groups({"trigger_event:read", "trigger_event:write", "trigger:read"})
      */
     #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $type;
 
     /**
      * @var int
-     * @Groups({"trigger_event:read", "trigger_event:write", "trigger:read"})
      */
     #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $order = 0;
 
     /**
      * @var array
-     * @Groups({"trigger_event:read", "trigger_event:write", "trigger:read"})
      */
     #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $properties = [];
 
     /**
      * @var Trigger
-     * @Groups({"trigger_event:write"})
      */
     #[Groups(['trigger_event:read', 'trigger_event:write'])]
     private $trigger;

@@ -57,7 +57,6 @@ class LeadList extends FormEntity implements UuidInterface
 
     /**
      * @var int|null
-     * @Groups({"segment:read", "campaign:read", "email:read"})
      */
     #[Groups(['segment:read', 'campaign:read', 'email:read', 'sms:read'])]
     private $id;
@@ -82,7 +81,6 @@ class LeadList extends FormEntity implements UuidInterface
 
     /**
      * @var string|null
-     * @Groups({"segment:read", "segment:write", "campaign:read", "email:read"})
      */
     #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $description;
@@ -95,21 +93,18 @@ class LeadList extends FormEntity implements UuidInterface
 
     /**
      * @var array
-     * @Groups({"segment:read", "segment:write", "campaign:read", "email:read"})
      */
     #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $filters = [];
 
     /**
      * @var bool
-     * @Groups({"segment:read", "segment:write", "campaign:read", "email:read"})
      */
     #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $isGlobal = true;
 
     /**
      * @var bool
-     * @Groups({"segment:read", "segment:write", "campaign:read", "email:read"})
      */
     #[Groups(['segment:read', 'segment:write', 'campaign:read', 'email:read', 'sms:read'])]
     private $isPreferenceCenter = false;

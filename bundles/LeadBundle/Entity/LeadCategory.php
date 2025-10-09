@@ -2,68 +2,74 @@
 
 namespace Mautic\LeadBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
-/**
- * @ApiResource(
- *   attributes={
- *     "security"="false",
- *     "normalization_context"={
- *       "groups"={
- *         "leadcategory:read"
- *        },
- *       "swagger_definition_name"="Read",
- *       "api_included"={"category"}
- *     },
- *     "denormalization_context"={
- *       "groups"={
- *         "leadcategory:write"
- *       },
- *       "swagger_definition_name"="Write"
- *     }
- *   }
- * )
- */
+#[ApiResource(
+    shortName: 'Contact Category',
+    operations: [
+        new GetCollection(uriTemplate: '/contacts/categories', security: "is_granted('lead:leads:viewown')"),
+        new Post(uriTemplate: '/contacts/categories', security: "is_granted('lead:leads:create')"),
+        new Get(uriTemplate: '/contacts/categories/{id}', security: "is_granted('lead:leads:viewown')"),
+        new Put(uriTemplate: '/contacts/categories/{id}', security: "is_granted('lead:leads:editown')"),
+        new Patch(uriTemplate: '/contacts/categories/{id}', security: "is_granted('lead:leads:editother')"),
+        new Delete(uriTemplate: '/contacts/categories/{id}', security: "is_granted('lead:leads:deleteown')"),
+    ],
+    normalizationContext: [
+        'groups'                  => ['leadcategory:read'],
+        'swagger_definition_name' => 'Read',
+        'api_included'            => ['category'],
+    ],
+    denormalizationContext: [
+        'groups'                  => ['leadcategory:write'],
+        'swagger_definition_name' => 'Write',
+    ]
+)]
 class LeadCategory
 {
     /**
      * @var int
-     * @Groups("leadcategory:read")
      */
+    #[Groups(['leadcategory:read'])]
     private $id;
 
     /**
      * @var Category
-     * @Groups({"leadcategory:read", "leadcategory:write"})
      **/
+    #[Groups(['leadcategory:read', 'leadcategory:write'])]
     private $category;
 
     /**
      * @var Lead
-     * @Groups({"leadcategory:read", "leadcategory:write"})
      */
+    #[Groups(['leadcategory:read', 'leadcategory:write'])]
     private $lead;
 
     /**
      * @var \DateTimeInterface
-     * @Groups({"leadcategory:read", "leadcategory:write"})
      */
+    #[Groups(['leadcategory:read', 'leadcategory:write'])]
     private $dateAdded;
 
     /**
      * @var bool
-     * @Groups({"leadcategory:read", "leadcategory:write"})
      */
+    #[Groups(['leadcategory:read', 'leadcategory:write'])]
     private $manuallyRemoved = false;
 
     /**
      * @var bool
-     * @Groups({"leadcategory:read", "leadcategory:write"})
      */
+    #[Groups(['leadcategory:read', 'leadcategory:write'])]
     private $manuallyAdded = false;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
