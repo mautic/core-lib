@@ -207,29 +207,10 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $segment = $this->createSegment('Segment A', 'segment-a');
         $email   = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
 
-        foreach (['contact@one.email', 'contact@two.email'] as $emailAddress) {
-            $contact = new Lead();
-            $contact->setEmail($emailAddress);
-
-            $member = new ListLead();
-            $member->setLead($contact);
-            $member->setList($segment);
-            $member->setDateAdded(new \DateTime());
-
-            $this->em->persist($member);
-            $this->em->persist($contact);
-        }
+        $this->addContactsToSegment($segment, ['contact@one.email', 'contact@two.email']);
         $this->em->flush();
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
-            'id'         => $email->getId(),
-            'pending'    => 2,
-            'batchLimit' => 10,
-        ]);
-
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
-        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
-        $this->assertQueuedEmailCount(2);
+        $this->sendBatchEmail($email);
 
         $email = $this->getMailerMessage();
 
@@ -268,32 +249,12 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
 
-        foreach (['contact@one.email', 'contact@two.email'] as $emailAddress) {
-            $contact = new Lead();
-            $contact->setEmail($emailAddress);
-
-            $member = new ListLead();
-            $member->setLead($contact);
-            $member->setList($segment);
-            $member->setDateAdded(new \DateTime());
-
-            $this->em->persist($member);
-            $this->em->persist($contact);
-        }
-
+        $this->addContactsToSegment($segment, ['contact@one.email', 'contact@two.email']);
         $this->em->persist($segment);
         $this->em->persist($email);
         $this->em->flush();
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
-            'id'         => $email->getId(),
-            'pending'    => 2,
-            'batchLimit' => 10,
-        ]);
-
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
-        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
-        $this->assertQueuedEmailCount(2);
+        $this->sendBatchEmail($email);
 
         $email = $this->getMailerMessage();
 
@@ -322,35 +283,20 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $email->setFromName('{contactfield=address1}');
         $email->setReplyToAddress('custom@replyto.address');
 
-        foreach (['contact@one.email', 'contact@two.email'] as $emailAddress) {
-            $contact = new Lead();
-            $contact->setEmail($emailAddress);
-            $contact->setAddress1('address1 name for '.$emailAddress);
-            $contact->setAddress2('address2+'.$emailAddress);
-
-            $member = new ListLead();
-            $member->setLead($contact);
-            $member->setList($segment);
-            $member->setDateAdded(new \DateTime());
-
-            $this->em->persist($member);
-            $this->em->persist($contact);
-        }
+        $this->addContactsToSegment(
+            $segment,
+            ['contact@one.email', 'contact@two.email'],
+            function (Lead $contact, string $emailAddress) {
+                $contact->setAddress1('address1 name for '.$emailAddress);
+                $contact->setAddress2('address2+'.$emailAddress);
+            }
+        );
 
         $this->em->persist($segment);
         $this->em->persist($email);
         $this->em->flush();
 
-        $this->setCsrfHeader();
-        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
-            'id'         => $email->getId(),
-            'pending'    => 2,
-            'batchLimit' => 10,
-        ]);
-
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
-        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
-        $this->assertQueuedEmailCount(2);
+        $this->sendBatchEmail($email, 2, 10, true);
 
         $messages   = self::getMailerMessages();
         $messageOne = array_values(array_filter($messages, fn ($message) => 'contact@one.email' === $message->getTo()[0]->getAddress()))[0];
@@ -417,6 +363,36 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertEquals('Email B Subject clone', $secondEmail->getSubject());
         Assert::assertEquals('Email B clone', $secondEmail->getName());
         Assert::assertEquals('Test html', $secondEmail->getCustomHtml());
+    }
+
+    public function testEmailDetailsPageShouldNotHavePendingCount(): void
+    {
+        $segment = $this->createSegment('Test Segment A', 'test-segment-a');
+        $email   = $this->createEmail('Test Email C', 'Test Email C Subject', 'list', 'blank', 'Test html', $segment);
+        $this->em->flush();
+
+        $this->client->enableProfiler();
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}");
+
+        // checking if pending count is removed from details page ui
+        $emailDetailsContainer = trim($crawler->filter('#email-details')->filter('tbody')->text());
+        $this->assertStringNotContainsString('Pending', $emailDetailsContainer);
+
+        $profile = $this->client->getProfile();
+
+        /** @var DoctrineDataCollector $dbCollector */
+        $dbCollector = $profile->getCollector('db');
+        $queries     = $dbCollector->getQueries();
+        $prefix      = self::getContainer()->getParameter('mautic.db_table_prefix');
+
+        $pendingCountQuery = array_filter(
+            $queries['default'],
+            function (array $query) use ($prefix, $segment, $email) {
+                return $query['sql'] === "SELECT count(*) as count FROM {$prefix}leads l WHERE (EXISTS (SELECT null FROM {$prefix}lead_lists_leads ll WHERE (ll.lead_id = l.id) AND (ll.leadlist_id IN ({$segment->getId()})) AND (ll.manually_removed = :false))) AND (NOT EXISTS (SELECT null FROM {$prefix}lead_donotcontact dnc WHERE (dnc.lead_id = l.id) AND (dnc.channel = 'email'))) AND (NOT EXISTS (SELECT null FROM {$prefix}email_stats stat WHERE (stat.lead_id = l.id) AND (stat.email_id IN ({$email->getId()})))) AND (NOT EXISTS (SELECT null FROM {$prefix}message_queue mq WHERE (mq.lead_id = l.id) AND (mq.status <> 'sent') AND (mq.channel = 'email') AND (mq.channel_id IN ({$email->getId()})))) AND ((l.email IS NOT NULL) AND (l.email <> ''))";
+            }
+        );
+
+        $this->assertCount(0, $pendingCountQuery);
     }
 
     public function testAbTestAction(): void
@@ -514,6 +490,51 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame($project->getId(), $savedEmail->getProjects()->first()->getId());
     }
 
+    /**
+     * @param array<mixed> $emails
+     *
+     * @throws \Doctrine\ORM\Exception\ORMException
+     */
+    private function addContactsToSegment(LeadList $segment, array $emails, ?callable $contactCallback = null): void
+    {
+        foreach ($emails as $emailAddress) {
+            $contact = new Lead();
+            $contact->setEmail($emailAddress);
+
+            if ($contactCallback) {
+                $contactCallback($contact, $emailAddress);
+            }
+
+            $member = new ListLead();
+            $member->setLead($contact);
+            $member->setList($segment);
+            $member->setDateAdded(new \DateTime());
+
+            $this->em->persist($member);
+            $this->em->persist($contact);
+        }
+    }
+
+    /**
+     * Helper method to send batch email and assert common response expectations.
+     */
+    private function sendBatchEmail(Email $email, int $pending = 2, int $batchLimit = 10, bool $setCsrf = false): void
+    {
+        if ($setCsrf) {
+            $this->setCsrfHeader();
+        }
+
+        $this->client->request(Request::METHOD_POST, '/s/ajax?action=email:sendBatch', [
+            'id'         => $email->getId(),
+            'pending'    => $pending,
+            'batchLimit' => $batchLimit,
+        ]);
+
+        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $this->client->getResponse()->getContent());
+        $this->assertQueuedEmailCount(2);
+    }
+
     private function createSegment(string $name, string $alias): LeadList
     {
         $segment = new LeadList();
@@ -543,48 +564,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($email);
 
         return $email;
-    }
-
-    public function testEmailDetailsPageShouldNotHavePendingCount(): void
-    {
-        // Create a segment
-        $segment = new LeadList();
-        $segment->setName('Test Segment A');
-        $segment->setPublicName('Test Segment A');
-        $segment->setAlias('test-segment-a');
-
-        // Create email template of type "list" and attach the segment to it
-        $email = new Email();
-        $email->setName('Test Email C');
-        $email->setSubject('Test Email C Subject');
-        $email->setEmailType('list');
-        $email->setCustomHtml('This is Email C custom HTML.');
-        $email->addList($segment);
-
-        $this->em->persist($segment);
-        $this->em->persist($email);
-        $this->em->flush();
-
-        $this->client->enableProfiler();
-        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}");
-
-        // checking if pending count is removed from details page ui
-        $emailDetailsContainer = trim($crawler->filter('#email-details')->filter('tbody')->text(null, false));
-        $this->assertStringNotContainsString('Pending', $emailDetailsContainer);
-
-        $profile = $this->client->getProfile();
-
-        /** @var DoctrineDataCollector $dbCollector */
-        $dbCollector = $profile->getCollector('db');
-        $queries     = $dbCollector->getQueries();
-        $prefix      = static::getContainer()->getParameter('mautic.db_table_prefix');
-
-        $pendingCountQuery = array_filter(
-            $queries['default'],
-            fn (array $query) => $query['sql'] === "SELECT count(*) as count FROM {$prefix}leads l WHERE (EXISTS (SELECT null FROM {$prefix}lead_lists_leads ll WHERE (ll.lead_id = l.id) AND (ll.leadlist_id IN ({$segment->getId()})) AND (ll.manually_removed = :false))) AND (NOT EXISTS (SELECT null FROM {$prefix}lead_donotcontact dnc WHERE (dnc.lead_id = l.id) AND (dnc.channel = 'email'))) AND (NOT EXISTS (SELECT null FROM {$prefix}email_stats stat WHERE (stat.lead_id = l.id) AND (stat.email_id IN ({$email->getId()})))) AND (NOT EXISTS (SELECT null FROM {$prefix}message_queue mq WHERE (mq.lead_id = l.id) AND (mq.status <> 'sent') AND (mq.channel = 'email') AND (mq.channel_id IN ({$email->getId()})))) AND ((l.email IS NOT NULL) AND (l.email <> ''))"
-        );
-
-        $this->assertCount(0, $pendingCountQuery);
     }
 
     public function testSendEmailForImportCustomEmailTemplate(): void
