@@ -107,9 +107,8 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
 
     /**
      * @param array<string, mixed>|null $additionalValues
-     *
-     * @dataProvider provideFieldTypesData
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideFieldTypesData')]
     public function testFieldWithLinkInLabel(
         string $fieldType,
         string $label,
@@ -157,7 +156,7 @@ final class FieldControllerFunctionalTest extends MauticMysqlTestCase
      *     additionalValues: array<string, mixed>|null
      * }>
      */
-    public function provideFieldTypesData(): array
+    public static function provideFieldTypesData(): array
     {
         return [
             'email field with link in label' => [

@@ -16,9 +16,7 @@ class PurifyExtensionTest extends TestCase
         $this->extension = new PurifyExtension();
     }
 
-    /**
-     * @dataProvider purifyHtmlDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('purifyHtmlDataProvider')]
     public function testPurifyAllowTargetBlank(?string $input, string $expected): void
     {
         $result = $this->extension->purifyAllowTargetBlank($input);
@@ -28,7 +26,7 @@ class PurifyExtensionTest extends TestCase
     /**
      * @return array<string, array{input: ?string, expected: string}>
      */
-    public function purifyHtmlDataProvider(): array
+    public static function purifyHtmlDataProvider(): array
     {
         return [
             'null input' => [
