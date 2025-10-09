@@ -47,9 +47,6 @@ $container->loadFromExtension('framework', [
     'assets' => [
         'base_path' => './',
     ],
-    'serializer' => [
-        'enable_annotations' => true,
-    ],
     'secret' => '%mautic.secret_key%',
     'router' => [
         'resource'            => '%mautic.application_dir%/app/config/routing.php',
