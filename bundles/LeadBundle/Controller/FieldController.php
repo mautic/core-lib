@@ -24,7 +24,7 @@ class FieldController extends FormController
      *
      * @return array|JsonResponse|RedirectResponse|Response
      */
-    public function indexAction(Request $request, $page = 1)
+    public function indexAction(Request $request, FieldModel $fieldModel, $page = 1)
     {
         // set some permissions
         $permissions = $this->security->isGranted(['lead:fields:view', 'lead:fields:full'], 'RETURN_ARRAY');
@@ -39,25 +39,30 @@ class FieldController extends FormController
 
         $limit  = $session->get('mautic.leadfield.limit', $this->coreParametersHelper->get('default_pagelimit'));
         $search = $request->get('search', $session->get('mautic.leadfield.filter', ''));
-        $session->set('mautic.leadfilter.filter', $search);
+        $session->set('mautic.leadfield.filter', $search);
 
         // do some default filtering
-        $orderBy    = $request->getSession()->get('mautic.leadfilter.orderby', 'f.order');
-        $orderByDir = $request->getSession()->get('mautic.leadfilter.orderbydir', 'ASC');
+        $orderBy    = $request->getSession()->get('mautic.leadfield.orderby', 'f.order');
+        $orderByDir = $request->getSession()->get('mautic.leadfield.orderbydir', 'ASC');
 
         $start = (1 === $page) ? 0 : (($page - 1) * $limit);
         if ($start < 0) {
             $start = 0;
         }
 
-        $search  = $request->get('search', $session->get('mautic.lead.emailtoken.filter', ''));
-
-        $session->set('mautic.lead.emailtoken.filter', $search);
-
-        $fields = $this->getModel('lead.field')->getEntities([
+        $fields = $fieldModel->getEntities([
             'start'      => $start,
             'limit'      => $limit,
-            'filter'     => ['string' => $search],
+            'filter'     => [
+                'string' => $search,
+                'force'  => [
+                    [
+                        'column' => 'f.columnIsNotRemoved',
+                        'value'  => false,
+                        'expr'   => 'eq',
+                    ],
+                ],
+            ],
             'orderBy'    => $orderBy,
             'orderByDir' => $orderByDir,
         ]);
@@ -299,7 +304,7 @@ class FieldController extends FormController
                         try {
                             $model->saveEntity($field, $this->getFormButton($form, ['buttons', 'save'])->isClicked());
                         } catch (AbortColumnUpdateException) {
-                            $flashMessage = $this->translator->trans('mautic.lead.field.pushed_to_background');
+                            $flashMessage = $this->translator->trans('mautic.lead.field.update_pushed_to_background');
                         } catch (SchemaException $e) {
                             $flashMessage = $e->getMessage();
                             $form['alias']->addError(new FormError($e->getMessage()));
