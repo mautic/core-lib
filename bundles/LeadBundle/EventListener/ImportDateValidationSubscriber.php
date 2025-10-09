@@ -14,8 +14,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class ImportDateValidationSubscriber implements EventSubscriberInterface
 {
-    private FieldModel $fieldModel;
-
     /**
      * Cached mapping of date/datetime fields.
      *
@@ -26,9 +24,8 @@ final class ImportDateValidationSubscriber implements EventSubscriberInterface
     private ?array $dateFields = null;
 
     public function __construct(
-        FieldModel $fieldModel
+        private FieldModel $fieldModel,
     ) {
-        $this->fieldModel = $fieldModel;
     }
 
     public static function getSubscribedEvents(): array
@@ -78,10 +75,10 @@ final class ImportDateValidationSubscriber implements EventSubscriberInterface
         switch ($type) {
             case 'datetime':
                 $this->createDate('Y-m-d H:i:s', $value, $alias, 'Only YYYY-MM-DD HH:MM:SS format is supported.');
-            break;
+                break;
             case 'date':
                 $this->createDate('Y-m-d', $value, $alias, 'Only YYYY-MM-DD format is supported.');
-            break;
+                break;
         }
     }
 
