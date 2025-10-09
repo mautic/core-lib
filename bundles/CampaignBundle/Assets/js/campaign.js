@@ -589,7 +589,16 @@ Mautic.campaignEventSelectDOW = function() {
  * @param event
  */
 Mautic.getAnchorsForEvent = function (event) {
-    var restrictions = Mautic.campaignBuilderConnectionRestrictions[event.type].target;
+    var eventRestrictions = Mautic.campaignBuilderConnectionRestrictions[event.type];
+
+    if (!eventRestrictions || !eventRestrictions.target) {
+        // Default fallback if restrictions not found
+        console.warn(`No restrictions found for the event type: ${event.type}. Probably the plugin was disabled.`);
+
+        return ['top', 'bottom'];
+    }
+
+    var restrictions = eventRestrictions.target;
 
     // If all connections are restricted, only anchor the top
     if (
