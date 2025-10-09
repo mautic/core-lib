@@ -58,9 +58,7 @@ class ReportFilterDataTransformerTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * @dataProvider provideTransformData
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideTransformData')]
     public function testTransformUtcToLocalForSupportedTypes(string $column, string $utcValue, string $expectedLocalValue): void
     {
         // Arrange
@@ -99,9 +97,7 @@ class ReportFilterDataTransformerTest extends TestCase
         $this->assertSame($expectedUtcDateTime, $reverseTransformedFilters[0]['value']);
     }
 
-    /**
-     * @dataProvider provideStringConditions
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideStringConditions')]
     public function testTransformationIsSkippedForStringLikeConditions(string $condition): void
     {
         $transformer   = new ReportFilterDataTransformer($this->columns);
