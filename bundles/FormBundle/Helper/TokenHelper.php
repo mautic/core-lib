@@ -7,7 +7,7 @@ use Mautic\FormBundle\Model\FormModel;
 
 class TokenHelper
 {
-    const REGEX = '/{form=(.*?)}/';
+    public const REGEX = '/{form=(.*?)}/';
 
     public function __construct(
         protected FormModel $formModel,

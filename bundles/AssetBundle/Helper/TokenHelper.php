@@ -6,7 +6,7 @@ use Mautic\AssetBundle\Model\AssetModel;
 
 class TokenHelper
 {
-    const REGEX = '/{assetlink=(.*?)}/';
+    public const REGEX = '/{assetlink=(.*?)}/';
 
     public function __construct(
         protected AssetModel $model,

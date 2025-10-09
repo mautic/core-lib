@@ -17,9 +17,9 @@ use Mautic\LeadBundle\Form\Validator\Constraints\UniqueCustomField;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\ProjectBundle\Entity\ProjectTrait;
 use Mautic\UserBundle\Entity\User;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
     shortName: 'Companies',
@@ -60,8 +60,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     #[Groups(['company:read', 'company:write'])]
     private $score = 0;
 
-    /**
-     */
     #[Groups(['company:read', 'company:write'])]
     private ?User $owner = null;
 

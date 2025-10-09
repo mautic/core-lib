@@ -53,8 +53,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
     #[Groups(['user:read'])]
     protected $id;
 
-    /**
-     */
     #[Groups(['user:read', 'user:write'])]
     protected ?string $username = null;
 

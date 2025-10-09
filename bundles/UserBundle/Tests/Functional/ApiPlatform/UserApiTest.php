@@ -9,12 +9,12 @@ use Mautic\UserBundle\Entity\User;
 
 /**
  * Tests that the User API endpoints properly handle password as write-only field.
- * 
+ *
  * The password field should:
  * - Accept values when creating/updating users (write-only via user:write group)
  * - NEVER be returned in API responses (not in user:read group)
  * - Be hashed before storage in the database
- * 
+ *
  * This ensures that password hashes are never exposed through the API,
  * which is critical for security.
  */
@@ -42,9 +42,9 @@ final class UserApiTest extends MauticMysqlTestCase
         // Test GET - password should not be in response
         $this->client->request('GET', "/api/v2/users/{$userId}");
         $this->assertResponseIsSuccessful();
-        
+
         $responseData = json_decode($this->client->getResponse()->getContent(), true);
-        
+
         // Assert password is not in the response
         $this->assertArrayNotHasKey('password', $responseData);
         $this->assertArrayHasKey('id', $responseData);
@@ -60,14 +60,14 @@ final class UserApiTest extends MauticMysqlTestCase
         // Test GET collection
         $this->client->request('GET', '/api/v2/users');
         $this->assertResponseIsSuccessful();
-        
+
         $responseData = json_decode($this->client->getResponse()->getContent(), true);
-        
+
         // ApiPlatform uses 'member' for collection items
         $this->assertArrayHasKey('member', $responseData);
         $this->assertIsArray($responseData['member']);
         $this->assertNotEmpty($responseData['member'], 'Should have at least one user');
-        
+
         // Check each user in the collection
         foreach ($responseData['member'] as $userData) {
             $this->assertArrayNotHasKey('password', $userData, 'Password should not be exposed in collection');

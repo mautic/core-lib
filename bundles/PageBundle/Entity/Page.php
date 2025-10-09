@@ -23,7 +23,6 @@ use Mautic\CoreBundle\Entity\VariantEntityInterface;
 use Mautic\CoreBundle\Entity\VariantEntityTrait;
 use Mautic\CoreBundle\Validator\EntityEvent;
 use Mautic\ProjectBundle\Entity\ProjectTrait;
-use Mautic\PageBundle\Entity\PageDraft;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Callback;
@@ -195,13 +194,9 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
 
     private int $cloneObjectId;
 
-    /**
-     */
     #[Groups(['page:read', 'page:write', 'download:read', 'email:read'])]
     private ?bool $publicPreview = true;
 
-    /**
-     */
     #[Groups(['page:read', 'page:write', 'download:read', 'email:read'])]
     private bool $isDuplicate = false;
 

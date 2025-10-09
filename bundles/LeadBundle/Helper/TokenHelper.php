@@ -11,7 +11,7 @@ class TokenHelper
     /**
      * @const REGEX
      */
-    const REGEX = '/({|%7B)contactfield=(.*?)(}|%7D)/';
+    public const REGEX = '/({|%7B)contactfield=(.*?)(}|%7D)/';
 
     /**
      * @var array
