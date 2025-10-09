@@ -5,11 +5,14 @@
  * @param container
  */
 Mautic.campaignOnLoad = function (container, response) {
+    Mautic.lazyLoadGraphStatsOnCampaignDetail();
     Mautic.lazyLoadContactListOnCampaignDetail();
-
+    Mautic.lazyLoadEventStatsOnCampaignDetail();
     const $flashes = mQuery('#flashes');
     const $builder = mQuery('#campaign-builder');
     const isCampaignPreview = $builder.hasClass('preview');
+    Mautic.campaignBuilderPostData = [];
+    let extraData = {};
 
     if (mQuery(container + ' #list-search').length) {
         Mautic.activateSearchAutocomplete('list-search', 'campaign');
@@ -40,10 +43,49 @@ Mautic.campaignOnLoad = function (container, response) {
                     event.preventDefault();
                     mQuery(this).find('.btn-edit').first().click();
                 });
-        } else {
-            mQuery("#CampaignCanvas div.list-campaign-event").each(function () {
-                var thisId = mQuery(this).attr('id');
-                var option  = mQuery('#'+thisId+' option[value="' + mQuery(this).val() + '"]');
+
+            // adding delete option ajax for events
+            mQuery("#CampaignCanvas .list-campaign-event a[data-toggle='ajax-delete']").on("click.ajax", function (event) {
+                event.preventDefault();
+                mQuery('.btns-builder').find('button').prop('disabled', true);
+                extraData = {
+                    'modifiedEvents': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedEvents),
+                    'deletedEvents': Mautic.campaignBuilderCampaignElements.deletedEvents ? JSON.stringify(Mautic.campaignBuilderCampaignElements.deletedEvents) : '',
+                };
+                return Mautic.ajaxifyLink(this, event, extraData);
+            });
+
+            // adding delete option ajax for sources
+            mQuery("#CampaignCanvas .list-campaign-source a[data-toggle='ajax-delete']").on("click.ajax", function (event) {
+                event.preventDefault();
+                mQuery('.btns-builder').find('button').prop('disabled', true);
+                extraData = {
+                    'modifiedSources': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedSources),
+                };
+                return Mautic.ajaxifyLink(this, event, extraData);
+            });
+
+            // adding ajax model option for sources
+            mQuery("#CampaignCanvas .list-campaign-source a[data-toggle='ajaxmodal']").off('click.ajaxmodal');
+            mQuery("#CampaignCanvas .list-campaign-source a[data-toggle='ajaxmodal']").on('click.ajaxmodal', function (event) {
+                event.preventDefault();
+                mQuery('.btns-builder').find('button').prop('disabled', true);
+                mQuery(this).data('form-data', {
+                    'modifiedSources': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedSources),
+                });
+                Mautic.ajaxifyModal(this, event);
+            });
+
+            // remove handlers from event edit option and add ajax modal option for events
+            mQuery("#CampaignCanvas .list-campaign-event a[data-toggle='ajaxmodal']").off('click.ajaxmodal');
+            mQuery("#CampaignCanvas .list-campaign-event a[data-toggle='ajaxmodal']").on('click.ajaxmodal', function (event) {
+                event.preventDefault();
+                mQuery('.btns-builder').find('button').prop('disabled', true);
+                mQuery(this).data('form-data', {
+                    "modifiedEvents": JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedEvents),
+                    'deletedEvents': Mautic.campaignBuilderCampaignElements.deletedEvents ? JSON.stringify(Mautic.campaignBuilderCampaignElements.deletedEvents) : '',
+                });
+                Mautic.ajaxifyModal(this, event);
             });
         }
 
@@ -125,41 +167,14 @@ Mautic.campaignOnLoad = function (container, response) {
             $builder.addClass('hide').removeClass('builder-active');
             $flashes.removeClass('alert-offset');
         });
-
-        Mautic.prepareCampaignCanvas();
+        if (!isCampaignPreview) {
+            Mautic.prepareCampaignCanvas();
+        }
 
         // Open the builder directly when saved from the builder
         if (response && response.inBuilder) {
             Mautic.launchCampaignEditor();
             Mautic.processBuilderErrors(response);
-        }
-
-        const campaignEmailStats = mQuery(container).find('[data-load="campaign-email-stats"]').first();
-        if(campaignEmailStats.length) {
-            mQuery(campaignEmailStats).on('click', () => {
-                const $campaignWeekdaysContainer = mQuery('[data-campaign-email-stats-weekdays]');
-                const $campaignHoursContainer = mQuery('[data-campaign-email-stats-hours]');
-
-                if ($campaignWeekdaysContainer.find('canvas').length === 0) {
-                    mQuery.ajax({
-                        url: $campaignWeekdaysContainer.data('campaign-email-stats-weekdays'),
-                        success: function (response) {
-                            $campaignWeekdaysContainer.html(response);
-                            Mautic.renderCharts($campaignWeekdaysContainer);
-                        }
-                    });
-                }
-
-                if ($campaignHoursContainer.find('canvas').length === 0) {
-                    mQuery.ajax({
-                        url: $campaignHoursContainer.data('campaign-email-stats-hours'),
-                        success: function (response) {
-                            $campaignHoursContainer.html(response);
-                            Mautic.renderCharts($campaignHoursContainer);
-                        }
-                    });
-                }
-            });
         }
 
         // update the cloned event info when storage is updated from different tab
@@ -176,11 +191,37 @@ Mautic.campaignOnLoad = function (container, response) {
                 Mautic.campaignEventInsertOnError(event, jqxhr);
             }
         });
-
-        if (isCampaignPreview) {
-            Mautic.previewCampaignLabels();
-        }
     }
+
+    const campaignEmailStats = mQuery(container).find('[data-load="campaign-email-stats"]').first();
+    if(campaignEmailStats.length) {
+        mQuery(campaignEmailStats).on('click', () => {
+            const $campaignWeekdaysContainer = mQuery('[data-campaign-email-stats-weekdays]');
+            const $campaignHoursContainer = mQuery('[data-campaign-email-stats-hours]');
+
+            if ($campaignWeekdaysContainer.find('canvas').length === 0) {
+                mQuery.ajax({
+                    url: $campaignWeekdaysContainer.data('campaign-email-stats-weekdays'),
+                    success: function (response) {
+                        $campaignWeekdaysContainer.html(response);
+                        Mautic.renderCharts($campaignWeekdaysContainer);
+                    }
+                });
+            }
+
+            if ($campaignHoursContainer.find('canvas').length === 0) {
+                mQuery.ajax({
+                    url: $campaignHoursContainer.data('campaign-email-stats-hours'),
+                    success: function (response) {
+                        $campaignHoursContainer.html(response);
+                        Mautic.renderCharts($campaignHoursContainer);
+                    }
+                });
+            }
+        });
+    }
+
+    Mautic.campaignAuditlogOnLoad(container, response);
 };
 
 Mautic.lazyLoadContactListOnCampaignDetail = function() {
@@ -198,6 +239,93 @@ Mautic.lazyLoadContactListOnCampaignDetail = function() {
         Mautic.processPageContent(response);
     });
 };
+
+Mautic.lazyLoadGraphStatsOnCampaignDetail = function() {
+    const containerId = '#campaign-graph-div';
+    const container = mQuery(containerId);
+
+    // Load the contacts only if the container exists.
+    if (!container.length) {
+        return;
+    }
+
+    const campaignGraphUrl = container.data('target-url');
+    mQuery.get(campaignGraphUrl, function(response) {
+        response.target = containerId;
+        Mautic.processPageContent(response);
+    });
+};
+
+Mautic.lazyLoadEventStatsOnCampaignDetail = function()  {
+    const containerId = '#campaign-tab-content';
+    const container = mQuery(containerId);
+
+    if (!container.length) {
+        return;
+    }
+
+    const campaignEventStatUrl = container.data('event-target-url');
+    if ('undefined' == typeof campaignEventStatUrl) {
+        // We don't have to make AJAX requests if the URL is empty
+        return;
+    }
+    mQuery.get(campaignEventStatUrl, function(response) {
+        if (response.errors && 'dev' == mauticEnv) {
+            alert(response.errors[0].message);
+            console.log(response.errors);
+        }
+
+        if (typeof response.preview !== 'undefined')
+        {
+            mQuery('#preview-container').html(response.preview);
+            Mautic.prepareCampaignCanvas();
+            Mautic.previewCampaignLabels();
+        }
+        else
+        {
+            mQuery('#decisions_li').remove();
+            mQuery('#decisions-container').remove();
+        }
+
+        if (typeof response.decisions !== 'undefined')
+        {
+            mQuery('#decisions-container').html(response.decisions);
+        }
+        else
+        {
+            mQuery('#decisions_li').remove();
+            mQuery('#decisions-container').remove();
+        }
+
+        if (typeof response.actions !== 'undefined')
+        {
+            mQuery('#actions-container').html(response.actions);
+        }
+        else
+        {
+            mQuery('#actions_li').remove();
+            mQuery('#actions-container').remove();
+        }
+
+        if (typeof response.conditions !== 'undefined')
+        {
+            mQuery('#conditions-container').html(response.conditions);
+        }
+        else
+        {
+            mQuery('#conditions_li').remove();
+            mQuery('#conditions-container').remove();
+        }
+
+        mQuery('ul#campaign_nav_header_ul li').removeClass('active');
+        mQuery('ul#campaign_nav_header_ul li').eq(0).addClass('active');
+
+        mQuery('div#campaign-tab-content .tab-pane').removeClass('active in');
+        mQuery('div#campaign-tab-content .tab-pane').eq(0).addClass('active in');
+
+    });
+}
+
 
 /**
  * Update chosen tooltips
@@ -314,6 +442,11 @@ Mautic.campaignEventOnLoad = function (container, response) {
 
     if (response.deleted) {
         Mautic.campaignBuilderInstance.remove(document.getElementById(domEventId));
+        if (response.deletedEvents) {
+            const existingDeletedEvents =  mQuery.isArray(Mautic.campaignBuilderCampaignElements.deletedEvents) ? Mautic.campaignBuilderCampaignElements.deletedEvents : [];
+            Mautic.campaignBuilderCampaignElements.deletedEvents = mQuery.unique(existingDeletedEvents.concat(response.deletedEvents))
+        }
+        delete Mautic.campaignBuilderCampaignElements.modifiedEvents[response.event.id];
         delete Mautic.campaignBuilderEventPositions[domEventId];
         delete Mautic.campaignBuilderCanvasEvents[response.event.id];
     } else if (response.updateHtml) {
@@ -340,14 +473,33 @@ Mautic.campaignEventOnLoad = function (container, response) {
         //activate new stuff
         mQuery(eventId + " a[data-toggle='ajax']").click(function (event) {
             event.preventDefault();
-            return Mautic.ajaxifyLink(this, event);
+            mQuery('.btns-builder').find('button').prop('disabled', true);
+            const extraData = {
+                'modifiedEvents': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedEvents),
+            };
+            return Mautic.ajaxifyLink(this, event, extraData);
         });
 
         //initialize ajax'd modals
         mQuery(eventId + " a[data-toggle='ajaxmodal']").on('click.ajaxmodal', function (event) {
             event.preventDefault();
+            mQuery('.btns-builder').find('button').prop('disabled', true);
+            mQuery(this).data('form-data', {
+                'modifiedEvents': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedEvents),
+            });
 
             Mautic.ajaxifyModal(this, event);
+        });
+
+        // adding delete option ajax for events
+        mQuery(eventId + " a[data-toggle='ajax-delete']").on("click.ajax", function (event) {
+            event.preventDefault();
+            mQuery('.btns-builder').find('button').prop('disabled', true);
+            const extraData = {
+                'modifiedEvents': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedEvents),
+                'deletedEvents': Mautic.campaignBuilderCampaignElements.deletedEvents ? JSON.stringify(Mautic.campaignBuilderCampaignElements.deletedEvents) : '',
+            };
+            return Mautic.ajaxifyLink(this, event, extraData);
         });
 
         mQuery(eventId).off('.eventbuttons')
@@ -379,6 +531,10 @@ Mautic.campaignEventOnLoad = function (container, response) {
         Mautic.clearCampaignEventClone();
     }
 
+    if(response.modifiedEvents) {
+        Mautic.campaignBuilderCampaignElements.modifiedEvents = response.modifiedEvents;
+    }
+    mQuery('.btns-builder').find('button').prop('disabled', false);
     Mautic.campaignBuilderInstance.repaintEverything();
 };
 
@@ -511,13 +667,19 @@ Mautic.campaignSourceOnLoad = function (container, response) {
         //activate new stuff
         mQuery(eventId + " a[data-toggle='ajax']").click(function (event) {
             event.preventDefault();
-            return Mautic.ajaxifyLink(this, event);
+            const extraData = {
+                'modifiedSources': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedSources),
+            };
+            return Mautic.ajaxifyLink(this, event, extraData);
         });
 
         //initialize ajax'd modals
         mQuery(eventId + " a[data-toggle='ajaxmodal']").on('click.ajaxmodal', function (event) {
             event.preventDefault();
 
+            mQuery(this).data('form-data', {
+                'modifiedSources': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedSources),
+            });
             Mautic.ajaxifyModal(this, event);
         });
 
@@ -559,6 +721,10 @@ Mautic.campaignSourceOnLoad = function (container, response) {
         }
     }
 
+    if(response.modifiedSources) {
+        Mautic.campaignBuilderCampaignElements.modifiedSources = response.modifiedSources;
+    }
+    mQuery('.btns-builder').find('button').prop('disabled', false);
     Mautic.campaignBuilderInstance.repaintEverything();
 };
 
@@ -1198,7 +1364,8 @@ Mautic.closeCampaignBuilder = function() {
 
     var overlay = mQuery('<div id="builder-overlay" class="modal-backdrop fade in"><div style="position: absolute; top:' + spinnerTop + 'px; left:' + spinnerLeft + 'px" class=".builder-spinner"><i class="ri-loader-3-line ri-spin ri-5x"></i></div></div>').css(builderCss).appendTo('.builder-content');
 
-    mQuery('#builder-errors').hide('fast').text('');
+    mQuery('#builder-errors span').text('');
+    mQuery('#builder-errors').hide('fast');
 
     Mautic.updateConnections(function(err, response) {
         mQuery('body').css('overflow-y', '');
@@ -1213,6 +1380,7 @@ Mautic.closeCampaignBuilder = function() {
             }
         }
     });
+    mQuery('#campaign_campaignElements').val(JSON.stringify(Mautic.campaignBuilderCampaignElements));
 };
 
 Mautic.saveCampaignFromBuilder = function() {
@@ -1222,6 +1390,7 @@ Mautic.saveCampaignFromBuilder = function() {
     Mautic.updateConnections(function(err) {
         if (!err) {
             var applyBtn = mQuery('.btn-apply');
+            mQuery('#campaign_campaignElements').val(JSON.stringify(Mautic.campaignBuilderCampaignElements));
             Mautic.inBuilderSubmissionOn(applyBtn.closest('form'));
             applyBtn.trigger('click');
             Mautic.inBuilderSubmissionOff();
@@ -1268,6 +1437,7 @@ Mautic.updateConnections = function(callback) {
     chart.connections  = connections;
     var canvasSettings = {canvasSettings: chart};
 
+    Mautic.campaignBuilderCampaignElements.canvasSettings = chart;
     var campaignId     = mQuery('#campaignId').val();
     var query          = "action=campaign:updateConnections&campaignId=" + campaignId;
 
@@ -1287,8 +1457,21 @@ Mautic.updateConnections = function(callback) {
 };
 
 /**
+ * Cancel the campaign event form
+ */
+Mautic.cancelCampaignEvent = function(e) {
+    e.preventDefault();
+
+    const extraData = {
+        'modifiedEvents': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedEvents),
+    };
+    Mautic.postForm(mQuery('form[name="campaignevent"]'), function (response) {
+        Mautic.processModalContent(response, '#' + response.modalId);
+    }, extraData);
+};
+
+/**
  * Submit the campaign event form
- * @param e
  */
 Mautic.submitCampaignEvent = function(e) {
     e.preventDefault();
@@ -1301,7 +1484,7 @@ Mautic.submitCampaignEvent = function(e) {
     // Get number of running ajax
     const runningAjax = mQuery.active;
 
-    mQuery('form[name="campaignevent"]').submit();
+    Mautic.refreshModifiedEvents(mQuery('form[name="campaignevent"]'), '#CampaignEventModal');
 
     const waitForElement = function (){
         if(mQuery.active <= runningAjax){
@@ -1315,6 +1498,18 @@ Mautic.submitCampaignEvent = function(e) {
     waitForElement();
 };
 
+Mautic.refreshModifiedEvents = function(form, target) {
+    const extraData = {
+        'modifiedEvents': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedEvents),
+    };
+    Mautic.postForm(form, function (response) {
+        if(response.modifiedEvents) {
+            Mautic.campaignBuilderCampaignElements.modifiedEvents = { ...Mautic.campaignBuilderCampaignElements.modifiedEvents, ...response.modifiedEvents };
+        }
+        Mautic.processModalContent(response, target);
+    }, extraData);
+};
+
 /**
  * Submit source form
  * @param e
@@ -1325,7 +1520,19 @@ Mautic.submitCampaignSource = function(e) {
     mQuery('#campaign_leadsource_droppedX').val(mQuery('#droppedX').val());
     mQuery('#campaign_leadsource_droppedY').val(mQuery('#droppedY').val());
 
-    mQuery('form[name="campaign_leadsource"]').submit();
+    Mautic.refreshModifiedSources(mQuery('form[name="campaign_leadsource"]'), '#CampaignEventModal');
+};
+
+Mautic.refreshModifiedSources = function(form, target) {
+    const extraData = {
+        'modifiedSources': JSON.stringify(Mautic.campaignBuilderCampaignElements.modifiedSources),
+    };
+    Mautic.postForm(form, function (response) {
+        if(response.modifiedSources) {
+            Mautic.campaignBuilderCampaignElements.modifiedSources = { ...Mautic.campaignBuilderCampaignElements.modifiedSources, ...response.modifiedSources };
+        }
+        Mautic.processModalContent(response, target);
+    }, extraData);
 };
 
 /**
@@ -2199,11 +2406,19 @@ Mautic.highlightJumpTarget = function(event, el) {
     if (highlightedAlready) {
         parentEventElement.data('highlighted', false);
         overlay.hide();
+        overlay.off('click.closejump');
         parentEventElement.css("z-index", 1010);
         jumpTarget.css("z-index", 1010);
     } else {
+        if (mQuery('[data-highlighted="true"]').length) {
+            mQuery('[data-highlighted="true"]').find('.highlight-jump-target').click();
+        }
+
         parentEventElement.data('highlighted', true);
         overlay.show();
+        overlay.on('click.closejump', function() {
+            element.click();
+        });
         parentEventElement.css("z-index", 2010);
         jumpTarget.css("z-index", 2010);
     }
@@ -2330,3 +2545,52 @@ Mautic.previewCampaignLabels = function() {
         });
     });
 }
+
+Mautic.campaignAuditlogOnLoad = function (container, response) {
+    document.querySelector("#campaign-auditlog a[data-activate-details='all']")?.addEventListener("click", function () {
+        let icon = this.querySelector("span:first-child");
+        let isExpanded = icon.classList.contains("ri-arrow-down-s-line");
+
+        document.querySelectorAll("#campaign-auditlog a[data-activate-details]:not([data-activate-details='all'])").forEach(element => {
+            const detailsId = element.getAttribute("data-activate-details");
+            const detailsElem = document.querySelector(`#auditlog-details-${detailsId}`);
+            const elementIcon = element.querySelector("span:first-child");
+
+            if (detailsElem) {
+                detailsElem.classList.toggle("hide", !isExpanded);
+                element.classList.toggle("active", isExpanded);
+                elementIcon.classList.replace(
+                    isExpanded ? "ri-arrow-down-s-line" : "ri-arrow-up-s-line",
+                    isExpanded ? "ri-arrow-up-s-line" : "ri-arrow-down-s-line"
+                );
+            }
+        });
+
+        icon.classList.replace(
+            isExpanded ? "ri-arrow-down-s-line" : "ri-arrow-up-s-line",
+            isExpanded ? "ri-arrow-up-s-line" : "ri-arrow-down-s-line"
+        );
+    });
+
+    document.querySelectorAll("#campaign-auditlog a[data-activate-details]:not([data-activate-details='all'])").forEach(anchor => {
+        anchor.addEventListener("click", function () {
+            const detailsId = this.dataset.activateDetails;
+            const icon = this.querySelector("span");
+            const detailsElement = document.getElementById(`auditlog-details-${detailsId}`);
+
+            if (detailsId && detailsElement) {
+                const isActive = this.classList.contains("active");
+
+                if (isActive) {
+                    detailsElement.classList.add("hide");
+                    this.classList.remove("active");
+                    icon.classList.replace("ri-arrow-up-s-line", "ri-arrow-down-s-line");
+                } else {
+                    detailsElement.classList.remove("hide");
+                    this.classList.add("active");
+                    icon.classList.replace("ri-arrow-down-s-line", "ri-arrow-up-s-line");
+                }
+            }
+        });
+    });
+};

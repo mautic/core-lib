@@ -142,7 +142,7 @@ class ReportModel extends FormModel implements GlobalSearchInterface
     /**
      * @throws MethodNotAllowedHttpException
      */
-    protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
     {
         if (!$entity instanceof Report) {
             throw new MethodNotAllowedHttpException(['Report']);
@@ -443,24 +443,26 @@ class ReportModel extends FormModel implements GlobalSearchInterface
      *
      * @return mixed[]
      */
-    public function getReportData(Report $entity, FormFactoryInterface $formFactory = null, array $options = []): array
+    public function getReportData(Report $entity, ?FormFactoryInterface $formFactory = null, array $options = []): array
     {
         // Clone dateFrom/dateTo because they handled separately in charts
         $chartDateFrom = isset($options['dateFrom']) ? clone $options['dateFrom'] : (new \DateTime('-30 days'));
         $chartDateTo   = isset($options['dateTo']) ? clone $options['dateTo'] : (new \DateTime());
+        $debugData     = [];
 
-        $debugData = [];
+        // UI doesn't set time so reset it to midnight. API can set time so do not reset it. Using DateTimeImmutable to distinguish.
+        $resetTime = !(isset($options['dateFrom']) && $options['dateFrom'] instanceof \DateTimeImmutable);
 
-        if (isset($options['dateFrom'])) {
-            // Fix date ranges if applicable
+        if ($resetTime && isset($options['dateFrom'])) {
+            $now = new \DateTime();
+
             if (!isset($options['dateTo'])) {
-                $options['dateTo'] = new \DateTime();
+                $options['dateTo'] = $now;
             }
 
-            // Adjust dateTo to be end of day or to current hour if today
-            $now = new \DateTime();
-            if ($now->format('Y-m-d') == $options['dateTo']->format('Y-m-d')) {
-                $options['dateTo'] = $now;
+            // Set time to the last second of the "to date" date
+            if ($now->format('Y-m-d') === $options['dateTo']->format('Y-m-d')) {
+                $options['dateTo'] = $now->setTime(23, 59, 59);
             } else {
                 $options['dateTo']->setTime(23, 59, 59);
             }

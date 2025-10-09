@@ -8,12 +8,15 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\LeadBundle\Form\Validator\Constraints\UniqueCustomField;
 use Mautic\LeadBundle\Model\FieldModel;
+use Mautic\ProjectBundle\Entity\ProjectTrait;
 use Mautic\UserBundle\Entity\User;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class Company extends FormEntity implements CustomFieldEntityInterface, IdentifierFieldEntityInterface
 {
     use CustomFieldEntityTrait;
+    use ProjectTrait;
 
     public const FIELD_ALIAS = 'company';
     public const TABLE_NAME  = 'companies';
@@ -58,6 +61,11 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     private $industry;
 
     private $description;
+
+    public function __construct()
+    {
+        $this->initializeProjects();
+    }
 
     public function __clone()
     {
@@ -125,6 +133,8 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
             ],
             FieldModel::$coreCompanyFields
         );
+
+        self::addProjectsField($builder, 'company_projects_xref', 'company_id');
     }
 
     /**
@@ -160,11 +170,17 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
                 ]
             )
             ->build();
+
+        self::addProjectsInLoadApiMetadata($metadata, 'company');
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
         $metadata->addConstraint(new UniqueCustomField(['object' => 'company']));
+        $metadata->addPropertyConstraint('score', new Assert\Range([
+            'min' => 0,
+            'max' => 2147483647,
+        ]));
     }
 
     public static function getDefaultIdentifierFields(): array
@@ -231,7 +247,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     /**
      * @return Company
      */
-    public function setOwner(User $owner = null)
+    public function setOwner(?User $owner = null)
     {
         $this->isChanged('owner', $owner);
         $this->owner = $owner;
