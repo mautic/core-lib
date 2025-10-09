@@ -14,6 +14,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
+use Mautic\CategoryBundle\Entity\Category;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FiltersEntityTrait;
 use Mautic\CoreBundle\Entity\FormEntity;
@@ -90,7 +91,7 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
     private $description;
 
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
-    private $category;
+    private ?Category $category;
 
     /**
      * @var \DateTimeInterface
