@@ -9,8 +9,7 @@ use Mautic\LeadBundle\Helper\SegmentCountCacheHelper;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Cache\CacheItemInterface;
-use Psr\Cache\InvalidArgumentException;
+use Symfony\Component\Cache\CacheItem;
 
 class SegmentCountCacheHelperTest extends TestCase
 {
@@ -18,53 +17,55 @@ class SegmentCountCacheHelperTest extends TestCase
 
     private SegmentCountCacheHelper $segmentCountCacheHelper;
 
-    /**
-     * @var CacheItemInterface&MockObject
-     */
-    private MockObject $cacheItem;
-
     protected function setUp(): void
     {
         $this->cacheProviderMock       = $this->createMock(CacheProviderInterface::class);
-        $this->cacheItem               = $this->createMock(CacheItemInterface::class);
         $this->segmentCountCacheHelper = new SegmentCountCacheHelper($this->cacheProviderMock);
     }
 
     /**
-     * @throws InvalidArgumentException
+     * Create a CacheItem instance using reflection since the constructor is private.
      */
+    private function createCacheItem(string $key, mixed $value = null, bool $isHit = false): CacheItem
+    {
+        $item = (new \ReflectionClass(CacheItem::class))->newInstanceWithoutConstructor();
+
+        $keyProperty = new \ReflectionProperty(CacheItem::class, 'key');
+        $keyProperty->setValue($item, $key);
+
+        $valueProperty = new \ReflectionProperty(CacheItem::class, 'value');
+        $valueProperty->setValue($item, $value);
+
+        $isHitProperty = new \ReflectionProperty(CacheItem::class, 'isHit');
+        $isHitProperty->setValue($item, $isHit);
+
+        return $item;
+    }
+
     public function testGetSegmentContactCount(): void
     {
         $segmentId = 1;
+        $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead', 1, true);
+
         $this->cacheProviderMock
             ->method('getItem')
             ->with('segment.'.$segmentId.'.lead')
-            ->willReturn($this->cacheItem);
-
-        $this->cacheItem
-            ->method('get')
-            ->willReturn(1);
+            ->willReturn($cacheItem);
 
         $count = $this->segmentCountCacheHelper->getSegmentContactCount($segmentId);
         Assert::assertSame(1, $count);
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function testSetSegmentContactCount(): void
     {
         $segmentId = 1;
         $count     = 2;
+        $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead');
 
         $this->cacheProviderMock
             ->method('getItem')
             ->with('segment.'.$segmentId.'.lead')
-            ->willReturn($this->cacheItem);
-
-        $this->cacheItem
-            ->method('set')
-            ->willReturn($count);
+            ->willReturn($cacheItem);
 
         $this->cacheProviderMock
             ->method('hasItem')
@@ -77,25 +78,18 @@ class SegmentCountCacheHelperTest extends TestCase
             ->with('segment.'.$segmentId.'.lead.recount');
 
         $this->segmentCountCacheHelper->setSegmentContactCount($segmentId, $count);
-        Assert::isNull();
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function testSetSegmentContactCountIfRecountExist(): void
     {
         $segmentId = 1;
         $count     = 2;
+        $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead');
 
         $this->cacheProviderMock
             ->method('getItem')
             ->with('segment.'.$segmentId.'.lead')
-            ->willReturn($this->cacheItem);
-
-        $this->cacheItem
-            ->method('set')
-            ->willReturn($count);
+            ->willReturn($cacheItem);
 
         $this->cacheProviderMock
             ->expects(self::exactly(1))
@@ -110,33 +104,27 @@ class SegmentCountCacheHelperTest extends TestCase
             ->willReturn(true);
 
         $this->segmentCountCacheHelper->setSegmentContactCount($segmentId, $count);
-        Assert::isNull();
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function testSetSegmentContactCountWithInvalidatedSegment(): void
     {
         $segmentId = 1;
+        $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead.recount');
 
         $this->cacheProviderMock
+            ->expects(self::once())
             ->method('getItem')
             ->with('segment.'.$segmentId.'.lead.recount')
-            ->willReturn($this->cacheItem);
+            ->willReturn($cacheItem);
 
-        $this->cacheItem
-            ->expects(self::exactly(1))
-            ->method('set')
-            ->willReturn(true);
+        $this->cacheProviderMock
+            ->expects(self::once())
+            ->method('save')
+            ->with($cacheItem);
 
         $this->segmentCountCacheHelper->invalidateSegmentContactCount($segmentId);
-        Assert::isNull();
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function testDecrementSegmentContactCountHasNoCache(): void
     {
         $segmentId = 1;
@@ -146,7 +134,6 @@ class SegmentCountCacheHelperTest extends TestCase
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn(false);
         $this->segmentCountCacheHelper->decrementSegmentContactCount($segmentId);
-        Assert::isNull();
     }
 
     public function testDeleteSegmentContactCountIfNotExist(): void
@@ -158,12 +145,8 @@ class SegmentCountCacheHelperTest extends TestCase
             ->with('segment.'.$segmentId.'.lead')
             ->willReturn(false);
         $this->segmentCountCacheHelper->deleteSegmentContactCount($segmentId);
-        Assert::isNull();
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function testDeleteSegmentContactCountIfExist(): void
     {
         $segmentId = 1;
@@ -180,30 +163,52 @@ class SegmentCountCacheHelperTest extends TestCase
             ->willReturn(true);
 
         $this->segmentCountCacheHelper->deleteSegmentContactCount($segmentId);
-        Assert::isNull();
     }
 
     public function testDecrementSegmentContactCount(): void
     {
         $segmentId = 1;
+        $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead', 5, true);
+
+        $this->cacheProviderMock
+            ->method('hasItem')
+            ->willReturnCallback(function ($key) use ($segmentId) {
+                if ($key === 'segment.'.$segmentId.'.lead') {
+                    return true;
+                }
+                if ($key === 'segment.'.$segmentId.'.lead.recount') {
+                    return false;
+                }
+
+                return false;
+            });
 
         $this->cacheProviderMock
             ->method('getItem')
-            ->with('segment.'.$segmentId.'.lead.recount')
-            ->willReturn($this->cacheItem);
+            ->willReturnCallback(function ($key) use ($segmentId, $cacheItem) {
+                if ($key === 'segment.'.$segmentId.'.lead') {
+                    return $cacheItem;
+                }
 
-        $this->cacheItem
-            ->expects(self::exactly(1))
-            ->method('set')
-            ->willReturn(true);
+                return null;
+            });
 
-        $this->segmentCountCacheHelper->invalidateSegmentContactCount($segmentId);
-        Assert::isNull();
+        $this->cacheProviderMock
+            ->expects(self::once())
+            ->method('save')
+            ->with($cacheItem);
+
+        $this->segmentCountCacheHelper->decrementSegmentContactCount($segmentId);
+
+        // Verify the count was decremented from 5 to 4
+        Assert::assertSame(4, $cacheItem->get());
     }
 
     public function testDecrementSegmentCountIsNotNegative(): void
     {
         $segmentId = 1;
+        $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead', 0, true);
+
         $this->cacheProviderMock
             ->expects(self::exactly(2))
             ->method('hasItem')
@@ -219,21 +224,18 @@ class SegmentCountCacheHelperTest extends TestCase
             });
         $this->cacheProviderMock
             ->method('getItem')
-            ->willReturnCallback(function ($key) use ($segmentId) {
+            ->willReturnCallback(function ($key) use ($segmentId, $cacheItem) {
                 if (in_array($key, ['segment.'.$segmentId.'.lead', 'segment.'.$segmentId.'.lead.recount'])) {
-                    return $this->cacheItem;
+                    return $cacheItem;
                 }
 
                 return null;
             });
-        
+
         // Edge case. Should not decrement below 0.
-        $this->cacheItem
-            ->expects(self::once())
-            ->method('get')
-            ->willReturn(0);
-        
         $this->segmentCountCacheHelper->decrementSegmentContactCount($segmentId);
-        Assert::isNull();
+
+        // Assert that the cache item value is still 0 (not negative)
+        Assert::assertSame(0, $cacheItem->get());
     }
 }

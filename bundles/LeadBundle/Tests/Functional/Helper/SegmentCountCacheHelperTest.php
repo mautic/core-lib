@@ -8,19 +8,16 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Helper\SegmentCountCacheHelper;
 use PHPUnit\Framework\Assert;
 
-class SegmentCountCacheHelperTest extends MauticMysqlTestCase
+final class SegmentCountCacheHelperTest extends MauticMysqlTestCase
 {
     private const SEGMENT_ID = 1;
 
-    /**
-     * @var SegmentCountCacheHelper
-     */
-    private $segmentCountCacheHelper;
+    private SegmentCountCacheHelper $segmentCountCacheHelper;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->segmentCountCacheHelper = $this->container->get('mautic.helper.segment.count.cache');
+        $this->segmentCountCacheHelper = $this->getContainer()->get(SegmentCountCacheHelper::class);
 
         // Delete the cache before each test starts.
         $this->segmentCountCacheHelper->setSegmentContactCount(self::SEGMENT_ID, 20);
