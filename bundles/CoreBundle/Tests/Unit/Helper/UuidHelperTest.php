@@ -9,17 +9,13 @@ use PHPUnit\Framework\TestCase;
 
 class UuidHelperTest extends TestCase
 {
-    /**
-     * @dataProvider provideValidUuids
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideValidUuids')]
     public function testIsValidUuidWithValidUuids(string $uuid): void
     {
         $this->assertTrue(UuidHelper::isValidUuid($uuid));
     }
 
-    /**
-     * @dataProvider provideInvalidUuids
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideInvalidUuids')]
     public function testIsValidUuidWithInvalidUuids(string $uuid): void
     {
         $this->assertFalse(UuidHelper::isValidUuid($uuid));
@@ -32,21 +28,21 @@ class UuidHelperTest extends TestCase
     {
         // UUID v1 (time-based)
         yield 'UUID v1' => ['6ba7b810-9dad-11d1-80b4-00c04fd430c8'];
-        
+
         // UUID v2 (DCE Security)
         yield 'UUID v2' => ['000003e8-9dad-21d1-b245-00c04fd430c8'];
-        
+
         // UUID v3 (MD5 hash)
         yield 'UUID v3' => ['6ba7b811-9dad-31d1-80b4-00c04fd430c8'];
-        
+
         // UUID v4 (random)
         yield 'UUID v4 lowercase' => ['550e8400-e29b-41d4-a716-446655440000'];
         yield 'UUID v4 uppercase' => ['550E8400-E29B-41D4-A716-446655440000'];
         yield 'UUID v4 mixed case' => ['550e8400-E29B-41d4-A716-446655440000'];
-        
+
         // UUID v5 (SHA-1 hash)
         yield 'UUID v5' => ['6ba7b812-9dad-51d1-80b4-00c04fd430c8'];
-        
+
         // Additional valid examples
         yield 'UUID v4 example 1' => ['f47ac10b-58cc-4372-a567-0e02b2c3d479'];
         yield 'UUID v4 example 2' => ['9b2c3d4e-5f6a-4b7c-8d9e-0f1a2b3c4d5e'];
