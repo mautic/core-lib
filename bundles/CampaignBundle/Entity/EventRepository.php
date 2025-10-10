@@ -272,7 +272,8 @@ class EventRepository extends CommonRepository
     }
 
     /**
-     * Sets events as deleted and updates their redirectEvent in a single operation.
+     * Sets events as deleted and updates their redirect_event_id.
+     * Also handles redirection chain updates for other events that point to the deleted events.
      *
      * @param array<int, array{id: int, redirectEvent: ?int}> $eventData Array of event data
      *
@@ -300,13 +301,12 @@ class EventRepository extends CommonRepository
             $eventStates[$row['id']] = $row['deleted'];
         }
 
-        foreach ($eventData as $eventInfo) {
+        foreach ($eventData as $eventId => $eventInfo) {
             $eventId       = $eventInfo['id'];
             $redirectEvent = $eventInfo['redirectEvent'] ?? null;
 
-            $isAlreadyDeleted = !empty($eventStates[$eventId]);
-
-            if ($isAlreadyDeleted) {
+            if (!empty($eventStates[$eventId])) {
+                unset($eventData[$eventId]);
                 continue;
             }
 
@@ -323,6 +323,36 @@ class EventRepository extends CommonRepository
             $qb->where($qb->expr()->eq('id', ':eventId'))
                ->setParameter('eventId', $eventId)
                ->executeStatement();
+        }
+
+        if (!empty($eventData)) {
+            $this->updateRedirectionChains($eventData);
+        }
+    }
+
+    /**
+     * Update redirection chains for other events that point to deleted events.
+     * For each deleted event, find all events that redirect to it and update them
+     * to redirect to the deleted event's redirect target.
+     *
+     * @param array<int, array{id: int, redirectEvent: ?int}> $eventData Array of event data
+     *
+     * @throws Exception
+     */
+    private function updateRedirectionChains(array $eventData): void
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        foreach ($eventData as $eventInfo) {
+            $redirectTarget = $eventInfo['redirectEvent'] ?? null;
+
+            $updateQb = $conn->createQueryBuilder();
+            $updateQb->update(MAUTIC_TABLE_PREFIX.Event::TABLE_NAME)
+                ->set('redirect_event_id', ':newRedirectId')
+                ->where('redirect_event_id = :deletedEventId')
+                ->setParameter('newRedirectId', $redirectTarget)
+                ->setParameter('deletedEventId', $eventInfo['id']);
+            $updateQb->executeStatement();
         }
     }
 
