@@ -33,7 +33,7 @@ final class AjaxController extends CommonAjaxController
         $limit       = (int) $request->query->get('limit', '10');
         $start       = (int) $request->query->get('start', '0');
 
-        $results = $this->projectModel->getLookupResults($entityType, $filter, $limit, $start, [
+        $results = $projectModel->getLookupResults($entityType, $filter, $limit, $start, [
             'projectId' => $projectId,
         ]);
 
