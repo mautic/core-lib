@@ -230,7 +230,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
                     $event->setTempId($v);
                 }
 
-                if (in_array($f, ['id', 'parent'])) {
+                if (in_array($f, ['id', 'parent', 'campaign'])) {
                     continue;
                 }
 
