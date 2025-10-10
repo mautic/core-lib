@@ -75,23 +75,17 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
     #[Groups(['dynamicContent:read'])]
     private $id;
 
-    /**
-     * @var string
-     */
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
-    private $name;
+    private ?string $name = null;
 
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
     private string $type = TypeList::HTML;
 
-    /**
-     * @var string|null
-     */
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
-    private $description;
+    private ?string $description = null;
 
     #[Groups(['dynamicContent:read', 'dynamicContent:write'])]
-    private ?Category $category;
+    private ?Category $category = null;
 
     /**
      * @var \DateTimeInterface

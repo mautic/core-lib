@@ -41,12 +41,6 @@ class IpAddress
     private $id;
 
     /**
-     * @var string|null
-     */
-    #[Groups(['ipaddress:read', 'ipaddress:write', 'download:read'])]
-    private $ipAddress;
-
-    /**
      * @var mixed[]
      */
     #[Groups(['ipaddress:read', 'ipaddress:write', 'download:read'])]
@@ -98,9 +92,10 @@ class IpAddress
     /**
      * @param string|null $ipAddress
      */
-    public function __construct($ipAddress = null)
-    {
-        $this->ipAddress = $ipAddress;
+    public function __construct(
+        #[Groups(['ipaddress:read', 'ipaddress:write', 'download:read'])]
+        private $ipAddress = null
+    ) {
     }
 
     /**
