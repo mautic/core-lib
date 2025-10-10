@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Entity;
 
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Result;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr;
 use Mautic\CampaignBundle\Entity\Event;
