@@ -13,10 +13,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 final class DeviceTrackingService implements DeviceTrackingServiceInterface
 {
-    /**
-     * @var LeadDevice
-     */
-    private $trackedDevice;
+    private ?LeadDevice $trackedDevice = null;
 
     public function __construct(
         private CookieHelper $cookieHelper,
