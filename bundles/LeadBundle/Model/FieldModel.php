@@ -1061,4 +1061,17 @@ class FieldModel extends FormModel
             ],
         ];
     }
+    
+    public function generateUniqueFieldAlias(string $alias): string
+    {
+        $originalAlias = $alias;
+        $i             = 1;
+
+        while ($this->getRepository()->findOneByAlias($alias)) {
+            $alias = $originalAlias.'_'.$i;
+            ++$i;
+        }
+
+        return $alias;
+    }
 }
