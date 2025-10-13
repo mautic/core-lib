@@ -77,9 +77,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         yield [true,  '4 lines were processed, 2 items created, 1 items updated, 1 items ignored'];
     }
 
-    /**
-     * @dataProvider dataImportCSV
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataImportCSV')]
     public function testImportCSV(bool $createLead, string $expectedOutput): void
     {
         $this->generateSmallCSV();
