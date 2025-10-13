@@ -26,17 +26,11 @@ class ContactTracker
 
     private ?Lead $systemContact = null;
 
-    /**
-     * @var Lead|null
-     */
-    private $trackedContact;
+    private ?Lead $trackedContact = null;
 
-    /**
-     * @var FieldModel
-     */
-    private $leadFieldModel;
+    private FieldModel $leadFieldModel;
 
-    private ?bool $useSystemContact;
+    private ?bool $useSystemContact = null;
 
     public function __construct(
         private LeadRepository $leadRepository,

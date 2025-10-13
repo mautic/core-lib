@@ -10,9 +10,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class LeadGetCurrentEvent extends Event
 {
-    private ?Lead $contact;
+    private ?Lead $contact = null;
 
-    public function __construct(private ?Request $request)
+    public function __construct(private ?Request $request = null)
     {
     }
 
