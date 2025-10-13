@@ -1200,6 +1200,8 @@ class CampaignController extends AbstractStandardFormController
                 $event['label'] = $label;
             }
 
+            $event['isRedirectTarget'] = $e->isRedirectTarget();
+
             $campaignEvents[$id] = $event;
         }
 

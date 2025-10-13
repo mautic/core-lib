@@ -91,35 +91,7 @@ Mautic.campaignEventDeleteModal = {
             // Disable all buttons during request
             this.modal.find('button').prop('disabled', true);
 
-            // Use the shared delete function in campaign.js
-            Mautic.campaignBuilderDeleteEvent(
-                eventId,
-                redirectTo,
-                deleteUrl,
-                // Success callback
-                (response) => {
-                    if (response.success) {
-                        // Close the modal
-                        this.modal.modal('hide');
-                    } else {
-                        // Show error message
-                        this.warningDiv.removeClass('alert-warning').addClass('alert-danger');
-                        this.warningDiv.find('.warning-message').text(response.message || Mautic.translate('mautic.campaign.event.delete.error'));
-
-                        // Re-enable buttons
-                        this.modal.find('button').prop('disabled', false);
-                    }
-                },
-                // Error callback
-                (response) => {
-                    // Show generic error message
-                    this.warningDiv.removeClass('alert-warning').addClass('alert-danger');
-                    this.warningDiv.find('.warning-message').text(Mautic.translate('mautic.campaign.event.delete.generic_error'));
-
-                    // Re-enable buttons
-                    this.modal.find('button').prop('disabled', false);
-                }
-            );
+            this.deleteEventWithRedirect(eventId, deleteUrl, redirectTo);
         });
 
         // Reset the modal when it's closed (via any method - X button, clicking outside, ESC key)
@@ -248,6 +220,103 @@ Mautic.campaignEventDeleteModal = {
     },
 
     /**
+     * Check if an event has a delay configured
+     *
+     * @param {string} eventId - The event ID to check
+     * @returns {boolean} - True if the event has a delay
+     */
+    hasDelay: function(eventId) {
+        if (typeof Mautic.campaignBuilderCanvasEvents === 'undefined'
+            || !Mautic.campaignBuilderCanvasEvents[eventId]) {
+            return false;
+        }
+
+        const event = Mautic.campaignBuilderCanvasEvents[eventId];
+        return !(event.triggerMode && event.triggerMode === 'immediate');
+    },
+
+    /**
+     * Check if an event is used as a redirect target by any other event
+     *
+     * @param {string} eventId - The event ID to check
+     * @returns {boolean} - True if the event is used as a redirect target
+     */
+    isRedirectTarget: function(eventId) {
+        // Check for deleted events within the campaign builder that haven't been saved yet.
+        if (Mautic.campaignBuilderCampaignElements.deletedEvents) {
+            for (let i = 0; i < Mautic.campaignBuilderCampaignElements.deletedEvents.length; i++) {
+                if (Mautic.campaignBuilderCampaignElements.deletedEvents[i].redirectEvent === eventId) {
+                    return true;
+                }
+            }
+        }
+
+        // If none found, load changes from the persisted Event entity.
+        if (typeof Mautic.campaignBuilderCanvasEvents !== 'undefined' &&
+            Mautic.campaignBuilderCanvasEvents[eventId] &&
+            typeof Mautic.campaignBuilderCanvasEvents[eventId].isRedirectTarget !== 'undefined') {
+            return Mautic.campaignBuilderCanvasEvents[eventId].isRedirectTarget;
+        }
+
+        return false;
+    },
+
+    /**
+     * Handle deletion of newly added unsaved events (ID starts with "new")
+     *
+     * @param {string} eventId - The event ID to delete
+     */
+    handleNewEventDeletion: function(eventId) {
+        // Remove the event from the canvas
+        if (typeof Mautic.campaignBuilderInstance !== 'undefined') {
+            Mautic.campaignBuilderInstance.remove(document.getElementById('CampaignEvent_' + eventId));
+        }
+
+        // Update all campaign builder data structures to mark the event as deleted
+        if (Mautic.campaignBuilderCanvasEvents[eventId]) {
+            // Mark the event as deleted
+            Mautic.campaignBuilderCanvasEvents[eventId].deleted = true;
+        }
+
+        // Update any references in the campaign builder elements
+        if (typeof Mautic.campaignBuilderCampaignElements.modifiedEvents !== 'undefined') {
+            delete Mautic.campaignBuilderCampaignElements.modifiedEvents[eventId];
+        }
+
+        // Delete from the campaign event positions
+        delete Mautic.campaignBuilderEventPositions['CampaignEvent_' + eventId];
+
+        // Reset the spinner icon on the delete button
+        const deleteButton = mQuery('#CampaignEvent_' + eventId).find('a[data-toggle="ajax-delete"] i');
+        if (deleteButton.length) {
+            deleteButton.removeClass('fa-spinner fa-spin').addClass('fa-times');
+        }
+    },
+
+    /**
+     * Check if an event should bypass the modal (can be directly deleted)
+     *
+     * @param {string} eventId - The event ID to check
+     * @returns {boolean} - True if modal should be bypassed
+     */
+    shouldBypassModal: function(eventId) {
+        if (typeof Mautic.campaignBuilderCanvasEvents === 'undefined'
+            || !Mautic.campaignBuilderCanvasEvents[eventId]) {
+            return false;
+        }
+
+        const event = Mautic.campaignBuilderCanvasEvents[eventId];
+
+        // Never bypass for decision events or if this event is used as a redirect target
+        if (event.eventType === 'decision' || this.isRedirectTarget(eventId)) {
+            return false;
+        }
+
+        // Bypass if event has no delay
+        return !this.hasDelay(eventId);
+    },
+
+    /**
      * Open the delete modal for a specific event
      *
      * @param {string} eventId - The ID of the event to delete
@@ -257,36 +326,25 @@ Mautic.campaignEventDeleteModal = {
     openForEvent: function(eventId, deleteUrl, campaignId) {
         // Check if this is a newly added unsaved event (ID starts with "new")
         if (eventId.startsWith('new')) {
-
-            // Remove the event from the canvas
-            if (typeof Mautic.campaignBuilderInstance !== 'undefined') {
-                Mautic.campaignBuilderInstance.remove(document.getElementById('CampaignEvent_' + eventId));
-            }
-
-            // Update all campaign builder data structures to mark the event as deleted
-            if (Mautic.campaignBuilderCanvasEvents[eventId]) {
-                // Mark the event as deleted
-                Mautic.campaignBuilderCanvasEvents[eventId].deleted = true;
-            }
-
-            // Update any references in the campaign builder elements
-            if (typeof Mautic.campaignBuilderCampaignElements.modifiedEvents !== 'undefined') {
-                delete Mautic.campaignBuilderCampaignElements.modifiedEvents[eventId];
-            }
-
-            // Delete from the campaign event positions
-            delete Mautic.campaignBuilderEventPositions['CampaignEvent_' + eventId];
-
-            // Reset the spinner icon on the delete button
-            const deleteButton = mQuery('#CampaignEvent_' + eventId).find('a[data-toggle="ajax-delete"] i');
-            if (deleteButton.length) {
-                deleteButton.removeClass('fa-spinner fa-spin').addClass('fa-times');
-            }
-
+            this.handleNewEventDeletion(eventId);
             return;
         }
 
-        // For existing events, show the modal:
+        // Check if we should bypass the modal using the preloaded information
+        const shouldBypass = this.shouldBypassModal(eventId);
+        if (shouldBypass) {
+            // Directly delete the event without showing modal
+            this.deleteEventDirectly(eventId, deleteUrl);
+        } else {
+            // Show the modal for redirect confirmation
+            this.showModalForEventDelete(eventId, deleteUrl, campaignId);
+        }
+    },
+
+    /**
+     * Show the modal for event deletion.
+     */
+    showModalForEventDelete: function(eventId, deleteUrl, campaignId) {
         // Ensure any previous state is cleared
         this.warningDiv.hide().removeClass('alert-danger').addClass('alert-warning');
         this.modal.find('button').prop('disabled', false);
@@ -308,7 +366,89 @@ Mautic.campaignEventDeleteModal = {
         // Store reference to the original button for cleanup
         const deleteButton = mQuery('#CampaignEvent_' + eventId).find('a[data-toggle="ajax-delete"]');
         this.modal.data('sourceButton', deleteButton).modal(modalOptions).modal('show');
+    },
 
+    /**
+     * Delete an event directly without showing modal (for events that can bypass modal)
+     *
+     * @param {string} eventId - The event ID to delete
+     * @param {string} deleteUrl - The delete URL
+     */
+    deleteEventDirectly: function(eventId, deleteUrl) {
+        // Start loading icon on the delete button
+        const deleteButton = mQuery('#CampaignEvent_' + eventId).find('a[data-toggle="ajax-delete"]');
+        const iconElement = deleteButton.find('i');
+        Mautic.startIconSpinOnEvent(deleteButton);
+
+        // Use the shared delete function with no redirect
+        Mautic.campaignBuilderDeleteEvent(
+            eventId,
+            null, // No redirect for direct deletions
+            deleteUrl,
+            // Success callback
+            (response) => {
+                Mautic.stopIconSpinPostEvent();
+                if (!response.success) {
+                    alert(response.message || Mautic.translate('mautic.campaign.event.delete.error'));
+                    // Reset the delete button icon on error
+                    if (iconElement && iconElement.length) {
+                        iconElement.removeClass('fa-spinner fa-spin').addClass('fa-times');
+                    }
+                }
+            },
+            // Error callback
+            (response) => {
+                Mautic.stopIconSpinPostEvent();
+                alert(Mautic.translate('mautic.campaign.event.delete.generic_error'));
+                // Reset the delete button icon on error
+                if (iconElement && iconElement.length) {
+                    iconElement.removeClass('fa-spinner fa-spin').addClass('fa-times');
+                }
+            }
+        );
+    },
+
+    /**
+     * Delete an event with redirect (called from modal)
+     *
+     * @param {string} eventId - The event ID to delete
+     * @param {string} deleteUrl - The delete URL
+     * @param {string} redirectEventId - The redirect event ID
+     */
+    deleteEventWithRedirect: function(eventId, deleteUrl, redirectEventId) {
+        // Start loading icon on the delete button
+        const deleteButton = mQuery('#CampaignEvent_' + eventId).find('a[data-toggle="ajax-delete"]');
+        Mautic.startIconSpinOnEvent(deleteButton);
+
+        // Use the shared delete function with redirect
+        Mautic.campaignBuilderDeleteEvent(
+            eventId,
+            redirectEventId,
+            deleteUrl,
+            // Success callback
+            (response) => {
+                Mautic.stopIconSpinPostEvent();
+                if (response.success) {
+                    // Close the modal on success
+                    this.modal.modal('hide');
+                } else {
+                    // Show error message in modal
+                    this.warningDiv.removeClass('alert-warning').addClass('alert-danger');
+                    this.warningDiv.find('.warning-message').text(response.message || Mautic.translate('mautic.campaign.event.delete.error'));
+                    // Re-enable buttons
+                    this.modal.find('button').prop('disabled', false);
+                }
+            },
+            // Error callback
+            (response) => {
+                Mautic.stopIconSpinPostEvent();
+                // Show generic error message in modal
+                this.warningDiv.removeClass('alert-warning').addClass('alert-danger');
+                this.warningDiv.find('.warning-message').text(Mautic.translate('mautic.campaign.event.delete.generic_error'));
+                // Re-enable buttons
+                this.modal.find('button').prop('disabled', false);
+            }
+        );
     }
 };
 
@@ -316,7 +456,6 @@ Mautic.campaignEventDeleteModal = {
  * Gets available campaign events for a dropdown list
  *
  * @param {string} currentEventId - The current event ID to exclude from the list
- * @param {boolean} includeDecisions - Whether to include decision events
  * @returns {Array} Array of available events objects with id, name and eventType
  */
 Mautic.getCampaignBuilderEventOptions = function(currentEventId) {
