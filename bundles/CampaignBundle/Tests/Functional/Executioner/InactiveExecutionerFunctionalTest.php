@@ -221,6 +221,106 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->assertGreaterThan(0, $counter->getTotalExecuted(), 'Expected events to be executed');
     }
 
+    public function testMultipleDecisionRedirectionFromSingleParent(): void
+    {
+        $campaign     = $this->createCampaign();
+        $contact      = $this->createContact();
+        $campaignLead = $this->createCampaignLead($campaign, $contact);
+
+        // Create parent action event (already executed)
+        $parentEvent = $this->createActionEvent($campaign, 'Parent Action Event');
+
+        // Create first decision event with negative child
+        $firstDecision = $this->createDecisionEvent($campaign, 'First Decision');
+        $firstDecision->setParent($parentEvent);
+
+        $firstNegativeAction = $this->createActionEvent($campaign, 'First Negative Action', $firstDecision, 'no');
+        $firstNegativeAction->setTriggerInterval(1);
+        $firstNegativeAction->setTriggerIntervalUnit('d'); // 1 day delay
+        $firstDecision->addChild($firstNegativeAction);
+
+        // Create second decision event with negative child (different delay)
+        $secondDecision = $this->createDecisionEvent($campaign, 'Second Decision');
+        $secondDecision->setParent($parentEvent);
+
+        $secondNegativeAction = $this->createActionEvent($campaign, 'Second Negative Action', $secondDecision, 'no');
+        $secondNegativeAction->setTriggerInterval(2);
+        $secondNegativeAction->setTriggerIntervalUnit('d'); // 2 day delay
+        $secondDecision->addChild($secondNegativeAction);
+
+        // Create redirect target events
+        $firstRedirectAction  = $this->createActionEvent($campaign, 'First Redirect Action');
+        $secondRedirectAction = $this->createActionEvent($campaign, 'Second Redirect Action');
+
+        // Set up redirection: delete both decisions and redirect to different events
+        $firstDecision->setDeleted(new \DateTime());
+        $firstDecision->setRedirectEvent($firstRedirectAction);
+
+        $secondDecision->setDeleted(new \DateTime());
+        $secondDecision->setRedirectEvent($secondRedirectAction);
+
+        // Log: Parent event was executed successfully
+        $parentEventLog = $this->createEventLog($campaign, $parentEvent, $contact);
+
+        // Don't create any logs for the decisions - contacts are "inactive" and waiting for both decisions
+
+        $this->em->persist($campaign);
+        $this->em->persist($contact);
+        $this->em->persist($campaignLead);
+        $this->em->persist($parentEvent);
+        $this->em->persist($firstDecision);
+        $this->em->persist($firstNegativeAction);
+        $this->em->persist($secondDecision);
+        $this->em->persist($secondNegativeAction);
+        $this->em->persist($firstRedirectAction);
+        $this->em->persist($secondRedirectAction);
+        $this->em->persist($parentEventLog);
+        $this->em->flush();
+
+        // Execute validation for both decisions
+        /** @var InactiveExecutioner $inactiveExecutioner */
+        $inactiveExecutioner = self::getContainer()->get('mautic.campaign.executioner.inactive');
+
+        $output  = new BufferedOutput();
+        $limiter = new ContactLimiter(100, 0, 0, 0, [$contact->getId()]);
+
+        defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED') || define('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED', 1);
+
+        // Validate first decision (should redirect to first redirect action)
+        $inactiveExecutioner->validate($firstDecision->getId(), $limiter, $output);
+
+        // Validate second decision (should redirect to second redirect action)
+        $inactiveExecutioner->validate($secondDecision->getId(), $limiter, $output);
+
+        // Verify both redirections worked
+        $firstRedirectLogs = $this->em->getRepository(LeadEventLog::class)->findBy([
+            'event' => $firstRedirectAction,
+            'lead'  => $contact,
+        ]);
+
+        $secondRedirectLogs = $this->em->getRepository(LeadEventLog::class)->findBy([
+            'event' => $secondRedirectAction,
+            'lead'  => $contact,
+        ]);
+
+        $this->assertGreaterThan(0, count($firstRedirectLogs), 'Expected logs for first redirect action');
+        $this->assertGreaterThan(0, count($secondRedirectLogs), 'Expected logs for second redirect action');
+
+        // Verify original negative actions were NOT executed
+        $firstNegativeLogs = $this->em->getRepository(LeadEventLog::class)->findBy([
+            'event' => $firstNegativeAction,
+            'lead'  => $contact,
+        ]);
+
+        $secondNegativeLogs = $this->em->getRepository(LeadEventLog::class)->findBy([
+            'event' => $secondNegativeAction,
+            'lead'  => $contact,
+        ]);
+
+        $this->assertCount(0, $firstNegativeLogs, 'Expected no logs for first negative action (should be bypassed)');
+        $this->assertCount(0, $secondNegativeLogs, 'Expected no logs for second negative action (should be bypassed)');
+    }
+
     private function createCampaign(): Campaign
     {
         $campaign = new Campaign();

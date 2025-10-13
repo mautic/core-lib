@@ -111,6 +111,9 @@ class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
         $campaign->expects($this->once())
             ->method('getEventsByType')
             ->willReturn(new ArrayCollection([$decision]));
+        $campaign->expects($this->any())
+            ->method('getId')
+            ->willReturn(1);
 
         $limiter = new ContactLimiter(0, 0, 0, 0);
 
@@ -120,7 +123,7 @@ class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
 
         $this->inactiveContactFinder->expects($this->exactly(3))
             ->method('getContacts')
-            ->with(null, $decision, $limiter)
+            ->with(1, $decision, $limiter)
             ->willReturnOnConsecutiveCalls(
                 new ArrayCollection([3 => new Lead()]),
                 new ArrayCollection([10 => new Lead()]),
@@ -168,6 +171,9 @@ class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
         $campaign->expects($this->once())
             ->method('isPublished')
             ->willReturn(true);
+        $campaign->expects($this->any())
+            ->method('getId')
+            ->willReturn(1);
 
         $decision = new Event();
         $decision->setCampaign($campaign);
@@ -185,7 +191,7 @@ class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
 
         $this->inactiveContactFinder->expects($this->exactly(3))
             ->method('getContacts')
-            ->with(null, $decision, $limiter)
+            ->with(1, $decision, $limiter)
             ->willReturnOnConsecutiveCalls(
                 new ArrayCollection([3 => new Lead()]),
                 new ArrayCollection([10 => new Lead()]),

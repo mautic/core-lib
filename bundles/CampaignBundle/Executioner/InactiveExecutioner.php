@@ -321,7 +321,7 @@ class InactiveExecutioner implements ExecutionerInterface
     private function handleRedirectedEvent(Event $redirectEvent, Event $originalDecisionEvent): void
     {
         $contacts = $this->inactiveContactFinder->getContacts(
-            $this->campaign->getId(), $originalDecisionEvent, $this->limiter);
+            $this->campaign->getId(), $originalDecisionEvent, $this->limiter, true);
 
         if (!$contacts->count()) {
             return;
@@ -338,6 +338,6 @@ class InactiveExecutioner implements ExecutionerInterface
         );
 
         $eventCollection = new ArrayCollection([$redirectEvent]);
-        $this->executioner->executeEventsForContacts($eventCollection, $contacts, $this->counter, true);
+        $this->executioner->executeEventsForContacts($eventCollection, $contacts, $this->counter);
     }
 }
