@@ -46,7 +46,8 @@ class InactiveContactFinder
             $campaignId,
             $decisionEvent->getId(),
             ($decisionParentEvent) ? $decisionParentEvent->getId() : null,
-            $limiter
+            $limiter,
+            $ignoreParentEvent
         );
 
         if (empty($this->campaignMemberDatesAdded)) {
