@@ -33,9 +33,8 @@ abstract class AbstractMauticTestCase extends WebTestCase
 
     protected array $clientOptions = [];
 
-
     /**
-     * Credentials for API authentication
+     * Credentials for API authentication.
      *
      * @var array<string,string>
      */

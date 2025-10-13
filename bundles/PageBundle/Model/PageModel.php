@@ -2,7 +2,6 @@
 
 namespace Mautic\PageBundle\Model;
 
-use DateTime;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManager;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
