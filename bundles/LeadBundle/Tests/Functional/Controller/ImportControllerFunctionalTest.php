@@ -187,9 +187,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
         yield [true,  '7 lines were processed, 1 items created, 1 items updated, 5 items ignored'];
     }
 
-    /**
-     * @dataProvider dataImportWithInvalidDates
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataImportWithInvalidDates')]
     public function testImportWithInvalidDates(bool $createLead, string $expectedOutput): void
     {
         $this->generateSmallCSV([
