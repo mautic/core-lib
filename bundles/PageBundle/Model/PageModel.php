@@ -447,7 +447,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         }
 
         $hit = new Hit();
-        $hit->setDateHit($dateTime ?: new Datetime());
+        $hit->setDateHit($dateTime);
         $hit->setIpAddress($ipAddress);
 
         // Set info from request

@@ -179,17 +179,6 @@ final class LeadEvents
     public const CURRENT_LEAD_CHANGED = 'mautic.current_lead_changed';
 
     /**
-     * The mautic.lead_get_current event is dispatched before the lead tracker tries to get the current lead.
-     * This gives an opportunity to set the current lead beforehand.
-     *
-     * The event listener receives a
-     * Mautic\LeadBundle\Event\LeadGetCurrentEvent instance.
-     *
-     * @var string
-     */
-    const LEAD_GET_CURRENT = 'mautic.lead_get_current';
-
-    /**
      * The mautic.lead_list_pre_save event is dispatched right before a lead_list is persisted.
      *
      * The event listener receives a

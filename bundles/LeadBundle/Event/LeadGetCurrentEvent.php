@@ -2,36 +2,18 @@
 
 declare(strict_types=1);
 
-/*
- * @copyright   2021 Mautic Contributors. All rights reserved
- * @author      Mautic
- *
- * @link        http://mautic.org
- *
- * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
- */
-
 namespace Mautic\LeadBundle\Event;
 
 use Mautic\LeadBundle\Entity\Lead;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class LeadGetCurrentEvent extends Event
+final class LeadGetCurrentEvent extends Event
 {
-    /**
-     * @var ?Request
-     */
-    private $request;
+    private ?Lead $contact;
 
-    /**
-     * @var ?Lead
-     */
-    private $contact;
-
-    public function __construct(?Request $request)
+    public function __construct(private ?Request $request)
     {
-        $this->request = $request;
     }
 
     public function getRequest(): ?Request

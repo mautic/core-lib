@@ -37,7 +37,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
     /**
      * Credentials for API authentication
      *
-     * @var array
+     * @var array<string,string>
      */
     protected array $clientServer = [
         'PHP_AUTH_USER' => 'admin',

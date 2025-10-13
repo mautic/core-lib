@@ -191,13 +191,11 @@ class ContactTracker
      */
     private function getCurrentContact()
     {
-        if ($this->dispatcher->hasListeners(LeadEvents::LEAD_GET_CURRENT)) {
-            $event = new LeadGetCurrentEvent($this->getRequest());
-            $this->dispatcher->dispatch(LeadEvents::LEAD_GET_CURRENT, $event);
+        $event = new LeadGetCurrentEvent($this->getRequest());
+        $this->dispatcher->dispatch($event);
 
-            if ($contact = $event->getContact()) {
-                return $contact;
-            }
+        if ($contact = $event->getContact()) {
+            return $contact;
         }
 
         if ($lead = $this->getContactByTrackedDevice()) {
