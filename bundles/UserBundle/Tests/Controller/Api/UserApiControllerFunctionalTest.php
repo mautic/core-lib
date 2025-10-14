@@ -197,10 +197,10 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * Test creating a user via API Platform v2 endpoint.
      *
-     * @dataProvider userCreateDataProvider
      *
      * @param array<string, mixed> $userData
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('userCreateDataProvider')]
     public function testCreateUserViaApiPlatform(array $userData, int $expectedStatusCode): void
     {
         // Create a role first

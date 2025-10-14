@@ -144,10 +144,10 @@ class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * Test creating a company via API Platform v2 endpoint.
      *
-     * @dataProvider companyCreateDataProvider
      *
      * @param array<string, mixed> $companyData
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('companyCreateDataProvider')]
     public function testCreateCompanyViaApiPlatform(array $companyData, int $expectedStatusCode): void
     {
         $this->client->request(
