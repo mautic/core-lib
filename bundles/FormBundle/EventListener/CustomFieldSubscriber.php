@@ -14,7 +14,7 @@ final class CustomFieldSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private FieldRepository $fieldRepository,
-        private FormModel $formModel
+        private FormModel $formModel,
     ) {
     }
 

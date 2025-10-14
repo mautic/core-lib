@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mautic\FormBundle\Entity;
 
 use Mautic\CoreBundle\Entity\CommonRepository;
-use Mautic\FormBundle\Entity\Field;
 use Mautic\LeadBundle\Entity\LeadField;
 
 /**

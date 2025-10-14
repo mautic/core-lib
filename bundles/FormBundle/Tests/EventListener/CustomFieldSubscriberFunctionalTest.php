@@ -40,7 +40,7 @@ final class CustomFieldSubscriberFunctionalTest extends MauticMysqlTestCase
         // Verify initial options are present (5 total: 1 empty + 4 options)
         $selectOptions = $crawler->filter('select option');
         $this->assertCount(5, $selectOptions, 'Should have 5 options total (1 empty + 4 custom)');
-        
+
         // Verify specific options by value
         $this->assertCount(1, $crawler->filter('select option[value="option1"]'), 'Option 1 should be present');
         $this->assertCount(1, $crawler->filter('select option[value="option2"]'), 'Option 2 should be present');
@@ -61,10 +61,10 @@ final class CustomFieldSubscriberFunctionalTest extends MauticMysqlTestCase
         $selectOptions = $crawler->filter('select option');
         // echo $crawler->html(); // Debug output to inspect the HTML
         $this->assertCount(4, $selectOptions, 'Should have 4 options total after removing one option (1 empty + 3 custom)');
-        
+
         // Verify the removed option (option4) is no longer present
         $this->assertCount(0, $crawler->filter('select option[value="option4"]'), 'Option 4 should be removed');
-        
+
         // Verify remaining options are still present
         $this->assertCount(1, $crawler->filter('select option[value="option1"]'), 'Option 1 should still be present');
         $this->assertCount(1, $crawler->filter('select option[value="option2"]'), 'Option 2 should still be present');
@@ -74,11 +74,11 @@ final class CustomFieldSubscriberFunctionalTest extends MauticMysqlTestCase
     private function createCustomSelectField(): int
     {
         $fieldPayload = [
-            'label' => 'Test Select Field',
-            'alias' => self::CUSTOM_FIELD_ALIAS,
-            'type' => 'select',
-            'group' => 'core',
-            'object' => 'lead',
+            'label'      => 'Test Select Field',
+            'alias'      => self::CUSTOM_FIELD_ALIAS,
+            'type'       => 'select',
+            'group'      => 'core',
+            'object'     => 'lead',
             'properties' => [
                 'list' => [
                     ['label' => 'Option 1', 'value' => 'option1'],
@@ -100,24 +100,24 @@ final class CustomFieldSubscriberFunctionalTest extends MauticMysqlTestCase
     private function createFormWithMappedField(): int
     {
         $formPayload = [
-            'name' => 'Test Form with Mapped Field',
+            'name'     => 'Test Form with Mapped Field',
             'formType' => 'standalone',
-            'fields' => [
+            'fields'   => [
                 [
-                    'label' => 'Test Select',
-                    'alias' => 'test_select',
-                    'type' => 'select',
-                    'leadField' => self::CUSTOM_FIELD_ALIAS,
+                    'label'        => 'Test Select',
+                    'alias'        => 'test_select',
+                    'type'         => 'select',
+                    'leadField'    => self::CUSTOM_FIELD_ALIAS,
                     'mappedObject' => 'contact',
-                    'mappedField' => self::CUSTOM_FIELD_ALIAS,
-                    'properties' => [
+                    'mappedField'  => self::CUSTOM_FIELD_ALIAS,
+                    'properties'   => [
                         'syncList' => 1,
                     ],
                 ],
                 [
                     'label' => 'Submit',
                     'alias' => 'submit',
-                    'type' => 'button',
+                    'type'  => 'button',
                 ],
             ],
             'postAction' => 'return',
@@ -134,18 +134,18 @@ final class CustomFieldSubscriberFunctionalTest extends MauticMysqlTestCase
     private function createLandingPage(int $formId): void
     {
         $pagePayload = [
-            'title' => 'Test Page',
-            'alias' => 'test-page',
+            'title'       => 'Test Page',
+            'alias'       => 'test-page',
             'description' => 'Test page with form',
             'isPublished' => true,
-            'customHtml' => '<!DOCTYPE html>
+            'customHtml'  => '<!DOCTYPE html>
                 <html>
                     <head>
                         <title>Test Page</title>
                     </head>
                     <body>
                         <div class="container">
-                            <div>{form=' . $formId . '}</div>
+                            <div>{form='.$formId.'}</div>
                         </div>
                     </body>
                 </html>',
