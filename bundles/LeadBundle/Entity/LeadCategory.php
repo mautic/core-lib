@@ -17,12 +17,12 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     shortName: 'Contact Category',
     operations: [
-        new GetCollection(uriTemplate: '/contacts/categories', security: "is_granted('lead:leads:viewown')"),
-        new Post(uriTemplate: '/contacts/categories', security: "is_granted('lead:leads:create')"),
-        new Get(uriTemplate: '/contacts/categories/{id}', security: "is_granted('lead:leads:viewown')"),
-        new Put(uriTemplate: '/contacts/categories/{id}', security: "is_granted('lead:leads:editown')"),
-        new Patch(uriTemplate: '/contacts/categories/{id}', security: "is_granted('lead:leads:editother')"),
-        new Delete(uriTemplate: '/contacts/categories/{id}', security: "is_granted('lead:leads:deleteown')"),
+        new GetCollection(uriTemplate: '/contactcategories', security: "is_granted('lead:leads:viewown')"),
+        new Post(uriTemplate: '/contactcategories', security: "is_granted('lead:leads:create')"),
+        new Get(uriTemplate: '/contactcategories/{id}', security: "is_granted('lead:leads:viewown')"),
+        new Put(uriTemplate: '/contactcategories/{id}', security: "is_granted('lead:leads:editown')"),
+        new Patch(uriTemplate: '/contactcategories/{id}', security: "is_granted('lead:leads:editother')"),
+        new Delete(uriTemplate: '/contactcategories/{id}', security: "is_granted('lead:leads:deleteown')"),
     ],
     normalizationContext: [
         'groups'                  => ['leadcategory:read'],
