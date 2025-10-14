@@ -28,10 +28,10 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
     shortName: 'User',
     operations: [
         new GetCollection(uriTemplate: '/users', security: "is_granted('user:users:viewown')"),
-        new Post(uriTemplate: '/users', security: "is_granted('user:users:create')"),
+        new Post(uriTemplate: '/users', security: "is_granted('user:users:create')", processor: \Mautic\UserBundle\ApiPlatform\UserProcessor::class),
         new Get(uriTemplate: '/users/{id}', security: "is_granted('user:users:viewown')"),
-        new Put(uriTemplate: '/users/{id}', security: "is_granted('user:users:editown')"),
-        new Patch(uriTemplate: '/users/{id}', security: "is_granted('user:users:editother')"),
+        new Put(uriTemplate: '/users/{id}', security: "is_granted('user:users:editown')", processor: \Mautic\UserBundle\ApiPlatform\UserProcessor::class),
+        new Patch(uriTemplate: '/users/{id}', security: "is_granted('user:users:editother')", processor: \Mautic\UserBundle\ApiPlatform\UserProcessor::class),
         new Delete(uriTemplate: '/users/{id}', security: "is_granted('user:users:deleteown')"),
     ],
     normalizationContext: [
@@ -59,7 +59,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
     /**
      * @var string
      */
-    #[Groups(['user:write'])]
     protected $password;
 
     /**
@@ -67,6 +66,7 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      *
      * @var ?string
      */
+    #[Groups(['user:write'])]
     private $plainPassword;
 
     /**
