@@ -144,7 +144,6 @@ class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * Test creating a company via API Platform v2 endpoint.
      *
-     *
      * @param array<string, mixed> $companyData
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('companyCreateDataProvider')]
@@ -167,15 +166,15 @@ class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
 
         if (Response::HTTP_CREATED === $expectedStatusCode) {
             $responseData = json_decode($response->getContent(), true);
-            
+
             $this->assertIsArray($responseData);
             $this->assertArrayHasKey('id', $responseData);
             $this->assertArrayHasKey('score', $responseData);
-            
+
             // Verify the company was actually created in the database
             $companyRepository = $this->em->getRepository(\Mautic\LeadBundle\Entity\Company::class);
-            $company = $companyRepository->find($responseData['id']);
-            
+            $company           = $companyRepository->find($responseData['id']);
+
             $this->assertInstanceOf(\Mautic\LeadBundle\Entity\Company::class, $company);
             $this->assertSame($companyData['name'] ?? null, $company->getName());
             $this->assertSame($companyData['score'] ?? 0, $company->getScore());

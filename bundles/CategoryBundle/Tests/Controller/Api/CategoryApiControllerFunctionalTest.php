@@ -22,7 +22,7 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
         $category->setBundle('contact');
         $category->setAlias('test-category');
         $category->setIsPublished(true);
-        
+
         $this->em->persist($category);
         $this->em->flush();
 
@@ -40,24 +40,24 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $response = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
-        
+
         $responseData = json_decode($response->getContent(), true);
-        
+
         $this->assertIsArray($responseData);
         $this->assertArrayHasKey('member', $responseData);
         $this->assertGreaterThanOrEqual(1, count($responseData['member']));
-        
+
         // Find our test category in the results
         $foundCategory = false;
         foreach ($responseData['member'] as $item) {
-            if ($item['title'] === 'Test Category') {
+            if ('Test Category' === $item['title']) {
                 $foundCategory = true;
                 $this->assertSame('contact', $item['bundle']);
                 $this->assertSame('test-category', $item['alias']);
                 break;
             }
         }
-        
+
         $this->assertTrue($foundCategory, 'Test category should be found in the API response');
     }
 
@@ -66,7 +66,7 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
         // The endpoint requires authentication - create and login a user
         $user = $this->createUser();
         $this->loginUser($user);
-        
+
         // Create test data - a category and a lead with that category
         $category = new Category();
         $category->setTitle('Test Contact Category');
@@ -74,26 +74,26 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
         $category->setAlias('test-contact-cat');
         $category->setIsPublished(true);
         $this->em->persist($category);
-        
+
         $lead = new \Mautic\LeadBundle\Entity\Lead();
         $lead->setFirstname('Test');
         $lead->setLastname('Lead');
         $lead->setEmail('test@example.com');
         $this->em->persist($lead);
-        
+
         $leadCategory = new \Mautic\LeadBundle\Entity\LeadCategory();
         $leadCategory->setCategory($category);
         $leadCategory->setLead($lead);
         $leadCategory->setDateAdded(new \DateTime());
         $this->em->persist($leadCategory);
-        
+
         $this->em->flush();
-        
+
         // Debug: Verify the entity was actually persisted
-        $repository = $this->em->getRepository(\Mautic\LeadBundle\Entity\LeadCategory::class);
+        $repository        = $this->em->getRepository(\Mautic\LeadBundle\Entity\LeadCategory::class);
         $allLeadCategories = $repository->findAll();
         $this->assertGreaterThanOrEqual(1, count($allLeadCategories), 'LeadCategory should be in database');
-        
+
         $this->client->request(
             'GET',
             '/api/v2/contactcategories',
@@ -107,9 +107,9 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $response = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
-        
+
         $responseData = json_decode($response->getContent(), true);
-        
+
         $this->assertIsArray($responseData);
         $this->assertArrayHasKey('member', $responseData);
         $this->assertArrayHasKey('totalItems', $responseData);
@@ -122,21 +122,21 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
     public function testGetCategoriesByBundle(): void
     {
         // Clear existing categories first
-        $this->em->createQuery('DELETE FROM ' . Category::class)->execute();
-        
+        $this->em->createQuery('DELETE FROM '.Category::class)->execute();
+
         // Create categories with different bundles
         $contactCategory = new Category();
         $contactCategory->setTitle('Contact Category');
         $contactCategory->setBundle('contact');
         $contactCategory->setAlias('contact-category');
         $contactCategory->setIsPublished(true);
-        
+
         $pageCategory = new Category();
         $pageCategory->setTitle('Page Category');
         $pageCategory->setBundle('page');
         $pageCategory->setAlias('page-category');
         $pageCategory->setIsPublished(true);
-        
+
         $this->em->persist($contactCategory);
         $this->em->persist($pageCategory);
         $this->em->flush();
@@ -155,28 +155,28 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $response = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
-        
+
         $responseData = json_decode($response->getContent(), true);
-        
+
         $this->assertIsArray($responseData);
         $this->assertArrayHasKey('member', $responseData);
-        
+
         // If filtering doesn't work, both categories will be returned
         // For now, let's just verify we get categories back
         $this->assertGreaterThanOrEqual(1, count($responseData['member']));
-        
+
         // Check if bundle filtering is working
         $hasContactCategory = false;
-        $hasPageCategory = false;
+        $hasPageCategory    = false;
         foreach ($responseData['member'] as $item) {
-            if ($item['bundle'] === 'contact') {
+            if ('contact' === $item['bundle']) {
                 $hasContactCategory = true;
             }
-            if ($item['bundle'] === 'page') {
+            if ('page' === $item['bundle']) {
                 $hasPageCategory = true;
             }
         }
-        
+
         $this->assertTrue($hasContactCategory, 'Should have contact category');
         // Note: If filtering is not implemented, this test documents current behavior
         if ($hasPageCategory) {
@@ -195,7 +195,7 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
         $role->setIsAdmin(true);
         $this->em->persist($role);
         $this->em->flush();
-        
+
         // Create user
         $user = new User();
         $user->setFirstName('Test');
@@ -206,7 +206,7 @@ class CategoryApiControllerFunctionalTest extends MauticMysqlTestCase
         $user->setRole($role);
         $this->em->persist($user);
         $this->em->flush();
-        
+
         return $user;
     }
 }

@@ -32,7 +32,7 @@ class UniqueCustomFieldValidator extends ConstraintValidator
         \assert($object instanceof Lead || $object instanceof Company);
 
         $form = $this->context->getRoot();
-        
+
         // When using API Platform, the root is not a Form instance
         if (!$form instanceof Form) {
             return;

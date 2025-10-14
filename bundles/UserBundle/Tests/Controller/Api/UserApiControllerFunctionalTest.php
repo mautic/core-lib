@@ -197,7 +197,6 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * Test creating a user via API Platform v2 endpoint.
      *
-     *
      * @param array<string, mixed> $userData
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('userCreateDataProvider')]
@@ -230,21 +229,21 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
 
         if (Response::HTTP_CREATED === $expectedStatusCode) {
             $responseData = json_decode($response->getContent(), true);
-            
+
             $this->assertIsArray($responseData);
             $this->assertArrayHasKey('id', $responseData);
             $this->assertArrayHasKey('username', $responseData);
-            
+
             // Verify the user was actually created in the database
             $userRepository = $this->em->getRepository(User::class);
-            $user = $userRepository->find($responseData['id']);
-            
+            $user           = $userRepository->find($responseData['id']);
+
             $this->assertInstanceOf(User::class, $user);
             $this->assertSame($userData['username'], $user->getUsername());
             $this->assertSame($userData['firstName'], $user->getFirstName());
             $this->assertSame($userData['lastName'], $user->getLastName());
             $this->assertSame($userData['email'], $user->getEmail());
-            
+
             // Verify the password was hashed correctly by checking if we can verify it
             $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
             \assert($hasher instanceof PasswordHasherInterface);
@@ -252,11 +251,11 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
                 $hasher->verify($user->getPassword(), $userData['plainPassword']),
                 'Password should be properly hashed and verifiable'
             );
-            
+
             // Verify we can log in with the new user (simulates authentication)
             $this->loginUser($user);
             $this->client->request('GET', '/s/dashboard');
-            
+
             // Assert we can access the dashboard successfully
             $this->assertResponseIsSuccessful();
             $this->assertStringContainsString('/s/dashboard', $this->client->getRequest()->getRequestUri());
@@ -282,4 +281,3 @@ class UserApiControllerFunctionalTest extends MauticMysqlTestCase
         ];
     }
 }
-
