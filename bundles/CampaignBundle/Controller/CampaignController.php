@@ -354,6 +354,8 @@ class CampaignController extends AbstractStandardFormController
         $sourcesList     = $this->getCampaignModel()->getSourceLists();
         $campaign        = $this->getCampaignModel()->getEntity($objectId);
         $this->prepareCampaignSourcesForEdit($objectId, $sourcesList, true);
+        // Filter out deleted events for the preview (but keep them for action/decision/condition tabs)
+        $previewEvents = array_filter($events, fn ($event) => empty($event['deleted']));
 
         $response['preview']    = trim(
             $this->renderView(
@@ -361,7 +363,7 @@ class CampaignController extends AbstractStandardFormController
                 [
                     'campaignId'      => $objectId,
                     'campaign'        => $campaign,
-                    'campaignEvents'  => $events,
+                    'campaignEvents'  => $previewEvents,
                     'campaignSources' => $this->campaignSources,
                     'eventSettings'   => $this->eventCollector->getEventsArray(),
                     'canvasSettings'  => $campaign->getCanvasSettings(),
