@@ -61,6 +61,10 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
         'swagger_definition_name' => 'Write',
     ]
 )]
+/**
+ * @use VariantEntityTrait<Email>
+ * @use TranslationEntityTrait<Email>
+ */
 class Email extends FormEntity implements VariantEntityInterface, TranslationEntityInterface, UuidInterface
 {
     use VariantEntityTrait;
@@ -1179,6 +1183,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
      */
     public function setPreferenceCenter(?Page $preferenceCenter = null)
     {
+        $this->isChanged('preferenceCenter', $preferenceCenter);
         $this->preferenceCenter = $preferenceCenter;
 
         return $this;
