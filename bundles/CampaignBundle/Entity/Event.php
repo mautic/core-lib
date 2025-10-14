@@ -212,7 +212,7 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * Collection of events that redirect to this event.
      */
-    private ?Collection $redirectingEvents;
+    private Collection $redirectingEvents;
 
     public function __construct()
     {
