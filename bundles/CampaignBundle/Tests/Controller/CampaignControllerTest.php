@@ -113,7 +113,7 @@ class CampaignControllerTest extends MauticMysqlTestCase
         $this->client->request('GET', '/s/campaigns/edit/'.$campaign->getId());
         $clientResponse = $this->client->getResponse();
 
-        Assert::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
 
         // Check that the campaign elements data includes isRedirectTarget
         $content = $clientResponse->getContent();

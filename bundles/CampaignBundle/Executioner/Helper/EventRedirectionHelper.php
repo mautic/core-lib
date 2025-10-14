@@ -26,13 +26,13 @@ class EventRedirectionHelper
      * Handle redirection for a deleted event and replace it in the event's collection.
      * If a redirection is found, returns the redirected event; otherwise returns the original event.
      *
-     * @param Event       $event  The event to check for redirection
-     * @param ?Collection $events The collection containing the event
-     * @param mixed       $key    The key of the event in the collection
+     * @param Event           $event  The event to check for redirection
+     * @param ?Collection     $events The collection containing the event
+     * @param int|string|null $key    The key of the event in the collection
      *
      * @return Event The redirected event if redirection was successful, or the original event if not
      */
-    public function handleEventRedirection(Event $event, ?Collection $events, mixed $key): Event
+    public function handleEventRedirection(Event $event, ?Collection $events, int|string|null $key): Event
     {
         $visited       = [];
         $redirectEvent = $this->findRedirectEventInCampaign($event, $visited, 1);

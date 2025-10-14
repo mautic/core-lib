@@ -374,6 +374,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             $this->createAjaxHeaders(),
             '{}'
         );
+        $this->assertResponseIsSuccessful();
 
         $response = $this->client->getResponse();
         $response = json_decode($response->getContent(), true);
@@ -411,6 +412,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             $this->createAjaxHeaders(),
             '{}'
         );
+        $this->assertResponseIsSuccessful();
 
         $deleteResponse = $this->client->getResponse();
         $deleteResponse = json_decode($deleteResponse->getContent(), true);
@@ -428,6 +430,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             $this->createAjaxHeaders(),
             '{}'
         );
+        $this->assertResponseIsSuccessful();
 
         $undeleteResponse = $this->client->getResponse();
         $undeleteResponse = json_decode($undeleteResponse->getContent(), true);
@@ -464,6 +467,7 @@ final class EventControllerFunctionalTest extends MauticMysqlTestCase
             $this->createAjaxHeaders(),
             '{}'
         );
+        $this->assertResponseIsSuccessful();
 
         $response = $this->client->getResponse();
         $response = json_decode($response->getContent(), true);

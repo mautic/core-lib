@@ -4,7 +4,6 @@ namespace Mautic\CampaignBundle\Entity;
 
 use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Exception;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 
@@ -276,8 +275,6 @@ class EventRepository extends CommonRepository
      * Also handles redirection chain updates for other events that point to the deleted events.
      *
      * @param array<int, array{id: int, redirectEvent: ?int}> $eventData Array of event data
-     *
-     * @throws Exception
      */
     public function setEventsAsDeletedWithRedirect(array $eventData): void
     {
@@ -336,8 +333,6 @@ class EventRepository extends CommonRepository
      * to redirect to the deleted event's redirect target.
      *
      * @param array<int, array{id: int, redirectEvent: ?int}> $eventData Array of event data
-     *
-     * @throws Exception
      */
     private function updateRedirectionChains(array $eventData): void
     {

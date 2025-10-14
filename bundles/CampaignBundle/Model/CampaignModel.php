@@ -906,8 +906,6 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
 
     /**
      * @param array<int, array<string, mixed>> $deletedEvents
-     *
-     * @throws Exception
      */
     private function handleDeletedEventsWithRedirect(array $deletedEvents): void
     {

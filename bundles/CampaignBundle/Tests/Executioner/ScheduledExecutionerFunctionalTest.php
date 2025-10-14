@@ -16,6 +16,16 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
 {
+    private ScheduledExecutioner $scheduledExecutioner;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
+        \assert($this->scheduledExecutioner instanceof ScheduledExecutioner);
+    }
+
     public function testEventsAreExecuted(): void
     {
         $campaign = $this->createCampaign();
@@ -38,11 +48,8 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($log4);
         $this->em->flush();
 
-        /** @var ScheduledExecutioner $scheduledExecutioner */
-        $scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-
         $limiter = new ContactLimiter(100, 0, 0, 0);
-        $counter = $scheduledExecutioner->execute($campaign, $limiter, new BufferedOutput());
+        $counter = $this->scheduledExecutioner->execute($campaign, $limiter, new BufferedOutput());
 
         $this->assertEquals(4, $counter->getTotalEvaluated());
     }
@@ -69,11 +76,8 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($log4);
         $this->em->flush();
 
-        /** @var ScheduledExecutioner $scheduledExecutioner */
-        $scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-
         $limiter = new ContactLimiter(100, 0, 0, 0);
-        $counter = $scheduledExecutioner->execute($campaign, $limiter); // Quiet mode - no output
+        $counter = $this->scheduledExecutioner->execute($campaign, $limiter); // Quiet mode - no output
 
         $this->assertEquals(4, $counter->getTotalEvaluated());
     }
@@ -94,10 +98,7 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($log2);
         $this->em->flush();
 
-        /** @var ScheduledExecutioner $scheduledExecutioner */
-        $scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-
-        $counter = $scheduledExecutioner->executeByIds([$log1->getId(), $log2->getId()]);
+        $counter = $this->scheduledExecutioner->executeByIds([$log1->getId(), $log2->getId()]);
 
         $this->assertEquals(2, $counter->getTotalEvaluated());
     }
@@ -119,11 +120,8 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($log2);
         $this->em->flush();
 
-        /** @var ScheduledExecutioner $scheduledExecutioner */
-        $scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-
         $limiter = new ContactLimiter(100, 0, 0, 0);
-        $counter = $scheduledExecutioner->execute($campaign, $limiter);
+        $counter = $this->scheduledExecutioner->execute($campaign, $limiter);
 
         // Both events should be evaluated since they are due for execution
         $this->assertEquals(2, $counter->getTotalEvaluated());
@@ -181,12 +179,9 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
             'Redirect event should match target event'
         );
 
-        /** @var ScheduledExecutioner $scheduledExecutioner */
-        $scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-
         // Process logs one by one to avoid race condition in rotation calculation
-        $counter1 = $scheduledExecutioner->executeByIds([$log1->getId()]);
-        $counter2 = $scheduledExecutioner->executeByIds([$log2->getId()]);
+        $counter1 = $this->scheduledExecutioner->executeByIds([$log1->getId()]);
+        $counter2 = $this->scheduledExecutioner->executeByIds([$log2->getId()]);
 
         $totalEvaluated = $counter1->getTotalEvaluated() + $counter2->getTotalEvaluated();
 
@@ -266,10 +261,7 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($log2);
         $this->em->flush();
 
-        /** @var ScheduledExecutioner $scheduledExecutioner */
-        $scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-
-        $counter = $scheduledExecutioner->executeByIds([$log1->getId(), $log2->getId()]);
+        $counter = $this->scheduledExecutioner->executeByIds([$log1->getId(), $log2->getId()]);
 
         $this->assertEquals(2, $counter->getTotalEvaluated());
     }
@@ -290,10 +282,7 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($log2);
         $this->em->flush();
 
-        /** @var ScheduledExecutioner $scheduledExecutioner */
-        $scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-
-        $counter = $scheduledExecutioner->executeByIds([$log1->getId(), $log2->getId()]);
+        $counter = $this->scheduledExecutioner->executeByIds([$log1->getId(), $log2->getId()]);
 
         $this->assertEquals(0, $counter->getTotalEvaluated());
     }
@@ -312,10 +301,7 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($log);
         $this->em->flush();
 
-        /** @var ScheduledExecutioner $scheduledExecutioner */
-        $scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-
-        $counter = $scheduledExecutioner->executeByIds([$log->getId()]);
+        $counter = $this->scheduledExecutioner->executeByIds([$log->getId()]);
 
         // Event should be evaluated since it's not deleted and campaign is published
         $this->assertEquals(1, $counter->getTotalEvaluated());
@@ -356,11 +342,8 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
 
         $initialRotation = $campaignMember->getRotation();
 
-        /** @var ScheduledExecutioner $scheduledExecutioner */
-        $scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-
         $limiter = new ContactLimiter(100, 0, 0, 0);
-        $scheduledExecutioner->execute($campaign, $limiter, new BufferedOutput());
+        $this->scheduledExecutioner->execute($campaign, $limiter, new BufferedOutput());
 
         $this->em->refresh($campaignMember);
 

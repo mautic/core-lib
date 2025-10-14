@@ -27,45 +27,21 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class KickoffExecutionerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var MockObject&KickoffContactFinder
-     */
-    private MockObject $kickoffContactFinder;
+    private MockObject&KickoffContactFinder $kickoffContactFinder;
 
-    /**
-     * @var MockObject&Translator
-     */
-    private MockObject $translator;
+    private MockObject&Translator $translator;
 
-    /**
-     * @var MockObject&EventExecutioner
-     */
-    private MockObject $executioner;
+    private MockObject&EventExecutioner $executioner;
 
-    /**
-     * @var MockObject&EventScheduler
-     */
-    private MockObject $scheduler;
+    private MockObject&EventScheduler $scheduler;
 
-    /**
-     * @var MockObject&CoreParametersHelper
-     */
-    private MockObject $coreParametersHelper;
+    private MockObject&CoreParametersHelper $coreParametersHelper;
 
-    /**
-     * @var MockObject&EventRedirectionHelper
-     */
-    private MockObject $redirectionHelper;
+    private MockObject&EventRedirectionHelper $redirectionHelper;
 
-    /**
-     * @var MockObject&EntityManagerInterface
-     */
-    private MockObject $entityManager;
+    private MockObject&EntityManagerInterface $entityManager;
 
-    /**
-     * @var MockObject&EventDispatcherInterface
-     */
-    private MockObject $eventDispatcher;
+    private MockObject&EventDispatcherInterface $eventDispatcher;
 
     protected function setUp(): void
     {

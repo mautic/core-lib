@@ -27,50 +27,23 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 class ScheduledExecutionerTest extends TestCase
 {
-    /**
-     * @var MockObject&LeadEventLogRepository
-     */
-    private $repository;
+    private MockObject&LeadEventLogRepository $repository;
 
-    /**
-     * @var MockObject&Translator
-     */
-    private $translator;
+    private MockObject&Translator $translator;
 
-    /**
-     * @var MockObject&EventExecutioner
-     */
-    private $executioner;
+    private MockObject&EventExecutioner $executioner;
 
-    /**
-     * @var MockObject&EventScheduler
-     */
-    private $scheduler;
+    private MockObject&EventScheduler $scheduler;
 
-    /**
-     * @var MockObject&ScheduledContactFinder
-     */
-    private $contactFinder;
+    private MockObject&ScheduledContactFinder $contactFinder;
 
-    /**
-     * @var MockObject&ProcessSignalService
-     */
-    private $processSignalService;
+    private MockObject&ProcessSignalService $processSignalService;
 
-    /**
-     * @var MockObject&EventRedirectionHelper
-     */
-    private $redirectionHelper;
+    private MockObject&EventRedirectionHelper $redirectionHelper;
 
-    /**
-     * @var MockObject&EntityManagerInterface
-     */
-    private $entityManager;
+    private MockObject&EntityManagerInterface $entityManager;
 
-    /**
-     * @var MockObject&LeadRepository
-     */
-    private $leadRepository;
+    private MockObject&LeadRepository $leadRepository;
 
     protected function setUp(): void
     {

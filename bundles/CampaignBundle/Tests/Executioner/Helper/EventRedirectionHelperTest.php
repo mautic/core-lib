@@ -12,7 +12,7 @@ use Mautic\CoreBundle\Test\IsolatedTestTrait;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class EventRedirectionHelperTest extends TestCase
+final class EventRedirectionHelperTest extends TestCase
 {
     use IsolatedTestTrait;
 

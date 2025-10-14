@@ -18,8 +18,18 @@ use Symfony\Component\Console\Output\BufferedOutput;
  * Functional tests for decision event redirection scenarios.
  * Tests redirection FROM decision events TO other event types (actions/conditions).
  */
-class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
+final class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
 {
+    private InactiveExecutioner $inactiveExecutioner;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->inactiveExecutioner = self::getContainer()->get('mautic.campaign.executioner.inactive');
+        \assert($this->inactiveExecutioner instanceof InactiveExecutioner);
+    }
+
     public function testDecisionRedirectionToAlreadyExecutedAction(): void
     {
         $campaign     = $this->createCampaign();
@@ -61,16 +71,12 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($existingTargetLog);
         $this->em->flush();
 
-        // Execute decision validation (should redirect to already executed action)
-        /** @var InactiveExecutioner $inactiveExecutioner */
-        $inactiveExecutioner = self::getContainer()->get('mautic.campaign.executioner.inactive');
-
         $output  = new BufferedOutput();
         $limiter = new ContactLimiter(100, 0, 0, 0, [$contact->getId()]);
 
         defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED') || define('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED', 1);
 
-        $inactiveExecutioner->validate($originalDecision->getId(), $limiter, $output);
+        $this->inactiveExecutioner->validate($originalDecision->getId(), $limiter, $output);
 
         $targetActionLogsAfter = $this->em->getRepository(LeadEventLog::class)->findBy([
             'event' => $targetAction,
@@ -130,16 +136,12 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($parentEventLog);
         $this->em->flush();
 
-        // Now test the decision validation process
-        /** @var InactiveExecutioner $inactiveExecutioner */
-        $inactiveExecutioner = self::getContainer()->get('mautic.campaign.executioner.inactive');
-
         $output  = new BufferedOutput();
         $limiter = new ContactLimiter(100, 0, 0, 0, [$contact->getId()]);
 
         defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED') || define('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED', 1);
 
-        $inactiveExecutioner->validate($originalDecision->getId(), $limiter, $output);
+        $this->inactiveExecutioner->validate($originalDecision->getId(), $limiter, $output);
 
         // Verify redirection worked by checking if redirect action was executed
         $redirectActionLogs = $this->em->getRepository(LeadEventLog::class)->findBy([
@@ -188,16 +190,12 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($parentEventLog);
         $this->em->flush();
 
-        // Execute decision validation (should redirect to condition)
-        /** @var InactiveExecutioner $inactiveExecutioner */
-        $inactiveExecutioner = self::getContainer()->get('mautic.campaign.executioner.inactive');
-
         $output  = new BufferedOutput();
         $limiter = new ContactLimiter(100, 0, 0, 0, [$contact->getId()]);
 
         defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED') || define('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED', 1);
 
-        $counter = $inactiveExecutioner->validate($originalDecision->getId(), $limiter, $output);
+        $counter = $this->inactiveExecutioner->validate($originalDecision->getId(), $limiter, $output);
 
         // Verify that the redirect condition was executed
         $redirectConditionLogs = $this->em->getRepository(LeadEventLog::class)->findBy([
@@ -277,20 +275,16 @@ class InactiveExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($parentEventLog);
         $this->em->flush();
 
-        // Execute validation for both decisions
-        /** @var InactiveExecutioner $inactiveExecutioner */
-        $inactiveExecutioner = self::getContainer()->get('mautic.campaign.executioner.inactive');
-
         $output  = new BufferedOutput();
         $limiter = new ContactLimiter(100, 0, 0, 0, [$contact->getId()]);
 
         defined('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED') || define('MAUTIC_CAMPAIGN_SYSTEM_TRIGGERED', 1);
 
         // Validate first decision (should redirect to first redirect action)
-        $inactiveExecutioner->validate($firstDecision->getId(), $limiter, $output);
+        $this->inactiveExecutioner->validate($firstDecision->getId(), $limiter, $output);
 
         // Validate second decision (should redirect to second redirect action)
-        $inactiveExecutioner->validate($secondDecision->getId(), $limiter, $output);
+        $this->inactiveExecutioner->validate($secondDecision->getId(), $limiter, $output);
 
         // Verify both redirections worked
         $firstRedirectLogs = $this->em->getRepository(LeadEventLog::class)->findBy([

@@ -13,7 +13,7 @@ final class Version20250512114846 extends PreUpAssertionMigration
     protected function preUpAssertions(): void
     {
         $this->skipAssertion(
-            fn (Schema $schema) => $schema->getTable($this->getPrefixedTableName(Event::TABLE_NAME))
+            fn (Schema $schema) => $schema->getTable($this->getTableName())
                 ->hasColumn('redirect_event_id'),
             'Column redirect_event_id already exists in campaign_events table'
         );

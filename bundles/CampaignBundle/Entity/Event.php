@@ -204,9 +204,7 @@ class Event implements ChannelInterface, UuidInterface
 
     private int $failedCount = 0;
 
-    /**
-     * @Groups({"event:read", "event:write", "campaign:read"})
-     */
+    #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private ?Event $redirectEvent;
 
     /**
@@ -1181,9 +1179,8 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * Check if this event is used as a redirect target by any other event.
-     *
-     * @Groups({"event:read", "campaign:read"})
      */
+    #[Groups(['event:read', 'campaign:read'])]
     public function isRedirectTarget(): bool
     {
         return $this->redirectingEvents->count() > 0;
