@@ -211,6 +211,8 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * Collection of events that redirect to this event.
+     *
+     * @var ArrayCollection<int, Event>
      */
     private Collection $redirectingEvents;
 
