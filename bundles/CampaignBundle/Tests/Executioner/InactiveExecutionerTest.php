@@ -22,15 +22,15 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 class InactiveExecutionerTest extends \PHPUnit\Framework\TestCase
 {
-    private MockObject|InactiveContactFinder $inactiveContactFinder;
+    private MockObject&InactiveContactFinder $inactiveContactFinder;
 
-    private MockObject|Translator $translator;
+    private MockObject&Translator $translator;
 
-    private MockObject|EventScheduler $eventScheduler;
+    private MockObject&EventScheduler $eventScheduler;
 
-    private MockObject|InactiveHelper $inactiveHelper;
+    private MockObject&InactiveHelper $inactiveHelper;
 
-    private MockObject|EventExecutioner $eventExecutioner;
+    private MockObject&EventExecutioner $eventExecutioner;
 
     private MockObject&EventRedirectionHelper $redirectionHelper;
 

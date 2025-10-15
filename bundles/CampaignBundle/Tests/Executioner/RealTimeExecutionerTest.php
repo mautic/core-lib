@@ -23,21 +23,21 @@ use Psr\Log\NullLogger;
 
 class RealTimeExecutionerTest extends TestCase
 {
-    private MockObject|LeadModel $leadModel;
+    private MockObject&LeadModel $leadModel;
 
-    private MockObject|EventRepository $eventRepository;
+    private MockObject&EventRepository $eventRepository;
 
-    private MockObject|EventExecutioner $executioner;
+    private MockObject&EventExecutioner $executioner;
 
-    private MockObject|DecisionExecutioner $decisionExecutioner;
+    private MockObject&DecisionExecutioner $decisionExecutioner;
 
-    private MockObject|EventCollector $eventCollector;
+    private MockObject&EventCollector $eventCollector;
 
-    private MockObject|EventScheduler $eventScheduler;
+    private MockObject&EventScheduler $eventScheduler;
 
-    private MockObject|ContactTracker $contactTracker;
+    private MockObject&ContactTracker $contactTracker;
 
-    private MockObject|LeadRepository $leadRepository;
+    private MockObject&LeadRepository $leadRepository;
 
     private DecisionHelper $decisionHelper;
 
