@@ -279,7 +279,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
         }
 
         $idColumn = $this->options['entity_id_column'] ?? 'id';
-        $getter   = 'get' . ucfirst((string)$idColumn);
+        $getter   = 'get'.ucfirst((string) $idColumn);
 
         $ids = [];
         foreach ($data as $value) {
