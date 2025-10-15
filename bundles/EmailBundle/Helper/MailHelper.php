@@ -403,18 +403,15 @@ class MailHelper
                 }
             }
 
-            $signer = $this->sMimeHelper->signContent($this->message);
+            // Sign the message with S/MIME if enabled
+            $messageToSend = $this->sMimeHelper->signContent($this->message);
 
             try {
                 if (!$this->skip) {
-                    $this->mailer->send($this->message);
+                    $this->mailer->send($messageToSend);
                     $this->message->clearMetadata();
                 }
                 $this->skip = false;
-
-                if ($signer) {
-                    $this->message->detachSigner($signer);
-                }
             } catch (TransportExceptionInterface $exception) {
                 /*
                     The nature of symfony/mailer is working with transactional emails only

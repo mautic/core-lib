@@ -301,6 +301,7 @@ class OwnerSubscriberTest extends TestCase
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
+            $this->createMock(SMimeHelper::class),
         );
         $mailerHelper->setLead($lead);
 

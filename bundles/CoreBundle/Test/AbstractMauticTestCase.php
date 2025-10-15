@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\RawMessage;
 use Symfony\Component\Routing\Router;
 
@@ -31,11 +32,6 @@ abstract class AbstractMauticTestCase extends WebTestCase
 
     protected Router $router;
 
-    /**
-     * Warning, each email is logged twice in the messageLogger.
-     * Because Mautic calls the send method twice.
-     */
-    protected \Swift_Plugins_MessageLogger $messageLogger;
     protected array $clientOptions = [];
 
     /**
@@ -63,21 +59,6 @@ abstract class AbstractMauticTestCase extends WebTestCase
 
     protected AbstractDatabaseTool $databaseTool;
 
-    /**
-     * Overloading the method from MailerAssertionsTrait to get better typehint.
-     *
-     * @return MauticMessage[]
-     */
-    public static function getMailerMessages(?string $transport = null): array
-    {
-        $messages = parent::getMailerMessages($transport);
-
-        return array_map(function (RawMessage $message): MauticMessage {
-            \assert($message instanceof MauticMessage);
-
-            return $message;
-        }, $messages);
-    }
 
     /**
      * Overloading the method from MailerAssertionsTrait to get better typehint.
@@ -88,11 +69,23 @@ abstract class AbstractMauticTestCase extends WebTestCase
     }
 
     /**
-     * @return MauticMessage[]
+     * @return RawMessage[]
      */
     public static function getMailerMessagesByToAddress(string $toAddress, ?string $transport = null): array
     {
-        return array_values(array_filter(self::getMailerMessages($transport), fn (MauticMessage $mauticMessage) => $mauticMessage->getTo()[0]->getAddress() === $toAddress));
+        return array_values(array_filter(self::getMailerMessages($transport), function (RawMessage $message) use ($toAddress) {
+            // Handle MauticMessage and Email (both have getTo())
+            if ($message instanceof MauticMessage || $message instanceof Email) {
+                $to = $message->getTo();
+                if ($to && isset($to[0]) && $to[0]->getAddress() === $toAddress) {
+                    return true;
+                }
+            }
+            
+            // For signed messages (Symfony\Component\Mime\Message), check the raw content
+            $raw = $message->toString();
+            return str_contains($raw, 'To: '.$toAddress) || str_contains($raw, 'To: <'.$toAddress.'>');
+        }));
     }
 
     protected function setUp(): void
@@ -118,16 +111,8 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $scheme           = $this->router->getContext()->getScheme();
         $secure           = 0 === strcasecmp($scheme, 'https');
 
-        $mailer = static::$container->get('mailer');
-        \assert($mailer instanceof \Swift_Mailer);
-
-        $this->messageLogger = new \Swift_Plugins_MessageLogger();
-        $mailer->registerPlugin($this->messageLogger);
-        
         $this->client->setServerParameter('HTTPS', (string) $secure);
-    }
-
-    public function loginUser(User $user): void
+    }    public function loginUser(User $user): void
     {
         $this->client->loginUser($user, 'mautic');
     }

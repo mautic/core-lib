@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Functional\Controller;
 
+use Mautic\CoreBundle\Helper\EncryptionHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Helper\SMimeHelper;
@@ -24,7 +25,7 @@ final class SendEmailToContactTest extends MauticMysqlTestCase
 
         parent::setUp();
 
-        $this->sMimeHelper = self::getContainer()->get('mautic.helper.smime');
+        $this->sMimeHelper = self::getContainer()->get(SMimeHelper::class);
     }
 
     protected function beforeTearDown(): void
@@ -73,7 +74,7 @@ final class SendEmailToContactTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
 
-        $email = $this->messageLogger->getMessages()[0]->toString();
+        $email = self::getMailerMessages()[0]->toString();
         Assert::assertStringContainsString('Hey John...', $email);
         Assert::assertStringContainsString('Subject: Some interesting subject for John', $email);
         Assert::assertStringContainsString('Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";', $email);
@@ -122,7 +123,7 @@ final class SendEmailToContactTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
 
-        $email = $this->messageLogger->getMessages()[0]->toString();
+        $email = self::getMailerMessages()[0]->toString();
         Assert::assertStringContainsString('Hey John...', $email);
         Assert::assertStringContainsString('Subject: Some interesting subject for John', $email);
         Assert::assertStringContainsString('Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";', $email);
@@ -159,7 +160,7 @@ final class SendEmailToContactTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
 
-        $email = $this->messageLogger->getMessages()[0]->toString();
+        $email = self::getMailerMessages()[0]->toString();
         Assert::assertStringContainsString('Hey John...', $email);
         Assert::assertStringContainsString('Subject: Some interesting subject for John', $email);
         Assert::assertStringNotContainsString('Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";', $email);
@@ -207,14 +208,18 @@ final class SendEmailToContactTest extends MauticMysqlTestCase
         $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
 
-        $message = $this->getMailerMessagesByToAddress('john@doe.email')[0];
-        $email   = $message->getBody()->toString();
+        $messages = self::getMailerMessages();
+        Assert::assertCount(1, $messages, 'Expected exactly one email message to be sent');
+        $message = $messages[0];
+        
+        // For signed messages, use toString() instead of getBody()
+        $email   = $message->toString();
         Assert::assertStringContainsString('Hey John...', $email);
         Assert::assertStringContainsString('<title>Some interesting subject for John</title>', $email);
-        Assert::assertStringContainsString('Some interesting subject for John', $message->getSubject());
+        Assert::assertStringContainsString('Some interesting subject for John', $email);
         Assert::assertStringContainsString('preheader text', $email);
-        Assert::assertStringContainsString('admin@test-beta.mautibot.com', $message->getFrom()[0]->getAddress());
-        Assert::assertStringContainsString('Admin', $message->getFrom()[0]->getName());
+        Assert::assertStringContainsString('admin@test-beta.mautibot.com', $email);
+        Assert::assertStringContainsString('Admin', $email);
         Assert::assertStringNotContainsString('This should be overwritten by the form content', $email);
     }
 }

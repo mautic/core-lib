@@ -7,9 +7,11 @@ namespace Mautic\EmailBundle\Helper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\EncryptionHelper;
 use Mautic\CoreBundle\Helper\Filesystem;
+use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\EmailBundle\Swiftmailer\Signers\SMimeSigner;
-use Swift_Message;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\RawMessage;
 
 /**
  * Signs message with S/MIME certificate.
@@ -47,20 +49,24 @@ class SMimeHelper
         return rtrim((string) $this->coreParametersHelper->get('smime_certificates_path'), '/');
     }
 
-    public function signContent(Swift_Message $message): ?SMimeSigner
+    /**
+     * Signs the message with S/MIME if enabled and certificates are available.
+     * Returns the signed message, or the original message if signing is not applicable.
+     */
+    public function signContent(MauticMessage $message): RawMessage
     {
         if (!$this->sMimeSigningEnabled()) {
-            return null;
+            return $message;
         }
 
-        /** @var array<string,string> $fromArray where the key is email address and value is name */
+        /** @var Address[] $fromArray */
         $fromArray = $message->getFrom();
 
         if (!is_array($fromArray) || 1 !== count($fromArray)) {
-            return null;
+            return $message;
         }
 
-        $fromEmail = array_keys($fromArray)[0];
+        $fromEmail = $fromArray[0]->getAddress();
 
         if (isset($this->certCache[$fromEmail])) {
             [$publicKey, $privateKey] = $this->certCache[$fromEmail];
@@ -68,17 +74,17 @@ class SMimeHelper
             try {
                 [$publicKey, $privateKey] = $this->getCertificatesFromDisk($fromEmail);
             } catch (IOException $e) {
-                return null;
+                return $message;
             }
 
             $this->certCache[$fromEmail] = [$publicKey, $privateKey];
         }
 
+        // Create Symfony's SMimeSigner with the certificate and private key
         $signer = new SMimeSigner($publicKey, $privateKey);
 
-        $message->attachSigner($signer);
-
-        return $signer;
+        // Sign and return the signed message
+        return $signer->sign($message);
     }
 
     /**

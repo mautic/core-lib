@@ -11,7 +11,6 @@ use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
 use PHPUnit\Framework\Assert;
-use Swift_Mime_SimpleMessage as SimpleMessage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,7 +18,7 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
 {
     protected function setUp(): void
     {
-        $this->configParams['mailer_spool_type']       = 'testSendingSegmentEmailInMemoryWithSMime' === $this->getName() ? 'memory' : 'file';
+        $this->configParams['mailer_spool_type']       = 'testSendingSegmentEmailInMemoryWithSMime' === $this->name() ? 'memory' : 'file';
         $this->configParams['smime_signing_enabled']   = true;
         $this->configParams['smime_certificates_path'] = '%kernel.project_dir%/app/bundles/EmailBundle/Tests/Mocks/Certificates/SMime';
         $this->configParams['mailer_from_email']       = 'admin@test-beta.mautibot.com';
@@ -59,16 +58,22 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame(Response::HTTP_OK, $response->getStatusCode(), $response->getContent());
         Assert::assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $response->getContent());
 
+        // Get messages using Symfony Mailer's test assertions
+        $messages = self::getMailerMessages();
+        
         // Sort messages by to address as the order can differ
-        $messages = $this->messageLogger->getMessages();
+        // For signed messages, extract the to address from the raw content
         Assert::assertTrue(usort(
             $messages,
-            fn (SimpleMessage $a, SimpleMessage $b) => strcmp(array_key_first($a->getTo()), array_key_first($b->getTo()))
+            function ($a, $b) {
+                $toA = $this->extractToAddress($a);
+                $toB = $this->extractToAddress($b);
+                return strcmp($toA, $toB);
+            }
         ));
 
-        // Warning, each email is logged twice in the messageLogger.
         Assert::assertStringContainsString('Hey anna@doe.email', $messages[0]->toString());
-        Assert::assertStringContainsString('Hey john@doe.email', $messages[2]->toString());
+        Assert::assertStringContainsString('Hey john@doe.email', $messages[1]->toString());
 
         foreach ($messages as $message) {
             $this->assertMessageIsSigned($message);
@@ -107,13 +112,20 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame(Response::HTTP_OK, $response->getStatusCode(), $response->getContent());
         Assert::assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $response->getContent());
 
-        $this->runCommand('mautic:broadcasts:send');
+        $this->testSymfonyCommand('mautic:broadcasts:send');
 
+        // Get messages using Symfony Mailer's test assertions
+        $messages = self::getMailerMessages();
+        
         // Sort messages by to address as the order can differ
-        $messages = $this->messageLogger->getMessages();
+        // For signed messages, extract the to address from the raw content
         Assert::assertTrue(usort(
             $messages,
-            fn (SimpleMessage $a, SimpleMessage $b) => strcmp(array_key_first($a->getTo()), array_key_first($b->getTo()))
+            function ($a, $b) {
+                $toA = $this->extractToAddress($a);
+                $toB = $this->extractToAddress($b);
+                return strcmp($toA, $toB);
+            }
         ));
 
         Assert::assertStringContainsString('Hey anna@doe.email', $messages[0]->toString());
@@ -128,6 +140,7 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
     {
         $segment = new LeadList();
         $segment->setName($name);
+        $segment->setPublicName($name);
         $segment->setAlias($alias);
         $this->em->persist($segment);
 
@@ -174,7 +187,26 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
         return $email;
     }
 
-    private function assertMessageIsSigned(SimpleMessage $message): void
+    private function extractToAddress($message): string
+    {
+        // For MauticMessage or Email, use getTo()
+        if (method_exists($message, 'getTo')) {
+            $to = $message->getTo();
+            if ($to && isset($to[0])) {
+                return $to[0]->getAddress();
+            }
+        }
+        
+        // For signed messages, extract from raw content
+        $raw = $message->toString();
+        if (preg_match('/To: (?:<)?([^>\r\n]+)(?:>)?/', $raw, $matches)) {
+            return trim($matches[1]);
+        }
+        
+        return '';
+    }
+
+    private function assertMessageIsSigned($message): void
     {
         $email = $message->toString();
         Assert::assertStringContainsString('Subject: Email A Subject', $email);
