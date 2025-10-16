@@ -17,7 +17,7 @@ final class UniqueNameValidator extends ConstraintValidator
     ) {
     }
 
-    public function validate($project, Constraint $constraint): void
+    public function validate(mixed $project, Constraint $constraint): void
     {
         if (!$project instanceof Project) {
             throw new UnexpectedTypeException($project, Project::class);

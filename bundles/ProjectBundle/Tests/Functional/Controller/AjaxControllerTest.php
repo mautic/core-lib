@@ -63,7 +63,7 @@ final class AjaxControllerTest extends MauticMysqlTestCase
 
     public function testCreatingDuplicateProject(): void
     {
-        $projectModel = self::$container->get('mautic.project.model.project');
+        $projectModel = self::getContainer()->get('mautic.project.model.project');
         \assert($projectModel instanceof ProjectModel);
 
         $this->assertCount(

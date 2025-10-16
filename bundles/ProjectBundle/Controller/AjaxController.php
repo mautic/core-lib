@@ -21,7 +21,6 @@ final class AjaxController extends CommonAjaxController
     public function __construct(
         private ProjectModel $projectModel,
         private ProjectRepository $projectRepository,
-        private CorePermissions $corePermissions,
     ) {
     }
 
