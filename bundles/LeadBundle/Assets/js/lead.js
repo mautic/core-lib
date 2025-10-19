@@ -664,7 +664,7 @@ Mautic.addLeadListFilter = function (elId, elObj) {
 
     if (mQuery('#' + prefix + '_filters div.panel').length == 0) {
         // First filter so hide the glue footer
-        prototype.find(".panel-heading .panel-glue").addClass('hide');
+        prototype.find(".panel-glue").addClass('hide');
     }
 
     const filterTypeIcon = filterOption.data('field-icon');
