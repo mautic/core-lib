@@ -662,7 +662,7 @@ Mautic.addLeadListFilter = function (elId, elObj) {
     var filterBase  = prefix + "[filters][" + filterNum + "]";
     var filterIdBase = prefix + "_filters_" + filterNum + "_";
 
-    if (mQuery('#' + prefix + '_filters div.panel').length == 0) {
+    if (Mautic.segmentFilter().getFilterCount() === 0) {
         // First filter so hide the glue footer
         prototype.find(".panel-glue").addClass('hide');
     }
