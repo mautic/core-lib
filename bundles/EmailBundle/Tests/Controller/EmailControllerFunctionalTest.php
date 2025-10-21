@@ -273,6 +273,37 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame('value123', $email->getHeaders()->get('x-global-custom-header')->getBody());
     }
 
+    public function testSegmentEmailTranslationChildrenParents(): void
+    {
+        $segment         = $this->createSegment('Segment A', 'segment-a');
+        $emailGrandPah   = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'test html', $segment);
+        $this->em->persist($emailGrandPah);
+        $this->em->flush();
+
+        $emailParent = $this->createEmail('Email B', 'Subject B', 'list', 'blank', 'test html', $segment);
+        $emailParent->setTranslationParent($emailGrandPah);
+        $this->em->persist($emailParent);
+        $emailGrandPah->addTranslationChild($emailParent);
+        $this->em->flush();
+
+        $emailChild = $this->createEmail('Email C', 'Subject C', 'list', 'blank', 'test html', $segment);
+        $emailChild->setTranslationParent($emailParent);
+        $this->em->persist($emailChild);
+        $emailParent->addTranslationChild($emailChild);
+        $this->em->persist($emailChild);
+        $this->em->flush();
+
+        $crawler      = $this->client->request(Request::METHOD_GET, '/s/emails');
+        $htmlLine1    = $crawler->filter('.email-list > tbody > tr:nth-child(1)')->html();
+        $htmlLine2    = $crawler->filter('.email-list > tbody > tr:nth-child(2)')->html();
+        $htmlLine3    = $crawler->filter('.email-list > tbody > tr:nth-child(3)')->html();
+
+        Assert::assertStringContainsString('ri-translate fs-14', $htmlLine1);
+        Assert::assertStringContainsString('ri-translate-2', $htmlLine2);
+        Assert::assertStringContainsString('ri-translate fs-14', $htmlLine2);
+        Assert::assertStringContainsString('ri-translate-2', $htmlLine3);
+    }
+
     public function testSegmentEmailSendWithAdvancedOptions(): void
     {
         $segment = $this->createSegment('Segment A', 'segment-a');
