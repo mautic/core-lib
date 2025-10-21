@@ -70,6 +70,13 @@ use Twig\Environment;
  */
 class SubmissionModel extends CommonFormModel
 {
+    /**
+     * Cache of result tables ensured to exist during the current process.
+     *
+     * @var array<string, true>
+     */
+    private array $ensuredResultTables = [];
+
     public function __construct(
         protected IpLookupHelper $ipLookupHelper,
         protected Environment $twig,
@@ -117,6 +124,15 @@ class SubmissionModel extends CommonFormModel
     public function saveSubmission($post, $server, Form $form, Request $request, $returnEvent = false)
     {
         $leadFields = $this->leadFieldModel->getFieldListWithProperties(false);
+        $resultsTableName = $this->getRepository()->getResultsTableName($form->getId(), $form->getAlias());
+        if (!isset($this->ensuredResultTables[$resultsTableName])) {
+            $schemaManager = $this->em->getConnection()->createSchemaManager();
+            if (!$schemaManager->tablesExist([$resultsTableName])) {
+                $this->formModel->createTableSchema($form);
+            }
+
+            $this->ensuredResultTables[$resultsTableName] = true;
+        }
 
         // everything matches up so let's save the results
         $submission = new Submission();
