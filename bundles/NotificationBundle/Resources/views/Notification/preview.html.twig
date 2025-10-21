@@ -5,7 +5,7 @@
 
 {% set notificationWrapper %}
 <div class="notification-preview">
-  <div class="notification-preview__body {% if notification.url %}animation--grow{% endif %}">
+  <div class="notification-preview__body {{ notification.url ? 'animation--grow' }}">
     <div class="notification-preview__container">
       <div class="notification-preview__notification notification-preview__notification--web">
         <span class="notification-preview__before"></span>
