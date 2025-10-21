@@ -49,6 +49,9 @@ class FormFieldHelper extends AbstractFormFieldHelper
         'number'        => [
             'filter' => 'float',
         ],
+        'slider'        => [
+            'filter' => 'float',
+        ],
         'pagebreak' => [],
         'password'  => [],
         'radiogrp'  => [
@@ -185,7 +188,8 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 }
                 break;
             case 'checkboxgrp':
-                $separator = urlencode('|');
+                $isUrlEncoded = is_string($value) && str_contains($value, '%7C');
+                $separator    = $isUrlEncoded ? urlencode('|') : '|';
                 if (is_string($value) && strrpos($value, $separator) > 0) {
                     $value = explode($separator, $value);
                 } elseif (!is_array($value)) {
