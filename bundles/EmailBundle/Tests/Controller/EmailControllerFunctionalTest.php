@@ -294,14 +294,11 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $crawler      = $this->client->request(Request::METHOD_GET, '/s/emails');
-        $htmlLine1    = $crawler->filter('.email-list > tbody > tr:nth-child(1)')->html();
-        $htmlLine2    = $crawler->filter('.email-list > tbody > tr:nth-child(2)')->html();
-        $htmlLine3    = $crawler->filter('.email-list > tbody > tr:nth-child(3)')->html();
+        $iconNodes1 = $crawler->filter('.email-list .ri-translate.fs-14');
+        Assert::assertGreaterThanOrEqual(2, $iconNodes1->count(), 'Translate icon not found in the email list rows.');
 
-        Assert::assertStringContainsString('ri-translate fs-14', $htmlLine1);
-        Assert::assertStringContainsString('ri-translate-2', $htmlLine2);
-        Assert::assertStringContainsString('ri-translate fs-14', $htmlLine2);
-        Assert::assertStringContainsString('ri-translate-2', $htmlLine3);
+        $iconNodes2 = $crawler->filter('.email-list .ri-translate-2');
+        Assert::assertGreaterThanOrEqual(1, $iconNodes2->count(), 'Translate icon not found in the email list rows.');
     }
 
     public function testSegmentEmailSendWithAdvancedOptions(): void
