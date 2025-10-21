@@ -294,7 +294,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $crawler      = $this->client->request(Request::METHOD_GET, '/s/emails');
-        $iconNodes1 = $crawler->filter('.email-list .ri-translate.fs-14');
+        $iconNodes1   = $crawler->filter('.email-list .ri-translate.fs-14');
         Assert::assertGreaterThanOrEqual(2, $iconNodes1->count(), 'Translate icon not found in the email list rows.');
 
         $iconNodes2 = $crawler->filter('.email-list .ri-translate-2');
