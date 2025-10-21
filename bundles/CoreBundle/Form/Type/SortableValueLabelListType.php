@@ -2,6 +2,7 @@
 
 namespace Mautic\CoreBundle\Form\Type;
 
+use Mautic\CoreBundle\Helper\InputHelper;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -47,7 +48,7 @@ class SortableValueLabelListType extends AbstractType
                     && empty($data['value'])
                     && !empty($data['label'])
                 ) {
-                    $data['value'] = $this->slugify((string) $data['label']);
+                    $data['value'] = strtolower(preg_replace('/_+/', '_', trim(InputHelper::alphanum(InputHelper::transliterate((string) $data['label']), false, '_'), '_')));
                     $event->setData($data);
                 }
             }
@@ -62,22 +63,5 @@ class SortableValueLabelListType extends AbstractType
         $view->vars['postaddonAttr'] = $options['attr']['postaddon_attr'] ?? [];
         $view->vars['preaddon']      = $options['attr']['preaddon'] ?? [];
         $view->vars['postaddon']     = $options['attr']['postaddon'] ?? [];
-    }
-
-    /**
-     * Convert a string to a URL-safe slug.
-     */
-    private function slugify(string $text): string
-    {
-        $text = str_replace('&', 'and', $text);
-        if (function_exists('transliterator_transliterate')) {
-            $text = transliterator_transliterate('Any-Latin; Latin-ASCII; [\u0100-\u7fff] remove', $text);
-        }
-        $text = preg_replace('~[^\pL\d]+~u', '_', $text);
-        $text = preg_replace('/[^a-zA-Z0-9_]+/', '', $text);
-        $text = trim($text, '_');
-        $text = mb_strtolower($text, 'UTF-8');
-
-        return preg_replace('~_+~', '_', $text);
     }
 }

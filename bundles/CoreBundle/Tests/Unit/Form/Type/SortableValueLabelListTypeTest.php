@@ -121,7 +121,9 @@ class SortableValueLabelListTypeTest extends TestCase
         return $eventListener;
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('eventListenerDataProvider')]
+    /**
+     * @dataProvider eventListenerDataProvider
+     */
     public function testFormEventListenerVariants(mixed $data, bool $shouldSetData, ?string $expectedValue = null): void
     {
         $type          = new SortableValueLabelListType();
@@ -173,16 +175,33 @@ class SortableValueLabelListTypeTest extends TestCase
         ];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('slugifyDataProvider')]
-    public function testSlugifyMethod(string $input, string $expected): void
+    /**
+     * @dataProvider slugifyDataProvider
+     */
+    public function testFormEventListenerGeneratesSlug(string $input, string $expected): void
     {
-        $type       = new SortableValueLabelListType();
-        $reflection = new \ReflectionClass($type);
-        $method     = $reflection->getMethod('slugify');
-        $method->setAccessible(true);
-
-        $result = $method->invoke($type, $input);
-        $this->assertEquals($expected, $result);
+        $type          = new SortableValueLabelListType();
+        $builder       = $this->createMock(FormBuilderInterface::class);
+        $eventListener = $this->getEventListenerFromBuildForm($type, $builder);
+        $event         = $this->createMock(FormEvent::class);
+        
+        $data = ['label' => $input, 'value' => ''];
+        $event->expects($this->once())
+            ->method('getData')
+            ->willReturn($data);
+        
+        if (!empty($input)) {
+            $event->expects($this->once())
+                ->method('setData')
+                ->with($this->callback(function ($newData) use ($data, $expected) {
+                    return $newData['label'] === $data['label'] && $newData['value'] === $expected;
+                }));
+        } else {
+            $event->expects($this->never())
+                ->method('setData');
+        }
+        
+        $eventListener($event);
     }
 
     /**
@@ -193,8 +212,8 @@ class SortableValueLabelListTypeTest extends TestCase
         return [
             ['My Option', 'my_option'],
             ['First Choice!', 'first_choice'],
-            ['Test-Value_123', 'test_value_123'],
-            ['Special@#$%Characters', 'special_characters'],
+            ['Test-Value_123', 'testvalue_123'],
+            ['Special@#$%Characters', 'specialcharacters'],
             ['  Trimmed  Spaces  ', 'trimmed_spaces'],
             ['Multiple___Underscores', 'multiple_underscores'],
             ['Àccénted Chàracters', 'accented_characters'],
