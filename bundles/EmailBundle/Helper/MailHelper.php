@@ -254,7 +254,7 @@ class MailHelper
     ) {
         $this->transport  = $this->getTransport();
         $this->returnPath = $coreParametersHelper->get('mailer_return_path');
-        
+
         $systemFromEmail    = (string) $coreParametersHelper->get('mailer_from_email');
         $systemReplyToEmail = $coreParametersHelper->get('mailer_reply_to_email');
         $systemFromName     = $this->cleanName(

@@ -19,6 +19,7 @@ use Mautic\EmailBundle\Helper\FromEmailHelper;
 use Mautic\EmailBundle\Helper\MailHashHelper;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\EmailBundle\Helper\SMimeHelper;
+use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\EmailBundle\Model\EmailStatModel;
 use Mautic\EmailBundle\Model\SendEmailToContact;
@@ -123,6 +124,8 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $twig;
 
+    private MockObject&SMimeHelper $sMimeHelper;
+
     private StatHelper $statHelper;
 
     protected function setUp(): void
@@ -139,6 +142,10 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->mailHashHelper       = new MailHashHelper($this->coreParametersHelper);
         $this->translator           = $this->createMock(TranslatorInterface::class);
         $this->twig                 = $this->createMock(Environment::class);
+        $this->sMimeHelper          = $this->createMock(SMimeHelper::class);
+
+        $this->sMimeHelper->method('signContent')
+            ->willReturnCallback(fn (MauticMessage $message) => $message);
 
         $this->fromEmaiHelper->method('getFrom')
             ->willReturn(new AddressDTO('someone@somewhere.com'));
@@ -230,6 +237,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\TestDox('Test a tokenized transport that limits batches does not throw BatchQueueMaxException on subsequent contacts when one fails')]
     public function testBadEmailDoesNotCauseBatchQueueMaxExceptionOnSubsequentContacts(): void
     {
+        /** @var Email&MockObject $emailMock */
         $emailMock = $this->createMock(Email::class);
         $emailMock->method('getId')->willReturn(1);
         $emailMock->method('getFromAddress')->willReturn('test@mautic.com');
@@ -263,6 +271,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $entityManager->expects($this->never()) // Never to make sure that the mock is properly tested if needed.
             ->method('getReference');
 
+        /** @var MailHelper&MockObject $mailHelper */
         $mailHelper = $this->getMockBuilder(MailHelper::class)
             ->setConstructorArgs([
                 $mailer,
@@ -282,6 +291,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                 $this->createMock(AssetModel::class),
                 $this->createMock(TrackableModel::class),
                 $this->createMock(RedirectModel::class),
+                $this->sMimeHelper,
             ])
             ->onlyMethods(['createEmailStat'])
             ->getMock();
@@ -292,6 +302,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                     $stat = new Stat();
                     $stat->setEmail($emailMock);
 
+                    /** @var Lead&MockObject $leadMock */
                     $leadMock = $this->createMock(Lead::class);
                     $leadMock->method('getId')
                         ->willReturn(1);
@@ -412,6 +423,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                 $this->createMock(AssetModel::class),
                 $this->createMock(TrackableModel::class),
                 $this->createMock(RedirectModel::class),
+                $this->sMimeHelper,
             ])
             ->onlyMethods([])
             ->getMock();
@@ -500,6 +512,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                 $this->createMock(AssetModel::class),
                 $this->createMock(TrackableModel::class),
                 $this->createMock(RedirectModel::class),
+                $this->sMimeHelper,
             ])
             ->onlyMethods(['createEmailStat'])
             ->getMock();
@@ -620,6 +633,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                 $this->createMock(AssetModel::class),
                 $this->createMock(TrackableModel::class),
                 $this->createMock(RedirectModel::class),
+                $this->sMimeHelper,
             ])
             ->onlyMethods(['createEmailStat'])
             ->getMock();
@@ -732,7 +746,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
-            $this->createMock(SMimeHelper::class),
+            $this->sMimeHelper,
         );
         $dncModel       = $this->createMock(DoNotContact::class);
         $translator     = $this->createMock(TranslatorInterface::class);

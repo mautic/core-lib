@@ -11,7 +11,7 @@ use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\EmailBundle\Swiftmailer\Signers\SMimeSigner;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\RawMessage;
+use Symfony\Component\Mime\Message;
 
 /**
  * Signs message with S/MIME certificate.
@@ -43,7 +43,7 @@ class SMimeHelper
      * Signs the message with S/MIME if enabled and certificates are available.
      * Returns the signed message, or the original message if signing is not applicable.
      */
-    public function signContent(MauticMessage $message): RawMessage
+    public function signContent(MauticMessage $message): Message
     {
         if (!$this->sMimeSigningEnabled()) {
             return $message;
@@ -78,9 +78,9 @@ class SMimeHelper
     }
 
     /**
-     * @throws IOException if one of the cetificates is not found
-     *
      * @return string[]
+     *
+     * @throws IOException if one of the cetificates is not found
      */
     private function getCertificatesFromDisk(string $fromEmail): array
     {

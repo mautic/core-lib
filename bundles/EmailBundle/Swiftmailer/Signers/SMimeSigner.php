@@ -15,7 +15,7 @@ use Symfony\Component\Mime\Message;
 class SMimeSigner
 {
     private ?string $tempCertFile = null;
-    private ?string $tempKeyFile = null;
+    private ?string $tempKeyFile  = null;
     private SymfonySMimeSigner $signer;
 
     /**
@@ -31,14 +31,14 @@ class SMimeSigner
         if (!file_exists($certificate)) {
             // It's content, write to temp file
             $this->tempCertFile = $this->writeTempFile($certificate, 'cert');
-            $certificate = $this->tempCertFile;
+            $certificate        = $this->tempCertFile;
         }
 
         // Check if private key is a file path or content
         if (!file_exists($privateKey)) {
             // It's content, write to temp file
             $this->tempKeyFile = $this->writeTempFile($privateKey, 'key');
-            $privateKey = $this->tempKeyFile;
+            $privateKey        = $this->tempKeyFile;
         }
 
         $this->signer = new SymfonySMimeSigner($certificate, $privateKey, $privateKeyPassphrase, $extraCerts, $signOptions);

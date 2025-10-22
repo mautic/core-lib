@@ -59,11 +59,10 @@ abstract class AbstractMauticTestCase extends WebTestCase
 
     protected AbstractDatabaseTool $databaseTool;
 
-
     /**
      * Overloading the method from MailerAssertionsTrait to get better typehint.
      */
-    public static function getMailerMessage(int $index = 0, ?string $transport = null): null|RawMessage|MauticMessage
+    public static function getMailerMessage(int $index = 0, ?string $transport = null): RawMessage|MauticMessage|null
     {
         return self::getMailerMessages($transport)[$index] ?? null;
     }
@@ -81,9 +80,10 @@ abstract class AbstractMauticTestCase extends WebTestCase
                     return true;
                 }
             }
-            
+
             // For signed messages (Symfony\Component\Mime\Message), check the raw content
             $raw = $message->toString();
+
             return str_contains($raw, 'To: '.$toAddress) || str_contains($raw, 'To: <'.$toAddress.'>');
         }));
     }
@@ -112,7 +112,9 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $secure           = 0 === strcasecmp($scheme, 'https');
 
         $this->client->setServerParameter('HTTPS', (string) $secure);
-    }    public function loginUser(User $user): void
+    }
+
+    public function loginUser(User $user): void
     {
         $this->client->loginUser($user, 'mautic');
     }
