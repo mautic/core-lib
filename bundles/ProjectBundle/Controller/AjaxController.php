@@ -4,53 +4,19 @@ declare(strict_types=1);
 
 namespace Mautic\ProjectBundle\Controller;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Mautic\CoreBundle\Controller\AjaxController as CommonAjaxController;
 use Mautic\CoreBundle\Controller\AjaxLookupControllerTrait;
-use Mautic\CoreBundle\Factory\ModelFactory;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\CoreBundle\Service\FlashBag;
-use Mautic\CoreBundle\Translation\Translator;
 use Mautic\ProjectBundle\Entity\Project;
 use Mautic\ProjectBundle\Entity\ProjectRepository;
 use Mautic\ProjectBundle\Model\ProjectModel;
 use Mautic\ProjectBundle\Security\Permissions\ProjectPermissions;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 final class AjaxController extends CommonAjaxController
 {
     use AjaxLookupControllerTrait;
-
-    public function __construct(
-        private ProjectModel $projectModel,
-        private ProjectRepository $projectRepository,
-        ManagerRegistry $doctrine,
-        ModelFactory $modelFactory,
-        UserHelper $userHelper,
-        CoreParametersHelper $coreParametersHelper,
-        EventDispatcherInterface $dispatcher,
-        Translator $translator,
-        FlashBag $flashBag,
-        RequestStack $requestStack,
-        CorePermissions $security,
-    ) {
-        parent::__construct(
-            $doctrine,
-            $modelFactory,
-            $userHelper,
-            $coreParametersHelper,
-            $dispatcher,
-            $translator,
-            $flashBag,
-            $requestStack,
-            $security,
-        );
-    }
 
     public function getLookupChoiceListAction(Request $request, ProjectModel $projectModel): JsonResponse
     {
@@ -94,7 +60,7 @@ final class AjaxController extends CommonAjaxController
                 $project = new Project();
                 $project->setName($projectName);
 
-                $existingProjectIds[] = $this->createProjectIfNotExists(trim($projectName));
+                $existingProjectIds[] = $this->createProjectIfNotExists(trim($projectName), $projectModel, $projectRepository);
             }
         }
 
@@ -110,15 +76,15 @@ final class AjaxController extends CommonAjaxController
         return $this->sendJsonResponse(['projects' => $projectOptions]);
     }
 
-    private function createProjectIfNotExists(string $name): int
+    private function createProjectIfNotExists(string $name, ProjectModel $projectModel, ProjectRepository $projectRepository): int
     {
-        if ($project = $this->projectRepository->findOneBy(['name' => $name])) {
+        if ($project = $projectRepository->findOneBy(['name' => $name])) {
             return $project->getId();
         }
 
         $project = new Project();
         $project->setName($name);
-        $this->projectModel->saveEntity($project);
+        $projectModel->saveEntity($project);
 
         return $project->getId();
     }
