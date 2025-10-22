@@ -6,6 +6,9 @@ namespace Mautic\ProjectBundle\DTO;
 
 final readonly class DetailRoute
 {
+    /**
+     * @param array<string, int|string|bool|Stringable|null> $otherParameters
+     */
     public function __construct(
         public string $route,
         private string $idParameterName,
@@ -13,6 +16,9 @@ final readonly class DetailRoute
     ) {
     }
 
+    /**
+     * @return array<string, int|string|bool|Stringable|null>
+     */
     public function getParameters(string $id): array
     {
         return [$this->idParameterName => $id] + $this->otherParameters;
