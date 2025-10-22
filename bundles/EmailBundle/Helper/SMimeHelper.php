@@ -18,10 +18,6 @@ use Symfony\Component\Mime\RawMessage;
  */
 class SMimeHelper
 {
-    private CoreParametersHelper $coreParametersHelper;
-    private Filesystem $filesystem;
-    private EncryptionHelper $encryptionHelper;
-
     /**
      * Caching the certificates to avoid reading them from the filesystem on every message.
      *
@@ -29,14 +25,8 @@ class SMimeHelper
      */
     private array $certCache = [];
 
-    public function __construct(
-        CoreParametersHelper $coreParametersHelper,
-        Filesystem $filesystem,
-        EncryptionHelper $encryptionHelper
-    ) {
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->filesystem           = $filesystem;
-        $this->encryptionHelper     = $encryptionHelper;
+    public function __construct(private CoreParametersHelper $coreParametersHelper, private Filesystem $filesystem, private EncryptionHelper $encryptionHelper)
+    {
     }
 
     public function sMimeSigningEnabled(): bool
@@ -73,7 +63,7 @@ class SMimeHelper
         } else {
             try {
                 [$publicKey, $privateKey] = $this->getCertificatesFromDisk($fromEmail);
-            } catch (IOException $e) {
+            } catch (IOException) {
                 return $message;
             }
 
@@ -103,7 +93,7 @@ class SMimeHelper
         try {
             // Try to decrypt the private key first
             $privateKey = $this->encryptionHelper->decrypt($this->filesystem->readFile($privateKeyEncryptedPath));
-        } catch (IOException $e) {
+        } catch (IOException) {
             // If the private key is not encrypted, just try to read it in an unecrypted form
             $privateKey = $this->filesystem->readFile($privateKeyPath);
         }

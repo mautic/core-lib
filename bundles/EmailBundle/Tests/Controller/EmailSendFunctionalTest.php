@@ -52,6 +52,7 @@ final class EmailSendFunctionalTest extends MauticMysqlTestCase
             $response->getContent()
         );
 
+        /** @var MauticMessage[] $messages */
         $messages = [
             $this->getMailerMessagesByToAddress('contact-flood-0@doe.com')[0],
             $this->getMailerMessagesByToAddress('contact-flood-1@doe.com')[0],

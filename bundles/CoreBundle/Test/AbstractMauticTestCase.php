@@ -63,7 +63,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
     /**
      * Overloading the method from MailerAssertionsTrait to get better typehint.
      */
-    public static function getMailerMessage(int $index = 0, ?string $transport = null): ?MauticMessage
+    public static function getMailerMessage(int $index = 0, ?string $transport = null): null|RawMessage|MauticMessage
     {
         return self::getMailerMessages($transport)[$index] ?? null;
     }

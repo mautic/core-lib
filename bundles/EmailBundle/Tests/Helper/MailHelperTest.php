@@ -173,7 +173,6 @@ class MailHelperTest extends TestCase
             ->willReturnMap(
                 [
                     ['mailer_return_path', false, null],
-                    ['mailer_spool_type', false, 'memory'],
                     ['mailer_address_length_limit', false, 320],
                 ]
             );
@@ -197,7 +196,6 @@ class MailHelperTest extends TestCase
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
-            $this->sMimeHelper,
         );
         $batchMailHelper->enableQueue();
         $batchMailHelper->addTo('somebody@somewhere.com');
@@ -213,7 +211,6 @@ class MailHelperTest extends TestCase
             ->willReturnMap(
                 [
                     ['mailer_return_path', false, null],
-                    ['mailer_spool_type', false, 'memory'],
                 ]
             );
 

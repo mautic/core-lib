@@ -7,18 +7,20 @@ namespace Mautic\EmailBundle\Tests\Controller\Api;
 use DateTime;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
+use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\RawMessage;
 
 class SMimeFunctionalTest extends MauticMysqlTestCase
 {
     protected function setUp(): void
     {
-        $this->configParams['mailer_spool_type']       = 'testSendingSegmentEmailInMemoryWithSMime' === $this->name() ? 'memory' : 'file';
+        $this->configParams['mailer_spool_type']       = 'testSendingSegmentEmailInMemoryWithSMime' === $this->name() ? 'memory' : 'file'; // There is no spool type anymore. Look into it!!!
         $this->configParams['smime_signing_enabled']   = true;
         $this->configParams['smime_certificates_path'] = '%kernel.project_dir%/app/bundles/EmailBundle/Tests/Mocks/Certificates/SMime';
         $this->configParams['mailer_from_email']       = 'admin@test-beta.mautibot.com';
@@ -63,14 +65,14 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
         
         // Sort messages by to address as the order can differ
         // For signed messages, extract the to address from the raw content
-        Assert::assertTrue(usort(
+        usort(
             $messages,
             function ($a, $b) {
                 $toA = $this->extractToAddress($a);
                 $toB = $this->extractToAddress($b);
                 return strcmp($toA, $toB);
             }
-        ));
+        );
 
         Assert::assertStringContainsString('Hey anna@doe.email', $messages[0]->toString());
         Assert::assertStringContainsString('Hey john@doe.email', $messages[1]->toString());
@@ -119,14 +121,14 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
         
         // Sort messages by to address as the order can differ
         // For signed messages, extract the to address from the raw content
-        Assert::assertTrue(usort(
+        usort(
             $messages,
             function ($a, $b) {
                 $toA = $this->extractToAddress($a);
                 $toB = $this->extractToAddress($b);
                 return strcmp($toA, $toB);
             }
-        ));
+        );
 
         Assert::assertStringContainsString('Hey anna@doe.email', $messages[0]->toString());
         Assert::assertStringContainsString('Hey john@doe.email', $messages[1]->toString());
@@ -187,7 +189,7 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
         return $email;
     }
 
-    private function extractToAddress($message): string
+    private function extractToAddress(RawMessage|MauticMessage $message): string
     {
         // For MauticMessage or Email, use getTo()
         if (method_exists($message, 'getTo')) {
@@ -206,7 +208,7 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
         return '';
     }
 
-    private function assertMessageIsSigned($message): void
+    private function assertMessageIsSigned(RawMessage $message): void
     {
         $email = $message->toString();
         Assert::assertStringContainsString('Subject: Email A Subject', $email);

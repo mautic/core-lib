@@ -142,10 +142,8 @@ class MailHelper
 
     /**
      * Tells the helper that the transport supports tokenized emails (likely HTTP API).
-     *
-     * @var bool
      */
-    protected $tokenizationEnabled = false;
+    protected bool $tokenizationEnabled;
 
     /**
      * Use queue mode when sending email through this mailer; this requires a transport that supports tokenization and the use of queue/flushQueue.
@@ -266,11 +264,6 @@ class MailHelper
         $this->setDefaultFrom(false, new AddressDTO($systemFromEmail, $systemFromName));
         $this->setDefaultReplyTo($systemReplyToEmail, $this->from);
 
-        // Check if batching is supported by the transport
-        if ($this->transport instanceof TokenTransportInterface) {
-            $this->tokenizationEnabled = true;
-        }
-
         $this->message = $this->getMessageInstance();
 
         $this->tokenizationEnabled = $this->isTokenizationSupported();
@@ -278,15 +271,11 @@ class MailHelper
 
     private function isTokenizationSupported(): bool
     {
-        $isMemorySpoolType = 'memory' === $this->coreParametersHelper->get('mailer_spool_type');
-        $tokensSupported   = $this->transport instanceof TokenTransportInterface;
-        $spoolSupported    = $this->transport instanceof SpoolTransport && $this->transport->supportsTokenization();
-
         if ($this->sMimeHelper->sMimeSigningEnabled()) {
             return false;
         }
 
-        return ($isMemorySpoolType && $tokensSupported) || $spoolSupported;
+        return $this->transport instanceof TokenTransportInterface;
     }
 
     /**
