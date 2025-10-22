@@ -88,6 +88,11 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
     private MockObject $leadFieldModel;
 
     /**
+     * @var MockObject|\Mautic\CoreBundle\Model\NotificationModel
+     */
+    private MockObject $notificationModel;
+
+    /**
      * @var MockObject|CompanyModel
      */
     private MockObject $companyModel;
@@ -123,6 +128,11 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
      * @var MockObject|EntityManager
      */
     private MockObject $entityManager;
+
+    /**
+     * @var MockObject|Connection
+     */
+    private MockObject $connection;
 
     /**
      * @var MockObject|SubmissionRepository
