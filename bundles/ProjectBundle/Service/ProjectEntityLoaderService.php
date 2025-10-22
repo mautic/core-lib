@@ -52,9 +52,11 @@ final class ProjectEntityLoaderService
                 ->getResult();
 
             $results[$entityType] = [
-                'label'    => $config->label,
-                'entities' => $entities,
-                'count'    => count($entities),
+                'label'       => $config->label,
+                'entities'    => $entities,
+                'count'       => count($entities),
+                'detailRoute' => $config->detailRoute
+        ?? new DetailRoute('mautic_'.$entityType.'_action', 'objectId', ['objectAction' => 'view']),
             ];
         }
 
