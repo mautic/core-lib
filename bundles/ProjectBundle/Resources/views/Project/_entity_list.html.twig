@@ -59,23 +59,10 @@
 																				},
 																		}) -}}
 										</td>
-										{% set objectAction = entityType in ['point', 'stage'] ? 'edit' : 'view' %}
-										{% set route = 'mautic_' ~ entityType ~ '_action' %}
-										{% set parameters = {
-												'objectAction': objectAction,
-												'objectId': entity.getId()
-										} %}
-
-										{% if entityType == 'global_token' %}
-												{# Special case: different route, no objectAction param #}
-												{% set route = 'mautic_global_token_edit' %}
-												{% set parameters = { 'objectId': entity.getId() } %}
-										{% endif %}
-
 										<td>
-												<a href="{{ path(route, parameters) }}" data-toggle="ajax">
-														{{ entity.getName()|purify }}
-												</a>
+											<a href="{{ path(entityData.detailRoute.route, entityData.detailRoute.getParameters(entity.getId())) }}" data-toggle="ajax">
+													{{ entity.getName()|purify }}
+											</a>
 										</td>
 										<td class="visible-lg" title="{{ entity.getDateAdded() ? dateToFullConcat(entity.getDateAdded()) : '' }}">
 											{{ entity.getDateAdded() ? dateToDate(entity.getDateAdded()) : '' }}
