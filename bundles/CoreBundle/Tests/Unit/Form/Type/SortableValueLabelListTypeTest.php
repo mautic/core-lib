@@ -121,9 +121,7 @@ class SortableValueLabelListTypeTest extends TestCase
         return $eventListener;
     }
 
-    /**
-     * @dataProvider eventListenerDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('eventListenerDataProvider')]
     public function testFormEventListenerVariants(mixed $data, bool $shouldSetData, ?string $expectedValue = null): void
     {
         $type          = new SortableValueLabelListType();
@@ -175,9 +173,7 @@ class SortableValueLabelListTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider slugifyDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('slugifyDataProvider')]
     public function testFormEventListenerGeneratesSlug(string $input, string $expected): void
     {
         $type          = new SortableValueLabelListType();
