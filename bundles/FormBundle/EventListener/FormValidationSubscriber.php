@@ -122,14 +122,14 @@ class FormValidationSubscriber implements EventSubscriberInterface
         $value       = $event->getValue();
         $selectedCnt = 0;
 
-        if (is_array($value)) {
-            foreach ($value as $v) {
-                if ('' !== $v && null !== $v) {
-                    ++$selectedCnt;
-                }
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+
+        foreach ($value as $v) {
+            if ('' !== $v && null !== $v) {
+                ++$selectedCnt;
             }
-        } elseif ('' !== $value && null !== $value) {
-            $selectedCnt = 1;
         }
 
         $validation = $field->getValidation();
