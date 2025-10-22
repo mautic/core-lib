@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\FormBundle\Tests\EventListener;
 
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
@@ -11,7 +13,7 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Translator;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FormValidationSubscriber::class)]
-class FormValidationSubscriberTest extends TestCase
+final class FormValidationSubscriberTest extends TestCase
 {
     private function getSubscriber(): FormValidationSubscriber
     {
