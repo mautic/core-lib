@@ -75,8 +75,9 @@ class FormValidationSubscriber implements EventSubscriberInterface
         if (!empty($value)) {
             $this->fieldTelValidation($event);
             $this->fieldEmailValidation($event);
-            $this->fieldCheckboxGroupValidation($event);
         }
+
+        $this->fieldCheckboxGroupValidation($event);
     }
 
     private function fieldEmailValidation(Events\ValidationEvent $event): void

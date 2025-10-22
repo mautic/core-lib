@@ -41,6 +41,34 @@ final class FormValidationSubscriberTest extends TestCase
         $this->assertSame('You must select at least 2 options.', $event->getInvalidReason());
     }
 
+    public function testFailsWhenNoSelectionsProvided(): void
+    {
+        $field = new Field();
+        $field->setType('checkboxgrp');
+        $field->setValidation(['minimum' => 2]);
+
+        $event      = new ValidationEvent($field, []);
+        $subscriber = $this->getSubscriber();
+        $subscriber->onFormValidate($event);
+
+        $this->assertFalse($event->isValid());
+        $this->assertSame('You must select at least 2 options.', $event->getInvalidReason());
+    }
+
+    public function testFailsWhenValueIsNull(): void
+    {
+        $field = new Field();
+        $field->setType('checkboxgrp');
+        $field->setValidation(['minimum' => 1]);
+
+        $event      = new ValidationEvent($field, null);
+        $subscriber = $this->getSubscriber();
+        $subscriber->onFormValidate($event);
+
+        $this->assertFalse($event->isValid());
+        $this->assertSame('You must select at least 1 options.', $event->getInvalidReason());
+    }
+
     public function testFailsWhenAboveMaximum(): void
     {
         $field = new Field();
