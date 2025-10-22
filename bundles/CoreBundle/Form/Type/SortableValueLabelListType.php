@@ -45,10 +45,10 @@ class SortableValueLabelListType extends AbstractType
                 $data = $event->getData();
 
                 if (is_array($data)
-                    && empty($data['value'])
+                    && (!isset($data['value']) || '' === $data['value'])
                     && !empty($data['label'])
                 ) {
-                    $data['value'] = strtolower(preg_replace('/_+/', '_', trim(InputHelper::alphanum(InputHelper::transliterate((string) $data['label']), false, '_'), '_')));
+                    $data['value'] = $this->generateSlugFromLabel((string) $data['label']);
                     $event->setData($data);
                 }
             }
@@ -63,5 +63,15 @@ class SortableValueLabelListType extends AbstractType
         $view->vars['postaddonAttr'] = $options['attr']['postaddon_attr'] ?? [];
         $view->vars['preaddon']      = $options['attr']['preaddon'] ?? [];
         $view->vars['postaddon']     = $options['attr']['postaddon'] ?? [];
+    }
+
+    private function generateSlugFromLabel(string $label): string
+    {
+        $transliterated = InputHelper::transliterate($label);
+        $alphanumeric   = InputHelper::alphanum($transliterated, false, '_');
+        $trimmed        = trim($alphanumeric, '_');
+        $normalized     = preg_replace('/_+/', '_', $trimmed);
+
+        return strtolower($normalized ?? '');
     }
 }
