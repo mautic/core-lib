@@ -184,12 +184,12 @@ class SortableValueLabelListTypeTest extends TestCase
         $builder       = $this->createMock(FormBuilderInterface::class);
         $eventListener = $this->getEventListenerFromBuildForm($type, $builder);
         $event         = $this->createMock(FormEvent::class);
-        
+
         $data = ['label' => $input, 'value' => ''];
         $event->expects($this->once())
             ->method('getData')
             ->willReturn($data);
-        
+
         if (!empty($input)) {
             $event->expects($this->once())
                 ->method('setData')
@@ -200,7 +200,7 @@ class SortableValueLabelListTypeTest extends TestCase
             $event->expects($this->never())
                 ->method('setData');
         }
-        
+
         $eventListener($event);
     }
 
