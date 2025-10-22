@@ -11315,6 +11315,9 @@ code:hover > .copy-icon {
   display: flex;
   flex-direction: column;
 }
+.project-popover__actions .btn ~ .btn {
+  margin-left: 0;
+}
 .modal.fade .modal-dialog {
   -webkit-transform: scale(0.95);
   -ms-transform: scale(0.95);

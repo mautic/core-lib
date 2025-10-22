@@ -627,6 +627,12 @@ code:hover > .copy-icon {
 .project-popover__actions {
   display: flex;
   flex-direction: column;
+
+  .btn {
+    & ~ .btn {
+      margin-left: 0;
+    }
+  }
 }
 
 .modal.fade .modal-dialog {
