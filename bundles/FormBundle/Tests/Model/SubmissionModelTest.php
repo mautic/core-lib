@@ -3,6 +3,7 @@
 namespace Mautic\FormBundle\Tests\Model;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\ORM\EntityManager;
 use Mautic\CampaignBundle\Membership\MembershipManager;
 use Mautic\CampaignBundle\Model\CampaignModel;
@@ -221,11 +222,13 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->entityManager              = $this->createMock(EntityManager::class);
         $this->connection                 = $this->createMock(Connection::class);
         $this->entityManager->method('getConnection')->willReturn($this->connection);
+        $schemaManager = $this->createMock(AbstractSchemaManager::class);
+        $schemaManager->method('tablesExist')->willReturn(true);
+        $this->connection->method('createSchemaManager')->willReturn($schemaManager);
         $this->connection->method('beginTransaction')->willReturn(true);
         $this->connection->method('commit')->willReturn(true);
         $this->connection->method('rollBack')->willReturn(true);
         $this->connection->method('executeStatement')->willReturn(1);
-        $this->connection->method('fetchAssociative')->willReturn(['submission_limit' => null, 'submission_count' => 0]);
         $classMetadata = $this->createMock(\Doctrine\ORM\Mapping\ClassMetadata::class);
         $classMetadata->method('getTableName')->willReturn('forms');
         $this->entityManager->method('getClassMetadata')->willReturn($classMetadata);
@@ -239,6 +242,24 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->router                     = $this->createMock(RouterInterface::class);
         $this->contactTracker             = $this->createMock(ContactTracker::class);
         $this->contactMerger              = $this->createMock(ContactMerger::class);
+
+        $this->entityManager->method('getRepository')->willReturnCallback(function (string $class) {
+            return match ($class) {
+                Submission::class => $this->submissioRepository,
+                Lead::class       => $this->leadRepository,
+                default           => null,
+            };
+        });
+
+        $this->dispatcher->method('hasListeners')->willReturn(false);
+        $this->deviceTrackingService->method('getTrackedDevice')->willReturn(null);
+        $this->formModel->method('getCustomComponents')->willReturn([
+            'viewOnlyFields' => [],
+            'fields'         => [],
+        ]);
+        $this->submissioRepository->method('getResultsTableName')->willReturn('form_results');
+        $this->leadFieldModel->method('getFieldListWithProperties')->willReturn([]);
+        $this->ipLookupHelper->method('getIpAddress')->willReturn(new IpAddress());
 
         $this->fieldHelper->method('getFieldFilter')->willReturn('string');
 
@@ -305,15 +326,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->companyModel->method('fetchCompanyFields')->willReturn([]);
 
-        $this->entityManager->expects($this->any())
-            ->method('getRepository')
-            ->willReturnMap(
-                [
-                    [Lead::class, $this->leadRepository],
-                    [Submission::class, $this->submissioRepository],
-                ]
-            );
-
         $this->leadRepository->expects($this->any())
             ->method('getLeadsByUniqueFields')
             ->willReturn(null);
@@ -333,6 +345,13 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->ipLookupHelper->expects($this->any())
             ->method('getIpAddress')
             ->willReturn(new IpAddress());
+
+        $this->connection->expects($this->exactly(2))
+            ->method('fetchAssociative')
+            ->willReturn([
+                'submission_limit' => null,
+                'submission_count' => 0,
+            ]);
 
         $request = new Request();
         $request->setMethod('POST');
@@ -366,6 +385,72 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['email' => 'test@email.com'], $submissionEvent->getContactFieldMatches());
 
         $this->assertFalse($this->submissionModel->saveSubmission($post, $server, $form, $request));
+    }
+
+    public function testSaveSubmissionReturnsErrorWhenLimitReached(): void
+    {
+        $this->connection->expects($this->once())
+            ->method('fetchAssociative')
+            ->willReturn([
+                'submission_limit' => 1,
+                'submission_count' => 1,
+            ]);
+        $this->notificationModel->expects($this->never())->method('addNotification');
+
+        $form = new Form();
+        $this->setEntityId($form, 42);
+        $form->setAlias('limit-form');
+        $form->setSubmissionLimit(1);
+        $form->setSubmissionLimitMessage('Stop here');
+
+        $result = $this->submissionModel->saveSubmission([], [], $form, new Request());
+
+        $this->assertSame(['errors' => 'Stop here'], $result);
+    }
+
+    public function testSaveSubmissionSendsNotificationWhenLimitReachedAfterIncrement(): void
+    {
+        $this->connection->expects($this->once())
+            ->method('fetchAssociative')
+            ->willReturn([
+                'submission_limit' => 2,
+                'submission_count' => 1,
+            ]);
+
+        $expectedMessage = 'Limit reached';
+        $this->translator->method('trans')->willReturnCallback(static fn (string $key, array $parameters = []) => match ($key) {
+            'mautic.form.submission.limit_reached.notification' => $expectedMessage,
+            default                                             => $key,
+        });
+
+        $user = new User();
+        $this->entityManager->expects($this->once())
+            ->method('getReference')
+            ->with(User::class, 99)
+            ->willReturn($user);
+
+        $this->notificationModel->expects($this->once())
+            ->method('addNotification')
+            ->with(
+                $expectedMessage,
+                'warning',
+                false,
+                'Limit form',
+                null,
+                null,
+                $user
+            );
+
+        $form = new Form();
+        $this->setEntityId($form, 99);
+        $form->setAlias('limit-form');
+        $form->setName('Limit form');
+        $form->setSubmissionLimit(2);
+        $form->setCreatedBy(99);
+
+        $result = $this->submissionModel->saveSubmission([], [], $form, new Request());
+
+        $this->assertFalse($result);
     }
 
     public function testNormalizeValues(): void
@@ -445,6 +530,24 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         ];
 
         return $fields;
+    }
+
+    private function setEntityId(object $entity, int $id): void
+    {
+        $reflection = new \ReflectionClass($entity);
+
+        do {
+            if ($reflection->hasProperty('id')) {
+                $property = $reflection->getProperty('id');
+                $property->setAccessible(true);
+                $property->setValue($entity, $id);
+
+                return;
+            }
+            $reflection = $reflection->getParentClass();
+        } while (false !== $reflection);
+
+        $this->fail('Unable to set id on entity of type '.get_class($entity));
     }
 
     private function setUpExport(): void
