@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mautic\EmailBundle\Swiftmailer\Signers;
+namespace Mautic\EmailBundle\Mailer\Signers;
 
 use Symfony\Component\Mime\Crypto\SMimeSigner as SymfonySMimeSigner;
 use Symfony\Component\Mime\Exception\RuntimeException;
@@ -12,7 +12,7 @@ use Symfony\Component\Mime\Message;
  * Custom SMimeSigner that wraps Symfony's SMimeSigner to support certificate/key content as strings.
  * If the certificate or private key is provided as a string (not a file path), it will be written to a temporary file.
  */
-class SMimeSigner
+final class SMimeSigner
 {
     private ?string $tempCertFile = null;
     private ?string $tempKeyFile  = null;

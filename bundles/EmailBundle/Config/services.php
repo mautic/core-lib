@@ -19,7 +19,7 @@ return function (ContainerConfigurator $configurator): void {
         'MonitoredEmail/Processor',
         'Stat/Reference.php',
         'Helper/DTO',
-        'Swiftmailer/Signers',
+        'Mailer/Signers',
     ];
 
     $services->load('Mautic\\EmailBundle\\', '../')

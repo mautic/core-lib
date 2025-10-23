@@ -12,16 +12,17 @@ use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\RawMessage;
 
-class SMimeFunctionalTest extends MauticMysqlTestCase
+final class SMimeFunctionalTest extends MauticMysqlTestCase
 {
     protected function setUp(): void
     {
         $this->configParams['smime_signing_enabled']   = true;
         $this->configParams['smime_certificates_path'] = '%kernel.project_dir%/app/bundles/EmailBundle/Tests/Mocks/Certificates/SMime';
         $this->configParams['mailer_from_email']       = 'admin@test-beta.mautibot.com';
+        $this->configParams['messenger_dsn_email']     = 'in-memory://default';
+        $this->configParams['mailer_dsn']              = 'smtp://null:25';
 
         parent::setUp();
     }
@@ -54,11 +55,11 @@ class SMimeFunctionalTest extends MauticMysqlTestCase
             $this->createAjaxHeaders()
         );
 
-        $response = $this->client->getResponse();
-        Assert::assertSame(Response::HTTP_OK, $response->getStatusCode(), $response->getContent());
-        Assert::assertSame('{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}', $response->getContent());
-
-        $this->testSymfonyCommand('mautic:broadcasts:send');
+        $this->assertResponseIsSuccessful();
+        Assert::assertJsonStringEqualsJsonString(
+            '{"success":1,"percent":100,"progress":[2,2],"stats":{"sent":2,"failed":0,"failedRecipients":[]}}',
+            $this->client->getResponse()->getContent()
+        );
 
         // Get messages using Symfony Mailer's test assertions
         $messages = self::getMailerMessages();

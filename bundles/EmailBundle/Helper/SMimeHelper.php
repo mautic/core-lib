@@ -8,7 +8,7 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\EncryptionHelper;
 use Mautic\CoreBundle\Helper\Filesystem;
 use Mautic\EmailBundle\Mailer\Message\MauticMessage;
-use Mautic\EmailBundle\Swiftmailer\Signers\SMimeSigner;
+use Mautic\EmailBundle\Mailer\Signers\SMimeSigner;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Message;
