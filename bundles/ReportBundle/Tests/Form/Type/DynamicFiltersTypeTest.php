@@ -140,11 +140,18 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 TextType::class,
                 $this->callback(function (array $args) {
-                    return 'Test Label (Equals)' === $args['label']
-                           && 'control-label' === $args['label_attr']['class']
-                           && 'form-control' === $args['attr']['class']
-                           && "Mautic.filterTableData('report.1','test_column',mQuery(this).val(),'list','.report-content');" === $args['attr']['onchange']
-                           && false === $args['required'];
+                    $expectedOptions = [
+                        'label'      => 'Test Label (Equals)',
+                        'label_attr' => ['class' => 'control-label'],
+                        'attr'       => [
+                            'class'       => 'form-control',
+                            'onchange'    => "Mautic.filterTableData('report.1','test_column',mQuery(this).val(),'list','.report-content');",
+                            'placeholder' => 'test_value',
+                        ],
+                        'required' => false,
+                    ];
+
+                    return $expectedOptions === $args;
                 })
             );
 
@@ -164,15 +171,26 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 ButtonGroupType::class,
                 $this->callback(function (array $args) {
-                    return 'Test Label (Equals)' === $args['label']
-                           && $args['choices'] === [
-                               [
-                                   'mautic.core.form.no'      => false,
-                                   'mautic.core.form.yes'     => true,
-                                   'mautic.core.filter.clear' => '2',
-                               ],
-                           ]
-                           && 1 === $args['data'];
+                    $expectedOptions = [
+                        'label'      => 'Test Label (Equals)',
+                        'label_attr' => ['class' => 'control-label'],
+                        'attr'       => [
+                            'class'       => 'form-control',
+                            'onchange'    => "Mautic.filterTableData('report.1','test_column',mQuery(this).val(),'list','.report-content');",
+                            'placeholder' => 1,
+                        ],
+                        'required' => false,
+                        'choices'  => [
+                            [
+                                'mautic.core.form.no'      => false,
+                                'mautic.core.form.yes'     => true,
+                                'mautic.core.filter.clear' => '2',
+                            ],
+                        ],
+                        'data' => 1,
+                    ];
+
+                    return $expectedOptions === $args;
                 })
             );
 
@@ -212,11 +230,22 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 DateType::class,
                 $this->callback(function (array $args) {
-                    return 'string' === $args['input']
-                           && 'single_text' === $args['widget']
-                           && false === $args['html5']
-                           && 'y-MM-dd' === $args['format']
-                           && false !== strpos($args['attr']['class'], 'datepicker');
+                    $expectedOptions = [
+                        'label'      => 'Test Label (Equals)',
+                        'label_attr' => ['class' => 'control-label'],
+                        'attr'       => [
+                            'class'       => 'form-control datepicker',
+                            'onchange'    => "Mautic.filterTableData('report.1','test_column',mQuery(this).val(),'list','.report-content');",
+                            'placeholder' => '2023-01-01',
+                        ],
+                        'required' => false,
+                        'input'    => 'string',
+                        'widget'   => 'single_text',
+                        'html5'    => false,
+                        'format'   => 'y-MM-dd',
+                    ];
+
+                    return $expectedOptions === $args;
                 })
             );
 
@@ -236,11 +265,22 @@ final class DynamicFiltersTypeTest extends TestCase
                 'test_alias',
                 DateTimeType::class,
                 $this->callback(function (array $args) {
-                    return 'string' === $args['input']
-                           && 'single_text' === $args['widget']
-                           && false === $args['html5']
-                           && 'y-MM-dd HH:mm:ss' === $args['format']
-                           && false !== strpos($args['attr']['class'], 'datetimepicker');
+                    $expectedOptions = [
+                        'label'      => 'Test Label (Equals)',
+                        'label_attr' => ['class' => 'control-label'],
+                        'attr'       => [
+                            'class'       => 'form-control datetimepicker',
+                            'onchange'    => "Mautic.filterTableData('report.1','test_column',mQuery(this).val(),'list','.report-content');",
+                            'placeholder' => '2023-01-01 12:00:00',
+                        ],
+                        'required' => false,
+                        'input'    => 'string',
+                        'widget'   => 'single_text',
+                        'html5'    => false,
+                        'format'   => 'y-MM-dd HH:mm:ss',
+                    ];
+
+                    return $expectedOptions === $args;
                 })
             );
 
