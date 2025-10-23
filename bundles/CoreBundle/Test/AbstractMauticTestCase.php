@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Message;
 use Symfony\Component\Mime\RawMessage;
 use Symfony\Component\Routing\Router;
 
@@ -68,24 +68,16 @@ abstract class AbstractMauticTestCase extends WebTestCase
     }
 
     /**
-     * @return RawMessage[]
+     * @return Message[]
      */
     public static function getMailerMessagesByToAddress(string $toAddress, ?string $transport = null): array
     {
-        return array_values(array_filter(self::getMailerMessages($transport), function (RawMessage $message) use ($toAddress) {
-            // Handle MauticMessage and Email (both have getTo())
-            if ($message instanceof MauticMessage || $message instanceof Email) {
-                $to = $message->getTo();
-                if ($to && isset($to[0]) && $to[0]->getAddress() === $toAddress) {
-                    return true;
-                }
-            }
-
-            // For signed messages (Symfony\Component\Mime\Message), check the raw content
-            $raw = $message->toString();
-
-            return str_contains($raw, 'To: '.$toAddress) || str_contains($raw, 'To: <'.$toAddress.'>');
-        }));
+        return array_values(
+            array_filter(
+                self::getMailerMessages($transport),
+                fn (Message $message) => $toAddress === $message->getHeaders()->get('To')->getBodyAsString()
+            )
+        );
     }
 
     protected function setUp(): void
@@ -98,6 +90,17 @@ abstract class AbstractMauticTestCase extends WebTestCase
     {
         putenv('MAUTIC_CONFIG_PARAMETERS='.json_encode($defaultConfigOptions));
         EnvLoader::load();
+        
+        // Convert config parameters to environment variables BEFORE building the container
+        // This ensures Symfony's config can read them when building the container
+        // Must be done AFTER EnvLoader::load() to ensure we override any .env file values
+        foreach ($defaultConfigOptions as $key => $value) {
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
+            $envKey = sprintf('MAUTIC_%s', mb_strtoupper($key));
+            putenv($envKey.'='.$value);
+        }
 
         self::ensureKernelShutdown();
         $this->client = static::createClient($this->clientOptions, $this->authenticateApi ? $this->clientServer : []);

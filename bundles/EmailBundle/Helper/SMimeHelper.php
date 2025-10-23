@@ -9,6 +9,7 @@ use Mautic\CoreBundle\Helper\EncryptionHelper;
 use Mautic\CoreBundle\Helper\Filesystem;
 use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\EmailBundle\Mailer\Signers\SMimeSigner;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Message;
@@ -25,7 +26,7 @@ class SMimeHelper
      */
     private array $certCache = [];
 
-    public function __construct(private CoreParametersHelper $coreParametersHelper, private Filesystem $filesystem, private EncryptionHelper $encryptionHelper)
+    public function __construct(private CoreParametersHelper $coreParametersHelper, private Filesystem $filesystem, private EncryptionHelper $encryptionHelper, private ?LoggerInterface $logger = null)
     {
     }
 
@@ -63,7 +64,13 @@ class SMimeHelper
         } else {
             try {
                 [$publicKey, $privateKey] = $this->getCertificatesFromDisk($fromEmail);
-            } catch (IOException) {
+            } catch (IOException $e) {
+                // Log the exception for debugging
+                $this->logger?->error('SMimeHelper: IOException when loading certificates for ' . $fromEmail, ['exception' => $e]);
+                return $message;
+            } catch (\Throwable $e) {
+                // Catch any other exceptions to prevent breaking the email send
+                $this->logger?->error('SMimeHelper: Unexpected error when loading certificates for ' . $fromEmail, ['exception' => $e]);
                 return $message;
             }
 
@@ -74,7 +81,14 @@ class SMimeHelper
         $signer = new SMimeSigner($publicKey, $privateKey);
 
         // Sign and return the signed message
-        return $signer->sign($message);
+        try {
+            $signedMessage = $signer->sign($message);
+            return $signedMessage;
+        } catch (\Throwable $e) {
+            // Catch any signing errors
+            $this->logger?->error('SMimeHelper: Error signing message', ['exception' => $e]);
+            return $message;
+        }
     }
 
     /**
