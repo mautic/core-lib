@@ -21,7 +21,8 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
         $this->configParams['smime_signing_enabled']   = true;
         $this->configParams['smime_certificates_path'] = '%kernel.project_dir%/app/bundles/EmailBundle/Tests/Mocks/Certificates/SMime';
         $this->configParams['mailer_from_email']       = 'admin@test-beta.mautibot.com';
-        $this->configParams['messenger_dsn_email']     = 'in-memory://default';
+        // $this->configParams['messenger_dsn_email']     = 'in-memory://default';
+        $this->configParams['messenger_dsn_email']     = 'sync://';
         $this->configParams['mailer_dsn']              = 'smtp://null:25';
 
         parent::setUp();
@@ -29,6 +30,7 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
 
     public function testSendingSegmentEmailWithSMime(): void
     {
+        var_dump($this->configParams);
         $segment  = $this->createSegment('Segment A', 'segment-a');
         $contact1 = $this->createContact('john@doe.email');
         $contact2 = $this->createContact('anna@doe.email');
