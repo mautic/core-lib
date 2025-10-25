@@ -48,6 +48,7 @@ class Form extends FormEntity implements UuidInterface
     use UuidTrait;
 
     use ProjectTrait;
+
     public const ENTITY_NAME = 'forms';
 
     /**
@@ -302,8 +303,8 @@ class Form extends FormEntity implements UuidInterface
         ]));
 
         $metadata->addPropertyConstraint('postActionProperty', new Assert\Url([
-            'message' => 'mautic.form.form.postactionproperty_redirect.notblank',
-            'groups'  => ['urlRequiredPassTwo'],
+            'message' => 'mautic.form.form.postactionproperty_redirect.url',
+            'groups'  => ['urlRequired'],
         ]));
 
         $metadata->addPropertyConstraint('postActionProperty', new Assert\NotBlank([
@@ -356,7 +357,7 @@ class Form extends FormEntity implements UuidInterface
                     'name',
                     'alias',
                     'category',
-                ]
+                ],
             )
             ->addProperties(
                 [
@@ -375,7 +376,7 @@ class Form extends FormEntity implements UuidInterface
                     'noIndex',
                     'formAttributes',
                     'language',
-                ]
+                ],
             )
             ->build();
 
@@ -628,9 +629,9 @@ class Form extends FormEntity implements UuidInterface
                     'mappedObject' => $field->getMappedObject(),
                     'mappedField'  => $field->getMappedField(),
                 ],
-                $this->getFields()->getValues()
+                $this->getFields()->getValues(),
             ),
-            fn ($elem) => isset($elem['mappedObject']) && isset($elem['mappedField'])
+            fn ($elem) => isset($elem['mappedObject']) && isset($elem['mappedField']),
         );
     }
 
@@ -646,10 +647,10 @@ class Form extends FormEntity implements UuidInterface
             array_filter(
                 array_unique(
                     $this->getFields()->map(
-                        fn (Field $field) => $field->getMappedObject()
-                    )->toArray()
-                )
-            )
+                        fn (Field $field) => $field->getMappedObject(),
+                    )->toArray(),
+                ),
+            ),
         );
     }
 
@@ -879,7 +880,9 @@ class Form extends FormEntity implements UuidInterface
      */
     public function generateFormName(): string
     {
-        return $this->name ? strtolower(InputHelper::alphanum(InputHelper::transliterate($this->name))) : 'form-'.$this->id;
+        return $this->name ? strtolower(
+            InputHelper::alphanum(InputHelper::transliterate($this->name)),
+        ) : 'form-'.$this->id;
     }
 
     /**
