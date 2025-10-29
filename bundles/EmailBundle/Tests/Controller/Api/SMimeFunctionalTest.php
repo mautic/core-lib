@@ -28,6 +28,8 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
 
     public function testSendingSegmentEmailWithSMime(): void
     {
+        var_dump($this->configParams);
+        var_dump($_ENV);
         $segment  = $this->createSegment('Segment A', 'segment-a');
         $contact1 = $this->createContact('john@doe.email');
         $contact2 = $this->createContact('anna@doe.email');
