@@ -1028,11 +1028,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $lists = $email->getLists();
         }
 
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-            dump("sendEmailToLists called: email_id=" . $email->getId() . ", lists=" . count($lists) . ", limit=$limit, batch=$batch");
-        }
-
         // Safety check
         if ('list' !== $email->getEmailType()) {
             return [0, 0, []];
@@ -1082,10 +1077,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             
             // Debug for CI
             if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-                dump("getPendingLeads for list {$list->getId()}: leadCount=$leadCount, limit=" . ($batch ?: $limit));
-                if ($leadCount > 0) {
-                    dump("Lead IDs:", array_column($leads, 'id'));
-                }
+                dump('getPendingLeads for list '.$list->getId().': leadCount='.$leadCount.', limit='.($batch ?: $limit));
             }
 
             while ($leadCount) {
@@ -1340,18 +1332,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         /** @var EmailRepository $emailRepo */
         $emailRepo = $this->getRepository();
 
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-            dump("EmailModel->sendEmail() called: email_id=" . $email->getId() . ", sendTo count=" . count($sendTo) . ", isMarketing=$isMarketing, ignoreDNC=$ignoreDNC");
-        }
-
         // get email settings such as templates, weights, etc
         $emailSettings = &$this->getEmailSettings($email);
-
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-            dump("Before DNC check: sendTo count=" . count($sendTo) . ", isMarketing=$isMarketing");
-        }
 
         if (!$ignoreDNC) {
             $dnc = $emailRepo->getDoNotEmailList($leadIds);
@@ -1363,22 +1345,12 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 unset($sendTo[$removeMeId]);
                 unset($leadIds[$removeMeId]);
             }
-            
-            // Debug for CI
-            if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-                dump("After DNC check: sendTo count=" . count($sendTo) . ", removed=" . count($dnc));
-            }
         }
 
         // Process frequency rules for email
         if ($isMarketing && count($sendTo)) {
             $campaignEventId = (is_array($channel) && !empty($channel) && 'campaign.event' === $channel[0] && !empty($channel[1])) ? $channel[1]
                 : null;
-            
-            // Debug for CI
-            if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-                $beforeCount = count($sendTo);
-            }
             
             $this->messageQueueModel->processFrequencyRules(
                 $sendTo,
@@ -1389,12 +1361,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 $emailPriority,
                 $messageQueue
             );
-            
-            // Debug for CI
-            if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-                $afterCount = count($sendTo);
-                dump("Frequency rules: before=$beforeCount, after=$afterCount, queued=" . ($beforeCount - $afterCount));
-            }
         }
 
         // get a count of leads

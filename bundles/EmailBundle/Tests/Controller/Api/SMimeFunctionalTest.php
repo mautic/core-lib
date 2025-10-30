@@ -59,6 +59,18 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
                 [$segment->getId()]
             )->fetchAllAssociative();
             dump('Segment members:', $segmentMembers);
+            
+            $emailStats = $this->em->getConnection()->executeQuery(
+                'SELECT * FROM ' . MAUTIC_TABLE_PREFIX . 'email_stats WHERE email_id = ?',
+                [$email->getId()]
+            )->fetchAllAssociative();
+            dump('Email stats before sending:', $emailStats);
+            
+            $messageQueue = $this->em->getConnection()->executeQuery(
+                'SELECT * FROM ' . MAUTIC_TABLE_PREFIX . 'message_queue WHERE channel_id = ? AND channel = ?',
+                [$email->getId(), 'email']
+            )->fetchAllAssociative();
+            dump('Message queue:', $messageQueue);
         }
 
         $this->client->request(
