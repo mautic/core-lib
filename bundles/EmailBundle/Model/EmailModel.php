@@ -957,6 +957,13 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             );
             dump('getPendingLeads SQL:', $query->getSQL());
             dump('getPendingLeads Params:', $query->getParameters());
+            
+            // Execute the query to see actual results
+            $results = $query->executeQuery()->fetchAllAssociative();
+            dump('Query returned '.count($results).' rows');
+            if (!empty($results)) {
+                dump('First result:', $results[0]);
+            }
         }
         
         $total      = $this->getRepository()->getEmailPendingLeads(
