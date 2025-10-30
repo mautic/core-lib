@@ -316,6 +316,8 @@ class EmailRepository extends CommonRepository
             dump('=== getEmailPendingQuery RETURNING QueryBuilder ===');
             dump('QueryBuilder class:', get_class($q));
             dump('SQL:', $q->getSQL());
+            dump('Parameters:', $q->getParameters());
+            dump('Parameter Types:', $q->getParameterTypes());
         }
 
         return $q;
