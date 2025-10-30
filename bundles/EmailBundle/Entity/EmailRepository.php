@@ -255,9 +255,22 @@ class EmailRepository extends CommonRepository
                 )
             );
 
+        // Debug for CI
+        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
+            dump('Segment QB after initial setup - SQL:', $segmentQb->getSQL());
+            dump('Segment QB after initial setup - Params:', $segmentQb->getParameters());
+        }
+
         if (null !== $maxDate) {
             $segmentQb->andWhere($segmentQb->expr()->lte('ll.date_added', ':max_date'));
             $segmentQb->setParameter('max_date', $maxDate, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE);
+        }
+        
+        // Debug for CI
+        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
+            dump('Segment QB after maxDate - SQL:', $segmentQb->getSQL());
+            dump('Segment QB after maxDate - Params:', $segmentQb->getParameters());
+            dump('maxDate value:', $maxDate);
         }
 
         // Main query
