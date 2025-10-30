@@ -1346,6 +1346,12 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         if ($isMarketing && count($sendTo)) {
             $campaignEventId = (is_array($channel) && !empty($channel) && 'campaign.event' === $channel[0] && !empty($channel[1])) ? $channel[1]
                 : null;
+            
+            // Debug for CI
+            if ('test' === ($_ENV['APP_ENV'] ?? null)) {
+                $beforeCount = count($sendTo);
+            }
+            
             $this->messageQueueModel->processFrequencyRules(
                 $sendTo,
                 'email',
@@ -1355,6 +1361,12 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 $emailPriority,
                 $messageQueue
             );
+            
+            // Debug for CI
+            if ('test' === ($_ENV['APP_ENV'] ?? null)) {
+                $afterCount = count($sendTo);
+                dump("Frequency rules: before=$beforeCount, after=$afterCount, queued=" . ($beforeCount - $afterCount));
+            }
         }
 
         // get a count of leads

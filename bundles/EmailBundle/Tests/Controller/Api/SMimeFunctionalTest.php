@@ -28,8 +28,6 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
 
     public function testSendingSegmentEmailWithSMime(): void
     {
-        var_dump($this->configParams);
-        var_dump($_ENV);
         $segment  = $this->createSegment('Segment A', 'segment-a');
         $contact1 = $this->createContact('john@doe.email');
         $contact2 = $this->createContact('anna@doe.email');
@@ -58,12 +56,28 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
 
         $this->assertResponseIsSuccessful();
         
+        // Debug: Check messenger configuration
+        $container = $this->getContainer();
+        dump('MAUTIC_MESSENGER_DSN_EMAIL env:', $_ENV['MAUTIC_MESSENGER_DSN_EMAIL'] ?? 'NOT SET');
+        dump('messenger_dsn_email config:', $container->getParameter('mautic.messenger_dsn_email'));
+        
+        // Check if messages are in a queue instead of sent
+        if ($container->has('messenger.transport.email')) {
+            $transport = $container->get('messenger.transport.email');
+            dump('Email transport class:', get_class($transport));
+        }
+        
         $response = json_decode($this->client->getResponse()->getContent(), true);
+        dump('Response from sendBatch:', $response);
+        
+        // Check how many emails were actually sent vs queued
+        $messages = $this->getMailerMessages();
+        dump('Total messages collected by test mailer:', count($messages));
         
         // Assert that 2 emails were sent successfully
         Assert::assertEquals(1, $response['success']);
-        Assert::assertEquals(100, $response['percent']);
         Assert::assertEquals([2, 2], $response['progress']);
+        Assert::assertEquals(100, $response['percent']);
         Assert::assertEquals(2, $response['stats']['sent']);
         Assert::assertEquals(0, $response['stats']['failed']);
         Assert::assertEmpty($response['stats']['failedRecipients']);
