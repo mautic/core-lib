@@ -46,6 +46,21 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
+        // Debug: Check if email-segment relationship was persisted
+        if ('test' === ($_ENV['APP_ENV'] ?? 'test')) {
+            $xref = $this->em->getConnection()->executeQuery(
+                'SELECT * FROM ' . MAUTIC_TABLE_PREFIX . 'email_list_xref WHERE email_id = ?',
+                [$email->getId()]
+            )->fetchAllAssociative();
+            dump('Email-segment xref records:', $xref);
+            
+            $segmentMembers = $this->em->getConnection()->executeQuery(
+                'SELECT * FROM ' . MAUTIC_TABLE_PREFIX . 'lead_lists_leads WHERE leadlist_id = ?',
+                [$segment->getId()]
+            )->fetchAllAssociative();
+            dump('Segment members:', $segmentMembers);
+        }
+
         $this->client->request(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
@@ -112,6 +127,7 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
         $member->setLead($contact);
         $member->setList($segment);
         $member->setDateAdded(new \DateTime());
+        $member->setManuallyRemoved(false);
         $this->em->persist($member);
 
         return $member;
