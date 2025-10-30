@@ -940,32 +940,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     ) {
         $variantIds = ($includeVariants) ? $email->getRelatedEntityIds() : null;
         
-        // Debug SQL query in test environment
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            $query = $this->getRepository()->getEmailPendingQuery(
-                $email->getId(),
-                $variantIds,
-                $listId,
-                false,
-                $limit,
-                $minContactId,
-                $maxContactId,
-                $countWithMaxMin,
-                null,
-                $maxThreads,
-                $threadId
-            );
-            dump('getPendingLeads SQL:', $query->getSQL());
-            dump('getPendingLeads Params:', $query->getParameters());
-            
-            // Execute the query to see actual results
-            $results = $query->executeQuery()->fetchAllAssociative();
-            dump('Query returned '.count($results).' rows');
-            if (!empty($results)) {
-                dump('First result:', $results[0]);
-            }
-        }
-        
         $total      = $this->getRepository()->getEmailPendingLeads(
             $email->getId(),
             $variantIds,
@@ -978,15 +952,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $maxThreads,
             $threadId
         );
-        
-        // Debug what getEmailPendingLeads actually returns
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            dump('getEmailPendingLeads returned:', $total);
-            dump('Type:', gettype($total));
-            if (is_array($total)) {
-                dump('Array count:', count($total));
-            }
-        }
 
         if ($storeToCache) {
             if ($countOnly && $countWithMaxMin) {
