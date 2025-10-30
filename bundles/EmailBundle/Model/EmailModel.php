@@ -939,6 +939,26 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         ?int $threadId = null,
     ) {
         $variantIds = ($includeVariants) ? $email->getRelatedEntityIds() : null;
+        
+        // Debug SQL query in test environment
+        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
+            $query = $this->getRepository()->getEmailPendingQuery(
+                $email->getId(),
+                $variantIds,
+                $listId,
+                false,
+                $limit,
+                $minContactId,
+                $maxContactId,
+                $countWithMaxMin,
+                null,
+                $maxThreads,
+                $threadId
+            );
+            dump('getPendingLeads SQL:', $query->getSQL());
+            dump('getPendingLeads Params:', $query->getParameters());
+        }
+        
         $total      = $this->getRepository()->getEmailPendingLeads(
             $email->getId(),
             $variantIds,
