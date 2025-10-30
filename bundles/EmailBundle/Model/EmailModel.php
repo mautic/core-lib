@@ -1327,8 +1327,18 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         /** @var EmailRepository $emailRepo */
         $emailRepo = $this->getRepository();
 
+        // Debug for CI
+        if ('test' === ($_ENV['APP_ENV'] ?? null)) {
+            dump("EmailModel->sendEmail() called: email_id=" . $email->getId() . ", sendTo count=" . count($sendTo) . ", isMarketing=$isMarketing, ignoreDNC=$ignoreDNC");
+        }
+
         // get email settings such as templates, weights, etc
         $emailSettings = &$this->getEmailSettings($email);
+
+        // Debug for CI
+        if ('test' === ($_ENV['APP_ENV'] ?? null)) {
+            dump("Before DNC check: sendTo count=" . count($sendTo) . ", isMarketing=$isMarketing");
+        }
 
         if (!$ignoreDNC) {
             $dnc = $emailRepo->getDoNotEmailList($leadIds);
@@ -1339,6 +1349,11 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 }
                 unset($sendTo[$removeMeId]);
                 unset($leadIds[$removeMeId]);
+            }
+            
+            // Debug for CI
+            if ('test' === ($_ENV['APP_ENV'] ?? null)) {
+                dump("After DNC check: sendTo count=" . count($sendTo) . ", removed=" . count($dnc));
             }
         }
 
