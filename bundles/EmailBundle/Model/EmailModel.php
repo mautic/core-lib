@@ -978,6 +978,15 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $maxThreads,
             $threadId
         );
+        
+        // Debug what getEmailPendingLeads actually returns
+        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
+            dump('getEmailPendingLeads returned:', $total);
+            dump('Type:', gettype($total));
+            if (is_array($total)) {
+                dump('Array count:', count($total));
+            }
+        }
 
         if ($storeToCache) {
             if ($countOnly && $countWithMaxMin) {
