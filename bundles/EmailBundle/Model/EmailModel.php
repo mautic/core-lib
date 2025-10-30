@@ -1028,6 +1028,11 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $lists = $email->getLists();
         }
 
+        // Debug for CI
+        if ('test' === ($_ENV['APP_ENV'] ?? null)) {
+            dump("sendEmailToLists called: email_id=" . $email->getId() . ", lists=" . count($lists) . ", limit=$limit, batch=$batch");
+        }
+
         // Safety check
         if ('list' !== $email->getEmailType()) {
             return [0, 0, []];
@@ -1074,6 +1079,14 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $options['listId'] = $list->getId();
             $leads             = $this->getPendingLeads($email, $list->getId(), false, $batch ?: $limit, true, $minContactId, $maxContactId, false, false, $maxThreads, $threadId);
             $leadCount         = count($leads);
+            
+            // Debug for CI
+            if ('test' === ($_ENV['APP_ENV'] ?? null)) {
+                dump("getPendingLeads for list {$list->getId()}: leadCount=$leadCount, limit=" . ($batch ?: $limit));
+                if ($leadCount > 0) {
+                    dump("Lead IDs:", array_column($leads, 'id'));
+                }
+            }
 
             while ($leadCount) {
                 if (null != $limit) {
