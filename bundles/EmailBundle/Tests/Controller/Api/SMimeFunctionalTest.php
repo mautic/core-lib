@@ -46,33 +46,6 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
-        // Debug: Check if email-segment relationship was persisted
-        if ('test' === ($_ENV['APP_ENV'] ?? 'test')) {
-            $xref = $this->em->getConnection()->executeQuery(
-                'SELECT * FROM ' . MAUTIC_TABLE_PREFIX . 'email_list_xref WHERE email_id = ?',
-                [$email->getId()]
-            )->fetchAllAssociative();
-            dump('Email-segment xref records:', $xref);
-            
-            $segmentMembers = $this->em->getConnection()->executeQuery(
-                'SELECT * FROM ' . MAUTIC_TABLE_PREFIX . 'lead_lists_leads WHERE leadlist_id = ?',
-                [$segment->getId()]
-            )->fetchAllAssociative();
-            dump('Segment members:', $segmentMembers);
-            
-            $emailStats = $this->em->getConnection()->executeQuery(
-                'SELECT * FROM ' . MAUTIC_TABLE_PREFIX . 'email_stats WHERE email_id = ?',
-                [$email->getId()]
-            )->fetchAllAssociative();
-            dump('Email stats before sending:', $emailStats);
-            
-            $messageQueue = $this->em->getConnection()->executeQuery(
-                'SELECT * FROM ' . MAUTIC_TABLE_PREFIX . 'message_queue WHERE channel_id = ? AND channel = ?',
-                [$email->getId(), 'email']
-            )->fetchAllAssociative();
-            dump('Message queue:', $messageQueue);
-        }
-
         $this->client->request(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
@@ -83,23 +56,7 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
 
         $this->assertResponseIsSuccessful();
         
-        // Debug: Check messenger configuration
-        $container = $this->getContainer();
-        dump('MAUTIC_MESSENGER_DSN_EMAIL env:', $_ENV['MAUTIC_MESSENGER_DSN_EMAIL'] ?? 'NOT SET');
-        dump('messenger_dsn_email config:', $container->getParameter('mautic.messenger_dsn_email'));
-        
-        // Check if messages are in a queue instead of sent
-        if ($container->has('messenger.transport.email')) {
-            $transport = $container->get('messenger.transport.email');
-            dump('Email transport class:', get_class($transport));
-        }
-        
         $response = json_decode($this->client->getResponse()->getContent(), true);
-        dump('Response from sendBatch:', $response);
-        
-        // Check how many emails were actually sent vs queued
-        $messages = $this->getMailerMessages();
-        dump('Total messages collected by test mailer:', count($messages));
         
         // Assert that 2 emails were sent successfully
         Assert::assertEquals(1, $response['success']);
@@ -138,7 +95,7 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
         $member = new ListLead();
         $member->setLead($contact);
         $member->setList($segment);
-        $member->setDateAdded(new \DateTime());
+        $member->setDateAdded(new \DateTime('5 sec ago')); // Falis in CI otherwise.
         $member->setManuallyRemoved(false);
         $this->em->persist($member);
 
