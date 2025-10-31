@@ -90,17 +90,6 @@ abstract class AbstractMauticTestCase extends WebTestCase
     {
         putenv('MAUTIC_CONFIG_PARAMETERS='.json_encode($defaultConfigOptions));
         EnvLoader::load();
-        
-        // Convert config parameters to environment variables BEFORE building the container
-        // This ensures Symfony's config can read them when building the container
-        // Must be done AFTER EnvLoader::load() to ensure we override any .env file values
-        foreach ($defaultConfigOptions as $key => $value) {
-            if (is_array($value)) {
-                $value = json_encode($value);
-            }
-            $envKey = sprintf('MAUTIC_%s', mb_strtoupper($key));
-            putenv($envKey.'='.$value);
-        }
 
         self::ensureKernelShutdown();
         $this->client = static::createClient($this->clientOptions, $this->authenticateApi ? $this->clientServer : []);

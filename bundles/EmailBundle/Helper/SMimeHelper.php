@@ -8,10 +8,10 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\EncryptionHelper;
 use Mautic\CoreBundle\Helper\Filesystem;
 use Mautic\EmailBundle\Mailer\Message\MauticMessage;
-use Mautic\EmailBundle\Mailer\Signers\SMimeSigner;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Crypto\SMimeSigner;
 use Symfony\Component\Mime\Message;
 
 /**
@@ -20,14 +20,31 @@ use Symfony\Component\Mime\Message;
 class SMimeHelper
 {
     /**
-     * Caching the certificates to avoid reading them from the filesystem on every message.
+     * Caching the certificate paths to avoid reading/decrypting them on every message.
      *
-     * @var array<string,string[]>
+     * @var array<string,array{certPath: string, keyPath: string}>
      */
     private array $certCache = [];
 
+    /**
+     * Temporary decrypted key files that need to be cleaned up.
+     *
+     * @var string[]
+     */
+    private array $tempFiles = [];
+
     public function __construct(private CoreParametersHelper $coreParametersHelper, private Filesystem $filesystem, private EncryptionHelper $encryptionHelper, private ?LoggerInterface $logger = null)
     {
+    }
+
+    public function __destruct()
+    {
+        // Clean up temporary decrypted key files
+        foreach ($this->tempFiles as $tempFile) {
+            if (file_exists($tempFile)) {
+                @unlink($tempFile);
+            }
+        }
     }
 
     public function sMimeSigningEnabled(): bool
@@ -60,10 +77,10 @@ class SMimeHelper
         $fromEmail = $fromArray[0]->getAddress();
 
         if (isset($this->certCache[$fromEmail])) {
-            [$publicKey, $privateKey] = $this->certCache[$fromEmail];
+            $certPaths = $this->certCache[$fromEmail];
         } else {
             try {
-                [$publicKey, $privateKey] = $this->getCertificatesFromDisk($fromEmail);
+                $certPaths = $this->getCertificatePaths($fromEmail);
             } catch (IOException $e) {
                 // Log the exception for debugging
                 $this->logger?->error('SMimeHelper: IOException when loading certificates for ' . $fromEmail, ['exception' => $e]);
@@ -74,11 +91,11 @@ class SMimeHelper
                 return $message;
             }
 
-            $this->certCache[$fromEmail] = [$publicKey, $privateKey];
+            $this->certCache[$fromEmail] = $certPaths;
         }
 
-        // Create Symfony's SMimeSigner with the certificate and private key
-        $signer = new SMimeSigner($publicKey, $privateKey);
+        // Create Symfony's SMimeSigner with the certificate and private key file paths
+        $signer = new SMimeSigner($certPaths['certPath'], $certPaths['keyPath']);
 
         // Sign and return the signed message
         try {
@@ -92,30 +109,53 @@ class SMimeHelper
     }
 
     /**
-     * @return string[]
+     * @return array{certPath: string, keyPath: string}
      *
-     * @throws IOException if one of the cetificates is not found
+     * @throws IOException if one of the certificates is not found
      */
-    private function getCertificatesFromDisk(string $fromEmail): array
+    private function getCertificatePaths(string $fromEmail): array
     {
         $certPath                = $this->getSMimeCertificatePath();
         $publicCertPath          = "{$certPath}/{$fromEmail}.crt";
         $privateKeyPath          = "{$certPath}/{$fromEmail}.pem";
         $privateKeyEncryptedPath = "{$certPath}/{$fromEmail}.pem.enc";
-        $publicKey               = $this->filesystem->readFile($publicCertPath);
 
-        try {
-            // Try to decrypt the private key first
-            $privateKey = $this->encryptionHelper->decrypt($this->filesystem->readFile($privateKeyEncryptedPath));
-        } catch (IOException) {
-            // If the private key is not encrypted, just try to read it in an unecrypted form
-            $privateKey = $this->filesystem->readFile($privateKeyPath);
+        // Check if public certificate exists
+        if (!file_exists($publicCertPath)) {
+            throw new IOException("Public certificate not found: {$publicCertPath}");
         }
 
-        if (!$privateKey) {
-            throw new IOException('Could not encrypt the private key');
+        // Try encrypted key first
+        if (file_exists($privateKeyEncryptedPath)) {
+            try {
+                $encryptedContent = $this->filesystem->readFile($privateKeyEncryptedPath);
+                $decryptedContent = $this->encryptionHelper->decrypt($encryptedContent);
+                
+                // Create a temporary file with a unique hash
+                $tempKeyPath = sys_get_temp_dir() . '/mautic_smime_' . md5($fromEmail . uniqid('', true)) . '.pem';
+                file_put_contents($tempKeyPath, $decryptedContent);
+                chmod($tempKeyPath, 0600); // Secure the temporary file
+                
+                // Track this file for cleanup
+                $this->tempFiles[] = $tempKeyPath;
+                
+                return [
+                    'certPath' => $publicCertPath,
+                    'keyPath' => $tempKeyPath,
+                ];
+            } catch (IOException) {
+                // Fall through to try unencrypted key
+            }
         }
 
-        return [$publicKey, $privateKey];
+        // Try unencrypted key
+        if (file_exists($privateKeyPath)) {
+            return [
+                'certPath' => $publicCertPath,
+                'keyPath' => $privateKeyPath,
+            ];
+        }
+
+        throw new IOException("Private key not found for {$fromEmail}");
     }
 }

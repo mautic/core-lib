@@ -19,7 +19,6 @@ return function (ContainerConfigurator $configurator): void {
         'MonitoredEmail/Processor',
         'Stat/Reference.php',
         'Helper/DTO',
-        'Mailer/Signers',
     ];
 
     $services->load('Mautic\\EmailBundle\\', '../')
