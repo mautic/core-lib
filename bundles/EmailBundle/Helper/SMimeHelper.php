@@ -33,7 +33,7 @@ class SMimeHelper
      */
     private array $tempFiles = [];
 
-    public function __construct(private CoreParametersHelper $coreParametersHelper, private Filesystem $filesystem, private EncryptionHelper $encryptionHelper, private ?LoggerInterface $logger = null)
+    public function __construct(private CoreParametersHelper $coreParametersHelper, private Filesystem $filesystem, private EncryptionHelper $encryptionHelper, private LoggerInterface $logger)
     {
     }
 
@@ -83,11 +83,8 @@ class SMimeHelper
                 $certPaths = $this->getCertificatePaths($fromEmail);
             } catch (IOException $e) {
                 // Log the exception for debugging
-                $this->logger?->error('SMimeHelper: IOException when loading certificates for ' . $fromEmail, ['exception' => $e]);
-                return $message;
-            } catch (\Throwable $e) {
-                // Catch any other exceptions to prevent breaking the email send
-                $this->logger?->error('SMimeHelper: Unexpected error when loading certificates for ' . $fromEmail, ['exception' => $e]);
+                $this->logger->error('SMimeHelper: IOException when loading certificates for '.$fromEmail, ['exception' => $e]);
+
                 return $message;
             }
 
@@ -99,11 +96,11 @@ class SMimeHelper
 
         // Sign and return the signed message
         try {
-            $signedMessage = $signer->sign($message);
-            return $signedMessage;
-        } catch (\Throwable $e) {
-            // Catch any signing errors
-            $this->logger?->error('SMimeHelper: Error signing message', ['exception' => $e]);
+            return $signer->sign($message);
+        } catch (\RuntimeException $e) {
+            // Catch OpenSSL signing errors (e.g., invalid certificate, corrupted key)
+            $this->logger->error('SMimeHelper: Failed to sign message', ['exception' => $e]);
+
             return $message;
         }
     }
@@ -130,18 +127,18 @@ class SMimeHelper
             try {
                 $encryptedContent = $this->filesystem->readFile($privateKeyEncryptedPath);
                 $decryptedContent = $this->encryptionHelper->decrypt($encryptedContent);
-                
+
                 // Create a temporary file with a unique hash
-                $tempKeyPath = sys_get_temp_dir() . '/mautic_smime_' . md5($fromEmail . uniqid('', true)) . '.pem';
+                $tempKeyPath = sys_get_temp_dir().'/mautic_smime_'.md5($fromEmail.uniqid('', true)).'.pem';
                 file_put_contents($tempKeyPath, $decryptedContent);
                 chmod($tempKeyPath, 0600); // Secure the temporary file
-                
+
                 // Track this file for cleanup
                 $this->tempFiles[] = $tempKeyPath;
-                
+
                 return [
                     'certPath' => $publicCertPath,
-                    'keyPath' => $tempKeyPath,
+                    'keyPath'  => $tempKeyPath,
                 ];
             } catch (IOException) {
                 // Fall through to try unencrypted key
@@ -152,7 +149,7 @@ class SMimeHelper
         if (file_exists($privateKeyPath)) {
             return [
                 'certPath' => $publicCertPath,
-                'keyPath' => $privateKeyPath,
+                'keyPath'  => $privateKeyPath,
             ];
         }
 

@@ -68,14 +68,21 @@ abstract class AbstractMauticTestCase extends WebTestCase
     }
 
     /**
-     * @return Message[]
+     * @return RawMessage[]
      */
     public static function getMailerMessagesByToAddress(string $toAddress, ?string $transport = null): array
     {
         return array_values(
             array_filter(
                 self::getMailerMessages($transport),
-                fn (Message $message) => $toAddress === $message->getHeaders()->get('To')->getBodyAsString()
+                function (RawMessage $message) use ($toAddress): bool {
+                    // Messages are actually Message objects (which extend RawMessage) and have getHeaders()
+                    if ($message instanceof Message) {
+                        return $toAddress === $message->getHeaders()->get('To')->getBodyAsString();
+                    }
+
+                    return false;
+                }
             )
         );
     }

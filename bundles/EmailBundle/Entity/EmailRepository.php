@@ -291,7 +291,7 @@ class EmailRepository extends CommonRepository
             }
         }
 
-            if (!empty($limit)) {
+        if (!empty($limit)) {
             $q->setFirstResult(0)
                 ->setMaxResults($limit);
         }

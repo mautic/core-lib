@@ -15,6 +15,8 @@ use Symfony\Component\Mime\RawMessage;
 
 final class SMimeFunctionalTest extends MauticMysqlTestCase
 {
+    private string $certPath;
+
     protected function setUp(): void
     {
         $this->configParams['smime_signing_enabled']   = true;
@@ -22,22 +24,48 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
         $this->configParams['mailer_from_email']       = 'admin@test-beta.mautibot.com';
         $this->configParams['messenger_dsn_email']     = 'sync://';
         $this->configParams['mailer_dsn']              = 'null://null';
+        $this->configParams['secret_key']              = 'test_secret_key_for_encryption';
 
         parent::setUp();
+
+        $this->certPath = $this->getContainer()->getParameter('kernel.project_dir').'/app/bundles/EmailBundle/Tests/Mocks/Certificates/SMime';
     }
 
-    public function testSendingSegmentEmailWithSMime(): void
+    protected function beforeTearDown(): void
     {
-        $segment  = $this->createSegment('Segment A', 'segment-a');
-        $contact1 = $this->createContact('john@doe.email');
-        $contact2 = $this->createContact('anna@doe.email');
-        $this->createSegmentMember($contact1, $segment);
-        $this->createSegmentMember($contact2, $segment);
+        $this->cleanupEncryptedCertificate();
+        parent::beforeTearDown();
+    }
+
+    /**
+     * @return iterable<string, array{encrypted: bool}>
+     */
+    public static function certificateTypeProvider(): iterable
+    {
+        yield 'unencrypted certificate' => ['encrypted' => false];
+        yield 'encrypted certificate' => ['encrypted' => true];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('certificateTypeProvider')]
+    public function testSendingSegmentEmailWithSMime(bool $encrypted): void
+    {
+        if ($encrypted) {
+            $this->createEncryptedCertificate();
+        }
+
+        $segment  = $this->createSegment('Test Segment', 'test-segment');
+        $contacts = ['john@doe.email', 'anna@doe.email'];
+
+        foreach ($contacts as $contactEmail) {
+            $contact = $this->createContact($contactEmail);
+            $this->createSegmentMember($contact, $segment);
+        }
+
         $this->em->flush();
 
         $email = $this->createEmail(
-            'Email A',
-            'Email A Subject',
+            'Test Email',
+            'Test Subject',
             'list',
             'blank',
             '<h1>Hey {contactfield=email}</h1>',
@@ -46,37 +74,64 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
+        $this->sendEmailBatchAndAssertSuccess($email, count($contacts));
+
+        // Verify all contacts received signed emails
+        foreach ($contacts as $contactEmail) {
+            $message = $this->getMailerMessagesByToAddress($contactEmail)[0];
+            Assert::assertStringContainsString('Hey '.$contactEmail, $message->toString());
+            $this->assertMessageIsSigned($message, 'Test Subject');
+        }
+    }
+
+    private function sendEmailBatchAndAssertSuccess(Email $email, int $expectedCount): void
+    {
         $this->client->request(
             Request::METHOD_POST,
             '/s/ajax?action=email:sendBatch',
-            ['id' => $email->getId(), 'pending' => 2],
+            ['id' => $email->getId(), 'pending' => $expectedCount],
             [],
             $this->createAjaxHeaders()
         );
 
         $this->assertResponseIsSuccessful();
-        
+
         $response = json_decode($this->client->getResponse()->getContent(), true);
-        
-        // Assert that 2 emails were sent successfully
+
+        // Assert that emails were sent successfully
         Assert::assertEquals(1, $response['success']);
-        Assert::assertEquals([2, 2], $response['progress']);
+        Assert::assertEquals([$expectedCount, $expectedCount], $response['progress']);
         Assert::assertEquals(100, $response['percent']);
-        Assert::assertEquals(2, $response['stats']['sent']);
+        Assert::assertEquals($expectedCount, $response['stats']['sent']);
         Assert::assertEquals(0, $response['stats']['failed']);
         Assert::assertEmpty($response['stats']['failedRecipients']);
 
         // With sync messenger, emails are sent immediately
-        $this->assertEmailCount(2);
+        $this->assertEmailCount($expectedCount);
+    }
 
-        $message1 = $this->getMailerMessagesByToAddress('john@doe.email')[0];
-        $message2 = $this->getMailerMessagesByToAddress('anna@doe.email')[0];
+    private function createEncryptedCertificate(): void
+    {
+        $privateKeyPath          = $this->certPath.'/admin@test-beta.mautibot.com.pem';
+        $privateKeyEncryptedPath = $this->certPath.'/admin@test-beta.mautibot.com.pem.enc';
 
-        Assert::assertStringContainsString('Hey john@doe.email', $message1->toString());
-        Assert::assertStringContainsString('Hey anna@doe.email', $message2->toString());
+        // Read the unencrypted private key
+        $privateKeyContent = file_get_contents($privateKeyPath);
 
-        $this->assertMessageIsSigned($message1);
-        $this->assertMessageIsSigned($message2);
+        // Encrypt it using the EncryptionHelper
+        $encryptionHelper = $this->getContainer()->get(\Mautic\CoreBundle\Helper\EncryptionHelper::class);
+        $encryptedContent = $encryptionHelper->encrypt($privateKeyContent);
+
+        // Write the encrypted content to .pem.enc file
+        file_put_contents($privateKeyEncryptedPath, $encryptedContent);
+    }
+
+    private function cleanupEncryptedCertificate(): void
+    {
+        $privateKeyEncryptedPath = $this->certPath.'/admin@test-beta.mautibot.com.pem.enc';
+        if (file_exists($privateKeyEncryptedPath)) {
+            @unlink($privateKeyEncryptedPath);
+        }
     }
 
     private function createSegment(string $name, string $alias): LeadList
@@ -132,10 +187,10 @@ final class SMimeFunctionalTest extends MauticMysqlTestCase
         return $email;
     }
 
-    private function assertMessageIsSigned(RawMessage $message): void
+    private function assertMessageIsSigned(RawMessage $message, string $expectedSubject): void
     {
         $email = $message->toString();
-        Assert::assertStringContainsString('Subject: Email A Subject', $email);
+        Assert::assertStringContainsString('Subject: '.$expectedSubject, $email);
         Assert::assertStringContainsString('Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";', $email);
         Assert::assertSame(1, substr_count($email, 'Content-Disposition: attachment; filename="smime.p7s"'), $email);
         Assert::assertSame(1, substr_count($email, 'Content-Type: application/x-pkcs7-signature; name="smime.p7s'), $email);
