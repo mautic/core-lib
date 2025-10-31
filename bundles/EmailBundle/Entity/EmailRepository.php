@@ -174,12 +174,6 @@ class EmailRepository extends CommonRepository
         ?int $maxThreads = null,
         ?int $threadId = null,
     ) {
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            dump('=== getEmailPendingQuery START ===');
-            dump('Input params:', compact('emailId', 'variantIds', 'listIds', 'countOnly', 'limit', 'minContactId', 'maxContactId'));
-        }
-        
         // Do not include leads in the do not contact table
         $dncQb = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $dncQb->select('dnc.lead_id')
@@ -228,20 +222,11 @@ class EmailRepository extends CommonRepository
             $listIds = array_column($lists, 'leadlist_id');
 
             if (empty($listIds)) {
-                // Debug for CI
-                if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-                    dump('getEmailPendingQuery: listIds is empty, returning early', compact('emailId', 'listIds', 'countOnly'));
-                }
                 // Prevent fatal error
                 return ($countOnly) ? 0 : [];
             }
         } elseif (!is_array($listIds)) {
             $listIds = [$listIds];
-        }
-        
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            dump('getEmailPendingQuery: listIds after processing', $listIds);
         }
 
         // Only include those in associated segments
@@ -255,22 +240,9 @@ class EmailRepository extends CommonRepository
                 )
             );
 
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            dump('Segment QB after initial setup - SQL:', $segmentQb->getSQL());
-            dump('Segment QB after initial setup - Params:', $segmentQb->getParameters());
-        }
-
         if (null !== $maxDate) {
             $segmentQb->andWhere($segmentQb->expr()->lte('ll.date_added', ':max_date'));
             $segmentQb->setParameter('max_date', $maxDate, \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE);
-        }
-        
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            dump('Segment QB after maxDate - SQL:', $segmentQb->getSQL());
-            dump('Segment QB after maxDate - Params:', $segmentQb->getParameters());
-            dump('maxDate value:', $maxDate);
         }
 
         // Main query
@@ -324,15 +296,6 @@ class EmailRepository extends CommonRepository
                 ->setMaxResults($limit);
         }
 
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            dump('=== getEmailPendingQuery RETURNING QueryBuilder ===');
-            dump('QueryBuilder class:', get_class($q));
-            dump('SQL:', $q->getSQL());
-            dump('Parameters:', $q->getParameters());
-            dump('Parameter Types:', $q->getParameterTypes());
-        }
-
         return $q;
     }
 
@@ -360,12 +323,6 @@ class EmailRepository extends CommonRepository
         ?int $maxThreads = null,
         ?int $threadId = null,
     ) {
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            dump('=== getEmailPendingLeads START ===');
-            dump('Input params:', compact('emailId', 'variantIds', 'listIds', 'countOnly', 'limit'));
-        }
-        
         $q = $this->getEmailPendingQuery(
             $emailId,
             $variantIds,
@@ -380,29 +337,11 @@ class EmailRepository extends CommonRepository
             $threadId
         );
 
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            dump('After getEmailPendingQuery, $q type:', gettype($q));
-            dump('Is QueryBuilder?', $q instanceof QueryBuilder);
-            if (!($q instanceof QueryBuilder)) {
-                dump('NOT A QUERYBUILDER! Returning early with value:', $q);
-            }
-        }
-
         if (!($q instanceof QueryBuilder)) {
             return $q;
         }
 
         $results = $q->executeQuery()->fetchAllAssociative();
-
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null) && !$countOnly) {
-            dump('Query executed, results count:', count($results));
-            if (!empty($results)) {
-                dump('First result keys:', array_keys($results[0]));
-                dump('First result id:', $results[0]['id'] ?? 'NO ID KEY');
-            }
-        }
 
         if ($countOnly && $countWithMaxMin) {
             // returns array in format ['count' => #, ['min_id' => #, 'max_id' => #]]
@@ -413,13 +352,6 @@ class EmailRepository extends CommonRepository
             $leads = [];
             foreach ($results as $r) {
                 $leads[$r['id']] = $r;
-            }
-
-            // Debug for CI
-            if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-                dump('=== getEmailPendingLeads RETURNING ===');
-                dump('Leads array count:', count($leads));
-                dump('Leads array keys:', array_keys($leads));
             }
 
             return $leads;

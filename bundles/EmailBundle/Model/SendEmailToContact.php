@@ -165,12 +165,6 @@ class SendEmailToContact
      */
     public function send(): void
     {
-        // Debug for CI
-        if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-            dump('SendEmailToContact->send() called for:', $this->contact['email'] ?? 'unknown');
-            dump('Tokenization mode:', $this->mailer->inTokenizationMode());
-        }
-        
         if ($this->mailer->inTokenizationMode()) {
             [$success, $errors] = $this->queueTokenizedEmail();
         } else {

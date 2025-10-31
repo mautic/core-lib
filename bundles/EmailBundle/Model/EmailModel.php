@@ -1075,11 +1075,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $options['listId'] = $list->getId();
             $leads             = $this->getPendingLeads($email, $list->getId(), false, $batch ?: $limit, true, $minContactId, $maxContactId, false, false, $maxThreads, $threadId);
             $leadCount         = count($leads);
-            
-            // Debug for CI
-            if ('test' === ($_ENV['APP_ENV'] ?? null)) {
-                dump('getPendingLeads for list '.$list->getId().': leadCount='.$leadCount.', limit='.($batch ?: $limit));
-            }
 
             while ($leadCount) {
                 if (null != $limit) {
