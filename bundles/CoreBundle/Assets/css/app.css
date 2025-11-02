@@ -3229,6 +3229,12 @@ fieldset[disabled] .btn-tertiary.btn-danger.focus i {
 .btn-tertiary:has(i) {
   padding-right: var(--spacing-05);
 }
+.btn-primary:not(:has(i)),
+.btn-secondary:not(:has(i)),
+.btn-tertiary:not(:has(i)) {
+  padding-left: var(--spacing-07);
+  padding-right: var(--spacing-07);
+}
 .btn-primary.btn--icon-only,
 .btn-secondary.btn--icon-only,
 .btn-tertiary.btn--icon-only {
