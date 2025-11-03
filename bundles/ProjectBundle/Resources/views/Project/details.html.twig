@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block headerTitle %}
-	{{ project.getName()|e }}
+	{{ project.getName() }}
 {% endblock %}
 
 {% block actions %}
@@ -94,7 +94,7 @@
 				</div>
 			</div>
 		</div>
-		<input name="entityId" id="entityId" type="hidden" value="{{ project.getId()|e }}"/>
+		<input name="entityId" id="entityId" type="hidden" value="{{ project.getId() }}"/>
 	</div>
 
 
