@@ -261,10 +261,10 @@ Mautic.ConvertFieldToCkeditor  = function(textarea, ckEditorToolbarOptions) {
         ckEditors.delete( textarea[0] )
     }
     const tokenCallback = textarea.attr('data-token-callback');
-    Mautic.InitCkEditor(textarea, Mautic.GetCkEditorConfigOptions(ckEditorToolbarOptions, tokenCallback));
+    Mautic.InitCkEditor(textarea, Mautic.GetCkEditorConfigOptions(ckEditorToolbarOptions, tokenCallback, textarea));
 }
 
-Mautic.GetCkEditorConfigOptions  = function(ckEditorToolbarOptions, tokenCallback) {
+Mautic.GetCkEditorConfigOptions  = function(ckEditorToolbarOptions, tokenCallback, textarea = null) {
     const defaultOptions = ['undo', 'redo', '|', 'bold', 'italic', 'underline', 'heading', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', 'alignment', 'numberedList', 'bulletedList', 'blockQuote', 'removeFormat', 'link', 'ckfinder', 'mediaEmbed', 'insertTable', 'sourceEditing'];
     const ckEditorToolbar = typeof ckEditorToolbarOptions != "undefined" && ckEditorToolbarOptions.length > 0 ? ckEditorToolbarOptions : defaultOptions;
     const ckEditorColors = [
@@ -284,8 +284,7 @@ Mautic.GetCkEditorConfigOptions  = function(ckEditorToolbarOptions, tokenCallbac
         { color: '#4c4ce6', label: 'Blue' },
         { color: '#994ce6', label: 'Purple' }
     ];
-    const allowFullHtmlAttr = textarea.attr('allow-full-html');
-    const allowFullHtml = typeof allowFullHtmlAttr !== 'undefined' ?  allowFullHtmlAttr : false;
+    const allowFullHtml = textarea && typeof textarea.attr('allow-full-html') !== 'undefined';
     const ckEditorOption = {
         toolbar: {
             items: ckEditorToolbar,
@@ -330,8 +329,18 @@ Mautic.GetCkEditorConfigOptions  = function(ckEditorToolbarOptions, tokenCallbac
             allowedProtocols: [ 'https?', 'tel', 'sms', 'sftp', 'smb', 'slack' ]
         },
         htmlSupport: {
-            fullPage: allowFullHtml,
-            allow: [
+            fullPage: {
+                allowRenderStylesFromHead: allowFullHtml
+            },
+            allow: allowFullHtml ? [
+                {
+                    // Allow all HTML elements
+                    name: /.*/,
+                    attributes: true,
+                    classes: true,
+                    styles: true
+                }
+            ] : [
                 {
                     name: /^(a|span)$/,
                     attributes: true,
