@@ -17,6 +17,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
 {
+    private const STAGE_NAME_TOKEN       = '%stage_name%';
+    private const SALES_USER_EMAIL_TOKEN = '%sales_user_email%';
+    private const STAGE_NAME             = 'Test Stage';
+
     protected $useCleanupRollback   = false;
 
     /**
@@ -38,16 +42,16 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
         $adminUser = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
 
         $stage = new Stage();
-        $stage->setName('Test Stage');
+        $stage->setName(self::STAGE_NAME);
         $this->em->persist($stage);
         $this->em->flush();
         $this->em->clear();
 
         $submissionData = $this->replacePlaceholders($submissionDataPlaceholders, [
-            '%sales_user_email%' => $salesUser->getEmail(),
-            '%sales_user_id%'    => $salesUser->getId(),
-            '%admin_user_id%'    => (string) $adminUser->getId(),
-            '%stage_name%'       => $stage->getName(),
+            self::SALES_USER_EMAIL_TOKEN => $salesUser->getEmail(),
+            '%sales_user_id%'            => $salesUser->getId(),
+            '%admin_user_id%'            => (string) $adminUser->getId(),
+            self::STAGE_NAME_TOKEN       => $stage->getName(),
         ]);
 
         $expectedOwnerId = null;
@@ -170,7 +174,7 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
             'contact.owner.email@test.com',
             [
                 'email'          => 'contact.owner.email@test.com',
-                'owner_by_email' => '%sales_user_email%',
+                'owner_by_email' => self::SALES_USER_EMAIL_TOKEN,
             ],
             'sales'
         );
@@ -190,10 +194,10 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
             'contact.stage.id@test.com',
             [
                 'email' => 'contact.stage.id@test.com',
-                'stage' => '%stage_name%',
+                'stage' => self::STAGE_NAME_TOKEN,
             ],
             null,
-            'Test Stage'
+            self::STAGE_NAME
         );
 
         yield 'owner by email and stage' => self::generateTestCase(
@@ -201,11 +205,11 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
             'contact.owner.email.stage@test.com',
             [
                 'email'          => 'contact.owner.email.stage@test.com',
-                'owner_by_email' => '%sales_user_email%',
-                'stage'          => '%stage_name%',
+                'owner_by_email' => self::SALES_USER_EMAIL_TOKEN,
+                'stage'          => self::STAGE_NAME_TOKEN,
             ],
             'sales',
-            'Test Stage'
+            self::STAGE_NAME
         );
 
         yield 'owner by id and stage' => self::generateTestCase(
@@ -214,10 +218,10 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
             [
                 'email'       => 'contact.owner.id.stage@test.com',
                 'owner_by_id' => '%sales_user_id%',
-                'stage'       => '%stage_name%',
+                'stage'       => self::STAGE_NAME_TOKEN,
             ],
             'sales',
-            'Test Stage'
+            self::STAGE_NAME
         );
 
         yield 'owner by email and id (email has precedence)' => self::generateTestCase(
@@ -225,7 +229,7 @@ class SubmissionOwnerAndStageFunctionalTest extends MauticMysqlTestCase
             'contact.owner.email.id@test.com',
             [
                 'email'          => 'contact.owner.email.id@test.com',
-                'owner_by_email' => '%sales_user_email%',
+                'owner_by_email' => self::SALES_USER_EMAIL_TOKEN,
                 'owner_by_id'    => '%admin_user_id%',
             ],
             'sales'
