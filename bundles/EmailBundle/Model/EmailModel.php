@@ -292,6 +292,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $entity = parent::getEntity($id);
             if (null !== $entity) {
                 $entity->setSessionId($entity->getId());
+                $this->setCachedCount($entity);
             }
         }
 
@@ -310,16 +311,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $entities = parent::getEntities($args);
 
         foreach ($entities as $entity) {
-            $queued  = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'queued'));
-            $pending = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'pending'));
-
-            if (false !== $queued) {
-                $entity->setQueuedCount($queued);
-            }
-
-            if (false !== $pending) {
-                $entity->setPendingCount($pending);
-            }
+            $this->setCachedCount($entity);
         }
 
         return $entities;
@@ -673,7 +665,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
                 $this->translator->trans('mautic.email.sent'),
                 $this->translator->trans('mautic.email.read'),
                 $this->translator->trans('mautic.email.failed'),
-                $this->translator->trans('mautic.email.clicked'),
+                $this->translator->trans('mautic.email.unique_clicked'),
                 $this->translator->trans('mautic.email.unsubscribed'),
                 $this->translator->trans('mautic.email.bounced'),
             ]
@@ -888,7 +880,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         );
 
         $chart->setDataset(
-            $this->translator->trans('mautic.email.clicked'),
+            $this->translator->trans('mautic.email.unique_clicked'),
             $this->statsCollectionHelper->fetchClickedStats($dateFrom, $dateTo, $fetchOptions)
         );
 
@@ -951,7 +943,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             $maxContactId,
             $countWithMaxMin,
             $maxThreads,
-            $threadId
+            $threadId,
+            $email->isSegmentEmail() && !$email->getContinueSending() ? $email->getPublishUp() : null,
         );
 
         if ($storeToCache) {
@@ -2131,6 +2124,35 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     }
 
     /**
+     * @param string|array<string> $filter
+     * @param array<string,mixed>  $options
+     *
+     * @return array<string,array<string,string>>
+     */
+    public function getLookupResultsWithIdName(
+        string $type, string|array $filter = '', int $limit = 10, int $start = 0, array $options = [],
+    ): array {
+        $results    = $this->getLookupResults($type, $filter, $limit, $start, $options);
+        $newResults = [];
+
+        foreach ($results as $language => $emails) {
+            if (!isset($options['name_is_key']) || empty($options['name_is_key'])) {
+                foreach ($emails as $name => $id) {
+                    $newResults[$language][$name] = sprintf('%s (%s)', $id, $name);
+                }
+            } else {
+                foreach ($emails as $id => $name) {
+                    $newResults[$language][$id] = sprintf('%s (%s)', $name, $id);
+                }
+            }
+        }
+        // sort by language
+        ksort($newResults);
+
+        return $newResults;
+    }
+
+    /**
      * @param array<int|string, int|string|array<int|string, mixed>|null> $contact
      *
      * @return array<int|string, int|string|array<int|string, mixed>|null>
@@ -2322,5 +2344,22 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $context->setScheme($original_scheme);
 
         return $url;
+    }
+
+    /**
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    protected function setCachedCount(mixed $entity): void
+    {
+        $queued  = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'queued'));
+        $pending = $this->cacheStorageHelper->get(sprintf('%s|%s|%s', 'email', $entity->getId(), 'pending'));
+
+        if (false !== $queued) {
+            $entity->setQueuedCount($queued);
+        }
+
+        if (false !== $pending) {
+            $entity->setPendingCount($pending);
+        }
     }
 }
