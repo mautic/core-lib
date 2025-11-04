@@ -75,7 +75,7 @@
 											{{ entity.getDateModified() ? dateToDate(entity.getDateModified()) : '' }}
 										</td>
 										<td class="visible-lg">
-											{{ entity.getCreatedByUser() ? entity.getCreatedByUser()|escape : '' }}
+											{{ entity.getCreatedByUser() ? entity.getCreatedByUser() : '' }}
 										</td>
 										<td class="visible-md visible-lg">
 											<span class="text-muted">{{ entity.getId() }}</span>
