@@ -41,7 +41,7 @@
                                     attributes: {
                                         'type': 'button',
                                         'data-theme': themeKey,
-                                        'class': 'mt-md select-theme-link' ~ (isSelected ? ' hide' : ''),
+                                        'class': 'btn-wide mt-md select-theme-link' ~ (isSelected ? ' hide' : ''),
                                         'onclick': "mQuery('#dynamic-content-tab').addClass('hidden')"
                                     },
                                 },
@@ -50,7 +50,7 @@
                                     variant: 'tertiary',
                                     attributes: {
                                         'type': 'button',
-                                        'class': 'mt-md select-theme-selected' ~ (not isSelected ? ' hide' : ''),
+                                        'class': 'btn-wide mt-md select-theme-selected' ~ (not isSelected ? ' hide' : ''),
                                         'disabled': ''
                                     },
                                 }
@@ -93,7 +93,7 @@
                           attributes: {
                               'type': 'button',
                               'data-theme': codeMode,
-                              'class': 'mt-md select-theme-link' ~ (isCodeMode ? ' hide' : ''),
+                              'class': 'btn-wide mt-md select-theme-link' ~ (isCodeMode ? ' hide' : ''),
                               'onclick': "mQuery('#dynamic-content-tab').removeClass('hidden')"
                           },
                       },
@@ -102,7 +102,7 @@
                           variant: 'tertiary',
                           attributes: {
                               'type': 'button',
-                              'class': 'mt-md select-theme-selected' ~ (not isCodeMode ? ' hide' : ''),
+                              'class': 'btn-wide mt-md select-theme-selected' ~ (not isCodeMode ? ' hide' : ''),
                               'disabled': 'disabled'
                           },
                       }
