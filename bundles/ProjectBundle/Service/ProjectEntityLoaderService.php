@@ -12,6 +12,7 @@ use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\ProjectBundle\DTO\DetailRoute;
 use Mautic\ProjectBundle\DTO\EntityTypeConfig;
 use Mautic\ProjectBundle\Entity\Project;
+use Mautic\ProjectBundle\Event\EntityTypeDetailRouteEvent;
 use Mautic\ProjectBundle\Event\EntityTypeModelMappingEvent;
 use Mautic\ProjectBundle\Event\EntityTypeNormalizationEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -55,8 +56,7 @@ final class ProjectEntityLoaderService
                 'label'       => $config->label,
                 'entities'    => $entities,
                 'count'       => count($entities),
-                'detailRoute' => $config->detailRoute
-        ?? new DetailRoute('mautic_'.$entityType.'_action', 'objectId', ['objectAction' => 'view']),
+                'detailRoute' => $config->detailRoute,
             ];
         }
 
@@ -186,12 +186,11 @@ final class ProjectEntityLoaderService
         $allMetadata = $this->em->getMetadataFactory()->getAllMetadata();
 
         // Example mapping; only register what actually exists / is permitted.
-        $detailRoutes = [
-            'point'   => new DetailRoute('mautic_point_action', 'objectId', ['objectAction' => 'edit']),
-            'stage'   => new DetailRoute('mautic_stage_action', 'objectId', ['objectAction' => 'edit']),
-            'segment' => new DetailRoute('mautic_segment_action', 'objectId', ['objectAction' => 'view']),
-            // add more types as needed; do not add types for bundles you don't ship
-        ];
+        $routeEvent = new EntityTypeDetailRouteEvent();
+        $this->eventDispatcher->dispatch($routeEvent);
+        $routeEvent->addRoute('point', new DetailRoute('mautic_point_action', 'objectId', ['objectAction' => 'edit']));
+        $routeEvent->addRoute('stage', new DetailRoute('mautic_stage_action', 'objectId', ['objectAction' => 'edit']));
+        $routeEvent->addRoute('segment', new DetailRoute('mautic_segment_action', 'objectId', ['objectAction' => 'view']));
 
         foreach ($allMetadata as $metadata) {
             $entityClass = $metadata->getName();
@@ -208,7 +207,7 @@ final class ProjectEntityLoaderService
                         entityClass: $entityClass,
                         label: $this->getEntityLabel($entityType),
                         model: $this->findModelForEntityType($entityType),
-                        detailRoute: $detailRoutes[$entityType] ?? new DetailRoute('mautic_'.$entityType.'_action', 'objectId', ['objectAction' => 'view']),
+                        detailRoute: $routeEvent->getRoute($entityType),
                     );
 
                     break;

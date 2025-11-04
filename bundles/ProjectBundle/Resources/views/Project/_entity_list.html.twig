@@ -60,9 +60,13 @@
 																		}) -}}
 										</td>
 										<td>
-											<a href="{{ path(entityData.detailRoute.route, entityData.detailRoute.getParameters(entity.getId())) }}" data-toggle="ajax">
-													{{ entity.getName()|purify }}
-											</a>
+										{% if entityData.detailRoute %}
+												<a href="{{ path(entityData.detailRoute.route, entityData.detailRoute.getParameters(entity.getId())) }}" data-toggle="ajax">
+														{{ entity.getName()|purify }}
+												</a>
+										{% else %}
+												{{ entity.getName()|purify }}
+										{% endif %}
 										</td>
 										<td class="visible-lg" title="{{ entity.getDateAdded() ? dateToFullConcat(entity.getDateAdded()) : '' }}">
 											{{ entity.getDateAdded() ? dateToDate(entity.getDateAdded()) : '' }}
