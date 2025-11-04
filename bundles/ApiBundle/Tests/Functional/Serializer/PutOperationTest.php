@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Mautic\ApiBundle\Tests\Functional\Serializer;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\ProjectBundle\Entity\Project;
 use Mautic\PageBundle\Entity\Page;
+use Mautic\ProjectBundle\Entity\Project;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Response;
 

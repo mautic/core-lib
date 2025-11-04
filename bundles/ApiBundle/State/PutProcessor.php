@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Custom processor for PUT operations to ensure entities are updated instead of created.
- * 
+ *
  * This processor decorates the default persist processor and intercepts PUT operations
  * to load existing entities from the database and merge incoming data, ensuring updates
  * rather than creation of new entities. It applies globally to all API Platform entities.
@@ -31,8 +31,8 @@ final class PutProcessor implements ProcessorInterface
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
 
-        $entityClass = get_class($data);
-        $id = $uriVariables['id'];
+        $entityClass = $data::class;
+        $id          = $uriVariables['id'];
 
         // Load the existing entity from the database
         $existingEntity = $this->entityManager->find($entityClass, $id);
@@ -45,13 +45,8 @@ final class PutProcessor implements ProcessorInterface
         // For PUT operations, we want to update the existing entity
         // The incoming $data already contains the deserialized changes
         // We need to merge those changes into the existing entity
-        
-        $this->mergeEntityData($data, $existingEntity, $entityClass);
 
-        // Make sure the entity is managed by Doctrine
-        if (!$this->entityManager->contains($existingEntity)) {
-            $existingEntity = $this->entityManager->merge($existingEntity);
-        }
+        $this->mergeEntityData($data, $existingEntity, $entityClass);
 
         // Persist the changes
         $this->entityManager->persist($existingEntity);
@@ -62,12 +57,14 @@ final class PutProcessor implements ProcessorInterface
 
     /**
      * Merge data from the incoming entity into the existing entity.
+     *
+     * @param class-string $entityClass
      */
     private function mergeEntityData(object $sourceEntity, object $targetEntity, string $entityClass): void
     {
         // Get the entity metadata to know which properties to update
         $metadata = $this->entityManager->getClassMetadata($entityClass);
-        
+
         // Update regular fields
         foreach ($metadata->getFieldNames() as $fieldName) {
             if (!$metadata->isIdentifier($fieldName)) {
@@ -86,9 +83,9 @@ final class PutProcessor implements ProcessorInterface
      */
     private function updateEntityField(object $sourceEntity, object $targetEntity, string $fieldName): void
     {
-        $getter = 'get' . ucfirst($fieldName);
-        $setter = 'set' . ucfirst($fieldName);
-        
+        $getter = 'get'.ucfirst($fieldName);
+        $setter = 'set'.ucfirst($fieldName);
+
         if (method_exists($sourceEntity, $getter) && method_exists($targetEntity, $setter)) {
             $value = $sourceEntity->$getter();
             // Only update if the incoming data has a value (not null)
