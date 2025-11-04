@@ -67,6 +67,9 @@ class PublicController extends CommonFormController
                 $postAction         = $form->getPostAction();
                 $postActionProperty = $form->getPostActionProperty();
 
+                if ($form->isSubmissionLimitReached()) {
+                    $error = $form->getSubmissionLimitMessage() ?? $this->translator->trans('mautic.form.submission.limit_reached');
+                }
                 // check to ensure the form is published
                 $status             = $form->getPublishStatus();
                 if ('pending' == $status) {

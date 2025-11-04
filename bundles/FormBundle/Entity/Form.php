@@ -179,11 +179,13 @@ class Form extends FormEntity implements UuidInterface
     /**
      * @var int|null
      */
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $submissionLimit;
 
     /**
      * @var string|null
      */
+    #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $submissionLimitMessage;
 
     /**

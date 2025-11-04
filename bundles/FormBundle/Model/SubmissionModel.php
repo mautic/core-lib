@@ -19,7 +19,6 @@ use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Model\FormModel as CommonFormModel;
-use Mautic\CoreBundle\Model\NotificationModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\CoreBundle\Twig\Helper\DateHelper;
@@ -54,7 +53,6 @@ use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Tracker\ContactTracker;
 use Mautic\LeadBundle\Tracker\Service\DeviceTrackingService\DeviceTrackingServiceInterface;
 use Mautic\PageBundle\Model\PageModel;
-use Mautic\UserBundle\Entity\User;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Psr\Log\LoggerInterface;
@@ -70,13 +68,6 @@ use Twig\Environment;
  */
 class SubmissionModel extends CommonFormModel
 {
-    /**
-     * Cache of result tables ensured to exist during the current process.
-     *
-     * @var array<string, true>
-     */
-    private array $ensuredResultTables = [];
-
     public function __construct(
         protected IpLookupHelper $ipLookupHelper,
         protected Environment $twig,
@@ -96,7 +87,6 @@ class SubmissionModel extends CommonFormModel
         private ContactTracker $contactTracker,
         private ContactMerger $contactMerger,
         private FieldsWithUniqueIdentifier $fieldsWithUniqueIdentifier,
-        private NotificationModel $notificationModel,
         EntityManager $em,
         CorePermissions $security,
         EventDispatcherInterface $dispatcher,
@@ -123,16 +113,7 @@ class SubmissionModel extends CommonFormModel
      */
     public function saveSubmission($post, $server, Form $form, Request $request, $returnEvent = false)
     {
-        $leadFields       = $this->leadFieldModel->getFieldListWithProperties(false);
-        $resultsTableName = $this->getRepository()->getResultsTableName($form->getId(), $form->getAlias());
-        if (!isset($this->ensuredResultTables[$resultsTableName])) {
-            $schemaManager = $this->em->getConnection()->createSchemaManager();
-            if (!$schemaManager->tablesExist([$resultsTableName])) {
-                $this->formModel->createTableSchema($form);
-            }
-
-            $this->ensuredResultTables[$resultsTableName] = true;
-        }
+        $leadFields = $this->leadFieldModel->getFieldListWithProperties(false);
 
         // everything matches up so let's save the results
         $submission = new Submission();
@@ -365,57 +346,21 @@ class SubmissionModel extends CommonFormModel
         // set results after uploader what can change file name if file name exists
         $submissionEvent->setResults($submission->getResults());
 
-        $conn = $this->em->getConnection();
-        $conn->beginTransaction();
+        // Save the submission
+        $this->saveEntity($submission);
+        $this->fieldValueTransformer->transformValuesAfterSubmit($submissionEvent);
+        // Now handle post submission actions
         try {
-            $stats = $conn->fetchAssociative('SELECT submission_limit, submission_count FROM '.$this->em->getClassMetadata(Form::class)->getTableName().' WHERE id = ? FOR UPDATE', [$form->getId()]);
-            if ($stats && null !== $stats['submission_limit'] && (int) $stats['submission_limit'] > 0 && (int) $stats['submission_count'] >= (int) $stats['submission_limit']) {
-                $conn->rollBack();
+            $this->executeFormActions($submissionEvent);
+        } catch (ValidationException $exception) {
+            // The action invalidated the form for whatever reason
+            $this->deleteEntity($submission);
 
-                return ['errors' => $form->getSubmissionLimitMessage() ?? $this->translator->trans('mautic.form.submission.limit_reached')];
+            if ($validationErrors = $exception->getViolations()) {
+                return ['errors' => $validationErrors];
             }
 
-            // Save the submission
-            $this->saveEntity($submission);
-            $this->fieldValueTransformer->transformValuesAfterSubmit($submissionEvent);
-            // Now handle post submission actions
-            try {
-                $this->executeFormActions($submissionEvent);
-            } catch (ValidationException $exception) {
-                // The action invalidated the form for whatever reason
-                $this->deleteEntity($submission);
-                $conn->rollBack();
-
-                if ($validationErrors = $exception->getViolations()) {
-                    return ['errors' => $validationErrors];
-                }
-
-                return ['errors' => [$exception->getMessage()]];
-            }
-
-            $conn->executeStatement('UPDATE '.$this->em->getClassMetadata(Form::class)->getTableName().' SET submission_count = submission_count + 1 WHERE id = ?', [$form->getId()]);
-
-            if ($stats && null !== $stats['submission_limit'] && (int) $stats['submission_limit'] > 0 && (int) $stats['submission_count'] + 1 >= (int) $stats['submission_limit']) {
-                $ownerId = $form->getCreatedBy();
-                if ($ownerId) {
-                    $user = $this->em->getReference(User::class, $ownerId);
-                    $this->notificationModel->addNotification(
-                        $this->translator->trans('mautic.form.submission.limit_reached.notification', ['%form%' => $form->getName()]),
-                        'warning',
-                        false,
-                        $form->getName(),
-                        null,
-                        null,
-                        $user
-                    );
-                }
-            }
-
-            $conn->commit();
-        } catch (\Exception $e) {
-            $conn->rollBack();
-
-            throw $e;
+            return ['errors' => [$exception->getMessage()]];
         }
 
         // update contact fields with transform values
@@ -460,12 +405,7 @@ class SubmissionModel extends CommonFormModel
     {
         $this->formUploader->deleteUploadedFiles($submission);
 
-        $form = $submission->getForm();
         parent::deleteEntity($submission);
-
-        if ($form) {
-            $this->em->getConnection()->executeStatement('UPDATE '.$this->em->getClassMetadata(Form::class)->getTableName().' SET submission_count = GREATEST(submission_count - 1, 0) WHERE id = ?', [$form->getId()]);
-        }
     }
 
     /**
@@ -1212,26 +1152,5 @@ class SubmissionModel extends CommonFormModel
         }
 
         return implode(', ', $value);
-    }
-
-    /**
-     * Delete multiple entities and ensure submission count is decremented for each.
-     *
-     * @param mixed[] $ids
-     *
-     * @return mixed[]
-     */
-    public function deleteEntities($ids): array
-    {
-        $entities = [];
-        foreach ($ids as $id) {
-            $entity = $this->getEntity($id);
-            if ($entity) {
-                $entities[$id] = $entity;
-                $this->deleteEntity($entity);
-            }
-        }
-
-        return $entities;
     }
 }
