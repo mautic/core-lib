@@ -30,7 +30,7 @@ class FakeModeratedCommand extends ModeratedCommand
 
     public function setLock(?LockInterface $lock = null): void
     {
-        $reflection = new \ReflectionClass($this);
+        $reflection  = new \ReflectionClass($this);
         $parentClass = $reflection->getParentClass();
 
         if ($parentClass->hasProperty('lock')) {
