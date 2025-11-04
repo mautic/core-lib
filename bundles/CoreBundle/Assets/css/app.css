@@ -12295,7 +12295,3 @@ a.header__menu-item.header__menu-item--current:focus {
   inline-size: 256px;
   overflow-y: auto;
 }
-#email-container .theme-list .select-theme-link,
-#email-container .theme-list .select-theme-selected {
-  margin-top: var(--spacing-04);
-}
