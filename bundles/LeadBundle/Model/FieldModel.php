@@ -1052,7 +1052,7 @@ class FieldModel extends FormModel
             ],
         ];
     }
-    
+
     public function generateUniqueFieldAlias(string $alias): string
     {
         $originalAlias = $alias;

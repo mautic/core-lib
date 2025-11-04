@@ -1091,7 +1091,7 @@ class SubmissionModel extends CommonFormModel
         $user = null;
         if (!empty($data['ownerbyemail'])) {
             $user = $userRepo->findOneBy(['email' => $data['ownerbyemail']]);
-        } elseif (!$user && !empty($data['ownerbyid'])) {
+        } elseif (!empty($data['ownerbyid'])) {
             $user = $userRepo->find($data['ownerbyid']);
         }
 
