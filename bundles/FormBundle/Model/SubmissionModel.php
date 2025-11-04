@@ -1086,7 +1086,7 @@ class SubmissionModel extends CommonFormModel
 
         // Set owner
         $userRepo = $this->em->getRepository(User::class);
-        assert($userRepo instanceof UserRepository);
+        \assert($userRepo instanceof UserRepository);
 
         $user = null;
         if (!empty($data['ownerbyemail'])) {
