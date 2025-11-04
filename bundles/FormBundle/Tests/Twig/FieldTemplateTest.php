@@ -8,7 +8,7 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\FormBundle\Entity\Field;
 use Mautic\FormBundle\Entity\Form;
 
-class FieldTemplateTest extends MauticMysqlTestCase
+final class FieldTemplateTest extends MauticMysqlTestCase
 {
     public function testFieldTemplateRendersWithCssClasses(): void
     {
