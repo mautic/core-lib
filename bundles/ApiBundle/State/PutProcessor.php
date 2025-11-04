@@ -10,11 +10,11 @@ use ApiPlatform\State\ProcessorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Custom processor for PUT operations to ensure entities are updated instead of created.
+ * Custom processor for PUT operations to ensure entities are replaced instead of created.
  *
  * This processor decorates the default persist processor and intercepts PUT operations
- * to load existing entities from the database and merge incoming data, ensuring updates
- * rather than creation of new entities. It applies globally to all API Platform entities.
+ * to load existing entities from the database and completely replace them with incoming data,
+ * following proper HTTP PUT semantics. It applies globally to all API Platform entities.
  */
 final class PutProcessor implements ProcessorInterface
 {
@@ -31,22 +31,19 @@ final class PutProcessor implements ProcessorInterface
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
 
-        $entityClass = $data::class;
-        $id          = $uriVariables['id'];
-
         // Load the existing entity from the database
-        $existingEntity = $this->entityManager->find($entityClass, $id);
+        $existingEntity = $this->entityManager->find($data::class, $uriVariables['id']);
 
         if (null === $existingEntity) {
             // Entity doesn't exist, let the default processor create it
             return $this->persistProcessor->process($data, $operation, $uriVariables, $context);
         }
 
-        // For PUT operations, we want to update the existing entity
-        // The incoming $data already contains the deserialized changes
-        // We need to merge those changes into the existing entity
+        // For PUT operations, we want to replace the existing entity completely
+        // The incoming $data contains the new state that should replace the existing entity
+        // Following HTTP PUT semantics: completely replace the resource
 
-        $this->mergeEntityData($data, $existingEntity, $entityClass);
+        $this->mergeEntityData($data, $existingEntity, $data::class);
 
         // Persist the changes
         $this->entityManager->persist($existingEntity);
@@ -56,7 +53,10 @@ final class PutProcessor implements ProcessorInterface
     }
 
     /**
-     * Merge data from the incoming entity into the existing entity.
+     * Replace data from the incoming entity into the existing entity.
+     *
+     * For PUT operations, we completely replace the resource with the provided data,
+     * including setting fields to null if they're not provided in the request.
      *
      * @param class-string $entityClass
      */
@@ -79,7 +79,10 @@ final class PutProcessor implements ProcessorInterface
     }
 
     /**
-     * Update a single field/association on the target entity from the source entity.
+     * Replace a single field/association on the target entity from the source entity.
+     *
+     * For PUT operations, we replace the entire resource, so we set the value
+     * from the source entity regardless of whether it's null or not.
      */
     private function updateEntityField(object $sourceEntity, object $targetEntity, string $fieldName): void
     {
@@ -88,10 +91,8 @@ final class PutProcessor implements ProcessorInterface
 
         if (method_exists($sourceEntity, $getter) && method_exists($targetEntity, $setter)) {
             $value = $sourceEntity->$getter();
-            // Only update if the incoming data has a value (not null)
-            if (null !== $value) {
-                $targetEntity->$setter($value);
-            }
+            // For PUT, we replace the entire resource, so set the value even if it's null
+            $targetEntity->$setter($value);
         }
     }
 }

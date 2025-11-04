@@ -199,4 +199,59 @@ final class PutOperationTest extends MauticMysqlTestCase
         Assert::assertNotNull($project);
         Assert::assertSame('New Project', $project->getName());
     }
+
+    /**
+     * Test that PUT operation completely replaces the resource (proper HTTP PUT semantics).
+     * If a field is missing from the PUT request, it should be set to null in the existing entity.
+     */
+    public function testPutOperationReplacesEntireResource(): void
+    {
+        // Create initial project with both name and description
+        $project = new Project();
+        $project->setName('Original Project');
+        $project->setDescription('Original Description');
+
+        $this->em->persist($project);
+        $this->em->flush();
+
+        $originalId = $project->getId();
+        Assert::assertNotNull($originalId, 'Project should have an ID after persisting');
+
+        // Update the project via PUT request with only name (no description)
+        // According to HTTP PUT semantics, this should clear the description
+        $this->client->request(
+            'PUT',
+            '/api/v2/projects/'.$originalId,
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/ld+json',
+                'HTTP_ACCEPT'  => 'application/ld+json',
+            ],
+            json_encode([
+                'name' => 'Updated Project Name Only',
+                // Note: description is intentionally omitted
+            ])
+        );
+
+        Assert::assertSame(200, $this->client->getResponse()->getStatusCode());
+
+        $response = json_decode($this->client->getResponse()->getContent(), true);
+
+        // Verify the response shows the field was replaced (cleared)
+        Assert::assertSame($originalId, $response['id'], 'Should update existing project, not create new one');
+        Assert::assertSame('Updated Project Name Only', $response['name']);
+
+        // The API may not include null fields in the response, so check if key exists
+        if (array_key_exists('description', $response)) {
+            Assert::assertNull($response['description'], 'Description should be null since it was not provided in PUT request');
+        }
+
+        // Verify in database that the description was actually cleared
+        $this->em->clear();
+        $updatedProject = $this->em->getRepository(Project::class)->find($originalId);
+        Assert::assertNotNull($updatedProject);
+        Assert::assertSame('Updated Project Name Only', $updatedProject->getName());
+        Assert::assertNull($updatedProject->getDescription(), 'Description should be cleared in database');
+    }
 }
