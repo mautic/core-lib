@@ -15,6 +15,22 @@ use Symfony\Component\HttpKernel\Exception\PreconditionRequiredHttpException;
 class RoleController extends FormController
 {
     /**
+     * @param int|string|null $objectId
+     *
+     * @return string
+     */
+    protected function getSessionBase($objectId = null)
+    {
+        $base = 'role';
+
+        if (null !== $objectId) {
+            $base .= '.'.$objectId;
+        }
+
+        return $base;
+    }
+
+    /**
      * Generate's default role list view.
      *
      * @param int $page
