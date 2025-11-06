@@ -29,7 +29,6 @@ class EmailModelTranslationCountFunctionalTest extends MauticMysqlTestCase
         $commandResult = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
         $this->assertStringContainsString('10 total events(s) to be processed in batches', $commandResult->getDisplay());
         $this->em->clear();
-        $this->getMailerMessages();
 
         $emailModel = static::getContainer()->get('mautic.email.model.email');
         \assert($emailModel instanceof EmailModel);
