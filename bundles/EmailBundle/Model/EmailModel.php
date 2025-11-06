@@ -1480,11 +1480,13 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
         // Update sent counts
         foreach ($sentCounts as $emailId => $count) {
+            $isVariant = $this->isEmailVariant($emailId, $emailSettings);
+
             // Retry a few times in case of deadlock errors
             $strikes = 3;
             while ($strikes >= 0) {
                 try {
-                    $this->getRepository()->upCountSent($emailId, (int) $count, (bool) $emailSettings[$emailId]['isVariant']);
+                    $this->getRepository()->upCountSent($emailId, (int) $count, $isVariant);
                     break;
                 } catch (\Exception $exception) {
                     error_log($exception);
@@ -2320,5 +2322,35 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $context->setScheme($original_scheme);
 
         return $url;
+    }
+
+
+
+    /**
+     * Check if an email is a variant by looking it up in emailSettings.
+     * Handles both parent emails and translations (translations inherit variant status from parent).
+     *
+     * @param int   $emailId
+     * @param array $emailSettings
+     *
+     * @return bool
+     */
+    private function isEmailVariant(int $emailId, array $emailSettings): bool
+    {
+        // Check if it's a parent email in emailSettings
+        if (isset($emailSettings[$emailId])) {
+            return (bool) $emailSettings[$emailId]['isVariant'];
+        }
+
+        // It's likely a translation - find it in translations and check if the parent is a variant
+        foreach ($emailSettings as $settings) {
+            if (!empty($settings['translations']) && is_array($settings['translations']) && isset($settings['translations'][$emailId])) {
+                // Check the parent's variant status (translations inherit variant status from parent)
+                return (bool) $settings['isVariant'];
+            }
+        }
+
+        // Default to false if not found (shouldn't happen in normal operation)
+        return false;
     }
 }
