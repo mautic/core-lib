@@ -13,7 +13,7 @@ use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Model\LeadModel;
 
-class EmailModelTranslationCountFunctionalTest extends MauticMysqlTestCase
+final class EmailModelTranslationCountFunctionalTest extends MauticMysqlTestCase
 {
     private const CONTACT_COUNT = 10;
 
