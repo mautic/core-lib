@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Model\FormModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\ProjectBundle\DTO\DetailRoute;
 use Mautic\ProjectBundle\DTO\EntityTypeConfig;
 use Mautic\ProjectBundle\Entity\Project;
 use Mautic\ProjectBundle\Event\EntityTypeDetailRouteEvent;
@@ -188,9 +187,6 @@ final class ProjectEntityLoaderService
         // Example mapping; only register what actually exists / is permitted.
         $routeEvent = new EntityTypeDetailRouteEvent();
         $this->eventDispatcher->dispatch($routeEvent);
-        $routeEvent->addRoute('point', new DetailRoute('mautic_point_action', 'objectId', ['objectAction' => 'edit']));
-        $routeEvent->addRoute('stage', new DetailRoute('mautic_stage_action', 'objectId', ['objectAction' => 'edit']));
-        $routeEvent->addRoute('segment', new DetailRoute('mautic_segment_action', 'objectId', ['objectAction' => 'view']));
 
         foreach ($allMetadata as $metadata) {
             $entityClass = $metadata->getName();
