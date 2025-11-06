@@ -2378,7 +2378,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
         // It's likely a translation - find it in translations and check if the parent is a variant
         foreach ($emailSettings as $settings) {
-            if (!empty($settings['translations']) && is_array($settings['translations']) && isset($settings['translations'][$emailId])) {
+            if (isset($settings['translations'][$emailId])) {
                 // Check the parent's variant status (translations inherit variant status from parent)
                 return (bool) $settings['isVariant'];
             }
