@@ -2324,16 +2324,11 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         return $url;
     }
 
-
-
     /**
      * Check if an email is a variant by looking it up in emailSettings.
      * Handles both parent emails and translations (translations inherit variant status from parent).
      *
-     * @param int   $emailId
-     * @param array $emailSettings
-     *
-     * @return bool
+     * @param array<int, array<string, mixed>> $emailSettings
      */
     private function isEmailVariant(int $emailId, array $emailSettings): bool
     {
