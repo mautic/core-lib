@@ -163,7 +163,7 @@ class EmailModelTranslationCountFunctionalTest extends MauticMysqlTestCase
                 'eventType'       => 'action',
                 'anchorEventType' => 'source',
                 'campaignId'      => 'mautic_ce6c7dddf8444e579d741c0125f18b33a5d49b45',
-                '_token'          => 'HgysZwvH_n0uAp47CcAcsGddRnRk65t-3crOnuLx28Y',
+                '_token'          => 'test_token',
                 'buttons'         => [
                     'save' => '',
                 ],
