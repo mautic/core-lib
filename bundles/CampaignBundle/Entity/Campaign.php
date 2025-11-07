@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Order;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CampaignBundle\Validator\Constraints\NoOrphanEvents;
@@ -96,6 +97,15 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
     public ?\DateTimeInterface $deleted = null;
 
     /**
+     * Defines how the scheduled events behave after a campaign is republished. It has 3 options:
+     * - `count_all_time`: There is no counting. The original trigger date is used. The unpublished time is not counted.
+     * - `restart_on_publish`: The interval starts from scratch after the campaign is published again.
+     * - `count_only_while_published`: The event will only count the time while the campaign is published. If it is unpublished, the counter will not increase.
+     */
+    #[Groups(['campaign:read', 'campaign:write'])]
+    private ?string $republishBehavior = null;
+
+    /**
      * @var Category|null
      **/
     #[Groups(['campaign:read', 'campaign:write'])]
@@ -161,6 +171,12 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         $builder->addIdColumns();
 
         $builder->addPublishDates();
+
+        $builder->createField('republishBehavior', Types::STRING)
+            ->columnName('republish_behavior')
+            ->nullable()
+            ->length(32)
+            ->build();
 
         $builder->addCategory();
 
@@ -237,6 +253,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
                     'allowRestart',
                     'publishUp',
                     'publishDown',
+                    'republishBehavior',
                     'events',
                     'forms',
                     'lists', // @deprecated, will be renamed to 'segments' in 3.0.0
@@ -467,6 +484,19 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         return $this;
     }
 
+    public function getRepublishBehavior(): ?string
+    {
+        return $this->republishBehavior;
+    }
+
+    public function setRepublishBehavior(?string $republishBehavior): self
+    {
+        $this->isChanged('republishBehavior', $republishBehavior);
+        $this->republishBehavior = $republishBehavior;
+
+        return $this;
+    }
+
     /**
      * @return \DateTimeInterface
      */
@@ -664,11 +694,17 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         );
     }
 
+    /**
+     * @deprecated use CoreEvents::VIEW_INJECT_CUSTOM_TEMPLATE to change template params instead
+     */
     public function getOnclickMethod(): string
     {
         return 'Mautic.confirmationCampaignPublishStatus(mQuery(this));';
     }
 
+    /**
+     * @deprecated use CoreEvents::VIEW_INJECT_CUSTOM_TEMPLATE to change template params instead
+     */
     public function getDataAttributes(): array
     {
         return [
@@ -678,6 +714,9 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         ];
     }
 
+    /**
+     * @deprecated use CoreEvents::VIEW_INJECT_CUSTOM_TEMPLATE to change template params instead
+     */
     public function getTranslationKeysDataAttributes(): array
     {
         return [

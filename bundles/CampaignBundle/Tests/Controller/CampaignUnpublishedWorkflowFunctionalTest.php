@@ -43,14 +43,17 @@ final class CampaignUnpublishedWorkflowFunctionalTest extends AbstractCampaignTe
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
 
+        $republishBehavior = $translator->trans('mautic.campaignconfig.campaign_republish_behavior.'.$campaign->getRepublishBehavior());
+
         $attributes = [
-            'onchange'              => 'Mautic.showCampaignConfirmation(mQuery(this));',
-            'data-toggle'           => 'confirmation',
-            'data-message'          => $translator->trans('mautic.campaign.form.confirmation.message'),
-            'data-confirm-text'     => $translator->trans('mautic.campaign.form.confirmation.confirm_text'),
-            'data-confirm-callback' => 'dismissConfirmation',
-            'data-cancel-text'      => $translator->trans('mautic.campaign.form.confirmation.cancel_text'),
-            'data-cancel-callback'  => 'setPublishedButtonToYes',
+            'onchange'               => 'Mautic.showCampaignConfirmation(mQuery(this));',
+            'data-toggle'            => 'confirmation',
+            'data-message-publish'   => $translator->trans('mautic.campaign.form.confirmation.message.publish', ['%republishBehavior%' => $republishBehavior]),
+            'data-message-unpublish' => $translator->trans('mautic.campaign.form.confirmation.message'),
+            'data-confirm-text'      => $translator->trans('mautic.campaign.form.confirmation.confirm_text'),
+            'data-confirm-callback'  => 'dismissConfirmation',
+            'data-cancel-text'       => $translator->trans('mautic.campaign.form.confirmation.cancel_text'),
+            'data-cancel-callback'   => 'setPublishedButtonToYes',
         ];
 
         $elements = $crawler->filter('form input[name*="campaign[isPublished]"]')->getIterator();
@@ -73,14 +76,17 @@ final class CampaignUnpublishedWorkflowFunctionalTest extends AbstractCampaignTe
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
 
-        $attributes    = [
-            'onclick'               => 'Mautic.confirmationCampaignPublishStatus(mQuery(this));',
-            'data-toggle'           => 'confirmation',
-            'data-confirm-callback' => 'confirmCallbackCampaignPublishStatus',
-            'data-cancel-callback'  => 'dismissConfirmation',
-            'data-message'          => $translator->trans('mautic.campaign.form.confirmation.message'),
-            'data-confirm-text'     => $translator->trans('mautic.campaign.form.confirmation.confirm_text'),
-            'data-cancel-text'      => $translator->trans('mautic.campaign.form.confirmation.cancel_text'),
+        $republishBehavior = $translator->trans('mautic.campaignconfig.campaign_republish_behavior.'.$campaign->getRepublishBehavior());
+
+        $attributes = [
+            'onclick'                => 'Mautic.confirmationCampaignPublishStatus(mQuery(this));',
+            'data-toggle'            => 'confirmation',
+            'data-confirm-callback'  => 'confirmCallbackCampaignPublishStatus',
+            'data-cancel-callback'   => 'dismissConfirmation',
+            'data-message-publish'   => $translator->trans('mautic.campaign.form.confirmation.message.publish', ['%republishBehavior%' => $republishBehavior]),
+            'data-message-unpublish' => $translator->trans('mautic.campaign.form.confirmation.message'),
+            'data-confirm-text'      => $translator->trans('mautic.campaign.form.confirmation.confirm_text'),
+            'data-cancel-text'       => $translator->trans('mautic.campaign.form.confirmation.cancel_text'),
         ];
 
         $toggleElement = $crawler->filter('.toggle-publish-status');

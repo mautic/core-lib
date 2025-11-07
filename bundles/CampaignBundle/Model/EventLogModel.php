@@ -162,7 +162,8 @@ class EventLogModel extends AbstractCommonModel
                         );
                     }
                     $log->setTriggerDate(
-                        new \DateTime($value)
+                        new \DateTime($value),
+                        'Trigger date updated via EventLogModel (API)'
                     );
                     break;
                 case 'ipAddress':

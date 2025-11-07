@@ -16,7 +16,9 @@ use Mautic\CampaignBundle\Executioner\Scheduler\Exception\NotSchedulableExceptio
 use Mautic\CampaignBundle\Executioner\Scheduler\Mode\DateTime as DateTimeScheduler;
 use Mautic\CampaignBundle\Executioner\Scheduler\Mode\Interval as IntervalScheduler;
 use Mautic\CampaignBundle\Executioner\Scheduler\Mode\Optimized as OptimizedScheduler;
+use Mautic\CampaignBundle\Service\PublishStateService;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Service\OptimisticLockServiceInterface;
 use Mautic\LeadBundle\Entity\Lead;
 use Psr\Log\LoggerInterface;
@@ -36,6 +38,7 @@ class EventScheduler
         private EventDispatcherInterface $dispatcher,
         private CoreParametersHelper $coreParametersHelper,
         private OptimisticLockServiceInterface $optimisticLockService,
+        private PublishStateService $publishStateService
     ) {
     }
 
@@ -77,9 +80,12 @@ class EventScheduler
         $this->scheduleEventForContacts($event, $config, $executionDate, $contacts, $isInactiveEvent);
     }
 
+    /**
+     * @deprecated use rescheduleLogs() instead
+     */
     public function reschedule(LeadEventLog $log, \DateTimeInterface $toBeExecutedOn): void
     {
-        $log->setTriggerDate($toBeExecutedOn);
+        $log->setTriggerDate($toBeExecutedOn, 'Event rescheduled');
         $this->eventLogger->persistLog($log);
 
         $event  = $log->getEvent();
@@ -94,7 +100,7 @@ class EventScheduler
     public function rescheduleLogs(ArrayCollection $logs, \DateTimeInterface $toBeExecutedOn): void
     {
         foreach ($logs as $log) {
-            $log->setTriggerDate($toBeExecutedOn);
+            $log->setTriggerDate($toBeExecutedOn, 'Bulk rescheduling of events');
         }
 
         $this->eventLogger->persistCollection($logs);
@@ -113,7 +119,7 @@ class EventScheduler
 
         foreach ($logs as $log) {
             try {
-                $this->reschedule($log, $this->getRescheduleDate($log));
+                $this->rescheduleLogs(new ArrayCollection([$log]), \DateTime::createFromInterface($this->getRescheduleDate($log)));
                 $this->optimisticLockService->resetVersion($log);
             } catch (IntervalNotConfiguredException) {
                 // Do not reschedule if an interval was not configured.
@@ -160,6 +166,55 @@ class EventScheduler
         }
 
         throw new NotSchedulableException();
+    }
+
+    /**
+     * @return bool true if the trigger date was extended, false otherwise
+     */
+    public function extendTriggerDateWhenCampaignUnpublished(LeadEventLog $log): bool
+    {
+        $event = $log->getEvent();
+
+        if (Event::TRIGGER_MODE_INTERVAL !== $event->getTriggerMode()) {
+            return false; // Only extend trigger date for interval events
+        }
+
+        $campaignRepublishBehaviorDefault = $this->coreParametersHelper->get('campaign_republish_behavior', 'count_all_time');
+        $campaignRepublishBehavior        = $event->getCampaign()->getRepublishBehavior() ?? $campaignRepublishBehaviorDefault;
+
+        if ('count_all_time' === $campaignRepublishBehavior) {
+            return false; // Do not extend trigger date for "count all time" behavior. Unpublished time does not matter.
+        }
+
+        $interval = $event->getTriggerInterval();
+        $unit     = $event->getTriggerIntervalUnit();
+
+        if (!$interval || !$unit) {
+            return false;
+        }
+
+        $lastPublishDate   = $this->publishStateService->getLastPublishDate($event->getCampaign());
+        $scheduledInterval = (new DateTimeHelper())->buildInterval($interval, $unit);
+
+        if ('restart_on_publish' === $campaignRepublishBehavior && $lastPublishDate) {
+            $lastPublishDatePlusInterval = \DateTimeImmutable::createFromInterface($lastPublishDate)->add($scheduledInterval);
+            $log->setTriggerDate(\DateTime::createFromImmutable($lastPublishDatePlusInterval), 'Campaign republish behavior: restart_on_publish');
+
+            return true;
+        }
+
+        if ('count_only_while_published' === $campaignRepublishBehavior) {
+            $unublishedSeconds = $this->publishStateService->getUnublishedSecondsSince($event->getCampaign(), $log->getDateTriggered()); // Date triggered is set to date when the log was created for unexecuted logs.
+            $ellapsedSeconds   = $lastPublishDate->getTimestamp() - $log->getDateTriggered()->getTimestamp(); // Seconds since the event log was created and now.
+            $publishedSeconds  = $ellapsedSeconds - $unublishedSeconds;
+            $secondsToAdd      = (new DateTimeHelper())->intervalToSeconds($scheduledInterval) - $publishedSeconds;
+            $newTriggerDate    = \DateTimeImmutable::createFromInterface($lastPublishDate)->add((new DateTimeHelper())->buildInterval($secondsToAdd, 'S'));
+            $log->setTriggerDate(\DateTime::createFromImmutable($newTriggerDate), 'Campaign republish behavior: count_only_while_published');
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -320,10 +375,10 @@ class EventScheduler
             // Determine the execution date based on the trigger mode
             if (Event::TRIGGER_MODE_OPTIMIZED === $event->getTriggerMode()) {
                 $optimizedExecutionDate = $this->optimizedScheduler->getExecutionDateTimeForContact($event, $contact);
-                $log->setTriggerDate($optimizedExecutionDate);
+                $log->setTriggerDate($optimizedExecutionDate, 'Initial optimized event scheduling');
             } else {
                 // For other trigger modes, use the provided execution date
-                $log->setTriggerDate($executionDate);
+                $log->setTriggerDate($executionDate, 'Initial event scheduling');
             }
 
             // Add it to the queue to persist to the DB

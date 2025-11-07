@@ -41,6 +41,7 @@ abstract class AbstractCampaignTestCase extends MauticMysqlTestCase
         $campaign = new Campaign();
         $campaign->setName('Campaign ABC');
         $campaign->setCreatedBy(1);
+        $campaign->setRepublishBehavior('count_all_time');
 
         $eventA = new Event();
         $eventA->setName('Event A');
