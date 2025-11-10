@@ -69,12 +69,6 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
     private $description;
 
     /**
-     * @var string
-     */
-    #[Groups(['notification:read', 'notification:write'])]
-    private $language = 'en';
-
-    /**
      * @var string|null
      */
     #[Groups(['notification:read', 'notification:write'])]
