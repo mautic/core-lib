@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class ContactTrackerFunctionalTest extends MauticMysqlTestCase
+final class ContactTrackerFunctionalTest extends MauticMysqlTestCase
 {
     private ContactTracker $contactTracker;
     private RequestStack $requestStack;
