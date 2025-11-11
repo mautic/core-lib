@@ -15,7 +15,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class MigrationCommandSubscriberTest extends MauticMysqlTestCase
+final class MigrationCommandSubscriberTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback = false;
     private string $tablePrefix;
