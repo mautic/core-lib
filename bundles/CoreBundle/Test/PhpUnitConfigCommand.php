@@ -17,7 +17,7 @@ use Symfony\Component\Finder\Finder;
     name: 'mautic:phpunit:config',
     description: 'Outputs PHPUnit configuration with <testsuites> split into passed [numberOfSuites]'
 )]
-class PhpUnitConfigCommand extends Command
+final class PhpUnitConfigCommand extends Command
 {
     protected function configure(): void
     {
