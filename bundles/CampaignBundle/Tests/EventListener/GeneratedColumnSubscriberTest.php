@@ -13,7 +13,7 @@ use Mautic\CoreBundle\Event\GeneratedColumnsEvent;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-class GeneratedColumnSubscriberTest extends TestCase
+final class GeneratedColumnSubscriberTest extends TestCase
 {
     public function testGetSubscribedEvents(): void
     {
