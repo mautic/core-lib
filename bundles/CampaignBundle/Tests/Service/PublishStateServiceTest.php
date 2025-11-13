@@ -17,11 +17,10 @@ final class PublishStateServiceTest extends MauticMysqlTestCase
     use CampaignAuditLogTrait;
 
     /**
-     * @dataProvider unpublishStateDataProvider
-     *
      * @param array<array{dateAdded: string, details: array<string, array<int, mixed>>}> $auditLogs
      * @param array<array{fromDate: ?string, toDate: ?string}>                           $expectedunpublishedranges
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('unpublishStateDataProvider')]
     public function testUnpublishStateCompilationFromAuditLog(array $auditLogs, array $expectedunpublishedranges, ?string $expectedLastPublishedDate, ?int $expectedUnpublishedSecondsSinceCampaignCreated = null): void
     {
         $campaign     = new Campaign();
@@ -70,7 +69,7 @@ final class PublishStateServiceTest extends MauticMysqlTestCase
         );
     }
 
-    public function unpublishStateDataProvider(): \Generator
+    public static function unpublishStateDataProvider(): \Generator
     {
         yield 'Campaign that is published' => [
             'auditLogs' => [

@@ -19,10 +19,9 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
     use CampaignAuditLogTrait;
 
     /**
-     * @dataProvider republishBehaviorProvider
-     *
      * @param array<array{dateAdded: string, details: array<string, array<int, mixed>>}> $auditLogs
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('republishBehaviorProvider')]
     public function testExecuteEventCommandWithRepublishBehavior(
         string $republishBehavior,
         string $triggerMode,
@@ -96,7 +95,7 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
     /**
      * @return array<string, array{republishBehavior: string, triggerMode: string, intervalDays: int, auditLogs: array<array{dateAdded: string, details: array<string, array<int, mixed>>}>, expectedTriggerDate: string, expectedIsScheduled: bool}>
      */
-    public function republishBehaviorProvider(): array
+    public static function republishBehaviorProvider(): array
     {
         $unpublishedAfter5days = 'published, unpublished and published';
         $auditLogs             = [
