@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Command;
 
-use Mautic\CampaignBundle\Command\TriggerCampaignCommand;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead;
@@ -868,7 +867,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
         // Execute using the command
         $logId         = $eventLog->getId();
-        $commandTester = $this->testSymfonyCommand(TriggerCampaignCommand::class, [
+        $commandTester = $this->testSymfonyCommand('mautic:campaigns:trigger', [
             '--campaign-id'       => $campaign->getId(),
             '--scheduled-only'    => true, // Only execute scheduled events to test the executeScheduled method
             '--contact-id'        => $contact->getId(),

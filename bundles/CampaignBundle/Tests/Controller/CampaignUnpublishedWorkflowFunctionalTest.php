@@ -91,7 +91,7 @@ final class CampaignUnpublishedWorkflowFunctionalTest extends AbstractCampaignTe
 
         $toggleElement = $crawler->filter('.toggle-publish-status');
         foreach ($attributes as $key => $val) {
-            $this->assertStringContainsString($val, $toggleElement->attr($key));
+            $this->assertStringContainsString($val, (string) $toggleElement->attr($key));
         }
     }
 

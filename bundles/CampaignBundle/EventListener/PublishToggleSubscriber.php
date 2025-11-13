@@ -26,7 +26,7 @@ final class PublishToggleSubscriber implements EventSubscriberInterface
 
     public function onTemplateRender(CustomTemplateEvent $event): void
     {
-        if ('MauticCoreBundle:Helper:publishstatus_icon.html.php' !== $event->getTemplate()) {
+        if ('@MauticCore/Helper/publishstatus_icon.html.twig' !== $event->getTemplate()) {
             return;
         }
 
