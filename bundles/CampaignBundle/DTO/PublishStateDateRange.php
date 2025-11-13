@@ -18,7 +18,7 @@ final class PublishStateDateRange
         $this->toDate = $toDate;
     }
 
-    public function getFromDate(): ?\DateTimeInterface
+    public function getFromDate(): \DateTimeInterface
     {
         return $this->fromDate;
     }

@@ -68,7 +68,7 @@ final class CampaignUnpublishedWorkflowFunctionalTest extends AbstractCampaignTe
 
     public function testCampaignListPageCheckUnpublishWorkflowAttributesPresent(): void
     {
-        $this->saveSomeCampaignLeadEventLogs();
+        $campaign   = $this->saveSomeCampaignLeadEventLogs();
         $translator = static::getContainer()->get('translator');
 
         // Check the message in the Campaign listing page

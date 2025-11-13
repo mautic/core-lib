@@ -6,6 +6,7 @@ namespace Mautic\CampaignBundle\Service;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
 use Mautic\CampaignBundle\DTO\PublishState;
 use Mautic\CampaignBundle\DTO\PublishStateDateRange;
 use Mautic\CampaignBundle\Entity\Campaign;
@@ -293,7 +294,7 @@ class PublishStateService
                     Criteria::expr()->eq('object', 'campaign'),
                     Criteria::expr()->eq('objectId', $campaign->getId()),
                 ),
-                ['id' => Criteria::ASC]
+                ['id' => Order::Ascending]
             )
         );
 

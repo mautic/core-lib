@@ -17,6 +17,7 @@ use Mautic\CampaignBundle\Executioner\ScheduledExecutioner;
 use Mautic\CampaignBundle\Tests\CampaignAuditLogTrait;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\LeadBundle\Command\SegmentCountCacheCommand;
+use Mautic\LeadBundle\Entity\Lead as Contact;
 use Mautic\LeadBundle\Entity\ListLead;
 use Mautic\LeadBundle\Helper\SegmentCountCacheHelper;
 use PHPUnit\Framework\Assert;
@@ -870,7 +871,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
         // Execute using the command
         $logId         = $eventLog->getId();
-        $commandTester = $this->testSymfonyCommand(TriggerCampaignCommand::NAME, [
+        $commandTester = $this->testSymfonyCommand(TriggerCampaignCommand::class, [
             '--campaign-id'       => $campaign->getId(),
             '--scheduled-only'    => true, // Only execute scheduled events to test the executeScheduled method
             '--contact-id'        => $contact->getId(),

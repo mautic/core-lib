@@ -49,7 +49,7 @@ final class PublishStateServiceTest extends MauticMysqlTestCase
 
         Assert::assertSame($expectedunpublishedranges, array_map(
             fn (PublishStateDateRange $range) => [
-                'fromDate' => $range->getFromDate()?->format(DateTimeHelper::FORMAT_DB),
+                'fromDate' => $range->getFromDate()->format(DateTimeHelper::FORMAT_DB),
                 'toDate'   => $range->getToDate()?->format(DateTimeHelper::FORMAT_DB),
             ], $unpublishStateService->generateUnpublishDateRanges($campaign)
         ));

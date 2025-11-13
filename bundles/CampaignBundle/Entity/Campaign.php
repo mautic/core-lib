@@ -22,7 +22,6 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\OptimisticLockInterface;
 use Mautic\CoreBundle\Entity\OptimisticLockTrait;
-use Mautic\CoreBundle\Entity\PublishStatusIconAttributesInterface;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\FormBundle\Entity\Form;
@@ -52,7 +51,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
         'swagger_definition_name' => 'Write',
     ]
 )]
-class Campaign extends FormEntity implements PublishStatusIconAttributesInterface, OptimisticLockInterface, UuidInterface
+class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterface
 {
     use UuidTrait;
 
@@ -704,6 +703,8 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
 
     /**
      * @deprecated use CoreEvents::VIEW_INJECT_CUSTOM_TEMPLATE to change template params instead
+     *
+     * @return array<string, string>
      */
     public function getDataAttributes(): array
     {
@@ -716,6 +717,8 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
 
     /**
      * @deprecated use CoreEvents::VIEW_INJECT_CUSTOM_TEMPLATE to change template params instead
+     *
+     * @return array<string, string>
      */
     public function getTranslationKeysDataAttributes(): array
     {
