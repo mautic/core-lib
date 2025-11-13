@@ -35,6 +35,10 @@ final class OverrideIncludeExtension extends AbstractExtension
 
     /**
      * Override the built-in include() twig function with event dispatching.
+     *
+     * @param mixed[]         $context
+     * @param string|string[] $template
+     * @param mixed[]         $variables
      */
     public function includeWithEvent(Environment $env, array $context, $template, array $variables = [], bool $withContext = true, bool $ignoreMissing = false, bool $sandboxed = false): string
     {
@@ -71,6 +75,9 @@ final class OverrideIncludeExtension extends AbstractExtension
         return 100; // High priority to ensure our extension overrides the core include function
     }
 
+    /**
+     * @param mixed[] $variables
+     */
     private function dispatchCustomTemplateEvent(string $template, array $variables): CustomTemplateEvent
     {
         return $this->eventDispatcher->dispatch(

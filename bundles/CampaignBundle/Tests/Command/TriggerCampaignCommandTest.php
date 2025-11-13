@@ -811,7 +811,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
     /**
      * @param array<array{dateAdded: string, details: array<string, array<int, mixed>>}> $auditLogs
-     * @param array<int, array<string, string>>                                          $expectedMetadata
+     * @param array<int, array<string, string>>                                          $expectedTriggerDateLog
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('republishBehaviorProvider')]
     public function testTriggerCampaignCommandWithRepublishBehavior(
@@ -821,7 +821,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         array $auditLogs,
         string $expectedTriggerDate,
         bool $expectedIsScheduled,
-        array $expectedMetadata,
+        array $expectedTriggerDateLog,
     ): void {
         // Create an unpublished campaign with specified republish behavior
         $campaign = new Campaign();
@@ -889,12 +889,12 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         $triggerDateLog = $metadata['triggerDateLog'];
         Assert::assertNotEmpty($triggerDateLog, 'Trigger date log should contain entries');
 
-        Assert::assertCount(count($expectedMetadata), $triggerDateLog);
+        Assert::assertCount(count($expectedTriggerDateLog), $triggerDateLog);
 
         // Assert that the expected metadata is present
         foreach ($triggerDateLog as $key => $log) {
-            Assert::assertSame($log['changedTo'], $expectedMetadata[$key]['changedTo']);
-            Assert::assertSame($log['note'], $expectedMetadata[$key]['note']);
+            Assert::assertSame($log['changedTo'], $expectedTriggerDateLog[$key]['changedTo']);
+            Assert::assertSame($log['note'], $expectedTriggerDateLog[$key]['note']);
         }
     }
 

@@ -3,6 +3,7 @@
 namespace Mautic\CoreBundle\Controller;
 
 use Mautic\CoreBundle\CoreEvents;
+use Mautic\CoreBundle\Event\CustomTemplateEvent;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
 use Mautic\CoreBundle\Exception\RecordNotUnpublishedException;
 use Mautic\CoreBundle\Factory\IpLookupFactory;
@@ -420,5 +421,18 @@ class AjaxController extends CommonController
         }
 
         return $this->sendJsonResponse($dataArray);
+    }
+
+    /**
+     * @param mixed[] $parameters
+     */
+    protected function renderView(string $view, array $parameters = []): string
+    {
+        $event = $this->dispatcher->dispatch(
+            new CustomTemplateEvent($this->getCurrentRequest(), $view, $parameters),
+            CoreEvents::VIEW_INJECT_CUSTOM_TEMPLATE
+        );
+
+        return parent::renderView($event->getTemplate(), $event->getVars());
     }
 }
