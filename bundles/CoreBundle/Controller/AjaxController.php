@@ -266,7 +266,7 @@ class AjaxController extends CommonController
                     if (!empty($refresh)) {
                         $dataArray['reload'] = 1;
                     } else {
-                        //get updated icon HTML
+                        // get updated icon HTML
                         $html = $this->renderView(
                             '@MauticCore/Helper/publishstatus_icon.html.twig',
                             [

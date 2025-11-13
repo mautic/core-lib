@@ -38,7 +38,7 @@ class EventScheduler
         private EventDispatcherInterface $dispatcher,
         private CoreParametersHelper $coreParametersHelper,
         private OptimisticLockServiceInterface $optimisticLockService,
-        private PublishStateService $publishStateService
+        private PublishStateService $publishStateService,
     ) {
     }
 

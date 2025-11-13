@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Command;
 
-use DateTime;
-use DateTimeZone;
-use Exception;
 use Mautic\CampaignBundle\Command\TriggerCampaignCommand;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
@@ -825,7 +822,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         array $auditLogs,
         string $expectedTriggerDate,
         bool $expectedIsScheduled,
-        array $expectedMetadata
+        array $expectedMetadata,
     ): void {
         // Create an unpublished campaign with specified republish behavior
         $campaign = new Campaign();

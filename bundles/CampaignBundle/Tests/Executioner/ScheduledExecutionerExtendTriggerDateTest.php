@@ -28,7 +28,7 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
         int $intervalDays,
         array $auditLogs,
         string $expectedTriggerDate,
-        bool $expectedIsScheduled
+        bool $expectedIsScheduled,
     ): void {
         // Create an unpublished campaign with specified republish behavior
         $campaign = new Campaign();

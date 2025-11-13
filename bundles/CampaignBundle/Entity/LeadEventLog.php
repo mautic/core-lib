@@ -357,7 +357,7 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
     /**
      * @return $this
      */
-    public function setTriggerDate(?\DateTimeInterface $triggerDate = null, string $note = null)
+    public function setTriggerDate(?\DateTimeInterface $triggerDate = null, ?string $note = null)
     {
         $this->triggerDate = $triggerDate;
         $this->setIsScheduled(true);
