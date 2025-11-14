@@ -13,6 +13,8 @@ trait TwigIntegrationTestTrait
     /**
      * Static data provider for integration tests
      * This uses a helper method to work around PHPUnit 10's static requirements.
+     *
+     * @return iterable<array{string, string, string, array<string, string>, string|false, array<array{string|null, string, string|null, string}>, string}>
      */
     public static function integrationTestDataProvider(): iterable
     {
@@ -34,8 +36,10 @@ trait TwigIntegrationTestTrait
     /**
      * Helper method to get integration test data
      * This creates a temporary instance to call the parent's non-static methods.
+     *
+     * @return iterable<array{string, string, string, array<string, string>, string|false, array<array{string|null, string, string|null, string}>, string}>
      */
-    private static function getIntegrationTestData(): iterable
+    protected static function getIntegrationTestData(): iterable
     {
         // Create a temporary instance of the actual test class
         $reflection = new \ReflectionClass(static::class);
@@ -47,8 +51,16 @@ trait TwigIntegrationTestTrait
 
     /**
      * @dataProvider integrationTestDataProvider
+     *
+     * @param string                $file
+     * @param string                $message
+     * @param string                $condition
+     * @param array<string, string> $templates
+     * @param string|bool           $exception
+     * @param array<mixed>          $outputs
+     * @param string                $deprecation
      */
-    public function testIntegration($file, $message, $condition, $templates, $exception, $outputs, $deprecation = '')
+    public function testIntegration($file, $message, $condition, $templates, $exception, $outputs, $deprecation = ''): void
     {
         $this->doIntegrationTest($file, $message, $condition, $templates, $exception, $outputs, $deprecation);
     }
@@ -56,20 +68,17 @@ trait TwigIntegrationTestTrait
     /**
      * Override the legacy integration test to prevent it from running
      * We don't use legacy Twig features, so this test is not needed.
+     *
+     * @param mixed $file
+     * @param mixed $message
+     * @param mixed $condition
+     * @param mixed $templates
+     * @param mixed $exception
+     * @param mixed $outputs
+     * @param mixed $deprecation
      */
-    public function testLegacyIntegration($file = null, $message = null, $condition = null, $templates = null, $exception = null, $outputs = null, $deprecation = '')
+    public function testLegacyIntegration($file = null, $message = null, $condition = null, $templates = null, $exception = null, $outputs = null, $deprecation = ''): void
     {
         $this->markTestSkipped('Legacy Twig tests are not applicable to this project');
-    }
-
-    /**
-     * Override to prevent the legacy data provider deprecation warning
-     * We return empty array since we skip the test anyway.
-     *
-     * @return array
-     */
-    public function getLegacyTests()
-    {
-        return [];
     }
 }
