@@ -8,6 +8,7 @@ use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
+use Mautic\CampaignBundle\Enum\RepublishBehavior;
 use Mautic\CampaignBundle\Executioner\InactiveExecutioner;
 use Mautic\CampaignBundle\Executioner\ScheduledExecutioner;
 use Mautic\CampaignBundle\Tests\CampaignAuditLogTrait;
@@ -929,7 +930,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
 
         return [
             'Same the original trigger date as it should not change' => [
-                'republishBehavior'      => 'count_all_time',
+                'republishBehavior'      => RepublishBehavior::COUNT_ALL_TIME->value,
                 'triggerMode'            => Event::TRIGGER_MODE_INTERVAL,
                 'intervalDays'           => 10,
                 'auditLogs'              => $auditLogs[$unpublishedAfter5days],
@@ -943,7 +944,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
                 ],
             ],
             '10 days after last publish which is 2024-10-10 00:00:00' => [
-                'republishBehavior'      => 'restart_on_publish',
+                'republishBehavior'      => RepublishBehavior::RESTART_ON_PUBLISH->value,
                 'triggerMode'            => Event::TRIGGER_MODE_INTERVAL,
                 'intervalDays'           => 10,
                 'auditLogs'              => $auditLogs[$unpublishedAfter5days],
@@ -961,7 +962,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
                 ],
             ],
             'Scheduled at 2024-10-02 00:00:00 for 10 days (2024-10-12 00:00:00), unpublished at 2024-10-05 00:00:00 after 3 days, published 2024-10-10 00:00:00 (5 days)' => [
-                'republishBehavior'      => 'count_only_while_published',
+                'republishBehavior'      => RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value,
                 'triggerMode'            => Event::TRIGGER_MODE_INTERVAL,
                 'intervalDays'           => 10,
                 'auditLogs'              => $auditLogs[$unpublishedAfter5days],
@@ -979,7 +980,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
                 ],
             ],
             'Absolute date trigger mode should not do anything' => [
-                'republishBehavior'      => 'count_only_while_published',
+                'republishBehavior'      => RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value,
                 'triggerMode'            => Event::TRIGGER_MODE_DATE,
                 'intervalDays'           => 10,
                 'auditLogs'              => $auditLogs[$unpublishedAfter5days],
@@ -993,7 +994,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
                 ],
             ],
             'Immediate trigger mode should not extend anything' => [
-                'republishBehavior'      => 'count_only_while_published',
+                'republishBehavior'      => RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value,
                 'triggerMode'            => Event::TRIGGER_MODE_IMMEDIATE,
                 'intervalDays'           => 10,
                 'auditLogs'              => $auditLogs[$unpublishedAfter5days],
@@ -1007,7 +1008,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
                 ],
             ],
             'If the interval is empty then there will be no extension' => [
-                'republishBehavior'      => 'count_only_while_published',
+                'republishBehavior'      => RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value,
                 'triggerMode'            => Event::TRIGGER_MODE_INTERVAL,
                 'intervalDays'           => 0,
                 'auditLogs'              => $auditLogs[$unpublishedAfter5days],

@@ -7,6 +7,7 @@ namespace Mautic\CampaignBundle\Tests\Executioner;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
+use Mautic\CampaignBundle\Enum\RepublishBehavior;
 use Mautic\CampaignBundle\Executioner\Scheduler\Mode\Interval;
 use Mautic\CampaignBundle\Tests\CampaignAuditLogTrait;
 use Mautic\CampaignBundle\Tests\Command\AbstractCampaignCommand;
@@ -127,7 +128,7 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
 
         return [
             'Same the original trigger date as it should not change' => [
-                'republishBehavior'   => 'count_all_time',
+                'republishBehavior'   => RepublishBehavior::COUNT_ALL_TIME->value,
                 'triggerMode'         => Event::TRIGGER_MODE_INTERVAL,
                 'intervalDays'        => 10,
                 'auditLogs'           => $auditLogs[$unpublishedAfter5days],
@@ -135,7 +136,7 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
                 'expectedIsScheduled' => false, // Executed anyway as the trigger date is still in the past
             ],
             '10 days after last publish which is 2024-10-10 00:00:00' => [
-                'republishBehavior'   => 'restart_on_publish',
+                'republishBehavior'   => RepublishBehavior::RESTART_ON_PUBLISH->value,
                 'triggerMode'         => Event::TRIGGER_MODE_INTERVAL,
                 'intervalDays'        => 10,
                 'auditLogs'           => $auditLogs[$unpublishedAfter5days],
@@ -143,7 +144,7 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
                 'expectedIsScheduled' => false, // Executed anyway as the trigger date is still in the past
             ],
             'Scheduled at 2024-10-02 00:00:00 for 10 days (2024-10-12 00:00:00), unpublished at 2024-10-05 00:00:00 after 3 days, published 2024-10-10 00:00:00 (5 days). From this it would be another 10 days but 3 were already served.' => [
-                'republishBehavior'   => 'count_only_while_published',
+                'republishBehavior'   => RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value,
                 'triggerMode'         => Event::TRIGGER_MODE_INTERVAL,
                 'intervalDays'        => 10,
                 'auditLogs'           => $auditLogs[$unpublishedAfter5days],
@@ -151,7 +152,7 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
                 'expectedIsScheduled' => false, // Executed anyway as the trigger date is still in the past
             ],
             'Scheduled 10 years into the future so it should reschedule, not execute. Republished 2024-10-10 00:00:00 with 3 days already published before.' => [
-                'republishBehavior'   => 'count_only_while_published',
+                'republishBehavior'   => RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value,
                 'triggerMode'         => Event::TRIGGER_MODE_INTERVAL,
                 'intervalDays'        => $tenYearsInDays, // 3652 days (Warning, this test will fail in 10 years. Sending regards to future maintainers!)
                 'auditLogs'           => $auditLogs[$unpublishedAfter5days],
@@ -159,7 +160,7 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
                 'expectedIsScheduled' => true, // Not executed but rescheduled for 10 years in the future
             ],
             'Absolute date trigger mode should not do anything' => [
-                'republishBehavior'   => 'count_only_while_published',
+                'republishBehavior'   => RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value,
                 'triggerMode'         => Event::TRIGGER_MODE_DATE,
                 'intervalDays'        => 10,
                 'auditLogs'           => $auditLogs[$unpublishedAfter5days],
@@ -167,7 +168,7 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
                 'expectedIsScheduled' => false, // Executed anyway as the trigger date is still in the past
             ],
             'Immediate trigger mode should not extend anything' => [
-                'republishBehavior'   => 'count_only_while_published',
+                'republishBehavior'   => RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value,
                 'triggerMode'         => Event::TRIGGER_MODE_IMMEDIATE,
                 'intervalDays'        => 10,
                 'auditLogs'           => $auditLogs[$unpublishedAfter5days],
@@ -175,7 +176,7 @@ final class ScheduledExecutionerExtendTriggerDateTest extends AbstractCampaignCo
                 'expectedIsScheduled' => false, // Executed anyway as the trigger date is still in the past
             ],
             'If the interval is empty then there will be no extension' => [
-                'republishBehavior'   => 'count_only_while_published',
+                'republishBehavior'   => RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value,
                 'triggerMode'         => Event::TRIGGER_MODE_INTERVAL,
                 'intervalDays'        => 0,
                 'auditLogs'           => $auditLogs[$unpublishedAfter5days],

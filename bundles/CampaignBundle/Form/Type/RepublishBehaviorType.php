@@ -4,18 +4,13 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Form\Type;
 
+use Mautic\CampaignBundle\Enum\RepublishBehavior;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class RepublishBehaviorType extends AbstractType
 {
-    private const BASE_CHOICES = [
-        'mautic.campaignconfig.campaign_republish_behavior.restart_on_publish'         => 'restart_on_publish',
-        'mautic.campaignconfig.campaign_republish_behavior.count_only_while_published' => 'count_only_while_published',
-        'mautic.campaignconfig.campaign_republish_behavior.count_all_time'             => 'count_all_time',
-    ];
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -30,8 +25,8 @@ final class RepublishBehaviorType extends AbstractType
         ]);
 
         $resolver->setNormalizer('choices', fn ($options) => $options['include_global_option']
-                ? ['mautic.campaignconfig.campaign_republish_behavior.use_global' => null] + self::BASE_CHOICES
-                : self::BASE_CHOICES
+                ? ['mautic.campaignconfig.campaign_republish_behavior.use_global' => null] + RepublishBehavior::getChoices()
+                : RepublishBehavior::getChoices()
         );
 
         $resolver->setAllowedTypes('include_global_option', 'bool');

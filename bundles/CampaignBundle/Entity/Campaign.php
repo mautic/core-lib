@@ -95,12 +95,7 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
     #[Groups(['campaign:read', 'campaign:write'])]
     public ?\DateTimeInterface $deleted = null;
 
-    /**
-     * Defines how the scheduled events behave after a campaign is republished. It has 3 options:
-     * - `count_all_time`: There is no counting. The original trigger date is used. The unpublished time is not counted.
-     * - `restart_on_publish`: The interval starts from scratch after the campaign is published again.
-     * - `count_only_while_published`: The event will only count the time while the campaign is published. If it is unpublished, the counter will not increase.
-     */
+    // see Mautic\CampaignBundle\Enum\RepublishBehavior for available values.
     #[Groups(['campaign:read', 'campaign:write'])]
     private ?string $republishBehavior = null;
 

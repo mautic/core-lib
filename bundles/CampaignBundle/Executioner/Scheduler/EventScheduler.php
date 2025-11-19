@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Mautic\CampaignBundle\CampaignEvents;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
+use Mautic\CampaignBundle\Enum\RepublishBehavior;
 use Mautic\CampaignBundle\Event\ScheduledBatchEvent;
 use Mautic\CampaignBundle\Event\ScheduledEvent;
 use Mautic\CampaignBundle\EventCollector\Accessor\Event\AbstractEventAccessor;
@@ -179,10 +180,10 @@ class EventScheduler
             return false; // Only extend trigger date for interval events
         }
 
-        $campaignRepublishBehaviorDefault = $this->coreParametersHelper->get('campaign_republish_behavior', 'count_all_time');
+        $campaignRepublishBehaviorDefault = $this->coreParametersHelper->get('campaign_republish_behavior', RepublishBehavior::COUNT_ALL_TIME->value);
         $campaignRepublishBehavior        = $event->getCampaign()->getRepublishBehavior() ?? $campaignRepublishBehaviorDefault;
 
-        if ('count_all_time' === $campaignRepublishBehavior) {
+        if (RepublishBehavior::COUNT_ALL_TIME->value === $campaignRepublishBehavior) {
             return false; // Do not extend trigger date for "count all time" behavior. Unpublished time does not matter.
         }
 
@@ -196,20 +197,20 @@ class EventScheduler
         $lastPublishDate   = $this->publishStateService->getLastPublishDate($event->getCampaign());
         $scheduledInterval = (new DateTimeHelper())->buildInterval($interval, $unit);
 
-        if ('restart_on_publish' === $campaignRepublishBehavior && $lastPublishDate) {
+        if (RepublishBehavior::RESTART_ON_PUBLISH->value === $campaignRepublishBehavior && $lastPublishDate) {
             $lastPublishDatePlusInterval = \DateTimeImmutable::createFromInterface($lastPublishDate)->add($scheduledInterval);
-            $log->setTriggerDate(\DateTime::createFromImmutable($lastPublishDatePlusInterval), 'Campaign republish behavior: restart_on_publish');
+            $log->setTriggerDate(\DateTime::createFromImmutable($lastPublishDatePlusInterval), 'Campaign republish behavior: '.RepublishBehavior::RESTART_ON_PUBLISH->value);
 
             return true;
         }
 
-        if ('count_only_while_published' === $campaignRepublishBehavior) {
+        if (RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value === $campaignRepublishBehavior) {
             $unublishedSeconds = $this->publishStateService->getUnublishedSecondsSince($event->getCampaign(), $log->getDateTriggered()); // Date triggered is set to date when the log was created for unexecuted logs.
             $ellapsedSeconds   = $lastPublishDate->getTimestamp() - $log->getDateTriggered()->getTimestamp(); // Seconds since the event log was created and now.
             $publishedSeconds  = $ellapsedSeconds - $unublishedSeconds;
             $secondsToAdd      = (new DateTimeHelper())->intervalToSeconds($scheduledInterval) - $publishedSeconds;
             $newTriggerDate    = \DateTimeImmutable::createFromInterface($lastPublishDate)->add((new DateTimeHelper())->buildInterval($secondsToAdd, 'S'));
-            $log->setTriggerDate(\DateTime::createFromImmutable($newTriggerDate), 'Campaign republish behavior: count_only_while_published');
+            $log->setTriggerDate(\DateTime::createFromImmutable($newTriggerDate), 'Campaign republish behavior: '.RepublishBehavior::COUNT_ONLY_WHILE_PUBLISHED->value);
 
             return true;
         }
