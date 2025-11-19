@@ -39,4 +39,3 @@ final class BlockedFreeEmailProvidersHelperTest extends TestCase
         self::assertGreaterThan(0, count($providers));
     }
 }
-
