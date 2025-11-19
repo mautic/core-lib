@@ -4,10 +4,10 @@ use Mautic\FormBundle\Event\Service\FieldValueTransformer;
 use Mautic\FormBundle\Form\Type\FieldType;
 use Mautic\FormBundle\Form\Type\SubmitActionEmailType;
 use Mautic\FormBundle\Form\Type\SubmitActionRepostType;
+use Mautic\FormBundle\Helper\BlockedFreeEmailProvidersHelper;
 use Mautic\FormBundle\Helper\FormFieldHelper;
 use Mautic\FormBundle\Helper\FormUploader;
 use Mautic\FormBundle\Helper\TokenHelper;
-use Mautic\FormBundle\Helper\BlockedFreeEmailProvidersHelper;
 use Mautic\FormBundle\Validator\Constraint\FileExtensionConstraintValidator;
 use Mautic\FormBundle\Validator\UploadFieldValidator;
 

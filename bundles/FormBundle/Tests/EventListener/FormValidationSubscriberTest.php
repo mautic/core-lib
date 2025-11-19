@@ -193,7 +193,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
                 };
             });
 
-        $event = new ValidationEvent($field, $email);
+        $event  = new ValidationEvent($field, $email);
         $ref    = new \ReflectionClass($this->subscriber);
         $method = $ref->getMethod('fieldEmailValidation');
         $method->setAccessible(true);
@@ -224,7 +224,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
                 };
             });
 
-        $event = new ValidationEvent($field, $email);
+        $event  = new ValidationEvent($field, $email);
 
         $ref    = new \ReflectionClass($this->subscriber);
         $method = $ref->getMethod('fieldEmailValidation');
