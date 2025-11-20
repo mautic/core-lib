@@ -16,15 +16,10 @@ enum RepublishBehavior: string
     case COUNT_ONLY_WHILE_PUBLISHED = 'count_only_while_published';
     case COUNT_ALL_TIME             = 'count_all_time';
 
-    public const TRANSLATION_PREFIX = 'mautic.campaignconfig.campaign_republish_behavior.';
 
     public function getLabel(): string
     {
-        return match ($this) {
-            self::RESTART_ON_PUBLISH         => self::TRANSLATION_PREFIX.'restart_on_publish',
-            self::COUNT_ONLY_WHILE_PUBLISHED => self::TRANSLATION_PREFIX.'count_only_while_published',
-            self::COUNT_ALL_TIME             => self::TRANSLATION_PREFIX.'count_all_time',
-        };
+        return 'mautic.campaignconfig.campaign_republish_behavior.'.$this->value;
     }
 
     /**
