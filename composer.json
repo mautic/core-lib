@@ -73,7 +73,7 @@
     "friendsofsymfony/rest-bundle": "^3.5.0",
     "klapaudius/oauth-server-bundle": "^4.0.0",
     "jms/serializer-bundle": "^5.4",
-    "joomla/filter": "~1.4.4",
+    "joomla/filter": "~3.0.5",
     "oneup/uploader-bundle": "^3.1.0",
     "jbroadway/urlify": "^1.0",
     "geoip2/geoip2": "~2.0",
