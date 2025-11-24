@@ -113,6 +113,9 @@ class FileUploaderTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $translatorMock->method('trans')
+            ->willReturn('Could not upload filed');
+
         $fileMock = $this->getMockBuilder(UploadedFile::class)
             ->disableOriginalConstructor()
             ->getMock();
