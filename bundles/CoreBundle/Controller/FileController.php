@@ -36,7 +36,7 @@ class FileController extends AjaxController
                     $fileUploader->validateImage($file);
                     $fileName = $fileUploader->upload($mediaDir, $file);
                     $this->successfulResponse($request, $fileName, $editor);
-                } catch (FileUploadException $error) {
+                } catch (FileUploadException) {
                     $this->failureResponse($editor);
                 }
             }
@@ -65,7 +65,7 @@ class FileController extends AjaxController
                             'thumb' => $imageUrl,
                             'name'  => $name,
                         ];
-                    } catch (FileUploadException $error) {
+                    } catch (FileUploadException) {
                     }
                 }
             }
