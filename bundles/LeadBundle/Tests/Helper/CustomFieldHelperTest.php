@@ -196,6 +196,34 @@ class CustomFieldHelperTest extends TestCase
         $this->assertEquals('2023-05-20 00:00:00', $result, 'FieldValueTransformer was not able to transform time field properly');
     }
 
+    public function testFieldValueTransformerUsesTimezoneConversion(): void
+    {
+        $originalTimezone = date_default_timezone_get();
+        $reflection       = new \ReflectionClass(DateTimeHelper::class);
+        $property         = $reflection->getProperty('defaultLocalTimezone');
+        $property->setAccessible(true);
+        $originalDefaultLocalTimezone = $property->getValue();
+
+        // Simulate a non-UTC default timezone to exercise real conversion
+        $property->setValue(null, 'Europe/Zurich');
+        date_default_timezone_set('UTC');
+
+        try {
+            $field  = ['type' => 'datetime'];
+            $value  = '2025-11-24 00:30:00';
+            $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
+            $this->assertEquals('2025-11-24 22:30:00', $result, 'Datetime was not converted from Europe/Berlin to UTC correctly');
+
+            $field  = ['type' => 'date'];
+            $value  = '2025-11-24';
+            $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
+            $this->assertEquals('2025-11-24', $result, 'Date was not converted from Europe/Zurich to UTC correctly');
+        } finally {
+            $property->setValue(null, $originalDefaultLocalTimezone);
+            date_default_timezone_set($originalTimezone);
+        }
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();
