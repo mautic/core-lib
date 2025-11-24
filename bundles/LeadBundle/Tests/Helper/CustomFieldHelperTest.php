@@ -98,9 +98,9 @@ class CustomFieldHelperTest extends TestCase
         ];
 
         $expected = [
-            'customdate'         => (new DateTimeHelper('-1 day'))->toLocalString('Y-m-d'),
-            'customdatetime'     => (new DateTimeHelper('-1 day'))->toLocalString('Y-m-d H:i:s'),
-            'customtime'         => (new DateTimeHelper('-20 minutes'))->toLocalString('H:i:s'),
+            'customdate'         => (new DateTimeHelper('-1 day'))->toUtcString('Y-m-d'),
+            'customdatetime'     => (new DateTimeHelper('-1 day'))->toUtcString('Y-m-d H:i:s'),
+            'customtime'         => (new DateTimeHelper('-20 minutes'))->toUtcString('H:i:s'),
             'customnulldatetime' => null,
         ];
 
@@ -177,7 +177,7 @@ class CustomFieldHelperTest extends TestCase
     public function testFieldValueTransformerWithDateTimeFields(): void
     {
         $mockDateTimeHelper = $this->createMock(DateTimeHelper::class);
-        $mockDateTimeHelper->method('toLocalString')
+        $mockDateTimeHelper->method('toUtcString')
             ->willReturn('2023-05-20 00:00:00');
 
         $field  = ['type' => 'datetime'];
