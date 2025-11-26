@@ -60,16 +60,6 @@
                             {{ include(
                                 '@MauticCore/Helper/tableheader.html.twig',
                                 {
-                                    'sessionVar': 'point.insight',
-                                    'orderBy'   : 'pi.insightAction',
-                                    'text'      : 'mautic.core.type',
-                                    'class'     : 'visible-md visible-lg col-pointinsight-type',
-                                }
-                            ) }}
-
-                            {{ include(
-                                '@MauticCore/Helper/tableheader.html.twig',
-                                {
                                     'sessionVar' : 'point.insight',
                                     'orderBy'    : 'pi.id',
                                     'text'       : 'mautic.core.id',
@@ -124,7 +114,6 @@
                                         {{ item.category.title }}
                                     {% endif %}
                                 </td>
-                                <td class="visible-md visible-lg">{{ item.insightAction }}</td>
                                 <td class="visible-md visible-lg">{{ item.id }}</td>
                             </tr>
                         {% endfor %}

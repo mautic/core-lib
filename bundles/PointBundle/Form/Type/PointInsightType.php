@@ -53,6 +53,22 @@ class PointInsightType extends AbstractType
         );
 
         $builder->add(
+            'infoText',
+            TextType::class,
+            [
+                'label'      => 'mautic.point.insight.action.set_custom_field_to_winning_point_group',
+                'label_attr' => ['class' => 'control-label'],
+                'mapped'     => false,
+                'required'   => false,
+                'attr'       => [
+                    'class'   => 'form-control',
+                    'tooltip' => 'mautic.point.insight.action.set_custom_field_to_winning_point_group.tooltip',
+                    'style'   => 'display: none;',
+                ],
+            ]
+        );
+
+        $builder->add(
             'category',
             CategoryListType::class,
             [
@@ -114,7 +130,6 @@ class PointInsightType extends AbstractType
                 'attr'       => [
                     'class'                => 'form-control',
                     'data-toggle'          => 'multiselect',
-                    'tooltip'              => 'mautic.point.insight.action.set_custom_field.tooltip',
                 ],
                 'multiple'      => true,
                 'required'      => false,

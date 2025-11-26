@@ -26,8 +26,11 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="pa-md">
-                                    {{ form_row(form.insightType) }}
-                                    {{ form_row(form.insightAction) }}
+                                    {{ form_row(form.infoText) }}
+                                    <div style="display: none;">
+                                        {{ form_widget(form.insightType) }}
+                                        {{ form_widget(form.insightAction) }}
+                                    </div>
                                     {{ form_row(form.pointGroups) }}
                                     {{ form_row(form.customField) }}
                                 </div>

@@ -22,14 +22,14 @@ class PointInsight extends FormEntity
     private $description;
 
     /**
-     * @var string|null
+     * @var string
      */
-    private $insightType;
+    private $insightType = 'compare_point_groups';
 
     /**
-     * @var string|null
+     * @var string
      */
-    private $insightAction;
+    private $insightAction = 'set_custom_field';
 
     /**
      * @var string|null
@@ -64,12 +64,10 @@ class PointInsight extends FormEntity
 
         $builder->createField('insightType', 'string')
             ->columnName('insight_type')
-            ->nullable()
             ->build();
 
         $builder->createField('insightAction', 'string')
             ->columnName('insight_action')
-            ->nullable()
             ->build();
 
         $builder->createField('customField', 'string')
