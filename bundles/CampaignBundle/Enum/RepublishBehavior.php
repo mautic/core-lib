@@ -16,7 +16,6 @@ enum RepublishBehavior: string
     case COUNT_ONLY_WHILE_PUBLISHED = 'count_only_while_published';
     case COUNT_ALL_TIME             = 'count_all_time';
 
-
     public function getLabel(): string
     {
         return 'mautic.campaignconfig.campaign_republish_behavior.'.$this->value;
