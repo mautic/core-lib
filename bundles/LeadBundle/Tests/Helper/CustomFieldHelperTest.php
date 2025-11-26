@@ -215,9 +215,16 @@ class CustomFieldHelperTest extends TestCase
             $this->assertEquals('2025-01-23 22:30:00', $result, 'Datetime was not converted from Etc/GMT-2 to UTC correctly');
 
             $field  = ['type' => 'date'];
-            $value  = '2025-01-24';
+            $value  = '2025-01-24 00:30:00';
             $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
             $this->assertEquals('2025-01-23', $result, 'Date was not converted from Etc/GMT-2 to UTC correctly');
+
+            $field  = ['type' => 'date'];
+            $value  = '2025-01-24';
+            $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
+            // Date strings without a time component are parsed using PHP's default timezone (UTC here),
+            // so the date remains unchanged.
+            $this->assertEquals('2025-01-24', $result, 'Date was not converted from Etc/GMT-2 to UTC correctly');
         } finally {
             $property->setValue(null, $originalDefaultLocalTimezone);
             date_default_timezone_set($originalTimezone);
