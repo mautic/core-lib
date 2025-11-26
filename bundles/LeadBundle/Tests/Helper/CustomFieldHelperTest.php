@@ -204,20 +204,20 @@ class CustomFieldHelperTest extends TestCase
         $property->setAccessible(true);
         $originalDefaultLocalTimezone = $property->getValue();
 
-        // Simulate a non-UTC default timezone to exercise real conversion
-        $property->setValue(null, 'Europe/Zurich');
+        // Simulate a non-UTC default timezone (fixed offset) to exercise real conversion
+        $property->setValue(null, 'Etc/GMT-2');
         date_default_timezone_set('UTC');
 
         try {
             $field  = ['type' => 'datetime'];
-            $value  = '2025-11-24 00:30:00';
+            $value  = '2025-01-24 00:30:00';
             $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
-            $this->assertEquals('2025-11-24 22:30:00', $result, 'Datetime was not converted from Europe/Berlin to UTC correctly');
+            $this->assertEquals('2025-01-23 22:30:00', $result, 'Datetime was not converted from Etc/GMT-2 to UTC correctly');
 
             $field  = ['type' => 'date'];
-            $value  = '2025-11-24';
+            $value  = '2025-01-24';
             $result = CustomFieldHelper::fieldValueTransfomer($field, $value);
-            $this->assertEquals('2025-11-24', $result, 'Date was not converted from Europe/Zurich to UTC correctly');
+            $this->assertEquals('2025-01-23', $result, 'Date was not converted from Etc/GMT-2 to UTC correctly');
         } finally {
             $property->setValue(null, $originalDefaultLocalTimezone);
             date_default_timezone_set($originalTimezone);
