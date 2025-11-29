@@ -1423,6 +1423,7 @@ class MailHelperTest extends TestCase
             [
                 'To'                    => 'contact1@somewhere.com',
                 'From'                  => 'No Body <nobody@nowhere.com>',
+                'Sender'                => 'No Body <nobody@nowhere.com>',
                 'Reply-To'              => 'nobody@nowhere.com',
                 'Subject'               => 'Test',
                 'X-Mautic-Test-2'       => MailHelper::getBlankPixel(),
