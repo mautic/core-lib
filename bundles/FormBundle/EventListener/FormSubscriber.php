@@ -54,15 +54,21 @@ class FormSubscriber implements EventSubscriberInterface
                 ['onFormSubmitActionSendEmail', 0],
                 ['onFormSubmitActionRepost', 0],
             ],
-            FormEvents::FORM_ON_SUBMIT => ['increaseFormSubmissionCount', 0],
+            FormEvents::FORM_ON_SUBMIT           => ['increaseFormSubmissionCount', 0],
+            FormEvents::SUBMISSION_POST_DELETE   => ['decreaseFormSubmissionCount', 0],
         ];
     }
 
-    public function increaseFormSubmissionCount(Events\SubmissionEvent $event)
+    public function increaseFormSubmissionCount(Events\SubmissionEvent $event): void
     {
-        $form = $event->getForm();
+        $form            = $event->getForm();
+        $submissionLimit = $form->getSubmissionLimit();
+        $currentCount    = $form->getSubmissionCount();
+
         $this->formRepository->incrementSubmissionCount($form->getId());
-        if ($form->isSubmissionLimitReached()) {
+
+        $newCount = $currentCount + 1;
+        if (null !== $submissionLimit && $submissionLimit > 0 && $newCount >= $submissionLimit) {
             $ownerId = $form->getCreatedBy();
             if ($ownerId) {
                 $user = $this->userRepository->find($ownerId);
@@ -77,6 +83,12 @@ class FormSubscriber implements EventSubscriberInterface
                 );
             }
         }
+    }
+
+    public function decreaseFormSubmissionCount(Events\SubmissionDeleteEvent $event): void
+    {
+        $form = $event->getForm();
+        $this->formRepository->decrementSubmissionCount($form->getId());
     }
 
     /**
