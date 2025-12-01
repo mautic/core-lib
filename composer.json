@@ -88,7 +88,7 @@
     "ramsey/uuid": "^4.7",
     "noxlogic/ratelimit-bundle": "^1.19",
     "knplabs/knp-menu-bundle": "^3.0",
-    "guzzlehttp/oauth-subscriber": "^0.8.0",
+    "guzzlehttp/oauth-subscriber": "^0.8.1",
     "helios-ag/fm-elfinder-bundle": "^12.3",
     "leezy/pheanstalk-bundle": "dev-master",
     "tightenco/collect": "^8.16.0",
