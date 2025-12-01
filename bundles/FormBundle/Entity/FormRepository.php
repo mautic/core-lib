@@ -292,4 +292,31 @@ class FormRepository extends CommonRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * Get submission limit and count atomically with FOR UPDATE lock.
+     *
+     * @return array{submission_limit: int|null, submission_count: int}|null
+     */
+    public function getSubmissionStatsForUpdate(int $formId): ?array
+    {
+        $conn = $this->_em->getConnection();
+        $qb   = $conn->createQueryBuilder();
+        $qb->select('submission_limit', 'submission_count')
+            ->from($this->getTableName(), 'f')
+            ->where('f.id = :id')
+            ->setParameter('id', $formId)
+            ->setMaxResults(1);
+
+        $result = $conn->executeQuery($qb->getSQL().' FOR UPDATE', $qb->getParameters(), $qb->getParameterTypes())->fetchAssociative();
+
+        if (!$result) {
+            return null;
+        }
+
+        return [
+            'submission_limit' => $result['submission_limit'],
+            'submission_count' => (int) $result['submission_count'],
+        ];
+    }
 }
