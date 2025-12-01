@@ -108,15 +108,6 @@ final class FormEvents
     public const FORM_ON_SUBMIT = 'mautic.form_on_submit';
 
     /**
-     * The mautic.form_submission_post_delete event is dispatched after a form submission is deleted.
-     *
-     * The event listener receives a Mautic\FormBundle\Event\SubmissionEvent instance.
-     *
-     * @var string
-     */
-    public const SUBMISSION_POST_DELETE = 'mautic.form_submission_post_delete';
-
-    /**
      * The mautic.form.on_campaign_trigger_condition event is fired when the campaign condition triggers.
      *
      * The event listener receives a

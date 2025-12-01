@@ -29,7 +29,6 @@ use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Entity\Submission;
 use Mautic\FormBundle\Entity\SubmissionRepository;
 use Mautic\FormBundle\Event\Service\FieldValueTransformer;
-use Mautic\FormBundle\Event\SubmissionDeleteEvent;
 use Mautic\FormBundle\Event\SubmissionEvent;
 use Mautic\FormBundle\Event\ValidationEvent;
 use Mautic\FormBundle\Exception\FileValidationException;
@@ -404,34 +403,9 @@ class SubmissionModel extends CommonFormModel
      */
     public function deleteEntity($submission): void
     {
-        $form = $submission->getForm();
         $this->formUploader->deleteUploadedFiles($submission);
 
         parent::deleteEntity($submission);
-
-        if ($form && $this->dispatcher->hasListeners(FormEvents::SUBMISSION_POST_DELETE)) {
-            $event = new SubmissionDeleteEvent($submission, $form);
-            $this->dispatcher->dispatch($event, FormEvents::SUBMISSION_POST_DELETE);
-        }
-    }
-
-    /**
-     * @param array<int> $ids
-     *
-     * @return array<int, Submission|null>
-     */
-    public function deleteEntities($ids): array
-    {
-        $entities = [];
-        foreach ($ids as $id) {
-            $entity        = $this->getEntity($id);
-            $entities[$id] = $entity;
-            if (null !== $entity) {
-                $this->deleteEntity($entity);
-            }
-        }
-
-        return $entities;
     }
 
     /**
