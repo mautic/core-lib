@@ -662,9 +662,9 @@ Mautic.addLeadListFilter = function (elId, elObj) {
     var filterBase  = prefix + "[filters][" + filterNum + "]";
     var filterIdBase = prefix + "_filters_" + filterNum + "_";
 
-    if (mQuery('#' + prefix + '_filters div.panel').length == 0) {
+    if (Mautic.segmentFilter().getFilterCount() === 0) {
         // First filter so hide the glue footer
-        prototype.find(".panel-heading .panel-glue").addClass('hide');
+        prototype.find(".panel-glue").addClass('hide');
     }
 
     const filterTypeIcon = filterOption.data('field-icon');
@@ -856,6 +856,8 @@ Mautic.updateLeadFieldProperties = function(selectedVal, onload) {
         selectedVal = 'select';
     }
 
+    mQuery('#leadfield_properties [data-toggle="tooltip"]').tooltip('destroy');
+
     if (mQuery('#field-templates .' + selectedVal).length) {
         mQuery('#leadfield_properties').html(
             mQuery('#field-templates .' + selectedVal).html()
@@ -901,6 +903,8 @@ Mautic.updateLeadFieldProperties = function(selectedVal, onload) {
                 }
             }, 500);
         });
+
+        mQuery('#leadfield_properties [data-toggle="tooltip"]').tooltip();
     } else if (!mQuery('#leadfield_properties .' + selectedVal).length) {
         mQuery('#leadfield_properties').html('');
     }
