@@ -37,6 +37,7 @@ use Mautic\LeadBundle\Tracker\ContactTracker;
 use Mautic\LeadBundle\Tracker\Service\DeviceTrackingService\DeviceTrackingServiceInterface;
 use Mautic\PageBundle\Model\PageModel;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Entity\UserRepository;
 use Monolog\Logger;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -242,11 +243,13 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->router                     = $this->createMock(RouterInterface::class);
         $this->contactTracker             = $this->createMock(ContactTracker::class);
         $this->contactMerger              = $this->createMock(ContactMerger::class);
+        $userRepository                   = $this->createMock(UserRepository::class);
 
-        $this->entityManager->method('getRepository')->willReturnCallback(function (string $class) {
+        $this->entityManager->method('getRepository')->willReturnCallback(function (string $class) use ($userRepository) {
             return match ($class) {
                 Submission::class => $this->submissioRepository,
                 Lead::class       => $this->leadRepository,
+                User::class       => $userRepository,
                 default           => null,
             };
         });
