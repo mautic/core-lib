@@ -45,10 +45,8 @@ return function (ContainerConfigurator $configurator): void {
     $services->set('mautic.http.client', GuzzleHttp\Client::class)->autowire();
     $services->set(Mautic\CoreBundle\Doctrine\MigrationFactoryDecorator::class)->autowire();
 
-    if (class_exists(StringExtension::class)) {
-        $services->set(StringExtension::class)
-            ->tag('twig.extension');
-    }
+    $services->set(StringExtension::class)
+        ->tag('twig.extension');
 
     $services->alias(GuzzleHttp\Client::class, 'mautic.http.client');
     $services->alias(Psr\Http\Client\ClientInterface::class, 'mautic.http.client');
