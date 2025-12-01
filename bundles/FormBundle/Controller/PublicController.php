@@ -98,6 +98,26 @@ class PublicController extends CommonFormController
 
                         if ($stats && null !== $stats['submission_limit'] && $stats['submission_limit'] > 0 && $stats['submission_count'] >= $stats['submission_limit']) {
                             $error = $form->getSubmissionLimitMessage() ?? $this->translator->trans('mautic.form.submission.limit_reached');
+
+                            $ownerId = $form->getCreatedBy();
+                            if ($ownerId) {
+                                /** @var \Mautic\CoreBundle\Model\NotificationModel $notificationModel */
+                                $notificationModel = $this->getModel('core.notification');
+                                /** @var \Mautic\UserBundle\Entity\UserRepository $userRepository */
+                                $userRepository = $this->doctrine->getRepository(\Mautic\UserBundle\Entity\User::class);
+                                $user = $userRepository->find($ownerId);
+                                if ($user) {
+                                    $notificationModel->addNotification(
+                                        $this->translator->trans('mautic.form.submission.limit_reached.notification', ['%form%' => $form->getName()]),
+                                        'warning',
+                                        false,
+                                        $form->getName(),
+                                        null,
+                                        null,
+                                        $user
+                                    );
+                                }
+                            }
                         } else {
                             $result = $formSubmissionModel->saveSubmission($post, $server, $form, $request, true);
                             if (!empty($result['errors'])) {
