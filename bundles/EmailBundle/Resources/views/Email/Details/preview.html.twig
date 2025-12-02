@@ -3,7 +3,9 @@
     <div class="row"><hr class=""></div>
     <div class="d-flex gap-sm ai-start">
         <div class="d-inline-flex as-1-1 ai-center jc-center" style="background-color: rgb(255, 208, 188); border-radius: 100px; width: 50px;">
-            <span class="type-heading-03 fw-b">D</span>
+            <span class="type-heading-03 fw-b">
+                {{ email.fromName|default(configGetParameter('mailer_from_name'))|slice(0, 1)|upper }}
+            </span>
         </div>
         <div>
             <div class="d-flex ai-center gap-xs mb-2 mt-4">
@@ -11,8 +13,8 @@
                 <span class="type-label-01">&lt;{{ email.fromAddress|default(configGetParameter('mailer_from_email')) }}&gt;</span>
 
             </div>
-            <span class="type-label-01 text-secondary">To:</span>
-            <span class="type-label-02">Me</span>
+            <span class="type-label-01 text-secondary">{{ 'mautic.email.preview.to_label'|trans }}</span>
+            <span class="type-label-02">{{ 'mautic.email.preview.to_me'|trans }}</span>
             <div class="d-flex text-secondary gap-md mt-xs">
                 <div class="d-flex ai-center">
                     <i class="ri-calendar-line"></i>
@@ -29,7 +31,7 @@
     <div id="email-details-header" class="d-flex gap-md">
         {% if email.replyToAddress %}
         <div class="d-flex gap-3 ai-center">
-            <span class="type-label-01 text-secondary">Reply to:</span>
+            <span class="type-label-01 text-secondary">{{ 'mautic.email.preview.reply_to'|trans }}</span>
             {% include '@MauticCore/Helper/_tag.html.twig' with { tags: [
                 {
                     color: 'warm-gray',
@@ -41,7 +43,7 @@
         {% endif %}
         {% if email.bccAddress %}
         <div class="d-flex gap-3 ai-center">
-            <span class="type-label-01 text-secondary">Bcc:</span>
+            <span class="type-label-01 text-secondary">{{ 'mautic.email.preview.bcc_label'|trans }}</span>
             {% include '@MauticCore/Helper/_tag.html.twig' with { tags: [
                 {
                     color: 'warm-gray',
@@ -52,7 +54,7 @@
         </div>
         {% else %}
         <div class="d-flex gap-3 ai-center ml-a">
-            <span class="type-label-01 text-placeholder">Bcc</span>
+            <span class="type-label-01 text-placeholder">{{ 'mautic.email.preview.bcc_placeholder'|trans }}</span>
         </div>
         {% endif %}
         
