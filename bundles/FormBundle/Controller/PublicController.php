@@ -94,7 +94,7 @@ class PublicController extends CommonFormController
                     try {
                         /** @var \Mautic\FormBundle\Entity\FormRepository $formRepository */
                         $formRepository = $formModel->getRepository();
-                        $stats = $formRepository->getSubmissionStatsForUpdate($form->getId());
+                        $stats          = $formRepository->getSubmissionStatsForUpdate($form->getId());
 
                         if ($stats && null !== $stats['submission_limit'] && $stats['submission_limit'] > 0 && $stats['submission_count'] >= $stats['submission_limit']) {
                             $error = $form->getSubmissionLimitMessage() ?? $this->translator->trans('mautic.form.submission.limit_reached');
@@ -105,7 +105,7 @@ class PublicController extends CommonFormController
                                 $notificationModel = $this->getModel('core.notification');
                                 /** @var \Mautic\UserBundle\Entity\UserRepository $userRepository */
                                 $userRepository = $this->doctrine->getRepository(\Mautic\UserBundle\Entity\User::class);
-                                $user = $userRepository->find($ownerId);
+                                $user           = $userRepository->find($ownerId);
                                 if ($user) {
                                     $notificationModel->addNotification(
                                         $this->translator->trans('mautic.form.submission.limit_reached.notification', ['%form%' => $form->getName()]),
@@ -121,46 +121,46 @@ class PublicController extends CommonFormController
                         } else {
                             $result = $formSubmissionModel->saveSubmission($post, $server, $form, $request, true);
                             if (!empty($result['errors'])) {
-                            if ($messengerMode || $isAjax) {
-                                $error = $result['errors'];
-                            } else {
-                                if (is_array($result['errors'])) {
-                                    $error = $this->translator->trans('mautic.form.submission.errors').'<br /><ol><li>'.implode('</li><li>', $result['errors']).'</li></ol>';
+                                if ($messengerMode || $isAjax) {
+                                    $error = $result['errors'];
                                 } else {
-                                    $error = (string) $result['errors'];
-                                }
-                            }
-                        } elseif (!empty($result['callback'])) {
-                            /** @var SubmissionEvent $submissionEvent */
-                            $submissionEvent   = $result['callback'];
-                            $callbackResponses = $submissionEvent->getPostSubmitCallbackResponse();
-                            // These submit actions have requested a callback after all is said and done
-                            $callbacksRequested = $submissionEvent->getPostSubmitCallback();
-                            foreach ($callbacksRequested as $key => $callbackRequested) {
-                                $callbackRequested['messengerMode'] = $messengerMode;
-                                $callbackRequested['ajaxMode']      = $isAjax;
-
-                                if (isset($callbackRequested['eventName'])) {
-                                    $submissionEvent->setPostSubmitCallback($key, $callbackRequested);
-                                    $submissionEvent->setContext($key);
-
-                                    $this->dispatcher->dispatch($submissionEvent, $callbackRequested['eventName']);
-                                }
-
-                                if ($submissionEvent->isPropagationStopped() && $submissionEvent->hasPostSubmitResponse()) {
-                                    if ($messengerMode) {
-                                        $callbackResponses[$key] = $submissionEvent->getPostSubmitResponse();
+                                    if (is_array($result['errors'])) {
+                                        $error = $this->translator->trans('mautic.form.submission.errors').'<br /><ol><li>'.implode('</li><li>', $result['errors']).'</li></ol>';
                                     } else {
-                                        return $submissionEvent->getPostSubmitResponse();
+                                        $error = (string) $result['errors'];
                                     }
                                 }
+                            } elseif (!empty($result['callback'])) {
+                                /** @var SubmissionEvent $submissionEvent */
+                                $submissionEvent   = $result['callback'];
+                                $callbackResponses = $submissionEvent->getPostSubmitCallbackResponse();
+                                // These submit actions have requested a callback after all is said and done
+                                $callbacksRequested = $submissionEvent->getPostSubmitCallback();
+                                foreach ($callbacksRequested as $key => $callbackRequested) {
+                                    $callbackRequested['messengerMode'] = $messengerMode;
+                                    $callbackRequested['ajaxMode']      = $isAjax;
+
+                                    if (isset($callbackRequested['eventName'])) {
+                                        $submissionEvent->setPostSubmitCallback($key, $callbackRequested);
+                                        $submissionEvent->setContext($key);
+
+                                        $this->dispatcher->dispatch($submissionEvent, $callbackRequested['eventName']);
+                                    }
+
+                                    if ($submissionEvent->isPropagationStopped() && $submissionEvent->hasPostSubmitResponse()) {
+                                        if ($messengerMode) {
+                                            $callbackResponses[$key] = $submissionEvent->getPostSubmitResponse();
+                                        } else {
+                                            return $submissionEvent->getPostSubmitResponse();
+                                        }
+                                    }
+                                }
+                            } elseif (isset($result['submission'])) {
+                                /** @var SubmissionEvent $submissionEvent */
+                                $submissionEvent = $result['submission'];
                             }
-                        } elseif (isset($result['submission'])) {
-                            /** @var SubmissionEvent $submissionEvent */
-                            $submissionEvent = $result['submission'];
                         }
-                        }
-                    } catch (\Exception $e) {
+                    } catch (\Exception) {
                         $error = $translator->trans('mautic.form.submit.error.unavailable', [], 'flashes');
                     }
                 }

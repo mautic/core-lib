@@ -58,7 +58,7 @@ class FormSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function increaseFormSubmissionCount(Events\SubmissionEvent $event)
+    public function increaseFormSubmissionCount(Events\SubmissionEvent $event): void
     {
         $form = $event->getForm();
         $this->formRepository->incrementSubmissionCount($form->getId());

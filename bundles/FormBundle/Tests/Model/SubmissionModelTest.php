@@ -285,7 +285,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
             $this->contactTracker,
             $this->contactMerger,
             $this->fieldsWithUniqueIdentifier,
-            $this->notificationModel,
             $this->entityManager,
             $this->createMock(CorePermissions::class),
             $this->dispatcher,
