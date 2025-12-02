@@ -219,7 +219,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         );
         $this->userHelper                 = $this->createMock(UserHelper::class);
         $this->fieldsWithUniqueIdentifier = $this->createMock(FieldsWithUniqueIdentifier::class);
-        $this->notificationModel          = $this->createMock(\Mautic\CoreBundle\Model\NotificationModel::class);
         $this->entityManager              = $this->createMock(EntityManager::class);
         $this->connection                 = $this->createMock(Connection::class);
         $this->entityManager->method('getConnection')->willReturn($this->connection);
@@ -348,13 +347,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
             ->method('getIpAddress')
             ->willReturn(new IpAddress());
 
-        $this->connection->expects($this->exactly(2))
-            ->method('fetchAssociative')
-            ->willReturn([
-                'submission_limit' => null,
-                'submission_count' => 0,
-            ]);
-
         $request = new Request();
         $request->setMethod('POST');
         $formData = [
@@ -385,74 +377,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($formData['email'], $tokens['{formfield=email}']);
         $this->assertEquals($formData['file'], $tokens['{formfield=file}']);
         $this->assertSame(['email' => 'test@email.com'], $submissionEvent->getContactFieldMatches());
-
-        $this->assertFalse($this->submissionModel->saveSubmission($post, $server, $form, $request));
-    }
-
-    public function testSaveSubmissionReturnsErrorWhenLimitReached(): void
-    {
-        $this->connection->expects($this->once())
-            ->method('fetchAssociative')
-            ->willReturn([
-                'submission_limit' => 1,
-                'submission_count' => 1,
-            ]);
-        $this->notificationModel->expects($this->never())->method('addNotification');
-
-        $form = new Form();
-        $this->setEntityId($form, 42);
-        $form->setAlias('limit-form');
-        $form->setSubmissionLimit(1);
-        $form->setSubmissionLimitMessage('Stop here');
-
-        $result = $this->submissionModel->saveSubmission([], [], $form, new Request());
-
-        $this->assertSame(['errors' => 'Stop here'], $result);
-    }
-
-    public function testSaveSubmissionSendsNotificationWhenLimitReachedAfterIncrement(): void
-    {
-        $this->connection->expects($this->once())
-            ->method('fetchAssociative')
-            ->willReturn([
-                'submission_limit' => 2,
-                'submission_count' => 1,
-            ]);
-
-        $expectedMessage = 'Limit reached';
-        $this->translator->method('trans')->willReturnCallback(static fn (string $key, array $parameters = []) => match ($key) {
-            'mautic.form.submission.limit_reached.notification' => $expectedMessage,
-            default                                             => $key,
-        });
-
-        $user = new User();
-        $this->entityManager->expects($this->once())
-            ->method('getReference')
-            ->with(User::class, 99)
-            ->willReturn($user);
-
-        $this->notificationModel->expects($this->once())
-            ->method('addNotification')
-            ->with(
-                $expectedMessage,
-                'warning',
-                false,
-                'Limit form',
-                null,
-                null,
-                $user
-            );
-
-        $form = new Form();
-        $this->setEntityId($form, 99);
-        $form->setAlias('limit-form');
-        $form->setName('Limit form');
-        $form->setSubmissionLimit(2);
-        $form->setCreatedBy(99);
-
-        $result = $this->submissionModel->saveSubmission([], [], $form, new Request());
-
-        $this->assertFalse($result);
     }
 
     public function testNormalizeValues(): void

@@ -1311,6 +1311,90 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testSubmissionLimitPreventsSecondSubmissionAndUsesCustomMessage(): void
+    {
+        $payload = [
+            'name'                   => 'Submission limit test form',
+            'description'            => 'Form created via submission limit test',
+            'formType'               => 'standalone',
+            'isPublished'            => true,
+            'submissionLimit'        => 1,
+            'submissionLimitMessage' => 'Stop here',
+            'fields'                 => [
+                [
+                    'label'     => 'Email',
+                    'type'      => 'email',
+                    'alias'     => 'email',
+                    'leadField' => 'email',
+                ],
+                [
+                    'label' => 'Submit',
+                    'type'  => 'button',
+                ],
+            ],
+        ];
+
+        $this->client->request(Request::METHOD_POST, '/api/forms/new', $payload);
+        $clientResponse = $this->client->getResponse();
+
+        $this->assertSame(Response::HTTP_CREATED, $clientResponse->getStatusCode(), $clientResponse->getContent());
+
+        $responseData = json_decode($clientResponse->getContent(), true);
+        $formId       = $responseData['form']['id'];
+
+        $submitPayload = [
+            'mauticform' => [
+                'email'    => 'limit@test.com',
+                'formId'   => $formId,
+                'formName' => 'Submission limit test form',
+                'return'   => '/submission-limit-return',
+            ],
+        ];
+
+        // First submission should succeed and create a single submission record.
+        $this->client->request(
+            Request::METHOD_POST,
+            "/form/submit?formId={$formId}",
+            $submitPayload
+        );
+
+        $this->client->request(Request::METHOD_GET, "/api/forms/{$formId}/submissions");
+        $submissionsResponse = $this->client->getResponse();
+        $submissionsData     = json_decode($submissionsResponse->getContent(), true);
+
+        $this->assertSame(Response::HTTP_OK, $submissionsResponse->getStatusCode(), $submissionsResponse->getContent());
+        $this->assertArrayHasKey('submissions', $submissionsData);
+        $this->assertCount(1, $submissionsData['submissions']);
+
+        // Second submission should be blocked by the submission limit and redirect with the custom message.
+        $this->client->request(
+            Request::METHOD_POST,
+            "/form/submit?formId={$formId}",
+            $submitPayload
+        );
+
+        $secondResponse = $this->client->getResponse();
+        $this->assertNotEmpty($secondResponse->getContent());
+
+        $currentUrl = $this->client->getRequest()->getUri();
+        $urlParts   = parse_url($currentUrl);
+        $query      = [];
+        if (isset($urlParts['query'])) {
+            parse_str($urlParts['query'], $query);
+        }
+
+        $this->assertSame('Stop here', urldecode($query['mauticError'] ?? ''));
+
+        // Ensure no additional submissions were created after hitting the limit.
+        $this->client->request(Request::METHOD_GET, "/api/forms/{$formId}/submissions");
+        $finalSubmissionsResponse = $this->client->getResponse();
+        $finalSubmissionsData     = json_decode($finalSubmissionsResponse->getContent(), true);
+
+        $this->assertSame(Response::HTTP_OK, $finalSubmissionsResponse->getStatusCode(), $finalSubmissionsResponse->getContent());
+        $this->assertArrayHasKey('submissions', $finalSubmissionsData);
+        $this->assertCount(1, $finalSubmissionsData['submissions']);
+    }
+
     /**
      * @return array<string, array{0: string, 1: string}>
      */
