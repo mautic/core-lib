@@ -126,10 +126,10 @@ class FormSubscriber implements EventSubscriberInterface
 
         $event->addSubmitAction('lead.updatelead', [
             'group'       => 'mautic.lead.lead.submitaction',
-            'label'       => 'mautic.lead.lead.submitaction.updatelead',
-            'description' => 'mautic.lead.lead.submitaction.updatelead_descr',
+            'label'       => 'mautic.lead.lead.events.updatelead',
+            'description' => 'mautic.lead.lead.events.updatelead_descr',
             'formType'    => UpdateLeadActionType::class,
-            'formTheme'   => '@MauticLead/FormTheme/ActionUpdateLead/_updatelead_action_widget.html.twig',
+            'formTheme'   => '@MauticLead/FormTheme/FormActionUpdateLead/_formaction_properties_row.html.twig',
             'eventName'   => FormEvents::ON_EXECUTE_SUBMIT_ACTION,
         ]);
     }

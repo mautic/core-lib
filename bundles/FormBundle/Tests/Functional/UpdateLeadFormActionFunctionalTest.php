@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\FormBundle\Tests\Functional;
 
-use DateTimeImmutable;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\LeadBundle\Entity\Lead;
@@ -27,7 +26,7 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
     {
         $lead = new Lead();
         foreach ($leadData as $field => $value) {
-            $method = 'set' . ucfirst($field);
+            $method = 'set'.ucfirst($field);
             if (method_exists($lead, $method)) {
                 $lead->$method($value);
             }
@@ -41,10 +40,10 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
         $form = $this->createFormViaApi('Test form', $actionProperties);
 
         $crawler     = $this->client->request(Request::METHOD_GET, "/form/{$form->getId()}");
-        $formCrawler = $crawler->filter("form[id=mauticform_testform]");
+        $formCrawler = $crawler->filter('form[id=mauticform_testform]');
 
         if (0 === $formCrawler->count()) {
-            $this->fail('Form not found: ' . $this->client->getResponse()->getContent());
+            $this->fail('Form not found: '.$this->client->getResponse()->getContent());
         }
         $formElement = $formCrawler->form();
 
@@ -60,8 +59,8 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
         foreach ($expectedLeadData as $field => $value) {
             $leadFieldValue = $lead->getFieldValue($field);
             if ('{datetime=now}' === $value) {
-                $actualValue = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $leadFieldValue);
-                $diff = abs($actualValue->getTimestamp() - (new \DateTime())->getTimestamp());
+                $actualValue = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $leadFieldValue);
+                $diff        = abs($actualValue->getTimestamp() - (new \DateTime())->getTimestamp());
                 $this->assertLessThan(60, $diff, "The {$field} is not within 60 seconds of now.");
             } else {
                 $this->assertEquals($value, $leadFieldValue ?? null, "Field $field does not match");
@@ -148,7 +147,6 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
      */
     public function createFormViaApi(string $name, array $actionProperties): Form
     {
-
         $formPayload = [
             'name'        => $name,
             'description' => '',
@@ -208,36 +206,37 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
     /**
      * @return array<string, mixed>
      */
-    private function getDefaultActionProperties(): array {
+    private function getDefaultActionProperties(): array
+    {
         return [
-            'title' => null,
-            'firstname' => null,
-            'lastname' => null,
-            'company' => null,
-            'position' => null,
-            'email' => null,
-            'mobile' => null,
-            'phone' => null,
-            'points' => null,
-            'fax' => null,
-            'address1' => null,
-            'address2' => null,
-            'city' => null,
-            'state' => null,
-            'zipcode' => null,
-            'country' => null,
+            'title'            => null,
+            'firstname'        => null,
+            'lastname'         => null,
+            'company'          => null,
+            'position'         => null,
+            'email'            => null,
+            'mobile'           => null,
+            'phone'            => null,
+            'points'           => null,
+            'fax'              => null,
+            'address1'         => null,
+            'address2'         => null,
+            'city'             => null,
+            'state'            => null,
+            'zipcode'          => null,
+            'country'          => null,
             'preferred_locale' => null,
-            'timezone' => null,
-            'last_active' => null,
+            'timezone'         => null,
+            'last_active'      => null,
             'attribution_date' => null,
-            'attribution' => null,
-            'website' => null,
-            'facebook' => null,
-            'foursquare' => null,
-            'instagram' => null,
-            'linkedin' => null,
-            'skype' => null,
-            'twitter' => null,
+            'attribution'      => null,
+            'website'          => null,
+            'facebook'         => null,
+            'foursquare'       => null,
+            'instagram'        => null,
+            'linkedin'         => null,
+            'skype'            => null,
+            'twitter'          => null,
         ];
     }
 }
