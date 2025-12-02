@@ -88,6 +88,10 @@ Mautic.contentPreviewUrlGenerator = {
         mQuery('#content_preview_url').val(previewUrl);
         // Update URL in preview button
         mQuery('#content_preview_url_button').attr('onClick', "window.open('" + previewUrl + "', '_blank');");
+        const previewFrame = mQuery('#content_preview_frame');
+        if (previewFrame.length) {
+            previewFrame.attr('src', previewUrl);
+        }
     }
 }
 

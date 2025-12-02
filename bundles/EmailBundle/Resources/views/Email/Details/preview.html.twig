@@ -1,0 +1,71 @@
+<div class="pr-md pl-md pb-lg mb-32 tile">
+    <div class="type-fluid-heading-03 mt-md">{{ email.subject }}</div>
+    <div class="row"><hr class=""></div>
+    <div class="d-flex gap-sm ai-start">
+        <div class="d-inline-flex as-1-1 ai-center jc-center" style="background-color: rgb(255, 208, 188); border-radius: 100px; width: 50px;">
+            <span class="type-heading-03 fw-b">D</span>
+        </div>
+        <div>
+            <div class="d-flex ai-center gap-xs mb-2 mt-4">
+                <span class="type-label-02 fw-sb">{{ email.fromName|default(configGetParameter('mailer_from_name')) }}</span>
+                <span class="type-label-01">&lt;{{ email.fromAddress|default(configGetParameter('mailer_from_email')) }}&gt;</span>
+
+            </div>
+            <span class="type-label-01 text-secondary">To:</span>
+            <span class="type-label-02">Me</span>
+            <div class="d-flex text-secondary gap-md mt-xs">
+                <div class="d-flex ai-center">
+                    <i class="ri-calendar-line"></i>
+                    <span class="ml-xs type-label-01">{{ dateToDate('now') }}</span>
+                </div>
+                <div class="d-flex ai-center">
+                    <i class="ri-time-line"></i>
+                    <span class="ml-xs type-label-01">{{ dateToTime('now')|upper }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row"><hr class=""></div>
+    <div id="email-details-header" class="d-flex gap-md">
+        {% if email.replyToAddress %}
+        <div class="d-flex gap-3 ai-center">
+            <span class="type-label-01 text-secondary">Reply to:</span>
+            {% include '@MauticCore/Helper/_tag.html.twig' with { tags: [
+                {
+                    color: 'warm-gray',
+                    label: email.replyToAddress|default(configGetParameter('mailer_from_email' | default('01'))),
+                    icon: 'ri-account-circle-fill',
+                }
+            ] } %}
+        </div>
+        {% endif %}
+        {% if email.bccAddress %}
+        <div class="d-flex gap-3 ai-center">
+            <span class="type-label-01 text-secondary">Bcc:</span>
+            {% include '@MauticCore/Helper/_tag.html.twig' with { tags: [
+                {
+                    color: 'warm-gray',
+                    label: email.bccAddress|default(configGetParameter('mailer_from_email' | default('01'))),
+                    icon: 'ri-account-circle-fill',
+                }
+            ] } %}
+        </div>
+        {% else %}
+        <div class="d-flex gap-3 ai-center ml-a">
+            <span class="type-label-01 text-placeholder">Bcc</span>
+        </div>
+        {% endif %}
+        
+    </div>
+
+    <div class="row"><hr class="mb-0"></div>
+
+
+<div class="row">
+      <iframe id="content_preview_frame"
+      scrolling="no"
+              class=""
+              src="{{ previewUrl|e }}"
+              style="width:100%;min-height:500px;border:0;max-height: 500px;overflow: hidden;"></iframe>
+</div>
+  </div>
