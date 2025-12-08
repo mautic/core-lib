@@ -124,6 +124,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
     protected function logoutUser(): void
     {
         $this->client->request(Request::METHOD_GET, '/s/logout');
+        $this->client->getCookieJar()->clear();
     }
 
     /**
