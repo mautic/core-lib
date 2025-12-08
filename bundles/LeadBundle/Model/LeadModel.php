@@ -2498,6 +2498,8 @@ class LeadModel extends FormModel
                     continue;
                 }
 
+                $fieldValue = $entity->getFieldValue($field['alias'], $group);
+
                 if (null === $fieldValue || '' === $fieldValue) {
                     continue;
                 }
@@ -2508,7 +2510,6 @@ class LeadModel extends FormModel
 
                 $flattenedAllowedValues = array_map(fn ($item): string => trim(html_entity_decode($item['value'], ENT_QUOTES)), $allowedValues['list']);
 
-                $fieldValue = $entity->getFieldValue($field['alias'], $group);
                 if (!empty($allowedValues['list']) && !in_array(trim($fieldValue), $flattenedAllowedValues)) {
                     // if the set value of the field is not present allowed values array,
                     // update the field value to null
