@@ -192,7 +192,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
 
         if ($command) {
             // Register the command
-            $application->add($command);
+            $application->addCommand($command);
         } else {
             $command = $application->find($name);
         }
