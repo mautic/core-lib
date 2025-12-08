@@ -2497,6 +2497,11 @@ class LeadModel extends FormModel
                 } elseif ('select' !== $field['type']) {
                     continue;
                 }
+
+                if (null === $fieldValue || '' === $fieldValue) {
+                    continue;
+                }
+
                 $allowedValues = is_array($field['properties'])
                     ? $field['properties']
                     : unserialize($field['properties']);
