@@ -2501,10 +2501,10 @@ class LeadModel extends FormModel
                     ? $field['properties']
                     : unserialize($field['properties']);
 
-                $flattenedAllowedValues = array_map(fn ($item): string => html_entity_decode($item['value'], ENT_QUOTES), $allowedValues['list']);
+                $flattenedAllowedValues = array_map(fn ($item): string => trim(html_entity_decode($item['value'], ENT_QUOTES)), $allowedValues['list']);
 
                 $fieldValue = $entity->getFieldValue($field['alias'], $group);
-                if (!empty($allowedValues['list']) && !in_array($fieldValue, $flattenedAllowedValues)) {
+                if (!empty($allowedValues['list']) && !in_array(trim($fieldValue), $flattenedAllowedValues)) {
                     // if the set value of the field is not present allowed values array,
                     // update the field value to null
                     $entity->addUpdatedField($field['alias'], null);
