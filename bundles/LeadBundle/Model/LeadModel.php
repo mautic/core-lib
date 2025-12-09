@@ -2497,20 +2497,14 @@ class LeadModel extends FormModel
                 } elseif ('select' !== $field['type']) {
                     continue;
                 }
-
-                $fieldValue = $entity->getFieldValue($field['alias'], $group);
-
-                if (null === $fieldValue || '' === $fieldValue) {
-                    continue;
-                }
-
                 $allowedValues = is_array($field['properties'])
                     ? $field['properties']
                     : unserialize($field['properties']);
 
-                $flattenedAllowedValues = array_map(fn ($item): string => trim(html_entity_decode($item['value'], ENT_QUOTES)), $allowedValues['list']);
+                $flattenedAllowedValues = array_map(fn ($item): string => html_entity_decode($item['value'], ENT_QUOTES), $allowedValues['list']);
 
-                if (!empty($allowedValues['list']) && !in_array(trim($fieldValue), $flattenedAllowedValues)) {
+                $fieldValue = $entity->getFieldValue($field['alias'], $group);
+                if (!empty($allowedValues['list']) && !in_array($fieldValue, $flattenedAllowedValues)) {
                     // if the set value of the field is not present allowed values array,
                     // update the field value to null
                     $entity->addUpdatedField($field['alias'], null);
