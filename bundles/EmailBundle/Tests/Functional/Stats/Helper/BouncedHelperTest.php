@@ -42,16 +42,14 @@ final class BouncedHelperTest extends MauticMysqlTestCase
         $this->createLeadsAndStats();
     }
 
-    /**
-     * @dataProvider statsFilterProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('statsFilterProvider')]
     public function testStatsWithFilters(
         bool $canViewOthers,
         bool $useCampaignFilter,
         string $dateFrom,
         string $dateTo,
         int $expectedCount,
-        string $message
+        string $message,
     ): void {
         $fromDateTime = new \DateTime($dateFrom);
         $toDateTime   = new \DateTime($dateTo);
