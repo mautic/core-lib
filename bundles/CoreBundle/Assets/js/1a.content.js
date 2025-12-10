@@ -984,7 +984,7 @@ Mautic.activateChosenSelect = function(el, ignoreGlobal, jQueryVariant) {
         multiPlaceholder = singlePlaceholder = $select.data('chosen-placeholder');
     }
 
-    const hide_results_on_select = !$select.attr('data-chosen-keep-results-on-select');
+    const hideResultsOnSelect = !$select.attr('data-chosen-keep-results-on-select');
 
     $select.chosen({
         placeholder_text_multiple: multiPlaceholder,
@@ -994,7 +994,7 @@ Mautic.activateChosenSelect = function(el, ignoreGlobal, jQueryVariant) {
         allow_single_deselect: true,
         include_group_label_in_selected: true,
         search_contains: true,
-        hide_results_on_select: hide_results_on_select,
+        hide_results_on_select: hideResultsOnSelect,
     });
 
     if (isLookup) {
@@ -1002,7 +1002,7 @@ Mautic.activateChosenSelect = function(el, ignoreGlobal, jQueryVariant) {
         const minTermLength = $select.attr('data-chosen-min-term-length');
 
         if (searchTerm) {
-            mQuery(el).ajaxChosen({
+            $select.ajaxChosen({
                 type: 'GET',
                 url: mauticAjaxUrl + '?action=' + $select.attr('data-chosen-lookup'),
                 dataType: 'json',
