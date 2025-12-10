@@ -3,7 +3,10 @@
         <div class="col-xs-12 mb-md">
             <h4 class="mb-sm">{{ 'mautic.lead.lead.update.action.help'|trans }}</h4>
             <div class="alert alert-info">
-                {{ 'mautic.lead.lead.events.updatelead_descr'|trans }}
+                <div>
+                    <p>{{ 'mautic.lead.lead.events.updatelead_descr'|trans|purify }}</p>
+                    <p class="mb-0">{{ 'mautic.lead.lead.events.updatelead_descr_form'|trans|purify }}</p>
+                </div>
             </div>
         </div>
         {% for child in form.children %}
