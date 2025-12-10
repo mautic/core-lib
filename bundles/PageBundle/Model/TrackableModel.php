@@ -882,7 +882,7 @@ class TrackableModel extends AbstractCommonModel
             }
 
             // Check for a do not track in proper HTML format
-            if ($link->hasAttribute('data-mautic-disable-tracking') && $link->getAttribute('data-mautic-disable-tracking') === 'true') {
+            if ($link->hasAttribute('data-mautic-disable-tracking') && 'true' === $link->getAttribute('data-mautic-disable-tracking')) {
                 $this->doNotTrack[$url] = $url;
                 continue;
             }
