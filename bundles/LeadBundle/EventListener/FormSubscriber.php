@@ -343,12 +343,12 @@ class FormSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $actionValues = $event->getActionConfig();
-        $formResults  = $event->getResults();
-        $fields       = $lead->getFields(true);
+        $actionValues         = $event->getActionConfig();
+        $contactFieldMatches  = $event->getContactFieldMatches();
+        $fields               = $lead->getFields(true);
 
         $mergedValues = array_merge($actionValues, array_filter(
-            $formResults,
+            $contactFieldMatches,
             static fn ($value) => '' !== $value && null !== $value
         ));
 

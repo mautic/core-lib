@@ -80,7 +80,7 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
             ],
             'formData' => [
                 'email'     => 'test@test.com',
-                'firstname' => 'Robert Updated',
+                'name'      => 'Robert Updated',
             ],
             'actionProperties' => [
                 'country' => 'Poland',
@@ -111,7 +111,7 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
             ],
             'formData' => [
                 'email'     => 'conflict@test.com',
-                'firstname' => 'Form Updated Name',
+                'name'      => 'Form Updated Name',
             ],
             'actionProperties' => [
                 'firstname' => 'Action Updated Name',
@@ -162,9 +162,9 @@ class UpdateLeadFormActionFunctionalTest extends MauticMysqlTestCase
                     'mappedObject' => 'contact',
                 ],
                 [
-                    'label'        => 'First Name',
+                    'label'        => 'Your name',
                     'type'         => 'text',
-                    'alias'        => 'firstname',
+                    'alias'        => 'name',
                     'leadField'    => 'firstname',
                     'mappedField'  => 'firstname',
                     'mappedObject' => 'contact',
