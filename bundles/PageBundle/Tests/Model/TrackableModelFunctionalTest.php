@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Mautic\PageBundle\Tests\Model;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\PageBundle\Entity\Trackable;
 use Mautic\PageBundle\Model\TrackableModel;
-
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class TrackableModelFunctionalTest extends MauticMysqlTestCase
 {
@@ -21,11 +20,10 @@ final class TrackableModelFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @dataProvider disableTrackingDataProvider
-     *
      * @param string[] $expectedTrackedUrls
      * @param string[] $expectedUntrackedHtml
      */
+    #[DataProvider('disableTrackingDataProvider')]
     public function testDisableTrackingAttributeWorks(string $content, array $expectedTrackedUrls, array $expectedUntrackedHtml): void
     {
         [$newContent, $trackableTokens] = $this->trackableModel->parseContentForTrackables($content, [], 'email', 1);
