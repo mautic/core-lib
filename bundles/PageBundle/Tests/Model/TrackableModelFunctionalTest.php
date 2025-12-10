@@ -28,13 +28,12 @@ final class TrackableModelFunctionalTest extends MauticMysqlTestCase
      */
     public function testDisableTrackingAttributeWorks(string $content, array $expectedTrackedUrls, array $expectedUntrackedHtml): void
     {
-        /** @var array{0: string, 1: Trackable[]} $result */
-        [$newContent, $trackables] = $this->trackableModel->parseContentForTrackables($content, [], 'email', 1);
+        [$newContent, $trackableTokens] = $this->trackableModel->parseContentForTrackables($content, [], 'email', 1);
 
-        $this->assertCount(count($expectedTrackedUrls), $trackables);
+        $this->assertCount(count($expectedTrackedUrls), $trackableTokens);
 
         $trackableUrls = [];
-        foreach ($trackables as $trackable) {
+        foreach ($trackableTokens as $trackable) {
             $trackableUrls[] = $trackable->getRedirect()->getUrl();
         }
 
@@ -55,6 +54,9 @@ final class TrackableModelFunctionalTest extends MauticMysqlTestCase
         }
     }
 
+    /**
+     * @return iterable<string, array<int, string|string[]>>
+     */
     public static function disableTrackingDataProvider(): iterable
     {
         yield 'HTML5 data attribute' => [
