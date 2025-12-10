@@ -71,7 +71,6 @@ class CompanyObjectHelperTest extends TestCase
                     // Set ID
                     $reflection = new \ReflectionClass($company);
                     $property   = $reflection->getProperty('id');
-                    $property->setAccessible(true);
                     $property->setValue($company, $idMap[$company->getEmail()]);
 
                     return true;
@@ -124,7 +123,6 @@ class CompanyObjectHelperTest extends TestCase
                     // Set ID
                     $reflection = new \ReflectionClass($company);
                     $property   = $reflection->getProperty('id');
-                    $property->setAccessible(true);
                     $property->setValue($company, $idMap[$company->getEmail()]);
 
                     return true;
