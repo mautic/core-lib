@@ -168,7 +168,7 @@ class SubmissionModel extends CommonFormModel
             $alias = $f->getAlias();
             $value = $post[$alias ?? ''] ?? '';
 
-            $fieldArray[$id] = [
+            $fieldArray[$id ?? ''] = [
                 'id'    => $id,
                 'type'  => $type,
                 'alias' => $alias,
