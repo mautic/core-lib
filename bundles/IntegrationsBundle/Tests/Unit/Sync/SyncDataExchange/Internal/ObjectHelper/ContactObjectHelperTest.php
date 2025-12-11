@@ -151,7 +151,7 @@ class ContactObjectHelperTest extends TestCase
                     // Set contact ID
                     $reflection = new \ReflectionClass($lead);
                     $property   = $reflection->getProperty('id');
-                    $property->setValue($lead, $idMap[$lead->getEmail()]);
+                    $property->setValue($lead, $idMap[$lead->getEmail() ?? '']);
 
                     return true;
                 })

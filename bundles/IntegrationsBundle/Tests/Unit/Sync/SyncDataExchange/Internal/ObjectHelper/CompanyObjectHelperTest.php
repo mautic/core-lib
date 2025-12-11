@@ -123,7 +123,7 @@ class CompanyObjectHelperTest extends TestCase
                     // Set ID
                     $reflection = new \ReflectionClass($company);
                     $property   = $reflection->getProperty('id');
-                    $property->setValue($company, $idMap[$company->getEmail()]);
+                    $property->setValue($company, $idMap[$company->getEmail() ?? '']);
 
                     return true;
                 })

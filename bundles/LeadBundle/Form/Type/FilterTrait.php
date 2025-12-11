@@ -56,8 +56,8 @@ trait FilterTrait
 
         if (isset($options['fields']['behaviors'][$fieldName])) {
             $field = $options['fields']['behaviors'][$fieldName];
-        } elseif (isset($data['object']) && isset($options['fields'][$data['object']][$fieldName])) {
-            $field = $options['fields'][$data['object']][$fieldName];
+        } elseif (isset($data['object']) && isset($options['fields'][$data['object'] ?? ''][$fieldName])) {
+            $field = $options['fields'][$data['object'] ?? ''][$fieldName];
         }
 
         $customOptions = [];
