@@ -57,9 +57,7 @@ class PublicControllerRedirectTest extends MauticMysqlTestCase
         Assert::assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 
-    /**
-     * @dataProvider redirectUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('redirectUrlProvider')]
     public function testRedirectWithSpecialCharsInQuery(string $url): void
     {
         $redirect = new Redirect();
@@ -80,7 +78,7 @@ class PublicControllerRedirectTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, array<string, string>>
      */
-    public function redirectUrlProvider(): iterable
+    public static function redirectUrlProvider(): iterable
     {
         yield 'The spaces in the query part must not be encoded with plus signs.' => [
             'url' => 'https://google.com?q=this%20has%20spaces',
