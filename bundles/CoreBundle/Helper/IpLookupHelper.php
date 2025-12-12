@@ -7,6 +7,7 @@ use Mautic\CoreBundle\Entity\IpAddress;
 use Mautic\CoreBundle\Entity\IpAddressRepository;
 use Mautic\CoreBundle\IpLookup\AbstractLookup;
 use Mautic\LeadBundle\Tracker\Factory\DeviceDetectorFactory\DeviceDetectorFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class IpLookupHelper
@@ -38,6 +39,11 @@ class IpLookupHelper
 
     private CoreParametersHelper $coreParametersHelper;
 
+    /**
+     * @var array<string, IpAddress>
+     */
+    private static array $ipAddresses = [];
+
     public function __construct(
         protected RequestStack $requestStack,
         protected EntityManager $em,
@@ -59,7 +65,7 @@ class IpLookupHelper
      */
     public function getIpAddressFromRequest()
     {
-        $request = $this->requestStack->getCurrentRequest();
+        $request = $this->getRequest();
 
         if (null !== $request) {
             $ipHolders = [
@@ -101,8 +107,6 @@ class IpLookupHelper
      */
     public function getIpAddress($ip = null)
     {
-        static $ipAddresses       = [];
-        $request                  = $this->requestStack->getCurrentRequest();
         $isIpAnonymizationEnabled = (bool) $this->coreParametersHelper->get('anonymize_ip');
 
         if (null === $ip) {
@@ -120,10 +124,7 @@ class IpLookupHelper
             $ip = '*.*.*.*';
         }
 
-        if (empty($ipAddresses[$ip])) {
-            $ipAddress = null;
-            $saveIp    = false;
-
+        if (!isset(self::$ipAddresses[$ip])) {
             /** @var IpAddressRepository $repo */
             $repo      = $this->em->getRepository(IpAddress::class);
             $ipAddress = $repo->findOneByIpAddress($ip);
@@ -150,7 +151,8 @@ class IpLookupHelper
             $doNotTrack = array_merge($this->doNotTrackIps, $this->doNotTrackInternalIps);
 
             $ipAddress->setDoNotTrackList($doNotTrack);
-            if ($ipAddress->isTrackable() && $request) {
+
+            if ($ipAddress->isTrackable() && $request = $this->getRequest()) {
                 $userAgent = $request->headers->get('User-Agent', '');
                 foreach ($this->doNotTrackBots as $bot) {
                     if (str_contains($userAgent, $bot)) {
@@ -188,10 +190,10 @@ class IpLookupHelper
                 $repo->saveEntity($ipAddress);
             }
 
-            $ipAddresses[$ip] = $ipAddress;
+            self::$ipAddresses[$ip] = $ipAddress;
         }
 
-        return $ipAddresses[$ip];
+        return self::$ipAddresses[$ip];
     }
 
     /**
@@ -220,6 +222,14 @@ class IpLookupHelper
             FILTER_VALIDATE_IP,
             FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6 | $filterFlagNoPrivRange | FILTER_FLAG_NO_RES_RANGE
         );
+    }
+
+    /**
+     * Resets cache.
+     */
+    public function reset(): void
+    {
+        self::$ipAddresses = [];
     }
 
     protected function getClientIpFromProxyList($ip)
@@ -254,5 +264,10 @@ class IpLookupHelper
     public function getRealIp()
     {
         return $this->realIp;
+    }
+
+    private function getRequest(): ?Request
+    {
+        return $this->requestStack->getCurrentRequest();
     }
 }
