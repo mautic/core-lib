@@ -338,6 +338,7 @@ return [
                 'class'     => Mautic\CoreBundle\Helper\FileUploader::class,
                 'arguments' => [
                     'mautic.helper.file_path_resolver',
+                    'translator',
                 ],
             ],
             'mautic.helper.file_path_resolver' => [
@@ -529,7 +530,7 @@ return [
                 'tagArguments' => [
                     'event'    => 'kernel.exception',
                     'method'   => 'onKernelException',
-                    'priority' => 255,
+                    'priority' => 253,
                 ],
             ],
             // Helpers

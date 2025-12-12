@@ -9,6 +9,7 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
+use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\LeadBundle\DataFixtures\ORM\LoadCategorizedLeadListData;
 use Mautic\LeadBundle\DataFixtures\ORM\LoadCategoryData;
 use Mautic\LeadBundle\DataFixtures\ORM\LoadCompanyData;
@@ -509,12 +510,14 @@ class LeadControllerTest extends MauticMysqlTestCase
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
         $this->assertQueuedEmailCount(1);
 
-        $email      = $this->getMailerMessage();
+        $email = $this->getMailerMessage();
+        \assert($email instanceof MauticMessage);
+
         $userHelper = static::getContainer()->get(UserHelper::class);
         $user       = $userHelper->getUser();
 
         Assert::assertSame('Ahoy contact@an.email', $email->getSubject());
-        Assert::assertMatchesRegularExpression('#Your email is <b>contact@an\.email<\/b><img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif" alt="" \/>#', $email->getHtmlBody());
+        Assert::assertMatchesRegularExpression('#Your email is <b>contact@an\.email<\/b><img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif\?ct=[^"]*" alt="" \/>#', $email->getHtmlBody());
         Assert::assertSame('Your email is contact@an.email', $email->getTextBody());
         Assert::assertCount(1, $email->getFrom());
         Assert::assertSame($user->getName(), $email->getFrom()[0]->getName());
@@ -557,12 +560,14 @@ class LeadControllerTest extends MauticMysqlTestCase
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
         $this->assertQueuedEmailCount(1);
 
-        $email      = $this->getMailerMessage();
+        $email = $this->getMailerMessage();
+        \assert($email instanceof MauticMessage);
+
         $userHelper = static::getContainer()->get(UserHelper::class);
         $user       = $userHelper->getUser();
 
         Assert::assertSame('Ahoy contact@an.email', $email->getSubject());
-        Assert::assertMatchesRegularExpression('#Your email is <b>contact@an\.email<\/b>. Company details: Mautic, Pune.<img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif" alt="" \/>#', $email->getHtmlBody());
+        Assert::assertMatchesRegularExpression('#Your email is <b>contact@an\.email<\/b>. Company details: Mautic, Pune.<img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif\?ct=[^" ]*" alt="" \/>#', $email->getHtmlBody());
         $expectedText = <<<EMAIL
 Your email is contact@an.email. Company details:
 Mautic, Pune.
