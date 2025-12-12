@@ -18,9 +18,9 @@ use Mautic\CampaignBundle\Event\NotifyOfUnpublishEvent;
 use Mautic\CampaignBundle\Model\CampaignModel;
 use Mautic\CampaignBundle\Model\Exceptions\CampaignAlreadyUnpublishedException;
 use Mautic\CampaignBundle\Model\Exceptions\CampaignVersionMismatchedException;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\CoreBundle\Twig\Helper\DateHelper;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CampaignEventSubscriber implements EventSubscriberInterface
@@ -35,7 +35,7 @@ class CampaignEventSubscriber implements EventSubscriberInterface
         private CampaignModel $campaignModel,
         private LeadEventLogRepository $leadEventLogRepository,
         private EventDispatcherInterface $eventDispatcher,
-        private DateHelper $dateHelper
+        private DateHelper $dateHelper,
     ) {
     }
 
