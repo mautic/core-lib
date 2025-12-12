@@ -398,18 +398,6 @@ class ReportSubscriberFunctionalTest extends AbstractReportSubscriberTestCase
         }
     }
 
-    public function createDnc(string $channel, Lead $contact, int $reason): DoNotContact
-    {
-        $dnc = new DoNotContact();
-        $dnc->setChannel($channel);
-        $dnc->setLead($contact);
-        $dnc->setReason($reason);
-        $dnc->setDateAdded(new \DateTime());
-        $this->em->persist($dnc);
-
-        return $dnc;
-    }
-
     /**
      * @return array<int,array<int,mixed>>
      */
