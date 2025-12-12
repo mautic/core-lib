@@ -230,7 +230,7 @@ class UrlHelper
 
             if ($parsedQuery) {
                 $encodedQuery = Query::build($parsedQuery, PHP_QUERY_RFC3986);
-                $url          = str_replace($query, $encodedQuery, $url);
+                $url          = str_replace('?'.$query, '?'.$encodedQuery, $url);
             }
         }
 
