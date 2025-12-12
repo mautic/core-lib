@@ -210,10 +210,12 @@ final class SendEmailToContactTest extends MauticMysqlTestCase
 
         $messages = self::getMailerMessages();
         Assert::assertCount(1, $messages, 'Expected exactly one email message to be sent');
-        $message = $messages[0];
+        $rawMessage = $messages[0];
+        Assert::assertInstanceOf(\Symfony\Component\Mime\Message::class, $rawMessage);
+        \assert($rawMessage instanceof \Symfony\Component\Mime\Message);
 
         // For signed messages, use toString() instead of getBody()
-        $email   = $message->toString();
+        $email   = $rawMessage->toString();
         Assert::assertStringContainsString('Hey John...', $email);
         Assert::assertStringContainsString('<title>Some interesting subject for John</title>', $email);
         Assert::assertStringContainsString('Some interesting subject for John', $email);
@@ -222,7 +224,7 @@ final class SendEmailToContactTest extends MauticMysqlTestCase
         Assert::assertStringContainsString('Admin', $email);
         Assert::assertStringNotContainsString('This should be overwritten by the form content', $email);
 
-        Assert::assertFalse($message->getHeaders()->has('List-Unsubscribe'));
-        Assert::assertFalse($message->getHeaders()->has('List-Unsubscribe-Post'));
+        Assert::assertFalse($rawMessage->getHeaders()->has('List-Unsubscribe'));
+        Assert::assertFalse($rawMessage->getHeaders()->has('List-Unsubscribe-Post'));
     }
 }
