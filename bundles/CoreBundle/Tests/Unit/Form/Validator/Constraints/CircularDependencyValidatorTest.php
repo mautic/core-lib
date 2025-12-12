@@ -61,10 +61,8 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
      *
      * @param string $expectedMessage  the expected message on a validation violation, if any
      * @param int    $currentSegmentId
-     *
-     * @return Mautic\CoreBundle\Form\Validator\Constraints\CircularDependencyValidator
      */
-    private function configureValidator($expectedMessage, $currentSegmentId)
+    private function configureValidator($expectedMessage, $currentSegmentId): CircularDependencyValidator
     {
         $filters = [
             [
