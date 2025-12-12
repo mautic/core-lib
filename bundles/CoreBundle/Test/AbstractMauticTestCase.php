@@ -33,8 +33,12 @@ abstract class AbstractMauticTestCase extends WebTestCase
 
     protected array $clientOptions = [];
 
-    // Credentials for API authentication
-    protected array $clientServer  = [
+    /**
+     * Credentials for API authentication.
+     *
+     * @var array<string,string>
+     */
+    protected array $clientServer = [
         'PHP_AUTH_USER' => 'admin',
         'PHP_AUTH_PW'   => 'Maut1cR0cks!',
     ];
@@ -120,6 +124,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
     protected function logoutUser(): void
     {
         $this->client->request(Request::METHOD_GET, '/s/logout');
+        $this->client->getCookieJar()->clear();
     }
 
     /**
@@ -188,7 +193,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
 
         if ($command) {
             // Register the command
-            $application->add($command);
+            $application->addCommand($command);
         } else {
             $command = $application->find($name);
         }
