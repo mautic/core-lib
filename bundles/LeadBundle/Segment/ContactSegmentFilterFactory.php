@@ -119,9 +119,9 @@ class ContactSegmentFilterFactory
             ]);
 
             if ('or' === strtolower($filter['glue']) && '=' === $filter['operator']) {
-                // Don't group date type filters - they require special processing
+                // Don't group date/datetime type filters - they require special processing
                 // by DateOptionFactory and don't support IN operator with arrays
-                if (isset($filter['type']) && 'date' === $filter['type']) {
+                if (isset($filter['type']) && in_array($filter['type'], ['date', 'datetime'], true)) {
                     array_push($shrinkedFilters, $filter);
                 } else {
                     if (!isset($arrStacks[$key])) {
