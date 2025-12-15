@@ -309,7 +309,7 @@ Mautic.updateReportFilterValueInput = function (filterColumn, setup) {
 
         inputElement.attr('data-bs-toggle', 'tooltip')
             .attr('data-bs-placement', 'bottom')
-            .attr('title', 'ss')
+            .attr('title', '...') // Set a placeholder title, to be replaced later
             .tooltip({ trigger: 'manual' });
 
         inputElement.on('focus', function () {

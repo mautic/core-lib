@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\ReportBundle\Tests\Form\DataTransformer;
 
 use Mautic\CoreBundle\Helper\DateTimeHelper;
@@ -9,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 
-class ReportFilterDataTransformerTest extends TestCase
+final class ReportFilterDataTransformerTest extends TestCase
 {
     private const LOCAL_TIMEZONE = 'Europe/Paris'; // UTC+2 during DST
 
@@ -27,7 +29,6 @@ class ReportFilterDataTransformerTest extends TestCase
         // Force the timezone using reflection
         $reflection = new \ReflectionClass(DateTimeHelper::class);
         $property   = $reflection->getProperty('defaultLocalTimezone');
-        $property->setAccessible(true);
         $property->setValue(null, self::LOCAL_TIMEZONE);
 
         date_default_timezone_set(self::LOCAL_TIMEZONE);
@@ -52,7 +53,6 @@ class ReportFilterDataTransformerTest extends TestCase
         // Reset the static property to null so it gets recalculated
         $reflection = new \ReflectionClass(DateTimeHelper::class);
         $property   = $reflection->getProperty('defaultLocalTimezone');
-        $property->setAccessible(true);
         $property->setValue(null, null);
 
         parent::tearDown();
