@@ -29,6 +29,6 @@ final class Version20251204081531 extends AbstractMauticMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE '.$this->getPrefixedTableName().' DROP COLUMN {$this->uuidColumn}');
+        $this->addSql("ALTER TABLE `{$this->getPrefixedTableName()}` DROP COLUMN `{$this->uuidColumn}`");
     }
 }
