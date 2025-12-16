@@ -780,10 +780,10 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
             // just skip string empty field
             if ('' !== $value) {
                 $mappedFieldAlias = $field->getMappedField();
-                $mappedField = $this->leadFieldModel->getEntityByAlias($mappedFieldAlias);
+                $mappedField      = $this->leadFieldModel->getEntityByAlias($mappedFieldAlias);
                 if ($mappedField && 'boolean' === $mappedField->getType()) {
                     $properties = $mappedField->getProperties();
-                    $value = CustomFieldValueHelper::normalize($value, 'boolean', $properties);
+                    $value      = CustomFieldValueHelper::normalize($value, 'boolean', $properties);
                 }
                 $this->fieldHelper->populateField($field, $value, $formName, $formHtml);
             }
