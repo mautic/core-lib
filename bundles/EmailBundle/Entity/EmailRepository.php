@@ -414,14 +414,12 @@ class EmailRepository extends CommonRepository
                 $topLevel = [$topLevel];
             }
 
-            if (is_array($topLevel)) {
-                foreach ($topLevel as $type) {
-                    match ($type) {
-                        'variant'     => $q->andWhere($q->expr()->isNull('e.variantParent')),
-                        'translation' => $q->andWhere($q->expr()->isNull('e.translationParent')),
-                        default       => null, // BC: ignore unknown values
-                    };
-                }
+            foreach ($topLevel as $type) {
+                match ($type) {
+                    'variant'     => $q->andWhere($q->expr()->isNull('e.variantParent')),
+                    'translation' => $q->andWhere($q->expr()->isNull('e.translationParent')),
+                    default       => null, // BC: ignore unknown values
+                };
             }
         }
 
