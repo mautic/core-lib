@@ -408,7 +408,7 @@ class EmailRepository extends CommonRepository
 
         if ($topLevel) {
             // BC layer
-            if (true === $topLevel || "1" === $topLevel) {
+            if (true === $topLevel || '1' === $topLevel) {
                 $topLevel = ['variant', 'translation'];
             } elseif (is_string($topLevel)) {
                 $topLevel = [$topLevel];
