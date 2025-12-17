@@ -57,9 +57,7 @@ class ConfigTrackingPageType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label' => 'mautic.page.config.form.append_segment_id_tracking_url',
-                'data'  => isset($options['data']['append_segment_id_tracking_url'])
-                    ? (bool) $options['data']['append_segment_id_tracking_url']
-                    : false,
+                'data'  => isset($options['data']['append_segment_id_tracking_url']) && (bool) $options['data']['append_segment_id_tracking_url'],
                 'attr'  => [
                     'tooltip' => 'mautic.page.config.form.append_segment_id_tracking_url.tooltip',
                 ],

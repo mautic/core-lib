@@ -51,9 +51,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         Assert::assertStringStartsWith(self::TEST_URL.'?'.self::SEGMENT_IDS_PARAM, $resultUrl, 'Segment IDs should be appended as query parameter');
     }
 
-    /**
-     * @dataProvider provideContactInputTypes
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideContactInputTypes')]
     public function testSegmentIdsAppendedWithDifferentContactTypes(string $testCase, callable $getContact): void
     {
         $lead        = $this->createContactWithSegments(3);
@@ -93,9 +91,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideUrlVariations
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideUrlVariations')]
     public function testUrlVariationsHandledCorrectly(
         string $testCase,
         string $url,
@@ -147,9 +143,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideInvalidOrEmptyContactScenarios
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideInvalidOrEmptyContactScenarios')]
     public function testUrlNotModifiedWhenContactInvalidOrHasNoSegments(
         string $testCase,
         callable $setupScenario,
@@ -230,9 +224,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         Assert::assertNotContains((string) $segmentIds[0], $returnedIds, 'Removed segment ID should not be present');
     }
 
-    /**
-     * @dataProvider provideSegmentCounts
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideSegmentCounts')]
     public function testSegmentIdsSortedAndFormattedCorrectly(int $segmentCount): void
     {
         $lead      = $this->createContactWithSegments($segmentCount);

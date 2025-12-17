@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\PageBundle\Event;
 
+use Mautic\LeadBundle\Entity\Lead;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -13,7 +14,7 @@ class UrlTokenReplaceEvent extends Event
 {
     public function __construct(
         private string $content,
-        private $lead,
+        private Lead|int|null $lead,
         private ?int $emailId = null,
     ) {
     }
@@ -36,10 +37,8 @@ class UrlTokenReplaceEvent extends Event
 
     /**
      * Get the lead (can be Lead entity or lead ID).
-     *
-     * @return mixed
      */
-    public function getLead()
+    public function getLead(): Lead|int|null
     {
         return $this->lead;
     }
