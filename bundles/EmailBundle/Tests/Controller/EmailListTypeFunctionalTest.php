@@ -11,8 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class EmailListTypeFunctionalTest extends MauticMysqlTestCase
 {
-    private const PARENT_EMAIL = 'Parent Email';
-    private const VARIANT_EMAIL = 'Variant Email';
+    private const PARENT_EMAIL      = 'Parent Email';
+    private const VARIANT_EMAIL     = 'Variant Email';
     private const TRANSLATION_EMAIL = 'Translation Email';
 
     /**
