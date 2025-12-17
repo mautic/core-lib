@@ -407,10 +407,21 @@ class EmailRepository extends CommonRepository
         }
 
         if ($topLevel) {
-            if (true === $topLevel || 'variant' == $topLevel) {
-                $q->andWhere($q->expr()->isNull('e.variantParent'));
-            } elseif ('translation' == $topLevel) {
-                $q->andWhere($q->expr()->isNull('e.translationParent'));
+            // BC layer
+            if (true === $topLevel || "1" === $topLevel) {
+                $topLevel = ['variant', 'translation'];
+            } elseif (is_string($topLevel)) {
+                $topLevel = [$topLevel];
+            }
+
+            if (is_array($topLevel)) {
+                foreach ($topLevel as $type) {
+                    match ($type) {
+                        'variant'     => $q->andWhere($q->expr()->isNull('e.variantParent')),
+                        'translation' => $q->andWhere($q->expr()->isNull('e.translationParent')),
+                        default       => null, // BC: ignore unknown values
+                    };
+                }
             }
         }
 
