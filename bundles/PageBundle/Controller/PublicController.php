@@ -23,6 +23,7 @@ use Mautic\LeadBundle\Tracker\Service\DeviceTrackingService\DeviceTrackingServic
 use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Event\PageDisplayEvent;
 use Mautic\PageBundle\Event\TrackingEvent;
+use Mautic\PageBundle\Event\UrlTokenReplaceEvent;
 use Mautic\PageBundle\Helper\PageConfig;
 use Mautic\PageBundle\Helper\TrackingHelper;
 use Mautic\PageBundle\Model\PageModel;
@@ -545,6 +546,11 @@ class PublicController extends AbstractFormController
                 $leadArray = ($lead) ? $primaryCompanyHelper->getProfileFieldsWithPrimaryCompany($lead) : [];
 
                 $url = TokenHelper::findLeadTokens($url, $leadArray, true);
+
+                // Dispatch URL token replace event to allow modifications
+                $urlEvent = new UrlTokenReplaceEvent($url, $lead, null);
+                $this->dispatcher->dispatch($urlEvent, PageEvents::ON_URL_TOKEN_REPLACE);
+                $url = $urlEvent->getContent();
             }
 
             if (str_contains($url, $this->generateUrl('mautic_asset_download'))) {

@@ -53,6 +53,20 @@ class ConfigTrackingPageType extends AbstractType
         );
 
         $builder->add(
+            'append_segment_id_tracking_url',
+            YesNoButtonGroupType::class,
+            [
+                'label' => 'mautic.page.config.form.append_segment_id_tracking_url',
+                'data'  => isset($options['data']['append_segment_id_tracking_url'])
+                    ? (bool) $options['data']['append_segment_id_tracking_url']
+                    : false,
+                'attr'  => [
+                    'tooltip' => 'mautic.page.config.form.append_segment_id_tracking_url.tooltip',
+                ],
+            ]
+        );
+
+        $builder->add(
             'facebook_pixel_id',
             TextType::class,
             [
