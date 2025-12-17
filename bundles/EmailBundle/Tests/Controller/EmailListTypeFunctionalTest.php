@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class EmailListTypeFunctionalTest extends MauticMysqlTestCase
 {
+    private const PARENT_EMAIL = 'Parent Email';
+    private const VARIANT_EMAIL = 'Variant Email';
+    private const TRANSLATION_EMAIL = 'Translation Email';
+
     /**
      * @param bool|string|string[] $topLevel
      * @param string[]             $expectedNames
@@ -18,9 +22,9 @@ final class EmailListTypeFunctionalTest extends MauticMysqlTestCase
     #[DataProvider('topLevelFilterDataProvider')]
     public function testGetLookupChoiceListWithTopLevelFilter($topLevel, array $expectedNames): void
     {
-        $parentEmail = $this->createEmail('Parent Email');
-        $this->createEmail('Variant Email', $parentEmail);
-        $this->createEmail('Translation Email', null, $parentEmail);
+        $parentEmail = $this->createEmail(self::PARENT_EMAIL);
+        $this->createEmail(self::VARIANT_EMAIL, $parentEmail);
+        $this->createEmail(self::TRANSLATION_EMAIL, null, $parentEmail);
 
         $this->em->clear();
 
@@ -42,47 +46,47 @@ final class EmailListTypeFunctionalTest extends MauticMysqlTestCase
     {
         yield 'array with variant and translation returns only parent' => [
             ['variant', 'translation'],
-            ['Parent Email'],
+            [self::PARENT_EMAIL],
         ];
 
         yield 'array with variant returns parent and translation' => [
             ['variant'],
-            ['Parent Email', 'Translation Email'],
+            [self::PARENT_EMAIL, self::TRANSLATION_EMAIL],
         ];
 
         yield 'array with translation returns parents and variants' => [
             ['translation'],
-            ['Parent Email', 'Variant Email'],
+            [self::PARENT_EMAIL, self::VARIANT_EMAIL],
         ];
 
         yield 'true returns only parent' => [
             true,
-            ['Parent Email'],
+            [self::PARENT_EMAIL],
         ];
 
         yield 'string variant returns parent and translation' => [
             'variant',
-            ['Parent Email', 'Translation Email'],
+            [self::PARENT_EMAIL, self::TRANSLATION_EMAIL],
         ];
 
         yield 'string translation returns parents and variants' => [
             'translation',
-            ['Parent Email', 'Variant Email'],
+            [self::PARENT_EMAIL, self::VARIANT_EMAIL],
         ];
 
         yield 'unknown filter returns all' => [
             ['unknown_filter'],
-            ['Parent Email', 'Variant Email', 'Translation Email'],
+            [self::PARENT_EMAIL, self::VARIANT_EMAIL, self::TRANSLATION_EMAIL],
         ];
 
         yield 'false returns all' => [
             false,
-            ['Parent Email', 'Variant Email', 'Translation Email'],
+            [self::PARENT_EMAIL, self::VARIANT_EMAIL, self::TRANSLATION_EMAIL],
         ];
 
         yield 'empty array returns all' => [
             [],
-            ['Parent Email', 'Variant Email', 'Translation Email'],
+            [self::PARENT_EMAIL, self::VARIANT_EMAIL, self::TRANSLATION_EMAIL],
         ];
     }
 
