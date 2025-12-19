@@ -16,9 +16,7 @@ class SafeUrlValidatorTest extends ConstraintValidatorTestCase
         return new SafeUrlValidator();
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testSafeUrlValidation(string $url, bool $isValid): void
     {
         $constraint = new SafeUrl();
