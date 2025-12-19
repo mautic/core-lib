@@ -650,4 +650,23 @@ class LeadRepository extends CommonRepository
 
         return $deletedRecordCount;
     }
+
+    /**
+     * @param array<int> $campaignIds
+     *
+     * @return array<mixed>
+     */
+    public function getCampaignContactCounts(array $campaignIds): array
+    {
+        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $qb->select('cl.campaign_id, COUNT(DISTINCT cl.lead_id) as contact_count')
+            ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', 'cl')
+            ->where('cl.campaign_id IN (:campaignIds)')
+            ->andWhere('cl.manually_removed = :manuallyRemoved')
+            ->setParameter('campaignIds', $campaignIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('manuallyRemoved', 0)
+            ->groupBy('cl.campaign_id');
+
+        return $qb->execute()->fetchAllAssociative();
+    }
 }
