@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Functional\Controller;
 
-use Mautic\CoreBundle\Entity\EventSourceRepository;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Import;
 use Mautic\LeadBundle\Entity\Lead;
@@ -73,7 +72,6 @@ class ImportUrlValidationTest extends MauticMysqlTestCase
         Assert::assertNotNull($leadRepository->findOneBy(['email' => 'ok2@a.com']));
         Assert::assertNull($leadRepository->findOneBy(['email' => 'bad@a.com']));
 
-        /** @var EventSourceRepository $events */
         $this->em->refresh($import);
 
         Assert::assertSame(2, $import->getIgnoredCount());
