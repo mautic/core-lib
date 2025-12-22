@@ -457,7 +457,7 @@ class TrackableModel extends AbstractCommonModel
             }
         } else {
             // Regular URL without a tokenized host
-            $trackableUrl = (string) Uri::fromParts($urlParts);
+            $trackableUrl = $this->httpBuildUrl($urlParts);
 
             if ($this->isInDoNotTrack($trackableUrl)) {
                 return false;
@@ -624,13 +624,17 @@ class TrackableModel extends AbstractCommonModel
     }
 
     /**
-     * @deprecated. Use (string) Uri::fromParts($parts) instead.
+     * Build a URL string from parse_url-style parts using Guzzle PSR-7.
+     * Decodes curly braces that Guzzle encodes to preserve Mautic tokens.
      *
      * @param array<string, mixed> $parts
      */
     protected function httpBuildUrl(array $parts): string
     {
-        return (string) Uri::fromParts($parts);
+        $uri = (string) Uri::fromParts($parts);
+
+        // Decode curly braces that Guzzle encoded to preserve Mautic tokens like {contactfield=bar}
+        return str_replace(['%7B', '%7D'], ['{', '}'], $uri);
     }
 
     /**
