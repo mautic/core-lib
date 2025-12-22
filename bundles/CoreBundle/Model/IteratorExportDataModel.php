@@ -13,9 +13,9 @@ class IteratorExportDataModel implements \Iterator
     private int $total;
 
     /**
-     * @var mixed[]
+     * @var ?mixed[]
      */
-    private array $data;
+    private ?array $data;
 
     private int $totalResult;
 
