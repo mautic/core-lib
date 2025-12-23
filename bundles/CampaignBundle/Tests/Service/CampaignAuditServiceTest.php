@@ -8,15 +8,16 @@ use Mautic\CampaignBundle\Service\CampaignAuditService;
 use Mautic\CoreBundle\Service\FlashBag;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CampaignAuditServiceTest extends MauticMysqlTestCase
 {
     private const CAMPAIGN_NAME = 'Test Campaign';
     private CampaignAuditService $campaignAuditService;
-    private FlashBag $flashBagMock;
-    private UrlGeneratorInterface $urlGeneratorMock;
-    private EventRepository $eventRepositoryMock;
+    private FlashBag|MockObject $flashBagMock;
+    private UrlGeneratorInterface|MockObject $urlGeneratorMock;
+    private EventRepository|MockObject $eventRepositoryMock;
 
     protected function setUp(): void
     {

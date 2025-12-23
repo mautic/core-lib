@@ -10,13 +10,14 @@ use Mautic\CampaignBundle\Service\CampaignAuditService;
 use Mautic\CoreBundle\Service\FlashBag;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class CampaignAuditServiceFunctionalTest extends MauticMysqlTestCase
 {
     private CampaignAuditService $campaignAuditService;
-    private FlashBag $flashBagMock;
-    private UrlGeneratorInterface $urlGeneratorMock;
+    private FlashBag|MockObject $flashBagMock;
+    private UrlGeneratorInterface|MockObject $urlGeneratorMock;
 
     protected function setUp(): void
     {
