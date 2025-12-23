@@ -48,6 +48,72 @@ class CampaignRepositoryTest extends TestCase
         $this->repository->setTranslator($translator);
     }
 
+    public function testFetchEmailIdsById(): void
+    {
+        $id = 2;
+
+        $queryResult = [
+            1 => ['channelId' => 1],
+            2 => ['channelId' => 2],
+        ];
+
+        $expectedResult = [1, 2];
+
+        $this->entityManager
+            ->method('createQueryBuilder')
+            ->willReturn($this->queryBuilder);
+
+        $this->queryBuilder->expects(self::once())
+            ->method('select')
+            ->with('e.channelId')
+            ->willReturn($this->queryBuilder);
+
+        $this->queryBuilder->expects(self::once())
+            ->method('from')
+            ->with(Campaign::class, $this->repository->getTableAlias(), $this->repository->getTableAlias().'.id')
+            ->willReturn($this->queryBuilder);
+
+        $this->queryBuilder->expects(self::once())
+            ->method('where')
+            ->with($this->repository->getTableAlias().'.id = :id')
+            ->willReturn($this->queryBuilder);
+
+        $this->queryBuilder->expects(self::once())
+            ->method('setParameter')
+            ->with('id', $id)
+            ->willReturn($this->queryBuilder);
+
+        $this->queryBuilder->method('getRootAliases')
+            ->willReturn(['e']);
+
+        $this->queryBuilder->expects(self::once())
+            ->method('andWhere')
+            ->with('e.channelId IS NOT NULL')
+            ->willReturn($this->queryBuilder);
+
+        $query = $this->getMockBuilder(Query::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['setHydrationMode', 'getResult'])
+            ->getMock();
+
+        $query->expects(self::once())
+            ->method('setHydrationMode')
+            ->with(Query::HYDRATE_ARRAY)
+            ->willReturn($query);
+
+        $this->queryBuilder->expects(self::once())
+            ->method('getQuery')
+            ->willReturn($query);
+
+        $query->expects(self::once())
+            ->method('getResult')
+            ->willReturn($queryResult);
+
+        $result = $this->repository->fetchEmailIdsById($id);
+
+        $this->assertEquals($expectedResult, $result);
+    }
+
     public function testAddSearchCommandWhereClauseHandlesExpirationFilters(): void
     {
         $qb     = $this->connection->createQueryBuilder();
