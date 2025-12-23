@@ -641,7 +641,12 @@ class CampaignRepository extends CommonRepository
      * or empty array if nothing found.
      *
      * @param int $id
+     *
+     * @deprecated The method is deprecated and will be removed in Mautic 8.x.
+     * Use `\Mautic\CampaignBundle\Entity\EventRepository::getCampaignEmailEvents` instead.
+     * @see EventRepository::getCampaignEmailEvents
      */
+    #[\Deprecated('The method is deprecated and will be removed in Mautic 8.x.')]
     public function fetchEmailIdsById($id): array
     {
         $emails = $this->getEntityManager()
