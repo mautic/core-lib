@@ -10,11 +10,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * Event dispatched when replacing tokens in a URL, allowing modifications before the final redirect.
  */
-class UrlTokenReplaceEvent extends Event
+final class UrlTokenReplaceEvent extends Event
 {
     public function __construct(
         private string $content,
-        private Lead|int|null $lead,
+        private Lead $lead,
         private ?int $emailId = null,
     ) {
     }
@@ -36,9 +36,9 @@ class UrlTokenReplaceEvent extends Event
     }
 
     /**
-     * Get the lead (can be Lead entity or lead ID).
+     * Get the lead entity.
      */
-    public function getLead(): Lead|int|null
+    public function getLead(): Lead
     {
         return $this->lead;
     }

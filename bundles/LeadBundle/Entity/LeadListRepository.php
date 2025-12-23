@@ -874,7 +874,7 @@ SQL;
      */
     public function getContactSegmentIds(string $contactId): array
     {
-        return array_map('intval', $this->getEntityManager()
+        $result = $this->getEntityManager()
             ->getConnection()
             ->createQueryBuilder()
             ->select('ll.leadlist_id')
@@ -884,7 +884,10 @@ SQL;
             ->andWhere('ll.manually_removed = 0')
             ->andWhere('l.is_published = 1')
             ->setParameter('contactId', $contactId)
+            ->orderBy('ll.leadlist_id', 'ASC')
             ->executeQuery()
-            ->fetchFirstColumn());
+            ->fetchAllNumeric();
+
+        return array_map(fn ($row) => (int) $row[0], $result);
     }
 }

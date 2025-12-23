@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace Mautic\PageBundle\EventListener;
 
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadListRepository;
 use Mautic\PageBundle\Event\UrlTokenReplaceEvent;
-use Mautic\PageBundle\PageEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Appends contact segment IDs to tracking URLs for third-party integrations like VWO.
  */
-class SegmentTrackingSubscriber implements EventSubscriberInterface
+final class SegmentTrackingSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private CoreParametersHelper $coreParametersHelper,
@@ -25,7 +23,7 @@ class SegmentTrackingSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PageEvents::ON_URL_TOKEN_REPLACE => ['onUrlTokenReplace', -100],
+            UrlTokenReplaceEvent::class => ['onUrlTokenReplace', -100],
         ];
     }
 
@@ -34,13 +32,13 @@ class SegmentTrackingSubscriber implements EventSubscriberInterface
      */
     public function onUrlTokenReplace(UrlTokenReplaceEvent $event): void
     {
-        $leadData = $event->getLead();
+        $lead = $event->getLead();
 
-        if (!$this->coreParametersHelper->get('append_segment_id_tracking_url') || !$leadData) {
+        if (!$this->coreParametersHelper->get('append_segment_id_tracking_url')) {
             return;
         }
 
-        $contactId = $leadData instanceof Lead ? $leadData->getId() : $leadData;
+        $contactId = $lead->getId();
         if (!$contactId) {
             return;
         }
@@ -60,7 +58,7 @@ class SegmentTrackingSubscriber implements EventSubscriberInterface
     private function appendSegmentIdsToUrl(UrlTokenReplaceEvent $event, array $segmentIds): void
     {
         $url             = $event->getContent();
-        $segmentIdsParam = 'segment_ids='.implode(',', $segmentIds);
+        $segmentIdsParam = http_build_query(['segment_ids' => implode(',', $segmentIds)]);
 
         $fragment = '';
         if (str_contains($url, '#')) {

@@ -9,7 +9,6 @@ use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
 use Mautic\PageBundle\Event\UrlTokenReplaceEvent;
-use Mautic\PageBundle\PageEvents;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -36,7 +35,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
     public function testFeatureFlagIsDisabled(): void
     {
         $lead      = $this->createContactWithSegments(2);
-        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead->getId());
+        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead);
 
         Assert::assertSame(self::TEST_URL, $resultUrl, 'When feature flag is disabled, URL should not be modified');
         Assert::assertStringNotContainsString('segment_ids', $resultUrl, 'URL should not contain segment_ids parameter when feature flag is disabled');
@@ -45,50 +44,10 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
     public function testFeatureFlagIsEnabled(): void
     {
         $lead      = $this->createContactWithSegments(2);
-        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead->getId());
+        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead);
 
         Assert::assertStringContainsString(self::SEGMENT_IDS_PARAM, $resultUrl, 'When feature flag is enabled, segment IDs should be appended');
         Assert::assertStringStartsWith(self::TEST_URL.'?'.self::SEGMENT_IDS_PARAM, $resultUrl, 'Segment IDs should be appended as query parameter');
-    }
-
-    #[\PHPUnit\Framework\Attributes\DataProvider('provideContactInputTypes')]
-    public function testSegmentIdsAppendedWithDifferentContactTypes(string $testCase, callable $getContact): void
-    {
-        $lead        = $this->createContactWithSegments(3);
-        $segments    = $this->getContactSegments($lead);
-        $expectedIds = array_keys($segments);
-        sort($expectedIds);
-
-        $contact   = $getContact($lead);
-        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $contact);
-
-        Assert::assertStringContainsString(self::SEGMENT_IDS_PARAM, $resultUrl, $testCase);
-
-        $parsedUrl = parse_url($resultUrl);
-        parse_str($parsedUrl['query'], $queryParams);
-
-        Assert::assertArrayHasKey('segment_ids', $queryParams);
-
-        $actualIds = explode(',', $queryParams['segment_ids']);
-        sort($actualIds);
-
-        Assert::assertSame($expectedIds, array_map('intval', $actualIds), $testCase);
-    }
-
-    /**
-     * @return iterable<string, array{string, callable}>
-     */
-    public static function provideContactInputTypes(): iterable
-    {
-        yield 'Contact as integer ID' => [
-            'Integer contact ID should work',
-            fn (Lead $lead) => $lead->getId(),
-        ];
-
-        yield 'Contact as Lead entity' => [
-            'Lead entity should work',
-            fn (Lead $lead): Lead => $lead,
-        ];
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('provideUrlVariations')]
@@ -99,7 +58,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         ?string $expectedContent = null,
     ): void {
         $lead      = $this->createContactWithSegments(2);
-        $resultUrl = $this->dispatchUrlTokenReplaceEvent($url, $lead->getId());
+        $resultUrl = $this->dispatchUrlTokenReplaceEvent($url, $lead);
 
         Assert::assertStringContainsString(self::SEGMENT_IDS_PARAM, $resultUrl, $testCase);
         Assert::assertStringContainsString($expectedSeparator.self::SEGMENT_IDS_PARAM, $resultUrl, $testCase);
@@ -143,56 +102,17 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         ];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('provideInvalidOrEmptyContactScenarios')]
-    public function testUrlNotModifiedWhenContactInvalidOrHasNoSegments(
-        string $testCase,
-        callable $setupScenario,
-    ): void {
-        $contactId = $setupScenario($this);
-        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $contactId);
-
-        Assert::assertSame(self::TEST_URL, $resultUrl, "URL should not be modified: {$testCase}");
-        Assert::assertStringNotContainsString('segment_ids', $resultUrl, "URL should not contain segment_ids: {$testCase}");
-    }
-
-    /**
-     * @return iterable<string, array{string, callable}>
-     */
-    public static function provideInvalidOrEmptyContactScenarios(): iterable
+    public function testUrlNotModifiedWhenContactHasNoSegments(): void
     {
-        yield 'Non-existent contact' => [
-            'Contact does not exist',
-            fn (self $test) => 999999,
-        ];
+        $lead = new Lead();
+        $lead->setEmail('nosegments@example.com');
+        $this->em->persist($lead);
+        $this->em->flush();
 
-        yield 'Invalid contact ID (zero)' => [
-            'Contact ID is zero',
-            fn (self $test) => 0,
-        ];
+        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead);
 
-        yield 'Contact with no segments' => [
-            'Contact exists but has no segments',
-            function (self $test) {
-                $lead = new Lead();
-                $lead->setEmail('nosegments@example.com');
-                $test->em->persist($lead);
-                $test->em->flush();
-
-                return $lead->getId();
-            },
-        ];
-
-        yield 'Deleted contact' => [
-            'Contact was deleted after creation',
-            function (self $test) {
-                $lead      = $test->createContactWithSegments(2);
-                $contactId = $lead->getId();
-                $test->em->remove($lead);
-                $test->em->flush();
-
-                return $contactId;
-            },
-        ];
+        Assert::assertSame(self::TEST_URL, $resultUrl, 'URL should not be modified when contact has no segments');
+        Assert::assertStringNotContainsString('segment_ids', $resultUrl, 'URL should not contain segment_ids');
     }
 
     public function testContactRemovedFromSegment(): void
@@ -213,10 +133,10 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
             $this->em->clear();
         }
 
-        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead->getId());
+        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead);
 
         $parsedUrl = parse_url($resultUrl);
-        parse_str($parsedUrl['query'], $queryParams);
+        parse_str($parsedUrl['query'] ?? '', $queryParams);
 
         $returnedIds = explode(',', $queryParams['segment_ids']);
 
@@ -228,10 +148,10 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
     public function testSegmentIdsSortedAndFormattedCorrectly(int $segmentCount): void
     {
         $lead      = $this->createContactWithSegments($segmentCount);
-        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead->getId());
+        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead);
 
         $parsedUrl = parse_url($resultUrl);
-        parse_str($parsedUrl['query'], $queryParams);
+        parse_str($parsedUrl['query'] ?? '', $queryParams);
 
         $segmentIds = explode(',', $queryParams['segment_ids']);
         Assert::assertCount($segmentCount, $segmentIds, "Should return exactly {$segmentCount} segment IDs");
@@ -259,8 +179,8 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
     {
         $lead = $this->createContactWithSegments(2);
 
-        $event = new UrlTokenReplaceEvent(self::TEST_URL, $lead->getId(), 123);
-        $this->dispatcher->dispatch($event, PageEvents::ON_URL_TOKEN_REPLACE);
+        $event = new UrlTokenReplaceEvent(self::TEST_URL, $lead, 123);
+        $this->dispatcher->dispatch($event);
 
         Assert::assertStringContainsString(self::SEGMENT_IDS_PARAM, $event->getContent(), 'Should append segment IDs regardless of email ID parameter');
     }
@@ -277,13 +197,13 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead->getId());
+        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead);
 
         Assert::assertStringContainsString(self::SEGMENT_IDS_PARAM, $resultUrl, 'Should still append segment IDs for published segments');
         Assert::assertStringNotContainsString((string) $firstSegmentId, $resultUrl, 'Unpublished segment ID should not be included');
 
         $parsedUrl = parse_url($resultUrl);
-        parse_str($parsedUrl['query'], $queryParams);
+        parse_str($parsedUrl['query'] ?? '', $queryParams);
         $segmentIds = explode(',', $queryParams['segment_ids']);
 
         Assert::assertCount(2, $segmentIds, 'Should return 2 segment IDs (excluding unpublished)');
@@ -295,9 +215,9 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         $initialSegments = $this->getContactSegments($lead);
         $initialCount    = count($initialSegments);
 
-        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead->getId());
+        $resultUrl = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead);
         $parsedUrl = parse_url($resultUrl);
-        parse_str($parsedUrl['query'], $queryParams);
+        parse_str($parsedUrl['query'] ?? '', $queryParams);
         $segmentIds = explode(',', $queryParams['segment_ids']);
 
         Assert::assertCount($initialCount, $segmentIds, 'Should initially have 2 segment IDs');
@@ -319,7 +239,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $resultUrl2 = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead->getId());
+        $resultUrl2 = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead);
         $parsedUrl2 = parse_url($resultUrl2);
         parse_str($parsedUrl2['query'], $queryParams2);
         $segmentIds2 = explode(',', $queryParams2['segment_ids']);
@@ -340,7 +260,7 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
             $this->em->clear();
         }
 
-        $resultUrl3 = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead->getId());
+        $resultUrl3 = $this->dispatchUrlTokenReplaceEvent(self::TEST_URL, $lead);
         $parsedUrl3 = parse_url($resultUrl3);
         parse_str($parsedUrl3['query'], $queryParams3);
         $segmentIds3 = explode(',', $queryParams3['segment_ids']);
@@ -351,13 +271,14 @@ final class SegmentTrackingSubscriberFunctionalTest extends MauticMysqlTestCase
 
     /**
      * Helper method to dispatch URL token replace event and return the result URL.
-     *
-     * @param int|Lead $contact
      */
-    private function dispatchUrlTokenReplaceEvent(string $url, $contact): string
+    private function dispatchUrlTokenReplaceEvent(string $url, Lead $contact): string
     {
+        // Ensure entity manager is in sync before dispatching event
+        $this->em->flush();
+
         $event = new UrlTokenReplaceEvent($url, $contact, null);
-        $this->dispatcher->dispatch($event, PageEvents::ON_URL_TOKEN_REPLACE);
+        $this->dispatcher->dispatch($event);
 
         return $event->getContent();
     }

@@ -89,6 +89,15 @@ return [
     ],
 
     'services' => [
+        'events' => [
+            'mautic.page.segment_tracking_subscriber' => [
+                'class'     => Mautic\PageBundle\EventListener\SegmentTrackingSubscriber::class,
+                'arguments' => [
+                    'mautic.helper.core_parameters',
+                    'mautic.lead.repository.lead_list',
+                ],
+            ],
+        ],
         'fixtures' => [
             'mautic.page.fixture.page_category' => [
                 'class'     => Mautic\PageBundle\DataFixtures\ORM\LoadPageCategoryData::class,

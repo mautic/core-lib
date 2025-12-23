@@ -549,7 +549,7 @@ class PublicController extends AbstractFormController
 
                 // Dispatch URL token replace event to allow modifications
                 $urlEvent = new UrlTokenReplaceEvent($url, $lead, null);
-                $this->dispatcher->dispatch($urlEvent, PageEvents::ON_URL_TOKEN_REPLACE);
+                $this->dispatcher->dispatch($urlEvent);
                 $url = $urlEvent->getContent();
             }
 
