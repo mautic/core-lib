@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CampaignAuditServiceTest extends MauticMysqlTestCase
 {
+    private const CAMPAIGN_NAME = 'Test Campaign';
     private CampaignAuditService $campaignAuditService;
     private FlashBag $flashBagMock;
     private UrlGeneratorInterface $urlGeneratorMock;
@@ -35,7 +36,7 @@ class CampaignAuditServiceTest extends MauticMysqlTestCase
     public function testWarningIsAddedForUnpublishedEmail(): void
     {
         $campaign = new Campaign();
-        $campaign->setName('Test Campaign');
+        $campaign->setName(self::CAMPAIGN_NAME);
         $this->em->persist($campaign);
 
         $publishedEmail = new Email();
@@ -87,7 +88,7 @@ class CampaignAuditServiceTest extends MauticMysqlTestCase
     public function testNoWarningIsAddedWhenAllEmailsArePublished(): void
     {
         $campaign = new Campaign();
-        $campaign->setName('Test Campaign');
+        $campaign->setName(self::CAMPAIGN_NAME);
         $this->em->persist($campaign);
 
         $publishedEmail = new Email();
@@ -106,7 +107,7 @@ class CampaignAuditServiceTest extends MauticMysqlTestCase
     public function testNoWarningIsAddedForCampaignWithNoEmails(): void
     {
         $campaign = new Campaign();
-        $campaign->setName('Test Campaign');
+        $campaign->setName(self::CAMPAIGN_NAME);
         $this->em->persist($campaign);
         $this->em->flush();
 
