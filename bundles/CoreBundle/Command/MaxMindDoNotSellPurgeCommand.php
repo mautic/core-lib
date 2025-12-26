@@ -154,7 +154,5 @@ EOT
 
             return;
         }
-
-        return;
     }
 }
