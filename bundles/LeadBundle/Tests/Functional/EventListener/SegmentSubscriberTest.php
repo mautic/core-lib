@@ -101,7 +101,7 @@ class SegmentSubscriberTest extends MauticMysqlTestCase
                 'properties' => ['filter' => 'Contact'],
             ],
         ];
-        $segment   = $this->saveSegment('Segment D', 'segment-d', $filters);
+        $segment   = $this->saveSegment('SegmentD', 'segment-d', $filters);
         $segmentId = $segment->getId();
 
         // Run segments update command.
