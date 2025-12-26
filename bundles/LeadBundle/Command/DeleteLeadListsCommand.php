@@ -9,8 +9,8 @@ use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\LeadListRepository;
 use Mautic\LeadBundle\Model\ListModel;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteLeadListsCommand extends Command
@@ -43,18 +43,16 @@ class DeleteLeadListsCommand extends Command
     {
         $this->setName(self::COMMAND_NAME)
             ->setDescription('Hard-delete segment(s) and all its references.')
-            ->addOption(
-                '--list-id',
-                '-i',
-                InputOption::VALUE_OPTIONAL,
-                'Segment id to delete.',
-                null
+            ->addArgument(
+                'list-id',
+                InputArgument::OPTIONAL,
+                'Segment id to delete.'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $listId   = (int) $input->getOption('list-id');
+        $listId   = (int) $input->getArgument('list-id');
 
         // single entity
         if (!empty($listId)) {
