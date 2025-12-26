@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Mautic\PageBundle\EventListener;
 
+use GuzzleHttp\Psr7\Query;
+use GuzzleHttp\Psr7\Uri;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\LeadBundle\Entity\LeadListRepository;
 use Mautic\PageBundle\Event\UrlTokenReplaceEvent;
@@ -57,19 +59,14 @@ final class SegmentTrackingSubscriber implements EventSubscriberInterface
      */
     private function appendSegmentIdsToUrl(UrlTokenReplaceEvent $event, array $segmentIds): void
     {
-        $url             = $event->getContent();
-        $segmentIdsParam = http_build_query(['segment_ids' => implode(',', $segmentIds)]);
+        $url = $event->getContent();
+        $uri = new Uri($url);
 
-        $fragment = '';
-        if (str_contains($url, '#')) {
-            $parts    = explode('#', $url, 2);
-            $url      = $parts[0];
-            $fragment = '#'.$parts[1];
-        }
+        $queryParams                = Query::parse($uri->getQuery());
+        $queryParams['segment_ids'] = implode(',', $segmentIds);
 
-        $separator = (str_contains($url, '?')) ? '&' : '?';
-        $url .= $separator.$segmentIdsParam.$fragment;
+        $newUri = $uri->withQuery(Query::build($queryParams));
 
-        $event->setContent($url);
+        $event->setContent((string) $newUri);
     }
 }
