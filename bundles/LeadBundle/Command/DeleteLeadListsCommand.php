@@ -19,7 +19,7 @@ class DeleteLeadListsCommand extends Command
 
     public function __construct(
         private ListModel $listModel,
-        private LeadListRepository $leadListRepository
+        private LeadListRepository $leadListRepository,
     ) {
         parent::__construct();
     }

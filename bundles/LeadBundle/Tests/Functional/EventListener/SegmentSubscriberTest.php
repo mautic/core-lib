@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Functional\EventListener;
 
-use Exception;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
@@ -88,7 +87,7 @@ class SegmentSubscriberTest extends MauticMysqlTestCase
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function testSegmentDeleteWhenBackgroundConfigFalse(): void
     {
@@ -162,6 +161,4 @@ class SegmentSubscriberTest extends MauticMysqlTestCase
 
         return $segment;
     }
-
-
 }

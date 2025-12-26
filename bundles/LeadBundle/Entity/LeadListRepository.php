@@ -6,9 +6,8 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Mautic\CoreBundle\Entity\CommonRepository;
-use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
-use Mautic\CoreBundle\Helper\RandomHelper\RandomHelper;
+use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 use Mautic\UserBundle\Entity\User;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -69,11 +68,7 @@ class LeadListRepository extends CommonRepository
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @param int $id
-     *
-     * @return mixed|null
      */
     public function getEntity($id = 0): ?LeadList
     {

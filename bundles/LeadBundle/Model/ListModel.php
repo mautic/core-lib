@@ -188,7 +188,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
     public function deleteEntity($entity): void
     {
         $id    = $entity->getId();
-        $event = $this->dispatchEvent('pre_delete', $entity);
+        $this->dispatchEvent('pre_delete', $entity);
         $this->getRepository()->setSegmentAsDeleted($id);
 
         $entity->deletedId = $id;

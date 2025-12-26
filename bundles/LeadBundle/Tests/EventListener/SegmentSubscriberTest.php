@@ -148,7 +148,7 @@ class SegmentSubscriberTest extends TestCase
         $event = $this->createMock(SegmentEvent::class);
         $event->expects($this->once())
             ->method('getList')
-            ->will($this->returnValue($segment));
+            ->willReturn($segment);
 
         $subscriber->onSegmentPostDelete($event);
     }
@@ -179,7 +179,7 @@ class SegmentSubscriberTest extends TestCase
 
         $segment->expects($this->once())
             ->method('getId')
-            ->will($this->returnValue($segmentId));
+            ->willReturn($segmentId);
 
         $event = $this->createMock(SegmentEvent::class);
         $event->expects($this->once())

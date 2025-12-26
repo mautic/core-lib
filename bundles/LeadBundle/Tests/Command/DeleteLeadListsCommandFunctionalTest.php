@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\LeadBundle\Tests\Command;
 
-use Exception;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Command\DeleteLeadListsCommand;
 use Mautic\LeadBundle\Entity\Lead;
@@ -24,7 +23,7 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function testSegmentDeleteCommand(): void
     {
@@ -58,7 +57,7 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function testSegmentDeleteCommandWithoutArgs(): void
     {

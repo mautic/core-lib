@@ -128,6 +128,7 @@ class LeadList extends FormEntity implements UuidInterface
 
     /**
      * @var \DateTimeInterface|null
+     *
      * @Groups({"segment:read", "segment:write", "campaign:read", "campaign:write"})
      */
     private $deleted;

@@ -226,7 +226,7 @@ final class LeadEvents
      *
      * @var string
      */
-    const ON_LIST_DELETE = 'mautic.lead_list_delete';
+    public const ON_LIST_DELETE = 'mautic.lead_list_delete';
 
     /**
      * The mautic.lead_list_post_delete event is dispatched after a lead_list is deleted.

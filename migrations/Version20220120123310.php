@@ -6,7 +6,6 @@ namespace Mautic\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
 use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
-use Mautic\LeadBundle\Field\Helper\IndexHelper;
 
 final class Version20220120123310 extends PreUpAssertionMigration
 {
