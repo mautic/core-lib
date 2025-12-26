@@ -106,10 +106,10 @@ class SegmentSubscriberTest extends MauticMysqlTestCase
         $segmentId = $segment->getId();
 
         // Run segments update command.
-        $this->runCommand('mautic:segments:update', ['-i' => $segmentId]);
+        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId]);
 
         /** @var ListModel $listModel */
-        $listModel = $this->container->get('mautic.lead.model.list');
+        $listModel = $this->getContainer()->get('mautic.lead.model.list');
         $leadCount = $listModel->getListLeadRepository()->getContactsCountBySegment($segmentId);
         self::assertSame(5, $leadCount);
 

@@ -698,7 +698,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         $segmentExistCheck = $this->listRepo->find($segmentId);
-        Assert::assertNull($segmentExistCheck);
+        Assert::assertTrue($segmentExistCheck->isDeleted());
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('dateFieldProvider')]

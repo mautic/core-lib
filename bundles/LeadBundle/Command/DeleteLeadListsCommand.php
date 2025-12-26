@@ -17,22 +17,10 @@ class DeleteLeadListsCommand extends Command
 {
     public const COMMAND_NAME = 'mautic:segment:delete';
 
-    /**
-     * @var ListModel
-     */
-    private $listModel;
-
-    /**
-     * @var LeadListRepository
-     */
-    private $leadListRepository;
-
     public function __construct(
-        ListModel $listModel,
-        LeadListRepository $leadListRepository
+        private ListModel $listModel,
+        private LeadListRepository $leadListRepository
     ) {
-        $this->listModel            = $listModel;
-        $this->leadListRepository   = $leadListRepository;
         parent::__construct();
     }
 
@@ -81,12 +69,9 @@ class DeleteLeadListsCommand extends Command
                     ],
                 ],
                 'ignore_paginator'  => true,
-                'iterator_mode'     => true,
+                'iterable_mode'     => true,
             ]);
-
-            while (false !== ($next = $leadLists->next())) {
-                // Key is ID and not 0
-                $list   = reset($next);
+            foreach ($leadLists as $list) {
                 $listId = $list->getId();
                 $this->deleteLeadList($list);
                 $output->writeln("<info>segment {$listId} has been deleted.</info>");

@@ -32,10 +32,10 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
         $segmentId = $segment->getId();
 
         // Run segments update command.
-        $this->runCommand('mautic:segments:update', ['-i' => $segmentId]);
+        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId]);
 
         /** @var ListModel $listModel */
-        $listModel = $this->container->get('mautic.lead.model.list');
+        $listModel = $this->getContainer()->get('mautic.lead.model.list');
         $leadCount = $listModel->getListLeadRepository()->getContactsCountBySegment($segmentId);
         self::assertSame(5, $leadCount);
 
@@ -48,7 +48,7 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
         $deletedEntity = $listModel->getSoftDeletedEntity($segmentId);
         self::assertSame($segmentId, $deletedEntity->getId());
 
-        $msg = $this->runCommand(DeleteLeadListsCommand::COMMAND_NAME, ['list-id' => $segmentId]);
+        $this->testSymfonyCommand(DeleteLeadListsCommand::COMMAND_NAME, ['list-id' => $segmentId]);
 
         $leadCount = $listModel->getListLeadRepository()->getContactsCountBySegment($segmentId);
         self::assertSame(0, $leadCount);
@@ -69,10 +69,10 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
         $segmentCId = $segmentC->getId();
 
         // Run segments update command.
-        $this->runCommand('mautic:segments:update');
+        $this->testSymfonyCommand('mautic:segments:update');
 
         /** @var ListModel $listModel */
-        $listModel = $this->container->get('mautic.lead.model.list');
+        $listModel = $this->getContainer()->get('mautic.lead.model.list');
         $leadCount = $listModel->getListLeadRepository()->getContactsCountBySegment($segmentBId);
         self::assertSame(5, $leadCount);
 
@@ -87,7 +87,7 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
         $deletedEntity = $listModel->getSoftDeletedEntity($segmentBId);
         self::assertSame($segmentBId, $deletedEntity->getId());
         // command without args --list-id
-        $msg = $this->runCommand(DeleteLeadListsCommand::COMMAND_NAME);
+        $this->testSymfonyCommand(DeleteLeadListsCommand::COMMAND_NAME);
 
         $leadCount = $listModel->getListLeadRepository()->getContactsCountBySegment($segmentBId);
         self::assertSame(0, $leadCount);
@@ -135,6 +135,7 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
         ];
         $segment->setName($name)
             ->setFilters($filters)
+            ->setPublicName($name)
             ->setAlias($alias);
         $segmentRepo->saveEntity($segment);
 

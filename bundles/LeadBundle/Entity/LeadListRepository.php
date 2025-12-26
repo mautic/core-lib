@@ -60,7 +60,7 @@ class LeadListRepository extends CommonRepository
                 $q->andWhere($q->expr()->isNull($this->getTableAlias().'.deleted'));
             }
 
-            $entity = $q->setParameter('listId', $id)
+            return $q->setParameter('listId', $id)
                 ->getQuery()
                 ->getSingleResult();
         } catch (\Exception) {
@@ -75,7 +75,7 @@ class LeadListRepository extends CommonRepository
      *
      * @return mixed|null
      */
-    public function getEntity($id = 0)
+    public function getEntity($id = 0): ?LeadList
     {
         return $this->getSingleEntity($id);
     }
