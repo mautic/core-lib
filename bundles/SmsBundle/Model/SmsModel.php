@@ -193,8 +193,8 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
             $sendTo = [$sendTo];
         }
 
-        $sentCount       = 0;
-        $failedCount     = 0;
+        $sentCount       = [];
+        $stats           = [];
         $results         = [];
         $contacts        = [];
         $fetchContacts   = [];
@@ -247,7 +247,6 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
             unset($contacts[$removeMeId], $contactIds[$removeMeId]);
         }
 
-        $translatedSms = null;
         if (!empty($contacts)) {
             $messageQueue    = $options['resend_message_queue'] ?? null;
             $campaignEventId = (is_array($channel) && 'campaign.event' === $channel[0] && !empty($channel[1])) ? $channel[1] : null;
@@ -272,7 +271,6 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
                 unset($contacts[$queue]);
             }
 
-            $stats = [];
             // @todo we should allow batch sending based on transport, MessageBird does support 20 SMS at once
             // the transport chain is already prepared for it
             if (count($contacts)) {
@@ -330,10 +328,9 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
                         if (is_string($metadata)) {
                             $stat->addDetail('failed', $metadata);
                         }
-                        ++$failedCount;
                     } else {
-                        $sendResult['sent'] = true;
-                        ++$sentCount;
+                        $sendResult['sent']                 = true;
+                        $sentCount[$translatedSms->getId()] = ($sentCount[$translatedSms->getId()] ?? 0) + 1;
                     }
 
                     $stats[]            = $stat;
@@ -345,8 +342,14 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
             }
         }
 
-        if ($translatedSms instanceof Sms || $sentCount || $failedCount) {
-            $this->getRepository()->upCount($translatedSms->getId(), 'sent', $sentCount);
+        if ($sentCount) {
+            $repo = $this->getRepository();
+            foreach ($sentCount as $id => $count) {
+                $repo->upCount($id, 'sent', $count);
+            }
+        }
+
+        if (count($stats)) {
             $this->getStatRepository()->saveEntities($stats);
 
             foreach ($stats as $stat) {
