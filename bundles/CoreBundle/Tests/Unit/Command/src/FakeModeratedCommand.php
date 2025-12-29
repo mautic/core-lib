@@ -33,11 +33,11 @@ class FakeModeratedCommand extends ModeratedCommand
         $reflection  = new \ReflectionClass($this);
         $parentClass = $reflection->getParentClass();
 
-        if ($parentClass->hasProperty('lock')) {
-            $property = $parentClass->getProperty('lock');
-            $property->setValue($this, $lock);
-        } else {
+        if (!$parentClass->hasProperty('lock')) {
             throw new \RuntimeException("The 'lock' property does not exist in the parent class.");
         }
+
+        $property = $parentClass->getProperty('lock');
+        $property->setValue($this, $lock);
     }
 }
