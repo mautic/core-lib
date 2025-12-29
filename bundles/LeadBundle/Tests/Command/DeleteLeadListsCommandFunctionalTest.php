@@ -85,7 +85,7 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
 
         $deletedEntity = $listModel->getSoftDeletedEntity($segmentBId);
         self::assertSame($segmentBId, $deletedEntity->getId());
-        // command without args --list-id
+        // command without  args --list-id
         $this->testSymfonyCommand(DeleteLeadListsCommand::COMMAND_NAME);
 
         $leadCount = $listModel->getListLeadRepository()->getContactsCountBySegment($segmentBId);
