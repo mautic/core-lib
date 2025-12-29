@@ -851,8 +851,8 @@ class AjaxController extends CommonAjaxController
      */
     private function checkForValidPermissions()
     {
-        if (!$this->corePermissions->isGranted('campaign:campaigns:editown')
-            && !$this->corePermissions->isGranted('campaign:campaigns:editother')) {
+        if (!$this->security->isGranted('campaign:campaigns:editown')
+            && !$this->security->isGranted('campaign:campaigns:editother')) {
             return $this->accessDenied();
         }
 
