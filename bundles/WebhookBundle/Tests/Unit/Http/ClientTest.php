@@ -1,6 +1,6 @@
 <?php
 
-namespace Mautic\WebhookBundle\Tests\Http;
+namespace Mautic\WebhookBundle\Tests\Unit\Http;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Request;
@@ -50,6 +50,7 @@ final class ClientTest extends TestCase
             'Content-Type'      => 'application/json',
             'X-Origin-Base-URL' => $siteUrl,
             'Webhook-Signature' => $expectedSignature,
+            'User-Agent'        => 'Webhook',
         ];
 
         $response = new Response();
@@ -58,12 +59,12 @@ final class ClientTest extends TestCase
         $this->parametersMock->expects($matcher)
             ->method('get')
             ->willReturnCallback(function (string $parameter) use ($matcher, $siteUrl) {
-                if (1 === $matcher->getInvocationCount()) {
+                if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('site_url', $parameter);
 
                     return $siteUrl;
                 }
-                if (2 === $matcher->getInvocationCount()) {
+                if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('webhook_allowed_private_addresses', $parameter);
 
                     return [];

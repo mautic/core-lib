@@ -21,7 +21,7 @@ class Client
     /**
      * @throws \Http\Client\Exception
      */
-    public function post($url, array $payload, string $secret = null): ResponseInterface
+    public function post($url, array $payload, ?string $secret = null): ResponseInterface
     {
         $jsonPayload = json_encode($payload);
         $signature   = null === $secret ? null : base64_encode(hash_hmac('sha256', $jsonPayload, $secret, true));
@@ -29,6 +29,7 @@ class Client
             'Content-Type'      => 'application/json',
             'X-Origin-Base-URL' => $this->coreParametersHelper->get('site_url'),
             'Webhook-Signature' => $signature,
+            'User-Agent'        => 'Webhook',
         ];
 
         $allowedPrivateAddresses = $this->coreParametersHelper->get('webhook_allowed_private_addresses');
