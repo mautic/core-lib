@@ -9,13 +9,12 @@ use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadEventLog;
 use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Entity\Stat;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
 
 final class SmsTranslationFunctionalTest extends MauticMysqlTestCase
 {
-    /**
-     * @dataProvider smsTimelineStatusProvider
-     */
+    #[DataProvider('smsTimelineStatusProvider')]
     public function testSmsTimelineStatusIsTranslated(string $action, bool $isFailed, string $expectedString): void
     {
         $contact = new Lead();
@@ -64,7 +63,7 @@ final class SmsTranslationFunctionalTest extends MauticMysqlTestCase
     /**
      * @return array<string, array{string, bool, string}>
      */
-    public function smsTimelineStatusProvider(): array
+    public static function smsTimelineStatusProvider(): array
     {
         return [
             'sent'      => ['sent', false, 'Text Message Sent'],
