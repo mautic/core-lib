@@ -270,9 +270,11 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
      * Normalize incoming selected values to an array of unique integer IDs.
      * Accepts scalars, arrays, or an entity object exposing the configured identifier getter.
      *
+     * @param int|string|iterable<int|numeric-string|object>|object $data
+     *
      * @return int[]
      */
-    private function sanitizeIds($data): array
+    private function sanitizeIds(int|string|array|object $data): array
     {
         if (!is_iterable($data)) {
             $data = [$data];
