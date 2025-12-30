@@ -48,7 +48,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
             $this->configParams['show_contact_preferences'] = 1;
         }
 
-        if (in_array($this->getName(), ['testContactPreferencesSaveMessage', 'testLandingPageContactPreferencesSaveMessage'])) {
+        if (in_array($this->name(), ['testContactPreferencesSaveMessage', 'testLandingPageContactPreferencesSaveMessage'])) {
             $this->configParams['show_contact_segments']           = 1;
             $this->configParams['show_contact_frequency']          = 1;
             $this->configParams['show_contact_pause_dates']        = 1;
