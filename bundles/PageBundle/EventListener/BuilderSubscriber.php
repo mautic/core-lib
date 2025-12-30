@@ -314,6 +314,9 @@ final class BuilderSubscriber implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @param array<string,mixed> $params
+     */
     private function renderSuccessMessage(array $params): string
     {
         return $this->renderTemplate(
