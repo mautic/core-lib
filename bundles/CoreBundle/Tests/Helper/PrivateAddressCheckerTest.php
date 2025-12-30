@@ -31,33 +31,25 @@ class PrivateAddressCheckerTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider privateIpProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('privateIpProvider')]
     public function testIsPrivateIpReturnsTrue(string $ip): void
     {
         $this->assertTrue($this->checker->isPrivateIp($ip));
     }
 
-    /**
-     * @dataProvider publicIpProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('publicIpProvider')]
     public function testIsPrivateIpReturnsFalse(string $ip): void
     {
         $this->assertFalse($this->checker->isPrivateIp($ip));
     }
 
-    /**
-     * @dataProvider privateUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('privateUrlProvider')]
     public function testIsPrivateUrlReturnsTrue(string $url): void
     {
         $this->assertTrue($this->checkerWithMockedDns->isPrivateUrl($url));
     }
 
-    /**
-     * @dataProvider publicUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('publicUrlProvider')]
     public function testIsPrivateUrlReturnsFalse(string $url): void
     {
         $this->assertFalse($this->checkerWithMockedDns->isPrivateUrl($url));
@@ -66,7 +58,7 @@ class PrivateAddressCheckerTest extends TestCase
     /**
      * @return array<string, array{string}>
      */
-    public function privateIpProvider(): array
+    public static function privateIpProvider(): array
     {
         return [
             'IPv4 Local'           => ['127.0.0.1'],
@@ -83,7 +75,7 @@ class PrivateAddressCheckerTest extends TestCase
     /**
      * @return array<string, array{string}>
      */
-    public function publicIpProvider(): array
+    public static function publicIpProvider(): array
     {
         return [
             'IPv4 Public'             => ['8.8.8.8'],
@@ -95,7 +87,7 @@ class PrivateAddressCheckerTest extends TestCase
     /**
      * @return array<string, array{string}>
      */
-    public function privateUrlProvider(): array
+    public static function privateUrlProvider(): array
     {
         return [
             'Localhost'                      => ['http://localhost'],
@@ -111,7 +103,7 @@ class PrivateAddressCheckerTest extends TestCase
     /**
      * @return array<string, array{string}>
      */
-    public function publicUrlProvider(): array
+    public static function publicUrlProvider(): array
     {
         return [
             'Public Domain' => ['http://public.example.com'],
@@ -124,7 +116,7 @@ class PrivateAddressCheckerTest extends TestCase
     /**
      * @return array<string, array{string}>
      */
-    public function invalidUrlProvider(): array
+    public static function invalidUrlProvider(): array
     {
         return [
             'Empty URL'          => [''],
@@ -134,9 +126,7 @@ class PrivateAddressCheckerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidUrlProvider')]
     public function testIsPrivateUrlThrowsExceptionForInvalidUrls(string $url): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -155,9 +145,7 @@ class PrivateAddressCheckerTest extends TestCase
         $this->assertFalse($this->checker->isPrivateIp('invalid-ip'));
     }
 
-    /**
-     * @dataProvider edgeCaseUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('edgeCaseUrlProvider')]
     public function testEdgeCaseUrls(string $url, bool $expectedResult): void
     {
         $this->assertEquals($expectedResult, $this->checkerWithMockedDns->isPrivateUrl($url));
@@ -166,7 +154,7 @@ class PrivateAddressCheckerTest extends TestCase
     /**
      * @return array<string, array{string, bool}>
      */
-    public function edgeCaseUrlProvider(): array
+    public static function edgeCaseUrlProvider(): array
     {
         return [
             'URL with Port'        => ['http://[::1]:8080', true],
@@ -175,18 +163,14 @@ class PrivateAddressCheckerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider allowedUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('allowedUrlProvider')]
     public function testIsAllowedUrlReturnsTrue(string $url): void
     {
         $this->checkerWithMockedDns->setAllowedPrivateAddresses(['192.168.1.1', 'localhost', '::1']);
         $this->assertTrue($this->checkerWithMockedDns->isAllowedUrl($url));
     }
 
-    /**
-     * @dataProvider disallowedUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('disallowedUrlProvider')]
     public function testIsAllowedUrlReturnsFalse(string $url): void
     {
         $this->checkerWithMockedDns->setAllowedPrivateAddresses(['192.168.1.2', '10.0.0.1']);
@@ -203,7 +187,7 @@ class PrivateAddressCheckerTest extends TestCase
     /**
      * @return array<string, array{string}>
      */
-    public function allowedUrlProvider(): array
+    public static function allowedUrlProvider(): array
     {
         return [
             'Public Domain'                => ['http://public.example.com'],
@@ -217,7 +201,7 @@ class PrivateAddressCheckerTest extends TestCase
     /**
      * @return array<string, array{string}>
      */
-    public function disallowedUrlProvider(): array
+    public static function disallowedUrlProvider(): array
     {
         return [
             'Disallowed Private IP'           => ['http://192.168.1.1'],
@@ -227,9 +211,7 @@ class PrivateAddressCheckerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidUrlProvider')]
     public function testIsAllowedUrlThrowsExceptionForInvalidUrls(string $url): void
     {
         $this->expectException(\InvalidArgumentException::class);
