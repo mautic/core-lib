@@ -13,6 +13,7 @@ use Mautic\DynamicContentBundle\DynamicContent\TypeList;
 use Mautic\DynamicContentBundle\Entity\DynamicContent;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\Stat;
+use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\ListLead;
@@ -22,6 +23,9 @@ use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bridge\Doctrine\DataCollector\DoctrineDataCollector;
+
+use function Symfony\Component\Clock\now;
+
 use Symfony\Component\HttpFoundation\Request;
 
 final class EmailControllerFunctionalTest extends MauticMysqlTestCase
@@ -161,7 +165,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}");
-        $html    = $crawler->filterXPath('//*[@id="toolbar"]/div[1]/a[2]')->html();
+        $html    = $crawler->filterXPath('//*[@id="toolbar"]')->html();
         $this->assertStringContainsString('Email is sending in the background', $html, $html);
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails');
@@ -173,7 +177,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}");
-        $html    = $crawler->filterXPath('//*[@id="toolbar"]/div[1]/a[2]')->html();
+        $html    = $crawler->filterXPath('//*[@id="toolbar"]')->html();
         $this->assertStringNotContainsString('Email is sending in the background', $html, $html);
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails');
@@ -185,7 +189,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}");
-        $html    = $crawler->filterXPath('//*[@id="toolbar"]/div[1]/a[2]')->html();
+        $html    = $crawler->filterXPath('//*[@id="toolbar"]')->html();
         $this->assertStringNotContainsString('disabled', $html, $html);
     }
 
@@ -204,6 +208,44 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         self::assertSame('<option value="'.$email->getId().'">'.$email->getName().' ('.$email->getId().')</option>', trim($html));
     }
 
+    public function testSegmentEmailVariationChildrenParents(): void
+    {
+        $segment         = $this->createSegment('Segment A', 'segment-a');
+        $emailGrandPah   = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'test html', $segment);
+        $this->em->persist($emailGrandPah);
+        $this->em->flush();
+
+        $emailParent = $this->createEmail('Email B', 'Subject B', 'list', 'blank', 'test html', $segment);
+        $emailParent->setVariantParent($emailGrandPah);
+        $this->em->persist($emailParent);
+        $emailGrandPah->addVariantChild($emailParent);
+        $this->em->flush();
+
+        $emailChild = $this->createEmail('Email C', 'Subject C', 'list', 'blank', 'test html', $segment);
+        $emailChild->setVariantParent($emailParent);
+        $this->em->persist($emailChild);
+        $emailParent->addVariantChild($emailChild);
+        $this->em->persist($emailChild);
+        $this->em->flush();
+
+        $crawler      = $this->client->request(Request::METHOD_GET, '/s/emails');
+        $htmlLine1    = $crawler->filter('.email-list > tbody > tr:nth-child(1)')->html();
+        $htmlLine2    = $crawler->filter('.email-list > tbody > tr:nth-child(2)')->html();
+        $htmlLine3    = $crawler->filter('.email-list > tbody > tr:nth-child(3)')->html();
+
+        Assert::assertStringContainsString('ri-a-b fs-14', $htmlLine3);
+        Assert::assertStringContainsString('Is A/B variant', $htmlLine3);
+        Assert::assertStringContainsString('Email C', $htmlLine3);
+        Assert::assertStringContainsString('Email B', $htmlLine2);
+        Assert::assertStringContainsString('ri-a-b fs-14', $htmlLine2);
+        Assert::assertStringContainsString('Is A/B variant', $htmlLine2);
+        Assert::assertStringContainsString('ri-organization-chart', $htmlLine2);
+        Assert::assertStringContainsString('Has A/B tests', $htmlLine2);
+        Assert::assertStringContainsString('Has A/B tests', $htmlLine1);
+        Assert::assertStringContainsString('ri-organization-chart', $htmlLine1);
+        Assert::assertStringContainsString('Email A', $htmlLine1);
+    }
+
     public function testSegmentEmailSend(): void
     {
         $segment = $this->createSegment('Segment A', 'segment-a');
@@ -215,6 +257,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->sendBatchEmail($email);
 
         $email = $this->getMailerMessage();
+        \assert($email instanceof MauticMessage);
 
         // The order of the recipients is not guaranteed, so we need to check both possibilities.
         Assert::assertSame('Subject A', $email->getSubject());
@@ -230,6 +273,34 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame('', $email->getReplyTo()[0]->getName());
         Assert::assertSame($this->configParams['mailer_from_email'], $email->getReplyTo()[0]->getAddress());
         Assert::assertSame('value123', $email->getHeaders()->get('x-global-custom-header')->getBody());
+    }
+
+    public function testSegmentEmailTranslationChildrenParents(): void
+    {
+        $segment         = $this->createSegment('Segment A', 'segment-a');
+        $emailGrandPah   = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'test html', $segment);
+        $this->em->persist($emailGrandPah);
+        $this->em->flush();
+
+        $emailParent = $this->createEmail('Email B', 'Subject B', 'list', 'blank', 'test html', $segment);
+        $emailParent->setTranslationParent($emailGrandPah);
+        $this->em->persist($emailParent);
+        $emailGrandPah->addTranslationChild($emailParent);
+        $this->em->flush();
+
+        $emailChild = $this->createEmail('Email C', 'Subject C', 'list', 'blank', 'test html', $segment);
+        $emailChild->setTranslationParent($emailParent);
+        $this->em->persist($emailChild);
+        $emailParent->addTranslationChild($emailChild);
+        $this->em->persist($emailChild);
+        $this->em->flush();
+
+        $crawler      = $this->client->request(Request::METHOD_GET, '/s/emails');
+        $iconNodes1   = $crawler->filter('.email-list .ri-translate.fs-14');
+        Assert::assertGreaterThanOrEqual(2, $iconNodes1->count(), 'Translate icon not found in the email list rows.');
+
+        $iconNodes2 = $crawler->filter('.email-list .ri-translate-2');
+        Assert::assertGreaterThanOrEqual(1, $iconNodes2->count(), 'Translate icon not found in the email list rows.');
     }
 
     public function testSegmentEmailSendWithAdvancedOptions(): void
@@ -259,6 +330,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->sendBatchEmail($email);
 
         $email = $this->getMailerMessage();
+        \assert($email instanceof MauticMessage);
 
         // The order of the recipients is not guaranteed, so we need to check both possibilities.
         Assert::assertSame('Subject A', $email->getSubject());
@@ -300,6 +372,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->sendBatchEmail($email, 2, 10, true);
 
+        /** @var MauticMessage[] $messages */
         $messages   = self::getMailerMessages();
         $messageOne = array_values(array_filter($messages, fn ($message) => 'contact@one.email' === $message->getTo()[0]->getAddress()))[0];
         $messageTwo = array_values(array_filter($messages, fn ($message) => 'contact@two.email' === $message->getTo()[0]->getAddress()))[0];
@@ -783,6 +856,152 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertNotEmpty($response['body']);
     }
 
+    public function testSegmentEmailSendWithoutContinueSending(): void
+    {
+        $segment = $this->createSegment('Segment A', 'segment-a');
+
+        $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
+        $this->em->persist($email);
+        $this->em->flush();
+
+        // Schedule the email to be sent
+        $crawler       = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $form          = $crawler->selectButton('schedule_send[buttons][save]')->form();
+
+        // Set publish up date to 1 hour ago
+        $publishUpDate = (new \DateTime('now -30 minutes'))->format('Y-m-d H:i');
+        $form['schedule_send[publishUp]']->setValue($publishUpDate);
+        $form['schedule_send[continueSending]']->setValue('0');
+
+        $this->client->submit($form);
+
+        // Create test contacts and add them to the segment
+        foreach (['test@one.email', 'test@two.email', 'test@three.email'] as $emailAddress) {
+            $contact = new Lead();
+            $contact->setEmail($emailAddress);
+
+            $member = new ListLead();
+            $member->setLead($contact);
+            $member->setList($segment);
+            if ('test@three.email' === $emailAddress) {
+                $member->setDateAdded(new \DateTime('-10 minutes'));
+            } else {
+                $member->setDateAdded(new \DateTime('-1 hour'));
+            }
+
+            $this->em->persist($member);
+            $this->em->persist($contact);
+        }
+
+        $this->em->flush();
+
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+        $this->assertStringContainsString('Email: Email A | 2', $commandTester->getDisplay());
+
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+
+        $email = $this->em->getRepository(Email::class)->find($email->getId());
+        $this->assertFalse($email->getIsPublished(), $commandTester->getDisplay());
+    }
+
+    public function testSegmentEmailSendWithContinueSending(): void
+    {
+        $segment = $this->createSegment('Segment A', 'segment-a');
+
+        $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
+        $this->em->persist($email);
+        $this->em->flush($email);
+
+        // Schedule the email to be sent
+        $crawler       = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $form          = $crawler->selectButton('schedule_send[buttons][save]')->form();
+
+        // Set publish up date to 1 hour ago
+        $publishUpDate = (new \DateTime('now -1 hour'))->format('Y-m-d H:i');
+        $form['schedule_send[publishUp]']->setValue($publishUpDate);
+        $form['schedule_send[continueSending]']->setValue('1');
+
+        $this->client->submit($form);
+
+        foreach (['test@one.email', 'test@two.email', 'test@three.email'] as $emailAddress) {
+            $contact = new Lead();
+            $contact->setEmail($emailAddress);
+
+            $member = new ListLead();
+            $member->setLead($contact);
+            $member->setList($segment);
+            if ('test@three.email' === $emailAddress) {
+                $member->setDateAdded(new \DateTime('-10 minutes'));
+            } else {
+                $member->setDateAdded(new \DateTime('-1 hour'));
+            }
+
+            $this->em->persist($member);
+            $this->em->persist($contact);
+        }
+
+        $this->em->flush();
+
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+        $this->assertStringContainsString('Email: Email A | 3', $commandTester->getDisplay());
+
+        $commandTester = $this->testSymfonyCommand('mautic:broadcast:send', ['--channel' => 'email', '--id' => $email->getId()]);
+
+        $email = $this->em->getRepository(Email::class)->find($email->getId());
+        $this->assertTrue($email->getIsPublished(), $commandTester->getDisplay());
+    }
+
+    public function testSegmentEmailCancelScheduling(): void
+    {
+        $segment = $this->createSegment('Segment A', 'segment-a');
+
+        $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'Ahoy <i>{contactfield=email}</i><a href="https://mautic.org">Mautic</a>', $segment);
+        $this->em->persist($email);
+        $this->em->flush($email);
+
+        // Schedule the email to be sent
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $form    = $crawler->selectButton('schedule_send[buttons][save]')->form();
+
+        // Set publish up date to 1 hour ago
+        $publishUpDate = (new \DateTime('now'))->format('Y-m-d H:i');
+        $form['schedule_send[publishUp]']->setValue($publishUpDate);
+
+        $this->client->submit($form);
+
+        // Schedule the email to be sent
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/scheduleSend/{$email->getId()}");
+        $form    = $crawler->selectButton('schedule_send[buttons][apply]')->form();
+        $this->client->submit($form);
+
+        $email = $this->em->getRepository(Email::class)->find($email->getId());
+        $this->assertNull($email->getPublishUp());
+    }
+
+    private function createDynamicContent(string $type): DynamicContent
+    {
+        $dynamicContent = new DynamicContent();
+        $dynamicContent->setName('Dynamic content');
+        $dynamicContent->setType($type);
+        $dynamicContent->setIsCampaignBased(false);
+        $dynamicContent->setSlotName('slot-name');
+        $dynamicContent->setContent('text content');
+        $dynamicContent->setFilters([
+            [
+                'glue'     => 'and',
+                'field'    => 'email',
+                'object'   => 'lead',
+                'type'     => 'email',
+                'filter'   => null,
+                'display'  => null,
+                'operator' => '!empty',
+            ],
+        ]);
+        $this->em->persist($dynamicContent);
+
+        return $dynamicContent;
+    }
+
     /**
      * @throws \Doctrine\ORM\Exception\ORMException
      * @throws OptimisticLockException
@@ -949,30 +1168,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($email);
 
         return $email;
-    }
-
-    private function createDynamicContent(string $type): DynamicContent
-    {
-        $dynamicContent = new DynamicContent();
-        $dynamicContent->setName('Dynamic content');
-        $dynamicContent->setType($type);
-        $dynamicContent->setIsCampaignBased(false);
-        $dynamicContent->setSlotName('slot-name');
-        $dynamicContent->setContent('text content');
-        $dynamicContent->setFilters([
-            [
-                'glue'     => 'and',
-                'field'    => 'email',
-                'object'   => 'lead',
-                'type'     => 'email',
-                'filter'   => null,
-                'display'  => null,
-                'operator' => '!empty',
-            ],
-        ]);
-        $this->em->persist($dynamicContent);
-
-        return $dynamicContent;
     }
 
     /**
