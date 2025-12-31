@@ -24,7 +24,7 @@ class CampaignAuditServiceTest extends MauticMysqlTestCase
         parent::setUp();
 
         $this->flashBagMock        = $this->createMock(FlashBag::class);
-        $this->urlGeneratorMock    = $this->createMock(UrlGeneratorInterface::class); // Instantiate the mock
+        $this->urlGeneratorMock    = $this->createMock(UrlGeneratorInterface::class);
         $this->eventRepositoryMock = $this->createMock(EventRepository::class);
 
         $this->campaignAuditService = new CampaignAuditService(
