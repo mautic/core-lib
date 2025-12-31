@@ -20,7 +20,7 @@ final class EmailListTypeFunctionalTest extends MauticMysqlTestCase
      * @param string[]             $expectedNames
      */
     #[DataProvider('topLevelFilterDataProvider')]
-    public function testGetLookupChoiceListWithTopLevelFilter($topLevel, array $expectedNames): void
+    public function testGetLookupChoiceListWithTopLevelFilter(array|string|bool $topLevel, array $expectedNames): void
     {
         $parentEmail = $this->createEmail(self::PARENT_EMAIL);
         $this->createEmail(self::VARIANT_EMAIL, $parentEmail);
