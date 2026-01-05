@@ -7,6 +7,7 @@ namespace Mautic\EmailBundle\Tests\Helper;
 use Mautic\CoreBundle\Entity\IpAddress;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Helper\BotRatioHelper;
+use Mautic\LeadBundle\Tracker\Factory\DeviceDetectorFactory\DeviceDetectorFactoryInterface;
 use PHPUnit\Framework\TestCase;
 
 final class BotRatioHelperTest extends TestCase
@@ -26,6 +27,30 @@ final class BotRatioHelperTest extends TestCase
         float $botHelperBotRatioThreshold,
         bool $isBot,
     ): void {
+        // Threshold
+        $coreParametersHelperMock = $this->createMock(CoreParametersHelper::class);
+        $coreParametersHelperMock->expects($this->exactly(4))
+            ->method('get')
+            ->withConsecutive(
+                ['bot_helper_bot_ratio_threshold', 0.6],
+                ['bot_helper_time_email_threshold', 2],
+                ['bot_helper_blocked_user_agents', []],
+                ['bot_helper_blocked_ip_addresses', []]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $botHelperBotRatioThreshold,
+                $botHelperTimeEmailThreshold,
+                $blockedUserAgents,
+                $ipDoNotTrackList
+            );
+
+        $deviceDetectorMock = $this->createMock(\DeviceDetector\DeviceDetector::class);
+        $deviceDetectorMock->method('parse');
+        $deviceDetectorMock->method('isBot')->willReturn(false);
+
+        $deviceDetectorFactoryMock = $this->createMock(DeviceDetectorFactoryInterface::class);
+        $deviceDetectorFactoryMock->method('create')->willReturn($deviceDetectorMock);
+
         // Time
         $emailHitDateTime = new \DateTime();
         $emailSent        = clone $emailHitDateTime;
@@ -36,7 +61,7 @@ final class BotRatioHelperTest extends TestCase
             ->willReturn($emailSent);
         // IP
         $ipAddress        = new IpAddress($ipAddressString);
-        $botRatioHelper   = new BotRatioHelper($botHelperBotRatioThreshold, $botHelperTimeEmailThreshold, $blockedUserAgents, $ipDoNotTrackList);
+        $botRatioHelper   = new BotRatioHelper($deviceDetectorFactoryMock, $botHelperBotRatioThreshold, $botHelperTimeEmailThreshold, $blockedUserAgents, $ipDoNotTrackList);
         $isEvaluatedAsBot = $botRatioHelper->isHitByBot($emailStatMock, $emailHitDateTime, $ipAddress, $userAgent);
         $this->assertSame($isBot, $isEvaluatedAsBot);
     }
