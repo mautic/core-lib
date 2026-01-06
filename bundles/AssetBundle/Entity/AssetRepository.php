@@ -237,11 +237,11 @@ class AssetRepository extends CommonRepository
     }
 
     /**
-     * Finds a single Asset entity based on a slug in the format "id:alias-or-uuid".
+     * Finds a single Asset entity based on a slug in the format "id:identifier".
      *
      * The slug is expected to be a string with two parts separated by a colon (`:`):
-     *  - The first part is the asset's numeric ID.
-     *  - The second part is either the asset's alias or UUID.
+     *  - ID: numeric asset ID
+     *  - Identifier: alias or UUID
      *
      * Example:
      *    - "1:example-file"
@@ -250,14 +250,14 @@ class AssetRepository extends CommonRepository
      * @throws NonUniqueResultException
      * @throws EntityNotFoundException
      */
-    public function findByIdAndAlias(string $slug): Asset
+    public function findOneBySlug(string $slug): Asset
     {
         // Split the slug into ID and alias/UUID parts. Alias is to BC check.
-        [$id, $alias] = array_pad(explode(':', $slug, 2), 2, null);
+        [$id, $slugIdentifier] = array_pad(explode(':', $slug, 2), 2, null);
 
         // Validate input: both parts must be present.
-        if (!$id || !$alias) {
-            throw new \InvalidArgumentException('Invalid slug format. Expected "id:alias-or-uuid".');
+        if (!$id || !$slugIdentifier) {
+            throw new \InvalidArgumentException('Invalid slug format. Expected "id:identifier".');
         }
 
         $qb = $this->createQueryBuilder('a');
@@ -266,18 +266,20 @@ class AssetRepository extends CommonRepository
         $asset = $qb
             ->where('a.id = :id')
             ->andWhere(
-                $qb->expr()->eq('a.alias', ':val')
+                $qb->expr()->orX(
+                    'a.alias = :val',
+                    'a.uuid = :val',
+                )
             )
             ->setParameters([
                 'id'  => (int) $id,
-                'val' => $alias,
+                'val' => $slugIdentifier,
             ])
             ->getQuery()
             ->getOneOrNullResult();
 
-        // If not found, throw a standardized Doctrine exception.
         if (!$asset) {
-            throw EntityNotFoundException::fromClassNameAndIdentifier(Asset::class, ['id' => $id, 'alias/uuid' => $alias]);
+            throw EntityNotFoundException::fromClassNameAndIdentifier(Asset::class, ['id' => $id, 'identifier' => $slugIdentifier]);
         }
 
         return $asset;

@@ -34,8 +34,20 @@ class PublicController extends AbstractFormController
         string $slug,
     ): Response {
         try {
-            $entity = $model->getRepository()->findByIdAndAlias($slug);
+            $entity = $model->getRepository()->findOneBySlug($slug);
         } catch (NonUniqueResultException|EntityNotFoundException|\InvalidArgumentException) {
+            /**
+             * @deprecated remove in Mautic 8.x
+             *
+             * Replace this with `return $this->notFound();`
+             * and remove the subsequent `if (!$entity)` block.
+             *
+             * Legacy slug lookup fallback.
+             */
+            $entity = $model->getEntityBySlugs($slug);
+        }
+
+        if (!$entity) {
             return $this->notFound();
         }
 
@@ -58,6 +70,8 @@ class PublicController extends AbstractFormController
         if (!$this->isAccessAllowed($entity)) {
             $model->trackDownload($entity, $request, 401);
             $response = $this->accessDenied();
+        } elseif ($this->shouldRedirect($model, $entity, $request)) {
+            $response = $this->redirectResponse($model, $entity, $request);
         } elseif ($entity->isRemote()) {
             $response = $this->remoteRedirectResponse($model, $entity, $request);
         } else {
@@ -65,6 +79,32 @@ class PublicController extends AbstractFormController
         }
 
         return $response;
+    }
+
+    /**
+     * Checks whether the current request URI matches the canonical asset URL.
+     * If they differ (ignoring query string), a redirect is required.
+     */
+    private function shouldRedirect(AssetModel $model, Asset $entity, Request $request): bool
+    {
+        $expectedUrl = $model->generateUrl($entity, false);
+        $actualUrl   = strtok($request->getRequestUri(), '?');
+
+        return $expectedUrl !== $actualUrl;
+    }
+
+    /**
+     * Tracks the redirect and returns a 301 permanent redirect to the canonical asset URL.
+     *
+     * @throws ORMException
+     */
+    private function redirectResponse(AssetModel $model, Asset $entity, Request $request): Response
+    {
+        $model->trackDownload($entity, $request, 301);
+
+        $url = $model->generateUrl($entity, false, [], $request->get('stream'));
+
+        return $this->redirect($url, 301);
     }
 
     /**

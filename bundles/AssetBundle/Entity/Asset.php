@@ -536,13 +536,13 @@ class Asset extends FormEntity implements UuidInterface
 
     /**
      * Set alias.
-     *
-     * @param string $alias
-     *
-     * @return Asset
      */
-    public function setAlias($alias)
+    public function setAlias(string $alias): self
     {
+        if (null !== $this->id) {
+            return $this;
+        }
+
         $this->isChanged('alias', $alias);
         $this->alias = $alias;
 

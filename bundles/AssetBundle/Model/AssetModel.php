@@ -433,9 +433,13 @@ class AssetModel extends FormModel implements GlobalSearchInterface
     {
         $entityId  = $entity->getId();
         $alias     = $entity->getAlias();
-        $assetSlug = $entityId.':'.$alias;
+        $uuid      = $entity->getUuid();
 
-        $routeParams = ['slug' => $assetSlug];
+        // Decide slug identifier: alias preferred, fallback to UUID.
+        $identifier = $alias ?: $uuid;
+        $slug       = $entityId.':'.$identifier;
+
+        $routeParams = ['slug' => $slug];
         if (!is_null($stream)) {
             $routeParams['stream'] = $stream;
         }
