@@ -126,8 +126,9 @@ class AssetType extends AbstractType
                 'label'      => 'mautic.core.alias',
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
-                    'class'   => 'form-control',
-                    'tooltip' => 'mautic.asset.asset.help.alias',
+                    'class'    => 'form-control',
+                    'tooltip'  => 'mautic.asset.asset.help.alias',
+                    'readonly' => $options['data'] && $options['data']->getId(),
                 ],
                 'required' => false,
             ]
