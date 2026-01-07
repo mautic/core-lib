@@ -40,15 +40,13 @@ class ModeratedCommandTest extends TestCase
         $this->pathsHelper          = $this->createMock(PathsHelper::class);
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $this->output               = new NullOutput();
-        $this->fakeModeratedCommand = new FakeModeratedCommand($this->pathsHelper, $this->coreParametersHelper);
 
-        // Safe: test-only reflection to inject value into a non-public $lockFile property.
-        // Justification: The class under test has no public setter, and this setup is needed for accurate test coverage.
-        $reflection = new \ReflectionClass($this->fakeModeratedCommand);
-        $property   = $reflection->getProperty('lockFile');
-        // Defensive: setAccessible(true) allows access to non-public properties, including protected and private ones.
-        $property->setAccessible(true);
-        $property->setValue($this->fakeModeratedCommand, $this->lockFilePath);
+        $this->fakeModeratedCommand = new FakeModeratedCommand(
+            $this->pathsHelper,
+            $this->coreParametersHelper
+        );
+
+        $this->fakeModeratedCommand->setLockFile($this->lockFilePath);
     }
 
     protected function tearDown(): void

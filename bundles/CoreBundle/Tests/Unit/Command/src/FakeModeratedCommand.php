@@ -40,4 +40,9 @@ class FakeModeratedCommand extends ModeratedCommand
         $property = $parentClass->getProperty('lock');
         $property->setValue($this, $lock);
     }
+
+    public function setLockFile(string $lockFilePath): void
+    {
+        $this->lockFile = $lockFilePath;
+    }
 }
