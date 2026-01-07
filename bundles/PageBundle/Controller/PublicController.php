@@ -522,9 +522,8 @@ class PublicController extends AbstractFormController
                 }
 
                 if ($lead) {
-                    $leadArray = ($lead) ? $primaryCompanyHelper->getProfileFieldsWithPrimaryCompany($lead) : [];
-
-                    $url = TokenHelper::findLeadTokens($url, $leadArray, true);
+                    $leadArray = $primaryCompanyHelper->getProfileFieldsWithPrimaryCompany($lead);
+                    $url       = TokenHelper::findLeadTokens($url, $leadArray, true);
 
                     // Dispatch URL token replace event to allow modifications
                     $urlEvent = new UrlTokenReplaceEvent($url, $lead, null);
