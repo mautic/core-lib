@@ -68,9 +68,12 @@ class SortableValueLabelListType extends AbstractType
     private function generateSlugFromLabel(string $label): string
     {
         $transliterated = InputHelper::transliterate($label);
-        $alphanumeric   = InputHelper::alphanum($transliterated, false, '_');
-        $trimmed        = trim($alphanumeric, '_');
-        $normalized     = preg_replace('/_+/', '_', $trimmed);
+        if (false === $transliterated) {
+            return '';
+        }
+        $alphanumeric = InputHelper::alphanum($transliterated, false, '_');
+        $trimmed      = trim($alphanumeric, '_');
+        $normalized   = preg_replace('/_+/', '_', $trimmed);
 
         return strtolower($normalized ?? '');
     }
