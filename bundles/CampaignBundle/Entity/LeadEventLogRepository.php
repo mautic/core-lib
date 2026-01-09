@@ -145,8 +145,13 @@ class LeadEventLogRepository extends CommonRepository
         $leadIps = [];
 
         $query = $this->_em->getConnection()->createQueryBuilder();
-        $query->from(MAUTIC_TABLE_PREFIX.'campaign_lead_event_log', 'll')
-            ->select('ll.event_id,
+
+        $joinCondition = 'e.id = ll.event_id';
+        if (isset($options['type'])) {
+            $joinCondition .= ' AND e.type = :type';
+        }
+
+        $query->select('ll.event_id,
                     ll.campaign_id,
                     ll.trigger_date,
                     ll.lead_id,
@@ -156,7 +161,12 @@ class LeadEventLogRepository extends CommonRepository
                     c.description AS campaign_description,
                     ll.metadata,
                     CONCAT(CONCAT(l.firstname, \' \'), l.lastname) AS lead_name')
-            ->leftJoin('ll', MAUTIC_TABLE_PREFIX.'campaign_events', 'e', 'e.id = ll.event_id')
+            ->add('from', [
+                'table' => MAUTIC_TABLE_PREFIX.'campaign_lead_event_log',
+                'alias' => 'll',
+                'hint'  => 'USE INDEX ('.MAUTIC_TABLE_PREFIX.'idx_scheduled_events)',
+            ], true)
+            ->join('ll', MAUTIC_TABLE_PREFIX.'campaign_events', 'e', $joinCondition)
             ->leftJoin('ll', MAUTIC_TABLE_PREFIX.'campaigns', 'c', 'c.id = e.campaign_id')
             ->leftJoin('ll', MAUTIC_TABLE_PREFIX.'leads', 'l', 'l.id = ll.lead_id')
             ->where($query->expr()->eq('ll.is_scheduled', 1))
@@ -173,8 +183,7 @@ class LeadEventLogRepository extends CommonRepository
         }
 
         if (isset($options['type'])) {
-            $query->andwhere('e.type = :type')
-            ->setParameter('type', $options['type']);
+            $query->setParameter('type', $options['type']);
         }
 
         if (isset($options['eventType'])) {
