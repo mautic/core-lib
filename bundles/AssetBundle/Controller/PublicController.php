@@ -55,18 +55,22 @@ class PublicController extends AbstractFormController
     }
 
     /**
-     * Determines and returns the appropriate response based on the given Asset entity.
+     * Determines and returns the appropriate response for a valid Asset entity.
      *
      * Logic:
-     * - If entity is missing → return 404
      * - If access is not allowed → track and return 401
-     * - If remote asset → track and redirect to remote URL
+     * - If canonical URL mismatch → redirect (301)
+     * - If remote asset → track and redirect
      * - If local asset → track and stream file
      *
      * @throws ORMException
      */
-    private function createAssetResponse(Request $request, CoreParametersHelper $parametersHelper, AssetModel $model, ?Asset $entity): Response
-    {
+    private function createAssetResponse(
+        Request $request,
+        CoreParametersHelper $parametersHelper,
+        AssetModel $model,
+        Asset $entity,
+    ): Response {
         if (!$this->isAccessAllowed($entity)) {
             $model->trackDownload($entity, $request, 401);
             $response = $this->accessDenied();

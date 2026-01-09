@@ -80,7 +80,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
     )]
     private function isLegacySlugBcEnabled(): bool
     {
-        return true; // remove in Mautic 8
+        return true;
     }
 
     /**
