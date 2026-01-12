@@ -46,7 +46,7 @@ trait FilterTrait
         }
 
         $fieldType   = $data['type'];
-        $fieldName   = $data['field'];
+        $fieldName   = $data['field'] ?? '';
         $type        = TextType::class;
         $attr        = ['class' => 'form-control filter-value'];
         $displayType = HiddenType::class;
