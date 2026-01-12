@@ -460,13 +460,6 @@ return [
                 'class' => Mautic\LeadBundle\Validator\Constraints\LengthValidator::class,
                 'tag'   => 'validator.constraint_validator',
             ],
-            'mautic.lead.validator.safe_url' => [
-                'class'     => Mautic\LeadBundle\Validator\Constraints\SafeUrlValidator::class,
-                'arguments' => [
-                    'translator' => '@translator',
-                ],
-                'tags'  => ['validator.constraint_validator'],
-            ],
             'mautic.lead.segment.stat.dependencies' => [
                 'class'     => Mautic\LeadBundle\Segment\Stat\SegmentDependencies::class,
                 'arguments' => [

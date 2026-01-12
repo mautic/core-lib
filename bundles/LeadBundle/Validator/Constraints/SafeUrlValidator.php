@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class SafeUrlValidator extends ConstraintValidator
+final class SafeUrlValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {

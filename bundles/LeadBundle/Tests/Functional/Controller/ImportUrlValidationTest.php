@@ -8,14 +8,13 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Import;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadField;
-use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Model\ImportModel;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\HttpFoundation\Request;
 
-class ImportUrlValidationTest extends MauticMysqlTestCase
+final class ImportUrlValidationTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback = false;
 
@@ -32,15 +31,6 @@ class ImportUrlValidationTest extends MauticMysqlTestCase
     {
         $this->generateCSV();
 
-        /** @var \Mautic\UserBundle\Entity\User $admin */
-        $admin = self::getContainer()
-          ->get('doctrine')
-          ->getRepository(\Mautic\UserBundle\Entity\User::class)
-          ->findOneBy(['username' => 'admin']);
-
-        $this->assertNotNull($admin, 'Admin user not found');
-        $this->loginUser($admin);
-
         // Create URL field
         $field = new LeadField();
         $field->setType('url');
@@ -48,8 +38,7 @@ class ImportUrlValidationTest extends MauticMysqlTestCase
         $field->setAlias('website_url');
         $field->setName('website_url');
 
-        /** @var FieldModel $fieldModel */
-        $fieldModel = self::getContainer()->get('mautic.lead.model.field');
+        $fieldModel = self::getContainer()->get(FieldModel::class);
         $fieldModel->saveEntity($field);
 
         // Create Import entity manually (same as working test)
@@ -65,7 +54,6 @@ class ImportUrlValidationTest extends MauticMysqlTestCase
             $display
         );
 
-        /** @var LeadRepository $leadRepository */
         $leadRepository = $this->em->getRepository(Lead::class);
 
         Assert::assertNotNull($leadRepository->findOneBy(['email' => 'ok1@a.com']));
