@@ -144,11 +144,9 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
 
         $this->em->clear();
 
-        $assetSlug = $asset->getId().':'.$asset->getAlias();
-
         // Don't follow redirects automatically
         $this->client->followRedirects(false);
-        $this->client->request('GET', '/asset/'.$assetSlug);
+        $this->client->request('GET', '/asset/'.$asset->getSlug());
 
         $response = $this->client->getResponse();
 
@@ -197,8 +195,8 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
         $asset = $this->createAsset(['title' => 'Canonical Asset']);
         $this->em->flush();
 
-        $nonCanonicalSlug = $asset->getId().':'.$asset->getUuid();
-        $canonicalSlug    = $asset->getId().':'.$asset->getAlias();
+        $canonicalSlug    = $asset->getSlug();
+        $nonCanonicalSlug = $asset->getId().':'.$asset->getAlias();
 
         $nonCanonicalUrl  = '/asset/'.$nonCanonicalSlug;
         $canonicalUrl     = '/asset/'.$canonicalSlug;
