@@ -868,9 +868,8 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test that email validation is triggered for invalid values like 0, "0".
-     *
-     * @dataProvider emailValidationDuringImportProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('emailValidationDuringImportProvider')]
     public function testEmailValidationDuringImport(
         mixed $emailValue,
         bool $shouldValidate,
