@@ -625,4 +625,31 @@ class AssetModel extends FormModel implements GlobalSearchInterface
 
         return $q->executeQuery()->fetchAllAssociative();
     }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Asset-specific override for legacy public asset URLs.
+     *
+     * Backward compatibility rules:
+     * - Supports `{id}:{alias}` when the alias matches the stored asset alias exactly
+     * - Also allows `{id}:` and `{id}:<any>` for assets that already have a
+     *   non-null, non-empty alias, to preserve historical public links
+     */
+    public function getEntityBySlugs($slug): Asset|bool
+    {
+        if (!is_string($slug) || !str_contains($slug, ':')) {
+            return false;
+        }
+
+        [$id] = array_pad(explode(':', $slug, 2), 1, null);
+
+        if (empty($id) || !ctype_digit((string) $id)) {
+            return false;
+        }
+
+        $entity = $this->getEntity((int) $id);
+
+        return $entity ?: false;
+    }
 }

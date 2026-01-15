@@ -32,20 +32,17 @@ class PublicController extends AbstractFormController
         string $slug,
     ): Response {
         try {
-            $entity = $model->getRepository()->findOneBySlug($slug);
-        } catch (NonUniqueResultException|EntityNotFoundException|\InvalidArgumentException) {
+            $entity = $model->getRepository()->findOneByUuid($slug);
+        } catch (NonUniqueResultException|EntityNotFoundException) {
             /**
-             * @deprecated remove in Mautic 8.x
-             *
-             * Replace this with `return $this->notFound();`
-             * and remove the subsequent `if (!$entity)` block.
-             *
-             * Legacy slug lookup fallback. `{id}:`
+             * Legacy slug lookup fallback.
+             * - `{id}:{alias}` and
+             * - `{id}:`.
              */
             $entity = $model->getEntityBySlugs($slug);
         }
 
-        if (!$entity) {
+        if (!$entity instanceof Asset) {
             return $this->notFound();
         }
 

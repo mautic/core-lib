@@ -48,15 +48,6 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
      */
     public function testDownloadActionById(): void
     {
-        /** @phpstan-ignore-next-line method.deprecated */
-        if ($this->isLegacySlugBcEnabled()) {
-            $this->markTestSkipped(
-                'Skipped due to legacy slug BC support. '
-                .'ID-based slug resolution is covered by existing BC-related tests. '
-                .'Revisit and remove this skip in Mautic 8.'
-            );
-        }
-
         $assetSlug = $this->asset->getId().':';
 
         $this->client->request('GET', '/asset/'.$assetSlug.'?stream=0');
@@ -66,17 +57,9 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
         $content = ob_get_contents();
         ob_end_clean();
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
-        $this->assertStringContainsString('404 Not Found', $content);
-    }
-
-    #[\Deprecated(
-        message: 'Legacy slug BC guard. Remove in Mautic 8.',
-        since: '7.x'
-    )]
-    private function isLegacySlugBcEnabled(): bool
-    {
-        return true;
+        $this->assertResponseIsSuccessful();
+        $this->assertStringStartsWith($this->expectedContentDisposition.$this->asset->getOriginalFileName(), $response->headers->get('Content-Disposition'));
+        $this->assertEquals($this->expectedPngContent, $content);
     }
 
     /**

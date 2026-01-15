@@ -1480,7 +1480,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Returns the public slug for this asset.
      *
-     * Uses `{id}:{uuid}` as the canonical slug.
+     * Uses `{uuid}` as the canonical slug.
      * Falls back to `{id}:{alias}` for backward compatibility.
      *
      * @throws \LogicException if the asset has not been saved yet and has no ID
@@ -1491,6 +1491,6 @@ class Asset extends FormEntity implements UuidInterface
             throw new \LogicException('This asset must be saved before it can be used in a URL.');
         }
 
-        return $this->id.':'.($this->uuid ?: $this->alias);
+        return $this->uuid ?: $this->id.':'.$this->alias;
     }
 }

@@ -237,49 +237,21 @@ class AssetRepository extends CommonRepository
     }
 
     /**
-     * Finds a single Asset entity based on a slug in the format "id:identifier".
-     *
-     * The slug is expected to be a string with two parts separated by a colon (`:`):
-     *  - ID: numeric asset ID
-     *  - Identifier: alias or UUID
-     *
-     * Example:
-     *    - "1:example-file"
-     *    - "42:1234a567-124-1a2b-123b-ab1c2345de6f7"
+     * Finds a single Asset entity by its canonical UUID slug.
      *
      * @throws NonUniqueResultException
      * @throws EntityNotFoundException
      */
-    public function findOneBySlug(string $slug): Asset
+    public function findOneByUuid(string $slug): Asset
     {
-        // Split the slug into ID and alias/UUID parts. Alias is to BC check.
-        [$id, $slugIdentifier] = array_pad(explode(':', $slug, 2), 2, null);
-
-        // Validate input: both parts must be present.
-        if (!$id || !$slugIdentifier) {
-            throw new \InvalidArgumentException('Invalid slug format. Expected "id:identifier".');
-        }
-
-        $qb = $this->createQueryBuilder('a');
-
-        // Build query: match the asset by ID and either alias or UUID.
-        $asset = $qb
-            ->where('a.id = :id')
-            ->andWhere(
-                $qb->expr()->orX(
-                    'a.alias = :val',
-                    'a.uuid = :val',
-                )
-            )
-            ->setParameters([
-                'id'  => (int) $id,
-                'val' => $slugIdentifier,
-            ])
+        $asset = $this->createQueryBuilder('a')
+            ->where('a.uuid = :uuid')
+            ->setParameter('uuid', $slug)
             ->getQuery()
             ->getOneOrNullResult();
 
         if (!$asset) {
-            throw EntityNotFoundException::fromClassNameAndIdentifier(Asset::class, ['id' => $id, 'identifier' => $slugIdentifier]);
+            throw EntityNotFoundException::fromClassNameAndIdentifier(Asset::class, ['uuid' => $slug]);
         }
 
         return $asset;
