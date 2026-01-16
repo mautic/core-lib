@@ -73,30 +73,6 @@ class AssetModel extends FormModel implements GlobalSearchInterface
 
     public function saveEntity($entity, $unlock = true): void
     {
-        if (empty($this->inConversion)) {
-            $alias = $entity->getAlias();
-            if (empty($alias)) {
-                $alias = $entity->getTitle();
-            }
-            $alias = $this->cleanAlias($alias, '', 0, '-');
-
-            // make sure alias is not already taken
-            $repo      = $this->getRepository();
-            $testAlias = $alias;
-            $count     = $repo->checkUniqueAlias($testAlias, $entity);
-            $aliasTag  = $count;
-
-            while ($count) {
-                $testAlias = $alias.$aliasTag;
-                $count     = $repo->checkUniqueAlias($testAlias, $entity);
-                ++$aliasTag;
-            }
-            if ($testAlias != $alias) {
-                $alias = $testAlias;
-            }
-            $entity->setAlias($alias);
-        }
-
         if (!$entity->isNew()) {
             // increase the revision
             $revision = $entity->getRevision();

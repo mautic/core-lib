@@ -121,33 +121,4 @@ class AssetModelFunctionalTest extends MauticMysqlTestCase
         $generatedUrl = $assetModel->generateUrl($asset, true, [], null);
         $this->assertSame('https://localhost/asset/1:the-alias', $generatedUrl);
     }
-
-    public function testAliasIsImmutableAfterPersist(): void
-    {
-        $asset = new Asset();
-        $asset->setTitle('Initial Title');
-        $asset->setAlias('initial-alias');
-        $asset->setDateAdded(new \DateTime());
-        $asset->setDateModified(new \DateTime());
-        $asset->setCreatedByUser('User');
-        $asset->setStorageLocation('remote');
-        $asset->setRemotePath('https://example.com/remote/asset/initial-alias');
-        $asset->setSize(0);
-        $asset->setIsPublished(true);
-
-        $this->em->persist($asset);
-        $this->em->flush();
-
-        // The alias should not be updatable anymore.
-        $asset->setAlias('new-alias');
-        $this->em->flush();
-
-        $this->assertSame('initial-alias', $asset->getAlias());
-
-        // Let's clear the entity manager to make sure we get a fresh entity from the DB.
-        $this->em->clear();
-
-        $assetFromDb = $this->em->find(Asset::class, $asset->getId());
-        $this->assertSame('initial-alias', $assetFromDb->getAlias());
-    }
 }

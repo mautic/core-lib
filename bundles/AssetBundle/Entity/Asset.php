@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Deprecated;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
@@ -224,7 +225,10 @@ class Asset extends FormEntity implements UuidInterface
 
         $builder->addIdColumns('title');
 
-        $builder->addField('alias', 'string');
+        $builder->createField('alias', 'string')
+            ->columnName('alias')
+            ->nullable()
+            ->build();
 
         $builder->createField('storageLocation', 'string')
             ->columnName('storage_location')
@@ -539,10 +543,6 @@ class Asset extends FormEntity implements UuidInterface
      */
     public function setAlias(string $alias): self
     {
-        if (null !== $this->id) {
-            return $this;
-        }
-
         $this->isChanged('alias', $alias);
         $this->alias = $alias;
 
