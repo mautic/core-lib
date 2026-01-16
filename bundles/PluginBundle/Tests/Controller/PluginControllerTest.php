@@ -51,7 +51,7 @@ class PluginControllerTest extends MauticMysqlTestCase
     public function testReturnPluginVersion(): void
     {
         $this->testSymfonyCommand('mautic:plugins:install');
-        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/plugins/config/MauticFocusBundle');
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/plugins/info/MauticFocusBundle');
 
         $response = $this->client->getResponse();
         Assert::assertTrue($response->isOk());
