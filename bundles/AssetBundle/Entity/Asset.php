@@ -11,7 +11,6 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Deprecated;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 use Mautic\CoreBundle\Entity\FormEntity;
@@ -133,7 +132,7 @@ class Asset extends FormEntity implements UuidInterface
     private $tempName;
 
     /**
-     * @var string
+     * @var string|null
      */
     #[Groups(['asset:read', 'asset:write', 'download:read', 'email:read'])]
     private $alias;
@@ -541,7 +540,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Set alias.
      */
-    public function setAlias(string $alias): self
+    public function setAlias(?string $alias): self
     {
         $this->isChanged('alias', $alias);
         $this->alias = $alias;
@@ -551,10 +550,8 @@ class Asset extends FormEntity implements UuidInterface
 
     /**
      * Get alias.
-     *
-     * @return string
      */
-    public function getAlias()
+    public function getAlias(): ?string
     {
         return $this->alias;
     }
