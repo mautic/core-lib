@@ -24,6 +24,7 @@ use Mautic\LeadBundle\Tracker\ContactTracker;
 use Mautic\LeadBundle\Tracker\Factory\DeviceDetectorFactory\DeviceDetectorFactory;
 use Mautic\LeadBundle\Tracker\Service\DeviceCreatorService\DeviceCreatorService;
 use Mautic\LeadBundle\Tracker\Service\DeviceTrackingService\DeviceTrackingServiceInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -78,9 +79,7 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-
-        $this->coreParametersHelper->expects($this->once())
-            ->method('get')
+        $this->coreParametersHelper->method('get')
             ->with($this->equalTo('max_size'))
             ->willReturn('2MB');
 
@@ -283,5 +282,86 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($lead, $download->getLead());
         $this->assertEquals($asset, $download->getAsset());
         $this->assertEquals('http://localhost', $download->getReferer());
+    }
+
+    #[DataProvider('getEntityBySlugsProvider')]
+    public function testGetEntityBySlugs(string $slug, bool $shouldResolve): void
+    {
+        $asset = $shouldResolve ? new Asset() : null;
+
+        $model = $this->getMockBuilder(AssetModel::class)
+            ->setConstructorArgs([
+                $this->leadModel,
+                $this->categoryModel,
+                $this->requestStack,
+                $this->ipLookupHelper,
+                $this->deviceCreatorService,
+                $this->deviceDetectorFactory,
+                $this->deviceTrackingService,
+                $this->contactTracker,
+                $this->entityManager,
+                $this->corePermissions,
+                $this->eventDispatcher,
+                $this->urlGenerator,
+                $this->translator,
+                $this->userHelper,
+                $this->logger,
+                $this->coreParametersHelper,
+            ])
+            ->onlyMethods(['getEntity'])
+            ->getMock();
+
+        if ($shouldResolve) {
+            $model->expects($this->once())
+                ->method('getEntity')
+                ->willReturn($asset);
+        } else {
+            $model->expects($this->never())
+                ->method('getEntity');
+        }
+
+        $result = $model->getEntityBySlugs($slug);
+
+        if ($shouldResolve) {
+            $this->assertSame($asset, $result);
+        } else {
+            $this->assertFalse($result);
+        }
+    }
+
+    /**
+     * @return iterable<string, array{string, bool}>
+     */
+    public static function getEntityBySlugsProvider(): iterable
+    {
+        yield 'id with alias' => [
+            '123:alias',
+            true,
+        ];
+
+        yield 'id with wrong alias (BC)' => [
+            '123:wrong-alias',
+            true,
+        ];
+
+        yield 'id with trailing colon' => [
+            '123:',
+            true,
+        ];
+
+        yield 'bare id' => [
+            '123',
+            false,
+        ];
+
+        yield 'non-numeric id' => [
+            'abc:alias',
+            false,
+        ];
+
+        yield 'empty id' => [
+            ':alias',
+            false,
+        ];
     }
 }
