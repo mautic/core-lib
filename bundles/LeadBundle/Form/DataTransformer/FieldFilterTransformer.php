@@ -50,7 +50,8 @@ class FieldFilterTransformer implements DataTransformerInterface
             if (!empty($this->default)) {
                 $rawFilters[$key] = array_merge($this->default, $rawFilters[$key]);
             }
-            if ('datetime' === $filter['type']) {
+            $filterType = $filter['type'];
+            if ('datetime' === $filterType || 'date' === $filterType) {
                 $bcFilter = $filter['filter'] ?? '';
                 $filter   = $filter['properties']['filter'] ?? $bcFilter;
                 if (empty($filter) || in_array($filter, $this->relativeDateStrings) || stristr($filter[0], '-') || stristr($filter[0], '+')) {
@@ -63,7 +64,8 @@ class FieldFilterTransformer implements DataTransformerInterface
                     continue;
                 }
 
-                $dt = new DateTimeHelper($filter, 'Y-m-d H:i');
+                $dateFormat = 'datetime' === $filterType ? 'Y-m-d H:i' : 'Y-m-d';
+                $dt         = new DateTimeHelper($filter, $dateFormat);
 
                 $rawFilters[$key]['properties']['filter'] = $dt->toLocalString();
             }
@@ -84,7 +86,7 @@ class FieldFilterTransformer implements DataTransformerInterface
         $rawFilters = array_values($rawFilters);
 
         foreach ($rawFilters as $k => $f) {
-            if ('datetime' === $f['type']) {
+            if ('datetime' == $f['type'] || 'date' === $f['type']) {
                 $bcFilter = $f['filter'] ?? '';
                 $filter   = $f['properties']['filter'] ?? $bcFilter;
                 if (empty($filter) || stristr($filter[0], '-') || stristr($filter[0], '+')) {
@@ -94,9 +96,12 @@ class FieldFilterTransformer implements DataTransformerInterface
                 if (in_array($filter, $this->relativeDateStrings)) {
                     $translationKey                         = array_search($filter, $this->relativeDate->getRelativeDateStrings());
                     $rawFilters[$k]['properties']['filter'] = $this->defaultStrings[$translationKey];
+
+                    continue;
                 }
 
-                $dt = new DateTimeHelper($filter, 'Y-m-d H:i', 'local');
+                $dateFormat = 'datetime' === $f['type'] ? 'Y-m-d H:i' : 'Y-m-d';
+                $dt         = new DateTimeHelper($filter, $dateFormat, 'local');
 
                 $rawFilters[$k]['properties']['filter'] = $dt->toUtcString();
             }
