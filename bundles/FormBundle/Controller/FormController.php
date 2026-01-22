@@ -914,7 +914,7 @@ class FormController extends CommonFormController
             }
         }
 
-        return $this->editAction($request, $entity, true, true);
+        return $this->editAction($request, $entity, true);
     }
 
     /**

@@ -94,10 +94,6 @@ Mautic.formOnLoad = function (container) {
         });
     }
 
-    if (mQuery('#mauticform_formType').length && mQuery('#mauticform_formType').val() == '') {
-        mQuery('body').addClass('noscroll');
-    }
-
     Mautic.initHideItemButton('#mauticforms_fields');
     Mautic.initHideItemButton('#mauticforms_actions');
 };
