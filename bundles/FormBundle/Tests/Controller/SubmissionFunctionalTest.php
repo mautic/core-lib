@@ -618,7 +618,6 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $form = new Form();
         $form->setName('Submission test form');
         $form->setAlias('submissiontestform');
-        $form->setFormType('standalone');
         $form->setIsPublished(true);
 
         $lookup = new Field();
