@@ -64,10 +64,11 @@ class FieldFilterTransformer implements DataTransformerInterface
                     continue;
                 }
 
-                $dateFormat = 'datetime' === $filterType ? 'Y-m-d H:i' : 'Y-m-d';
-                if (!$this->isValidAbsoluteDate($filter, $dateFormat)) {
+                if (!$this->isValidAbsoluteDate($filter, $filterType)) {
                     continue;
                 }
+
+                $dateFormat = 'datetime' === $filterType ? 'Y-m-d H:i' : 'Y-m-d';
 
                 $dt = new DateTimeHelper($filter, $dateFormat);
 
@@ -105,10 +106,11 @@ class FieldFilterTransformer implements DataTransformerInterface
                     continue;
                 }
 
-                $dateFormat = 'datetime' === $f['type'] ? 'Y-m-d H:i' : 'Y-m-d';
-                if (!$this->isValidAbsoluteDate($filter, $dateFormat)) {
+                if (!$this->isValidAbsoluteDate($filter, $f['type'])) {
                     continue;
                 }
+
+                $dateFormat = 'datetime' === $f['type'] ? 'Y-m-d H:i' : 'Y-m-d';
 
                 $dt = new DateTimeHelper($filter, $dateFormat, 'local');
 
@@ -119,12 +121,18 @@ class FieldFilterTransformer implements DataTransformerInterface
         return $rawFilters;
     }
 
-    private function isValidAbsoluteDate(string $value, string $dateFormat): bool
+    private function isValidAbsoluteDate(string $value, string $type): bool
     {
-        $dt = \DateTimeImmutable::createFromFormat($dateFormat, $value);
+        $formats = 'datetime' === $type
+            ? ['Y-m-d H:i', 'Y-m-d H:i:s']
+            : ['Y-m-d'];
 
-        if (false !== $dt && $dt->format($dateFormat) === $value) {
-            return true;
+        foreach ($formats as $format) {
+            $dt = \DateTimeImmutable::createFromFormat($format, $value);
+
+            if ($dt !== false && $dt->format($format) === $value) {
+                return true;
+            }
         }
 
         return false;
