@@ -71,21 +71,6 @@
     'entity': activeForm,
     'status': 'available'
 }) -}}
-<div class="label__divider"></div>
-{% include '@MauticCore/Helper/_tag.html.twig' with {
-    tags: [
-        {
-            type: 'read-only',
-            icon: activeForm.formType == 'campaign'
-            ? 'ri-megaphone-line'
-            : 'ri-survey-line',
-            color: 'high-contrast',
-            label: activeForm.formType == 'campaign'
-                ? 'mautic.form.type.campaign.header'
-                : 'mautic.form.type.standalone.header'
-        }
-    ]
-} %}
 
 {% if activeForm.noIndex is defined and activeForm.noIndex == 1 %}
     {% include '@MauticCore/Helper/_tag.html.twig' with {
