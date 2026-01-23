@@ -135,22 +135,11 @@
                                       <select class="chosen form-builder-new-component" data-placeholder="{{ 'mautic.form.form.component.submitactions'|trans }}">
                                           <option value=""></option>
                                           {% for group, groupActions in actions %}
-                                                  {% set campaignActionFound = false %}
-                                                  {% for k, e in groupActions %}
-                                                      {% if e.allowCampaignForm is defined and e.allowCampaignForm is not empty %}
-                                                          {% set campaignActionFound = true %}
-                                                      {% endif %}
-                                                  {% endfor %}
-                                                  {% set class = campaignActionFound is empty ? 'action-standalone-only' : '' %}
-                                                  {% if not campaignActionFound and not activeForm.isStandalone %}
-                                                      {% set class = class ~ ' hide' %}
-                                                  {% endif %}
-                                                  <optgroup class="{{ class }}" label="{{ group|trans }}"></optgroup>
+                                                  <optgroup label="{{ group|trans }}"></optgroup>
                                                   {% for k, e in groupActions %}
                                                       {{ include('@MauticForm/Action/_option.html.twig', {
                                                               'action': e,
                                                               'type': k,
-                                                              'isStandalone': activeForm.isStandalone,
                                                               'formId': form['sessionId'].vars['data'],
                                                       }, with_context=false) }}
                                                   {% endfor %}

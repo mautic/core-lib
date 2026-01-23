@@ -614,16 +614,6 @@ class FormController extends CommonFormController
                         try {
                             $model->getRepository()->saveEntity($entity);
 
-                            // Ensure actions are compatible with form type
-                            if (!$entity->isStandalone()) {
-                                foreach ($actions as $actionId => $action) {
-                                    if (empty($customComponents['actions'][$action['type']]['allowCampaignForm'])) {
-                                        unset($actions[$actionId]);
-                                        $deletedActions[] = $actionId;
-                                    }
-                                }
-                            }
-
                             if (count($actions)) {
                                 // Now set and persist the actions
                                 $model->setActions($entity, $actions);
