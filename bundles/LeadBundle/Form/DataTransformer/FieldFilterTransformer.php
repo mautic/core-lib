@@ -54,19 +54,22 @@ class FieldFilterTransformer implements DataTransformerInterface
             if ('datetime' === $filterType || 'date' === $filterType) {
                 $bcFilter = $filter['filter'] ?? '';
                 $filter   = $filter['properties']['filter'] ?? $bcFilter;
-                $filter   = strtolower($filter);
                 if (empty($filter) || in_array($filter, $this->relativeDateStrings) || stristr($filter[0], '-') || stristr($filter[0], '+')) {
                     continue;
                 }
 
-                if (in_array($filter, $this->defaultStrings)) {
-                    $rawFilters[$key]['properties']['filter'] = $this->translator->trans(array_search($filter, $this->defaultStrings));
+                if (in_array(strtolower($filter), $this->defaultStrings)) {
+                    $rawFilters[$key]['properties']['filter'] = $this->translator->trans(array_search(strtolower($filter), $this->defaultStrings));
 
                     continue;
                 }
 
                 $dateFormat = 'datetime' === $filterType ? 'Y-m-d H:i' : 'Y-m-d';
-                $dt         = new DateTimeHelper($filter, $dateFormat);
+                if (!$this->isValidAbsoluteDate($filter, $dateFormat)) {
+                    continue;
+                }
+
+                $dt = new DateTimeHelper($filter, $dateFormat);
 
                 $rawFilters[$key]['properties']['filter'] = $dt->toLocalString();
             }
@@ -103,12 +106,27 @@ class FieldFilterTransformer implements DataTransformerInterface
                 }
 
                 $dateFormat = 'datetime' === $f['type'] ? 'Y-m-d H:i' : 'Y-m-d';
-                $dt         = new DateTimeHelper($filter, $dateFormat, 'local');
+                if (!$this->isValidAbsoluteDate($filter, $dateFormat)) {
+                    continue;
+                }
+
+                $dt = new DateTimeHelper($filter, $dateFormat, 'local');
 
                 $rawFilters[$k]['properties']['filter'] = $dt->toUtcString();
             }
         }
 
         return $rawFilters;
+    }
+
+    private function isValidAbsoluteDate(string $value, string $dateFormat): bool
+    {
+        $dt = \DateTimeImmutable::createFromFormat($dateFormat, $value);
+
+        if (false !== $dt && $dt->format($dateFormat) === $value) {
+            return true;
+        }
+
+        return false;
     }
 }

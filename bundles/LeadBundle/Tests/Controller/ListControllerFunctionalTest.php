@@ -740,6 +740,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
     {
         return [
             ['Today', false],
+            ['Not-a-date', true],
             ['birthday', false],
             ['2023-01-01 11:00', false],
             ['2023-01-01 11:00:00', false],
