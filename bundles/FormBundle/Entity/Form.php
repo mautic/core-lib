@@ -877,10 +877,23 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * Generate a form name for HTML attributes.
+     *
+     * @param string[] $allowedCharacters
      */
-    public function generateFormName(): string
+    public function generateFormName(?string $name = null, array $allowedCharacters = [])
     {
-        return $this->name ? strtolower(InputHelper::alphanum(InputHelper::transliterate($this->name))) : 'form-'.$this->id;
+        $name = strtolower(
+            InputHelper::alphanum(
+                InputHelper::transliterate(
+                    $name ?? $this->name
+                ),
+                false,
+                false,
+                $allowedCharacters
+            )
+        );
+
+        return (empty($name)) ? 'form-'.$this->id : $name;
     }
 
     /**
