@@ -130,7 +130,7 @@ class FieldFilterTransformer implements DataTransformerInterface
         foreach ($formats as $format) {
             $dt = \DateTimeImmutable::createFromFormat($format, $value);
 
-            if ($dt !== false && $dt->format($format) === $value) {
+            if (false !== $dt && $dt->format($format) === $value) {
                 return true;
             }
         }
