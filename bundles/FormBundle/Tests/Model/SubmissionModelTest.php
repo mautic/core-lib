@@ -90,11 +90,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
     private MockObject $leadFieldModel;
 
     /**
-     * @var MockObject|\Mautic\CoreBundle\Model\NotificationModel
-     */
-    private MockObject $notificationModel;
-
-    /**
      * @var MockObject|CompanyModel
      */
     private MockObject $companyModel;
@@ -456,24 +451,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         ];
 
         return $fields;
-    }
-
-    private function setEntityId(object $entity, int $id): void
-    {
-        $reflection = new \ReflectionClass($entity);
-
-        do {
-            if ($reflection->hasProperty('id')) {
-                $property = $reflection->getProperty('id');
-                $property->setAccessible(true);
-                $property->setValue($entity, $id);
-
-                return;
-            }
-            $reflection = $reflection->getParentClass();
-        } while (false !== $reflection);
-
-        $this->fail('Unable to set id on entity of type '.get_class($entity));
     }
 
     private function setUpExport(): void
