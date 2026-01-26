@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
-class SortableValueLabelListTypeTest extends TestCase
+final class SortableValueLabelListTypeTest extends TestCase
 {
     public function testBuildFormMakesValueOptional(): void
     {
