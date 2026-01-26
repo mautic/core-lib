@@ -20,6 +20,7 @@ use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\UuidInterface;
 use Mautic\CoreBundle\Entity\UuidTrait;
 use Mautic\CoreBundle\Helper\InputHelper;
+use Mautic\FormBundle\Validator\Constraint\IsPostActionRedirectUrl;
 use Mautic\ProjectBundle\Entity\ProjectTrait;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -304,10 +305,7 @@ class Form extends FormEntity implements UuidInterface
             'groups'  => ['urlRequired'],
         ]));
 
-        $metadata->addPropertyConstraint('postActionProperty', new Assert\Url([
-            'message' => 'mautic.form.form.postactionproperty_redirect.url',
-            'groups'  => ['urlRequired'],
-        ]));
+        $metadata->addPropertyConstraint('postActionProperty', new IsPostActionRedirectUrl(groups: ['urlRequired']));
 
         $metadata->addPropertyConstraint('postActionProperty', new Assert\NotBlank([
             'message' => 'mautic.form.form.postactionproperty_hideform.notblank',

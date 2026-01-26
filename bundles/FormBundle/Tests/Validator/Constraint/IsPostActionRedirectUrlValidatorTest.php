@@ -1,0 +1,215 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Mautic\FormBundle\Tests\Validator\Constraint;
+
+use Mautic\FormBundle\Finder\Tokens\RedirectUrlTokensFinder;
+use Mautic\FormBundle\Validator\Constraint\IsPostActionRedirectUrl;
+use Mautic\FormBundle\Validator\Constraint\IsPostActionRedirectUrlValidator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\Validator\Constraints\Url;
+use Symfony\Component\Validator\ConstraintValidatorInterface;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+#[CoversClass(IsPostActionRedirectUrlValidator::class)]
+class IsPostActionRedirectUrlValidatorTest extends ConstraintValidatorTestCase
+{
+    private ValidatorInterface|MockObject $urlValidator;
+
+    public static function provideEmptyValue(): \Generator
+    {
+        yield 'null' => [null];
+        yield 'empty string' => [''];
+    }
+
+    public static function provideIncorrectUrl(): \Generator
+    {
+        yield 'not valid url 1' => [
+            'example',
+            null,
+        ];
+
+        yield 'not valid url 2' => [
+            'ttps://example.com',
+            null,
+        ];
+
+        yield 'not valid url 3' => [
+            'https://example',
+            null,
+        ];
+
+        yield 'not valid url 4' => [
+            'https:/example.com',
+            null,
+        ];
+
+        yield 'not valid url 5' => [
+            'example.com?test1=123&test2=abc',
+            null,
+        ];
+
+        // ---
+
+        yield 'not valid url 1 - with tokens' => [
+            'example?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            'example?pagelink-1&formfield-2&contactfield-3',
+        ];
+
+        yield 'not valid url 2 - with tokens' => [
+            'ttps://example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            'ttps://example.com?pagelink-1&formfield-2&contactfield-3',
+        ];
+
+        yield 'not valid url 3 - with tokens' => [
+            'https://example?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            'https://example?pagelink-1&formfield-2&contactfield-3',
+        ];
+
+        yield 'not valid url 4 - with tokens' => [
+            'https:/example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            'https:/example.com?pagelink-1&formfield-2&contactfield-3',
+        ];
+
+        yield 'not valid url 5 - with tokens' => [
+            'example.com?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            'example.com?test1=123&test2=abc&pagelink-1&formfield-2&contactfield-3',
+        ];
+
+        yield 'missing curly braces in some tokens' => [
+            'https:/example.com?{pagelink=123}&formfield=abc}&{contactfield=abc123',
+            'https:/example.com?pagelink-1&formfield=abc}&{contactfield=abc123',
+        ];
+
+        yield 'unknown tokens' => [
+            'https:/example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}&{foo=bar}',
+            'https:/example.com?pagelink-1&formfield-2&contactfield-3&{foo=bar}',
+        ];
+    }
+
+    public static function provideUrl(): \Generator
+    {
+        yield 'homepage with ending slash' => [
+            'https://example.com/',
+        ];
+
+        yield 'homepage without ending slash' => [
+            'https://example.com',
+        ];
+
+        yield 'page url 1' => [
+            'https://example.com/page1/',
+        ];
+
+        yield 'page url 2' => [
+            'https://example.com/page2/lorem-ipsum/',
+        ];
+
+        yield 'page url with query parameters 1' => [
+            'https://example.com/page2/lorem-ipsum?test1&test2',
+        ];
+
+        yield 'page url with query parameters 2' => [
+            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc',
+        ];
+    }
+
+    public static function provideUrlWithTokens(): \Generator
+    {
+        yield 'homepage with ending slash' => [
+            'https://example.com/?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+        ];
+
+        yield 'homepage without ending slash' => [
+            'https://example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+        ];
+
+        yield 'page url 1' => [
+            'https://example.com/page1/?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+        ];
+
+        yield 'page url 2' => [
+            'https://example.com/page2/lorem-ipsum/?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+        ];
+
+        yield 'page url with query parameters 1' => [
+            'https://example.com/page2/lorem-ipsum?test1&test2&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+        ];
+
+        yield 'page url with query parameters 2' => [
+            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+        ];
+
+        yield 'page url with query parameters - multiple same tokens' => [
+            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+        ];
+
+        yield 'page url without query parameters' => [
+            'https://example.com/page2/{pagelink=123}/{formfield=abc}/lorem-ipsum/{contactfield=abc123}',
+        ];
+    }
+
+    #[DataProvider('provideEmptyValue')]
+    public function testEmptyValue(?string $emptyValue): void
+    {
+        $this->validator->validate($emptyValue, new IsPostActionRedirectUrl());
+        $this->assertNoViolation();
+    }
+
+    #[DataProvider('provideIncorrectUrl')]
+    public function testIncorrectUrl(string $incorrectUrl, ?string $dummyDataUrl): void
+    {
+        $violationParameters = [
+            '{{ value }}' => $incorrectUrl,
+        ];
+
+        $violation = $this->createMock(ConstraintViolationInterface::class);
+        $violation->method('getMessage')->willReturn('Incorrect URL message');
+        $violation->method('getParameters')->willReturn($violationParameters);
+
+        $violationList = new ConstraintViolationList([$violation]);
+        $urlConstraint = new Url(message: 'mautic.form.form.postactionproperty_redirect.url');
+
+        $this
+            ->urlValidator
+            ->expects(self::once())
+            ->method('validate')
+            ->with($dummyDataUrl ?? $incorrectUrl, $urlConstraint)
+            ->willReturn($violationList);
+
+        $this->validator->validate($incorrectUrl, new IsPostActionRedirectUrl());
+
+        $this
+            ->buildViolation('Incorrect URL message')
+            ->setParameters($violationParameters)
+            ->assertRaised();
+    }
+
+    #[DataProvider('provideUrl')]
+    public function testRegularUrl(string $url): void
+    {
+        $this->validator->validate($url, new IsPostActionRedirectUrl());
+        $this->assertNoViolation();
+    }
+
+    #[DataProvider('provideUrlWithTokens')]
+    public function testUrlWithTokens(string $url): void
+    {
+        $this->validator->validate($url, new IsPostActionRedirectUrl());
+        $this->assertNoViolation();
+    }
+
+    protected function createValidator(): ConstraintValidatorInterface
+    {
+        $this->urlValidator      = $this->createMock(ValidatorInterface::class);
+        $redirectUrlTokensFinder = new RedirectUrlTokensFinder();
+
+        return new IsPostActionRedirectUrlValidator($this->urlValidator, $redirectUrlTokensFinder);
+    }
+}
