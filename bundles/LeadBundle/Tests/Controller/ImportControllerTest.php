@@ -78,41 +78,25 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
         Assert::assertStringContainsString('Import process was successfully created. You will be notified when finished.', $crawler->html());
 
-        /** @var ImportRepository $importRepository */
-        $importRepository = $this->em->getRepository(Import::class);
-
-        /** @var Import $importEntity */
-        $importEntity = $importRepository->findOneBy(['originalFile' => 'contacts.csv']);
-
         $fields = ['email' => 'email', 'firstname' => 'firstname', 'lastname' => 'lastname'];
 
-        Assert::assertNotNull($importEntity);
-        Assert::assertSame(2, $importEntity->getLineCount());
-        Assert::assertSame(Import::QUEUED, $importEntity->getStatus());
-        Assert::assertSame('lead', $importEntity->getObject());
-        Assert::assertSame($fields, $importEntity->getProperties()['fields']);
-        Assert::assertSame(array_values($fields), $importEntity->getProperties()['headers']);
+        $this->assertImportLifecycle(
+            'contacts.csv',
+            $fields,
+            array_values($fields),
+            2,
+            1,
+            1,
+            function () use ($expectedName): void {
+                /** @var LeadRepository $leadRepository */
+                $leadRepository = $this->em->getRepository(Lead::class);
 
-        $this->testSymfonyCommand(ImportCommand::COMMAND_NAME);
-
-        $this->em->clear();
-
-        /** @var Import $importEntity */
-        $importEntity = $importRepository->findOneBy(['originalFile' => 'contacts.csv']);
-
-        Assert::assertNotNull($importEntity);
-        Assert::assertSame(2, $importEntity->getLineCount());
-        Assert::assertSame(1, $importEntity->getInsertedCount());
-        Assert::assertSame(1, $importEntity->getUpdatedCount());
-        Assert::assertSame(Import::IMPORTED, $importEntity->getStatus());
-
-        /** @var LeadRepository $importRepository */
-        $leadRepository = $this->em->getRepository(Lead::class);
-
-        /** @var Lead[] $contacts */
-        $contacts = $leadRepository->findBy(['email' => ['john@doe.email', 'ferda@mravenec.email']], ['email' => 'desc']);
-        Assert::assertSame($expectedName, $contacts[0]->getFirstname());
-        Assert::assertCount(2, $contacts);
+                /** @var Lead[] $contacts */
+                $contacts = $leadRepository->findBy(['email' => ['john@doe.email', 'ferda@mravenec.email']], ['email' => 'desc']);
+                Assert::assertSame($expectedName, $contacts[0]->getFirstname());
+                Assert::assertCount(2, $contacts);
+            }
+        );
     }
 
     public function testContactPermissionsAreFollowedDuringImport(): void
@@ -280,96 +264,24 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
     public function testCancelActionNotificationLogic(): void
     {
-        $import = new Import();
-        $import->setObject('lead')
-               ->setOriginalFile('test.csv')
-               ->setStatus(Import::QUEUED)
-               ->setIsPublished(true)
-               ->setDir('/tmp')
-               ->setFile('test.csv');
-        $this->em->persist($import);
-        $this->em->flush();
+        $import = $this->createQueuedImport();
 
-        $notificationModel = static::getContainer()->get('mautic.core.model.notification');
-        $translator        = static::getContainer()->get('translator');
-
-        $fileName = basename('/tmp/test.csv');
-        $message  = $import->getId()
-            ? $translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()])
-            : $translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
-
-        $notificationModel->addNotification($message, 'warning');
-
-        $notificationRepo = $this->em->getRepository(\Mautic\CoreBundle\Entity\Notification::class);
-        $notifications    = $notificationRepo->getNotifications(1);
-        $found            = false;
-        foreach ($notifications as $notification) {
-            if (str_contains($notification['message'], 'Import canceled for file test.csv (ID '.$import->getId().')')) {
-                $found = true;
-                Assert::assertSame('warning', $notification['type']);
-                break;
-            }
-        }
-        Assert::assertTrue($found, 'Notification with import ID was not found');
+        $this->addCancellationNotification($import);
+        $this->assertNotificationMessageContains('Import canceled for file test.csv (ID '.$import->getId().')');
     }
 
     public function testCancelActionNotificationLogicWithoutImport(): void
     {
-        $notificationModel = static::getContainer()->get('mautic.core.model.notification');
-        $translator        = static::getContainer()->get('translator');
-
-        $fileName = basename('/tmp/test.csv');
-        $message  = $translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
-
-        $notificationModel->addNotification($message, 'warning');
-
-        $notificationRepo = $this->em->getRepository(\Mautic\CoreBundle\Entity\Notification::class);
-        $notifications    = $notificationRepo->getNotifications(1);
-        $found            = false;
-        foreach ($notifications as $notification) {
-            if (str_contains($notification['message'], 'Import canceled for file test.csv')
-                && !str_contains($notification['message'], 'ID')) {
-                $found = true;
-                Assert::assertSame('warning', $notification['type']);
-                break;
-            }
-        }
-        Assert::assertTrue($found, 'Notification without import ID was not found');
+        $this->addCancellationNotification();
+        $this->assertNotificationMessageContains('Import canceled for file test.csv');
     }
 
     public function testResetImportFunctionality(): void
     {
-        $import = new Import();
-        $import->setObject('lead')
-               ->setOriginalFile('test.csv')
-               ->setStatus(Import::QUEUED)
-               ->setIsPublished(true)
-               ->setDir('/tmp')
-               ->setFile('test.csv');
-        $this->em->persist($import);
-        $this->em->flush();
+        $import = $this->createQueuedImport();
 
-        $notificationModel = static::getContainer()->get('mautic.core.model.notification');
-        $translator        = static::getContainer()->get('translator');
-
-        $fileName = basename('/tmp/test.csv');
-        $message  = $import->getId()
-            ? $translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()])
-            : $translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
-
-        $notificationModel->addNotification($message, 'warning');
-
-        $notificationRepo = $this->em->getRepository(\Mautic\CoreBundle\Entity\Notification::class);
-        $notifications    = $notificationRepo->getNotifications(1);
-        $found            = false;
-        foreach ($notifications as $notification) {
-            if (str_contains($notification['message'], 'Import canceled for file test.csv (ID '.$import->getId().')')) {
-                $found = true;
-                Assert::assertSame('warning', $notification['type']);
-                break;
-            }
-        }
-        Assert::assertTrue($found, 'Notification with import ID was not found');
+        $this->addCancellationNotification($import);
+        $this->assertNotificationMessageContains('Import canceled for file test.csv (ID '.$import->getId().')');
     }
 
     public function testImportWithSkipIfExistsFlagTrue(): void
@@ -401,44 +313,33 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
         Assert::assertStringContainsString('Import process was successfully created. You will be notified when finished.', $crawler->html(), $crawler->html());
 
-        $this->em->clear();
+        $fields = [
+            'email'                => 'email',
+            'firstname'            => 'firstname',
+            'lastname'             => 'lastname',
+            'company'              => 'companyname',
+            'custom_boolean_field' => 'custom_boolean_field',
+        ];
 
-        /** @var ImportRepository $importRepository */
-        $importRepository = $this->em->getRepository(Import::class);
+        $this->assertImportLifecycle(
+            'contacts-with-custom-field.csv',
+            $fields,
+            array_keys($fields),
+            2,
+            1,
+            1,
+            function (): void {
+                /** @var LeadRepository $leadRepository */
+                $leadRepository = $this->em->getRepository(Lead::class);
 
-        /** @var Import $importEntity */
-        $importEntity = $importRepository->findOneBy(['originalFile' => 'contacts-with-custom-field.csv']);
-
-        $fields = ['email' => 'email', 'firstname' => 'firstname', 'lastname' => 'lastname', 'company' => 'companyname', 'custom_boolean_field' => 'custom_boolean_field'];
-
-        Assert::assertNotNull($importEntity);
-        Assert::assertSame(2, $importEntity->getLineCount());
-        Assert::assertSame('lead', $importEntity->getObject());
-        Assert::assertEquals($fields, $importEntity->getProperties()['fields']);
-        Assert::assertEquals(array_keys($fields), $importEntity->getProperties()['headers']);
-
-        $this->testSymfonyCommand(ImportCommand::COMMAND_NAME);
-
-        $this->em->clear();
-
-        /** @var Import $importEntity */
-        $importEntity = $importRepository->findOneBy(['originalFile' => 'contacts-with-custom-field.csv']);
-
-        Assert::assertNotNull($importEntity);
-        Assert::assertSame(2, $importEntity->getLineCount());
-        Assert::assertSame(1, $importEntity->getInsertedCount());
-        Assert::assertSame(1, $importEntity->getUpdatedCount());
-        Assert::assertSame(Import::IMPORTED, $importEntity->getStatus());
-
-        /** @var LeadRepository $importRepository */
-        $leadRepository = $this->em->getRepository(Lead::class);
-
-        /** @var Lead[] $contacts */
-        $contacts = $leadRepository->findBy(['email' => ['john@doe.email', 'ferda@mravenec.email']], ['email' => 'desc']);
-        Assert::assertSame('Johny', $contacts[0]->getFirstname());
-        Assert::assertSame('Company A', $contacts[0]->getCompany());
-        Assert::assertSame('Company B', $contacts[1]->getCompany());
-        Assert::assertCount(2, $contacts);
+                /** @var Lead[] $contacts */
+                $contacts = $leadRepository->findBy(['email' => ['john@doe.email', 'ferda@mravenec.email']], ['email' => 'desc']);
+                Assert::assertSame('Johny', $contacts[0]->getFirstname());
+                Assert::assertSame('Company A', $contacts[0]->getCompany());
+                Assert::assertSame('Company B', $contacts[1]->getCompany());
+                Assert::assertCount(2, $contacts);
+            }
+        );
     }
 
     private function setPhoneFieldIsRequired(bool $required): void
@@ -451,6 +352,95 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
         $phoneField->setIsRequired($required);
         $fieldRepository->saveEntity($phoneField);
+    }
+
+    /**
+     * Re-usable import assertions to keep duplicate test flows short.
+     *
+     * @param array<string, string> $fields
+     * @param string[]              $headers
+     */
+    private function assertImportLifecycle(
+        string $originalFile,
+        array $fields,
+        array $headers,
+        int $lineCount,
+        int $insertedCount,
+        int $updatedCount,
+        ?callable $afterAssertions = null,
+    ): void {
+        /** @var ImportRepository $importRepository */
+        $importRepository = $this->em->getRepository(Import::class);
+
+        /** @var Import $importEntity */
+        $importEntity = $importRepository->findOneBy(['originalFile' => $originalFile]);
+
+        Assert::assertNotNull($importEntity);
+        Assert::assertSame($lineCount, $importEntity->getLineCount());
+        Assert::assertSame(Import::QUEUED, $importEntity->getStatus());
+        Assert::assertSame('lead', $importEntity->getObject());
+        Assert::assertEquals($fields, $importEntity->getProperties()['fields']);
+        Assert::assertEquals($headers, $importEntity->getProperties()['headers']);
+
+        $this->testSymfonyCommand(ImportCommand::COMMAND_NAME);
+
+        $this->em->clear();
+
+        /** @var Import $importEntity */
+        $importEntity = $importRepository->findOneBy(['originalFile' => $originalFile]);
+
+        Assert::assertNotNull($importEntity);
+        Assert::assertSame($lineCount, $importEntity->getLineCount());
+        Assert::assertSame($insertedCount, $importEntity->getInsertedCount());
+        Assert::assertSame($updatedCount, $importEntity->getUpdatedCount());
+        Assert::assertSame(Import::IMPORTED, $importEntity->getStatus());
+
+        if (null !== $afterAssertions) {
+            $afterAssertions();
+        }
+    }
+
+    private function createQueuedImport(): Import
+    {
+        $import = new Import();
+        $import->setObject('lead')
+               ->setOriginalFile('test.csv')
+               ->setStatus(Import::QUEUED)
+               ->setIsPublished(true)
+               ->setDir('/tmp')
+               ->setFile('test.csv');
+        $this->em->persist($import);
+        $this->em->flush();
+
+        return $import;
+    }
+
+    private function addCancellationNotification(?Import $import = null): void
+    {
+        $notificationModel = static::getContainer()->get('mautic.core.model.notification');
+        $translator        = static::getContainer()->get('translator');
+
+        $fileName = basename('/tmp/test.csv');
+        $message  = $import && $import->getId()
+            ? $translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()])
+            : $translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
+
+        $notificationModel->addNotification($message, 'warning');
+    }
+
+    private function assertNotificationMessageContains(string $expectedSubstring): void
+    {
+        $notificationRepo = $this->em->getRepository(\Mautic\CoreBundle\Entity\Notification::class);
+        $notifications    = $notificationRepo->getNotifications(1);
+        $found            = false;
+        foreach ($notifications as $notification) {
+            if (str_contains($notification['message'], $expectedSubstring)) {
+                $found = true;
+                Assert::assertSame('warning', $notification['type']);
+                break;
+            }
+        }
+        Assert::assertTrue($found, sprintf('Notification containing "%s" was not found', $expectedSubstring));
     }
 
     private function createLead(?string $email = null, string $firstName = ''): Lead
