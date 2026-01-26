@@ -440,7 +440,6 @@ final class ImportControllerTest extends MauticMysqlTestCase
         Assert::assertSame('Company B', $contacts[1]->getCompany());
         Assert::assertCount(2, $contacts);
     }
-    }
 
     private function setPhoneFieldIsRequired(bool $required): void
     {
