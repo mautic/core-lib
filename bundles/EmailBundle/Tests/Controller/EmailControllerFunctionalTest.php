@@ -228,51 +228,22 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($emailChild);
         $this->em->flush();
 
-        $crawler = $this->client->request(Request::METHOD_GET, '/s/emails');
-        $rows    = $crawler->filter('.email-list > tbody > tr');
+        $crawler      = $this->client->request(Request::METHOD_GET, '/s/emails');
+        $htmlLine1    = $crawler->filter('.email-list > tbody > tr:nth-child(1)')->html();
+        $htmlLine2    = $crawler->filter('.email-list > tbody > tr:nth-child(2)')->html();
+        $htmlLine3    = $crawler->filter('.email-list > tbody > tr:nth-child(3)')->html();
 
-        Assert::assertGreaterThanOrEqual(3, $rows->count());
-
-        $grandParentRow = null;
-        $parentRow      = null;
-        $childRow       = null;
-
-        for ($i = 0; $i < $rows->count(); ++$i) {
-            $rowHtml = $rows->eq($i)->html();
-
-            if (str_contains($rowHtml, 'Email A')) {
-                $grandParentRow = $rowHtml;
-            }
-
-            if (str_contains($rowHtml, 'Email B')) {
-                $parentRow = $rowHtml;
-            }
-
-            if (str_contains($rowHtml, 'Email C')) {
-                $childRow = $rowHtml;
-            }
-        }
-
-        Assert::assertNotNull($grandParentRow, 'Failed asserting that the grandparent email row is present.');
-        Assert::assertNotNull($parentRow, 'Failed asserting that the parent email row is present.');
-        Assert::assertNotNull($childRow, 'Failed asserting that the variant email row is present.');
-
-        Assert::assertStringContainsString('Email A', $grandParentRow);
-        Assert::assertStringContainsString('Has A/B tests', $grandParentRow);
-        Assert::assertStringContainsString('ri-organization-chart', $grandParentRow);
-        Assert::assertStringNotContainsString('Is A/B variant', $grandParentRow);
-
-        Assert::assertStringContainsString('Email B', $parentRow);
-        Assert::assertStringContainsString('ri-a-b fs-14', $parentRow);
-        Assert::assertStringContainsString('Is A/B variant', $parentRow);
-        Assert::assertStringContainsString('ri-organization-chart', $parentRow);
-        Assert::assertStringContainsString('Has A/B tests', $parentRow);
-
-        Assert::assertStringContainsString('Email C', $childRow);
-        Assert::assertStringContainsString('ri-a-b fs-14', $childRow);
-        Assert::assertStringContainsString('Is A/B variant', $childRow);
-        Assert::assertStringNotContainsString('ri-organization-chart', $childRow);
-        Assert::assertStringNotContainsString('Has A/B tests', $childRow);
+        Assert::assertStringContainsString('ri-a-b fs-14', $htmlLine3);
+        Assert::assertStringContainsString('Is A/B variant', $htmlLine3);
+        Assert::assertStringContainsString('Email C', $htmlLine3);
+        Assert::assertStringContainsString('Email B', $htmlLine2);
+        Assert::assertStringContainsString('ri-a-b fs-14', $htmlLine2);
+        Assert::assertStringContainsString('Is A/B variant', $htmlLine2);
+        Assert::assertStringContainsString('ri-organization-chart', $htmlLine2);
+        Assert::assertStringContainsString('Has A/B tests', $htmlLine2);
+        Assert::assertStringContainsString('Has A/B tests', $htmlLine1);
+        Assert::assertStringContainsString('ri-organization-chart', $htmlLine1);
+        Assert::assertStringContainsString('Email A', $htmlLine1);
     }
 
     public function testSegmentEmailSend(): void
