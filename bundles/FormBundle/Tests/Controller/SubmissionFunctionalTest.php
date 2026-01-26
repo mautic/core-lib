@@ -502,6 +502,63 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         Assert::assertCount(1, $submissions);
     }
 
+    public function testFormWithoutExplicitTypeAddContactToCampaign(): void
+    {
+        // Create the test form via API WITHOUT formType parameter
+        $payload = [
+            'name'        => 'Universal form test',
+            'description' => 'Form created without explicit type',
+            'isPublished' => true,
+            'fields'      => [
+                [
+                    'label'     => 'Email',
+                    'type'      => 'email',
+                    'alias'     => 'email',
+                    'leadField' => 'email',
+                ],
+                [
+                    'label' => 'Submit',
+                    'type'  => 'button',
+                ],
+            ],
+            'postAction'  => 'return',
+        ];
+
+        $this->client->request(Request::METHOD_POST, '/api/forms/new', $payload);
+        $clientResponse = $this->client->getResponse();
+        $response       = json_decode($clientResponse->getContent(), true);
+        $formId         = $response['form']['id'];
+
+        $this->assertSame(Response::HTTP_CREATED, $clientResponse->getStatusCode(), $clientResponse->getContent());
+
+        $campaignSources = ['forms' => [$formId => $formId]];
+
+        /** @var CampaignModel $campaignModel */
+        $campaignModel = static::getContainer()->get('mautic.campaign.model.campaign');
+
+        $campaign = new Campaign();
+        $campaign->setName('Test Campaign for Universal Form');
+        $campaign->setIsPublished(true);
+        $campaignModel->setLeadSources($campaign, $campaignSources, []);
+
+        $this->em->persist($campaign);
+        $this->em->flush();
+
+        // Submit the form
+        $crawler     = $this->client->request(Request::METHOD_GET, "/form/{$formId}");
+        $formCrawler = $crawler->filter('form[id=mauticform_universalformtest]');
+        $this->assertCount(1, $formCrawler);
+        $form = $formCrawler->form();
+        $form->setValues([
+            'mauticform[email]' => 'universal@test.com',
+        ]);
+        $this->client->submit($form);
+
+        // Verify contact was added to campaign
+        $campaignLeads = $this->em->getRepository(Lead::class)->findBy(['campaign' => $campaign->getId()]);
+        Assert::assertCount(1, $campaignLeads);
+    }
+
     protected function beforeTearDown(): void
     {
         $tablePrefix = static::getContainer()->getParameter('mautic.db_table_prefix');
