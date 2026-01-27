@@ -329,8 +329,11 @@ Mautic.initPluginEvents = function () {
         if (container === '#IntegrationEditModal' && response && response.pluginVersion) {
             const $modalLabel = mQuery('#IntegrationEditModal-label');
             if ($modalLabel.find('.plugin-version-badge').length === 0) {
-                const versionHtml = ' <span class="plugin-version-badge label label-default ml-xs">v' + response.pluginVersion + '</span>';
-                $modalLabel.append(versionHtml);
+                const $badge = mQuery('<span>')
+                    .addClass('plugin-version-badge label label-default ml-xs')
+                    .text('v' + String(response.pluginVersion));
+
+                $modalLabel.append(' ').append($badge);
             }
         }
     });
