@@ -81,7 +81,7 @@
             </div>
             {% do form.properties.setRendered() %}
         </div>
-        {% set shouldBeFieldModalId = 'shouldBeFieldModal' %}
+        {% set fieldGuidanceModalId = 'fieldGuidanceModal' %}
         {% set fieldItems = [
             {
                 'heading': 'mautic.lead.field.shouldbe.field.item1.heading',
@@ -183,14 +183,14 @@
             href: '',
             attributes: {
                 'data-toggle': 'modal',
-                'data-target': '#' ~ shouldBeFieldModalId
+                'data-target': '#' ~ fieldGuidanceModalId
             },
             type: 'link',
             ctaType: 'modal'
         } only %}
         </div>
         {% include '@MauticCore/Components/modal.html.twig' with {
-            id: shouldBeFieldModalId,
+            id: fieldGuidanceModalId,
             modalLabel: 'mautic.lead.field.shouldbe.label',
             modalContent: shouldBeFieldModalContent,
             type: 'expressive',
