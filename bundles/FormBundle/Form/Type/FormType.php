@@ -147,8 +147,7 @@ class FormType extends AbstractType
             [
                 'label' => 'mautic.form.form.progressive_profiling_limit.max_fields',
                 'attr'  => [
-                    'style'       => 'width:100px;',
-                    'class'       => 'form-control',
+                'class'       => 'form-control form-control-narrow',
                     'tooltip'     => 'mautic.form.form.progressive_profiling_limit.max_fields.tooltip',
                     'placeholder' => 'mautic.form.form.progressive_profiling_limit_unlimited',
                 ],
@@ -175,8 +174,7 @@ class FormType extends AbstractType
         $builder->add('submissionLimit', IntegerType::class, [
             'label'      => 'mautic.form.submission.limit',
             'attr'       => [
-                'class' => 'form-control',
-                'style' => 'width:100px;',
+                'class' => 'form-control form-control-narrow',
             ],
             'required'   => false,
         ]);

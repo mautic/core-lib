@@ -126,10 +126,7 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $entityManager;
 
-    /**
-     * @var MockObject|Connection
-     */
-    private MockObject $connection;
+    private MockObject&Connection $connection;
 
     /**
      * @var MockObject|SubmissionRepository

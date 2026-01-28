@@ -6,7 +6,6 @@ use Mautic\CoreBundle\Entity\IpAddress;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\LanguageHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
-use Mautic\CoreBundle\Model\NotificationModel;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\FormBundle\Entity\Action;
 use Mautic\FormBundle\Entity\Form;
@@ -15,7 +14,6 @@ use Mautic\FormBundle\Event\SubmissionEvent;
 use Mautic\FormBundle\EventListener\FormSubscriber;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\UserBundle\Entity\User;
-use Mautic\UserBundle\Entity\UserRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,9 +40,6 @@ class FormSubscriberTest extends TestCase
         $router            = $this->createMock(RouterInterface::class);
         $languageHelper    = $this->createMock(LanguageHelper::class);
         $formRepository    = $this->createMock(\Mautic\FormBundle\Entity\FormRepository::class);
-        $userRepository    = $this->createMock(UserRepository::class);
-        $notificationModel = $this->createMock(NotificationModel::class);
-
         $this->mailer->expects($this->once())
             ->method('getMailer')
             ->willReturnSelf();
@@ -56,9 +51,7 @@ class FormSubscriberTest extends TestCase
             $translator,
             $router,
             $languageHelper,
-            $formRepository,
-            $userRepository,
-            $notificationModel
+            $formRepository
         );
     }
 

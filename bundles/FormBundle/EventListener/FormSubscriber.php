@@ -9,7 +9,6 @@ use GuzzleHttp\Psr7\Response;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\LanguageHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
-use Mautic\CoreBundle\Model\NotificationModel;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Entity\FormRepository;
@@ -19,7 +18,6 @@ use Mautic\FormBundle\Form\Type\SubmitActionEmailType;
 use Mautic\FormBundle\Form\Type\SubmitActionRepostType;
 use Mautic\FormBundle\FormEvents;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\UserBundle\Entity\UserRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -38,8 +36,6 @@ class FormSubscriber implements EventSubscriberInterface
         private RouterInterface $router,
         private LanguageHelper $languageHelper,
         private FormRepository $formRepository,
-        private UserRepository $userRepository,
-        private NotificationModel $notificationModel,
     ) {
         $this->mailer = $mailer->getMailer();
     }
@@ -62,21 +58,6 @@ class FormSubscriber implements EventSubscriberInterface
     {
         $form = $event->getForm();
         $this->formRepository->incrementSubmissionCount($form->getId());
-        if ($form->isSubmissionLimitReached()) {
-            $ownerId = $form->getCreatedBy();
-            if ($ownerId) {
-                $user = $this->userRepository->find($ownerId);
-                $this->notificationModel->addNotification(
-                    $this->translator->trans('mautic.form.submission.limit_reached.notification', ['%form%' => $form->getName()]),
-                    'warning',
-                    false,
-                    $form->getName(),
-                    null,
-                    null,
-                    $user
-                );
-            }
-        }
     }
 
     /**

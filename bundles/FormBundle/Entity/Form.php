@@ -50,6 +50,7 @@ class Form extends FormEntity implements UuidInterface
 
     use ProjectTrait;
     public const ENTITY_NAME = 'forms';
+    public const TABLE_NAME  = 'forms';
 
     /**
      * @var int
@@ -177,22 +178,13 @@ class Form extends FormEntity implements UuidInterface
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
     private $progressiveProfilingLimit;
 
-    /**
-     * @var int|null
-     */
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
-    private $submissionLimit;
+    private ?int $submissionLimit = null;
 
-    /**
-     * @var string|null
-     */
     #[Groups(['form:read', 'form:write', 'download:read', 'campaign:read', 'email:read'])]
-    private $submissionLimitMessage;
+    private ?string $submissionLimitMessage = null;
 
-    /**
-     * @var int
-     */
-    private $submissionCount = 0;
+    private int $submissionCount = 0;
 
     /**
      * This var is used to cache the result once gained from the loop.
@@ -291,11 +283,11 @@ class Form extends FormEntity implements UuidInterface
             ->build();
 
         $builder->addNullableField('submissionLimit', Types::INTEGER, 'submission_limit');
-        $builder->createField('submissionLimitMessage', 'text')
+        $builder->createField('submissionLimitMessage', Types::TEXT)
             ->columnName('submission_limit_message')
             ->nullable()
             ->build();
-        $builder->createField('submissionCount', 'integer')
+        $builder->createField('submissionCount', Types::INTEGER)
             ->columnName('submission_count')
             ->build();
 

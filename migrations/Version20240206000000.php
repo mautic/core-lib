@@ -6,10 +6,11 @@ namespace Mautic\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
 use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
+use Mautic\FormBundle\Entity\Form;
 
 final class Version20240206000000 extends PreUpAssertionMigration
 {
-    protected const TABLE_NAME = 'forms';
+    protected const TABLE_NAME = Form::TABLE_NAME;
 
     protected function preUpAssertions(): void
     {
