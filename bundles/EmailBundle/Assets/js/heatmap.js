@@ -135,7 +135,7 @@
             this.iframeDocument.write(this.content);
 
             const cssLink = document.createElement("link");
-            const baseUrl = window.mauticBaseUrl || '';
+            const baseUrl = window.mauticBaseUrl || '/';
             cssLink.href = baseUrl + 'app/bundles/EmailBundle/Assets/css/heatmap.css';
             cssLink.rel = "stylesheet";
             cssLink.type = "text/css";
