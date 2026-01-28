@@ -34,9 +34,8 @@ class PublicController extends CommonFormController
         DateHelper $dateTemplateHelper,
         PageTokenHelper $pageTokenHelper,
         NotificationModel $notificationModel,
-        UserRepository $userRepository
-    )
-    {
+        UserRepository $userRepository,
+    ) {
         if ('POST' !== $request->getMethod()) {
             return $this->accessDenied();
         }
