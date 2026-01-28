@@ -1137,7 +1137,128 @@ Mautic.prepareCampaignCanvas = function() {
                 Mautic.campaignDragOptions
             );
         }
+
+        Mautic.initCampaignCanvasPan();
     }
+};
+
+/**
+ * Allow users to pan the campaign canvas by holding spacebar and dragging
+ */
+Mautic.initCampaignCanvasPan = function () {
+    if (mQuery('.preview').length) {
+        return;
+    }
+
+    var builderContent = mQuery('.builder-content');
+    var isPanMode = false;
+    var isPanning = false;
+    var startX = 0;
+    var startY = 0;
+    var scrollLeft = 0;
+    var scrollTop = 0;
+
+    mQuery(document).on('keydown.campaignPan', function (e) {
+        if (e.keyCode === 32) {
+            var target = e.target;
+            var tagName = target.tagName.toLowerCase();
+
+            if (tagName === 'input' || tagName === 'textarea' || target.isContentEditable) {
+                return;
+            }
+
+            if (mQuery('.modal.in').length > 0) {
+                return;
+            }
+
+            if (mQuery('.chosen-with-drop').length > 0) {
+                return;
+            }
+
+            e.preventDefault();
+
+            if (!isPanMode) {
+                isPanMode = true;
+                builderContent.addClass('pan-mode');
+            }
+        }
+    });
+
+    mQuery(document).on('keyup.campaignPan', function (e) {
+        if (e.keyCode === 32) {
+            var target = e.target;
+            var tagName = target.tagName.toLowerCase();
+
+            if (tagName === 'input' || tagName === 'textarea' || target.isContentEditable) {
+                return;
+            }
+
+            e.preventDefault();
+
+            if (isPanMode) {
+                isPanMode = false;
+                isPanning = false;
+                builderContent.removeClass('pan-mode panning');
+            }
+        }
+    });
+
+    builderContent.on('mousedown.campaignPan', function (e) {
+        if (!isPanMode) {
+            return;
+        }
+
+        if (e.button !== 0) {
+            return;
+        }
+
+        e.preventDefault();
+        isPanning = true;
+        builderContent.addClass('panning');
+
+        startX = e.pageX - builderContent.offset().left;
+        startY = e.pageY - builderContent.offset().top;
+        scrollLeft = builderContent.scrollLeft();
+        scrollTop = builderContent.scrollTop();
+    });
+
+    builderContent.on('mousemove.campaignPan', function (e) {
+        if (!isPanning) {
+            return;
+        }
+
+        e.preventDefault();
+
+        var x = e.pageX - builderContent.offset().left;
+        var y = e.pageY - builderContent.offset().top;
+        var walkX = (x - startX);
+        var walkY = (y - startY);
+
+        builderContent.scrollLeft(scrollLeft - walkX);
+        builderContent.scrollTop(scrollTop - walkY);
+    });
+
+    builderContent.on('mouseup.campaignPan', function (e) {
+        if (isPanning) {
+            isPanning = false;
+            builderContent.removeClass('panning');
+        }
+    });
+
+    builderContent.on('mouseleave.campaignPan', function (e) {
+        if (isPanning) {
+            isPanning = false;
+            builderContent.removeClass('panning');
+        }
+    });
+
+    mQuery(window).on('blur.campaignPan', function () {
+        if (isPanMode || isPanning) {
+            isPanMode = false;
+            isPanning = false;
+            builderContent.removeClass('pan-mode panning');
+        }
+    });
 };
 
 /**
@@ -2700,7 +2821,7 @@ Mautic.previewCampaignEventDetails = function() {
                 }
             }
         });
-        
+
         event.preventDefault();
     });
 
