@@ -207,6 +207,9 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
         $dateTimeHelperMock->expects($this->once())
             ->method('getTextDate')
             ->willReturn(false);
+        // Mock toLocalString() which is called by format() when getTextDate returns false
+        $dateTimeHelperMock->method('toLocalString')
+            ->willReturn('December 31, 2023');
 
         // Inject the mock DateTimeHelper into DateHelper
         $reflectionProperty = new \ReflectionProperty(DateHelper::class, 'helper');
