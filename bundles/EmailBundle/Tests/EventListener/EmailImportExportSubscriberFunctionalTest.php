@@ -37,7 +37,8 @@ final class EmailImportExportSubscriberFunctionalTest extends MauticMysqlTestCas
         $this->assertArrayHasKey(Email::ENTITY_NAME, $entities);
         $this->assertCount(1, $entities[Email::ENTITY_NAME]);
 
-        $exportedEmail = $entities[Email::ENTITY_NAME][0];
+        $exportedEmail = reset($entities[Email::ENTITY_NAME]);
+        $this->assertIsArray($exportedEmail);
         $this->assertNull($exportedEmail['translation_parent_id']);
         $this->assertNull($exportedEmail['variant_parent_id']);
         $this->assertSame($email->getId(), $exportedEmail['id']);
@@ -73,7 +74,8 @@ final class EmailImportExportSubscriberFunctionalTest extends MauticMysqlTestCas
         $this->assertArrayHasKey(Email::ENTITY_NAME, $entities);
         $this->assertCount(1, $entities[Email::ENTITY_NAME]);
 
-        $exportedEmail = $entities[Email::ENTITY_NAME][0];
+        $exportedEmail = reset($entities[Email::ENTITY_NAME]);
+        $this->assertIsArray($exportedEmail);
         $this->assertIsInt($exportedEmail['translation_parent_id']);
         $this->assertSame($parentEmail->getId(), $exportedEmail['translation_parent_id']);
         $this->assertNull($exportedEmail['variant_parent_id']);
@@ -108,7 +110,8 @@ final class EmailImportExportSubscriberFunctionalTest extends MauticMysqlTestCas
         $this->assertArrayHasKey(Email::ENTITY_NAME, $entities);
         $this->assertCount(1, $entities[Email::ENTITY_NAME]);
 
-        $exportedEmail = $entities[Email::ENTITY_NAME][0];
+        $exportedEmail = reset($entities[Email::ENTITY_NAME]);
+        $this->assertIsArray($exportedEmail);
         $this->assertIsInt($exportedEmail['variant_parent_id']);
         $this->assertSame($parentEmail->getId(), $exportedEmail['variant_parent_id']);
         $this->assertNull($exportedEmail['translation_parent_id']);
@@ -150,7 +153,8 @@ final class EmailImportExportSubscriberFunctionalTest extends MauticMysqlTestCas
         $this->assertArrayHasKey(Email::ENTITY_NAME, $entities);
         $this->assertCount(1, $entities[Email::ENTITY_NAME]);
 
-        $exportedEmail = $entities[Email::ENTITY_NAME][0];
+        $exportedEmail = reset($entities[Email::ENTITY_NAME]);
+        $this->assertIsArray($exportedEmail);
         $this->assertIsArray($exportedEmail['variant_settings']);
         $this->assertSame([], $exportedEmail['variant_settings']);
     }
