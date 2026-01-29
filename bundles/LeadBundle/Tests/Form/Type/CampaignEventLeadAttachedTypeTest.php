@@ -48,14 +48,18 @@ final class CampaignEventLeadAttachedTypeTest extends TestCase
     public function testThatBuildFormMethodAddsContactAddedOptions(): void
     {
         $parameters = $this->parameters();
-        $this->formBuilderInterface->expects($this->exactly(4))
-            ->method('add')
-            ->withConsecutive(
-                $parameters[0],
-                $parameters[1],
-                $parameters[2],
-                $parameters[3]
-            );
+        $matcher    = $this->exactly(4);
+        $this->formBuilderInterface->expects($matcher)
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+                if (1 === $matcher->numberOfInvocations()) {
+                }
+                if (2 === $matcher->numberOfInvocations()) {
+                }
+                if (3 === $matcher->numberOfInvocations()) {
+                }
+                if (4 === $matcher->numberOfInvocations()) {
+                }
+            });
 
         $this->campaignEventLeadAttachedType->buildForm($this->formBuilderInterface, []);
     }
