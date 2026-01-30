@@ -10,14 +10,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class CampaignEventLeadAttachedType extends AbstractType
 {
-    /**
-     * @var ListModel
-     */
-    protected $listModel;
-
-    public function __construct(ListModel $listModel)
+    public function __construct(protected ListModel $listModel)
     {
-        $this->listModel  = $listModel;
     }
 
     /**
