@@ -2763,12 +2763,26 @@ Mautic.autoOrganizeCampaign = function () {
         }
     });
 
+    mQuery("#CampaignCanvas .draggable").each(function () {
+        const id = mQuery(this).attr('id');
+        if (nodes[id]) {
+            nodes[id].isSource = mQuery(this).hasClass('list-campaign-source');
+        }
+    });
+
     let moved = true;
     let iterations = 0;
     while (moved && iterations < 100) {
         moved = false;
         iterations++;
         Object.values(nodes).forEach(node => {
+            if (node.isSource) {
+                if (node.rank !== 0) {
+                    node.rank = 0;
+                    moved = true;
+                }
+                return;
+            }
             if (node.in.length === 0) {
                 if (node.rank !== 0) {
                     node.rank = 0;
@@ -2805,22 +2819,27 @@ Mautic.autoOrganizeCampaign = function () {
         visited.add(nodeId);
 
         const node = nodes[nodeId];
-        if (node.out.length === 0) {
+        const downstreamChildren = node.out.filter(childId => nodes[childId].rank > 0);
+        if (downstreamChildren.length === 0) {
             node.subtreeWidth = node.width;
             return node.subtreeWidth;
         }
 
         let totalChildrenWidth = 0;
-        node.out.forEach(childId => {
+        downstreamChildren.forEach(childId => {
             totalChildrenWidth += calculateSubtreeWidth(childId) + horizontalSpacing;
         });
-        totalChildrenWidth -= horizontalSpacing; // Remove last spacing
+        totalChildrenWidth -= horizontalSpacing;
 
         node.subtreeWidth = Math.max(node.width, totalChildrenWidth);
         return node.subtreeWidth;
     }
 
-    const roots = Object.values(nodes).filter(n => n.in.length === 0);
+    const roots = Object.values(nodes).filter(n => n.rank === 0).sort((a, b) => {
+        const posA = a.el.position();
+        const posB = b.el.position();
+        return posA.left !== posB.left ? posA.left - posB.left : (a.id < b.id ? -1 : 1);
+    });
     roots.forEach(root => calculateSubtreeWidth(root.id));
 
     const positioned = new Set();
@@ -2834,8 +2853,10 @@ Mautic.autoOrganizeCampaign = function () {
 
         let currentChildX = xOffset;
         node.out.forEach(childId => {
-            positionNode(childId, currentChildX, yOffset + verticalSpacing);
-            currentChildX += nodes[childId].subtreeWidth + horizontalSpacing;
+            if (nodes[childId].rank > 0) {
+                positionNode(childId, currentChildX, yOffset + verticalSpacing);
+                currentChildX += nodes[childId].subtreeWidth + horizontalSpacing;
+            }
         });
     }
 
