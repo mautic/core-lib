@@ -493,7 +493,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         return $event->setResult(true);
     }
 
-    public function onCampaignTriggerCondition(CampaignExecutionEvent $event): CampaignExecutionEvent
+    public function onCampaignTriggerCondition(CampaignExecutionEvent $event)
     {
         $lead   = $event->getLead();
         $result = false;
@@ -681,6 +681,7 @@ class CampaignSubscriber implements EventSubscriberInterface
     /**
      * @throws \Exception
      */
+    /** @phpstan-ignore-next-line */
     public function onCampaignTriggerConditionContactAdded(CampaignExecutionEvent $event): bool
     {
         $campaign = $this->campaignModel->getEntity($event->getEvent()['campaign']['id']);

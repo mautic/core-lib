@@ -184,10 +184,10 @@ class CampaignSubscriberTest extends MauticMysqlTestCase
             'eventSettings'   => [],
         ];
 
-        $campaignExecutionEvent = new CampaignExecutionEvent($eventProperties, false);
+        $campaignExecutionEvent = new CampaignExecutionEvent($eventProperties, false); // @phpstan-ignore-line classConstant.deprecatedClass
         $result                 = $this->campaignSubscriber->onCampaignTriggerCondition($campaignExecutionEvent);
-        $this->assertInstanceOf(CampaignExecutionEvent::class, $result);
-        $this->assertSame(false, $result->getResult());
+        $this->assertInstanceOf(CampaignExecutionEvent::class, $result); // @phpstan-ignore-line classConstant.deprecatedClass
+        $this->assertFalse($result->getResult());
     }
 
     /**
