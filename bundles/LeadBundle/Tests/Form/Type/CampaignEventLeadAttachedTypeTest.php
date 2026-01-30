@@ -50,16 +50,8 @@ final class CampaignEventLeadAttachedTypeTest extends TestCase
         $parameters = $this->parameters();
         $matcher    = $this->exactly(4);
         $this->formBuilderInterface->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if (1 === $matcher->numberOfInvocations()) {
-                }
-                if (2 === $matcher->numberOfInvocations()) {
-                }
-                if (3 === $matcher->numberOfInvocations()) {
-                }
-                if (4 === $matcher->numberOfInvocations()) {
-                }
-            });
+            ->method('add')
+            ->willReturnSelf();
 
         $this->campaignEventLeadAttachedType->buildForm($this->formBuilderInterface, []);
     }
