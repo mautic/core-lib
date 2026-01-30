@@ -28,7 +28,6 @@ class RoleRepository extends CommonRepository
 
         $q->addSelect('('.$sq->getDql().') as user_count');
 
-
         $args['qb'] = $q;
 
         return parent::getEntities($args);
