@@ -28,12 +28,21 @@ final readonly class RedirectUrlTokensFinder
         foreach ($names as $index => $name) {
             $value = $values[$index];
 
-            $token           = new TokenDto($name, $value);
-            $nameAndPosition = \sprintf('%s-%d', $name, $index + 1);
+            $token       = new TokenDto($name, $value);
+            $replacement = $this->createTokenReplacement($name, $index + 1);
 
-            $result = \str_replace($token->toString(), $nameAndPosition, $result);
+            $result = \str_replace($token->toString(), $replacement, $result);
         }
 
         return $result;
+    }
+
+    private function createTokenReplacement(string $name, int $position): string
+    {
+        if ($name === RedirectUrlToken::PageLink->value) {
+            return 'https://example.com';
+        }
+
+        return \sprintf('%s-%d', $name, $position);
     }
 }

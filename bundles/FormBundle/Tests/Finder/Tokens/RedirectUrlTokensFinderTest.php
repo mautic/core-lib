@@ -112,8 +112,30 @@ class RedirectUrlTokensFinderTest extends TestCase
             true,
         ];
 
-        yield 'unknown tokens' => [
+        yield 'with unknown tokens' => [
             'https:/example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}&{foo=bar}',
+            true,
+        ];
+
+        // ---
+
+        yield 'tokens only' => [
+            '{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            true,
+        ];
+
+        yield 'tokens mixed with static url' => [
+            '{pagelink=123}/page2/lorem-ipsum?{formfield=abc}&{contactfield=abc123}',
+            true,
+        ];
+
+        yield 'tokens mixed with static url and query parameters 1' => [
+            '{pagelink=123}/page2/lorem-ipsum?test1&test2&{formfield=abc}&{contactfield=abc123}',
+            true,
+        ];
+
+        yield 'tokens mixed with static url and query parameters 2' => [
+            '{pagelink=123}/page2/lorem-ipsum?test1=123&test2=abc&{formfield=abc}&{contactfield=abc123}',
             true,
         ];
 
@@ -150,7 +172,7 @@ class RedirectUrlTokensFinderTest extends TestCase
         ];
 
         yield 'page url with query parameters - multiple same tokens' => [
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{formfield=def}&{contactfield=abc123}&{contactfield=def456}',
             true,
         ];
 
@@ -229,80 +251,70 @@ class RedirectUrlTokensFinderTest extends TestCase
         // ---
 
         yield 'not valid url 1 - with tokens' => [
-            'example?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'example?pagelink-1&formfield-2&contactfield-3',
+            'example?{formfield=abc}&{contactfield=abc123}',
+            'example?formfield-1&contactfield-2',
         ];
 
         yield 'not valid url 2 - with tokens' => [
-            'ttps://example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'ttps://example.com?pagelink-1&formfield-2&contactfield-3',
+            'ttps://example.com?{formfield=abc}&{contactfield=abc123}',
+            'ttps://example.com?formfield-1&contactfield-2',
         ];
 
         yield 'not valid url 3 - with tokens' => [
-            'https://example?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'https://example?pagelink-1&formfield-2&contactfield-3',
+            'https://example?{formfield=abc}&{contactfield=abc123}',
+            'https://example?formfield-1&contactfield-2',
         ];
 
         yield 'not valid url 4 - with tokens' => [
-            'https:/example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'https:/example.com?pagelink-1&formfield-2&contactfield-3',
+            'https:/example.com?{formfield=abc}&{contactfield=abc123}',
+            'https:/example.com?formfield-1&contactfield-2',
         ];
 
         yield 'not valid url 5 - with tokens' => [
-            'example.com?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'example.com?test1=123&test2=abc&pagelink-1&formfield-2&contactfield-3',
+            'example.com?test1=123&test2=abc&{formfield=abc}&{contactfield=abc123}',
+            'example.com?test1=123&test2=abc&formfield-1&contactfield-2',
         ];
 
         yield 'missing curly braces in some tokens' => [
-            'https:/example.com?{pagelink=123}&formfield=abc}&{contactfield=abc123',
-            'https:/example.com?pagelink-1&formfield=abc}&{contactfield=abc123',
+            '{pagelink=123}?formfield=abc}&{contactfield=abc123',
+            'https://example.com?formfield=abc}&{contactfield=abc123',
         ];
 
-        yield 'unknown tokens' => [
-            'https:/example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}&{foo=bar}',
-            'https:/example.com?pagelink-1&formfield-2&contactfield-3&{foo=bar}',
+        yield 'with unknown tokens' => [
+            '{pagelink=123}?{formfield=abc}&{contactfield=abc123}&{foo=bar}',
+            'https://example.com?formfield-2&contactfield-3&{foo=bar}',
         ];
 
         // ---
 
-        yield 'homepage with ending slash - with tokens' => [
-            'https://example.com/?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'https://example.com/?pagelink-1&formfield-2&contactfield-3',
+        yield 'tokens only' => [
+            '{pagelink=123}?{formfield=abc}&{contactfield=abc123}',
+            'https://example.com?formfield-2&contactfield-3',
         ];
 
-        yield 'homepage without ending slash - with tokens' => [
-            'https://example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'https://example.com?pagelink-1&formfield-2&contactfield-3',
+        yield 'tokens mixed with static url' => [
+            '{pagelink=123}/page2/lorem-ipsum?{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/page2/lorem-ipsum?formfield-2&contactfield-3',
         ];
 
-        yield 'page url 1 - with tokens' => [
-            'https://example.com/page1/?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'https://example.com/page1/?pagelink-1&formfield-2&contactfield-3',
+        yield 'tokens mixed with static url and query parameters 1' => [
+            '{pagelink=123}/page2/lorem-ipsum?test1&test2&{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/page2/lorem-ipsum?test1&test2&formfield-2&contactfield-3',
         ];
 
-        yield 'page url 2 - with tokens' => [
-            'https://example.com/page2/lorem-ipsum/?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'https://example.com/page2/lorem-ipsum/?pagelink-1&formfield-2&contactfield-3',
-        ];
-
-        yield 'page url with query parameters 1 - with tokens' => [
-            'https://example.com/page2/lorem-ipsum?test1&test2&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'https://example.com/page2/lorem-ipsum?test1&test2&pagelink-1&formfield-2&contactfield-3',
-        ];
-
-        yield 'page url with query parameters 2 - with tokens' => [
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&pagelink-1&formfield-2&contactfield-3',
+        yield 'tokens mixed with static url and query parameters 2' => [
+            '{pagelink=123}/page2/lorem-ipsum?test1=123&test2=abc&{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&formfield-2&contactfield-3',
         ];
 
         yield 'page url with query parameters - multiple same tokens' => [
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&pagelink-1&formfield-2&contactfield-3',
+            '{pagelink=123}/page2/lorem-ipsum?test1=123&test2=abc&{formfield=abc}&{formfield=def}&{contactfield=abc123}&{contactfield=def456}',
+            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&formfield-2&formfield-3&contactfield-4&contactfield-5',
         ];
 
         yield 'page url without query parameters' => [
-            'https://example.com/page2/{pagelink=123}/{formfield=abc}/lorem-ipsum/{contactfield=abc123}',
-            'https://example.com/page2/pagelink-1/formfield-2/lorem-ipsum/contactfield-3',
+            '{pagelink=123}/page2/{formfield=abc}/lorem-ipsum/{contactfield=abc123}',
+            'https://example.com/page2/formfield-2/lorem-ipsum/contactfield-3',
         ];
     }
 
