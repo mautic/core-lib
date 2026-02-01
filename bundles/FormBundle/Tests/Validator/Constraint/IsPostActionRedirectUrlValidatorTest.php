@@ -89,9 +89,14 @@ class IsPostActionRedirectUrlValidatorTest extends ConstraintValidatorTestCase
             'https:/example.com?formfield=abc}&{contactfield=abc123',
         ];
 
-        yield 'with unknown tokens' => [
-            'https:/example.com?{formfield=abc}&{contactfield=abc123}&{foo=bar}',
-            'https:/example.com?formfield-1&contactfield-2&{foo=bar}',
+        yield 'with unknown tokens 1' => [
+            'https:/example.com?{formfield=abc}&{contactfield=abc123}&{foo=bar}&{lorem=ipsum}',
+            'https:/example.com?formfield-1&contactfield-2&{foo=bar}&{lorem=ipsum}',
+        ];
+
+        yield 'with unknown tokens 2' => [
+            '{pagelink=123}?{formfield=abc}&{contactfield=abc123}&{foo=bar}&{lorem=ipsum}',
+            'https://example.com?formfield-2&contactfield-3&{foo=bar}&{lorem=ipsum}',
         ];
     }
 
@@ -125,40 +130,43 @@ class IsPostActionRedirectUrlValidatorTest extends ConstraintValidatorTestCase
     public static function provideUrlWithTokens(): \Generator
     {
         yield 'homepage with ending slash' => [
-            'https://example.com/?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/?{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/?formfield-1&contactfield-2',
         ];
 
-        yield 'homepage without ending slash' => [
-            'https://example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+        yield 'all supported tokens' => [
+            '{pagelink=123}?{formfield=abc}&{contactfield=abc123}',
+            'https://example.com?formfield-2&contactfield-3',
         ];
 
         yield 'page url 1' => [
-            'https://example.com/page1/?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            '{pagelink=123}/page1?{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/page1?formfield-2&contactfield-3',
         ];
 
         yield 'page url 2' => [
-            'https://example.com/page2/lorem-ipsum/?{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            '{pagelink=123}/page2/lorem-ipsum/?{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/page2/lorem-ipsum/?formfield-2&contactfield-3',
         ];
 
         yield 'page url with query parameters 1' => [
-            'https://example.com/page2/lorem-ipsum?test1&test2&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            '{pagelink=123}/page2/lorem-ipsum?test1&test2&{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/page2/lorem-ipsum?test1&test2&formfield-2&contactfield-3',
         ];
 
         yield 'page url with query parameters 2' => [
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{contactfield=abc123}',
+            '{pagelink=123}/page2/lorem-ipsum?test1=123&test2=abc&{formfield=abc}&{contactfield=abc123}',
+            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&formfield-2&contactfield-3',
         ];
 
         yield 'page url with query parameters - multiple same tokens' => [
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&{pagelink=123}&{formfield=abc}&{formfield=def}&{contactfield=abc123}&{contactfield=def456}',
+            '{pagelink=123}/page2/lorem-ipsum?test1=123&test2=abc&{formfield=abc}&{formfield=def}&{contactfield=abc123}&{contactfield=def456}',
+            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&formfield-2&formfield-3&contactfield-4&contactfield-5',
         ];
 
         yield 'page url without query parameters' => [
-            'https://example.com/page2/{pagelink=123}/{formfield=abc}/lorem-ipsum/{contactfield=abc123}',
-        ];
-
-        yield 'with unknown tokens' => [
-            '{pagelink=123}?{formfield=abc}&{contactfield=abc123}&{foo=bar}',
-            'https://example.com?formfield-2&contactfield-3&{foo=bar}',
+            '{pagelink=123}/page2/{formfield=abc}/lorem-ipsum/{contactfield=abc123}',
+            'https://example.com/page2/formfield-2/lorem-ipsum/contactfield-3',
         ];
     }
 
@@ -212,8 +220,18 @@ class IsPostActionRedirectUrlValidatorTest extends ConstraintValidatorTestCase
     }
 
     #[DataProvider('provideUrlWithTokens')]
-    public function testUrlWithTokens(string $url): void
+    public function testUrlWithTokens(string $url, string $dummyDataUrl): void
     {
+        $violationList = new ConstraintViolationList();
+        $urlConstraint = new Url(message: 'mautic.form.form.postactionproperty_redirect.url');
+
+        $this
+            ->urlValidator
+            ->expects(self::once())
+            ->method('validate')
+            ->with($dummyDataUrl, $urlConstraint)
+            ->willReturn($violationList);
+
         $this->validator->validate($url, new IsPostActionRedirectUrl());
         $this->assertNoViolation();
     }

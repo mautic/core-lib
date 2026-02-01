@@ -138,7 +138,7 @@ class RedirectUrlTokensFinderTest extends TestCase
         ];
 
         yield 'with unknown tokens' => [
-            'https:/example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}&{foo=bar}',
+            'https:/example.com?{pagelink=123}&{formfield=abc}&{contactfield=abc123}&{foo=bar}&{lorem=ipsum}',
             true,
         ];
 
@@ -306,8 +306,8 @@ class RedirectUrlTokensFinderTest extends TestCase
         ];
 
         yield 'with unknown tokens' => [
-            '{pagelink=123}?{formfield=abc}&{contactfield=abc123}&{foo=bar}',
-            'https://example.com?formfield-2&contactfield-3&{foo=bar}',
+            '{pagelink=123}?{formfield=abc}&{contactfield=abc123}&{foo=bar}&{lorem=ipsum}',
+            'https://example.com?formfield-2&contactfield-3&{foo=bar}&{lorem=ipsum}',
         ];
 
         // ---
