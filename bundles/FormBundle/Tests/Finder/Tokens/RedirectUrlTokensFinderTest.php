@@ -12,6 +12,31 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(RedirectUrlTokensFinder::class)]
 class RedirectUrlTokensFinderTest extends TestCase
 {
+    private const NOT_VALID_URLS = [
+        'ttps://example.com',
+        'https://example',
+        'https:/example.com',
+        'example.com?test1=123&test2=abc',
+    ];
+
+    private const HOMEPAGE_URLS = [
+        'https://example.com/',
+        'https://example.com',
+    ];
+
+    private const PAGE_URLS = [
+        'https://example.com/page1/',
+        'https://example.com/page2/lorem-ipsum/',
+        'https://example.com/page2/lorem-ipsum?test1&test2',
+        'https://example.com/page2/lorem-ipsum?test1=123&test2=abc',
+    ];
+
+    private const TOKENIZED_URLS = [
+        '{pagelink=123}/page2/lorem-ipsum?{formfield=abc}&{contactfield=abc123}',
+        '{pagelink=123}/page2/lorem-ipsum?test1&test2&{formfield=abc}&{contactfield=abc123}',
+        '{pagelink=123}/page2/lorem-ipsum?test1=123&test2=abc&{formfield=abc}&{contactfield=abc123}',
+    ];
+
     private RedirectUrlTokensFinder $redirectUrlTokensFinder;
 
     public static function provideUrlToCheck(): \Generator
@@ -29,54 +54,54 @@ class RedirectUrlTokensFinderTest extends TestCase
         ];
 
         yield 'not valid url 2' => [
-            'ttps://example.com',
+            self::NOT_VALID_URLS[0],
             false,
         ];
 
         yield 'not valid url 3' => [
-            'https://example',
+            self::NOT_VALID_URLS[1],
             false,
         ];
 
         yield 'not valid url 4' => [
-            'https:/example.com',
+            self::NOT_VALID_URLS[2],
             false,
         ];
 
         yield 'not valid url 5' => [
-            'example.com?test1=123&test2=abc',
+            self::NOT_VALID_URLS[3],
             false,
         ];
 
         // ---
 
         yield 'homepage with ending slash' => [
-            'https://example.com/',
+            self::HOMEPAGE_URLS[0],
             false,
         ];
 
         yield 'homepage without ending slash' => [
-            'https://example.com',
+            self::HOMEPAGE_URLS[1],
             false,
         ];
 
         yield 'page url 1' => [
-            'https://example.com/page1/',
+            self::PAGE_URLS[0],
             false,
         ];
 
         yield 'page url 2' => [
-            'https://example.com/page2/lorem-ipsum/',
+            self::PAGE_URLS[1],
             false,
         ];
 
         yield 'page url with query parameters 1' => [
-            'https://example.com/page2/lorem-ipsum?test1&test2',
+            self::PAGE_URLS[2],
             false,
         ];
 
         yield 'page url with query parameters 2' => [
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc',
+            self::PAGE_URLS[3],
             false,
         ];
 
@@ -125,17 +150,17 @@ class RedirectUrlTokensFinderTest extends TestCase
         ];
 
         yield 'tokens mixed with static url' => [
-            '{pagelink=123}/page2/lorem-ipsum?{formfield=abc}&{contactfield=abc123}',
+            self::TOKENIZED_URLS[0],
             true,
         ];
 
         yield 'tokens mixed with static url and query parameters 1' => [
-            '{pagelink=123}/page2/lorem-ipsum?test1&test2&{formfield=abc}&{contactfield=abc123}',
+            self::TOKENIZED_URLS[1],
             true,
         ];
 
         yield 'tokens mixed with static url and query parameters 2' => [
-            '{pagelink=123}/page2/lorem-ipsum?test1=123&test2=abc&{formfield=abc}&{contactfield=abc123}',
+            self::TOKENIZED_URLS[2],
             true,
         ];
 
@@ -197,55 +222,55 @@ class RedirectUrlTokensFinderTest extends TestCase
         ];
 
         yield 'not valid url 2' => [
-            'ttps://example.com',
-            'ttps://example.com',
+            self::NOT_VALID_URLS[0],
+            self::NOT_VALID_URLS[0],
         ];
 
         yield 'not valid url 3' => [
-            'https://example',
-            'https://example',
+            self::NOT_VALID_URLS[1],
+            self::NOT_VALID_URLS[1],
         ];
 
         yield 'not valid url 4' => [
-            'https:/example.com',
-            'https:/example.com',
+            self::NOT_VALID_URLS[2],
+            self::NOT_VALID_URLS[2],
         ];
 
         yield 'not valid url 5' => [
-            'example.com?test1=123&test2=abc',
-            'example.com?test1=123&test2=abc',
+            self::NOT_VALID_URLS[3],
+            self::NOT_VALID_URLS[3],
         ];
 
         // ---
 
         yield 'homepage with ending slash' => [
-            'https://example.com/',
-            'https://example.com/',
+            self::HOMEPAGE_URLS[0],
+            self::HOMEPAGE_URLS[0],
         ];
 
         yield 'homepage without ending slash' => [
-            'https://example.com',
-            'https://example.com',
+            self::HOMEPAGE_URLS[1],
+            self::HOMEPAGE_URLS[1],
         ];
 
         yield 'page url 1' => [
-            'https://example.com/page1/',
-            'https://example.com/page1/',
+            self::PAGE_URLS[0],
+            self::PAGE_URLS[0],
         ];
 
         yield 'page url 2' => [
-            'https://example.com/page2/lorem-ipsum/',
-            'https://example.com/page2/lorem-ipsum/',
+            self::PAGE_URLS[1],
+            self::PAGE_URLS[1],
         ];
 
         yield 'page url with query parameters 1' => [
-            'https://example.com/page2/lorem-ipsum?test1&test2',
-            'https://example.com/page2/lorem-ipsum?test1&test2',
+            self::PAGE_URLS[2],
+            self::PAGE_URLS[2],
         ];
 
         yield 'page url with query parameters 2' => [
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc',
-            'https://example.com/page2/lorem-ipsum?test1=123&test2=abc',
+            self::PAGE_URLS[3],
+            self::PAGE_URLS[3],
         ];
 
         // ---
@@ -293,17 +318,17 @@ class RedirectUrlTokensFinderTest extends TestCase
         ];
 
         yield 'tokens mixed with static url' => [
-            '{pagelink=123}/page2/lorem-ipsum?{formfield=abc}&{contactfield=abc123}',
+            self::TOKENIZED_URLS[0],
             'https://example.com/page2/lorem-ipsum?formfield-2&contactfield-3',
         ];
 
         yield 'tokens mixed with static url and query parameters 1' => [
-            '{pagelink=123}/page2/lorem-ipsum?test1&test2&{formfield=abc}&{contactfield=abc123}',
+            self::TOKENIZED_URLS[1],
             'https://example.com/page2/lorem-ipsum?test1&test2&formfield-2&contactfield-3',
         ];
 
         yield 'tokens mixed with static url and query parameters 2' => [
-            '{pagelink=123}/page2/lorem-ipsum?test1=123&test2=abc&{formfield=abc}&{contactfield=abc123}',
+            self::TOKENIZED_URLS[2],
             'https://example.com/page2/lorem-ipsum?test1=123&test2=abc&formfield-2&contactfield-3',
         ];
 
