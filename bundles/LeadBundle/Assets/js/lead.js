@@ -1289,12 +1289,14 @@ Mautic.removeTagFromLead = function (el, leadId, tagId, event) {
         event.stopPropagation();
         event.preventDefault();
     }
-    mQuery(el).find('i').removeClass('ri-close-line').addClass('ri-loader-3-line ri-spin');
 
-    Mautic.ajaxActionRequest('lead:removeTagFromLead', {'leadId': leadId, 'tagId': tagId}, function() {
-        mQuery('#tagLabel' + tagId).fadeOut(300, function() { mQuery(this).remove(); });
-    });
+    if (confirm(Mautic.translate('mautic.lead.tag.confirm_remove'))) {
+        mQuery(el).find('i').removeClass('ri-close-line').addClass('ri-loader-3-line ri-spin');
 
+        Mautic.ajaxActionRequest('lead:removeTagFromLead', {'leadId': leadId, 'tagId': tagId}, function() {
+            mQuery('#tagLabel' + tagId).fadeOut(300, function() { mQuery(this).remove(); });
+        });
+    }
 };
 
 Mautic.toggleLiveLeadListUpdate = function () {
