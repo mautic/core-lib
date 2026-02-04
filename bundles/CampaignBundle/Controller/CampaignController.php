@@ -424,7 +424,7 @@ class CampaignController extends AbstractStandardFormController
      */
     public function indexAction(Request $request, $page = null)
     {
-        return $this->indexStandard($page);
+        return $this->indexStandard($request, $page);
     }
 
     protected function getDefaultOrderColumn()
@@ -1247,10 +1247,5 @@ class CampaignController extends AbstractStandardFormController
         }
 
         return $campaignLogCountsProcessed;
-    }
-
-    protected function getDefaultOrderDirection(): string
-    {
-        return 'DESC';
     }
 }
