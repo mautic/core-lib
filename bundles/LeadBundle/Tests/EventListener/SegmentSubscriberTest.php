@@ -38,15 +38,9 @@ class SegmentSubscriberTest extends TestCase
      */
     private MockObject $translator;
 
-    /**
-     * @var CoreParametersHelper|MockObject
-     */
-    private $coreParametersHelper;
+    private CoreParametersHelper&MockObject $coreParametersHelper;
 
-    /**
-     * @var SegmentCountCacheHelper|MockObject
-     */
-    private $segmentCountCacheHelper;
+    private SegmentCountCacheHelper&MockObject $segmentCountCacheHelper;
 
     /**
      * @var SegmentUsedInCampaignsValidator&MockObject
@@ -64,12 +58,7 @@ class SegmentSubscriberTest extends TestCase
         $this->translator                      = $this->createMock(TranslatorInterface::class);
         $this->coreParametersHelper            = $this->createMock(CoreParametersHelper::class);
         $this->segmentCountCacheHelper         = $this->createMock(SegmentCountCacheHelper::class);
-        $this->coreParametersHelper->method('get')
-            ->willReturnCallback(
-                function () {
-                    return false;
-                }
-            );
+        $this->coreParametersHelper->method('get')->willReturnCallback(fn () => false);
     }
 
     public function testGetSubscribedEvents(): void
@@ -155,7 +144,7 @@ class SegmentSubscriberTest extends TestCase
 
     public function testOnSegmentDelete(): void
     {
-        $segmentId        = 1;
+        $segmentId = 1;
 
         $this->listModel->expects($this->once())
             ->method('removeLeadsByListId')
@@ -164,7 +153,7 @@ class SegmentSubscriberTest extends TestCase
         $this->listModel->expects($this->once())
             ->method('hardDeleteEntity');
 
-        $subscriber  = new SegmentSubscriber(
+        $subscriber = new SegmentSubscriber(
             $this->ipLookupHelper,
             $this->auditLogModel,
             $this->listModel,

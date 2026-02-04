@@ -86,12 +86,9 @@ class SegmentSubscriberTest extends MauticMysqlTestCase
         ], ['mautic.lead_list.filter.alert.endwith']];
     }
 
-    /**
-     * @throws \Exception
-     */
     public function testSegmentDeleteWhenBackgroundConfigFalse(): void
     {
-        $filters     = [
+        $filters = [
             [
                 'glue'       => 'and',
                 'field'      => 'firstname',
@@ -107,8 +104,9 @@ class SegmentSubscriberTest extends MauticMysqlTestCase
         // Run segments update command.
         $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segmentId]);
 
-        /** @var ListModel $listModel */
         $listModel = $this->getContainer()->get('mautic.lead.model.list');
+        \assert($listModel instanceof ListModel);
+
         $leadCount = $listModel->getListLeadRepository()->getContactsCountBySegment($segmentId);
         self::assertSame(5, $leadCount);
 
@@ -130,9 +128,10 @@ class SegmentSubscriberTest extends MauticMysqlTestCase
     private function saveContacts(): array
     {
         // Add 5 contacts
-        /** @var LeadRepository $contactRepo */
         $contactRepo = $this->em->getRepository(Lead::class);
-        $contacts    = [];
+        \assert($contactRepo instanceof LeadRepository);
+
+        $contacts = [];
 
         for ($i = 1; $i <= 5; ++$i) {
             $contact = new Lead();

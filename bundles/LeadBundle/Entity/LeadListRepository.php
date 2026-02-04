@@ -75,9 +75,6 @@ class LeadListRepository extends CommonRepository
         return $this->getSingleEntity($id);
     }
 
-    /**
-     * Get soft deleted entity.
-     */
     public function getSoftDeletedEntity(int $id): ?LeadList
     {
         return $this->getSingleEntity($id, false);

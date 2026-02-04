@@ -22,9 +22,6 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
         $this->saveContacts();
     }
 
-    /**
-     * @throws \Exception
-     */
     public function testSegmentDeleteCommand(): void
     {
         $segment   = $this->saveSegment('Segment A', 'segment-a');
@@ -56,9 +53,6 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
         self::assertNull($deletedEntity);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function testSegmentDeleteCommandWithoutArgs(): void
     {
         $segmentB   = $this->saveSegment('Segment B', 'segment-b');
@@ -119,10 +113,11 @@ class DeleteLeadListsCommandFunctionalTest extends MauticMysqlTestCase
     private function saveSegment(string $name, string $alias): LeadList
     {
         // Add 1 segment
-        /** @var LeadListRepository $segmentRepo */
         $segmentRepo = $this->em->getRepository(LeadList::class);
-        $segment     = new LeadList();
-        $filters     = [
+        \assert($segmentRepo instanceof LeadListRepository);
+
+        $segment = new LeadList();
+        $filters = [
             [
                 'glue'       => 'and',
                 'field'      => 'firstname',

@@ -160,8 +160,6 @@ class ListModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
-     * Delete an array of segments.
-     *
      * @param array<int> $ids
      *
      * @return array<object>
@@ -181,8 +179,6 @@ class ListModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
-     * Delete an entity.
-     *
      * @param LeadList $entity
      */
     public function deleteEntity($entity): void
