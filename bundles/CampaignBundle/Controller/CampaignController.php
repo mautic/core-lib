@@ -419,10 +419,8 @@ class CampaignController extends AbstractStandardFormController
 
     /**
      * @param int $page
-     *
-     * @return JsonResponse|Response
      */
-    public function indexAction(Request $request, $page = null)
+    public function indexAction(Request $request, $page = null): Response
     {
         return $this->indexStandard($request, $page);
     }
