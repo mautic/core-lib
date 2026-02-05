@@ -634,7 +634,7 @@ class AssetModel extends FormModel implements GlobalSearchInterface
         }
 
         $entity = $this->getEntity((int) $id);
-        if ($entity && $entity->getAlias() !== null) {
+        if ($entity && null !== $entity->getAlias()) {
             return $entity;
         }
 
