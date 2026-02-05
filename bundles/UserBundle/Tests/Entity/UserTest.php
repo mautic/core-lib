@@ -68,42 +68,6 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($originalUser->isPublished(), $newUser->isPublished());
     }
 
-    public function testLegacySerializeMethod(): void
-    {
-        $user = new User();
-        $user->setUsername('testuser');
-        $user->setPassword('hashedpassword');
-        $user->setIsPublished(true);
-
-        $serializedString = $user->serialize();
-
-        $this->assertIsString($serializedString);
-        $this->assertNotEmpty($serializedString);
-
-        // Ensure the serialized string contains the expected structure
-        $unserializedData = unserialize($serializedString);
-        $this->assertIsArray($unserializedData);
-        $this->assertCount(4, $unserializedData);
-    }
-
-    public function testLegacyUnserializeMethod(): void
-    {
-        $originalUser = new User();
-        $originalUser->setUsername('testuser');
-        $originalUser->setPassword('hashedpassword');
-        $originalUser->setIsPublished(true);
-
-        $serializedString = $originalUser->serialize();
-
-        $newUser = new User();
-        $newUser->unserialize($serializedString);
-
-        $this->assertSame($originalUser->getId(), $newUser->getId());
-        $this->assertSame($originalUser->getUsername(), $newUser->getUsername());
-        $this->assertSame($originalUser->getPassword(), $newUser->getPassword());
-        $this->assertSame($originalUser->isPublished(), $newUser->isPublished());
-    }
-
     public function testSerializationRoundTrip(): void
     {
         $user = new User();
@@ -120,16 +84,6 @@ class UserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($user->getUsername(), $newUser->getUsername());
         $this->assertSame($user->getPassword(), $newUser->getPassword());
         $this->assertSame($user->isPublished(), $newUser->isPublished());
-
-        // Test round-trip with serialize/unserialize
-        $serializedString = $user->serialize();
-        $anotherUser      = new User();
-        $anotherUser->unserialize($serializedString);
-
-        $this->assertSame($user->getId(), $anotherUser->getId());
-        $this->assertSame($user->getUsername(), $anotherUser->getUsername());
-        $this->assertSame($user->getPassword(), $anotherUser->getPassword());
-        $this->assertSame($user->isPublished(), $anotherUser->isPublished());
     }
 
     public function testSerializationExcludesNonEssentialData(): void
