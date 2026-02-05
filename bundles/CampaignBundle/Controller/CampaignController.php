@@ -422,7 +422,9 @@ class CampaignController extends AbstractStandardFormController
      */
     public function indexAction(Request $request, $page = null): Response
     {
-        return $this->indexStandard($request, $page);
+        $enableExportPermission = $this->security->isAdmin() || $this->security->isGranted('campaign:export:enable', 'MATCH_ONE');
+
+        return $this->indexStandard($request, $page, $enableExportPermission);
     }
 
     protected function getDefaultOrderColumn()

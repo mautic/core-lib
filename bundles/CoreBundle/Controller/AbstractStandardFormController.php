@@ -786,7 +786,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
     /**
      * @param int $page
      */
-    protected function indexStandard(Request $request, $page = null): Response
+    protected function indexStandard(Request $request, $page = null, $enableExportPermission = false): Response
     {
         // set some permissions
         $permissions = $this->security->isGranted(
@@ -871,21 +871,22 @@ abstract class AbstractStandardFormController extends AbstractFormController
         $session->set('mautic.'.$this->getSessionBase().'.page', $page);
 
         $viewParameters = [
-            'permissionBase'  => $this->getPermissionBase(),
-            'mauticContent'   => $this->getJsLoadMethodPrefix(),
-            'sessionVar'      => $this->getSessionBase(),
-            'actionRoute'     => $this->getActionRoute(),
-            'indexRoute'      => $this->getIndexRoute(),
-            'tablePrefix'     => $model->getRepository()->getTableAlias(),
-            'modelName'       => $this->getModelName(),
-            'translationBase' => $this->getTranslationBase(),
-            'searchValue'     => $search,
-            'items'           => $items,
-            'totalItems'      => $count,
-            'page'            => $page,
-            'limit'           => $limit,
-            'permissions'     => $permissions,
-            'tmpl'            => $request->get('tmpl', 'index'),
+            'permissionBase'        => $this->getPermissionBase(),
+            'mauticContent'         => $this->getJsLoadMethodPrefix(),
+            'sessionVar'            => $this->getSessionBase(),
+            'actionRoute'           => $this->getActionRoute(),
+            'indexRoute'            => $this->getIndexRoute(),
+            'tablePrefix'           => $model->getRepository()->getTableAlias(),
+            'modelName'             => $this->getModelName(),
+            'translationBase'       => $this->getTranslationBase(),
+            'searchValue'           => $search,
+            'items'                 => $items,
+            'totalItems'            => $count,
+            'page'                  => $page,
+            'limit'                 => $limit,
+            'permissions'           => $permissions,
+            'tmpl'                  => $request->get('tmpl', 'index'),
+            'enableExportPermission'=> $enableExportPermission,
         ];
 
         return $this->delegateView(
