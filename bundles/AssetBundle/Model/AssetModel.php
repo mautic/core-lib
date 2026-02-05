@@ -615,9 +615,11 @@ class AssetModel extends FormModel implements GlobalSearchInterface
      * Asset-specific override for legacy public asset URLs.
      *
      * Backward compatibility rules:
-     * - Supports `{id}:{alias}` when the alias matches the stored asset alias exactly
-     * - Also allows `{id}:` and `{id}:<any>` for assets that already have a
-     *   non-null, non-empty alias, to preserve historical public links
+     * - Supports `{id}:{alias}` without validating the alias value
+     * - Allows `{id}:` and `{id}:<any>` only for assets that already have a
+     *   non-null alias, for BC
+     *
+     * @note The alias portion of the slug is no longer used for matching or validation.
      */
     public function getEntityBySlugs($slug): Asset|bool
     {
@@ -632,7 +634,10 @@ class AssetModel extends FormModel implements GlobalSearchInterface
         }
 
         $entity = $this->getEntity((int) $id);
+        if ($entity && $entity->getAlias() !== null) {
+            return $entity;
+        }
 
-        return $entity ?: false;
+        return false;
     }
 }

@@ -287,9 +287,18 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
     }
 
     #[DataProvider('getEntityBySlugsProvider')]
-    public function testGetEntityBySlugs(string $slug, bool $shouldResolve): void
-    {
-        $asset = $shouldResolve ? new Asset() : null;
+    public function testGetEntityBySlugs(
+        string $slug,
+        bool $expectsLookup,
+        bool $shouldResolve,
+        ?string $alias,
+    ): void {
+        $asset = null;
+
+        if ($expectsLookup) {
+            $asset = new Asset();
+            $asset->setAlias($alias);
+        }
 
         $model = $this->getMockBuilder(AssetModel::class)
             ->setConstructorArgs([
@@ -313,7 +322,7 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
             ->onlyMethods(['getEntity'])
             ->getMock();
 
-        if ($shouldResolve) {
+        if ($expectsLookup) {
             $model->expects($this->once())
                 ->method('getEntity')
                 ->willReturn($asset);
@@ -332,38 +341,64 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return iterable<string, array{string, bool}>
+     * @return iterable<string, array{string, bool, bool, ?string}>
      */
     public static function getEntityBySlugsProvider(): iterable
     {
         yield 'id with alias' => [
             '123:alias',
             true,
+            true,
+            'alias',
         ];
 
         yield 'id with wrong alias (BC)' => [
             '123:wrong-alias',
             true,
+            true,
+            'real-alias',
         ];
 
         yield 'id with trailing colon' => [
             '123:',
             true,
+            true,
+            'alias',
+        ];
+
+        yield 'id with trailing colon but alias is null' => [
+            '123:',
+            true,
+            false,
+            null,
         ];
 
         yield 'bare id' => [
             '123',
             false,
+            false,
+            null,
         ];
 
         yield 'non-numeric id' => [
             'abc:alias',
             false,
+            false,
+            null,
         ];
 
         yield 'empty id' => [
             ':alias',
             false,
+            false,
+            null,
+        ];
+
+        yield 'id with empty alias (BC)' => [
+            '123:',
+            true,
+            true,
+            '',
         ];
     }
 }
