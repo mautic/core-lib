@@ -15,24 +15,27 @@ final class BlockedFreeEmailProvidersHelper
      */
     public static function load(): array
     {
-        if (!file_exists(self::JSON_FILE_PATH) || !is_readable(self::JSON_FILE_PATH)) {
-            return [];
-        }
+        $providers = self::loadRaw();
 
-        $content = file_get_contents(self::JSON_FILE_PATH);
-        if (false === $content) {
-            return [];
-        }
+        return is_array($providers) ? array_map('strtolower', $providers) : [];
+    }
 
-        try {
-            $providers = json_decode($content, true, JSON_THROW_ON_ERROR);
-            if (!is_array($providers)) {
-                return [];
+    /**
+     * @return array<string>|null
+     */
+    private static function loadRaw(): ?array
+    {
+        $decoded = null;
+        if (file_exists(self::JSON_FILE_PATH) && is_readable(self::JSON_FILE_PATH)) {
+            $content = file_get_contents(self::JSON_FILE_PATH);
+            if (false !== $content) {
+                $decoded = json_decode($content, true);
+                if (JSON_ERROR_NONE !== json_last_error() || !is_array($decoded)) {
+                    $decoded = null;
+                }
             }
-
-            return array_map('strtolower', $providers);
-        } catch (\JsonException) {
-            return [];
         }
+
+        return $decoded;
     }
 }

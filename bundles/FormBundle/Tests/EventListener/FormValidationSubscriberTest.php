@@ -14,6 +14,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[\PHPUnit\Framework\Attributes\CoversClass(FormValidationSubscriber::class)]
 final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
 {
+    private const MINIMUM_TWO_OPTIONS_MESSAGE = 'You must select at least 2 options.';
+
     private MockObject&TranslatorInterface $translator;
 
     private MockObject&CoreParametersHelper $coreParametersHelper;
@@ -38,7 +40,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->translator
             ->method('trans')
             ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 2], 'validators')
-            ->willReturn('You must select at least 2 options.');
+            ->willReturn(self::MINIMUM_TWO_OPTIONS_MESSAGE);
 
         $field = new Field();
         $field->setType('checkboxgrp');
@@ -48,7 +50,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->subscriber->onFormValidate($event);
 
         self::assertFalse($event->isValid());
-        self::assertSame('You must select at least 2 options.', $event->getInvalidReason());
+        self::assertSame(self::MINIMUM_TWO_OPTIONS_MESSAGE, $event->getInvalidReason());
     }
 
     public function testFailsWhenNoSelectionsProvided(): void
@@ -56,7 +58,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->translator
             ->method('trans')
             ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 2], 'validators')
-            ->willReturn('You must select at least 2 options.');
+            ->willReturn(self::MINIMUM_TWO_OPTIONS_MESSAGE);
 
         $field = new Field();
         $field->setType('checkboxgrp');
@@ -66,7 +68,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->subscriber->onFormValidate($event);
 
         self::assertFalse($event->isValid());
-        self::assertSame('You must select at least 2 options.', $event->getInvalidReason());
+        self::assertSame(self::MINIMUM_TWO_OPTIONS_MESSAGE, $event->getInvalidReason());
     }
 
     public function testFailsWhenValueIsNull(): void
@@ -154,7 +156,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->translator
             ->method('trans')
             ->with('mautic.form.submission.checkboxgrp.minimum', ['%min%' => 2], 'validators')
-            ->willReturn('You must select at least 2 options.');
+            ->willReturn(self::MINIMUM_TWO_OPTIONS_MESSAGE);
 
         $field = new Field();
         $field->setType('checkboxgrp');
@@ -167,7 +169,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->subscriber->onFormValidate($event);
 
         self::assertFalse($event->isValid());
-        self::assertSame('You must select at least 2 options.', $event->getInvalidReason());
+        self::assertSame(self::MINIMUM_TWO_OPTIONS_MESSAGE, $event->getInvalidReason());
     }
 
     public function testEmailDonotSubmitDomainPatternTriggersFailure(): void
@@ -191,11 +193,8 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
                 };
             });
 
-        $event  = new ValidationEvent($field, $email);
-        $ref    = new \ReflectionClass($this->subscriber);
-        $method = $ref->getMethod('fieldEmailValidation');
-        $method->setAccessible(true);
-        $method->invoke($this->subscriber, $event);
+        $event = new ValidationEvent($field, $email);
+        $this->subscriber->onFormValidate($event);
 
         self::assertFalse($event->isValid());
         self::assertSame('Cannot be sent with this email', $event->getInvalidReason());
@@ -222,12 +221,8 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
                 };
             });
 
-        $event  = new ValidationEvent($field, $email);
-
-        $ref    = new \ReflectionClass($this->subscriber);
-        $method = $ref->getMethod('fieldEmailValidation');
-        $method->setAccessible(true);
-        $method->invoke($this->subscriber, $event);
+        $event = new ValidationEvent($field, $email);
+        $this->subscriber->onFormValidate($event);
 
         self::assertFalse($event->isValid());
         self::assertSame('Blocked free email provider', $event->getInvalidReason());
