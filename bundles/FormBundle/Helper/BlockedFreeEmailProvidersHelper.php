@@ -24,11 +24,10 @@ final class BlockedFreeEmailProvidersHelper
             return [];
         }
 
-        $providers = json_decode($content, true);
-        if (JSON_ERROR_NONE !== json_last_error() || !is_array($providers)) {
+        try {
+            return json_decode($content, true, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
             return [];
         }
-
-        return $providers;
     }
 }
