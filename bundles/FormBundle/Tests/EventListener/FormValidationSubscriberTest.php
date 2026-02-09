@@ -14,11 +14,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[\PHPUnit\Framework\Attributes\CoversClass(FormValidationSubscriber::class)]
 final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var MockObject&TranslatorInterface */
-    private MockObject $translator;
+    private MockObject&TranslatorInterface $translator;
 
-    /** @var MockObject&CoreParametersHelper */
-    private MockObject $coreParametersHelper;
+    private MockObject&CoreParametersHelper $coreParametersHelper;
 
     private FormValidationSubscriber $subscriber;
 
