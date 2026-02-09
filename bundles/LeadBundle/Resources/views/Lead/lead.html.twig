@@ -536,10 +536,9 @@
 
         <div class="pa-sm">
             
+            {% set maxVisibleTagsCount = 8 %}
             {% set tagCount = lead.tags|length %}
-            {% set isExpandable = tagCount > 8 %}
-            {% set firstEightTags = lead.tags|slice(0, 8) %}
-            {% set remainingTags = lead.tags|slice(8) %}
+            {% set isExpandable = tagCount > maxVisibleTagsCount %}
             
             {% set tagHeader %}
                 <div class="d-flex jc-space-between">
@@ -574,6 +573,8 @@
                 } %}
             
             {% else %}
+                {% set firstEightTags = lead.tags|slice(0, maxVisibleTagsCount) %}
+                {% set remainingTags = lead.tags|slice(maxVisibleTagsCount) %}
                 
                 {% set aboveContent %}
                     {{ tagHeader }}
