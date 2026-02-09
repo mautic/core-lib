@@ -25,7 +25,12 @@ final class BlockedFreeEmailProvidersHelper
         }
 
         try {
-            return json_decode($content, true, JSON_THROW_ON_ERROR);
+            $providers = json_decode($content, true, JSON_THROW_ON_ERROR);
+            if (!is_array($providers)) {
+                return [];
+            }
+
+            return array_map('strtolower', $providers);
         } catch (\JsonException) {
             return [];
         }

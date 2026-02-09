@@ -217,7 +217,7 @@ final class FormValidationSubscriberTest extends \PHPUnit\Framework\TestCase
             ->willReturnCallback(function (string $key) {
                 return match ($key) {
                     'do_not_submit_emails'         => [],
-                    'blocked_free_email_providers' => ['Example.com'],
+                    'blocked_free_email_providers' => ['example.com'],
                     default                        => [],
                 };
             });
