@@ -786,7 +786,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
     /**
      * @param int $page
      */
-    protected function indexStandard(Request $request, $page = null, $enableExportPermission = false): Response
+    protected function indexStandard(Request $request, $page = null): Response
     {
         // set some permissions
         $permissions = $this->security->isGranted(
@@ -886,7 +886,6 @@ abstract class AbstractStandardFormController extends AbstractFormController
             'limit'                  => $limit,
             'permissions'            => $permissions,
             'tmpl'                   => $request->get('tmpl', 'index'),
-            'enableExportPermission' => $enableExportPermission,
         ];
 
         return $this->delegateView(

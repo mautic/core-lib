@@ -132,6 +132,7 @@ class CampaignController extends AbstractStandardFormController
                 'campaign:campaigns:deleteother',
                 'campaign:campaigns:publishown',
                 'campaign:campaigns:publishother',
+                'campaign:imports:create',
             ],
             'RETURN_ARRAY'
         );
@@ -422,9 +423,7 @@ class CampaignController extends AbstractStandardFormController
      */
     public function indexAction(Request $request, $page = null): Response
     {
-        $enableExportPermission = $this->security->isAdmin() || $this->security->isGranted('campaign:export:enable', 'MATCH_ONE');
-
-        return $this->indexStandard($request, $page, $enableExportPermission);
+        return $this->indexStandard($request, $page);
     }
 
     protected function getDefaultOrderColumn()
@@ -997,7 +996,12 @@ class CampaignController extends AbstractStandardFormController
     {
         switch ($action) {
             case 'index':
-                $args['viewParameters']['filters'] = $this->listFilters;
+                $args['viewParameters']['filters']     = $this->listFilters;
+                $args['viewParameters']['permissions'] = array_merge($args['viewParameters']['permissions'],
+                    $this->security->isGranted('campaign:imports:create', 'RETURN_ARRAY',
+                        null,
+                        true));
+                $args['viewParameters']['enableExportPermission'] = $this->security->isAdmin() || $this->security->isGranted('campaign:export:enable', 'MATCH_ONE');
                 break;
             case 'view':
                 /** @var Campaign $entity */

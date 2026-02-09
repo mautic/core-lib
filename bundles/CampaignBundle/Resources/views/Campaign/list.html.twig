@@ -11,7 +11,7 @@
     <div id="page-list-wrapper" class="{% if items|length > 0 or searchValue is not empty %}panel {% endif %}panel-default">
         {%- set pageButtons = [] %}
         {% if permissions['campaign:campaigns:create'] %}
-            {% if permissions['campaign:imports:create'] is defined and permissions['campaign:imports:create'] %}
+            {% if permissions['campaign:imports:create'] %}
                 {% set pageButtons = pageButtons|merge([
                     {
                         'attr': {
