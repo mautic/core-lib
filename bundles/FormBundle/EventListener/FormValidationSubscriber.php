@@ -105,7 +105,7 @@ class FormValidationSubscriber implements EventSubscriberInterface
             $domain           = strtolower((string) substr(strrchr($value, '@'), 1));
             $blockedProviders = array_map('strtolower', $blockedProviders);
             if ($domain && in_array($domain, $blockedProviders, true)) {
-                $event->failedValidation(ArrayHelper::getValue('blockfreeemail_validationmsg', $field->getValidation()));
+                $event->failedValidation($field->getValidation()['blockfreeemail_validationmsg'] ?? null);
             }
         }
     }
