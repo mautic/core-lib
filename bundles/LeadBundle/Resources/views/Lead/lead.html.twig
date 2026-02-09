@@ -573,6 +573,7 @@
                 } %}
             
             {% else %}
+                {# Use tile--expandable-interactive for more than 8 tags #}
                 {% set firstEightTags = lead.tags|slice(0, maxVisibleTagsCount) %}
                 {% set remainingTags = lead.tags|slice(maxVisibleTagsCount) %}
                 
