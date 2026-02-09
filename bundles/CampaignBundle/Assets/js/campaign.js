@@ -1150,18 +1150,18 @@ Mautic.initCampaignCanvasPan = function () {
         return;
     }
 
-    var builderContent = mQuery('.builder-content');
-    var isPanMode = false;
-    var isPanning = false;
-    var startX = 0;
-    var startY = 0;
-    var scrollLeft = 0;
-    var scrollTop = 0;
+    const builderContent = mQuery('.builder-content');
+    let isPanMode = false;
+    let isPanning = false;
+    let startX = 0;
+    let startY = 0;
+    let scrollLeft = 0;
+    let scrollTop = 0;
 
     mQuery(document).on('keydown.campaignPan', function (e) {
         if (e.keyCode === 32) {
-            var target = e.target;
-            var tagName = target.tagName.toLowerCase();
+            const target = e.target;
+            const tagName = target.tagName.toLowerCase();
 
             if (tagName === 'input' || tagName === 'textarea' || target.isContentEditable) {
                 return;
@@ -1186,8 +1186,8 @@ Mautic.initCampaignCanvasPan = function () {
 
     mQuery(document).on('keyup.campaignPan', function (e) {
         if (e.keyCode === 32) {
-            var target = e.target;
-            var tagName = target.tagName.toLowerCase();
+            const target = e.target;
+            const tagName = target.tagName.toLowerCase();
 
             if (tagName === 'input' || tagName === 'textarea' || target.isContentEditable) {
                 return;
@@ -1229,10 +1229,10 @@ Mautic.initCampaignCanvasPan = function () {
 
         e.preventDefault();
 
-        var x = e.pageX - builderContent.offset().left;
-        var y = e.pageY - builderContent.offset().top;
-        var walkX = (x - startX);
-        var walkY = (y - startY);
+        const x = e.pageX - builderContent.offset().left;
+        const y = e.pageY - builderContent.offset().top;
+        const walkX = (x - startX);
+        const walkY = (y - startY);
 
         builderContent.scrollLeft(scrollLeft - walkX);
         builderContent.scrollTop(scrollTop - walkY);
@@ -1252,7 +1252,7 @@ Mautic.initCampaignCanvasPan = function () {
         }
     });
 
-    mQuery(window).on('blur.campaignPan', function () {
+    mQuery(globalThis).on('blur.campaignPan', function () {
         if (isPanMode || isPanning) {
             isPanMode = false;
             isPanning = false;
