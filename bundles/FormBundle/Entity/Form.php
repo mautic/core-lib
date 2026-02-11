@@ -880,7 +880,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @param string[] $allowedCharacters
      */
-    public function generateFormName(?string $name = null, array $allowedCharacters = [])
+    public function generateFormName(?string $name = null, array $allowedCharacters = []): string
     {
         $name = strtolower(
             InputHelper::alphanum(
@@ -888,7 +888,7 @@ class Form extends FormEntity implements UuidInterface
                     $name ?? $this->name
                 ),
                 false,
-                false,
+                null,
                 $allowedCharacters
             )
         );
