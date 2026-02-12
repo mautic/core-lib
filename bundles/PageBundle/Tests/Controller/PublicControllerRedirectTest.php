@@ -101,13 +101,15 @@ class PublicControllerRedirectTest extends MauticMysqlTestCase
 
         $ct = $this->getEncodedClickThroughValue($stat->getTrackingHash(), (int) $lead->getId());
 
+        $this->logoutUser();
+
         $this->client->followRedirects(false);
         $this->client->request(Request::METHOD_GET, sprintf('/r/%s?ct=%s', $redirect->getRedirectId(), $ct));
 
         $response = $this->client->getResponse();
         \assert($response instanceof RedirectResponse);
         Assert::assertSame(Response::HTTP_FOUND, $response->getStatusCode());
-        Assert::assertSame(sprintf('%s&ct=%s', $url, $ct), $response->getTargetUrl());
+        Assert::assertSame($url, $response->getTargetUrl(), 'The dots in the query part must be preserved.');
 
         $hit = $this->em->getRepository(Hit::class)->findOneBy(['url' => $url]);
         Assert::assertNotNull($hit);
