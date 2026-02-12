@@ -21,6 +21,8 @@ class AjaxController extends CommonAjaxController
             return $this->createErrorResponse(
                 'mautic.webhook.error.private_address'
             );
+        } catch (\InvalidArgumentException $e) {
+            return $this->createErrorResponse($e->getMessage());
         } catch (\Exception) {
             return $this->createErrorResponse(
                 'mautic.webhook.label.warning'
