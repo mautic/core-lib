@@ -6,7 +6,6 @@ namespace Mautic\EmailBundle\Tests\Helper;
 
 use DeviceDetector\DeviceDetector;
 use Mautic\CoreBundle\Entity\IpAddress;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Helper\BotRatioHelper;
 use Mautic\LeadBundle\Tracker\Factory\DeviceDetectorFactory\DeviceDetectorFactoryInterface;
@@ -17,23 +16,9 @@ use PHPUnit\Framework\TestCase;
  */
 final class BotRatioHelperMatomoTest extends TestCase
 {
-    /**
-     * @dataProvider knownBotUserAgentsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('knownBotUserAgentsProvider')]
     public function testMatomoDetectorIdentifiesKnownBots(string $userAgent, string $expectedBotName): void
     {
-        $coreParametersHelperMock = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelperMock->method('get')
-            ->willReturnCallback(function ($key, $default) {
-                return match ($key) {
-                    'bot_helper_bot_ratio_threshold'  => 0.6,
-                    'bot_helper_time_email_threshold' => 2,
-                    'bot_helper_blocked_user_agents'  => [],
-                    'bot_helper_blocked_ip_addresses' => [],
-                    default                           => $default,
-                };
-            });
-
         $deviceDetectorMock = $this->createMock(DeviceDetector::class);
         $deviceDetectorMock->expects($this->once())
             ->method('parse');
@@ -47,7 +32,7 @@ final class BotRatioHelperMatomoTest extends TestCase
             ->with($userAgent)
             ->willReturn($deviceDetectorMock);
 
-        $botRatioHelper = new BotRatioHelper($coreParametersHelperMock, $deviceDetectorFactoryMock);
+        $botRatioHelper = new BotRatioHelper($deviceDetectorFactoryMock);
 
         $emailStatMock    = $this->createMock(Stat::class);
         $emailHitDateTime = new \DateTime();
@@ -61,18 +46,6 @@ final class BotRatioHelperMatomoTest extends TestCase
     {
         $userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
 
-        $coreParametersHelperMock = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelperMock->method('get')
-            ->willReturnCallback(function ($key, $default) {
-                return match ($key) {
-                    'bot_helper_bot_ratio_threshold'  => 0.6,
-                    'bot_helper_time_email_threshold' => 2,
-                    'bot_helper_blocked_user_agents'  => [],
-                    'bot_helper_blocked_ip_addresses' => ['1.2.3.*'],
-                    default                           => $default,
-                };
-            });
-
         $deviceDetectorMock = $this->createMock(DeviceDetector::class);
         $deviceDetectorMock->method('parse');
         $deviceDetectorMock->method('isBot')->willReturn(false);
@@ -80,10 +53,9 @@ final class BotRatioHelperMatomoTest extends TestCase
         $deviceDetectorFactoryMock = $this->createMock(DeviceDetectorFactoryInterface::class);
         $deviceDetectorFactoryMock->method('create')->willReturn($deviceDetectorMock);
 
-        $botRatioHelper = new BotRatioHelper($coreParametersHelperMock, $deviceDetectorFactoryMock);
-
-        $emailStatMock = $this->createMock(Stat::class);
-        $emailSent     = new \DateTime('-1 second');
+        $botRatioHelper = new BotRatioHelper($deviceDetectorFactoryMock, 0.6, 2, [], ['1.2.3.*']);
+        $emailStatMock  = $this->createMock(Stat::class);
+        $emailSent      = new \DateTime('-1 second');
         $emailStatMock->method('getDateSent')->willReturn($emailSent);
 
         $emailHitDateTime = new \DateTime();
@@ -96,7 +68,7 @@ final class BotRatioHelperMatomoTest extends TestCase
     /**
      * @return iterable<string, array{string, string}>
      */
-    public function knownBotUserAgentsProvider(): iterable
+    public static function knownBotUserAgentsProvider(): iterable
     {
         yield 'Googlebot' => [
             'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',

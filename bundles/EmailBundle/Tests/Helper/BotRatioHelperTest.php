@@ -27,23 +27,6 @@ final class BotRatioHelperTest extends TestCase
         float $botHelperBotRatioThreshold,
         bool $isBot,
     ): void {
-        // Threshold
-        $coreParametersHelperMock = $this->createMock(CoreParametersHelper::class);
-        $coreParametersHelperMock->expects($this->exactly(4))
-            ->method('get')
-            ->withConsecutive(
-                ['bot_helper_bot_ratio_threshold', 0.6],
-                ['bot_helper_time_email_threshold', 2],
-                ['bot_helper_blocked_user_agents', []],
-                ['bot_helper_blocked_ip_addresses', []]
-            )
-            ->willReturnOnConsecutiveCalls(
-                $botHelperBotRatioThreshold,
-                $botHelperTimeEmailThreshold,
-                $blockedUserAgents,
-                $ipDoNotTrackList
-            );
-
         $deviceDetectorMock = $this->createMock(\DeviceDetector\DeviceDetector::class);
         $deviceDetectorMock->method('parse');
         $deviceDetectorMock->method('isBot')->willReturn(false);
