@@ -495,7 +495,6 @@ New line',
         $form = new Form();
         $form->setName('Test Form');
         $form->setAlias('test_form');
-        $form->setFormType('standalone');
 
         return $form;
     }

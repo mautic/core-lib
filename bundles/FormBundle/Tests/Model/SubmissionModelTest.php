@@ -319,6 +319,20 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->companyModel->method('fetchCompanyFields')->willReturn([]);
 
+        $this->campaignModel->method('getCampaignsByForm')->willReturn([]);
+
+        $userMock = $this->createMock(UserRepository::class);
+
+        $this->entityManager->expects($this->any())
+            ->method('getRepository')
+            ->willReturnMap(
+                [
+                    [Lead::class, $this->leadRepository],
+                    [Submission::class, $this->submissioRepository],
+                    [User::class, $userMock],
+                ]
+            );
+
         $this->leadRepository->expects($this->any())
             ->method('getLeadsByUniqueFields')
             ->willReturn(null);
