@@ -98,6 +98,8 @@ class PublicController extends CommonFormController
                     $formSubmissionModel = $this->getModel('form.submission');
                     \assert($formSubmissionModel instanceof SubmissionModel);
 
+                    $this->doctrine->getManager()->refresh($form);
+
                     if ($form->isSubmissionLimitReached()) {
                         $error = $form->getSubmissionLimitMessage() ?? $this->translator->trans('mautic.form.submission.limit_reached');
 
