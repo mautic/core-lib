@@ -598,7 +598,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $rowWithoutFilters = null;
         foreach ($leadListsTableRows as $row) {
             $rowCrawler = new Crawler($row);
-            $nameText   = $rowCrawler->filterXPath('//td[2]//a')->text();
+            $nameText   = $rowCrawler->filterXPath('.//td[2]//a')->text();
             if (str_contains($nameText, 'Lead List 1')) {
                 $rowWithFilters = $rowCrawler;
             } elseif (str_contains($nameText, 'Lead List 2')) {
@@ -610,11 +610,11 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertNotNull($rowWithoutFilters, 'Could not find Lead List 2 row');
 
         // Lead List 1 (with filters) should have the filter icon
-        $filterIconCount = $rowWithFilters->filterXPath('//td[2]//div//i[@class="ri-fw ri-filter-2-fill fs-14"]')->count();
+        $filterIconCount = $rowWithFilters->filterXPath('.//td[2]//div//i[@class="ri-fw ri-filter-2-fill fs-14"]')->count();
         $this->assertEquals(1, $filterIconCount);
 
         // Lead List 2 (without filters) should NOT have the filter icon
-        $filterIconCount = $rowWithoutFilters->filterXPath('//td[2]//div//i[@class="ri-fw ri-filter-2-fill fs-14"]')->count();
+        $filterIconCount = $rowWithoutFilters->filterXPath('.//td[2]//div//i[@class="ri-fw ri-filter-2-fill fs-14"]')->count();
         $this->assertEquals(0, $filterIconCount);
     }
 
