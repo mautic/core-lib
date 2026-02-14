@@ -35,11 +35,10 @@ class AjaxController extends CommonAjaxController
             return $this->createErrorResponse('mautic.webhook.label.no.url');
         }
 
-        $selectedTypes        = InputHelper::cleanArray($request->request->all()['types']) ?? [];
-        $payloadPaths         = $this->getPayloadPaths($selectedTypes, $pathsHelper);
-        $payload              = $this->loadPayloads($payloadPaths);
-        $payload['timestamp'] = (new \DateTimeImmutable())->format('c');
-        $secret               = InputHelper::string($request->request->get('secret'));
+        $selectedTypes = InputHelper::cleanArray($request->request->all()['types']) ?? [];
+        $payloadPaths  = $this->getPayloadPaths($selectedTypes, $pathsHelper);
+        $payload       = $this->loadPayloads($payloadPaths);
+        $secret        = InputHelper::string($request->request->get('secret'));
 
         $response = $client->post($url, $payload, $secret);
 
