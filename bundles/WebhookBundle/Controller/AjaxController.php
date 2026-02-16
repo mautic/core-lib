@@ -33,16 +33,21 @@ class AjaxController extends CommonAjaxController
     private function processWebhookTest(Request $request, Client $client, PathsHelper $pathsHelper): JsonResponse
     {
         $url = $this->validateUrl($request);
+
         if (!$url) {
-            return $this->createErrorResponse('mautic.webhook.label.no.url');
+            throw new \InvalidArgumentException('mautic.webhook.label.no.url');
         }
 
-        $selectedTypes = InputHelper::cleanArray($request->request->all()['types']) ?? [];
-        $payloadPaths  = $this->getPayloadPaths($selectedTypes, $pathsHelper);
-        $payload       = $this->loadPayloads($payloadPaths);
-        $secret        = InputHelper::string($request->request->get('secret'));
+        $selectedTypes = InputHelper::cleanArray($request->request->all()['types'] ?? []);
 
-        $response = $client->post($url, $payload, $secret);
+        if (!$selectedTypes) {
+            throw new \InvalidArgumentException('mautic.webhook.label.no.events');
+        }
+
+        $payloadPaths = $this->getPayloadPaths($selectedTypes, $pathsHelper);
+        $payload      = $this->loadPayloads($payloadPaths);
+        $secret       = InputHelper::string($request->request->get('secret'));
+        $response     = $client->post($url, $payload, $secret);
 
         return $this->createResponseFromStatusCode($response->getStatusCode());
     }
