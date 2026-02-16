@@ -171,8 +171,7 @@ class PrivateAddressChecker
     /**
      * Resolves the given hostname to an array of IP addresses.
      *
-     * @return array<string> List of resolved IP addresses.
-     *
+     * @return array<string> list of resolved IP addresses
      * @return array<string> List of resolved IP addresses
      */
     private function resolveHostName(string $host): array
