@@ -11,13 +11,14 @@ use Mautic\UserBundle\Entity\UserRepository;
 use Mautic\UserBundle\Event\UserEvent;
 use Mautic\UserBundle\UserEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserProvider implements UserProviderInterface
 {
@@ -25,7 +26,8 @@ class UserProvider implements UserProviderInterface
         protected UserRepository $userRepository,
         protected PermissionRepository $permissionRepository,
         protected EventDispatcherInterface $dispatcher,
-        protected UserPasswordHasher $encoder,
+        protected UserPasswordHasherInterface $encoder,
+        protected TranslatorInterface $translator,
     ) {
     }
 
@@ -53,7 +55,7 @@ class UserProvider implements UserProviderInterface
 
         if (empty($user)) {
             $message = sprintf(
-                'Unable to find an active admin MauticUserBundle:User object identified by "%s".',
+                'Unable to find an active user by the username or email "%s".',
                 $identifier
             );
             throw new UserNotFoundException($message, 0);
