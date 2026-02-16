@@ -169,7 +169,9 @@ class PrivateAddressChecker
     }
 
     /**
-     * Resolve hostname to IPs and check if any are in allowed addresses.
+     * Resolves the given hostname to an array of IP addresses.
+     *
+     * @return array<string> List of resolved IP addresses.
      *
      * @return array<string> List of resolved IP addresses
      */
