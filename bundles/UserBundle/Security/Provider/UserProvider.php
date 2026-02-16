@@ -53,12 +53,8 @@ class UserProvider implements UserProviderInterface
         ResultCacheHelper::enableOrmQueryCache($query, new ResultCacheOptions(User::CACHE_NAMESPACE, 5 * 60));
         $user = $query->getOneOrNullResult();
 
-        if (empty($user)) {
-            $message = sprintf(
-                'Unable to find an active user by the username or email "%s".',
-                $identifier
-            );
-            throw new UserNotFoundException($message, 0);
+        if (!$user instanceof User) {
+            throw new UserNotFoundException($this->translator->trans('mautic.user.exception.user.not_found', ['%identifier%' => $identifier]));
         }
 
         // load permissions
