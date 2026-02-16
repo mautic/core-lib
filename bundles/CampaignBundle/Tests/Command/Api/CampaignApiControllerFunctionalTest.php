@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
 {
-    /**
-     * @dataProvider withContactCountsProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('withContactCountsProvider')]
     public function testCampaignAPI(string $withContactCounts, bool $fromCache, int $expectedContacts): void
     {
         $contact  = $this->createLead('Test');
@@ -25,7 +23,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $cacheProvider = self::$container->get('mautic.cache.provider');
+        $cacheProvider = self::getContainer()->get('mautic.cache.provider');
         if ($fromCache) {
             $contactCountDetail = [
                 'contactCount'   => $expectedContacts,
@@ -70,7 +68,7 @@ final class CampaignApiControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<mixed>
      */
-    public function withContactCountsProvider(): iterable
+    public static function withContactCountsProvider(): iterable
     {
         yield ['true', false, 1];
         yield ['true', true, 2];
