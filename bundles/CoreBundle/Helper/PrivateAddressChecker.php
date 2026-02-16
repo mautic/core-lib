@@ -43,7 +43,7 @@ class PrivateAddressChecker
     {
         $parsedUrl = parse_url($url);
 
-        if (!isset($parsedUrl['host'])) {
+        if (false === $parsedUrl || !isset($parsedUrl['host'])) {
             throw new \InvalidArgumentException('Invalid URL format');
         }
 
