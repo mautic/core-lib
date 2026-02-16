@@ -372,8 +372,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
             'state_from',
             'birth_date',
         ],
-    ): Import
-    {
+    ): Import {
         $now    = new \DateTime();
         $import = new Import();
         $import->setIsPublished(true);
@@ -388,7 +387,7 @@ class ImportControllerFunctionalTest extends MauticMysqlTestCase
 
         $import->setProperties([
             'fields' => $fields,
-            'parser'   => [
+            'parser' => [
                 'escape'     => '\\',
                 'delimiter'  => ',',
                 'enclosure'  => '"',
