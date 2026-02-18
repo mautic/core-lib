@@ -584,9 +584,7 @@ class FieldController extends FormController
                 'type'    => 'error',
                 'msg'     => 'mautic.core.notice.used.fields',
                 'msgVars' => [
-                    '%fields%' => implode(', ', array_map(function ($entity) {
-                        return $entity->getName().' ('.$entity->getId().')';
-                    }, $unableToDeleteEntities)),
+                    '%fields%' => implode(', ', array_map(fn ($entity) => $entity->getName().' ('.$entity->getId().')', $unableToDeleteEntities)),
                 ],
             ];
         }
