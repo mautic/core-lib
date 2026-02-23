@@ -11,7 +11,7 @@ Mautic.inBuilderSubmissionOn = function(form) {
     const inBuilder = mQuery('<input type="hidden" name="inBuilder" value="1" />');
     form.append(inBuilder);
     form.one('submit:success', function (event, action, data) {
-        if (data && data.newContent) {
+        if (data?.newContent) {
             // update the value of the optimistic lock version
             const selector = '#page_version, #emailform_version';
             const version = mQuery(data.newContent).find(selector).val();
