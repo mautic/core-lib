@@ -268,6 +268,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertStringContainsString('ri-organization-chart', $emailARow);
     }
 
+    #[DataProvider('provideHtmlForEmailTracking')]
     public function testSegmentEmailSend(string $htmlContent, bool $singleOrDoubleQuotes): void
     {
         $segment = $this->createSegment('Segment A', 'segment-a');
@@ -326,7 +327,6 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         Assert::assertGreaterThanOrEqual(1, $iconNodes2->count(), 'Translate icon not found in the email list rows.');
     }
 
-    #[DataProvider('provideHtmlForEmailTracking')]
     public static function provideHtmlForEmailTracking(): \Generator
     {
         $variantQuotes   = ['single quote' => "'", 'double quote' => '"'];
