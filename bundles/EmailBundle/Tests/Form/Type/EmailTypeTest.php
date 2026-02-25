@@ -196,4 +196,76 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         Assert::assertSame($existingPage, $email->getPreferenceCenter());
         Assert::assertSame($existingUtmTags, $email->getUtmTags());
     }
+
+    public function testBuildFormDoesNotOverwriteCloneValuesForNewEmailWithPreFilledFields(): void
+    {
+        $email            = new Email();
+        $existingPage     = new Page();
+        $cloneUtmTags     = [
+            'utmSource'   => 'clone-source',
+            'utmMedium'   => 'clone-medium',
+            'utmCampaign' => 'clone-campaign',
+            'utmContent'  => 'clone-content',
+        ];
+
+        $email->setPreferenceCenter($existingPage);
+        $email->setUtmTags($cloneUtmTags);
+
+        $this->themeHelper
+            ->expects($this->once())
+            ->method('getCurrentTheme')
+            ->with('blank', 'email')
+            ->willReturn('blank');
+
+        $this->coreParametersHelper
+            ->method('get')
+            ->willReturnMap([
+                ['email_default_preference_center_id', 42],
+                ['email_default_utm_source', 'config-source'],
+                ['email_default_utm_medium', 'config-medium'],
+                ['email_default_utm_campaign', 'config-campaign'],
+                ['email_default_utm_content', 'config-content'],
+                ['mailer_is_owner', false],
+            ]);
+
+        $this->entityManager
+            ->expects($this->never())
+            ->method('find');
+
+        $this->form->buildForm($this->formBuilder, ['data' => $email]);
+
+        Assert::assertSame($existingPage, $email->getPreferenceCenter());
+        Assert::assertSame($cloneUtmTags, $email->getUtmTags());
+    }
+
+    public function testBuildFormLeavesFieldsUnchangedWhenDefaultConfigurationIsEmpty(): void
+    {
+        $email = new Email();
+
+        $this->themeHelper
+            ->expects($this->once())
+            ->method('getCurrentTheme')
+            ->with('blank', 'email')
+            ->willReturn('blank');
+
+        $this->coreParametersHelper
+            ->method('get')
+            ->willReturnMap([
+                ['email_default_preference_center_id', null],
+                ['email_default_utm_source', ''],
+                ['email_default_utm_medium', null],
+                ['email_default_utm_campaign', ''],
+                ['email_default_utm_content', null],
+                ['mailer_is_owner', false],
+            ]);
+
+        $this->entityManager
+            ->expects($this->never())
+            ->method('find');
+
+        $this->form->buildForm($this->formBuilder, ['data' => $email]);
+
+        Assert::assertNull($email->getPreferenceCenter());
+        Assert::assertSame([], $email->getUtmTags());
+    }
 }
