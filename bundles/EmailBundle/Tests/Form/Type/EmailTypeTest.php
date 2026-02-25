@@ -11,6 +11,7 @@ use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Form\Type\EmailType;
 use Mautic\EmailBundle\Helper\EmailConfigInterface;
+use Mautic\PageBundle\Entity\Page;
 use Mautic\StageBundle\Model\StageModel;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -84,6 +85,11 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->formBuilder->method('create')->willReturnSelf();
+        $this->formBuilder->method('add')->willReturnSelf();
+        $this->formBuilder->method('addModelTransformer')->willReturnSelf();
+        $this->corePermissions->method('hasPublishAccessForEntity')->willReturn(true);
+        $this->translator->method('trans')->willReturn('translated');
+        $this->emailConfig->method('isDraftEnabled')->willReturn(false);
     }
 
     public function testBuildForm(): void
@@ -110,5 +116,84 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         $this->form->buildForm($this->formBuilder, $options);
 
         Assert::assertContains('buttons', $names);
+    }
+
+    public function testBuildFormHydratesPreferenceCenterAndUtmTagsDefaultsForNewEmail(): void
+    {
+        $email          = new Email();
+        $preferencePage = new Page();
+
+        $this->themeHelper
+            ->expects($this->once())
+            ->method('getCurrentTheme')
+            ->with('blank', 'email')
+            ->willReturn('blank');
+
+        $this->coreParametersHelper
+            ->method('get')
+            ->willReturnMap([
+                ['email_default_preference_center_id', 42],
+                ['email_default_utm_source', 'newsletter'],
+                ['email_default_utm_medium', 'email'],
+                ['email_default_utm_campaign', 'spring-campaign'],
+                ['email_default_utm_content', 'hero-cta'],
+                ['mailer_is_owner', false],
+            ]);
+
+        $this->entityManager
+            ->expects($this->once())
+            ->method('find')
+            ->with(Page::class, 42)
+            ->willReturn($preferencePage);
+
+        $this->form->buildForm($this->formBuilder, ['data' => $email]);
+
+        Assert::assertSame($preferencePage, $email->getPreferenceCenter());
+        Assert::assertSame(
+            [
+                'utmSource'   => 'newsletter',
+                'utmMedium'   => 'email',
+                'utmCampaign' => 'spring-campaign',
+                'utmContent'  => 'hero-cta',
+            ],
+            $email->getUtmTags()
+        );
+    }
+
+    public function testBuildFormDoesNotOverwriteExistingPreferenceCenterAndUtmTags(): void
+    {
+        $email                = new Email();
+        $existingPage         = new Page();
+        $existingUtmTags      = [
+            'utmSource'   => 'manual-source',
+            'utmMedium'   => 'manual-medium',
+            'utmCampaign' => 'manual-campaign',
+            'utmContent'  => 'manual-content',
+        ];
+
+        $email->setId(1);
+        $email->setPreferenceCenter($existingPage);
+        $email->setUtmTags($existingUtmTags);
+
+        $this->themeHelper
+            ->expects($this->once())
+            ->method('getCurrentTheme')
+            ->with('blank', 'email')
+            ->willReturn('blank');
+
+        $this->coreParametersHelper
+            ->method('get')
+            ->willReturnMap([
+                ['mailer_is_owner', false],
+            ]);
+
+        $this->entityManager
+            ->expects($this->never())
+            ->method('find');
+
+        $this->form->buildForm($this->formBuilder, ['data' => $email]);
+
+        Assert::assertSame($existingPage, $email->getPreferenceCenter());
+        Assert::assertSame($existingUtmTags, $email->getUtmTags());
     }
 }

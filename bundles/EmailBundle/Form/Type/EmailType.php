@@ -23,6 +23,7 @@ use Mautic\EmailBundle\Helper\EmailConfigInterface;
 use Mautic\FormBundle\Form\Type\FormListType;
 use Mautic\LeadBundle\Form\Type\LeadListType;
 use Mautic\LeadBundle\Helper\FormFieldHelper;
+use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Form\Type\PreferenceCenterListType;
 use Mautic\ProjectBundle\Form\Type\ProjectType;
 use Mautic\StageBundle\Model\StageModel;
@@ -67,6 +68,8 @@ class EmailType extends AbstractType
 
         $emailEntity =  $options['data'];
         \assert($emailEntity instanceof Email);
+
+        $this->applyDefaultsForNewEmail($emailEntity);
 
         $builder->add(
             'name',
@@ -676,6 +679,40 @@ class EmailType extends AbstractType
     private function getGlobalMailerIsOwner(): bool
     {
         return (bool) $this->coreParametersHelper->get('mailer_is_owner');
+    }
+
+    private function applyDefaultsForNewEmail(Email $emailEntity): void
+    {
+        if (!$emailEntity->isNew()) {
+            return;
+        }
+
+        if (null === $emailEntity->getPreferenceCenter()) {
+            $defaultPreferenceCenterId = $this->coreParametersHelper->get('email_default_preference_center_id');
+            if (!empty($defaultPreferenceCenterId)) {
+                $preferenceCenter = $this->em->find(Page::class, $defaultPreferenceCenterId);
+                if ($preferenceCenter instanceof Page) {
+                    $emailEntity->setPreferenceCenter($preferenceCenter);
+                }
+            }
+        }
+
+        if (!empty($emailEntity->getUtmTags())) {
+            return;
+        }
+
+        $utmTags = [
+            'utmSource'   => $this->coreParametersHelper->get('email_default_utm_source'),
+            'utmMedium'   => $this->coreParametersHelper->get('email_default_utm_medium'),
+            'utmCampaign' => $this->coreParametersHelper->get('email_default_utm_campaign'),
+            'utmContent'  => $this->coreParametersHelper->get('email_default_utm_content'),
+        ];
+
+        if (!array_filter($utmTags, static fn ($tag): bool => null !== $tag && '' !== $tag)) {
+            return;
+        }
+
+        $emailEntity->setUtmTags($utmTags);
     }
 
     private function addDynamicContentField(FormBuilderInterface $builder): void
