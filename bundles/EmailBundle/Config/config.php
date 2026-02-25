@@ -272,6 +272,11 @@ return [
         'webview_text'                   => null,
         'unsubscribe_message'            => null,
         'resubscribe_message'            => null,
+        'email_default_preference_center_id'                                => null,
+        'email_default_utm_source'                                          => null,
+        'email_default_utm_medium'                                          => null,
+        'email_default_utm_campaign'                                        => null,
+        'email_default_utm_content'                                         => null,
         'monitored_email'                => [
             'general' => [
                 'address'         => null,
