@@ -697,22 +697,22 @@ class EmailType extends AbstractType
             }
         }
 
-        if (!empty($emailEntity->getUtmTags())) {
-            return;
+        if (empty($emailEntity->getUtmTags())) {
+            $utmTags = [
+                'utmSource'   => $this->coreParametersHelper->get('email_default_utm_source'),
+                'utmMedium'   => $this->coreParametersHelper->get('email_default_utm_medium'),
+                'utmCampaign' => $this->coreParametersHelper->get('email_default_utm_campaign'),
+                'utmContent'  => $this->coreParametersHelper->get('email_default_utm_content'),
+            ];
+
+            if (array_filter($utmTags, static fn ($tag): bool => null !== $tag && '' !== $tag)) {
+                $emailEntity->setUtmTags($utmTags);
+            }
         }
 
-        $utmTags = [
-            'utmSource'   => $this->coreParametersHelper->get('email_default_utm_source'),
-            'utmMedium'   => $this->coreParametersHelper->get('email_default_utm_medium'),
-            'utmCampaign' => $this->coreParametersHelper->get('email_default_utm_campaign'),
-            'utmContent'  => $this->coreParametersHelper->get('email_default_utm_content'),
-        ];
-
-        if (!array_filter($utmTags, static fn ($tag): bool => null !== $tag && '' !== $tag)) {
-            return;
-        }
-
-        $emailEntity->setUtmTags($utmTags);
+        // Defaults applied during form construction are not user-initiated changes;
+        // clear the change tracker so the audit log is not polluted.
+        $emailEntity->resetChanges();
     }
 
     private function addDynamicContentField(FormBuilderInterface $builder): void
