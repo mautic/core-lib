@@ -34,12 +34,12 @@ final class EmailSendDisabledTrackingFunctionalTest extends MauticMysqlTestCase
             'utmContent'  => 'utmContentA',
         ];
 
-        $leads                                          = [];
-        $leads['"Contact 1" <contact-flood-1@doe.com>'] = $this->createLead('Contact 1', '', 'contact-flood-1@doe.com');
-        $this->createListLead($segment, $leads['"Contact 1" <contact-flood-1@doe.com>']);
+        $leads                            = [];
+        $leads['contact-flood-1@doe.com'] = $this->createLead('', '', 'contact-flood-1@doe.com');
+        $this->createListLead($segment, $leads['contact-flood-1@doe.com']);
 
-        $leads['"Contact 2" <contact-flood-2@doe.com>'] = $this->createLead('Contact 2', '', 'contact-flood-2@doe.com');
-        $this->createListLead($segment, $leads['"Contact 2" <contact-flood-2@doe.com>']);
+        $leads['contact-flood-2@doe.com'] = $this->createLead('', '', 'contact-flood-2@doe.com');
+        $this->createListLead($segment, $leads['contact-flood-2@doe.com']);
 
         $content = '<!DOCTYPE html><htm><body><a href="https://localhost">link</a>
                         <a id="{unsubscribe_url}">unsubscribe here</a>
