@@ -683,7 +683,7 @@ class EmailType extends AbstractType
 
     private function applyDefaultsForNewEmail(Email $emailEntity): void
     {
-        if (!$emailEntity->isNew()) {
+        if (!$emailEntity->isNew() || $emailEntity->getIsClone()) {
             return;
         }
 

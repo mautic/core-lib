@@ -115,6 +115,25 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame('clone-content', $form['emailform[utmTags][utmContent]']->getValue());
     }
 
+    public function testCloneOfEmailWithBlankFieldsDoesNotInheritConfigDefaults(): void
+    {
+        // Source email has no preference center and no UTM tags set — intentionally blank.
+        // The clone must preserve those blank values rather than inheriting global defaults.
+        $email = $this->createEmail();
+        $this->em->flush();
+
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/clone/{$email->getId()}");
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton(self::SAVE_AND_CLOSE)->form();
+
+        Assert::assertSame('', $form['emailform[preferenceCenter]']->getValue());
+        Assert::assertSame('', $form['emailform[utmTags][utmSource]']->getValue());
+        Assert::assertSame('', $form['emailform[utmTags][utmMedium]']->getValue());
+        Assert::assertSame('', $form['emailform[utmTags][utmCampaign]']->getValue());
+        Assert::assertSame('', $form['emailform[utmTags][utmContent]']->getValue());
+    }
+
     private function createEmail(): Email
     {
         $email = new Email();

@@ -268,4 +268,41 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         Assert::assertNull($email->getPreferenceCenter());
         Assert::assertSame([], $email->getUtmTags());
     }
+
+    public function testBuildFormDoesNotApplyConfigDefaultsToCloneWithBlankFields(): void
+    {
+        // Source email has no preference center and no UTM tags — intentionally blank.
+        $source = new Email();
+        // Simulate the clone operation performed by EmailController::cloneAction.
+        $clone = clone $source;
+
+        Assert::assertTrue($clone->isNew());
+        Assert::assertTrue($clone->getIsClone());
+
+        $this->themeHelper
+            ->expects($this->once())
+            ->method('getCurrentTheme')
+            ->with('blank', 'email')
+            ->willReturn('blank');
+
+        $this->coreParametersHelper
+            ->method('get')
+            ->willReturnMap([
+                ['email_default_preference_center_id', 42],
+                ['email_default_utm_source', 'config-source'],
+                ['email_default_utm_medium', 'config-medium'],
+                ['email_default_utm_campaign', 'config-campaign'],
+                ['email_default_utm_content', 'config-content'],
+                ['mailer_is_owner', false],
+            ]);
+
+        $this->entityManager
+            ->expects($this->never())
+            ->method('find');
+
+        $this->form->buildForm($this->formBuilder, ['data' => $clone]);
+
+        Assert::assertNull($clone->getPreferenceCenter(), 'Clone with blank preferenceCenter must not inherit config default');
+        Assert::assertSame([], $clone->getUtmTags(), 'Clone with blank utmTags must not inherit config defaults');
+    }
 }
