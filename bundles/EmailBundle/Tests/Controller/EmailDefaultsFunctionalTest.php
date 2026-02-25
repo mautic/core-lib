@@ -23,7 +23,7 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        $this->configParams['email_default_preference_center_id'] = 1000;
+        $this->configParams['email_default_preference_center_id'] = 1;
         $this->configParams['email_default_utm_source']           = 'config-source';
         $this->configParams['email_default_utm_medium']           = 'config-medium';
         $this->configParams['email_default_utm_campaign']         = 'config-campaign';
@@ -38,7 +38,7 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
         $preferenceCenter = $this->createPreferenceCenterPage('Default Preference Center');
         $this->em->flush();
 
-        Assert::assertSame(1000, $preferenceCenter->getId());
+        Assert::assertSame(1, $preferenceCenter->getId());
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
         $this->assertResponseIsSuccessful();
@@ -70,7 +70,7 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        Assert::assertSame(1000, $configuredPage->getId());
+        Assert::assertSame(1, $configuredPage->getId());
 
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/edit/{$email->getId()}");
         $this->assertResponseIsSuccessful();
@@ -101,7 +101,7 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
-        Assert::assertSame(1000, $configuredPage->getId());
+        Assert::assertSame(1, $configuredPage->getId());
 
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/clone/{$email->getId()}");
         $this->assertResponseIsSuccessful();

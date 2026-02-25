@@ -131,14 +131,16 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
 
         $this->coreParametersHelper
             ->method('get')
-            ->willReturnMap([
-                ['email_default_preference_center_id', 42],
-                ['email_default_utm_source', 'newsletter'],
-                ['email_default_utm_medium', 'email'],
-                ['email_default_utm_campaign', 'spring-campaign'],
-                ['email_default_utm_content', 'hero-cta'],
-                ['mailer_is_owner', false],
-            ]);
+            ->willReturnCallback(static function (string $key): mixed {
+                return match ($key) {
+                    'email_default_preference_center_id' => 42,
+                    'email_default_utm_source'           => 'newsletter',
+                    'email_default_utm_medium'           => 'email',
+                    'email_default_utm_campaign'         => 'spring-campaign',
+                    'email_default_utm_content'          => 'hero-cta',
+                    default                              => false,
+                };
+            });
 
         $this->entityManager
             ->expects($this->once())

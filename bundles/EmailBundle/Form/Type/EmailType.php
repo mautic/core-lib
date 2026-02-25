@@ -299,7 +299,7 @@ class EmailType extends AbstractType
                 ->addModelTransformer($transformer)
         );
 
-        $transformer = new IdToEntityModelTransformer($this->em, \Mautic\PageBundle\Entity\Page::class, 'id');
+        $transformer = new IdToEntityModelTransformer($this->em, Page::class, 'id');
         $builder->add(
             $builder->create(
                 'preferenceCenter',

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Tests\Form\Type;
 
+use Mautic\ConfigBundle\Form\DataTransformer\DsnTransformerFactory;
+use Mautic\ConfigBundle\Form\Type\DsnType;
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\Form\Type\ConfigType;
 use Mautic\PageBundle\Entity\PageRepository;
@@ -32,13 +35,17 @@ class ConfigTypeTest extends TypeTestCase
         $permsMock = $this->createMock(CorePermissions::class);
         $permsMock->method('isGranted')->willReturn(false);
 
-        $configType             = new ConfigType($translator);
-        $preferenceCenterList   = new PreferenceCenterListType($pageModelMock, $permsMock);
-        $validator              = Validation::createValidator();
+        $dsnType              = new DsnType(
+            $this->createMock(DsnTransformerFactory::class),
+            $this->createMock(CoreParametersHelper::class),
+        );
+        $configType           = new ConfigType($translator);
+        $preferenceCenterList = new PreferenceCenterListType($pageModelMock, $permsMock);
+        $validator            = Validation::createValidator();
 
         return [
             new ValidatorExtension($validator),
-            new PreloadedExtension([$configType, $preferenceCenterList], []),
+            new PreloadedExtension([$configType, $dsnType, $preferenceCenterList], []),
         ];
     }
 

@@ -136,7 +136,6 @@ class ConfigType extends AbstractType
             ]
         );
 
-
         $builder->add(
             'email_default_preference_center_id',
             PreferenceCenterListType::class,
