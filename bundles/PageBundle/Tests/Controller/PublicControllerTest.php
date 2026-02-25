@@ -429,7 +429,7 @@ class PublicControllerTest extends TestCase
 
         yield 'With click-through parameter' => [
             'redirectUrl' => 'https://some.test.url/asset/1:examplefilejpg?ct=parameter',
-            'targetUrl'   => 'https://some.test.url/asset/1:examplefilejpg?ct=parameter&ct=dummy_click_through',
+            'targetUrl'   => 'https://some.test.url/asset/1:examplefilejpg?ct=dummy_click_through',
         ];
     }
 
