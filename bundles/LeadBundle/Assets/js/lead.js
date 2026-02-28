@@ -1284,19 +1284,52 @@ Mautic.removeBounceStatus = function (el, dncId, channel) {
     });
 };
 
+/**
+ * Confirm callback for removing a tag from a contact
+ */
+Mautic.confirmRemoveTagFromLead = function (action, el) {
+    let element = mQuery(el);
+
+    let leadId = element.data('lead-id');
+    let tagId = element.data('tag-id');
+
+    element.find('i')
+        .removeClass('ri-close-line')
+        .addClass('ri-loader-3-line ri-spin');
+
+    Mautic.ajaxActionRequest(
+        'lead:removeTagFromLead',
+        { leadId, tagId },
+        function () {
+            mQuery('#tagLabel' + tagId).fadeOut(300, function () {
+                mQuery(this).remove();
+            });
+        }
+    );
+
+    // Dismiss the confirmation modal
+    Mautic.dismissConfirmation();
+};
+
+
 Mautic.removeTagFromLead = function (el, leadId, tagId, event) {
     if (event) {
         event.stopPropagation();
         event.preventDefault();
     }
 
-    if (confirm(Mautic.translate('mautic.lead.tag.confirm_remove'))) {
-        mQuery(el).find('i').removeClass('ri-close-line').addClass('ri-loader-3-line ri-spin');
+    let element = mQuery(el);
 
-        Mautic.ajaxActionRequest('lead:removeTagFromLead', {'leadId': leadId, 'tagId': tagId}, function() {
-            mQuery('#tagLabel' + tagId).fadeOut(300, function() { mQuery(this).remove(); });
-        });
-    }
+    element.data({
+        'message': Mautic.translate('mautic.lead.tag.confirm_remove'),
+        'confirm-text': Mautic.translate('mautic.core.form.confirm'),
+        'cancel-text': Mautic.translate('mautic.core.form.cancel'),
+        'confirm-callback': 'confirmRemoveTagFromLead',
+        'lead-id': leadId,
+        'tag-id': tagId
+    });
+
+    Mautic.showConfirmation(el);
 };
 
 Mautic.toggleLiveLeadListUpdate = function () {
