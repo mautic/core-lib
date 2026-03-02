@@ -62,7 +62,7 @@ class CircularDependencyValidatorTest extends \PHPUnit\Framework\TestCase
      * @param string $expectedMessage  the expected message on a validation violation, if any
      * @param int    $currentSegmentId
      */
-    private function configureValidator($expectedMessage, $currentSegmentId): CircularDependencyValidator
+    private function configureValidator(string $expectedMessage, int $currentSegmentId): CircularDependencyValidator
     {
         $filters = [
             [
