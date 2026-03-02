@@ -21,6 +21,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,7 +47,7 @@ class MessageController extends AbstractStandardFormController
     }
 
     /**
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return JsonResponse|RedirectResponse
      */
     public function batchDeleteAction(Request $request)
     {
@@ -54,7 +55,7 @@ class MessageController extends AbstractStandardFormController
     }
 
     /**
-     * @return Response|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response|JsonResponse|RedirectResponse
      */
     public function cloneAction(Request $request, $objectId)
     {
@@ -85,7 +86,7 @@ class MessageController extends AbstractStandardFormController
     }
 
     /**
-     * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return array|JsonResponse|RedirectResponse|Response
      */
     public function viewAction(Request $request, $objectId)
     {
@@ -195,7 +196,7 @@ class MessageController extends AbstractStandardFormController
     }
 
     /**
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @return JsonResponse|RedirectResponse
      */
     public function deleteAction(Request $request, $objectId)
     {
@@ -245,7 +246,7 @@ class MessageController extends AbstractStandardFormController
     /**
      * @param int $page
      *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return JsonResponse|RedirectResponse|Response
      */
     public function contactsAction(
         Request $request,
