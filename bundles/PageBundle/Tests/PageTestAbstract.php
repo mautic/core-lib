@@ -137,6 +137,7 @@ class PageTestAbstract extends TestCase
             $contactTracker,
             $coreParametersHelper,
             $this->contactRequestHelper,
+            $this->createMock(\Mautic\CoreBundle\Model\AbTest\VariantConverterService::class),
             $entityManager,
             $this->security = $this->createMock(CorePermissions::class),
             $dispatcher,

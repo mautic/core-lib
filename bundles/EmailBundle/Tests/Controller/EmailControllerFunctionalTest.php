@@ -523,35 +523,25 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $email          = $this->createEmail('Email B', 'Email B Subject', 'list', 'blank', 'Test html', $segment, $varientSetting);
         $this->em->flush();
 
-        // request for email clone
-        $crawler        = $this->client->request(Request::METHOD_GET, "/s/emails/abtest/{$email->getId()}");
-        $buttonCrawler  =  $crawler->selectButton('Save & Close');
-        $form           = $buttonCrawler->form();
-        $form['emailform[subject]']->setValue('Email B Subject var 2');
-        $form['emailform[name]']->setValue('Email B var 2');
-        $form['emailform[variantSettings][weight]']->setValue((string) $varientSetting['totalWeight']);
-        $form['emailform[variantSettings][winnerCriteria]']->setValue($varientSetting['winnerCriteria']);
-        $form['emailform[isPublished]']->setValue('1');
-
+        // Load the AB test form page and submit via the form's own apply button
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/email/abtest/generate/{$email->getId()}");
+        $form    = $crawler->selectButton('generate_ab_test[buttons][apply]')->form();
+        $form['generate_ab_test[winnerCriteria]']->setValue('email.openrate');
+        $form['generate_ab_test[sendWinnerDelay]']->setValue('24');
+        $form['generate_ab_test[totalWeight]']->setValue('10');
         $this->client->submit($form);
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        Assert::assertTrue($this->client->getResponse()->isRedirection() || $this->client->getResponse()->isOk());
 
-        $emails = $this->em->getRepository(Email::class)->findBy([], ['id' => 'ASC']);
-        Assert::assertCount(2, $emails);
+        // Verify the parent email was updated with AB test settings
+        $this->em->clear();
+        $updatedEmail = $this->em->getRepository(Email::class)->find($email->getId());
+        Assert::assertNotNull($updatedEmail);
 
-        $firstEmail  = $emails[0];
-        $secondEmail = $emails[1];
-
-        Assert::assertSame($email->getId(), $firstEmail->getId());
-        Assert::assertNotSame($email->getId(), $secondEmail->getId());
-        Assert::assertEquals('list', $secondEmail->getEmailType());
-        Assert::assertEquals('Email B Subject', $firstEmail->getSubject());
-        Assert::assertEquals('Email B', $firstEmail->getName());
-        Assert::assertEquals('Email B Subject var 2', $secondEmail->getSubject());
-        Assert::assertEquals('Email B var 2', $secondEmail->getName());
-        Assert::assertEquals('blank', $secondEmail->getTemplate());
-        Assert::assertEquals('Test html', $secondEmail->getCustomHtml());
-        Assert::assertEquals($firstEmail->getId(), $secondEmail->getVariantParent()->getId());
+        $settings = $updatedEmail->getVariantSettings();
+        Assert::assertEquals('email.openrate', $settings['winnerCriteria']);
+        Assert::assertEquals(24, $settings['sendWinnerDelay']);
+        Assert::assertEquals(10, $settings['totalWeight']);
+        Assert::assertEquals(1, $settings['enableAbTest']);
     }
 
     #[DataProvider('dwcTokenTypeDataProvider')]

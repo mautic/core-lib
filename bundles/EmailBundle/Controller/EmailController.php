@@ -5,12 +5,13 @@ namespace Mautic\EmailBundle\Controller;
 use Mautic\AssetBundle\Model\AssetModel;
 use Mautic\CoreBundle\Controller\FormController;
 use Mautic\CoreBundle\Controller\FormErrorMessagesTrait;
-use Mautic\CoreBundle\Event\DetermineWinnerEvent;
 use Mautic\CoreBundle\Factory\PageHelperFactoryInterface;
 use Mautic\CoreBundle\Form\Type\ContentPreviewSettingsType;
 use Mautic\CoreBundle\Form\Type\DateRangeType;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
+use Mautic\CoreBundle\Model\AbTest\AbTestResultService;
+use Mautic\CoreBundle\Model\AbTest\AbTestSettingsService;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\EmailEvents;
@@ -259,7 +260,7 @@ class EmailController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function viewAction(Request $request, EmailModel $model, EmailConfig $emailConfig, $objectId)
+    public function viewAction(Request $request, EmailModel $model, EmailConfig $emailConfig, AbTestSettingsService $abTestSettingsService, AbTestResultService $abTestResultService, $objectId)
     {
         $security = $this->security;
 
@@ -305,60 +306,15 @@ class EmailController extends FormController
         }
 
         // get A/B test information
-        [$parent, $children]     = $email->getVariants();
-        $properties              = [];
-        $variantError            = false;
-        $weight                  = 0;
-        if (count($children)) {
-            foreach ($children as $c) {
-                $variantSettings = $c->getVariantSettings();
-
-                if (is_array($variantSettings) && isset($variantSettings['winnerCriteria'])) {
-                    if ($c->isPublished()) {
-                        if (!isset($lastCriteria)) {
-                            $lastCriteria = $variantSettings['winnerCriteria'];
-                        }
-
-                        // make sure all the variants are configured with the same criteria
-                        if ($lastCriteria != $variantSettings['winnerCriteria']) {
-                            $variantError = true;
-                        }
-
-                        $weight += $variantSettings['weight'];
-                    }
-                } else {
-                    $variantSettings['winnerCriteria'] = '';
-                    $variantSettings['weight']         = 0;
-                }
-
-                $properties[$c->getId()] = $variantSettings;
-            }
-
-            $properties[$parent->getId()]['weight']         = 100 - $weight;
-            $properties[$parent->getId()]['winnerCriteria'] = '';
-        }
+        [$parent, $children] = $email->getVariants();
 
         $abTestResults = [];
         $criteria      = $model->getBuilderComponents($email, 'abTestWinnerCriteria');
-        if (!empty($lastCriteria) && empty($variantError)) {
-            if (isset($criteria['criteria'][$lastCriteria])) {
-                $testSettings = $criteria['criteria'][$lastCriteria];
 
-                $args = [
-                    'email'      => $email,
-                    'parent'     => $parent,
-                    'children'   => $children,
-                    'properties' => $properties,
-                ];
-
-                $event = new DetermineWinnerEvent($args);
-                $this->dispatcher->dispatch(
-                    $event,
-                    $testSettings['event']
-                );
-
-                $abTestResults = $event->getAbTestResults();
-            }
+        $abTestSettings = null;
+        if (count($children) > 0) {
+            $abTestSettings = $abTestSettingsService->getAbTestSettings($parent);
+            $abTestResults  = $abTestResultService->getAbTestResult($parent, $criteria['criteria'][$abTestSettings['winnerCriteria']] ?? null);
         }
 
         // get related translations
@@ -383,10 +339,17 @@ class EmailController extends FormController
         }
 
         $variants = [
-            'parent'             => $parent,
-            'children'           => $children,
-            'properties'         => $properties,
-            'criteria'           => $criteria['criteria'],
+            'parent'                     => $parent,
+            'children'                   => $children,
+            'properties'                 => $abTestSettings ? $abTestSettings['variants'] : null,
+            'criteria'                   => $criteria['criteria'],
+            'winnerCriteria'             => $abTestSettings ? $abTestSettings['winnerCriteria'] : null,
+            'configurationError'         => $abTestSettings ? $abTestSettings['configurationError'] : null,
+            'hoursLeftToDetermineWinner' => $parent ? $model->timeLeftToDetermineWinner(
+                $parent->getId(),
+                $abTestSettings['sendWinnerDelay'] ?? null
+            ) : null,
+            'abTestSettings'             => $abTestSettings ?? [],
         ];
 
         $translations = [
@@ -1189,16 +1152,10 @@ class EmailController extends FormController
     /**
      * Create an AB test.
      *
-     * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return array<string, mixed>|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function abtestAction(
-        Request $request,
-        AssetModel $assetModel,
-        CorePermissions $corePermissions,
-        EmailConfig $emailConfig,
-        EmailModel $model,
-        ThemeHelper $themeHelper, $objectId,
-    ) {
+    public function abTestAction(Request $request, AssetModel $assetModel, CorePermissions $corePermissions, EmailConfig $emailConfig, EmailModel $model, ThemeHelper $themeHelper, int $objectId)
+    {
         $entity = $model->getEntity($objectId);
 
         if (null != $entity) {
@@ -1275,7 +1232,7 @@ class EmailController extends FormController
             $parent = $entity->getVariantParent() ?? $entity;
             \assert($parent instanceof Email);
 
-            $model->convertVariant($entity);
+            $model->convertWinnerVariant($entity);
 
             $this->dispatcher->dispatch(new ManualWinnerEvent($parent));
 
