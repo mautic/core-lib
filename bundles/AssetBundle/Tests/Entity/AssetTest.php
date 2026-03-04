@@ -7,7 +7,7 @@ namespace Mautic\AssetBundle\Tests\Entity;
 use Mautic\AssetBundle\Entity\Asset;
 use PHPUnit\Framework\TestCase;
 
-class AssetTest extends TestCase
+final class AssetTest extends TestCase
 {
     public function testGetSlugReturnsUuidWhenPresent(): void
     {
