@@ -125,8 +125,7 @@ class BroadcastSubscriber implements EventSubscriberInterface
 
     protected function getLimitForABTest(int $limit, Email $emailEntity, int $totalLeadCountForVariants): int
     {
-        $limit ??= 10000;
-        $diff  = ($emailEntity->getVariantSentCount(true) + $limit) - $totalLeadCountForVariants;
+        $diff = ($emailEntity->getVariantSentCount(true) + $limit) - $totalLeadCountForVariants;
         if ($diff > 0) {
             $limit = $limit - $diff;
         }
