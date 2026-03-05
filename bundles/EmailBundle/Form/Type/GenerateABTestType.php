@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class GenerateABTestType extends AbstractType
+final class GenerateABTestType extends AbstractType
 {
     public function __construct(private EmailModel $emailModel, private TranslatorInterface $translator)
     {

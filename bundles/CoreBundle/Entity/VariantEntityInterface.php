@@ -32,8 +32,6 @@ interface VariantEntityInterface
 
     /**
      * @param array<mixed> $variantSettings
-     *
-     * @return $this
      */
     public function setVariantSettings(array $variantSettings): static;
 

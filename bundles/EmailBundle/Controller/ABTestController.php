@@ -19,7 +19,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class ABTestController extends AbstractFormController
+final class ABTestController extends AbstractFormController
 {
     public const DEFAULT_DELAY = 24;
 

@@ -924,12 +924,7 @@ class StatRepository extends CommonRepository
         return $queryBuilder->executeQuery()->fetchAllAssociative();
     }
 
-    /**
-     * @param int $emailId
-     *
-     * @return string
-     */
-    public function getEmailSentLastDate($emailId)
+    public function getEmailSentLastDate(int $emailId): ?string
     {
         $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $query->from(MAUTIC_TABLE_PREFIX.'email_stats', 's');

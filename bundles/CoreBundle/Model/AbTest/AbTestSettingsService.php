@@ -8,11 +8,6 @@ use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\VariantEntityInterface;
 use Mautic\EmailBundle\Entity\Email;
 
-/**
- * Class AbTestSettingsService.
- * Reads configuration from variants and returns configuration set for AB test.
- * Helps with BC of old variants that have settings in variant children.
- */
 class AbTestSettingsService
 {
     /**
@@ -29,20 +24,11 @@ class AbTestSettingsService
      */
     private ?array $variantsSettings = null;
 
-    /**
-     * @var string|null
-     */
-    private $winnerCriteria;
+    private ?string $winnerCriteria = null;
 
-    /**
-     * @var int
-     */
-    private $totalWeight;
+    private int $totalWeight = 0;
 
-    /**
-     * @var int
-     */
-    private $sendWinnerDelay;
+    private int $sendWinnerDelay = 0;
 
     private ?bool $configurationError = null;
 
@@ -148,11 +134,7 @@ class AbTestSettingsService
         }
     }
 
-    /**
-     * @param VariantEntityInterface|FormEntity $variant
-     * @param int                               $weight
-     */
-    private function setVariantSettingsWeight($variant, $weight): void
+    private function setVariantSettingsWeight(VariantEntityInterface|FormEntity $variant, int $weight): void
     {
         if ($variant->getIsPublished()) {
             $variantWeight                                       = (int) round(($weight / 100) * $this->totalWeight);
@@ -174,20 +156,16 @@ class AbTestSettingsService
 
     /**
      * Adds variant weight for further calculation.
-     *
-     * @param int|float $weight
      */
-    private function addPublishedVariantWeight($weight): void
+    private function addPublishedVariantWeight(int|float $weight): void
     {
         $this->allPublishedVariantsWeight += $weight;
     }
 
     /**
      * Sets winner criteria from variant children (for BC of old variants).
-     *
-     * @param string $variantCriteria
      */
-    private function setWinnerCriteriaFromVariant($variantCriteria): void
+    private function setWinnerCriteriaFromVariant(string $variantCriteria): void
     {
         if (!empty($this->winnerCriteria) && $variantCriteria != $this->winnerCriteria) {
             // there are variants with different winner criteria

@@ -8,9 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\VariantEntityInterface;
 
-/**
- * Class VariantConverterService.
- */
 class VariantConverterService
 {
     /**
@@ -49,7 +46,7 @@ class VariantConverterService
     /**
      * @return array<VariantEntityInterface>
      */
-    public function getUpdatedVariants()
+    public function getUpdatedVariants(): array
     {
         return $this->updatedVariants;
     }

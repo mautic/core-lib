@@ -8,14 +8,8 @@ use Mautic\CoreBundle\Entity\VariantEntityInterface;
 use Mautic\CoreBundle\Model\AbTest\VariantConverterService;
 use Mautic\EmailBundle\Entity\Email;
 
-/**
- * Class EmailVariantConverterService.
- */
 class EmailVariantConverterService
 {
-    /**
-     * EmailVariantConverterService constructor.
-     */
     public function __construct(private VariantConverterService $variantConverterService)
     {
     }
@@ -28,7 +22,7 @@ class EmailVariantConverterService
     /**
      * @return array<VariantEntityInterface>
      */
-    public function getUpdatedVariants()
+    public function getUpdatedVariants(): array
     {
         return $this->variantConverterService->getUpdatedVariants();
     }

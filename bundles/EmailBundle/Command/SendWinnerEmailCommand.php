@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Sends email to winner variant after predetermined amount of time.
  */
-class SendWinnerEmailCommand extends ModeratedCommand
+final class SendWinnerEmailCommand extends ModeratedCommand
 {
     protected static string $defaultDescription = 'Send winner email variant to remaining contacts';
     public const COMMAND_NAME                   = 'mautic:email:sendwinner';

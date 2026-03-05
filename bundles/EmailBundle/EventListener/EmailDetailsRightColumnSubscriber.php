@@ -9,7 +9,7 @@ use Mautic\CoreBundle\Event\CustomContentEvent;
 use Mautic\EmailBundle\Model\AbTest\EmailStatus;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class EmailDetailsRightColumnSubscriber implements EventSubscriberInterface
+final class EmailDetailsRightColumnSubscriber implements EventSubscriberInterface
 {
     /**
      * @return mixed[]

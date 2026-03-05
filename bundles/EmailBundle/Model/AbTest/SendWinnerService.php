@@ -28,12 +28,10 @@ class SendWinnerService
     }
 
     /**
-     * @param int|null $emailId
-     *
      * @throws \ReflectionException
      * @throws \Exception
      */
-    public function processWinnerEmails($emailId = null): void
+    public function processWinnerEmails(?int $emailId = null): void
     {
         if (null === $emailId) {
             $emails = $this->emailModel->getEmailsToSendWinnerVariant();
@@ -70,15 +68,12 @@ class SendWinnerService
     /**
      * @return array<string>
      */
-    public function getOutputMessages()
+    public function getOutputMessages(): array
     {
         return $this->outputMessages;
     }
 
-    /**
-     * @return bool
-     */
-    public function shouldTryAgain()
+    public function shouldTryAgain(): bool
     {
         return $this->tryAgain;
     }
@@ -140,12 +135,10 @@ class SendWinnerService
     }
 
     /**
-     * @param string $winnerCriteria
-     *
      * @throws \ReflectionException
      * @throws NotReadyToSendWinnerException
      */
-    private function getWinner(Email $parentVariant, $winnerCriteria): ?Email
+    private function getWinner(Email $parentVariant, string $winnerCriteria): ?Email
     {
         $criteria      = $this->emailModel->getBuilderComponents($parentVariant, 'abTestWinnerCriteria');
         $abTestResults = $this->abTestResultService->getAbTestResult($parentVariant, $criteria['criteria'][$winnerCriteria]);
@@ -162,10 +155,7 @@ class SendWinnerService
         return $this->emailModel->getEntity($winners[0]);
     }
 
-    /**
-     * @param string $message
-     */
-    private function addOutputMessage($message): void
+    private function addOutputMessage(string $message): void
     {
         $this->outputMessages[] = $message;
     }

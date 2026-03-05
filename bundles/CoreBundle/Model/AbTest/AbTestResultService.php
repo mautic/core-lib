@@ -8,9 +8,6 @@ use Mautic\CoreBundle\Entity\VariantEntityInterface;
 use Mautic\CoreBundle\Event\DetermineWinnerEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-/**
- * Class AbTestResultService.
- */
 class AbTestResultService
 {
     public function __construct(
