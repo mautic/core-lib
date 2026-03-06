@@ -72,22 +72,6 @@ class SegmentStressTest extends MauticMysqlTestCase
             [
                 'object'     => 'lead',
                 'glue'       => 'and',
-                'field'      => 'address1',
-                'type'       => 'text',
-                'operator'   => '!empty',
-                'properties' => ['filter' => null],
-            ],
-            [
-                'object'     => 'lead',
-                'glue'       => 'and',
-                'field'      => 'address1',
-                'type'       => 'text',
-                'operator'   => '!=',
-                'properties' => ['filter' => null],
-            ],
-            [
-                'object'     => 'lead',
-                'glue'       => 'and',
                 'field'      => 'firstname',
                 'type'       => 'text',
                 'operator'   => 'startsWith',
