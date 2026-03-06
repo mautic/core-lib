@@ -8,8 +8,7 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
 use Mautic\LeadBundle\Command\UpdateLeadListsCommand;
 use Mautic\LeadBundle\Entity\LeadList;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Tester\ApplicationTester;
+use Symfony\Component\Console\Command\Command;
 
 class SegmentStressTest extends MauticMysqlTestCase
 {
@@ -44,17 +43,12 @@ class SegmentStressTest extends MauticMysqlTestCase
 
     public function testSegmentStressTest(): void
     {
-        $application = new Application(self::$kernel);
-        $application->setAutoExit(false);
-        $applicationTester = new ApplicationTester($application);
-
         $this->saveContacts();
         $segmentA   = $this->saveSegment();
         $segmentAId = $segmentA->getId();
-
-        // Run segments update command.
-        $exitCode = $applicationTester->run(['command' => UpdateLeadListsCommand::NAME, '-i' => $segmentAId]);
-        self::assertSame(0, $exitCode, $applicationTester->getDisplay());
+        $this->em->clear();
+        $commandTester = $this->testSymfonyCommand(UpdateLeadListsCommand::NAME, ['-i' => $segmentAId]);
+        self::assertSame(Command::SUCCESS, $commandTester->getStatusCode(), $commandTester->getDisplay());
     }
 
     private function saveContacts(): void
