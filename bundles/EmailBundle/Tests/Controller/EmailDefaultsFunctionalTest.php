@@ -22,6 +22,14 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
 {
     public const SAVE_AND_CLOSE = 'Save & Close';
 
+    /**
+     * Disabled because testNewEmailFormPreselectsConfiguredPreferenceCenterAndUtmDefaults
+     * calls setUpSymfony() mid-test to reboot the kernel with the actual page ID in config.
+     * MauticMysqlTestCase forbids re-creating the client while transaction rollback cleanup
+     * is active, so we fall back to resetDatabase() for cleanup instead.
+     */
+    protected $useCleanupRollback = false;
+
     protected function setUp(): void
     {
         $this->configParams['email_default_utm_source']   = 'config-source';
@@ -34,13 +42,6 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
 
     public function testNewEmailFormPreselectsConfiguredPreferenceCenterAndUtmDefaults(): void
     {
-        // Commit the setUp transaction so the page survives the kernel reboot below.
-        // resetAutoincrement() is intentionally avoided: it issues DDL which commits
-        // the active transaction and causes tearDown() to fail with "no active transaction".
-        if ($this->connection->isTransactionActive()) {
-            $this->connection->commit();
-        }
-
         $preferenceCenter = $this->createPreferenceCenterPage('Default Preference Center');
         $this->em->flush();
 

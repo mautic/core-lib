@@ -9,7 +9,9 @@ use Mautic\ConfigBundle\Form\Type\DsnType;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\Form\Type\ConfigMonitoredEmailType;
+use Mautic\EmailBundle\Form\Type\ConfigMonitoredMailboxesType;
 use Mautic\EmailBundle\Form\Type\ConfigType;
+use Mautic\EmailBundle\MonitoredEmail\Mailbox;
 use Mautic\PageBundle\Entity\PageRepository;
 use Mautic\PageBundle\Form\Type\PreferenceCenterListType;
 use Mautic\PageBundle\Model\PageModel;
@@ -44,11 +46,12 @@ class ConfigTypeTest extends TypeTestCase
         $configType              = new ConfigType($translator);
         $preferenceCenterList    = new PreferenceCenterListType($pageModelMock, $permsMock);
         $configMonitoredEmail    = new ConfigMonitoredEmailType(new EventDispatcher());
+        $configMonitoredMailboxes = new ConfigMonitoredMailboxesType($this->createMock(Mailbox::class));
         $validator               = Validation::createValidator();
 
         return [
             new ValidatorExtension($validator),
-            new PreloadedExtension([$configType, $dsnType, $preferenceCenterList, $configMonitoredEmail], []),
+            new PreloadedExtension([$configType, $dsnType, $preferenceCenterList, $configMonitoredEmail, $configMonitoredMailboxes], []),
         ];
     }
 
