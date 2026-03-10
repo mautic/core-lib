@@ -43,11 +43,11 @@ class ConfigTypeTest extends TypeTestCase
             $this->createMock(DsnTransformerFactory::class),
             $this->createMock(CoreParametersHelper::class),
         );
-        $configType              = new ConfigType($translator);
-        $preferenceCenterList    = new PreferenceCenterListType($pageModelMock, $permsMock);
-        $configMonitoredEmail    = new ConfigMonitoredEmailType(new EventDispatcher());
+        $configType               = new ConfigType($translator);
+        $preferenceCenterList     = new PreferenceCenterListType($pageModelMock, $permsMock);
+        $configMonitoredEmail     = new ConfigMonitoredEmailType(new EventDispatcher());
         $configMonitoredMailboxes = new ConfigMonitoredMailboxesType($this->createMock(Mailbox::class));
-        $validator               = Validation::createValidator();
+        $validator                = Validation::createValidator();
 
         return [
             new ValidatorExtension($validator),
