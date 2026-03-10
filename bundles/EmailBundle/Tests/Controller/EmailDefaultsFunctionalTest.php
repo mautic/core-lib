@@ -7,6 +7,7 @@ namespace Mautic\EmailBundle\Tests\Controller;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\PageBundle\Entity\Page;
+use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,29 +24,40 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        $this->configParams['email_default_preference_center_id'] = 1;
-        $this->configParams['email_default_utm_source']           = 'config-source';
-        $this->configParams['email_default_utm_medium']           = 'config-medium';
-        $this->configParams['email_default_utm_campaign']         = 'config-campaign';
-        $this->configParams['email_default_utm_content']          = 'config-content';
+        $this->configParams['email_default_utm_source']   = 'config-source';
+        $this->configParams['email_default_utm_medium']   = 'config-medium';
+        $this->configParams['email_default_utm_campaign'] = 'config-campaign';
+        $this->configParams['email_default_utm_content']  = 'config-content';
 
         parent::setUp();
     }
 
     public function testNewEmailFormPreselectsConfiguredPreferenceCenterAndUtmDefaults(): void
     {
-        $this->resetAutoincrement(['pages']);
+        // Commit the setUp transaction so the page survives the kernel reboot below.
+        // resetAutoincrement() is intentionally avoided: it issues DDL which commits
+        // the active transaction and causes tearDown() to fail with "no active transaction".
+        if ($this->connection->isTransactionActive()) {
+            $this->connection->commit();
+        }
+
         $preferenceCenter = $this->createPreferenceCenterPage('Default Preference Center');
         $this->em->flush();
 
-        Assert::assertSame(1, $preferenceCenter->getId());
+        $pageId = $preferenceCenter->getId();
+
+        // Reboot the kernel so CoreParametersHelper picks up the actual page ID.
+        $this->setUpSymfony(array_merge($this->configParams, ['email_default_preference_center_id' => $pageId]));
+
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->loginUser($user);
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/emails/new');
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton(self::SAVE_AND_CLOSE)->form();
 
-        Assert::assertSame((string) $preferenceCenter->getId(), $form['emailform[preferenceCenter]']->getValue());
+        Assert::assertSame((string) $pageId, $form['emailform[preferenceCenter]']->getValue());
         Assert::assertSame('config-source', $form['emailform[utmTags][utmSource]']->getValue());
         Assert::assertSame('config-medium', $form['emailform[utmTags][utmMedium]']->getValue());
         Assert::assertSame('config-campaign', $form['emailform[utmTags][utmCampaign]']->getValue());
@@ -54,9 +66,7 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
 
     public function testEditFormDoesNotOverwriteExistingPreferenceCenterAndUtmValues(): void
     {
-        $this->resetAutoincrement(['pages']);
-        $configuredPage = $this->createPreferenceCenterPage('Configured Preference Center');
-        $existingPage   = $this->createPreferenceCenterPage('Existing Preference Center');
+        $existingPage = $this->createPreferenceCenterPage('Existing Preference Center');
 
         $email = $this->createEmail();
         $email->setPreferenceCenter($existingPage);
@@ -69,8 +79,6 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
         $this->em->clear();
-
-        Assert::assertSame(1, $configuredPage->getId());
 
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/edit/{$email->getId()}");
         $this->assertResponseIsSuccessful();
@@ -86,9 +94,7 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
 
     public function testCloneFormKeepsExplicitCloneValuesInsteadOfConfigDefaults(): void
     {
-        $this->resetAutoincrement(['pages']);
-        $configuredPage = $this->createPreferenceCenterPage('Configured Preference Center');
-        $clonedPage     = $this->createPreferenceCenterPage('Cloned Preference Center');
+        $clonedPage = $this->createPreferenceCenterPage('Cloned Preference Center');
 
         $email = $this->createEmail();
         $email->setPreferenceCenter($clonedPage);
@@ -100,8 +106,6 @@ class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
         ]);
 
         $this->em->flush();
-
-        Assert::assertSame(1, $configuredPage->getId());
 
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/clone/{$email->getId()}");
         $this->assertResponseIsSuccessful();

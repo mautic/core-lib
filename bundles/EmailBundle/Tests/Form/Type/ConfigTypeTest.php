@@ -8,10 +8,12 @@ use Mautic\ConfigBundle\Form\DataTransformer\DsnTransformerFactory;
 use Mautic\ConfigBundle\Form\Type\DsnType;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\EmailBundle\Form\Type\ConfigMonitoredEmailType;
 use Mautic\EmailBundle\Form\Type\ConfigType;
 use Mautic\PageBundle\Entity\PageRepository;
 use Mautic\PageBundle\Form\Type\PreferenceCenterListType;
 use Mautic\PageBundle\Model\PageModel;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\PreloadedExtension;
@@ -39,13 +41,14 @@ class ConfigTypeTest extends TypeTestCase
             $this->createMock(DsnTransformerFactory::class),
             $this->createMock(CoreParametersHelper::class),
         );
-        $configType           = new ConfigType($translator);
-        $preferenceCenterList = new PreferenceCenterListType($pageModelMock, $permsMock);
-        $validator            = Validation::createValidator();
+        $configType              = new ConfigType($translator);
+        $preferenceCenterList    = new PreferenceCenterListType($pageModelMock, $permsMock);
+        $configMonitoredEmail    = new ConfigMonitoredEmailType(new EventDispatcher());
+        $validator               = Validation::createValidator();
 
         return [
             new ValidatorExtension($validator),
-            new PreloadedExtension([$configType, $dsnType, $preferenceCenterList], []),
+            new PreloadedExtension([$configType, $dsnType, $preferenceCenterList, $configMonitoredEmail], []),
         ];
     }
 
