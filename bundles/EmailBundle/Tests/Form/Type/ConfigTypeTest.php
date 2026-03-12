@@ -11,7 +11,9 @@ use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\Form\Type\ConfigMonitoredEmailType;
 use Mautic\EmailBundle\Form\Type\ConfigMonitoredMailboxesType;
 use Mautic\EmailBundle\Form\Type\ConfigType;
+use Mautic\EmailBundle\Mailer\Transport\TransportFactory;
 use Mautic\EmailBundle\MonitoredEmail\Mailbox;
+use Mautic\EmailBundle\Validator\DsnValidator;
 use Mautic\PageBundle\Entity\PageRepository;
 use Mautic\PageBundle\Form\Type\PreferenceCenterListType;
 use Mautic\PageBundle\Model\PageModel;
@@ -20,6 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -47,7 +50,12 @@ class ConfigTypeTest extends TypeTestCase
         $preferenceCenterList     = new PreferenceCenterListType($pageModelMock, $permsMock);
         $configMonitoredEmail     = new ConfigMonitoredEmailType(new EventDispatcher());
         $configMonitoredMailboxes = new ConfigMonitoredMailboxesType($this->createMock(Mailbox::class));
-        $validator                = Validation::createValidator();
+        $dsnValidator             = new DsnValidator($this->createMock(TransportFactory::class));
+        $validator                = Validation::createValidatorBuilder()
+            ->setConstraintValidatorFactory(new ConstraintValidatorFactory([
+                DsnValidator::class => $dsnValidator,
+            ]))
+            ->getValidator();
 
         return [
             new ValidatorExtension($validator),
