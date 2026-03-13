@@ -2,6 +2,7 @@
 
 namespace Mautic\ReportBundle\Scheduler\Command;
 
+use Mautic\CoreBundle\Helper\ExitCode;
 use Mautic\ReportBundle\Exception\FileIOException;
 use Mautic\ReportBundle\Model\ReportCleanup;
 use Mautic\ReportBundle\Model\ReportExporter;
@@ -29,8 +30,9 @@ class ExportSchedulerCommand extends Command
 
     protected function configure()
     {
-        $this
-            ->addOption('--report', 'report', InputOption::VALUE_OPTIONAL, 'ID of report. Process all reports if not set.');
+        $this->addOption('--report', 'report', InputOption::VALUE_OPTIONAL, 'ID of report. Process all reports if not set.');
+
+        parent::configure();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -63,6 +65,8 @@ class ExportSchedulerCommand extends Command
             $output->writeln('<info>'.$this->translator->trans('mautic.report.schedule.command.finished').'</info>');
         } catch (FileIOException $e) {
             $output->writeln('<error>'.$e->getMessage().'</error>');
+
+            return ExitCode::FAILURE;
         }
 
         return Command::SUCCESS;
