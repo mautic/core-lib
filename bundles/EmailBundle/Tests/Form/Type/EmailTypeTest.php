@@ -96,11 +96,7 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
     {
         $options = ['data' => new Email()];
         $names   = [];
-        $this->themeHelper
-            ->expects($this->once())
-            ->method('getCurrentTheme')
-            ->with('blank', 'email')
-            ->willReturn('blank');
+        $this->expectThemeHelper();
 
         $this->formBuilder->method('add')
             ->with(
@@ -123,12 +119,7 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         $email          = new Email();
         $preferencePage = new Page();
 
-        $this->themeHelper
-            ->expects($this->once())
-            ->method('getCurrentTheme')
-            ->with('blank', 'email')
-            ->willReturn('blank');
-
+        $this->expectThemeHelper();
         $this->coreParametersHelper
             ->method('get')
             ->willReturnCallback(static function (string $key): mixed {
@@ -164,9 +155,9 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildFormDoesNotOverwriteExistingPreferenceCenterAndUtmTags(): void
     {
-        $email                = new Email();
-        $existingPage         = new Page();
-        $existingUtmTags      = [
+        $email           = new Email();
+        $existingPage    = new Page();
+        $existingUtmTags = [
             'utmSource'   => 'manual-source',
             'utmMedium'   => 'manual-medium',
             'utmCampaign' => 'manual-campaign',
@@ -177,21 +168,9 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         $email->setPreferenceCenter($existingPage);
         $email->setUtmTags($existingUtmTags);
 
-        $this->themeHelper
-            ->expects($this->once())
-            ->method('getCurrentTheme')
-            ->with('blank', 'email')
-            ->willReturn('blank');
-
-        $this->coreParametersHelper
-            ->method('get')
-            ->willReturnMap([
-                ['mailer_is_owner', false],
-            ]);
-
-        $this->entityManager
-            ->expects($this->never())
-            ->method('find');
+        $this->expectThemeHelper();
+        $this->configureDefaultParams(['mailer_is_owner' => false]);
+        $this->expectNoEntityLookup();
 
         $this->form->buildForm($this->formBuilder, ['data' => $email]);
 
@@ -201,9 +180,9 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildFormSkipsDefaultsForClonedEmail(): void
     {
-        $source           = new Email();
-        $existingPage     = new Page();
-        $cloneUtmTags     = [
+        $source       = new Email();
+        $existingPage = new Page();
+        $cloneUtmTags = [
             'utmSource'   => 'clone-source',
             'utmMedium'   => 'clone-medium',
             'utmCampaign' => 'clone-campaign',
@@ -218,26 +197,9 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         Assert::assertTrue($clone->getIsClone(), 'Cloned entity must report isClone() as true');
         Assert::assertTrue($clone->isNew(), 'Cloned entity must report isNew() as true');
 
-        $this->themeHelper
-            ->expects($this->once())
-            ->method('getCurrentTheme')
-            ->with('blank', 'email')
-            ->willReturn('blank');
-
-        $this->coreParametersHelper
-            ->method('get')
-            ->willReturnMap([
-                ['email_default_preference_center_id', 42],
-                ['email_default_utm_source', 'config-source'],
-                ['email_default_utm_medium', 'config-medium'],
-                ['email_default_utm_campaign', 'config-campaign'],
-                ['email_default_utm_content', 'config-content'],
-                ['mailer_is_owner', false],
-            ]);
-
-        $this->entityManager
-            ->expects($this->never())
-            ->method('find');
+        $this->expectThemeHelper();
+        $this->configureDefaultParams($this->allDefaultParams());
+        $this->expectNoEntityLookup();
 
         $this->form->buildForm($this->formBuilder, ['data' => $clone]);
 
@@ -249,26 +211,16 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
     {
         $email = new Email();
 
-        $this->themeHelper
-            ->expects($this->once())
-            ->method('getCurrentTheme')
-            ->with('blank', 'email')
-            ->willReturn('blank');
-
-        $this->coreParametersHelper
-            ->method('get')
-            ->willReturnMap([
-                ['email_default_preference_center_id', null],
-                ['email_default_utm_source', ''],
-                ['email_default_utm_medium', null],
-                ['email_default_utm_campaign', ''],
-                ['email_default_utm_content', null],
-                ['mailer_is_owner', false],
-            ]);
-
-        $this->entityManager
-            ->expects($this->never())
-            ->method('find');
+        $this->expectThemeHelper();
+        $this->configureDefaultParams([
+            'email_default_preference_center_id' => null,
+            'email_default_utm_source'           => '',
+            'email_default_utm_medium'           => null,
+            'email_default_utm_campaign'         => '',
+            'email_default_utm_content'          => null,
+            'mailer_is_owner'                    => false,
+        ]);
+        $this->expectNoEntityLookup();
 
         $this->form->buildForm($this->formBuilder, ['data' => $email]);
 
@@ -278,38 +230,61 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
 
     public function testBuildFormDoesNotApplyConfigDefaultsToCloneWithBlankFields(): void
     {
-        // Source email has no preference center and no UTM tags — intentionally blank.
         $source = new Email();
-        // Simulate the clone operation performed by EmailController::cloneAction.
-        $clone = clone $source;
+        $clone  = clone $source;
 
         Assert::assertTrue($clone->isNew());
         Assert::assertTrue($clone->getIsClone());
 
-        $this->themeHelper
-            ->expects($this->once())
-            ->method('getCurrentTheme')
-            ->with('blank', 'email')
-            ->willReturn('blank');
-
-        $this->coreParametersHelper
-            ->method('get')
-            ->willReturnMap([
-                ['email_default_preference_center_id', 42],
-                ['email_default_utm_source', 'config-source'],
-                ['email_default_utm_medium', 'config-medium'],
-                ['email_default_utm_campaign', 'config-campaign'],
-                ['email_default_utm_content', 'config-content'],
-                ['mailer_is_owner', false],
-            ]);
-
-        $this->entityManager
-            ->expects($this->never())
-            ->method('find');
+        $this->expectThemeHelper();
+        $this->configureDefaultParams($this->allDefaultParams());
+        $this->expectNoEntityLookup();
 
         $this->form->buildForm($this->formBuilder, ['data' => $clone]);
 
         Assert::assertNull($clone->getPreferenceCenter(), 'Clone with blank preferenceCenter must not inherit config default');
         Assert::assertSame([], $clone->getUtmTags(), 'Clone with blank utmTags must not inherit config defaults');
+    }
+
+    private function expectThemeHelper(): void
+    {
+        $this->themeHelper
+            ->expects($this->once())
+            ->method('getCurrentTheme')
+            ->with('blank', 'email')
+            ->willReturn('blank');
+    }
+
+    private function expectNoEntityLookup(): void
+    {
+        $this->entityManager
+            ->expects($this->never())
+            ->method('find');
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    private function configureDefaultParams(array $params): void
+    {
+        $map = [];
+        foreach ($params as $key => $value) {
+            $map[] = [$key, $value];
+        }
+        $this->coreParametersHelper
+            ->method('get')
+            ->willReturnMap($map);
+    }
+
+    private function allDefaultParams(): array
+    {
+        return [
+            'email_default_preference_center_id' => 42,
+            'email_default_utm_source'           => 'config-source',
+            'email_default_utm_medium'           => 'config-medium',
+            'email_default_utm_campaign'         => 'config-campaign',
+            'email_default_utm_content'          => 'config-content',
+            'mailer_is_owner'                    => false,
+        ];
     }
 }
