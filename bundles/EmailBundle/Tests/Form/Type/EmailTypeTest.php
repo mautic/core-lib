@@ -199,9 +199,9 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         Assert::assertSame($existingUtmTags, $email->getUtmTags());
     }
 
-    public function testBuildFormDoesNotOverwriteCloneValuesForNewEmailWithPreFilledFields(): void
+    public function testBuildFormSkipsDefaultsForClonedEmail(): void
     {
-        $email            = new Email();
+        $source           = new Email();
         $existingPage     = new Page();
         $cloneUtmTags     = [
             'utmSource'   => 'clone-source',
@@ -210,8 +210,13 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
             'utmContent'  => 'clone-content',
         ];
 
-        $email->setPreferenceCenter($existingPage);
-        $email->setUtmTags($cloneUtmTags);
+        $source->setPreferenceCenter($existingPage);
+        $source->setUtmTags($cloneUtmTags);
+
+        $clone = clone $source;
+
+        Assert::assertTrue($clone->getIsClone(), 'Cloned entity must report isClone() as true');
+        Assert::assertTrue($clone->isNew(), 'Cloned entity must report isNew() as true');
 
         $this->themeHelper
             ->expects($this->once())
@@ -234,10 +239,10 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
             ->expects($this->never())
             ->method('find');
 
-        $this->form->buildForm($this->formBuilder, ['data' => $email]);
+        $this->form->buildForm($this->formBuilder, ['data' => $clone]);
 
-        Assert::assertSame($existingPage, $email->getPreferenceCenter());
-        Assert::assertSame($cloneUtmTags, $email->getUtmTags());
+        Assert::assertSame($existingPage, $clone->getPreferenceCenter());
+        Assert::assertSame($cloneUtmTags, $clone->getUtmTags());
     }
 
     public function testBuildFormLeavesFieldsUnchangedWhenDefaultConfigurationIsEmpty(): void
