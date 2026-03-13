@@ -687,6 +687,8 @@ class EmailType extends AbstractType
             return;
         }
 
+        $changesBefore = $emailEntity->getChanges();
+
         if (null === $emailEntity->getPreferenceCenter()) {
             $defaultPreferenceCenterId = $this->coreParametersHelper->get('email_default_preference_center_id');
             if (!empty($defaultPreferenceCenterId)) {
@@ -711,10 +713,10 @@ class EmailType extends AbstractType
             }
         }
 
-        // This method only runs for new entities (isNew() guard above), which have no
-        // prior meaningful changes. Clear the tracker so system-applied defaults don't
-        // appear as user-initiated edits in the audit log.
-        $emailEntity->resetChanges();
+        // Restore only the changes that existed before defaults were applied,
+        // so pre-form mutations (e.g. emailType set by the controller) are preserved
+        // while system-applied defaults don't appear as user edits in the audit log.
+        $emailEntity->setChanges($changesBefore);
     }
 
     private function addDynamicContentField(FormBuilderInterface $builder): void
