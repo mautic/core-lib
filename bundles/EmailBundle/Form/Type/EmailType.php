@@ -705,13 +705,15 @@ class EmailType extends AbstractType
                 'utmContent'  => $this->coreParametersHelper->get('email_default_utm_content'),
             ];
 
-            if (array_filter($utmTags, static fn ($tag): bool => null !== $tag && '' !== $tag)) {
-                $emailEntity->setUtmTags($utmTags);
+            $filteredUtmTags = array_filter($utmTags, static fn ($tag): bool => null !== $tag && '' !== $tag);
+            if ($filteredUtmTags) {
+                $emailEntity->setUtmTags($filteredUtmTags);
             }
         }
 
-        // Defaults applied during form construction are not user-initiated changes;
-        // clear the change tracker so the audit log is not polluted.
+        // This method only runs for new entities (isNew() guard above), which have no
+        // prior meaningful changes. Clear the tracker so system-applied defaults don't
+        // appear as user-initiated edits in the audit log.
         $emailEntity->resetChanges();
     }
 
