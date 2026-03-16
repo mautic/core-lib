@@ -35,6 +35,8 @@ final class BotRatioHelperMatomoTest extends TestCase
         $botRatioHelper = new BotRatioHelper($deviceDetectorFactoryMock);
 
         $emailStatMock    = $this->createMock(Stat::class);
+        $emailSent        = new \DateTime('-1 second');
+        $emailStatMock->method('getDateSent')->willReturn($emailSent);
         $emailHitDateTime = new \DateTime();
         $ipAddress        = new IpAddress('1.2.3.4');
 

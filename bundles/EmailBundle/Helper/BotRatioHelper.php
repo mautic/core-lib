@@ -39,10 +39,6 @@ class BotRatioHelper
         IpAddress $ipAddress,
         string $userAgent,
     ): bool {
-        if ($this->isBotByMatomoDetector($userAgent)) {
-            return true;
-        }
-
         $totalPoints = (int) $this->isUnderTimeThreshold($emailStat, $emailHitDateTime) +
             (int) $this->isIpInIgnoreList($ipAddress) +
             (int) $this->isUserAgentInIgnoreList($userAgent);
@@ -77,6 +73,10 @@ class BotRatioHelper
 
     private function isUserAgentInIgnoreList(string $userAgent): bool
     {
+        if ($this->isBotByMatomoDetector($userAgent)) {
+            return true;
+        }
+
         foreach ($this->blockedUserAgents as $blockedUserAgent) {
             if (str_contains($userAgent, $blockedUserAgent)) {
                 return true;
