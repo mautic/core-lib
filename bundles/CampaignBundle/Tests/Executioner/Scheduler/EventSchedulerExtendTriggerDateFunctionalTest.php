@@ -90,7 +90,7 @@ final class EventSchedulerExtendTriggerDateFunctionalTest extends MauticMysqlTes
 
         // Without the fix, this throws: Exception "Unknown or bad format (PT-XXXXS)"
         // With the fix, this executes successfully
-        $output = $this->runCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $output = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()])->getDisplay();
 
         $this->assertStringNotContainsString('Exception', $output, 'Command should execute without errors');
 
@@ -151,7 +151,7 @@ final class EventSchedulerExtendTriggerDateFunctionalTest extends MauticMysqlTes
 
         $this->em->clear();
 
-        $output = $this->runCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $output = $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()])->getDisplay();
 
         $this->assertStringNotContainsString('Exception', $output, 'Command should execute without errors');
 
