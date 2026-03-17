@@ -2766,7 +2766,7 @@ Mautic.previewCampaignLabels = function() {
             if (connectionAnchor === 'yes') {
                 connection.addOverlay(["Label", {
                     label: element.dataset.eventYesPercent + '%',
-                    location: 0.44,
+                    location: 0.25,
                     cssClass: 'jtk-label jtk-label--success',
                     id: element.id + 'yes-path-label'
                 }]);
@@ -2774,7 +2774,7 @@ Mautic.previewCampaignLabels = function() {
             if (connectionAnchor === 'no') {
                 connection.addOverlay(["Label", {
                     label: element.dataset.eventNoPercent + '%',
-                    location: 0.44,
+                    location: 0.25,
                     cssClass: 'jtk-label jtk-label--error',
                     id: element.id + 'no-path-label'
                 }]);
