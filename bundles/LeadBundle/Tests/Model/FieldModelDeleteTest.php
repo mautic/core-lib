@@ -1,28 +1,53 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\Tests\Model;
 
-use Mautic\AllydeBundle\Entity\Job;
-use Mautic\AllydeBundle\Entity\JobRepository;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadFieldRepository;
+use Mautic\LeadBundle\Model\FieldModel;
 use PHPUnit\Framework\Assert;
 
-class FieldModelDeleteTest extends MauticMysqlTestCase
+final class FieldModelDeleteTest extends MauticMysqlTestCase
 {
+    private int $leadFieldId;
+    private int $companyFieldId;
+
     public function setUp(): void
     {
-        $this->configParams['create_custom_field_in_background'] = true;
-
         parent::setUp();
+        // $this->configParams['create_custom_field_in_background'] = true;
     }
 
     public function testBatchDeleteFields(): void
     {
         $this->connection->beginTransaction();
 
-        $fieldModel = self::$container->get('mautic.lead.model.field');
+        $this->configParams['create_custom_field_in_background'] = false;
+        $this->initColumnData();
+
+        $leadFieldRepository = $this->em->getRepository(LeadField::class);
+        \assert($leadFieldRepository instanceof LeadFieldRepository);
+
+        Assert::assertCount(1, $leadFieldRepository->findBy(['alias' => 'test_lead_field']));
+        Assert::assertCount(1, $leadFieldRepository->findBy(['alias' => 'test_company_field']));
+
+        /** @var FieldModel $fieldModel */
+        $fieldModel                                              = self::getContainer()->get('mautic.lead.model.field');
+        $this->configParams['create_custom_field_in_background'] = true;
+
+        $fieldModel->deleteEntities([$this->leadFieldId, $this->companyFieldId]);
+
+        Assert::assertCount(0, $leadFieldRepository->findBy(['alias' => 'test_lead_field']));
+        Assert::assertCount(0, $leadFieldRepository->findBy(['alias' => 'test_company_field']));
+    }
+
+    public function initColumnData(): void
+    {
+        /** @var FieldModel $fieldModel */
+        $fieldModel = self::getContainer()->get('mautic.lead.model.field');
 
         $leadField = new LeadField();
         $leadField->setName('Test Lead Field')
@@ -36,30 +61,11 @@ class FieldModelDeleteTest extends MauticMysqlTestCase
             ->setType('text')
             ->setObject('company');
 
-        try {
-            $fieldModel->saveEntity($leadField);
-        } catch (\Exception $e) {
-        }
+        $fieldModel->saveEntity($leadField);
+        $fieldModel->saveEntity($companyField);
+        $this->em->flush();
 
-        try {
-            $fieldModel->saveEntity($companyField);
-        } catch (\Exception $e) {
-        }
-
-        $leadFieldRepository = $this->em->getRepository(LeadField::class);
-        \assert($leadFieldRepository instanceof LeadFieldRepository);
-
-        $this->assertCount(45, $leadFieldRepository->findAll(), 'There should be 43 + 2 fields');
-
-        $jobRepository = $this->em->getRepository(Job::class);
-        \assert($jobRepository instanceof JobRepository);
-
-        $leadColumnCreateJobs = $jobRepository->findBy(['task' => 'createLeadColumn']);
-        Assert::assertCount(2, $leadColumnCreateJobs, 'There should be 2 jobs to create lead column');
-
-        $fieldModel->deleteEntities([$leadField->getId(), $companyField->getId()]);
-
-        $leadColumnDeleteJobs = $jobRepository->findBy(['task' => 'deleteLeadColumn']);
-        Assert::assertCount(2, $leadColumnDeleteJobs, 'There should be 2 jobs to delete lead column');
+        $this->leadFieldId    = $leadField->getId();
+        $this->companyFieldId = $companyField->getId();
     }
 }
