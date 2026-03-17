@@ -69,6 +69,9 @@ class EmailType extends AbstractType
         $emailEntity =  $options['data'];
         \assert($emailEntity instanceof Email);
 
+        // Pre-populates the form with config defaults for UI display.
+        // The authoritative application of defaults (covering API and programmatic creation)
+        // is handled by EmailDefaultsSubscriber on EMAIL_PRE_SAVE.
         $this->applyDefaultsForNewEmail($emailEntity);
 
         $builder->add(
