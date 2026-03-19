@@ -14,9 +14,14 @@ final class FieldModelDeleteTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback = false;
 
-    public function testBatchDeleteFields(): void
+    protected function setUp(): void
     {
         $this->configParams['create_custom_field_in_background'] = false;
+        parent::setUp();
+    }
+
+    public function testBatchDeleteFields(): void
+    {
         /** @var FieldModel $fieldModel */
         $fieldModel = self::getContainer()->get('mautic.lead.model.field');
 
@@ -40,13 +45,30 @@ final class FieldModelDeleteTest extends MauticMysqlTestCase
         \assert($leadFieldRepository instanceof LeadFieldRepository);
 
         Assert::assertCount(1, $leadFieldRepository->findBy(['alias' => 'test_lead_field']));
+        Assert::assertTrue($this->columnExists('leads', 'test_lead_field'));
         Assert::assertCount(1, $leadFieldRepository->findBy(['alias' => 'test_company_field']));
-
-        $this->configParams['create_custom_field_in_background'] = true;
+        Assert::assertTrue($this->columnExists('companies', 'test_company_field'));
 
         $fieldModel->deleteEntities([$leadField->getId(), $companyField->getId()]);
 
         Assert::assertCount(0, $leadFieldRepository->findBy(['alias' => 'test_lead_field']));
+        Assert::assertFalse($this->columnExists('leads', 'test_lead_field'));
         Assert::assertCount(0, $leadFieldRepository->findBy(['alias' => 'test_company_field']));
+        Assert::assertFalse($this->columnExists('companies', 'test_company_field'));
+    }
+
+    private function columnExists(string $table, string $column): bool
+    {
+        $prefix = static::getContainer()->getParameter('mautic.db_table_prefix');
+
+        return (bool) $this->connection->createQueryBuilder()
+            ->select('1')
+            ->from('INFORMATION_SCHEMA.COLUMNS')
+            ->where('TABLE_SCHEMA = DATABASE()')
+            ->andWhere('TABLE_NAME = :table')
+            ->andWhere('COLUMN_NAME = :column')
+            ->setParameter('table', $prefix.$table)
+            ->setParameter('column', $column)
+            ->fetchOne();
     }
 }
