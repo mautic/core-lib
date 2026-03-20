@@ -265,11 +265,18 @@ class CommonApiController extends FetchCommonApiController
         if ($this->model instanceof ApiLockAwareInterface && $this->model->isApiLocked($entity)) {
             $date = $entity->getCheckedOut();
 
+            // Use model name getter for entity display name
+            $nameGetter = $this->model->getNameGetter();
+
+            $name = method_exists($entity, $nameGetter)
+                ? $entity->{$nameGetter}()
+                : '';
+
             return $this->returnError(
                 $this->translator->trans(
                     'mautic.api.error.entity.locked',
                     [
-                        '%name%' => $entity->getName(),
+                        '%name%' => $name,
                         '%user%' => $entity->getCheckedOutByUser(),
                         '%date%' => $date->format($this->coreParametersHelper->get('date_format_dateonly')),
                         '%time%' => $date->format($this->coreParametersHelper->get('date_format_timeonly')),
