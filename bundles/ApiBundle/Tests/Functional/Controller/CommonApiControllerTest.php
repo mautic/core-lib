@@ -76,6 +76,59 @@ class CommonApiControllerTest extends MauticMysqlTestCase
         $this->assertEquals('Updated Firstname', $data['contact']['fields']['core']['firstname']['normalizedValue']);
     }
 
+    public function testBatchEditFailsForLockedEmailEntity(): void
+    {
+        $email = $this->createEmail('Test Email');
+
+        $this->lockEntityAsAdmin($email);
+
+        $this->createAndAuthenticateApiUser('api_user_batch', 'api-batch@example.com');
+
+        $payload = [
+            [
+                'id'   => $email->getId(),
+                'name' => 'Updated Email',
+            ],
+        ];
+
+        $this->client->request(
+            'PATCH',
+            '/api/emails/batch/edit',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode($payload)
+        );
+
+        $response = $this->client->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+
+        $data = json_decode($response->getContent(), true);
+
+        $this->assertArrayHasKey('errors', $data);
+
+        $error = $data['errors'][0];
+
+        $this->assertEquals(Response::HTTP_CONFLICT, $error['code']);
+
+        $translator = static::getContainer()->get('translator');
+        assert($translator instanceof TranslatorInterface);
+
+        $coreParametersHelper = static::getContainer()->get('mautic.helper.core_parameters');
+        assert($coreParametersHelper instanceof CoreParametersHelper);
+        $dateFormat = $coreParametersHelper->get('date_format_dateonly');
+        $timeFormat = $coreParametersHelper->get('date_format_timeonly');
+
+        $expectedMessage = $translator->trans('mautic.api.error.entity.locked', [
+            '%name%' => $email->getName(),
+            '%user%' => $email->getCheckedOutByUser(),
+            '%date%' => $email->getCheckedOut()->format($dateFormat),
+            '%time%' => $email->getCheckedOut()->format($timeFormat),
+        ]);
+
+        $this->assertEquals($expectedMessage, $error['message']);
+    }
+
     private function lockEntityAsAdmin(object $entity): void
     {
         $adminUser = $this->em->getRepository(User::class)->find(1);

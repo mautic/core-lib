@@ -262,34 +262,6 @@ class CommonApiController extends FetchCommonApiController
             return $this->accessDenied();
         }
 
-        if ($this->model instanceof ApiLockAwareInterface && $this->model->isApiLocked($entity)) {
-            $date = $entity->getCheckedOut();
-
-            // Use model name getter for entity display name
-            $nameGetter = $this->model->getNameGetter();
-
-            $name = method_exists($entity, $nameGetter)
-                ? $entity->{$nameGetter}()
-                : '';
-
-            return $this->returnError(
-                $this->translator->trans(
-                    'mautic.api.error.entity.locked',
-                    [
-                        '%name%' => $name,
-                        '%user%' => $entity->getCheckedOutByUser(),
-                        '%date%' => $date->format($this->coreParametersHelper->get('date_format_dateonly')),
-                        '%time%' => $date->format($this->coreParametersHelper->get('date_format_timeonly')),
-                    ]
-                ),
-                Response::HTTP_CONFLICT,
-                [
-                    'checkedOutBy'     => $entity->getCheckedOutByUser(),
-                    'checkedOut'       => $entity->getCheckedOut()->format('Y-m-d H:i:s T'),
-                ]
-            );
-        }
-
         return $this->processForm($request, $entity, $parameters, $method);
     }
 
@@ -504,6 +476,37 @@ class CommonApiController extends FetchCommonApiController
             // Bug reported https://github.com/symfony/symfony/issues/19788
             $defaultProperties = $this->getEntityDefaultProperties($entity);
             $parameters        = array_merge($defaultProperties, $parameters);
+        }
+
+        if ($this->model instanceof ApiLockAwareInterface
+            && $entity->getId()
+            && $this->model->isApiLocked($entity)
+        ) {
+            $date = $entity->getCheckedOut();
+
+            // Use model name getter for entity display name
+            $nameGetter = $this->model->getNameGetter();
+
+            $name = method_exists($entity, $nameGetter)
+                ? $entity->{$nameGetter}()
+                : '';
+
+            return $this->returnError(
+                $this->translator->trans(
+                    'mautic.api.error.entity.locked',
+                    [
+                        '%name%' => $name,
+                        '%user%' => $entity->getCheckedOutByUser(),
+                        '%date%' => $date->format($this->coreParametersHelper->get('date_format_dateonly')),
+                        '%time%' => $date->format($this->coreParametersHelper->get('date_format_timeonly')),
+                    ]
+                ),
+                Response::HTTP_CONFLICT,
+                [
+                    'checkedOutBy'     => $entity->getCheckedOutByUser(),
+                    'checkedOut'       => $entity->getCheckedOut()->format('Y-m-d H:i:s T'),
+                ]
+            );
         }
 
         // Check if user has access to publish
