@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\ApiBundle\Tests\Functional\Controller;
 
+use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
 use Mautic\UserBundle\Entity\Role;
@@ -38,13 +39,19 @@ class CommonApiControllerTest extends MauticMysqlTestCase
 
         $this->assertEquals(Response::HTTP_CONFLICT, $error['code']);
 
-        $translator      = static::getContainer()->get('translator');
+        $translator = static::getContainer()->get('translator');
         assert($translator instanceof TranslatorInterface);
+
+        $coreParametersHelper = static::getContainer()->get('mautic.helper.core_parameters');
+        assert($coreParametersHelper instanceof CoreParametersHelper);
+        $dateFormat = $coreParametersHelper->get('date_format_dateonly');
+        $timeFormat = $coreParametersHelper->get('date_format_timeonly');
+
         $expectedMessage = $translator->trans('mautic.api.error.entity.locked', [
             '%name%' => $email->getName(),
             '%user%' => $email->getCheckedOutByUser(),
-            '%date%' => $email->getCheckedOut()->format('F j, Y'),
-            '%time%' => $email->getCheckedOut()->format('g:i a'),
+            '%date%' => $email->getCheckedOut()->format($dateFormat),
+            '%time%' => $email->getCheckedOut()->format($timeFormat),
         ]);
 
         $this->assertEquals($expectedMessage, $error['message']);
