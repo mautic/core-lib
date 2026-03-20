@@ -8,6 +8,7 @@ use Mautic\ApiBundle\Event\ApiEntityEvent;
 use Mautic\ApiBundle\Helper\EntityResultHelper;
 use Mautic\ApiBundle\Model\ApiLockAwareInterface;
 use Mautic\CategoryBundle\Entity\Category;
+use Mautic\CoreBundle\Exception\DeleteEntityDependencyException;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\AppVersion;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
@@ -104,7 +105,15 @@ class CommonApiController extends FetchCommonApiController
                 continue;
             }
 
-            $this->model->deleteEntity($entity);
+            try {
+                $this->model->deleteEntity($entity);
+            } catch (DeleteEntityDependencyException $e) {
+                $msg = $this->translator->trans('mautic.api.dependent.entity.delete.error',
+                    ['%id%'   => $entity->getId()], 'validators');
+                $this->setBatchError($key, $msg, $e->getCode(), $errors, $entities, $entity);
+                continue;
+            }
+
             $this->doctrine->getManager()->detach($entity);
         }
 
@@ -127,21 +136,28 @@ class CommonApiController extends FetchCommonApiController
     public function deleteEntityAction($id)
     {
         $entity = $this->model->getEntity($id);
-        if (null !== $entity) {
-            if (!$this->checkEntityAccess($entity, 'delete')) {
-                return $this->accessDenied();
-            }
 
-            $this->model->deleteEntity($entity);
-
-            $this->preSerializeEntity($entity);
-            $view = $this->view([$this->entityNameOne => $entity], Response::HTTP_OK);
-            $this->setSerializationContext($view);
-
-            return $this->handleView($view);
+        if (null === $entity) {
+            return $this->notFound();
         }
 
-        return $this->notFound();
+        if (!$this->checkEntityAccess($entity, 'delete')) {
+            return $this->accessDenied();
+        }
+
+        try {
+            $this->model->deleteEntity($entity);
+        } catch (DeleteEntityDependencyException $e) {
+            $msg = $this->translator->trans('mautic.api.dependent.entity.delete.error',
+                ['%id%'   => $entity->getId()], 'validators');
+
+            return $this->returnError($msg, $e->getCode());
+        }
+        $this->preSerializeEntity($entity);
+        $view = $this->view([$this->entityNameOne => $entity], Response::HTTP_OK);
+        $this->setSerializationContext($view);
+
+        return $this->handleView($view);
     }
 
     /**
