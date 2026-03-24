@@ -25,10 +25,12 @@ class CampaignTestAbstract extends TestCase
     protected static int $mockId       = 232;
     protected static string $mockName  = 'Mock name';
     protected static string $mockAlias = 'Mock alias';
+    protected EntityManager $entityManager;
 
     protected function initCampaignModel(): CampaignModel
     {
         $entityManager = $this->createMock(EntityManager::class);
+        $this->entityManager = $entityManager;
 
         $security = $this->createMock(CorePermissions::class);
 
