@@ -156,7 +156,7 @@ class StatRepository extends CommonRepository
         }
 
         $q->setMaxResults($limit);
-        $q->groupBy('s.id');
+        $q->groupBy('s.id, s.lead_id, s.email_address, s.is_read, s.email_id, s.date_sent, s.date_read, e.name, c.id, c.companyname, campaign.id, campaign.name, ll.id, ll.name');
         $q->orderBy('s.id', 'DESC');
 
         return $q->executeQuery()->fetchAllAssociative();
