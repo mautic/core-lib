@@ -78,7 +78,7 @@ class SourceController extends CommonFormController
             if (!$cancelled = $this->isFormCancelled($form)) {
                 if ($valid = $this->isFormValid($form)) {
                     $success                      = 1;
-                    $modifiedSources[$sourceType] = array_flip($form[$sourceType]->getData());
+                    $modifiedSources[$sourceType] = $this->buildSubmittedSourceMap($form[$sourceType]->getData());
                 } else {
                     $success = 0;
                 }
@@ -187,7 +187,7 @@ class SourceController extends CommonFormController
                     $success = 1;
 
                     // save the properties to session
-                    $modifiedSources[$sourceType] = array_flip($form[$sourceType]->getData());
+                    $modifiedSources[$sourceType] = $this->buildSubmittedSourceMap($form[$sourceType]->getData());
                 } else {
                     $success = 0;
                 }
@@ -289,5 +289,15 @@ class SourceController extends CommonFormController
         if ($request->get('modifiedSources')) {
             $this->modifiedSources = json_decode($request->get('modifiedSources'), true);
         }
+    }
+
+    /**
+     * @param array<int, int|string> $submittedSources
+     *
+     * @return array<int, bool>
+     */
+    private function buildSubmittedSourceMap(array $submittedSources): array
+    {
+        return array_fill_keys($submittedSources, true);
     }
 }

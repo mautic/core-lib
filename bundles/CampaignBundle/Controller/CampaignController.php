@@ -956,8 +956,8 @@ class CampaignController extends AbstractStandardFormController
      */
     private function setCampaignSources(bool $isClone = false): void
     {
-        $campaignSources = (array) ($this->campaignElements['campaignSources'] ?? []);
-        $modifiedSources = (array) ($this->campaignElements['modifiedSources'] ?? []);
+        $campaignSources = $this->normalizeCampaignSources((array) ($this->campaignElements['campaignSources'] ?? []));
+        $modifiedSources = $this->normalizeCampaignSources((array) ($this->campaignElements['modifiedSources'] ?? []));
 
         if ($campaignSources === $modifiedSources) {
             if ($isClone) {
@@ -986,6 +986,32 @@ class CampaignController extends AbstractStandardFormController
             }
             $this->campaignSources = $modifiedSources;
         }
+    }
+
+    /**
+     * @param array<string, array<int|string, mixed>> $sources
+     *
+     * @return array<string, array<int, mixed>>
+     */
+    private function normalizeCampaignSources(array $sources): array
+    {
+        $normalizedSources = [];
+
+        foreach ($sources as $type => $typeSources) {
+            if (!is_array($typeSources)) {
+                continue;
+            }
+
+            foreach ($typeSources as $sourceId => $label) {
+                if (!ctype_digit((string) $sourceId)) {
+                    continue;
+                }
+
+                $normalizedSources[$type][(int) $sourceId] = $label;
+            }
+        }
+
+        return $normalizedSources;
     }
 
     /**
