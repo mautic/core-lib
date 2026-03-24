@@ -462,10 +462,16 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             foreach ($sources as $id => $label) {
                 switch ($type) {
                     case 'lists':
-                        $entity->addList($this->em->getReference(LeadList::class, $id));
+                        $list = $this->getLeadListSource($id);
+                        if ($list instanceof LeadList) {
+                            $entity->addList($list);
+                        }
                         break;
                     case 'forms':
-                        $entity->addForm($this->em->getReference(Form::class, $id));
+                        $form = $this->getFormSource($id);
+                        if ($form instanceof Form) {
+                            $entity->addForm($form);
+                        }
                         break;
                     default:
                         break;
@@ -477,16 +483,44 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
             foreach ($sources as $id => $label) {
                 switch ($type) {
                     case 'lists':
-                        $entity->removeList($this->em->getReference(LeadList::class, $id));
+                        $list = $this->getLeadListSource($id);
+                        if ($list instanceof LeadList) {
+                            $entity->removeList($list);
+                        }
                         break;
                     case 'forms':
-                        $entity->removeForm($this->em->getReference(Form::class, $id));
+                        $form = $this->getFormSource($id);
+                        if ($form instanceof Form) {
+                            $entity->removeForm($form);
+                        }
                         break;
                     default:
                         break;
                 }
             }
         }
+    }
+
+    private function getLeadListSource(int|string $identifier): ?LeadList
+    {
+        if (!ctype_digit((string) $identifier)) {
+            return null;
+        }
+
+        $list = $this->em->find(LeadList::class, (int) $identifier);
+
+        return $list instanceof LeadList ? $list : null;
+    }
+
+    private function getFormSource(int|string $identifier): ?Form
+    {
+        if (!ctype_digit((string) $identifier)) {
+            return null;
+        }
+
+        $form = $this->em->find(Form::class, (int) $identifier);
+
+        return $form instanceof Form ? $form : null;
     }
 
     /**
@@ -506,7 +540,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
 
                 if ($lists) {
                     foreach ($lists as $list) {
-                        $choices['lists'][$list['alias']] = $list['name'];
+                        $choices['lists'][$list['id']] = $list['name'];
                     }
                 }
 
