@@ -110,7 +110,7 @@ class AuditlogController extends CommonController
             }
 
             return [
-                'eventName'      => $eventLabel,
+                'userSourceName' => $eventLabel,
                 'eventType'      => $event['eventType'] ?? '',
                 'eventTimestamp' => $dateHelper->toText($event['timestamp'], 'local', 'Y-m-d H:i:s', true),
             ];
