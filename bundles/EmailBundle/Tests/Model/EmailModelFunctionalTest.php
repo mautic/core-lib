@@ -532,15 +532,13 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, null[]>
      */
-    public function dataFrequencyRules(): iterable
+    public static function dataFrequencyRules(): iterable
     {
         yield 'Custom Frequency Rules' => [null];
         yield 'Default Frequency Rules' => [null];
     }
 
-    /**
-     * @dataProvider dataFrequencyRules
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataFrequencyRules')]
     public function testFrequencyRulesAreAppliedWhenSendToDncIsNo(): void
     {
         $contact = $this->createContact();
@@ -553,9 +551,7 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->assertEmailIsPostponed($email, $contact);
     }
 
-    /**
-     * @dataProvider dataFrequencyRules
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataFrequencyRules')]
     public function testFrequencyRulesAreNotAppliedWhenSendToDncIsTrue(): void
     {
         $contact = $this->createContact();
@@ -570,9 +566,7 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
         $this->assertEmailIsNotPostponed();
     }
 
-    /**
-     * @dataProvider dataFrequencyRules
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataFrequencyRules')]
     public function testEmailsWithSendToDncSetToYesAreNotCountedTowardsFrequencyRules(): void
     {
         $contact     = $this->createContact();

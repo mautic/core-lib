@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Tests\EventListener;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
-use Mautic\AssetBundle\Model\AssetModel;
-use Mautic\CoreBundle\Factory\ModelFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Mautic\AssetBundle\Model\AssetModel;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
@@ -15,7 +11,6 @@ use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
-use Mautic\CoreBundle\Twig\Helper\SlotsHelper;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\EmailBundle\Event\EmailSendEvent;
@@ -82,7 +77,7 @@ final class EmailSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->emailModel       = $this->createMock(EmailModel::class);
         $this->translator       = $this->createMock(TranslatorInterface::class);
         $this->mockMessage      = $this->createMock(MauticMessage::class);
-        $this->subscriber       = new EmailSubscriber($this->ipLookupHelper, $this->auditLogModel, $this->emailModel, $this->translator, $this->createMock(EntityManager::class), $this->createMock(EmailDraftModel::class));
+        $this->subscriber       = new EmailSubscriber($this->ipLookupHelper, $this->auditLogModel, $this->emailModel, $this->translator, $this->createMock(EntityManagerInterface::class), $this->createMock(EmailDraftModel::class));
     }
 
     public function testOnEmailResendWithNoLeadIdHash(): void

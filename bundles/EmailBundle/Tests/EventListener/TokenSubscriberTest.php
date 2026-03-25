@@ -1,17 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\EmailBundle\Tests\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Mautic\AssetBundle\Model\AssetModel;
-use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Mautic\CoreBundle\Helper\PathsHelper;
-use Mautic\CoreBundle\Helper\ThemeHelper;
-use Mautic\CoreBundle\Twig\Helper\SlotsHelper;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\EmailBundle\EventListener\TokenSubscriber;
