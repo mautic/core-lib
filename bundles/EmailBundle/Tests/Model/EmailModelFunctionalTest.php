@@ -28,6 +28,8 @@ use PHPUnit\Framework\Assert;
 
 class EmailModelFunctionalTest extends MauticMysqlTestCase
 {
+    use CreateTestEntitiesTrait;
+
     private const EMAILS_A_MONTH = 2;
     private bool $useDefaultFrequencyRules;
     private EmailModel $emailModel;
@@ -525,6 +527,8 @@ class EmailModelFunctionalTest extends MauticMysqlTestCase
 
         $this->assertArrayHasKey('companies', $result);
         $this->assertEmpty($result['companies']);
+    }
+
     /**
      * @return iterable<string, null[]>
      */
