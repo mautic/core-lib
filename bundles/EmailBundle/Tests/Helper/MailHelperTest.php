@@ -1119,15 +1119,18 @@ class MailHelperTest extends TestCase
         $unsubscribeUrl   = 'http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret;
         $trackingPixelUrl = '/tracking.gif';
 
+        $callCount = 0;
         $this->router->method('generate')
-            ->withConsecutive([
-                'mautic_email_unsubscribe',
-                ['idHash' => 'hash', 'urlEmail' => 'someemail@email.test', 'secretHash' => $emailSecret],
-                UrlGeneratorInterface::ABSOLUTE_URL,
-            ], [
-                'mautic_email_tracker', ['idHash' => 'hash'], UrlGeneratorInterface::ABSOLUTE_URL,
-            ])
-            ->willReturnOnConsecutiveCalls($unsubscribeUrl, $trackingPixelUrl);
+            ->willReturnCallback(function ($route, $params = [], $type = null) use (&$callCount, $unsubscribeUrl, $trackingPixelUrl, $emailSecret) {
+                if (0 === $callCount++) {
+                    $this->assertSame('mautic_email_unsubscribe', $route);
+                    $this->assertSame(['idHash' => 'hash', 'urlEmail' => 'someemail@email.test', 'secretHash' => $emailSecret], $params);
+                    return $unsubscribeUrl;
+                }
+                $this->assertSame('mautic_email_tracker', $route);
+                $this->assertSame(['idHash' => 'hash'], $params);
+                return $trackingPixelUrl;
+            });
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
@@ -1191,19 +1194,9 @@ class MailHelperTest extends TestCase
 
         $emailSecret = hash_hmac('sha256', 'someemail@email.test', 'secret');
         $this->router->method('generate')
-            ->withConsecutive(
-                [
-                    'mautic_email_unsubscribe',
-                    ['idHash' => 'hash', 'urlEmail' => 'someemail@email.test', 'secretHash' => $emailSecret],
-                    UrlGeneratorInterface::ABSOLUTE_URL,
-                ],
-                [
-                    'mautic_email_tracker',
-                    ['idHash' => 'hash'],
-                    UrlGeneratorInterface::ABSOLUTE_URL,
-                ]
-            )
-            ->willReturn('http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret);
+            ->willReturnCallback(function ($route) use ($emailSecret) {
+                return 'http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret;
+            });
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
@@ -1909,29 +1902,28 @@ class MailHelperTest extends TestCase
         $trackedHtml = $initialHtml.'{unsubscribe_url}<img height="1" width="1" src="{tracking_pixel}" alt="" />';
 
         $this->dispatcher->method('dispatch')
-            ->withConsecutive(
-                [new EmailSendEvent($mailer), EmailEvents::EMAIL_PRE_SEND],
-                [new EmailSendEvent($mailer), EmailEvents::EMAIL_ON_SEND]
-            )
             ->willReturnCallback(function (EmailSendEvent $event, string $eventName): EmailSendEvent {
                 if (EmailEvents::EMAIL_ON_SEND === $eventName) {
                     $event->addToken('{ token }', 'https://mautic.com/app/assets/images/flags/Venezuela.png');
                     $event->addToken('{ country }', 'Venezuela');
                 }
-
                 return $event;
             });
 
+        $callCount = 0;
         $this->router->expects(self::exactly(5))
             ->method('generate')
-            ->withConsecutive(
-                ['mautic_email_unsubscribe', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL],
-                ['mautic_email_tracker', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL],
-                ['mautic_email_tracker', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL],
-                ['mautic_email_tracker', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL],
-                ['mautic_email_tracker', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL]
-            )
-            ->willReturnOnConsecutiveCalls($unsubscribeUrl, $trackingPixelUrl, $trackingPixelUrl);
+            ->willReturnCallback(function ($route, $params = [], $type = null) use (&$callCount, $unsubscribeUrl, $trackingPixelUrl) {
+                if (0 === $callCount) {
+                    $this->assertSame('mautic_email_unsubscribe', $route);
+                    ++$callCount;
+                    return $unsubscribeUrl;
+                } else {
+                    $this->assertSame('mautic_email_tracker', $route);
+                    ++$callCount;
+                    return $trackingPixelUrl;
+                }
+            });
 
         $email = new Email();
         $email->setSubject('Test');

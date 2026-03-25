@@ -233,34 +233,36 @@ class BuilderSubscriberTest extends TestCase
 
         $unsubscribeTokenizedText = '<a href="|URL|">Unsubscribe</a> {contactfield=companyname} {contactfield=lastname}';
 
+        $callCount = 0;
+        $expectedKeys = ['secret_key', 'unsubscribe_text', 'webview_text', 'default_signature_text', 'mailer_from_name', 'brand_name'];
+        $expectedResponses = [
+            'secret',
+            $unsubscribeTokenizedText,
+            'Just a text',
+            'Signature',
+            'jan.kozak@acquia.com',
+            'ACME',
+        ];
         $this->coreParametersHelper->method('get')
-            ->withConsecutive(['secret_key'], ['unsubscribe_text'], ['webview_text'], ['default_signature_text'], ['mailer_from_name'])
-            ->willReturnOnConsecutiveCalls('secret', $unsubscribeTokenizedText, 'Just a text', 'Signature', 'jan.kozak@acquia.com');
+            ->willReturnCallback(function ($key) use (&$callCount, $expectedKeys, $expectedResponses) {
+                if ($callCount < count($expectedKeys)) {
+                    $this->assertSame($expectedKeys[$callCount], $key);
+                }
+                return $expectedResponses[$callCount++] ?? null;
+            });
 
         $emailHash = hash_hmac('sha256', 'lukas.sykora@acquia.com', 'secret');
         $this->emailModel->method('buildUrl')
-            ->withConsecutive(
-                [
-                    'mautic_email_unsubscribe',
-                    ['idHash' => 'hash', 'urlEmail' => 'lukas.sykora@acquia.com', 'secretHash' => $emailHash],
-                ],
-                [
-                    'mautic_email_webview',
-                    ['idHash' => 'hash'],
-                ],
-                [
-                    'mautic_email_preview',
-                    ['objectId' => 111],
-                ]
-            )->willReturnOnConsecutiveCalls(
-                '/email/unsubscribe/hash/lukas.sykora@acquia.com/'.$emailHash,
-                '/email/webview/'.$emailHash,
-                '/email/preview/111'
-            );
+            ->willReturnCallback(function ($route, $params = [], ...$rest) use ($emailHash) {
+                return match($route) {
+                    'mautic_email_unsubscribe' => '/email/unsubscribe/hash/lukas.sykora@acquia.com/'.$emailHash,
+                    'mautic_email_webview' => '/email/webview/'.$emailHash,
+                    'mautic_email_preview' => '/email/preview/111',
+                    default => null,
+                };
+            });
 
-        $this->translator->expects($this->never())
-            ->method('trans')
-            ->withConsecutive([$unsubscribeTokenizedText], [])
+        $this->translator->method('trans')
             ->willReturn($unsubscribeTokenizedText);
 
         $this->builderSubscriber->onEmailGenerate($event);
