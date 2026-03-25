@@ -177,7 +177,10 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
     private function saveSegment(string $name, string $alias, array $filters = [], ?LeadList $segment = null): LeadList
     {
         $segment ??= new LeadList();
-        $segment->setName($name)->setAlias($alias)->setFilters($filters);
+        $segment->setName($name);
+        $segment->setPublicName($name);
+        $segment->setAlias($alias);
+        $segment->setFilters($filters);
         $this->listModel->saveEntity($segment);
 
         return $segment;
@@ -744,6 +747,9 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/edit/'.$segment->getId());
+
+        Assert::assertStringContainsString('leadlist_buttons_apply', $this->client->getResponse()->getContent());
+
         $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
         $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk());

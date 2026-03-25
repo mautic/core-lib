@@ -314,6 +314,7 @@ return [
             ],
         ],
         'mailer_is_owner'                                                   => false,
+        'disable_unsubscribe_link_header'                                   => false,
         'default_signature_text'                                            => null,
         'email_frequency_number'                                            => 0,
         'email_frequency_time'                                              => 'DAY',

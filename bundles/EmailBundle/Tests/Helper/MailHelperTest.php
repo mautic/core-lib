@@ -4,18 +4,21 @@ namespace Mautic\EmailBundle\Tests\Helper;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Mautic\AssetBundle\Model\AssetModel;
-use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
+use Mautic\CoreBundle\Twig\Helper\SlotsHelper;
+use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Entity\Email;
+use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\EmailBundle\Exception\InvalidEmailException;
 use Mautic\EmailBundle\Helper\FromEmailHelper;
 use Mautic\EmailBundle\Helper\MailHashHelper;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\EmailBundle\Helper\SMimeHelper;
 use Mautic\EmailBundle\Mailer\Exception\BatchQueueMaxException;
+use Mautic\EmailBundle\Model\EmailStatModel;
 use Mautic\EmailBundle\MonitoredEmail\Mailbox;
 use Mautic\EmailBundle\Tests\Helper\Transport\BatchTransport;
 use Mautic\EmailBundle\Tests\Helper\Transport\BcInterfaceTokenTransport;
@@ -31,6 +34,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Exception\LogicException;
 use Symfony\Component\Mime\Header\HeaderInterface;
 use Symfony\Component\Mime\Header\MailboxListHeader;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -52,7 +56,7 @@ class MailHelperTest extends TestCase
     /**
      * @var array<array<int|string|null>>
      */
-    private $defaultParams = [
+    private array $defaultParams = [
         ['mailer_from_email', null, 'nobody@nowhere.com'],
         ['mailer_from_name', null, 'No Body'],
         ['mailer_address_length_limit', null, 320],
@@ -60,55 +64,46 @@ class MailHelperTest extends TestCase
 
     private FromEmailHelper $fromEmailHelper;
 
-    /**
-     * @var CoreParametersHelper&MockObject
-     */
-    private MockObject $coreParametersHelper;
+    private CoreParametersHelper&MockObject $coreParametersHelper;
 
-    /**
-     * @var Mailbox&MockObject
-     */
-    private MockObject $mailbox;
+    private Mailbox&MockObject $mailbox;
 
-    /**
-     * @var LeadRepository&MockObject
-     */
-    private MockObject $contactRepository;
+    private LeadRepository&MockObject $contactRepository;
 
-    /**
-     * @var LoggerInterface&MockObject
-     */
-    private MockObject $logger;
+    private LoggerInterface&MockObject $logger;
 
-    /**
-     * @var RouterInterface&MockObject
-     */
-    private MockObject $router;
+    private RouterInterface&MockObject $router;
 
-    /**
-     * @var Environment&MockObject
-     */
-    private MockObject $twig;
+    private Environment&MockObject $twig;
 
-    /**
-     * @var ThemeHelper&MockObject
-     */
-    private MockObject $themeHelper;
+    private ThemeHelper&MockObject $themeHelper;
+
+    private EventDispatcherInterface&MockObject $dispatcher;
+
+    private PathsHelper $pathsHelper;
 
     private MailHashHelper $mailHashHelper;
 
-    private RequestStack $requestStack;
+    private RequestStack&MockObject $requestStack;
 
     private EntityManagerInterface&MockObject $entityManager;
 
-    private ModelFactory&MockObject $mockFactory;
-
     private SMimeHelper&MockObject $sMimeHelper;
+
+    private MockObject&Environment $environment;
+
+    private MockObject&AssetModel $assetModel;
+
+    private MockObject&TrackableModel $trackableModel;
+
+    private MockObject&RedirectModel $redirectModel;
+
+    private MockObject&EmailStatModel $emailStatModel;
 
     /**
      * @var array<array<string,string|int>>
      */
-    protected $contacts = [
+    protected array $contacts = [
         [
             'id'        => 1,
             'email'     => 'contact1@somewhere.com',
@@ -154,8 +149,8 @@ class MailHelperTest extends TestCase
         $this->entityManager        = $this->createMock(EntityManagerInterface::class);
         $this->mailHashHelper       = new MailHashHelper($this->coreParametersHelper);
         $this->requestStack         = new RequestStack();
-        $this->mockFactory          = $this->createMock(ModelFactory::class);
         $this->sMimeHelper          = $this->createMock(SMimeHelper::class);
+        $this->emailStatModel       = $this->createMock(EmailStatModel::class);
 
         // Configure SMimeHelper to return false for signing by default
         $this->sMimeHelper->method('sMimeSigningEnabled')->willReturn(false);
@@ -191,11 +186,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel
         );
         $batchMailHelper->enableQueue();
         $batchMailHelper->addTo('somebody@somewhere.com');
@@ -230,11 +225,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         try {
@@ -263,17 +258,18 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $singleMailHelper->enableQueue();
 
         $email = new Email();
         $email->setFromAddress('override@nowhere.com');
         $email->setFromName('Test');
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
         $email->setUseOwnerAsMailer(false);
         $email->setSubject('Test');
 
@@ -320,16 +316,17 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $singleMailHelper->enableQueue();
 
         $email = new Email();
         $email->setSubject('Hello');
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
         $singleMailHelper->setEmail($email);
 
         $singleMailHelper->addTo($this->contacts[0]['email']);
@@ -375,14 +372,15 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         $email = new Email();
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
         $email->setUseOwnerAsMailer(true);
         $email->setSubject('Subject');
         $email->setCustomHtml('content');
@@ -467,13 +465,14 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $email  = new Email();
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
         $email->setUseOwnerAsMailer(true);
 
         $mailer->setEmail($email);
@@ -521,15 +520,16 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $email = new Email();
 
         $email->setUseOwnerAsMailer(true);
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
 
         $mailer->setEmail($email);
         $mailer->enableQueue();
@@ -581,11 +581,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $mailer->enableQueue();
         $mailer->setSubject('Hello');
@@ -622,11 +622,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $email = new Email();
 
@@ -667,16 +667,16 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $email = new Email();
 
         $email->setSubject('Subject');
-        $email->setCustomHtml('content');
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
 
         $mailer->setEmail($email);
         $mailer->send();
@@ -709,11 +709,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $email = new Email();
 
@@ -753,18 +753,18 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $email = new Email();
 
         // From address is set
         $email->setFromAddress('from@nowhere.com');
         $email->setSubject('Subject');
-        $email->setCustomHtml('content');
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
         $mailer->setEmail($email);
         $mailer->send();
         $replyTo = $mailer->message->getReplyTo() ? $mailer->message->getReplyTo()[0]->getAddress() : null;
@@ -801,11 +801,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         $email = new Email();
@@ -963,11 +963,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $mailer->setBody('{signature}');
         $mailer->addTo($this->contacts[0]['email']);
@@ -1011,11 +1011,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $mailer->addTo($this->contacts[0]['email']);
 
@@ -1062,11 +1062,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $mailer->addTo($this->contacts[0]['email']);
         $mailer->setTokens([
@@ -1115,14 +1115,19 @@ class MailHelperTest extends TestCase
         ];
         $this->coreParametersHelper->method('get')->willReturnMap($params);
 
-        $emailSecret = hash_hmac('sha256', 'someemail@email.test', 'secret');
+        $emailSecret      = hash_hmac('sha256', 'someemail@email.test', 'secret');
+        $unsubscribeUrl   = 'http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret;
+        $trackingPixelUrl = '/tracking.gif';
 
-        $this->router->expects($this->once())
-            ->method('generate')
-            ->with('mautic_email_unsubscribe',
+        $this->router->method('generate')
+            ->withConsecutive([
+                'mautic_email_unsubscribe',
                 ['idHash' => 'hash', 'urlEmail' => 'someemail@email.test', 'secretHash' => $emailSecret],
-                UrlGeneratorInterface::ABSOLUTE_URL)
-            ->willReturn('http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret);
+                UrlGeneratorInterface::ABSOLUTE_URL,
+            ], [
+                'mautic_email_tracker', ['idHash' => 'hash'], UrlGeneratorInterface::ABSOLUTE_URL,
+            ])
+            ->willReturnOnConsecutiveCalls($unsubscribeUrl, $trackingPixelUrl);
 
         $transport     = new SmtpTransport();
         $symfonyMailer = new Mailer($transport);
@@ -1140,31 +1145,31 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $mailer->setIdHash('hash');
 
         $email = new Email();
         $email->setSubject('Test');
-        $email->setCustomHtml('<html></html>');
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
         $lead = new Lead();
         $lead->setEmail('someemail@email.test');
         $mailer->setIdHash('hash');
         $mailer->setEmail($email);
         $mailer->setLead($lead);
 
-        $mailer->setEmailType(MailHelper::EMAIL_TYPE_MARKETING);
+        $email->setSendToDnc(false);
         $headers = $mailer->getCustomHeaders();
 
         $this->assertSame('<http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret.'>', $headers['List-Unsubscribe']);
         $this->assertSame('List-Unsubscribe=One-Click', $headers['List-Unsubscribe-Post']);
 
         // There are no unsubscribe headers in transactional emails.
-        $mailer->setEmailType(MailHelper::EMAIL_TYPE_TRANSACTIONAL);
+        $email->setSendToDnc(true);
         $headers = $mailer->getCustomHeaders();
         $this->assertNull($headers['List-Unsubscribe'] ?? null);
         $this->assertNull($headers['List-Unsubscribe-Post'] ?? null);
@@ -1180,15 +1185,24 @@ class MailHelperTest extends TestCase
                     'List-Unsubscribe' => '<mailto:list@host.com?subject=unsubscribe>',
                 ]],
             ['secret_key', null, 'secret'],
+            ['disable_unsubscribe_link_header', null, false],
         ];
         $this->coreParametersHelper->method('get')->willReturnMap($params);
 
         $emailSecret = hash_hmac('sha256', 'someemail@email.test', 'secret');
-        $this->router->expects($this->once())
-            ->method('generate')
-            ->with('mautic_email_unsubscribe',
-                ['idHash' => 'hash', 'urlEmail' => 'someemail@email.test', 'secretHash' => $emailSecret],
-                UrlGeneratorInterface::ABSOLUTE_URL)
+        $this->router->method('generate')
+            ->withConsecutive(
+                [
+                    'mautic_email_unsubscribe',
+                    ['idHash' => 'hash', 'urlEmail' => 'someemail@email.test', 'secretHash' => $emailSecret],
+                    UrlGeneratorInterface::ABSOLUTE_URL,
+                ],
+                [
+                    'mautic_email_tracker',
+                    ['idHash' => 'hash'],
+                    UrlGeneratorInterface::ABSOLUTE_URL,
+                ]
+            )
             ->willReturn('http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret);
 
         $transport     = new SmtpTransport();
@@ -1207,24 +1221,24 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $mailer->setIdHash('hash');
 
         $email = new Email();
         $email->setSubject('Test');
-        $email->setCustomHtml('<html></html>');
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
+        $email->setSendToDnc(false);
         $lead = new Lead();
         $lead->setEmail('someemail@email.test');
         $mailer->setIdHash('hash');
         $mailer->setEmail($email);
         $mailer->setLead($lead);
 
-        $mailer->setEmailType(MailHelper::EMAIL_TYPE_MARKETING);
         $headers = $mailer->getCustomHeaders();
 
         $this->assertSame('<http://www.somedomain.cz/email/unsubscribe/hash/someemail@email.test/'.$emailSecret.'>,<mailto:list@host.com?subject=unsubscribe>', $headers['List-Unsubscribe']);
@@ -1250,11 +1264,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
     }
 
@@ -1322,11 +1336,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         $mailer->setTo(['sombody@somewhere.com', 'sombodyelse@somewhere.com'], 'test');
@@ -1370,11 +1384,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         $mailer->addTo($this->contacts[0]['email']);
@@ -1406,6 +1420,7 @@ class MailHelperTest extends TestCase
                     ['mailer_reply_to_email', false, '{tracking_pixel}'],
                     ['mailer_from_email', null, 'nobody@nowhere.com'],
                     ['mailer_from_name', null, 'No Body'],
+                    ['disable_unsubscribe_link_header', null, false],
                 ]
             );
 
@@ -1423,18 +1438,19 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $smtpMailHelper->addTo($this->contacts[0]['email']);
 
         $email = new Email();
         $email->setSubject('Test');
-        $email->setCustomHtml('content');
+        $email->setCustomHtml('<html>{unsubscribe_url}</html>');
         $email->setHeaders(['X-Mautic-Test-2' => '{tracking_pixel}']);
+        $email->setSendToDnc(false);
         $smtpMailHelper->setEmail($email);
         $smtpMailHelper->send();
 
@@ -1493,11 +1509,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $email = new Email();
 
@@ -1558,11 +1574,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
         $email = new Email();
 
@@ -1609,11 +1625,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         $longName = 'This is a very long name that exceeds the length limit';
@@ -1725,11 +1741,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         $addresses = ['cc1@example.com', 'cc2@example.com'];
@@ -1762,11 +1778,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         $addresses = [
@@ -1802,11 +1818,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         $addresses = ['bcc1@example.com', 'bcc2@example.com'];
@@ -1839,11 +1855,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel,
         );
 
         $addresses = [
@@ -1860,5 +1876,82 @@ class MailHelperTest extends TestCase
         $this->assertEquals('Name 1', $bcc[0]->getName());
         $this->assertEquals('bcc2@example.com', $bcc[1]->getAddress());
         $this->assertEquals('Default Name', $bcc[1]->getName());
+    }
+
+    // Testing:
+    // - images with tokens
+    // - if an image does not exist, it won't break the send and such image won't be embedded.
+    // - if an image is already embedded, it won't be embedded again.
+    // - if an image exists on the local domain, it will be embedded.
+    public function testImagesEmbeddedOnSend(): void
+    {
+        $this->coreParametersHelper->method('get')
+            ->willReturnMap(
+                [
+                    ['mailer_from_email', null, 'nobody@nowhere.com'],
+                    ['mailer_convert_embed_images', null, true],
+                    ['mailer_append_tracking_pixel', null, true],
+                    ['mailer_from_name', null, 'Test'],
+                    ['mailer_append_tracking_pixel', null, true],
+                    ['secret_key', null, 'secret'],
+                    ['site_url', null, 'https://mautic.com'],
+                ]
+            );
+
+        $unsubscribeUrl   = '/unsubscribe';
+        $trackingPixelUrl = '/tracking.gif';
+
+        $mailer = new MailHelper(new Mailer(new SmtpTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->dispatcher, $this->pathsHelper, $this->environment, $this->assetModel, $this->themeHelper, $this->trackableModel, $this->redirectModel, $this->entityManager, $this->requestStack, $this->emailStatModel, new SlotsHelper());
+        $mailer->addTo($this->contacts[0]['email']);
+        $mailer->setIdHash();
+
+        $initialHtml = 'Text <a href="https://mautic.com">Mautic</a> <img src="cid:abc" /> <img src="{ token }" /> <img src="https://mautic.com/app/assets/images/flags/{ country }.png"/> <img src="https://mautic.com/fake.jpg">';
+        $trackedHtml = $initialHtml.'{unsubscribe_url}<img height="1" width="1" src="{tracking_pixel}" alt="" />';
+
+        $this->dispatcher->method('dispatch')
+            ->withConsecutive(
+                [new EmailSendEvent($mailer), EmailEvents::EMAIL_PRE_SEND],
+                [new EmailSendEvent($mailer), EmailEvents::EMAIL_ON_SEND]
+            )
+            ->willReturnCallback(function (EmailSendEvent $event, string $eventName): EmailSendEvent {
+                if (EmailEvents::EMAIL_ON_SEND === $eventName) {
+                    $event->addToken('{ token }', 'https://mautic.com/app/assets/images/flags/Venezuela.png');
+                    $event->addToken('{ country }', 'Venezuela');
+                }
+
+                return $event;
+            });
+
+        $this->router->expects(self::exactly(5))
+            ->method('generate')
+            ->withConsecutive(
+                ['mautic_email_unsubscribe', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL],
+                ['mautic_email_tracker', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL],
+                ['mautic_email_tracker', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL],
+                ['mautic_email_tracker', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL],
+                ['mautic_email_tracker', ['idHash' => $mailer->getIdHash()], UrlGeneratorInterface::ABSOLUTE_URL]
+            )
+            ->willReturnOnConsecutiveCalls($unsubscribeUrl, $trackingPixelUrl, $trackingPixelUrl);
+
+        $email = new Email();
+        $email->setSubject('Test');
+        $email->setCustomHtml($initialHtml.'{unsubscribe_url}');
+        $mailer->setEmail($email);
+
+        try {
+            $mailer->message->getBody();
+            $this->fail('The body should be empty before send');
+        } catch (LogicException $e) {
+            Assert::assertSame('A message must have a text or an HTML part or attachments.', $e->getMessage());
+        }
+
+        Assert::assertSame($trackedHtml, $mailer->getBody());
+        $mailer->send(true);
+
+        Assert::assertSame(
+            'Text <a href="https://mautic.com">Mautic</a> <img src="cid:abc" /> <img src="cid:2cb7cfd2ffccfbbbaf0e4d8891df2d79" /> <img src="cid:2cb7cfd2ffccfbbbaf0e4d8891df2d79"/> <img src="https://mautic.com/fake.jpg">{unsubscribe_url}<img height="1" width="1" src="" alt="" />',
+            $mailer->message->getHtmlBody()
+        );
+        Assert::assertSame($trackedHtml, $mailer->getBody());
     }
 }
