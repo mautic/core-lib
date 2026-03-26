@@ -1126,10 +1126,12 @@ class MailHelperTest extends TestCase
                 if (0 === $callCount++) {
                     $this->assertSame('mautic_email_unsubscribe', $route);
                     $this->assertSame(['idHash' => 'hash', 'urlEmail' => 'someemail@email.test', 'secretHash' => $emailSecret], $params);
+
                     return $unsubscribeUrl;
                 }
                 $this->assertSame('mautic_email_tracker', $route);
                 $this->assertSame(['idHash' => 'hash'], $params);
+
                 return $trackingPixelUrl;
             });
 
@@ -1908,6 +1910,7 @@ class MailHelperTest extends TestCase
                     $event->addToken('{ token }', 'https://mautic.com/app/assets/images/flags/Venezuela.png');
                     $event->addToken('{ country }', 'Venezuela');
                 }
+
                 return $event;
             });
 
@@ -1918,10 +1921,12 @@ class MailHelperTest extends TestCase
                 if (0 === $callCount) {
                     $this->assertSame('mautic_email_unsubscribe', $route);
                     ++$callCount;
+
                     return $unsubscribeUrl;
                 } else {
                     $this->assertSame('mautic_email_tracker', $route);
                     ++$callCount;
+
                     return $trackingPixelUrl;
                 }
             });

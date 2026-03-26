@@ -233,8 +233,8 @@ class BuilderSubscriberTest extends TestCase
 
         $unsubscribeTokenizedText = '<a href="|URL|">Unsubscribe</a> {contactfield=companyname} {contactfield=lastname}';
 
-        $callCount = 0;
-        $expectedKeys = ['secret_key', 'unsubscribe_text', 'webview_text', 'default_signature_text', 'mailer_from_name', 'brand_name'];
+        $callCount         = 0;
+        $expectedKeys      = ['secret_key', 'unsubscribe_text', 'webview_text', 'default_signature_text', 'mailer_from_name', 'brand_name'];
         $expectedResponses = [
             'secret',
             $unsubscribeTokenizedText,
@@ -248,17 +248,18 @@ class BuilderSubscriberTest extends TestCase
                 if ($callCount < count($expectedKeys)) {
                     $this->assertSame($expectedKeys[$callCount], $key);
                 }
+
                 return $expectedResponses[$callCount++] ?? null;
             });
 
         $emailHash = hash_hmac('sha256', 'lukas.sykora@acquia.com', 'secret');
         $this->emailModel->method('buildUrl')
             ->willReturnCallback(function ($route, $params = [], ...$rest) use ($emailHash) {
-                return match($route) {
+                return match ($route) {
                     'mautic_email_unsubscribe' => '/email/unsubscribe/hash/lukas.sykora@acquia.com/'.$emailHash,
-                    'mautic_email_webview' => '/email/webview/'.$emailHash,
-                    'mautic_email_preview' => '/email/preview/111',
-                    default => null,
+                    'mautic_email_webview'     => '/email/webview/'.$emailHash,
+                    'mautic_email_preview'     => '/email/preview/111',
+                    default                    => null,
                 };
             });
 

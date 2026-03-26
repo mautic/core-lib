@@ -128,7 +128,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->twig                 = $this->createMock(Environment::class);
         $this->sMimeHelper          = $this->createMock(SMimeHelper::class);
         $this->pathsHelper          = $this->createMock(PathsHelper::class);
-            $this->dispatcher           = $this->createMock(EventDispatcherInterface::class);
+        $this->dispatcher           = $this->createMock(EventDispatcherInterface::class);
         $this->assetModel           = $this->createMock(AssetModel::class);
         $this->trackableModel       = $this->createMock(TrackableModel::class);
         $this->redirectModel        = $this->createMock(RedirectModel::class);
