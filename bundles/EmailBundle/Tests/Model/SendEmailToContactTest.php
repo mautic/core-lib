@@ -78,91 +78,37 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         ],
     ];
 
-    /**
-     * @var MockObject&FromEmailHelper
-     */
-    private $fromEmaiHelper;
+    private MockObject&FromEmailHelper $fromEmaiHelper;
 
-    /**
-     * @var MockObject&CoreParametersHelper
-     */
-    private $coreParametersHelper;
+    private MockObject&CoreParametersHelper $coreParametersHelper;
 
-    /**
-     * @var MockObject&Mailbox
-     */
-    private $mailbox;
+    private MockObject&Mailbox $mailbox;
 
-    /**
-     * @var MockObject&LoggerInterface
-     */
-    private MockObject $loggerMock;
+    private MockObject&LoggerInterface $loggerMock;
 
     private MailHashHelper $mailHashHelper;
 
-    /**
-     * @var MockObject&TranslatorInterface
-     */
-    private MockObject $translator;
+    private MockObject&TranslatorInterface $translator;
 
-    /**
-     * @var MockObject&MailHelper
-     */
-    private $mailHelper;
+    private MockObject&MailHelper $mailHelper;
 
-    /**
-     * @var MockObject&DoNotContact
-     */
-    private $dncModel;
+    private MockObject&DoNotContact $dncModel;
 
-    /**
-     * @var MockObject&EmailStatModel
-     */
-    private $emailStatModel;
+    private MockObject&EmailStatModel $emailStatModel;
 
-    /**
-     * @var MockObject&Environment
-     */
-    private MockObject $twig;
+    private MockObject&Environment $twig;
 
     private MockObject&SMimeHelper $sMimeHelper;
 
+    private MockObject&EventDispatcherInterface $dispatcher;
+
     private MockObject&PathsHelper $pathsHelper;
 
-    /**
-     * @var MockObject&Environment
-     */
-    private $environment;
+    private MockObject&AssetModel $assetModel;
 
-    /**
-     * @var MockObject&AssetModel
-     */
-    private $assetModel;
+    private MockObject&TrackableModel $trackableModel;
 
-    /**
-     * @var MockObject&ThemeHelper
-     */
-    private $themeHelper;
-
-    /**
-     * @var MockObject&TrackableModel
-     */
-    private $trackableModel;
-
-    /**
-     * @var MockObject&RedirectModel
-     */
-    private $redirectModel;
-
-    /**
-     * @var MockObject&EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var MockObject&RequestStack
-     */
-    private $requestStack;
+    private MockObject&RedirectModel $redirectModel;
 
     private StatHelper $statHelper;
 
@@ -181,20 +127,17 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $this->translator           = $this->createMock(TranslatorInterface::class);
         $this->twig                 = $this->createMock(Environment::class);
         $this->sMimeHelper          = $this->createMock(SMimeHelper::class);
+        $this->pathsHelper          = $this->createMock(PathsHelper::class);
+            $this->dispatcher           = $this->createMock(EventDispatcherInterface::class);
+        $this->assetModel           = $this->createMock(AssetModel::class);
+        $this->trackableModel       = $this->createMock(TrackableModel::class);
+        $this->redirectModel        = $this->createMock(RedirectModel::class);
 
         $this->sMimeHelper->method('signContent')
             ->willReturnCallback(fn (MauticMessage $message) => $message);
 
         $this->fromEmaiHelper->method('getFrom')
             ->willReturn(new AddressDTO('someone@somewhere.com'));
-        $this->pathsHelper          = $this->createMock(PathsHelper::class);
-        $this->environment          = $this->createMock(Environment::class);
-        $this->assetModel           = $this->createMock(AssetModel::class);
-        $this->themeHelper          = $this->createMock(ThemeHelper::class);
-        $this->trackableModel       = $this->createMock(TrackableModel::class);
-        $this->redirectModel        = $this->createMock(RedirectModel::class);
-        $this->entityManager        = $this->createMock(EntityManagerInterface::class);
-        $this->requestStack         = $this->createMock(RequestStack::class);
     }
 
     #[\PHPUnit\Framework\Attributes\TestDox('Tests that all contacts are temporarily failed if an Email entity happens to be incorrectly configured')]
@@ -329,13 +272,13 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                 $routerMock,
                 $this->twig,
                 $themeHelper,
-                $this->createMock(PathsHelper::class),
-                $this->createMock(EventDispatcherInterface::class),
+                $this->pathsHelper,
+                $this->dispatcher,
                 $requestStack,
                 $entityManager,
-                $this->createMock(AssetModel::class),
-                $this->createMock(TrackableModel::class),
-                $this->createMock(RedirectModel::class),
+                $this->assetModel,
+                $this->trackableModel,
+                $this->redirectModel,
                 $this->sMimeHelper,
                 $this->emailStatModel,
             ])
@@ -545,13 +488,13 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                 $routerMock,
                 $this->twig,
                 $themeHelper,
-                $this->createMock(PathsHelper::class),
-                $this->createMock(EventDispatcherInterface::class),
+                $this->pathsHelper,
+                $this->dispatcher,
                 $requestStack,
                 $entityManager,
-                $this->createMock(AssetModel::class),
-                $this->createMock(TrackableModel::class),
-                $this->createMock(RedirectModel::class),
+                $this->assetModel,
+                $this->trackableModel,
+                $this->redirectModel,
                 $this->sMimeHelper,
                 $this->emailStatModel,
             ])
@@ -665,13 +608,13 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
                 $routerMock,
                 $this->twig,
                 $themeHelper,
-                $this->createMock(PathsHelper::class),
-                $this->createMock(EventDispatcherInterface::class),
+                $this->pathsHelper,
+                $this->dispatcher,
                 $requestStack,
                 $entityManager,
-                $this->createMock(AssetModel::class),
-                $this->createMock(TrackableModel::class),
-                $this->createMock(RedirectModel::class),
+                $this->assetModel,
+                $this->trackableModel,
+                $this->redirectModel,
                 $this->sMimeHelper,
                 $this->emailStatModel,
             ])
@@ -778,13 +721,13 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
             $router,
             $twig,
             $themeHelper,
-            $this->createMock(PathsHelper::class),
-            $this->createMock(EventDispatcherInterface::class),
+            $this->pathsHelper,
+            $this->dispatcher,
             $requestStack,
             $entityManager,
-            $this->createMock(AssetModel::class),
-            $this->createMock(TrackableModel::class),
-            $this->createMock(RedirectModel::class),
+            $this->assetModel,
+            $this->trackableModel,
+            $this->redirectModel,
             $this->sMimeHelper,
             $this->emailStatModel,
         );

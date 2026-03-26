@@ -8,7 +8,6 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Helper\ThemeHelper;
-use Mautic\CoreBundle\Twig\Helper\SlotsHelper;
 use Mautic\EmailBundle\EmailEvents;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Event\EmailSendEvent;
@@ -37,7 +36,6 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Exception\LogicException;
 use Symfony\Component\Mime\Header\HeaderInterface;
 use Symfony\Component\Mime\Header\MailboxListHeader;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
@@ -89,8 +87,6 @@ class MailHelperTest extends TestCase
     private EntityManagerInterface&MockObject $entityManager;
 
     private SMimeHelper&MockObject $sMimeHelper;
-
-    private MockObject&Environment $environment;
 
     private MockObject&AssetModel $assetModel;
 
@@ -146,9 +142,14 @@ class MailHelperTest extends TestCase
         $this->router               = $this->createMock(RouterInterface::class);
         $this->twig                 = $this->createMock(Environment::class);
         $this->themeHelper          = $this->createMock(ThemeHelper::class);
+        $this->dispatcher           = $this->createMock(EventDispatcherInterface::class);
+        $this->pathsHelper          = $this->createMock(PathsHelper::class);
+        $this->assetModel           = $this->createMock(AssetModel::class);
+        $this->trackableModel       = $this->createMock(TrackableModel::class);
+        $this->redirectModel        = $this->createMock(RedirectModel::class);
         $this->entityManager        = $this->createMock(EntityManagerInterface::class);
         $this->mailHashHelper       = new MailHashHelper($this->coreParametersHelper);
-        $this->requestStack         = new RequestStack();
+        $this->requestStack         = $this->createMock(RequestStack::class);
         $this->sMimeHelper          = $this->createMock(SMimeHelper::class);
         $this->emailStatModel       = $this->createMock(EmailStatModel::class);
 
@@ -1684,11 +1685,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->mockFactory,
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->createMock(EmailStatModel::class),
         );
 
         $email = new Email();
@@ -1894,7 +1895,7 @@ class MailHelperTest extends TestCase
         $unsubscribeUrl   = '/unsubscribe';
         $trackingPixelUrl = '/tracking.gif';
 
-        $mailer = new MailHelper(new Mailer(new SmtpTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->dispatcher, $this->pathsHelper, $this->environment, $this->assetModel, $this->themeHelper, $this->trackableModel, $this->redirectModel, $this->entityManager, $this->requestStack, $this->emailStatModel, new SlotsHelper());
+        $mailer = new MailHelper(new Mailer(new SmtpTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->pathsHelper, $this->dispatcher, $this->requestStack, $this->entityManager, $this->assetModel, $this->trackableModel, $this->redirectModel, $this->sMimeHelper, $this->emailStatModel);
         $mailer->addTo($this->contacts[0]['email']);
         $mailer->setIdHash();
 

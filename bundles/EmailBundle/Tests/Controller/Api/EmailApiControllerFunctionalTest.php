@@ -33,7 +33,7 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->configParams['mailer_from_name']       = 'Mautic Admin';
         $this->configParams['default_signature_text'] = 'Best regards, |FROM_NAME|';
 
-        if ('testCreateEmailWithoutSendToDncPermission' === $this->getName()) {
+        if ('testCreateEmailWithoutSendToDncPermission' === $this->name()) {
             $this->clientServer = [
                 'PHP_AUTH_USER' => 'sales',
                 'PHP_AUTH_PW'   => 'Maut1cR0cks!',

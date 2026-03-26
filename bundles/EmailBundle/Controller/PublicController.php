@@ -778,6 +778,8 @@ class PublicController extends CommonFormController
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @return array<mixed>
      */
     private function getViewParams(Lead $lead, string $idHash, array $params): array
