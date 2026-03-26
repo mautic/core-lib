@@ -554,7 +554,7 @@ Mautic.toggleYesNo = function(element) {
         $textEl = $toggle.find('.toggle__text'),
         isYes = $yesInput.is(':checked');
 
-    if ($yesInput.is(':disabled')) {
+    if ($toggle.hasClass('toggle--disabled') || $toggle.hasClass('toggle--readonly')) {
         return;
     }
 
