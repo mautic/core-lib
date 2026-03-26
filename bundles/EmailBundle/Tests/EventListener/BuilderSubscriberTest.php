@@ -20,32 +20,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BuilderSubscriberTest extends TestCase
 {
-    /**
-     * @var MockObject&CoreParametersHelper
-     */
-    private MockObject $coreParametersHelper;
+    private MockObject&CoreParametersHelper $coreParametersHelper;
 
     private BuilderSubscriber $builderSubscriber;
 
-    /**
-     * @var MockObject&EmailModel
-     */
-    private MockObject $emailModel;
+    private MockObject&EmailModel $emailModel;
 
-    /**
-     * @var MockObject&TrackableModel
-     */
-    private MockObject $trackableModel;
+    private MockObject&TrackableModel $trackableModel;
 
-    /**
-     * @var MockObject&RedirectModel
-     */
-    private MockObject $redirectModel;
+    private MockObject&RedirectModel $redirectModel;
 
-    /**
-     * @var MockObject&TranslatorInterface
-     */
-    private MockObject $translator;
+    private MockObject&TranslatorInterface $translator;
 
     protected function setUp(): void
     {

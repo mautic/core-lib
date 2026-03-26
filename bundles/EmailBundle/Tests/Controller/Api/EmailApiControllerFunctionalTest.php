@@ -33,14 +33,8 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->configParams['mailer_from_name']       = 'Mautic Admin';
         $this->configParams['default_signature_text'] = 'Best regards, |FROM_NAME|';
 
-        if ('testCreateEmailWithoutSendToDncPermission' === $this->name()) {
-            $this->clientServer = [
-                'PHP_AUTH_USER' => 'sales',
-                'PHP_AUTH_PW'   => 'Maut1cR0cks!',
-            ];
-        }
-
         parent::setUp();
+
         $this->loadFixtures([LoadCategoryData::class]);
         $this->setUpMailer();
     }
@@ -464,15 +458,18 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testCreateEmailWithoutSendToDncPermission(): void
     {
-        $user       = $this->getUser($this->clientServer['PHP_AUTH_USER']);
+        $user       = $this->getUser('sales');
         $permission = ['email:emails' => ['create']];
         $this->setPermission($user->getRole(), $permission);
+        $this->client->setServerParameter('PHP_AUTH_USER', $user->getUserIdentifier());
+        $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
         $payload = [
             'name'       => 'API email',
             'subject'    => 'Email created via API test',
             'customHtml' => '<h1>Email content created by an API test</h1>',
             'sendToDnc'  => true,
         ];
+        $this->em->clear();
         $this->client->request('POST', '/api/emails/new', $payload);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);

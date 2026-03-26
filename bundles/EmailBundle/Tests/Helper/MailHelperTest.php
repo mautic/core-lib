@@ -78,7 +78,7 @@ class MailHelperTest extends TestCase
 
     private EventDispatcherInterface&MockObject $dispatcher;
 
-    private PathsHelper $pathsHelper;
+    private PathsHelper&MockObject $pathsHelper;
 
     private MailHashHelper $mailHashHelper;
 
@@ -183,7 +183,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -222,7 +222,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $entityManager,
@@ -255,7 +255,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -313,7 +313,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -369,7 +369,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -462,7 +462,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -517,7 +517,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -578,7 +578,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -619,7 +619,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -664,7 +664,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -706,7 +706,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -750,7 +750,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -798,7 +798,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -960,7 +960,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1008,7 +1008,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1059,7 +1059,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1147,7 +1147,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1213,7 +1213,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1256,7 +1256,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1328,7 +1328,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1376,7 +1376,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1430,7 +1430,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1501,7 +1501,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1566,7 +1566,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1617,7 +1617,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1683,7 +1683,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1733,7 +1733,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1770,7 +1770,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1810,7 +1810,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1847,7 +1847,7 @@ class MailHelperTest extends TestCase
             $this->router,
             $this->twig,
             $this->themeHelper,
-            $this->createMock(PathsHelper::class),
+            $this->pathsHelper,
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
@@ -1894,10 +1894,28 @@ class MailHelperTest extends TestCase
                 ]
             );
 
-        $unsubscribeUrl   = '/unsubscribe';
-        $trackingPixelUrl = '/tracking.gif';
+        $this->pathsHelper->method('getRootPath')->willReturn(realpath(__DIR__.'/../../../../../'));
 
-        $mailer = new MailHelper(new Mailer(new SmtpTransport()), $this->fromEmailHelper, $this->coreParametersHelper, $this->mailbox, $this->logger, $this->mailHashHelper, $this->router, $this->twig, $this->themeHelper, $this->pathsHelper, $this->dispatcher, $this->requestStack, $this->entityManager, $this->assetModel, $this->trackableModel, $this->redirectModel, $this->sMimeHelper, $this->emailStatModel);
+        $mailer = new MailHelper(
+            new Mailer(new SmtpTransport()),
+            $this->fromEmailHelper,
+            $this->coreParametersHelper,
+            $this->mailbox,
+            $this->logger,
+            $this->mailHashHelper,
+            $this->router,
+            $this->twig,
+            $this->themeHelper,
+            $this->pathsHelper,
+            $this->dispatcher,
+            $this->requestStack,
+            $this->entityManager,
+            $this->assetModel,
+            $this->trackableModel,
+            $this->redirectModel,
+            $this->sMimeHelper,
+            $this->emailStatModel
+        );
         $mailer->addTo($this->contacts[0]['email']);
         $mailer->setIdHash();
 
@@ -1914,21 +1932,11 @@ class MailHelperTest extends TestCase
                 return $event;
             });
 
-        $callCount = 0;
-        $this->router->expects(self::exactly(5))
-            ->method('generate')
-            ->willReturnCallback(function ($route, $params = [], $type = null) use (&$callCount, $unsubscribeUrl, $trackingPixelUrl) {
-                if (0 === $callCount) {
-                    $this->assertSame('mautic_email_unsubscribe', $route);
-                    ++$callCount;
-
-                    return $unsubscribeUrl;
-                } else {
-                    $this->assertSame('mautic_email_tracker', $route);
-                    ++$callCount;
-
-                    return $trackingPixelUrl;
-                }
+        $this->router->method('generate')
+            ->willReturnCallback(fn ($route) => match ($route) {
+                'mautic_email_unsubscribe' => '/unsubscribe',
+                'mautic_email_tracker'     => '/tracking.gif',
+                default                    => $route,
             });
 
         $email = new Email();
@@ -1946,8 +1954,8 @@ class MailHelperTest extends TestCase
         Assert::assertSame($trackedHtml, $mailer->getBody());
         $mailer->send(true);
 
-        Assert::assertSame(
-            'Text <a href="https://mautic.com">Mautic</a> <img src="cid:abc" /> <img src="cid:2cb7cfd2ffccfbbbaf0e4d8891df2d79" /> <img src="cid:2cb7cfd2ffccfbbbaf0e4d8891df2d79"/> <img src="https://mautic.com/fake.jpg">{unsubscribe_url}<img height="1" width="1" src="" alt="" />',
+        Assert::assertMatchesRegularExpression(
+            '#^Text <a href="https://mautic\.com">Mautic</a> <img src="cid:abc" /> <img src="cid:2cb7cfd2ffccfbbbaf0e4d8891df2d79" /> <img src="cid:2cb7cfd2ffccfbbbaf0e4d8891df2d79"/> <img src="https://mautic\.com/fake\.jpg">\{unsubscribe_url\}<img height="1" width="1" src="/tracking\.gif\?ct=[A-Za-z0-9%]+" alt="" />$#',
             $mailer->message->getHtmlBody()
         );
         Assert::assertSame($trackedHtml, $mailer->getBody());

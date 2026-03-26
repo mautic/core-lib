@@ -835,7 +835,8 @@ class MailHelper
                     $path = $this->pathsHelper->getRootPath().$path;
                 }
 
-                if (file_exists($path) && $imageContent = file_get_contents($path)) {
+                // Ingore the get_contents errors and use the path in the image src instead if it cannot be fetched.
+                if ($imageContent = @file_get_contents($path)) {
                     $this->message->embed($imageContent, md5($match));
                     $this->embedImagesReplaces[$match] = 'cid:'.md5($match);
                 }
