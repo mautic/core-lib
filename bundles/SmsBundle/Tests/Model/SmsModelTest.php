@@ -10,13 +10,13 @@ use Mautic\CoreBundle\Helper\CacheStorageHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\LeadBundle\Entity\DoNotContactRepository;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\PageBundle\Model\TrackableModel;
 use Mautic\SmsBundle\Collection\RecipientCollection;
 use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Entity\SmsRepository;
+use Mautic\SmsBundle\Entity\StatRepository;
 use Mautic\SmsBundle\Form\Type\SmsType;
 use Mautic\SmsBundle\Helper\DTO\SmsRecipientDTO;
 use Mautic\SmsBundle\Model\SmsModel;
@@ -75,7 +75,6 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
         $this->smsModel             = new SmsModel(
             $this->pageTrackableModel,
             $this->leadModel,
-            $this->messageQueueModel,
             $this->transport,
             $this->cacheStorageHelper,
             $this->entityManger,
@@ -127,16 +126,9 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
 
     public function testSendSMSTest(): void
     {
-        $dncMock = $this->createMock(DoNotContactRepository::class);
-        $dncMock->method('getChannelList')
-            ->with('sms', [1, 2])
-            ->willReturn([]);
-
-        $sms = $this->createMock(Sms::class);
-        $sms->method('getId')
-            ->willReturn(1);
-        $sms->method('getMessage')
-            ->willReturn('test');
+        $sms = new Sms();
+        $this->setProperty($sms, 'id', 1);
+        $sms->setMessage('test');
 
         $lead1 = new Lead();
         $lead1->setMobile('+1234567890');
@@ -145,10 +137,6 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
         $lead2 = new Lead();
         $lead2->setMobile('+123456790');
         $lead2->setId(2);
-
-        $this->leadModel->method('getEntities')
-            ->with(['ids' => [$lead1, $lead2]])
-            ->willReturn([$lead1, $lead2]);
 
         // Partial mock, mocks just getRepository
         $smsModel = $this->getMockBuilder(SmsModel::class)
@@ -167,19 +155,19 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
                 $this->logger,
                 $this->coreParametersHelper,
             ])
-            ->onlyMethods(['getDoNotContactRepository'])
+            ->onlyMethods(['getRepository', 'getStatRepository'])
             ->getMock();
         $smsModel->method('getRepository')
             ->willReturn($smsRepo = $this->createMock(SmsRepository::class));
+
+        $smsModel->method('getStatRepository')
+            ->willReturn($this->createMock(StatRepository::class));
 
         $smsRepo->expects($this->once())
             ->method('upCount')
             ->with($sms->getId(), 'sent', 2);
 
-        $smsModel->method('getDoNotContactRepository')
-            ->willReturn($dncMock);
-
-        $transport->expects($this->once())
+        $this->transport->expects($this->once())
             ->method('sendBatchSms')
             ->willReturnCallback(function (RecipientCollection $recipientCollection, string $message) {
                 /** @var SmsRecipientDTO $recipient */

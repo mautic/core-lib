@@ -114,7 +114,14 @@ final class SmsEvents
      */
     public const ON_SMS_TOKENS_BUILD = 'mautic.sms.on_tokens_build';
 
-    const ON_CAMPAIGN_REPLY = 'mautic.sms.on_campaign_reply';
+    /**
+     * The mautic.sms.on_campaign_reply event is dispatched when a SMS reply campaign decision is processed.
+     *
+     * The event listener receives a Mautic\SmsBundle\Event\ReplyEvent
+     *
+     * @var string
+     */
+    public const ON_CAMPAIGN_REPLY = 'mautic.sms.on_campaign_reply';
 
     /**
      * The mautic.sms.dnc_filter_contacts_on_send event is dispatched when sending an SMS
@@ -124,7 +131,7 @@ final class SmsEvents
      *
      * @var string
      */
-    const DNC_FILTER_CONTACTS_ON_SEND = 'mautic.sms.dnc_filter_contacts_on_send';
+    public const DNC_FILTER_CONTACTS_ON_SEND = 'mautic.sms.dnc_filter_contacts_on_send';
 
     /**
      * The mautic.sms.queue_filter_contacts_on_send event is dispatched when sending an SMS
@@ -134,7 +141,7 @@ final class SmsEvents
      *
      * @var string
      */
-    const QUEUE_FILTER_CONTACTS_ON_SEND = 'mautic.sms.queue_filter_contacts_on_send';
+    public const QUEUE_FILTER_CONTACTS_ON_SEND = 'mautic.sms.queue_filter_contacts_on_send';
 
     /**
      * The mautic.sms.filter_contacts_on_send event is dispatched when sending an SMS
@@ -144,5 +151,5 @@ final class SmsEvents
      *
      * @var string
      */
-    const FILTER_CONTACTS_ON_SEND = 'mautic.sms.filter_contacts_on_send';
+    public const FILTER_CONTACTS_ON_SEND = 'mautic.sms.filter_contacts_on_send';
 }

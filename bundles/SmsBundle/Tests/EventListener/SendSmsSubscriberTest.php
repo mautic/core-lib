@@ -8,27 +8,25 @@ use Mautic\ChannelBundle\Model\MessageQueueModel;
 use Mautic\LeadBundle\Entity\DoNotContactRepository;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\SmsBundle\Event\DncEvent;
+use Mautic\SmsBundle\Event\FilterEvent;
+use Mautic\SmsBundle\Event\QueueEvent;
 use Mautic\SmsBundle\EventListener\SendSmsSubscriber;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class SendSmsSubscriberTest extends TestCase
+final class SendSmsSubscriberTest extends TestCase
 {
-    /**
-     * @var SendSmsSubscriber
-     */
-    private $subscriber;
+    private SendSmsSubscriber $subscriber;
 
-    /**
-     * @var DoNotContactRepository|MockObject
-     */
-    private $dncRepoMock;
+    private DoNotContactRepository&MockObject $dncRepoMock;
+
+    private MessageQueueModel&MockObject $mqmMock;
 
     public function setUp(): void
     {
         $this->subscriber = new SendSmsSubscriber(
             $this->dncRepoMock = $this->createMock(DoNotContactRepository::class),
-            $this->createMock(MessageQueueModel::class)
+            $this->mqmMock     = $this->createMock(MessageQueueModel::class)
         );
     }
 
@@ -62,5 +60,80 @@ class SendSmsSubscriberTest extends TestCase
 
         $this->assertCount(1, $event->getContacts());
         $this->assertCount(1, $event->getRemovedContacts());
+    }
+
+    public function testQueueFilterNoEntriesDoesNotRemoveContacts(): void
+    {
+        $this->mqmMock->method('processFrequencyRules')
+            ->willReturn([]);
+
+        $event = new QueueEvent($contacts = [
+            1 => new Lead(),
+            2 => new Lead(),
+        ], []);
+
+        $this->subscriber->queueFilter($event);
+
+        $this->assertSame($contacts, $event->getContacts());
+    }
+
+    public function testQueueFilterContactWithFrequencyRuleIsRemoved(): void
+    {
+        $this->mqmMock->method('processFrequencyRules')
+            ->willReturn($contactToRemove = [
+                1 => new Lead(),
+            ]);
+
+        $event = new QueueEvent(array_merge($contacts = [
+            2 => new Lead(),
+        ], $contactToRemove), []);
+
+        $this->subscriber->queueFilter($event);
+
+        $this->assertCount(1, $event->getContacts());
+        $this->assertCount(1, $event->getQueuedContacts());
+    }
+
+    public function testGenericFilterContactsWithPhoneNumbersAreNotRemoved(): void
+    {
+        $event = new FilterEvent($contacts = [
+            1 => $contact1 = new Lead(),
+            2 => $contact2 = new Lead(),
+        ]);
+
+        $this->setProperty($contact1, 'id', 1);
+        $contact1->setPhone('+1234567890');
+        $this->setProperty($contact2, 'id', 2);
+        $contact2->setPhone('+1234567890');
+
+        $this->subscriber->genericFilter($event);
+
+        $this->assertSame($contacts, $event->getContacts());
+    }
+
+    public function testGenericFilterContactsWithoutPhoneNumbersAreRemoved(): void
+    {
+        $event = new FilterEvent($contacts = [
+            1 => $contact1 = new Lead(),
+            2 => $contact2 = new Lead(),
+        ]);
+
+        $this->setProperty($contact1, 'id', 1);
+        $this->setProperty($contact2, 'id', 2);
+
+        $this->subscriber->genericFilter($event);
+
+        $this->assertCount(0, $event->getContacts());
+        $this->assertCount(2, $event->getRemovedContacts());
+    }
+
+    /**
+     * @param mixed $value
+     */
+    private function setProperty(object $object, string $property, $value): void
+    {
+        \Closure::bind(function (object $object) use ($property, $value) {
+            $object->$property = $value;
+        }, null, $object)($object);
     }
 }

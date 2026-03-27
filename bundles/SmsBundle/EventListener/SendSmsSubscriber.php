@@ -14,28 +14,16 @@ use Mautic\SmsBundle\Event\QueueEvent;
 use Mautic\SmsBundle\SmsEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SendSmsSubscriber implements EventSubscriberInterface
+final class SendSmsSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var DoNotContactRepository
-     */
-    private $dncRepo;
-
-    /**
-     * @var MessageQueueModel
-     */
-    private $messageQueueModel;
-
-    public function __construct(DoNotContactRepository $dncRepo, MessageQueueModel $messageQueueModel)
+    public function __construct(private DoNotContactRepository $dncRepo, private MessageQueueModel $messageQueueModel)
     {
-        $this->dncRepo           = $dncRepo;
-        $this->messageQueueModel = $messageQueueModel;
     }
 
     /**
      * @return array<string, array<mixed>>
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             SmsEvents::DNC_FILTER_CONTACTS_ON_SEND   => ['dncFilter', 0],
@@ -79,12 +67,8 @@ class SendSmsSubscriber implements EventSubscriberInterface
 
     public function genericFilter(FilterEvent $event): void
     {
-        $contactsWithoutNumbers = array_filter($event->getContacts(), function (Lead $contact) {
-            return empty($contact->getLeadPhoneNumber());
-        });
+        $contactsWithoutNumbers = array_filter($event->getContacts(), fn(Lead $contact) => empty($contact->getLeadPhoneNumber()));
 
-        $event->removeContacts(array_map(function (Lead $contact) {
-            return $contact->getId();
-        }, $contactsWithoutNumbers));
+        $event->removeContacts(array_map(fn(Lead $contact) => $contact->getId(), $contactsWithoutNumbers));
     }
 }

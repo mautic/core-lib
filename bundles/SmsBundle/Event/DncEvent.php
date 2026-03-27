@@ -5,26 +5,20 @@ declare(strict_types=1);
 namespace Mautic\SmsBundle\Event;
 
 use Mautic\LeadBundle\Entity\Lead;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class DncEvent extends Event
+final class DncEvent extends Event
 {
-    /**
-     * @var array<Lead>
-     */
-    private $contacts;
-
     /**
      * @var array<int>
      */
-    private $removed  = [];
+    private array $removed = [];
 
     /**
      * @param array<int, Lead> $contacts
      */
-    public function __construct(array $contacts)
+    public function __construct(private array $contacts)
     {
-        $this->contacts = $contacts;
     }
 
     /**

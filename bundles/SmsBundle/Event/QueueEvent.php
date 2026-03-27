@@ -5,33 +5,21 @@ declare(strict_types=1);
 namespace Mautic\SmsBundle\Event;
 
 use Mautic\LeadBundle\Entity\Lead;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class QueueEvent extends Event
+final class QueueEvent extends Event
 {
-    /**
-     * @var array<Lead>
-     */
-    private $contacts;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private $options;
-
     /**
      * @var array<int>
      */
-    private $queued  = [];
+    private array $queued  = [];
 
     /**
      * @param array<int, Lead>     $contacts
      * @param array<string, mixed> $options
      */
-    public function __construct(array $contacts, array $options)
+    public function __construct(private array $contacts, private array $options)
     {
-        $this->contacts = $contacts;
-        $this->options  = $options;
     }
 
     /**
