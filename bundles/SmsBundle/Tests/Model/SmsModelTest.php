@@ -143,7 +143,6 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
             ->setConstructorArgs([
                 $this->pageTrackableModel,
                 $this->leadModel,
-                $this->messageQueueModel,
                 $this->transport,
                 $this->cacheStorageHelper,
                 $this->entityManger,
@@ -174,6 +173,8 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
                 foreach ($recipientCollection as $recipient) {
                     $recipient->setResult(true);
                 }
+
+                return $recipientCollection;
             });
 
         $results = $smsModel->sendSms($sms, [$lead1, $lead2], ['channel' => ['campaign.event', 1]]);

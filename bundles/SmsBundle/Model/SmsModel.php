@@ -287,7 +287,11 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         /** @var Lead $contact */
         foreach ($contacts as $contact) {
             $stats[$contact->getId()] = $stat = $this->createStatEntry($sms, $contact, $channel, false);
-            $smsEvent                 = new SmsSendEvent($sms->getMessage(), $contact);
+
+            [, $sms] = $this->getTranslatedEntity($sms, $contact);
+            \assert($sms instanceof Sms);
+
+            $smsEvent = new SmsSendEvent($sms->getMessage(), $contact);
 
             $smsEvent->setSmsId($sms->getId());
             $this->dispatcher->dispatch($smsEvent, SmsEvents::SMS_ON_SEND);

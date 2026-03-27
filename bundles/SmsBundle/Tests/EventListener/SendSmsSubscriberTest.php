@@ -79,14 +79,13 @@ final class SendSmsSubscriberTest extends TestCase
 
     public function testQueueFilterContactWithFrequencyRuleIsRemoved(): void
     {
-        $this->mqmMock->method('processFrequencyRules')
-            ->willReturn($contactToRemove = [
-                1 => new Lead(),
-            ]);
+        $lead1 = (new Lead())->setId(1);
+        $lead2 = (new Lead())->setId(2);
 
-        $event = new QueueEvent(array_merge($contacts = [
-            2 => new Lead(),
-        ], $contactToRemove), []);
+        $this->mqmMock->method('processFrequencyRules')
+            ->willReturn([$lead1->getId()]);
+
+        $event = new QueueEvent(array_merge([2 => $lead2], [1 => $lead1]), []);
 
         $this->subscriber->queueFilter($event);
 
