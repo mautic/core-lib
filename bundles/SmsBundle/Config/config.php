@@ -90,15 +90,6 @@ return [
                     'mautic.sms.model.sms',
                 ],
             ],
-            'mautic.mms.media.constraint.allowed_size' => [
-                'class'     => Mautic\SmsBundle\Form\Validator\Constraints\MediaMaxAllowedSizeValidator::class,
-                'arguments' => [
-                    'templating.helper.assets',
-                    'mautic.helper.paths',
-                ],
-                'tag'       => 'validator.constraint_validator',
-                'alias'     => 'mms_max_allowed_media_size',
-            ],
         ],
         'integrations' => [
             'mautic.integration.twilio' => [

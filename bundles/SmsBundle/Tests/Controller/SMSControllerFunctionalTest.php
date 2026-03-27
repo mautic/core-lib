@@ -49,9 +49,9 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
         $crawler  = $this->client->request(Request::METHOD_GET, '/s/sms');
         $response = $this->client->getResponse();
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame(2, $crawler->filter('.sms-list tbody tr')->count());
-        $this->assertSame(1, $crawler->filter('.sms-list tbody i.fa-file-image-o')->count());
-        $this->assertStringContainsString($mediaSmsName, $crawler->filter('.sms-list tbody i.fa-file-image-o')->parents()->parents()->text());
+        $this->assertCount(2, $crawler->filter('.sms-list tbody tr'));
+        $this->assertCount(1, $crawler->filter('.sms-list tbody i.fa-file-image-o'));
+        $this->assertStringContainsString($mediaSmsName, $crawler->filter('.sms-list tbody i.fa-file-image-o')->closest('tr')->text());
     }
 
     public function testPreviewMMS(): void
@@ -158,7 +158,7 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
         $crawler  = $this->client->request(Request::METHOD_GET, '/s/sms/'.$page.'/'.$sms->getId());
         $response = $this->client->getResponse();
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame(3, $crawler->filter('#media_row li')->count());
+        $this->assertCount(3, $crawler->filter('#media_row li'));
         foreach ($media as $key => $value) {
             $html = $crawler->filterXPath("//ul[@id='media_row']//li")->eq($key)->html();
             $this->assertStringContainsString('<label><img src="'.$value.'"></label>', $html);

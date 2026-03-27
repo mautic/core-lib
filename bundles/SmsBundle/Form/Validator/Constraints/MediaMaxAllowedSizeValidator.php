@@ -5,23 +5,18 @@ declare(strict_types=1);
 namespace Mautic\SmsBundle\Form\Validator\Constraints;
 
 use Mautic\CoreBundle\Helper\PathsHelper;
-use Mautic\CoreBundle\Templating\Helper\AssetsHelper;
+use Mautic\CoreBundle\Twig\Helper\AssetsHelper;
 use Mautic\SmsBundle\Entity\Sms;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class MediaMaxAllowedSizeValidator extends ConstraintValidator
+final class MediaMaxAllowedSizeValidator extends ConstraintValidator
 {
     private const MAX_MEDIA_SIZE_IN_BYTES = 5000000;
 
-    private AssetsHelper $assetsHelper;
-    private PathsHelper $pathsHelper;
-
-    public function __construct(AssetsHelper $assetsHelper, PathsHelper $pathsHelper)
+    public function __construct(private AssetsHelper $assetsHelper, private PathsHelper $pathsHelper)
     {
-        $this->assetsHelper = $assetsHelper;
-        $this->pathsHelper  = $pathsHelper;
     }
 
     /**

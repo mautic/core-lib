@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Mautic\SmsBundle\Tests\Model;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Mautic\ChannelBundle\Model\MessageQueueModel;
 use Mautic\CoreBundle\Helper\CacheStorageHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
@@ -26,7 +25,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 final class SmsModelTest extends \PHPUnit\Framework\TestCase
 {
@@ -35,8 +33,6 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
     private MockObject&EntityManagerInterface $entityManger;
 
     private MockObject&LeadModel $leadModel;
-
-    private MockObject&MessageQueueModel $messageQueueModel;
 
     private MockObject&TrackableModel $pageTrackableModel;
 
@@ -62,7 +58,6 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
     {
         $this->pageTrackableModel   = $this->createMock(TrackableModel::class);
         $this->leadModel            = $this->createMock(LeadModel::class);
-        $this->messageQueueModel    = $this->createMock(MessageQueueModel::class);
         $this->transport            = $this->createMock(TransportChain::class);
         $this->cacheStorageHelper   = $this->createMock(CacheStorageHelper::class);
         $this->entityManger         = $this->createMock(EntityManagerInterface::class);
