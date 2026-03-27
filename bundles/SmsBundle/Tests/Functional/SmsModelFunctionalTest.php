@@ -6,6 +6,7 @@ namespace Mautic\SmsBundle\Tests\Functional;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\SmsBundle\Collection\RecipientCollection;
 use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Model\SmsModel;
 use Mautic\SmsBundle\Sms\TransportChain;
@@ -49,17 +50,16 @@ final class SmsModelFunctionalTest extends MauticMysqlTestCase
         // 3. Mock transport
         $transportMock = $this->createMock(TransportChain::class);
         $transportMock->expects($this->once())
-            ->method('sendSms')
+            ->method('sendBatchSms')
             ->with(
                 $this->anything(),
-                $this->callback(function (string $message) use ($expectedMessage) {
-                    $this->assertSame($expectedMessage, $message);
+                $this->callback(function (string $template) use ($expectedMessage) {
+                    $this->assertSame($expectedMessage, $template);
 
                     return true;
-                }),
-                $this->anything()
+                })
             )
-            ->willReturn(true);
+            ->willReturn(new RecipientCollection());
 
         $this->getContainer()->set('mautic.sms.transport_chain', $transportMock);
 

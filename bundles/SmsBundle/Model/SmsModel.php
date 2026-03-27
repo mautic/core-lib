@@ -325,7 +325,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
                         SmsEvents::TOKEN_REPLACEMENT,
                     );
 
-                    $collection->append(new SmsRecipientDTO($lead, $tokenEvent->getTokens())); // we may need to send stat here.
+                    $collection->append(new SmsRecipientDTO($lead, $tokenEvent->getTokens()));
 
                     $stats[$lead->getId()] = $stat;
 
@@ -337,7 +337,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
                 if (count($collection)) {
                     // assumption made that the Sms message is same for all contacts
-                    $metadata = $this->transport->sendBatchSms($collection, $message);
+                    $this->transport->sendBatchSms($collection, $message);
 
                     $sendResult = [
                         'sent'    => false,
