@@ -42,14 +42,14 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
         $this->translator->method('trans')->willReturn('mautic.sms.campaign.failed.missing_entity');
 
         $event    = new Event();
-        $campaign = new class() extends Campaign {
+        $campaign = new class extends Campaign {
             public function getId(): int
             {
                 return 111;
             }
         };
         $contact = new Lead();
-        $leadLog = new class() extends LeadEventLog {
+        $leadLog = new class extends LeadEventLog {
             public function getId(): int
             {
                 return 456;
@@ -77,14 +77,14 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
         $event    = new Event();
         $campaign = new Campaign();
         $contact  = new Lead();
-        $leadLog  = new class() extends LeadEventLog {
+        $leadLog  = new class extends LeadEventLog {
             public function getId(): int
             {
                 return 456;
             }
         };
 
-        $campaign  = new class() extends Campaign {
+        $campaign  = new class extends Campaign {
             public function getId(): int
             {
                 return 111;
@@ -129,21 +129,21 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
         $smsModel->expects(self::once())->method('sendSms')->willReturn([]);
         $smsModel->method('getEntity')->willReturn($sms);
 
-        $event    = new Event();
-        $campaign  = new class() extends Campaign {
+        $event     = new Event();
+        $campaign  = new class extends Campaign {
             public function getId(): int
             {
                 return 111;
             }
         };
         $contact  = new Lead();
-        $leadLog  = new class() extends LeadEventLog {
+        $leadLog  = new class extends LeadEventLog {
             public function getId(): int
             {
                 return 456;
             }
         };
-        
+
         $leadLog->setLead($contact);
         $contact->setId(789);
 

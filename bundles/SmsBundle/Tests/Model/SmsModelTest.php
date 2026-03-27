@@ -21,8 +21,8 @@ use Mautic\SmsBundle\Model\SmsModel;
 use Mautic\SmsBundle\Sms\TransportChain;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class SmsModelTest extends \PHPUnit\Framework\TestCase
@@ -57,20 +57,20 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        $this->pageTrackableModel = $this->createMock(TrackableModel::class);
-        $this->leadModel          = $this->createMock(LeadModel::class);
-        $this->messageQueueModel  = $this->createMock(MessageQueueModel::class);
-        $this->transport          = $this->createMock(TransportChain::class);
-        $this->cacheStorageHelper = $this->createMock(CacheStorageHelper::class);
-        $this->entityManger       = $this->createMock(EntityManagerInterface::class);
-        $this->security           = $this->createMock(CorePermissions::class);
-        $this->dispatcher         = $this->createMock(EventDispatcherInterface::class);
-        $this->urlGenerator       = $this->createMock(UrlGeneratorInterface::class);
-        $this->translatorInterface = $this->createMock(TranslatorInterface::class);
-        $this->userHelper         = $this->createMock(UserHelper::class);
-        $this->logger             = $this->createMock(LoggerInterface::class);
+        $this->pageTrackableModel   = $this->createMock(TrackableModel::class);
+        $this->leadModel            = $this->createMock(LeadModel::class);
+        $this->messageQueueModel    = $this->createMock(MessageQueueModel::class);
+        $this->transport            = $this->createMock(TransportChain::class);
+        $this->cacheStorageHelper   = $this->createMock(CacheStorageHelper::class);
+        $this->entityManger         = $this->createMock(EntityManagerInterface::class);
+        $this->security             = $this->createMock(CorePermissions::class);
+        $this->dispatcher           = $this->createMock(EventDispatcherInterface::class);
+        $this->urlGenerator         = $this->createMock(UrlGeneratorInterface::class);
+        $this->translatorInterface  = $this->createMock(TranslatorInterface::class);
+        $this->userHelper           = $this->createMock(UserHelper::class);
+        $this->logger               = $this->createMock(LoggerInterface::class);
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $this->smsModel           = new SmsModel(
+        $this->smsModel             = new SmsModel(
             $this->pageTrackableModel,
             $this->leadModel,
             $this->messageQueueModel,
