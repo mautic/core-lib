@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Mautic\SmsBundle\Tests\Model;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Mautic\ChannelBundle\Model\MessageQueueModel;
 use Mautic\CoreBundle\Helper\CacheStorageHelper;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\CoreBundle\Translation\Translator;
 use Mautic\LeadBundle\Entity\DoNotContactRepository;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Model\LeadModel;
@@ -24,43 +23,35 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SmsModelTest extends \PHPUnit\Framework\TestCase
+final class SmsModelTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @var MockObject|CacheStorageHelper
-     */
-    private MockObject $cacheStorageHelper;
+    private MockObject&CacheStorageHelper $cacheStorageHelper;
 
-    /**
-     * @var MockObject|EntityManager
-     */
-    private MockObject $entityManger;
+    private MockObject&EntityManagerInterface $entityManger;
 
-    /**
-     * @var MockObject|LeadModel
-     */
-    private MockObject $leadModel;
+    private MockObject&LeadModel $leadModel;
 
-    /**
-     * @var MockObject|MessageQueueModel
-     */
-    private MockObject $messageQueueModel;
+    private MockObject&MessageQueueModel $messageQueueModel;
 
-    /**
-     * @var MockObject|TrackableModel
-     */
-    private MockObject $pageTrackableModel;
+    private MockObject&TrackableModel $pageTrackableModel;
 
-    /**
-     * @var MockObject|TransportChain
-     */
-    private MockObject $transport;
+    private MockObject&TransportChain $transport;
 
-    /**
-     * @var MockObject&CorePermissions
-     */
-    private MockObject $security;
+    private MockObject&CorePermissions $security;
+
+    private MockObject&EventDispatcherInterface $dispatcher;
+
+    private MockObject&UrlGeneratorInterface $urlGenerator;
+
+    private MockObject&TranslatorInterface $translatorInterface;
+
+    private MockObject&UserHelper $userHelper;
+
+    private MockObject&LoggerInterface $logger;
+
+    private MockObject&CoreParametersHelper $coreParametersHelper;
 
     private SmsModel $smsModel;
 
@@ -71,8 +62,14 @@ class SmsModelTest extends \PHPUnit\Framework\TestCase
         $this->messageQueueModel  = $this->createMock(MessageQueueModel::class);
         $this->transport          = $this->createMock(TransportChain::class);
         $this->cacheStorageHelper = $this->createMock(CacheStorageHelper::class);
-        $this->entityManger       = $this->createMock(EntityManager::class);
+        $this->entityManger       = $this->createMock(EntityManagerInterface::class);
         $this->security           = $this->createMock(CorePermissions::class);
+        $this->dispatcher         = $this->createMock(EventDispatcherInterface::class);
+        $this->urlGenerator       = $this->createMock(UrlGeneratorInterface::class);
+        $this->translatorInterface = $this->createMock(TranslatorInterface::class);
+        $this->userHelper         = $this->createMock(UserHelper::class);
+        $this->logger             = $this->createMock(LoggerInterface::class);
+        $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $this->smsModel           = new SmsModel(
             $this->pageTrackableModel,
             $this->leadModel,
@@ -81,12 +78,12 @@ class SmsModelTest extends \PHPUnit\Framework\TestCase
             $this->cacheStorageHelper,
             $this->entityManger,
             $this->security,
-            $this->createMock(EventDispatcherInterface::class),
-            $this->createMock(UrlGeneratorInterface::class),
-            $this->createMock(Translator::class),
-            $this->createMock(UserHelper::class),
-            $this->createMock(LoggerInterface::class),
-            $this->createMock(CoreParametersHelper::class)
+            $this->dispatcher,
+            $this->urlGenerator,
+            $this->translatorInterface,
+            $this->userHelper,
+            $this->logger,
+            $this->coreParametersHelper
         );
     }
 
@@ -133,14 +130,7 @@ class SmsModelTest extends \PHPUnit\Framework\TestCase
             ->with('sms', [1, 2])
             ->willReturn([]);
 
-        $pageTrackableModel = $this->createMock(TrackableModel::class);
-        $leadModel          = $this->createMock(LeadModel::class);
-        $messageQueueModel  = $this->createMock(MessageQueueModel::class);
-        $transport          = $this->createMock(TransportChain::class);
-
-        $dispatcher         = $this->createMock(EventDispatcherInterface::class);
-
-        $sms          = $this->createMock(Sms::class);
+        $sms = $this->createMock(Sms::class);
         $sms->method('getId')
             ->willReturn(1);
         $sms->method('getMessage')
@@ -154,17 +144,30 @@ class SmsModelTest extends \PHPUnit\Framework\TestCase
         $lead2->setMobile('+123456790');
         $lead2->setId(2);
 
-        $leadModel->method('getEntities')
+        $this->leadModel->method('getEntities')
             ->with(['ids' => [$lead1, $lead2]])
             ->willReturn([$lead1, $lead2]);
 
         // Partial mock, mocks just getRepository
         $smsModel = $this->getMockBuilder(SmsModel::class)
-            ->setConstructorArgs([$pageTrackableModel, $leadModel, $messageQueueModel, $transport])
-            ->setMethods(['getDoNotContactRepository'])
+            ->setConstructorArgs([
+                $this->pageTrackableModel,
+                $this->leadModel,
+                $this->messageQueueModel,
+                $this->transport,
+                $this->cacheStorageHelper,
+                $this->entityManger,
+                $this->security,
+                $this->dispatcher,
+                $this->urlGenerator,
+                $this->translatorInterface,
+                $this->userHelper,
+                $this->logger,
+                $this->coreParametersHelper,
+            ])
+            ->onlyMethods(['getDoNotContactRepository'])
             ->getMock();
 
-        $smsModel->setDispatcher($dispatcher);
         $smsModel->method('getDoNotContactRepository')
             ->willReturn($dncMock);
 

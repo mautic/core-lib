@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\SmsBundle\Tests\Sms;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\SmsBundle\Collection\RecipientCollection;
-use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Helper\DTO\SmsRecipientDTO;
 use Mautic\SmsBundle\Integration\Twilio\TwilioTransport;
 use Mautic\SmsBundle\Sms\BulkTransportInterface;
@@ -13,14 +14,11 @@ use Mautic\SmsBundle\Sms\TransportChain;
 use Mautic\SmsBundle\Sms\TransportInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class TransportChainTest extends MauticMysqlTestCase
+final class TransportChainTest extends MauticMysqlTestCase
 {
     private TransportChain $transportChain;
 
-    /**
-     * @var TransportInterface|MockObject
-     */
-    private MockObject $twilioTransport;
+    private MockObject&TransportInterface $twilioTransport;
 
     /**
      * Call protected/private method of a class.
@@ -101,7 +99,7 @@ class TransportChainTest extends MauticMysqlTestCase
             }
         };
 
-        $transportChain = new class('mautic.test.bulktwilio.mock', $this->container->get('mautic.helper.integration')) extends TransportChain {
+        $transportChain = new class('mautic.test.bulktwilio.mock', $this->getContainer()->get('mautic.helper.integration')) extends TransportChain {
             public function getEnabledTransports(): array
             {
                 $transports = $this->getTransports();
