@@ -54,7 +54,7 @@ final class SendSmsSubscriber implements EventSubscriberInterface
         $queuedContacts = $this->messageQueueModel->processFrequencyRules(
             $contacts,
             'sms',
-            ($options['sms_id'] ?? ''),
+            $options['sms_id'] ?? '',
             $campaignEventId,
             3,
             MessageQueue::PRIORITY_NORMAL,
