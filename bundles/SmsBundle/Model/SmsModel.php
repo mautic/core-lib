@@ -189,8 +189,8 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
     /**
      * @param Lead|int|array<Lead>|array<int> $sendTo
-     * @param array            $options
-     * @param array<int, Lead> $contacts
+     * @param array                           $options
+     * @param array<int, Lead>                $contacts
      */
     public function sendSms(Sms $sms, $sendTo, $options = [], array &$contacts = []): array
     {
