@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace Mautic\SmsBundle\Form\Validator\Constraints;
 
+use Mautic\SmsBundle\Form\Validator\Constraints\MediaMaxAllowedSizeValidator;
 use Symfony\Component\Validator\Constraint;
 
-class MediaMaxAllowedSize extends Constraint
+final class MediaMaxAllowedSize extends Constraint
 {
-    /**
-     * @var string
-     */
-    public $message = 'mautic.sms.form.max.size.media.error';
+    public string $message = 'mautic.sms.form.max.size.media.error';
 
     public function validatedBy(): string
     {
-        return 'mms_max_allowed_media_size';
+        return MediaMaxAllowedSizeValidator::class;
     }
 
     public function getTargets(): string
