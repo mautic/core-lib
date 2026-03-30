@@ -96,6 +96,23 @@ class StatRepository extends CommonRepository
             'll.name AS segment_name',
         ];
 
+        $groupByColumns = [
+            's.id',
+            's.lead_id',
+            's.email_address',
+            's.is_read',
+            's.email_id',
+            's.date_sent',
+            's.date_read',
+            'e.name',
+            'c.id',
+            'c.companyname',
+            'campaign.id',
+            'campaign.name',
+            'll.id',
+            'll.name',
+        ];
+
         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $q->select(...$nonAggregateColumns)
             ->from(MAUTIC_TABLE_PREFIX.'email_stats', 's')
@@ -166,10 +183,7 @@ class StatRepository extends CommonRepository
         }
 
         $q->setMaxResults($limit);
-        $q->groupBy(implode(', ', array_map(
-            static fn (string $col): string => preg_replace('/\s+AS\s+\w+$/i', '', $col),
-            $nonAggregateColumns
-        )));
+        $q->groupBy(...$groupByColumns);
         $q->orderBy('s.id', 'DESC');
 
         return $q->executeQuery()->fetchAllAssociative();
