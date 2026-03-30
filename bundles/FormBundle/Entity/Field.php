@@ -228,7 +228,7 @@ class Field implements UuidInterface
     #[Groups(['field:read', 'field:write', 'form:read', 'campaign:read', 'email:read'])]
     private $mappedField;
 
-    public ?int $deletedId;
+    public ?int $deletedId = null;
 
     public function __clone()
     {
@@ -901,11 +901,11 @@ class Field implements UuidInterface
             return true;
         }
 
-        if (!isset($data[$parentField->getAlias()])) {
+        if (!isset($data[$parentField->getAlias() ?? ''])) {
             return false;
         }
 
-        $sendValues = $data[$parentField->getAlias()];
+        $sendValues = $data[$parentField->getAlias() ?? ''];
         if (!is_array($sendValues)) {
             $sendValues = [$sendValues];
         }
