@@ -39,7 +39,7 @@ final class MediaMaxAllowedSizeValidator extends ConstraintValidator
             $host     = $pathIndo['host'];
             $path     = $pathIndo['path'];
             if (parse_url($this->assetsHelper->getBaseUrl(), PHP_URL_HOST) !== $host) {
-                //skip because it is a third party url.
+                // skip because it is a third party url.
                 continue;
             }
             $filePath = $this->pathsHelper->getSystemPath('local_root').$path;

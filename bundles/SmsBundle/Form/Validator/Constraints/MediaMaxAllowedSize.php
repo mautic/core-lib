@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\SmsBundle\Form\Validator\Constraints;
 
-use Mautic\SmsBundle\Form\Validator\Constraints\MediaMaxAllowedSizeValidator;
 use Symfony\Component\Validator\Constraint;
 
 final class MediaMaxAllowedSize extends Constraint

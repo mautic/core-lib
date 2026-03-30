@@ -202,8 +202,8 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
             ->columnName('is_mms')
             ->option('default', 0)
             ->nullable(false)
-            ->build();   
-     
+            ->build();
+
         $builder->createManyToMany('lists', LeadList::class)
             ->setJoinTable('sms_message_list_xref')
             ->setIndexBy('id')
@@ -238,7 +238,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
         $metadata->addConstraint(new Callback(
             function (Sms $sms, ExecutionContextInterface $context): void {
-                $type = $sms->getSmsType();
+                $type      = $sms->getSmsType();
                 $validator = $context->getValidator();
                 if ('list' == $type) {
                     $violations = $validator->validate(

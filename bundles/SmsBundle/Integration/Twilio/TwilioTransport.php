@@ -60,7 +60,7 @@ class TwilioTransport implements TransportInterface, MMSTransportInterface
         try {
             $messagingServiceSid = $this->configuration->getMessagingServiceSid();
             $this->configureClient();
-            
+
             $this->client->messages->create(
                 $this->sanitizeNumber($number),
                 $this->createPayload($messagingServiceSid, $content, $media)

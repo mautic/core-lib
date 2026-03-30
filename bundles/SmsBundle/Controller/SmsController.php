@@ -296,7 +296,7 @@ class SmsController extends FormController
                     if (!$entity->isMms()) {
                         $entity->setMedia([]);
                     }
-                    //form is valid so process the data
+                    // form is valid so process the data
                     $model->saveEntity($entity);
 
                     $this->addFlashMessage(

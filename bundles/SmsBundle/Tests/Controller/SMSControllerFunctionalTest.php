@@ -135,7 +135,7 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @param array<mixed> $media
      */
-    private function CreateSms(string $name = 'sms', string $message = 'sms body', bool $isMms = false, array $media = null): Sms
+    private function CreateSms(string $name = 'sms', string $message = 'sms body', bool $isMms = false, ?array $media = null): Sms
     {
         $sms = new Sms();
         $sms->setName($name);

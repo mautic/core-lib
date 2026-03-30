@@ -104,7 +104,7 @@ final class TransportChainTest extends MauticMysqlTestCase
 
     public function testSendMessage(): void
     {
-        $mmsTransport = new class() implements TransportInterface, MMSTransportInterface {
+        $mmsTransport = new class implements TransportInterface, MMSTransportInterface {
             public function sendMms(Lead $lead, string $content, array $media)
             {
                 return true;

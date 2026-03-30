@@ -13,12 +13,12 @@ final class Version20230301051300 extends PreUpAssertionMigration
     protected function preUpAssertions(): void
     {
         $this->skipAssertion(function (Schema $schema) {
-            return $schema->getTable($this->getPrefixedTableName(SMS::TABLE_NAME))->hasColumn('media');
+            return $schema->getTable($this->getPrefixedTableName(Sms::TABLE_NAME))->hasColumn('media');
         }, 'Column media already exists');
     }
 
     public function up(Schema $schema): void
     {
-        $this->addSql(sprintf("ALTER TABLE %s add media JSON NOT NULL DEFAULT ('{}');", $this->getPrefixedTableName(SMS::TABLE_NAME)));
+        $this->addSql(sprintf("ALTER TABLE %s add media JSON NOT NULL DEFAULT ('{}');", $this->getPrefixedTableName(Sms::TABLE_NAME)));
     }
 }
