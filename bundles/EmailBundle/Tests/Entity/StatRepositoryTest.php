@@ -104,6 +104,24 @@ final class StatRepositoryTest extends \PHPUnit\Framework\TestCase
 
     public function testGetSentEmailToContactDataBuildsOnlyFullGroupByCompliantQuery(): void
     {
+        $expectedRow = [
+            'id'            => '101',
+            'lead_id'       => '7',
+            'email_address' => 'contact@example.test',
+            'is_read'       => '1',
+            'email_id'      => '22',
+            'date_sent'     => '2026-03-10 08:00:00',
+            'date_read'     => '2026-03-10 08:30:00',
+            'email_name'    => 'March Newsletter',
+            'link_hits'     => '3',
+            'company_id'    => '11',
+            'company_name'  => 'ACME',
+            'campaign_id'   => '5',
+            'campaign_name' => 'Spring Campaign',
+            'segment_id'    => '13',
+            'segment_name'  => 'VIP Contacts',
+        ];
+
         $this->connection->expects($this->once())
             ->method('executeQuery')
             ->willReturnCallback(function (string $sql, array $params = [], array $types = []) {
@@ -117,46 +135,10 @@ final class StatRepositoryTest extends \PHPUnit\Framework\TestCase
             });
 
         $this->result->method('fetchAllAssociative')
-            ->willReturn([
-                [
-                    'id'            => '101',
-                    'lead_id'       => '7',
-                    'email_address' => 'contact@example.test',
-                    'is_read'       => '1',
-                    'email_id'      => '22',
-                    'date_sent'     => '2026-03-10 08:00:00',
-                    'date_read'     => '2026-03-10 08:30:00',
-                    'email_name'    => 'March Newsletter',
-                    'link_hits'     => '3',
-                    'company_id'    => '11',
-                    'company_name'  => 'ACME',
-                    'campaign_id'   => '5',
-                    'campaign_name' => 'Spring Campaign',
-                    'segment_id'    => '13',
-                    'segment_name'  => 'VIP Contacts',
-                ],
-            ]);
+            ->willReturn([$expectedRow]);
 
         $this->assertSame(
-            [
-                [
-                    'id'            => '101',
-                    'lead_id'       => '7',
-                    'email_address' => 'contact@example.test',
-                    'is_read'       => '1',
-                    'email_id'      => '22',
-                    'date_sent'     => '2026-03-10 08:00:00',
-                    'date_read'     => '2026-03-10 08:30:00',
-                    'email_name'    => 'March Newsletter',
-                    'link_hits'     => '3',
-                    'company_id'    => '11',
-                    'company_name'  => 'ACME',
-                    'campaign_id'   => '5',
-                    'campaign_name' => 'Spring Campaign',
-                    'segment_id'    => '13',
-                    'segment_name'  => 'VIP Contacts',
-                ],
-            ],
+            [$expectedRow],
             $this->statRepository->getSentEmailToContactData(
                 10,
                 new \DateTime('2026-03-01 00:00:00'),
