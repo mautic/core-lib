@@ -35,13 +35,13 @@
     <div class="col-md-12">
         {{ form_label(form.media) }}
     </div>
-    <div class="col-md-2">
+    <div class="col-md-5">
         <button type="button" id="upload_mms_media" class="btn btn-primary" onclick="javascript:Mautic.loadNewWindow({windowUrl:'{{ path('mautic_base_index') }}elfinder?editor=media_form'})">
             <i class="fa fa-upload "></i> {{ 'mautic.lead.import.upload'|trans }}
         </button>
     </div>
     <div class="col-md-2">
-        {{ 'mautic.core.config.contact_unique_identifiers_operator.or'|trans }}
+        {{ 'mautic.core.or'|trans }}
     </div>
     <div class="col-md-5">
         <div class="input-group">
@@ -68,7 +68,7 @@
     </div>
     <div class="col-md-12">
         <div class="alert alert-info mt-10">
-            {{ 'mautic.sms.form.mms.media.infobox'|trans }}
+            {{ 'mautic.sms.form.mms.media.infobox'|trans|raw }}
         </div>
     </div>
 </div>
