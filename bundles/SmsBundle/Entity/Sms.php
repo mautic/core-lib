@@ -133,21 +133,15 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
     /**
      * @var array<mixed>
-     *
-     * @Groups({"sms:read", "sms:write"})
      */
+    #[Groups(['sms:read', 'sms:write'])]
     private array $media = [];
 
-    /**
-     * @Groups({"sms:read", "sms:write"})
-     */
+    #[Groups(['sms:read', 'sms:write'])]
     private bool $isMms = false;
 
-    /**
-     * @var int
-     */
     #[Groups(['sms:read'])]
-    private ?int $pendingCount = 0;
+    private int $pendingCount = 0;
 
     public function __clone()
     {
