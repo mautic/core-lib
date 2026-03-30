@@ -33,15 +33,25 @@ final class MediaMaxAllowedSizeValidator extends ConstraintValidator
         }
 
         $totalMediaSize = 0;
+        $baseHost       = parse_url($this->assetsHelper->getBaseUrl(), PHP_URL_HOST);
 
         foreach ($sms->getMedia() as $media) {
-            $pathIndo = parse_url($media);
-            $host     = $pathIndo['host'];
-            $path     = $pathIndo['path'];
-            if (parse_url($this->assetsHelper->getBaseUrl(), PHP_URL_HOST) !== $host) {
+            $pathInfo = parse_url($media);
+            if (!is_array($pathInfo) || empty($pathInfo['path'])) {
+                continue;
+            }
+
+            $host = $pathInfo['host'] ?? $baseHost;
+            $path = $pathInfo['path'];
+            if ($baseHost !== $host) {
                 // skip because it is a third party url.
                 continue;
             }
+
+            if (!str_starts_with($path, '/')) {
+                $path = '/'.$path;
+            }
+
             $filePath = $this->pathsHelper->getSystemPath('local_root').$path;
             if (file_exists($filePath)) {
                 $totalMediaSize += filesize($filePath);

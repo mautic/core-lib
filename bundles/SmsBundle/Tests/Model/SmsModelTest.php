@@ -138,7 +138,6 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
 
     private function sendMessage(bool $isMMS = false): void
     {
-        $transport          = $this->createMock(TransportChain::class);
         $repositoryMock     = $this->createMock(SmsRepository::class);
         $statRepositoryMock = $this->createMock(StatRepository::class);
 
@@ -192,13 +191,13 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
             ->willReturn($statRepositoryMock);
 
         if ($isMMS) {
-            $transport->expects($this->once())
+            $this->transport->expects($this->once())
                 ->method('sendMMS')
                 ->willReturnCallback(function (RecipientCollection $recipientCollection, string $message, array $media) {
                     return $this->setRecipientResult($recipientCollection);
                 });
         } else {
-            $transport->expects($this->once())
+            $this->transport->expects($this->once())
                 ->method('sendBatchSms')
                 ->willReturnCallback(function (RecipientCollection $recipientCollection, string $message) {
                     return $this->setRecipientResult($recipientCollection);
