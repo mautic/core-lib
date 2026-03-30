@@ -87,6 +87,7 @@
         'data-end': 'mautic.core.form.available_until_scheduled_end'
     }
 }) }}
+{{ form_row(form.isMms) }}
 
 <div id="leadList"{% if 'template' == type %} class="hide"{% endif %}>
     {{ form_row(form.lists) }}
