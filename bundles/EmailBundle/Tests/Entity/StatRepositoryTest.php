@@ -126,6 +126,7 @@ final class StatRepositoryTest extends \PHPUnit\Framework\TestCase
             ->method('executeQuery')
             ->willReturnCallback(function (string $sql, array $params = [], array $types = []) {
                 self::assertStringContainsString('SELECT s.id, s.lead_id, s.email_address, s.is_read, s.email_id, s.date_sent, s.date_read, e.name AS email_name, c.id AS company_id, c.companyname AS company_name, campaign.id AS campaign_id, campaign.name AS campaign_name, ll.id AS segment_id, ll.name AS segment_name, COUNT(ph.id) AS link_hits', $sql);
+                self::assertStringContainsString('LEFT JOIN test_companies_leads cl ON s.lead_id = cl.lead_id AND cl.is_primary = 1', $sql);
                 self::assertStringContainsString('GROUP BY s.id, s.lead_id, s.email_address, s.is_read, s.email_id, s.date_sent, s.date_read, e.name, c.id, c.companyname, campaign.id, campaign.name, ll.id, ll.name', $sql);
                 self::assertStringNotContainsString('GROUP BY s.id AS', $sql);
                 self::assertSame('2026-03-01 00:00:00', $params['dateFrom']);

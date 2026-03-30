@@ -129,14 +129,10 @@ class StatRepository extends CommonRepository
             ->setParameter('dateFrom', $dateFrom->format('Y-m-d H:i:s'))
             ->setParameter('dateTo', $dateTo->format('Y-m-d H:i:s'));
 
-        $companyJoinOnExpr = $q->expr()->and(
-            $q->expr()->eq('s.lead_id', 'cl.lead_id')
-        );
-        if (!empty($companyId)) {
-            // Must force a one to one relationship
-            $companyJoinOnExpr->with(
-                $q->expr()->eq('cl.is_primary', 1)
-            );
+        $companyJoinOnExpr = 's.lead_id = cl.lead_id';
+        if (empty($companyId)) {
+            // Must force a one to one relationship when no specific company filter is applied.
+            $companyJoinOnExpr .= ' AND cl.is_primary = 1';
         }
 
         $q->leftJoin('s', MAUTIC_TABLE_PREFIX.'companies_leads', 'cl', $companyJoinOnExpr)
