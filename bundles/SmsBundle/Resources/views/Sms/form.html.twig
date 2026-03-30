@@ -37,7 +37,7 @@
     </div>
     <div class="col-md-5">
         <button type="button" id="upload_mms_media" class="btn btn-primary" onclick="javascript:Mautic.loadNewWindow({windowUrl:'{{ path('mautic_base_index') }}elfinder?editor=media_form'})">
-            <i class="fa fa-upload "></i> {{ 'mautic.lead.import.upload'|trans }}
+            <i class="ri-file-upload-line"></i> {{ 'mautic.lead.import.upload'|trans }}
         </button>
     </div>
     <div class="col-md-2">
@@ -47,7 +47,7 @@
         <div class="input-group">
             <input type="text" id="media_url" class="form-control" placeholder="{{ 'mautic.sms.type_media_url'|trans }}" />
             <span class="input-group-addon" onclick="Mautic.addMediaFromUrl()">
-                <i class="fa fa-upload"></i>
+                <i class="ri-file-upload-line"></i>
             </span>
         </div>
     </div>
