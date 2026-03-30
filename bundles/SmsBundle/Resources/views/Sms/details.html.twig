@@ -116,20 +116,6 @@
                                         </td>
                                     </tr>
                                 {% endif %}
-                                {% if sms.getMedia() %}
-                                    <tr>
-                                        <td width="20%"><span class="fw-b textTitle">{{ 'mautic.sms.form.media'|trans }}</span></td>
-                                        <td>
-                                            <ul id="media_row">
-                                                {% for image in sms.getMedia() %}
-                                                    <li>
-                                                        <label><img src="{{ image }}"></label>
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                {% endif %}
                             </tbody>
                         </table>
                     </div>
