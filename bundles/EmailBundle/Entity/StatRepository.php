@@ -79,11 +79,27 @@ class StatRepository extends CommonRepository
         $campaignId = null,
         $segmentId = null,
     ): array {
+        $nonAggregateColumns = [
+            's.id',
+            's.lead_id',
+            's.email_address',
+            's.is_read',
+            's.email_id',
+            's.date_sent',
+            's.date_read',
+            'e.name AS email_name',
+            'c.id AS company_id',
+            'c.companyname AS company_name',
+            'campaign.id AS campaign_id',
+            'campaign.name AS campaign_name',
+            'll.id AS segment_id',
+            'll.name AS segment_name',
+        ];
+
         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $q->select('s.id, s.lead_id, s.email_address, s.is_read, s.email_id, s.date_sent, s.date_read')
+        $q->select($nonAggregateColumns)
             ->from(MAUTIC_TABLE_PREFIX.'email_stats', 's')
             ->leftJoin('s', MAUTIC_TABLE_PREFIX.'emails', 'e', 's.email_id = e.id')
-            ->addSelect('e.name AS email_name')
             ->leftJoin('s', MAUTIC_TABLE_PREFIX.'page_hits', 'ph', 'ph.source = \'email\' and ph.source_id = s.email_id and ph.lead_id = s.lead_id')
             ->addSelect('COUNT(ph.id) AS link_hits');
 
@@ -107,9 +123,7 @@ class StatRepository extends CommonRepository
         }
 
         $q->leftJoin('s', MAUTIC_TABLE_PREFIX.'companies_leads', 'cl', $companyJoinOnExpr)
-            ->leftJoin('s', MAUTIC_TABLE_PREFIX.'companies', 'c', 'cl.company_id = c.id')
-            ->addSelect('c.id AS company_id')
-            ->addSelect('c.companyname AS company_name');
+            ->leftJoin('s', MAUTIC_TABLE_PREFIX.'companies', 'c', 'cl.company_id = c.id');
 
         if (!empty($companyId)) {
             $q->andWhere('cl.company_id = :companyId')
@@ -117,18 +131,14 @@ class StatRepository extends CommonRepository
         }
 
         $q->leftJoin('s', MAUTIC_TABLE_PREFIX.'campaign_events', 'ce', 's.source = "campaign.event" and s.source_id = ce.id')
-            ->leftJoin('ce', MAUTIC_TABLE_PREFIX.'campaigns', 'campaign', 'ce.campaign_id = campaign.id')
-            ->addSelect('campaign.id AS campaign_id')
-            ->addSelect('campaign.name AS campaign_name');
+            ->leftJoin('ce', MAUTIC_TABLE_PREFIX.'campaigns', 'campaign', 'ce.campaign_id = campaign.id');
 
         if (null !== $campaignId) {
             $q->andWhere('ce.campaign_id = :campaignId')
                 ->setParameter('campaignId', $campaignId);
         }
 
-        $q->leftJoin('s', MAUTIC_TABLE_PREFIX.'lead_lists', 'll', 's.list_id = ll.id')
-            ->addSelect('ll.id AS segment_id')
-            ->addSelect('ll.name AS segment_name');
+        $q->leftJoin('s', MAUTIC_TABLE_PREFIX.'lead_lists', 'll', 's.list_id = ll.id');
 
         if (null !== $segmentId) {
             $sb = $this->getEntityManager()->getConnection()->createQueryBuilder();
@@ -156,7 +166,10 @@ class StatRepository extends CommonRepository
         }
 
         $q->setMaxResults($limit);
-        $q->groupBy('s.id, s.lead_id, s.email_address, s.is_read, s.email_id, s.date_sent, s.date_read, e.name, c.id, c.companyname, campaign.id, campaign.name, ll.id, ll.name');
+        $q->groupBy(implode(', ', array_map(
+            static fn (string $col): string => preg_replace('/\s+AS\s+\w+$/i', '', $col),
+            $nonAggregateColumns
+        )));
         $q->orderBy('s.id', 'DESC');
 
         return $q->executeQuery()->fetchAllAssociative();
