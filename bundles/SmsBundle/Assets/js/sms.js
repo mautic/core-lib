@@ -144,7 +144,7 @@ Mautic.addMediaList = function(url){
 
 Mautic.addMediaFromUrl = function (){
     const url = mQuery('#media_url').val();
-    const regex = /^https?:\/\/.*\/.*\.(png|gif|jpeg|jpg)\??.*$/gmi;
+    const regex = /^https?:\/\/\S+\.(png|gif|jpeg|jpg)(\?\S*)?$/i;
     if (regex.test(url)) {
         mQuery('#media_url').parent('.input-group').removeClass('has-error');
         Mautic.addMediaList(url);
