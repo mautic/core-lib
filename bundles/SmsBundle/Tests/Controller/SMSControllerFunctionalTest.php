@@ -158,10 +158,11 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
         $crawler  = $this->client->request(Request::METHOD_GET, '/s/sms/'.$page.'/'.$sms->getId());
         $response = $this->client->getResponse();
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertCount(3, $crawler->filterXPath('(//ul[@id="media_row"])[1]//li'));
+        $mediaDivs = $crawler->filter('div.phone-preview__message--media');
+        $this->assertCount(3, $mediaDivs);
         foreach ($media as $key => $value) {
-            $html = $crawler->filterXPath("(//ul[@id='media_row'])[1]//li")->eq($key)->html();
-            $this->assertStringContainsString('<label><img src="'.$value.'"></label>', $html);
+            $img = $mediaDivs->eq($key)->filter('img');
+            $this->assertSame((string) $value, $img->attr('src'));
         }
     }
 }
