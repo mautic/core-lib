@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\EmailBundle\Tests\Controller\Api;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\EmailBundle\Entity\Email;
 use Mautic\PageBundle\Entity\Page;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
@@ -48,6 +49,10 @@ class EmailApiDefaultsFunctionalTest extends MauticMysqlTestCase
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->loginUser($user);
 
+        // Verify the page survived the kernel reboot.
+        $reloadedPage = $this->em->find(Page::class, $pageId);
+        Assert::assertNotNull($reloadedPage, "Page ID {$pageId} must exist after kernel reboot");
+
         $payload = [
             'name'       => 'API defaults test',
             'subject'    => 'Test subject',
@@ -65,7 +70,13 @@ class EmailApiDefaultsFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame('config-medium', $response['utmTags']['utmMedium']);
         Assert::assertSame('config-campaign', $response['utmTags']['utmCampaign']);
         Assert::assertSame('config-content', $response['utmTags']['utmContent']);
-        Assert::assertSame($pageId, $response['preferenceCenter']['id']);
+
+        // Verify preference center from database since API serialization may return it differently.
+        $emailId   = $response['id'];
+        $savedEmail = $this->em->find(Email::class, $emailId);
+        Assert::assertNotNull($savedEmail, 'Email must be persisted');
+        Assert::assertNotNull($savedEmail->getPreferenceCenter(), 'Preference center must be set by defaults');
+        Assert::assertSame($pageId, $savedEmail->getPreferenceCenter()->getId());
     }
 
     public function testNewEmailViaApiDoesNotOverwriteExplicitValues(): void
