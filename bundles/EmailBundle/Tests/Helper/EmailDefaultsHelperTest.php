@@ -103,6 +103,32 @@ class EmailDefaultsHelperTest extends TestCase
         $this->assertSame($existingUtmTags, $email->getUtmTags());
     }
 
+    public function testAppliesDefaultsWhenUtmTagsContainOnlyNullValues(): void
+    {
+        $email = new Email();
+        $email->setUtmTags([
+            'utmSource'   => null,
+            'utmMedium'   => null,
+            'utmCampaign' => null,
+            'utmContent'  => null,
+        ]);
+
+        $this->coreParametersHelper->method('get')->willReturnMap([
+            ['email_default_preference_center_id', null, null],
+            ['email_default_utm_source', null, 'config-source'],
+            ['email_default_utm_medium', null, 'config-medium'],
+            ['email_default_utm_campaign', null, null],
+            ['email_default_utm_content', null, null],
+        ]);
+
+        $this->helper->applyDefaults($email);
+
+        $this->assertSame([
+            'utmSource' => 'config-source',
+            'utmMedium' => 'config-medium',
+        ], $email->getUtmTags());
+    }
+
     public function testFiltersOutNullAndEmptyUtmValues(): void
     {
         $this->coreParametersHelper->method('get')->willReturnMap([

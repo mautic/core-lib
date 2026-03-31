@@ -129,5 +129,4 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
             ->with('blank', 'email')
             ->willReturn('blank');
     }
-
 }
