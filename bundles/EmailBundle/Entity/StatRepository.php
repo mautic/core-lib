@@ -194,7 +194,7 @@ class StatRepository extends CommonRepository
         }
 
         $q->setMaxResults($limit);
-        $q->groupBy(...$groupByColumns);
+        $q->groupBy(...array_keys($columnMap));
         $q->orderBy('s.id', 'DESC');
 
         return $q->executeQuery()->fetchAllAssociative();
