@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Mautic\EmailBundle\Tests\Controller\Api;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\EmailBundle\Entity\Email;
 use Mautic\PageBundle\Entity\Page;
+use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,10 +25,10 @@ class EmailApiDefaultsFunctionalTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
-        $this->configParams['email_default_utm_source']   = 'config-source';
+        $this->configParams['email_default_utm_source']    = 'config-source';
         $this->configParams['email_default_utm_medium']    = 'config-medium';
-        $this->configParams['email_default_utm_campaign'] = 'config-campaign';
-        $this->configParams['email_default_utm_content']  = 'config-content';
+        $this->configParams['email_default_utm_campaign']  = 'config-campaign';
+        $this->configParams['email_default_utm_content']   = 'config-content';
 
         parent::setUp();
     }
@@ -44,6 +44,9 @@ class EmailApiDefaultsFunctionalTest extends MauticMysqlTestCase
         $this->setUpSymfony(array_merge($this->configParams, [
             'email_default_preference_center_id' => $pageId,
         ]));
+
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->loginUser($user);
 
         $payload = [
             'name'       => 'API defaults test',
