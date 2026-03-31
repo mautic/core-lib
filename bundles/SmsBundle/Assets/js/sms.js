@@ -11,8 +11,13 @@ Mautic.smsOnLoad = function (container, response) {
     mQuery('#media_url').on("keydown", (event) => {
         // add media from url id enter key (keycode = 13) is pressed.
         if (event.keyCode == 13) {
+            event.preventDefault();
             Mautic.addMediaFromUrl();
         }
+    });
+
+    mQuery('#media_url').on('input', () => {
+        Mautic.clearMediaUrlError();
     });
 
     mQuery('#sms_message').on("input", () => {
@@ -142,16 +147,52 @@ Mautic.addMediaList = function(url){
     mQuery('#media_row').append(mediaHtml);
 };
 
-Mautic.addMediaFromUrl = function (){
-    const url = mQuery('#media_url').val();
-    const regex = /^https?:\/\/\S+\.(png|gif|jpeg|jpg)(\?\S*)?$/i;
-    if (regex.test(url)) {
-        mQuery('#media_url').parent('.input-group').removeClass('has-error');
-        Mautic.addMediaList(url);
-        mQuery('#media_url').val('')
-    } else {
-        mQuery('#media_url').parent('.input-group').addClass('has-error');
+Mautic.isValidMediaUrl = function(url) {
+    if (!url) {
+        return false;
     }
+
+    try {
+        const parsedUrl = new URL(url, window.location.origin);
+
+        return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
+    } catch (error) {
+        return false;
+    }
+};
+
+Mautic.showMediaUrlError = function(translationKey) {
+    mQuery('#media_url').parent('.input-group').addClass('has-error');
+    mQuery('#media_url_error').text(Mautic.translate(translationKey)).removeClass('hide');
+};
+
+Mautic.clearMediaUrlError = function() {
+    mQuery('#media_url').parent('.input-group').removeClass('has-error');
+    mQuery('#media_url_error').text('').addClass('hide');
+};
+
+Mautic.addMediaFromUrl = function (){
+    const url = mQuery('#media_url').val().trim();
+
+    if (!Mautic.isValidMediaUrl(url)) {
+        Mautic.showMediaUrlError('mautic.sms.media_url.error.invalid');
+
+        return;
+    }
+
+    const probeImage = new Image();
+
+    probeImage.onload = function() {
+        Mautic.clearMediaUrlError();
+        Mautic.addMediaList(url);
+        mQuery('#media_url').val('');
+    };
+
+    probeImage.onerror = function() {
+        Mautic.showMediaUrlError('mautic.sms.media_url.error.not_image');
+    };
+
+    probeImage.src = url;
 }
 
 Mautic.toggleIsMms = function () {
