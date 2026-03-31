@@ -111,7 +111,22 @@ class StatRepository extends CommonRepository
             'campaign.name',
             'll.id',
             'll.name',
-        ];
+ $columnMap = [
+    's.id'            => 'id',
+    's.lead_id'       => 'lead_id',
+    's.email_address' => 'email_address',
+    's.is_read'       => 'is_read',
+    's.email_id'      => 'email_id',
+    's.date_sent'     => 'date_sent',
+    's.date_read'     => 'date_read',
+    'e.name'          => 'email_name',
+    'c.id'            => 'company_id',
+    'c.companyname'   => 'company_name',
+    'campaign.id'     => 'campaign_id',
+    'campaign.name'   => 'campaign_name',
+    'll.id'           => 'segment_id',
+    'll.name'         => 'segment_name',
+];
 
         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $q->select(...$nonAggregateColumns)
