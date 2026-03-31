@@ -20,6 +20,7 @@ use Mautic\CoreBundle\Helper\ThemeHelperInterface;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Helper\EmailConfigInterface;
+use Mautic\EmailBundle\Helper\EmailDefaultsHelper;
 use Mautic\FormBundle\Form\Type\FormListType;
 use Mautic\LeadBundle\Form\Type\LeadListType;
 use Mautic\LeadBundle\Helper\FormFieldHelper;
@@ -57,6 +58,7 @@ class EmailType extends AbstractType
         private ThemeHelperInterface $themeHelper,
         private CorePermissions $corePermissions,
         EmailConfigInterface $emailConfig,
+        private EmailDefaultsHelper $defaultsHelper,
     ) {
         $this->isDraftEnabled = $emailConfig->isDraftEnabled();
     }
@@ -690,36 +692,7 @@ class EmailType extends AbstractType
             return;
         }
 
-        $changesBefore = $emailEntity->getChanges();
-
-        if (null === $emailEntity->getPreferenceCenter()) {
-            $defaultPreferenceCenterId = $this->coreParametersHelper->get('email_default_preference_center_id');
-            if (!empty($defaultPreferenceCenterId)) {
-                $preferenceCenter = $this->em->find(Page::class, $defaultPreferenceCenterId);
-                if ($preferenceCenter instanceof Page) {
-                    $emailEntity->setPreferenceCenter($preferenceCenter);
-                }
-            }
-        }
-
-        if (empty($emailEntity->getUtmTags())) {
-            $utmTags = [
-                'utmSource'   => $this->coreParametersHelper->get('email_default_utm_source'),
-                'utmMedium'   => $this->coreParametersHelper->get('email_default_utm_medium'),
-                'utmCampaign' => $this->coreParametersHelper->get('email_default_utm_campaign'),
-                'utmContent'  => $this->coreParametersHelper->get('email_default_utm_content'),
-            ];
-
-            $filteredUtmTags = array_filter($utmTags, static fn ($tag): bool => null !== $tag && '' !== $tag);
-            if ($filteredUtmTags) {
-                $emailEntity->setUtmTags($filteredUtmTags);
-            }
-        }
-
-        // Restore only the changes that existed before defaults were applied,
-        // so pre-form mutations (e.g. emailType set by the controller) are preserved
-        // while system-applied defaults don't appear as user edits in the audit log.
-        $emailEntity->setChanges($changesBefore);
+        $this->defaultsHelper->applyDefaults($emailEntity);
     }
 
     private function addDynamicContentField(FormBuilderInterface $builder): void

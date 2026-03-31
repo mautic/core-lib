@@ -11,7 +11,7 @@ use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Form\Type\EmailType;
 use Mautic\EmailBundle\Helper\EmailConfigInterface;
-use Mautic\PageBundle\Entity\Page;
+use Mautic\EmailBundle\Helper\EmailDefaultsHelper;
 use Mautic\StageBundle\Model\StageModel;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -62,6 +62,11 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $themeHelper;
 
+    /**
+     * @var EmailDefaultsHelper&MockObject
+     */
+    private MockObject $defaultsHelper;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -74,6 +79,7 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         $this->corePermissions      = $this->createMock(CorePermissions::class);
         $this->themeHelper          = $this->createMock(ThemeHelperInterface::class);
         $this->emailConfig          = $this->createMock(EmailConfigInterface::class);
+        $this->defaultsHelper       = $this->createMock(EmailDefaultsHelper::class);
         $this->form                 = new EmailType(
             $this->translator,
             $this->entityManager,
@@ -81,7 +87,8 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
             $this->coreParametersHelper,
             $this->themeHelper,
             $this->corePermissions,
-            $this->emailConfig
+            $this->emailConfig,
+            $this->defaultsHelper,
         );
 
         $this->formBuilder->method('create')->willReturnSelf();
@@ -114,138 +121,6 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
         Assert::assertContains('buttons', $names);
     }
 
-    public function testBuildFormHydratesPreferenceCenterAndUtmTagsDefaultsForNewEmail(): void
-    {
-        $email          = new Email();
-        $preferencePage = new Page();
-
-        $this->expectThemeHelper();
-        $this->coreParametersHelper
-            ->method('get')
-            ->willReturnCallback(static function (string $key): mixed {
-                return match ($key) {
-                    'email_default_preference_center_id' => 42,
-                    'email_default_utm_source'           => 'newsletter',
-                    'email_default_utm_medium'           => 'email',
-                    'email_default_utm_campaign'         => 'spring-campaign',
-                    'email_default_utm_content'          => 'hero-cta',
-                    default                              => false,
-                };
-            });
-
-        $this->entityManager
-            ->expects($this->once())
-            ->method('find')
-            ->with(Page::class, 42)
-            ->willReturn($preferencePage);
-
-        $this->form->buildForm($this->formBuilder, ['data' => $email]);
-
-        Assert::assertSame($preferencePage, $email->getPreferenceCenter());
-        Assert::assertSame(
-            [
-                'utmSource'   => 'newsletter',
-                'utmMedium'   => 'email',
-                'utmCampaign' => 'spring-campaign',
-                'utmContent'  => 'hero-cta',
-            ],
-            $email->getUtmTags()
-        );
-    }
-
-    public function testBuildFormDoesNotOverwriteExistingPreferenceCenterAndUtmTags(): void
-    {
-        $email           = new Email();
-        $existingPage    = new Page();
-        $existingUtmTags = [
-            'utmSource'   => 'manual-source',
-            'utmMedium'   => 'manual-medium',
-            'utmCampaign' => 'manual-campaign',
-            'utmContent'  => 'manual-content',
-        ];
-
-        $email->setId(1);
-        $email->setPreferenceCenter($existingPage);
-        $email->setUtmTags($existingUtmTags);
-
-        $this->expectThemeHelper();
-        $this->configureDefaultParams(['mailer_is_owner' => false]);
-        $this->expectNoEntityLookup();
-
-        $this->form->buildForm($this->formBuilder, ['data' => $email]);
-
-        Assert::assertSame($existingPage, $email->getPreferenceCenter());
-        Assert::assertSame($existingUtmTags, $email->getUtmTags());
-    }
-
-    public function testBuildFormSkipsDefaultsForClonedEmail(): void
-    {
-        $source       = new Email();
-        $existingPage = new Page();
-        $cloneUtmTags = [
-            'utmSource'   => 'clone-source',
-            'utmMedium'   => 'clone-medium',
-            'utmCampaign' => 'clone-campaign',
-            'utmContent'  => 'clone-content',
-        ];
-
-        $source->setPreferenceCenter($existingPage);
-        $source->setUtmTags($cloneUtmTags);
-
-        $clone = clone $source;
-
-        Assert::assertTrue($clone->getIsClone(), 'Cloned entity must report isClone() as true');
-        Assert::assertTrue($clone->isNew(), 'Cloned entity must report isNew() as true');
-
-        $this->expectThemeHelper();
-        $this->configureDefaultParams($this->allDefaultParams());
-        $this->expectNoEntityLookup();
-
-        $this->form->buildForm($this->formBuilder, ['data' => $clone]);
-
-        Assert::assertSame($existingPage, $clone->getPreferenceCenter());
-        Assert::assertSame($cloneUtmTags, $clone->getUtmTags());
-    }
-
-    public function testBuildFormLeavesFieldsUnchangedWhenDefaultConfigurationIsEmpty(): void
-    {
-        $email = new Email();
-
-        $this->expectThemeHelper();
-        $this->configureDefaultParams([
-            'email_default_preference_center_id' => null,
-            'email_default_utm_source'           => '',
-            'email_default_utm_medium'           => null,
-            'email_default_utm_campaign'         => '',
-            'email_default_utm_content'          => null,
-            'mailer_is_owner'                    => false,
-        ]);
-        $this->expectNoEntityLookup();
-
-        $this->form->buildForm($this->formBuilder, ['data' => $email]);
-
-        Assert::assertNull($email->getPreferenceCenter());
-        Assert::assertSame([], $email->getUtmTags());
-    }
-
-    public function testBuildFormDoesNotApplyConfigDefaultsToCloneWithBlankFields(): void
-    {
-        $source = new Email();
-        $clone  = clone $source;
-
-        Assert::assertTrue($clone->isNew());
-        Assert::assertTrue($clone->getIsClone());
-
-        $this->expectThemeHelper();
-        $this->configureDefaultParams($this->allDefaultParams());
-        $this->expectNoEntityLookup();
-
-        $this->form->buildForm($this->formBuilder, ['data' => $clone]);
-
-        Assert::assertNull($clone->getPreferenceCenter(), 'Clone with blank preferenceCenter must not inherit config default');
-        Assert::assertSame([], $clone->getUtmTags(), 'Clone with blank utmTags must not inherit config defaults');
-    }
-
     private function expectThemeHelper(): void
     {
         $this->themeHelper
@@ -255,36 +130,4 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
             ->willReturn('blank');
     }
 
-    private function expectNoEntityLookup(): void
-    {
-        $this->entityManager
-            ->expects($this->never())
-            ->method('find');
-    }
-
-    /**
-     * @param array<string, mixed> $params
-     */
-    private function configureDefaultParams(array $params): void
-    {
-        $map = [];
-        foreach ($params as $key => $value) {
-            $map[] = [$key, $value];
-        }
-        $this->coreParametersHelper
-            ->method('get')
-            ->willReturnMap($map);
-    }
-
-    private function allDefaultParams(): array
-    {
-        return [
-            'email_default_preference_center_id' => 42,
-            'email_default_utm_source'           => 'config-source',
-            'email_default_utm_medium'           => 'config-medium',
-            'email_default_utm_campaign'         => 'config-campaign',
-            'email_default_utm_content'          => 'config-content',
-            'mailer_is_owner'                    => false,
-        ];
-    }
 }
