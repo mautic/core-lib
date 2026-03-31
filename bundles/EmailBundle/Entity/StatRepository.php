@@ -129,7 +129,11 @@ class StatRepository extends CommonRepository
 ];
 
         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $q->select(...$nonAggregateColumns)
+$q->select(...array_map(
+    static fn(string $col, string $alias) => "$col AS $alias",
+    array_keys($columnMap),
+    $columnMap
+));
             ->from(MAUTIC_TABLE_PREFIX.'email_stats', 's')
             ->leftJoin('s', MAUTIC_TABLE_PREFIX.'emails', 'e', 's.email_id = e.id')
             ->leftJoin('s', MAUTIC_TABLE_PREFIX.'page_hits', 'ph', 'ph.source = \'email\' and ph.source_id = s.email_id and ph.lead_id = s.lead_id')
