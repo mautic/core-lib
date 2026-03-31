@@ -79,61 +79,31 @@ class StatRepository extends CommonRepository
         $campaignId = null,
         $segmentId = null,
     ): array {
-        $nonAggregateColumns = [
-            's.id',
-            's.lead_id',
-            's.email_address',
-            's.is_read',
-            's.email_id',
-            's.date_sent',
-            's.date_read',
-            'e.name AS email_name',
-            'c.id AS company_id',
-            'c.companyname AS company_name',
-            'campaign.id AS campaign_id',
-            'campaign.name AS campaign_name',
-            'll.id AS segment_id',
-            'll.name AS segment_name',
+        $columnMap = [
+            's.id'            => 'id',
+            's.lead_id'       => 'lead_id',
+            's.email_address' => 'email_address',
+            's.is_read'       => 'is_read',
+            's.email_id'      => 'email_id',
+            's.date_sent'     => 'date_sent',
+            's.date_read'     => 'date_read',
+            'e.name'          => 'email_name',
+            'c.id'            => 'company_id',
+            'c.companyname'   => 'company_name',
+            'campaign.id'     => 'campaign_id',
+            'campaign.name'   => 'campaign_name',
+            'll.id'           => 'segment_id',
+            'll.name'         => 'segment_name',
         ];
 
-        $groupByColumns = [
-            's.id',
-            's.lead_id',
-            's.email_address',
-            's.is_read',
-            's.email_id',
-            's.date_sent',
-            's.date_read',
-            'e.name',
-            'c.id',
-            'c.companyname',
-            'campaign.id',
-            'campaign.name',
-            'll.id',
-            'll.name',
- $columnMap = [
-    's.id'            => 'id',
-    's.lead_id'       => 'lead_id',
-    's.email_address' => 'email_address',
-    's.is_read'       => 'is_read',
-    's.email_id'      => 'email_id',
-    's.date_sent'     => 'date_sent',
-    's.date_read'     => 'date_read',
-    'e.name'          => 'email_name',
-    'c.id'            => 'company_id',
-    'c.companyname'   => 'company_name',
-    'campaign.id'     => 'campaign_id',
-    'campaign.name'   => 'campaign_name',
-    'll.id'           => 'segment_id',
-    'll.name'         => 'segment_name',
-];
+        $selectColumns = array_map(
+            static fn (string $column, string $alias): string => sprintf('%s AS %s', $column, $alias),
+            array_keys($columnMap),
+            array_values($columnMap)
+        );
 
         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
-$q->select(...array_map(
-    static fn(string $col, string $alias) => "$col AS $alias",
-    array_keys($columnMap),
-    $columnMap
-));
+        $q->select(...$selectColumns)
             ->from(MAUTIC_TABLE_PREFIX.'email_stats', 's')
             ->leftJoin('s', MAUTIC_TABLE_PREFIX.'emails', 'e', 's.email_id = e.id')
             ->leftJoin('s', MAUTIC_TABLE_PREFIX.'page_hits', 'ph', 'ph.source = \'email\' and ph.source_id = s.email_id and ph.lead_id = s.lead_id')
