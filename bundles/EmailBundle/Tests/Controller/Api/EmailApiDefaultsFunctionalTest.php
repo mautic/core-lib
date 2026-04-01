@@ -72,7 +72,7 @@ class EmailApiDefaultsFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame('config-content', $response['utmTags']['utmContent']);
 
         // Verify preference center from database since API serialization may return it differently.
-        $emailId   = $response['id'];
+        $emailId    = $response['id'];
         $savedEmail = $this->em->find(Email::class, $emailId);
         Assert::assertNotNull($savedEmail, 'Email must be persisted');
         Assert::assertNotNull($savedEmail->getPreferenceCenter(), 'Preference center must be set by defaults');
