@@ -359,12 +359,11 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             );
 
             return $this->keys;
-        } else {
-            $this->encryptAndSetApiKeys($withKeys, $settings);
-
-            // reset for events that depend on rebuilding auth objects
-            $this->setIntegrationSettings($settings);
         }
+        $this->encryptAndSetApiKeys($withKeys, $settings);
+
+        // reset for events that depend on rebuilding auth objects
+        $this->setIntegrationSettings($settings);
     }
 
     /**
@@ -594,9 +593,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
                 return implode('; ', $errors);
             } elseif (!empty($response->error->message)) {
                 return $response->error->message;
-            } else {
-                return (string) $response;
             }
+
+            return (string) $response;
         } elseif (is_array($response)) {
             if (isset($response['error_description'])) {
                 return $response['error_description'];
@@ -604,12 +603,12 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
                 if (is_array($response['error'])) {
                     if (isset($response['error']['message'])) {
                         return $response['error']['message'];
-                    } else {
-                        return implode(', ', $response['error']);
                     }
-                } else {
-                    return $response['error'];
+
+                    return implode(', ', $response['error']);
                 }
+
+                return $response['error'];
             } elseif (isset($response['errors'])) {
                 $errors = [];
                 foreach ($response['errors'] as $err) {
@@ -628,9 +627,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             }
 
             return $response;
-        } else {
-            return $response;
         }
+
+        return $response;
     }
 
     /**
@@ -798,14 +797,14 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         } catch (\GuzzleHttp\Exception\RequestException $exception) {
             if (!empty($settings['return_raw'])) {
                 return $exception->getResponse();
-            } else {
-                return [
-                    'error' => [
-                        'message' => $exception->getResponse()->getBody()->getContents(),
-                        'code'    => $exception->getCode(),
-                    ],
-                ];
             }
+
+            return [
+                'error' => [
+                    'message' => $exception->getResponse()->getBody()->getContents(),
+                    'code'    => $exception->getCode(),
+                ],
+            ];
         }
         if (empty($settings['ignore_event_dispatch'])) {
             $event->setResponse($result);
@@ -816,9 +815,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
         }
         if (!empty($settings['return_raw'])) {
             return $result;
-        } else {
-            return $this->parseCallbackResponse($result->getBody(), !empty($settings['authorize_session']));
         }
+
+        return $this->parseCallbackResponse($result->getBody(), !empty($settings['authorize_session']));
     }
 
     /**
@@ -1003,12 +1002,12 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
             }
 
             return $url;
-        } else {
-            return $this->router->generate(
-                'mautic_integration_auth_callback',
-                ['integration' => $this->getName()]
-            );
         }
+
+        return $this->router->generate(
+            'mautic_integration_auth_callback',
+            ['integration' => $this->getName()]
+        );
     }
 
     /**
@@ -1840,16 +1839,14 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
                 if (!isset($data[$field])) {
                     $info[$field] = '';
                     continue;
-                } else {
-                    $values = $data[$field];
                 }
+                $values = $data[$field];
             } else {
                 if (!isset($data->$field)) {
                     $info[$field] = '';
                     continue;
-                } else {
-                    $values = $data->$field;
                 }
+                $values = $data->$field;
             }
 
             switch ($fieldDetails['type']) {
@@ -2025,9 +2022,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     {
         if ('leadfield_match' == $section) {
             return ['mautic.integration.form.field_match_notes', 'info'];
-        } else {
-            return ['', 'info'];
         }
+
+        return ['', 'info'];
     }
 
     /**
