@@ -7,6 +7,7 @@ use Mautic\CoreBundle\Factory\PageHelperFactoryInterface;
 use Mautic\CoreBundle\Helper\ExportHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\LeadBundle\Entity\Company;
+use Mautic\LeadBundle\Entity\CompanyLeadRepository;
 use Mautic\LeadBundle\Form\Type\CompanyMergeType;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\FieldModel;
@@ -510,7 +511,7 @@ class CompanyController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function viewAction(Request $request, $objectId)
+    public function viewAction($objectId)
     {
         /** @var CompanyModel $model */
         $model  = $this->getModel('lead.company');
@@ -598,18 +599,15 @@ class CompanyController extends FormController
         );
     }
 
-    public function GraphAction(int $objectId): JsonResponse
+    public function graphAction(CompanyLeadRepository $companiesRepo, int $objectId): Response
     {
-        $model          = $this->getModel('lead.company');
-        \assert($model instanceof CompanyModel);
-        $companiesRepo  = $model->getCompanyLeadRepository();
         $contacts       = $companiesRepo->getCompanyLeads($objectId);
         $engagementData = is_array($contacts) ? $this->getCompanyEngagementsForGraph($contacts) : [];
 
         return $this->ajaxAction(
             $this->requestStack->getCurrentRequest(),
             [
-                'contentTemplate' => 'MauticCoreBundle:Helper:chart.html.php',
+                'contentTemplate' => '@MauticCore/Helper/chart.html.twig',
                 'viewParameters'  => [
                     'chartData'   => $engagementData,
                     'chartType'   => 'line',

@@ -123,7 +123,7 @@ return [
             ],
             'mautic_company_graph'     => [
                 'path'       => '/company/graph/{objectId}',
-                'controller' => 'MauticLeadBundle:Company:graph',
+                'controller' => 'Mautic\LeadBundle\Controller\CompanyController::graphAction',
             ],
             'mautic_company_action' => [
                 'path'       => '/companies/{objectAction}/{objectId}',
