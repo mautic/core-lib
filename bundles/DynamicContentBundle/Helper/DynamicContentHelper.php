@@ -19,12 +19,12 @@ class DynamicContentHelper
     use MatchFilterForLeadTrait;
 
     /**
-     * @var DYNAMIC_CONTENT_REGEX
+     * @var string
      */
     public const DYNAMIC_CONTENT_REGEX = '/{(dynamiccontent)=(\w+)(?:\/}|}(?:([^{]*(?:{(?!\/\1})[^{]*)*){\/\1})?)/is';
 
     /**
-     * @var DYNAMIC_WEB_CONTENT_REGEX
+     * @var string
      */
     public const DYNAMIC_WEB_CONTENT_REGEX = '/{dwc=(.*?)}/';
 
