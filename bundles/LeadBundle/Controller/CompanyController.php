@@ -245,8 +245,8 @@ class CompanyController extends FormController
 
                     if ($this->getFormButton($form, ['buttons', 'save'])->isClicked()) {
                         $viewParameters = ['objectAction' => 'view', 'objectId' => $entity->getId()];
-                        $returnUrl = $this->generateUrl('mautic_company_action', $viewParameters);
-                        $template  = 'Mautic\LeadBundle\Controller\CompanyController::viewAction';
+                        $returnUrl      = $this->generateUrl('mautic_company_action', $viewParameters);
+                        $template       = 'Mautic\LeadBundle\Controller\CompanyController::viewAction';
                     } else {
                         // return edit view so that all the session stuff is loaded
                         return $this->editAction($request, $entity->getId(), true);
@@ -424,8 +424,8 @@ class CompanyController extends FormController
 
                     if ($this->getFormButton($form, ['buttons', 'save'])->isClicked()) {
                         $viewParameters = ['objectAction' => 'view', 'objectId' => $objectId];
-                        $returnUrl = $this->generateUrl('mautic_company_action', $viewParameters);
-                        $template  = 'Mautic\LeadBundle\Controller\CompanyController::viewAction';
+                        $returnUrl      = $this->generateUrl('mautic_company_action', $viewParameters);
+                        $template       = 'Mautic\LeadBundle\Controller\CompanyController::viewAction';
                     }
                 }
             } else {
@@ -433,8 +433,8 @@ class CompanyController extends FormController
                 $model->unlockEntity($entity);
 
                 $viewParameters = ['objectAction' => 'view', 'objectId' => $objectId];
-                $returnUrl = $this->generateUrl('mautic_company_action', $viewParameters);
-                $template  = 'Mautic\LeadBundle\Controller\CompanyController::viewAction';
+                $returnUrl      = $this->generateUrl('mautic_company_action', $viewParameters);
+                $template       = 'Mautic\LeadBundle\Controller\CompanyController::viewAction';
             }
 
             $passthrough = [

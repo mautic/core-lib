@@ -3,13 +3,14 @@
 namespace Mautic\LeadBundle\Tests\Controller;
 
 use function GuzzleHttp\json_decode;
+
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
-use Mautic\ProjectBundle\Entity\Project;
-use Symfony\Component\HttpFoundation\Request;
 use Mautic\LeadBundle\Entity\LeadList;
+use Mautic\ProjectBundle\Entity\Project;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CompanyControllerTest extends MauticMysqlTestCase
@@ -202,7 +203,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $this->assertEquals(Response::HTTP_OK, $clientResponse->getStatusCode());
 
         // Use the Crawler to parse the HTML content
-        $crawler = new \Symfony\Component\DomCrawler\Crawler($clientResponseContent);
+        $crawler = new Crawler($clientResponseContent);
 
         // Check for specific buttons by their IDs
         $applyButton  = $crawler->filter('#company_buttons_apply');
