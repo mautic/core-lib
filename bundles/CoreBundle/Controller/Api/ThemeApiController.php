@@ -71,7 +71,6 @@ class ThemeApiController extends CommonApiController
             );
         }
         $fileName  = InputHelper::filename($themeZip->getClientOriginalName());
-        $themeName = basename($fileName, '.zip');
         $dir       = $pathsHelper->getSystemPath('themes', true);
 
         if (!empty($themeZip)) {

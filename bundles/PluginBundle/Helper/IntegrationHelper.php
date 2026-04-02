@@ -336,11 +336,9 @@ class IntegrationHelper
      * @param bool $find If true, array of regexes to find a handle will be returned;
      *                   If false, array of URLs with a placeholder of %handle% will be returned
      *
-     * @return array
-     *
      * @todo Extend this method to allow plugins to add URLs to these arrays
      */
-    public function getSocialProfileUrlRegex($find = true)
+    public function getSocialProfileUrlRegex($find = true): array
     {
         if ($find) {
             // regex to find a match

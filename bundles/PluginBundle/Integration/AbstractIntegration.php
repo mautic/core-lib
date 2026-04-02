@@ -601,11 +601,7 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
                 return $response['error_description'];
             } elseif (isset($response['error'])) {
                 if (is_array($response['error'])) {
-                    if (isset($response['error']['message'])) {
-                        return $response['error']['message'];
-                    }
-
-                    return implode(', ', $response['error']);
+                    return $response['error']['message'] ?? implode(', ', $response['error']);
                 }
 
                 return $response['error'];
