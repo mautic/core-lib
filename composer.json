@@ -56,7 +56,6 @@
     "symfony/swiftmailer-bundle": "~3.3",
     "symfony/polyfill-mbstring": "~1.0",
     "symfony/security-acl": "~3.0.0",
-    "symfony/polyfill-php73": "^1.13",
     "symfony/polyfill-php74": "^1.13",
     "symfony/css-selector": "~4.4.0",
     "symfony/http-client": "~4.4.0",
