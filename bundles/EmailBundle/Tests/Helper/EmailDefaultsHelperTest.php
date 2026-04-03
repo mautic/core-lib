@@ -12,7 +12,7 @@ use Mautic\PageBundle\Entity\Page;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class EmailDefaultsHelperTest extends TestCase
+final class EmailDefaultsHelperTest extends TestCase
 {
     private MockObject&CoreParametersHelper $coreParametersHelper;
 

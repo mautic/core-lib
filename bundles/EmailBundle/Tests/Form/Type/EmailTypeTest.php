@@ -62,10 +62,7 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $themeHelper;
 
-    /**
-     * @var EmailDefaultsHelper&MockObject
-     */
-    private MockObject $defaultsHelper;
+    private EmailDefaultsHelper&MockObject $defaultsHelper;
 
     protected function setUp(): void
     {

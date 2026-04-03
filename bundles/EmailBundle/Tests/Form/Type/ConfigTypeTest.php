@@ -26,7 +26,7 @@ use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ConfigTypeTest extends TypeTestCase
+final class ConfigTypeTest extends TypeTestCase
 {
     protected function getExtensions(): array
     {

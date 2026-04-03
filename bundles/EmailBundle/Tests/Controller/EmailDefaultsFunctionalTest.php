@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
  * These tests run with the config params set so they do not bleed into the
  * unrelated tests in EmailFunctionalTest.
  */
-class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
+final class EmailDefaultsFunctionalTest extends MauticMysqlTestCase
 {
     public const SAVE_AND_CLOSE = 'Save & Close';
 

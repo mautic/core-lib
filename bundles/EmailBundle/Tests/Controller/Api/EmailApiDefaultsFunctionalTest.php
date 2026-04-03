@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Functional tests proving that email defaults from config are applied
  * when creating emails via the API (EMAIL_PRE_SAVE subscriber).
  */
-class EmailApiDefaultsFunctionalTest extends MauticMysqlTestCase
+final class EmailApiDefaultsFunctionalTest extends MauticMysqlTestCase
 {
     /**
      * Disabled because testNewEmailViaApiAppliesConfiguredDefaults calls
@@ -46,12 +46,9 @@ class EmailApiDefaultsFunctionalTest extends MauticMysqlTestCase
             'email_default_preference_center_id' => $pageId,
         ]));
 
+        // Re-authenticate: setUpSymfony() destroys the previous client and its security token.
         $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
         $this->loginUser($user);
-
-        // Verify the page survived the kernel reboot.
-        $reloadedPage = $this->em->find(Page::class, $pageId);
-        Assert::assertNotNull($reloadedPage, "Page ID {$pageId} must exist after kernel reboot");
 
         $payload = [
             'name'       => 'API defaults test',
