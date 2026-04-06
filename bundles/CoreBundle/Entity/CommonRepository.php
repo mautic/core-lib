@@ -374,7 +374,6 @@ class CommonRepository extends ServiceEntityRepository
 
         $this->buildClauses($q, $args);
         $query = $q->getQuery();
-//        dump($query->getSQL());
 
         if (isset($args['result_cache'])) {
             if (!$args['result_cache'] instanceof ResultCacheOptions) {
