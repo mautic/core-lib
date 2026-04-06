@@ -62,7 +62,7 @@ class SourceController extends CommonFormController
 
         $campaignModel = $this->getModel('campaign');
         \assert($campaignModel instanceof CampaignModel);
-        $sourceList = $campaignModel->getSourceLists($sourceType);
+        $sourceList = $campaignModel->getSourceLists($sourceType, false, true);
         $form       = $this->formFactory->create(
             CampaignLeadSourceType::class,
             $source,
@@ -170,7 +170,7 @@ class SourceController extends CommonFormController
 
         $campaignModel = $this->getModel('campaign');
         \assert($campaignModel instanceof CampaignModel);
-        $sourceList = $campaignModel->getSourceLists($sourceType);
+        $sourceList = $campaignModel->getSourceLists($sourceType, false, true);
         $form       = $this->formFactory->create(
             CampaignLeadSourceType::class,
             $source,

@@ -14,7 +14,7 @@ class CampaignModelTest extends CampaignTestAbstract
         $model = $this->initCampaignModel();
         $lists = $model->getSourceLists();
         $this->assertTrue(isset($lists['lists']));
-        $this->assertSame([parent::$mockId => parent::$mockName], $lists['lists']);
+        $this->assertSame([parent::$mockAlias => parent::$mockName], $lists['lists']);
         $this->assertTrue(isset($lists['forms']));
         $this->assertSame([parent::$mockId => parent::$mockName], $lists['forms']);
     }
@@ -23,13 +23,20 @@ class CampaignModelTest extends CampaignTestAbstract
     {
         $model = $this->initCampaignModel();
         $lists = $model->getSourceLists('lists');
-        $this->assertSame([parent::$mockId => parent::$mockName], $lists);
+        $this->assertSame([parent::$mockAlias => parent::$mockName], $lists);
     }
 
     public function testGetSourceListsWithForms(): void
     {
         $model = $this->initCampaignModel();
         $lists = $model->getSourceLists('forms');
+        $this->assertSame([parent::$mockId => parent::$mockName], $lists);
+    }
+
+    public function testGetSourceListsWithListsUsingIds(): void
+    {
+        $model = $this->initCampaignModel();
+        $lists = $model->getSourceLists('lists', false, true);
         $this->assertSame([parent::$mockId => parent::$mockName], $lists);
     }
 

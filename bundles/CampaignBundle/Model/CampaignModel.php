@@ -529,7 +529,7 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
      * @param string $sourceType
      * @param bool   $globalOnly
      */
-    public function getSourceLists($sourceType = null, $globalOnly = false): array
+    public function getSourceLists($sourceType = null, $globalOnly = false, bool $useIdsForLists = false): array
     {
         $choices = [];
         switch ($sourceType) {
@@ -540,7 +540,8 @@ class CampaignModel extends CommonFormModel implements GlobalSearchInterface
 
                 if ($lists) {
                     foreach ($lists as $list) {
-                        $choices['lists'][$list['id']] = $list['name'];
+                        $identifier                    = $useIdsForLists ? $list['id'] : $list['alias'];
+                        $choices['lists'][$identifier] = $list['name'];
                     }
                 }
 

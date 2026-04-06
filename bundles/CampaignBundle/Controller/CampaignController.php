@@ -354,7 +354,7 @@ class CampaignController extends AbstractStandardFormController
         $this->addSchedulingLabels($events);
         $sortedEvents           = $this->processCampaignEventsFromParentCondition($events);
 
-        $sourcesList     = $this->getCampaignModel()->getSourceLists();
+        $sourcesList     = $this->getCampaignModel()->getSourceLists(null, false, true);
         $campaign        = $this->getCampaignModel()->getEntity($objectId);
         $this->prepareCampaignSourcesForEdit($objectId, $sourcesList, true);
         // Filter out deleted events for the preview (but keep them for action/decision/condition tabs)
@@ -1126,7 +1126,7 @@ class CampaignController extends AbstractStandardFormController
                     $campaignModel = $this->getModel('campaign');
                     \assert($campaignModel instanceof CampaignModel);
 
-                    $sourceList                   = $campaignModel->getSourceLists($type);
+                    $sourceList                   = $campaignModel->getSourceLists($type, false, true);
                     $this->campaignSources[$type] = [
                         'sourceType' => $type,
                         'campaignId' => $objectId,
