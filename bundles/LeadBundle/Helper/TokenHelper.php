@@ -135,9 +135,9 @@ class TokenHelper
         }
         if (in_array($defaultValue, ['true', 'date', 'time', 'datetime', 'label'])) {
             return $value;
-        } else {
-            return '' !== $value ? $value : $defaultValue;
         }
+
+        return '' !== $value ? $value : $defaultValue;
     }
 
     private static function getTokenDefaultValue($match): string
