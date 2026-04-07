@@ -61,7 +61,7 @@ class FilterType extends AbstractType
             }
 
             // Keep legacy operators available for existing saved segments, but not for new filters.
-            $legacyOperators = [OperatorOptions::INCLUDING_ALL, OperatorOptions::EXCLUDING_ALL];
+            $legacyOperators  = [OperatorOptions::INCLUDING_ALL, OperatorOptions::EXCLUDING_ALL];
             $isLegacyOperator = null !== $operator && in_array($operator, $legacyOperators, true);
 
             if ($isLegacyOperator && !in_array($operator, $operators, true)) {
