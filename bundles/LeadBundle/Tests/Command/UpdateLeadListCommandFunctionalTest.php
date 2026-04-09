@@ -558,6 +558,102 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
 
     /**
      * @param int|string $expected
+     * @param array<int> $addFieldsToCompany
+     * @param array<int> $addFieldsToSegment
+     */
+    #[DataProvider('provideIncludeExclude')]
+    public function testCompanyCustomFieldIncludeExclude(string $filter, $expected, array $addFieldsToCompany, array $addFieldsToSegment): void
+    {
+        $fieldAlias = 'test_company_inc_ex_field';
+
+        /** @var FieldModel $fieldModel */
+        $fieldModel = $this->getContainer()->get(FieldModel::class);
+
+        $leadField = new LeadField();
+        $leadField->setName('Test Company Field')
+            ->setAlias($fieldAlias)
+            ->setType('multiselect')
+            ->setObject('company')
+            ->setProperties([
+                'list' => [
+                    ['label' => 'Halusky', 'value' => 'halusky'],
+                    ['label' => 'Bramborak', 'value' => 'bramborak'],
+                    ['label' => 'Makovec', 'value' => 'makovec'],
+                ],
+            ]);
+        $fieldModel->saveEntity($leadField);
+
+        $this->em->flush();
+
+        $companyValue = [];
+        if (in_array(1, $addFieldsToCompany, true)) {
+            $companyValue[] = 'halusky';
+        }
+        if (in_array(2, $addFieldsToCompany, true)) {
+            $companyValue[] = 'bramborak';
+        }
+        if (in_array(3, $addFieldsToCompany, true)) {
+            $companyValue[] = 'makovec';
+        }
+
+        $company = new Company();
+        $company->setName('Test Company');
+        $company->addUpdatedField($fieldAlias, $companyValue);
+
+        $companyModel = self::getContainer()->get(\Mautic\LeadBundle\Model\CompanyModel::class);
+        \assert($companyModel instanceof \Mautic\LeadBundle\Model\CompanyModel);
+        $companyModel->saveEntity($company);
+
+        $contact = $this->createLead('First name', emailId: 'halusky@bramborak.makovec');
+        $this->em->flush();
+
+        $this->createPrimaryCompanyForLead($contact, $company);
+
+        $segmentValue = [];
+        if (in_array(1, $addFieldsToSegment, true)) {
+            $segmentValue[] = 'halusky';
+        }
+        if (in_array(2, $addFieldsToSegment, true)) {
+            $segmentValue[] = 'bramborak';
+        }
+        if (in_array(3, $addFieldsToSegment, true)) {
+            $segmentValue[] = 'makovec';
+        }
+
+        $segment = $this->createSegment(
+            'test-segment',
+            [[
+                'glue'     => 'and',
+                'field'    => $fieldAlias,
+                'object'   => 'company',
+                'type'     => 'multiselect',
+                'filter'   => $segmentValue,
+                'display'  => null,
+                'operator' => $filter,
+            ]]
+        );
+
+        $longTimeAgo = new \DateTime('2000-01-01 00:00:00');
+        $segment->setLastBuiltDate($longTimeAgo);
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $output = $this->testSymfonyCommand(UpdateLeadListsCommand::NAME);
+
+        Assert::assertSame(Command::SUCCESS, $output->getStatusCode());
+
+        /** @var LeadListRepository $leadListRepository */
+        $leadListRepository = $this->em->getRepository(LeadList::class);
+
+        Assert::assertSame(
+            (int) $expected,
+            (int) $leadListRepository->getLeadCount([$segment->getId()])
+        );
+    }
+
+    /**
+     * @param int|string $expected
      * @param array<int> $addSegmentsToContact
      * @param array<int> $addSegmentsToSegment
      */
