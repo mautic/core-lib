@@ -50,6 +50,55 @@ final class MessageOfTheDayCommand extends Command
         return Command::SUCCESS;
     }
 
+    private function fetchMotdJson(OutputInterface $output): string
+    {
+        $url = $this->coreParametersHelper->get('motd_url');
+
+        if (empty($url)) {
+            throw new MessageOfTheDayException('MOTD URL is not configured');
+        }
+
+        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new MessageOfTheDayException('MOTD URL is not valid');
+        }
+
+        $cachePath = $this->coreParametersHelper->get('motd_cache_path');
+        $cacheTtl  = (int) $this->coreParametersHelper->get('motd_cache_ttl');
+
+        if (is_file($cachePath) && time() - filemtime($cachePath) < $cacheTtl) {
+            $cached = file_get_contents($cachePath);
+
+            if (false !== $cached) {
+                return $cached;
+            }
+        }
+
+        try {
+            $response = $this->httpClient->request('GET', $url, [
+                'timeout' => 3,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            $json = $response->getContent();
+        } catch (ExceptionInterface) {
+            throw new MessageOfTheDayException('Could not fetch motd.json');
+        }
+
+        if ('' === $json) {
+            throw new MessageOfTheDayException('MOTD response was empty');
+        }
+
+        $written = file_put_contents($cachePath, $json);
+
+        if (false === $written && $output->isVerbose()) {
+            $output->writeln('<error>Could not write MOTD cache to '.$cachePath.'</error>');
+        }
+
+        return $json;
+    }
+
     /**
      * @return array{
      *     timed: list<array{category: array{label: string}, lines: list<string>}>,
@@ -158,55 +207,6 @@ final class MessageOfTheDayCommand extends Command
         $pool = (random_int(1, 100) <= 75) ? $timed : $timeless;
 
         return $pool[array_rand($pool)];
-    }
-
-    private function fetchMotdJson(OutputInterface $output): string
-    {
-        $url = $this->coreParametersHelper->get('motd_url');
-
-        if (empty($url)) {
-            throw new MessageOfTheDayException('MOTD URL is not configured');
-        }
-
-        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new MessageOfTheDayException('MOTD URL is not valid');
-        }
-
-        $cachePath = $this->coreParametersHelper->get('motd_cache_path');
-        $cacheTtl  = (int) $this->coreParametersHelper->get('motd_cache_ttl');
-
-        if (is_file($cachePath) && time() - filemtime($cachePath) < $cacheTtl) {
-            $cached = file_get_contents($cachePath);
-
-            if (false !== $cached) {
-                return $cached;
-            }
-        }
-
-        try {
-            $response = $this->httpClient->request('GET', $url, [
-                'timeout' => 3,
-                'headers' => [
-                    'Accept' => 'application/json',
-                ],
-            ]);
-
-            $json = $response->getContent();
-        } catch (ExceptionInterface) {
-            throw new MessageOfTheDayException('Could not fetch motd.json');
-        }
-
-        if ('' === $json) {
-            throw new MessageOfTheDayException('MOTD response was empty');
-        }
-
-        $written = file_put_contents($cachePath, $json);
-
-        if (false === $written && $output->isVerbose()) {
-            $output->writeln('<error>Could not write MOTD cache to '.$cachePath.'</error>');
-        }
-
-        return $json;
     }
 
     /**
