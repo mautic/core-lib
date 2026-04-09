@@ -7,6 +7,7 @@ namespace Mautic\LeadBundle\Tests\Command;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
 use Mautic\LeadBundle\Command\UpdateLeadListsCommand;
+use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadList;
@@ -463,6 +464,96 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
         yield 'exclude all no match multiple' => [OperatorOptions::EXCLUDING_ALL, 1, 1, [2, 3]]; // Multiple values always match "!in_all" with single value
         yield 'exclude all with match' => [OperatorOptions::EXCLUDING_ALL, 0, 1, [1]];
         yield 'exclude all with match multiple' => [OperatorOptions::EXCLUDING_ALL, 1, 1, [1, 2]]; // Multiple values always match "!in_all" with single value
+    }
+
+    /**
+     * @param int|string $expected
+     * @param array<int> $addFieldsToSegment
+     */
+    #[DataProvider('provideSingleIncludeExclude')]
+    public function testCompanyCustomFieldSelectIncludeExclude(string $filter, $expected, int $addFieldToCompany, array $addFieldsToSegment): void
+    {
+        $fieldAlias = 'test_company_inc_ex_single_field';
+
+        /** @var FieldModel $fieldModel */
+        $fieldModel = $this->getContainer()->get(FieldModel::class);
+
+        $leadField = new LeadField();
+        $leadField->setName('Test Company Field')
+            ->setAlias($fieldAlias)
+            ->setType('select')
+            ->setObject('company')
+            ->setProperties([
+                'list' => [
+                    ['label' => 'Halusky', 'value' => 'halusky'],
+                    ['label' => 'Bramborak', 'value' => 'bramborak'],
+                    ['label' => 'Makovec', 'value' => 'makovec'],
+                ],
+            ]);
+        $fieldModel->saveEntity($leadField);
+
+        $this->em->flush();
+
+        $companyValue = match ($addFieldToCompany) {
+            1       => 'halusky',
+            2       => 'bramborak',
+            3       => 'makovec',
+            default => null,
+        };
+
+        $company = new Company();
+        $company->setName('Test Company');
+        $company->addUpdatedField($fieldAlias, $companyValue);
+
+        $companyModel = self::getContainer()->get(\Mautic\LeadBundle\Model\CompanyModel::class);
+        \assert($companyModel instanceof \Mautic\LeadBundle\Model\CompanyModel);
+        $companyModel->saveEntity($company);
+
+        $contact = $this->createLead('First name', emailId: 'halusky@bramborak.makovec');
+        $this->em->flush();
+
+        $this->createPrimaryCompanyForLead($contact, $company);
+
+        $segmentValue = [];
+        if (in_array(1, $addFieldsToSegment, true)) {
+            $segmentValue[] = 'halusky';
+        }
+        if (in_array(2, $addFieldsToSegment, true)) {
+            $segmentValue[] = 'bramborak';
+        }
+        if (in_array(3, $addFieldsToSegment, true)) {
+            $segmentValue[] = 'makovec';
+        }
+
+        $segment = $this->createSegment(
+            'test-segment',
+            [[
+                'glue'     => 'and',
+                'field'    => $fieldAlias,
+                'object'   => 'company',
+                'type'     => 'select',
+                'filter'   => $segmentValue,
+                'display'  => null,
+                'operator' => $filter,
+            ]]
+        );
+
+        $longTimeAgo = new \DateTime('2000-01-01 00:00:00');
+        $segment->setLastBuiltDate($longTimeAgo);
+
+        $this->em->flush();
+        $this->em->clear();
+
+        Assert::assertEquals($longTimeAgo, $segment->getLastBuiltDate());
+
+        $output = $this->testSymfonyCommand(UpdateLeadListsCommand::NAME);
+
+        Assert::assertSame(Command::SUCCESS, $output->getStatusCode());
+
+        /** @var LeadListRepository $leadListRepository */
+        $leadListRepository = $this->em->getRepository(LeadList::class);
+
+        Assert::assertSame($expected, $leadListRepository->getLeadCount([$segment->getId()]));
     }
 
     /**

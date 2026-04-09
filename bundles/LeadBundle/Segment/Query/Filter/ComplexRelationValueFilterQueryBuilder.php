@@ -4,6 +4,7 @@ namespace Mautic\LeadBundle\Segment\Query\Filter;
 
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Mautic\LeadBundle\Segment\ContactSegmentFilter;
+use Mautic\LeadBundle\Segment\OperatorOptions;
 use Mautic\LeadBundle\Segment\Query\QueryBuilder;
 
 /**
@@ -117,6 +118,28 @@ class ComplexRelationValueFilterQueryBuilder extends BaseFilterQueryBuilder
                 }
 
                 $expression = $queryBuilder->expr()->and(...$expressions);
+                break;
+            case OperatorOptions::INCLUDING_ALL:
+                // Single-select field can't match all values at once - always false for multiple values.
+                if (is_array($filterParametersHolder) && count($filterParametersHolder) > 1) {
+                    $expression = $queryBuilder->expr()->and('1 = 0');
+                    break;
+                }
+                $expression = $queryBuilder->expr()->in(
+                    $tableAlias.'.'.$filter->getField(),
+                    $filterParametersHolder
+                );
+                break;
+            case OperatorOptions::EXCLUDING_ALL:
+                // Single-select field can't hold all values at once - always true for multiple values.
+                if (is_array($filterParametersHolder) && count($filterParametersHolder) > 1) {
+                    $expression = $queryBuilder->expr()->and('1 = 1');
+                    break;
+                }
+                $expression = $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->isNull($tableAlias.'.'.$filter->getField()),
+                    $queryBuilder->expr()->notIn($tableAlias.'.'.$filter->getField(), $filterParametersHolder)
+                );
                 break;
             default:
                 throw new \Exception('Dunno how to handle operator "'.$filterOperator.'"');
