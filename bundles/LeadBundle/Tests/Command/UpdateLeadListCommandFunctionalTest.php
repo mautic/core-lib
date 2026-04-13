@@ -339,11 +339,10 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @param int|string $expected
      * @param array<int> $addFieldsToSegment
      */
     #[DataProvider('provideSingleIncludeExclude')]
-    public function testCustomFieldSelectIncludeExclude(string $filter, $expected, int $addFieldToContact, array $addFieldsToSegment): void
+    public function testCustomFieldSelectIncludeExclude(string $filter, int $expected, int $addFieldToContact, array $addFieldsToSegment): void
     {
         $fieldAlias = 'test_inc_ex_single_field';
 
@@ -467,11 +466,10 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @param int|string $expected
      * @param array<int> $addFieldsToSegment
      */
     #[DataProvider('provideSingleIncludeExclude')]
-    public function testCompanyCustomFieldSelectIncludeExclude(string $filter, $expected, int $addFieldToCompany, array $addFieldsToSegment): void
+    public function testCompanyCustomFieldSelectIncludeExclude(string $filter, int $expected, int $addFieldToCompany, array $addFieldsToSegment): void
     {
         $fieldAlias = 'test_company_inc_ex_single_field';
 
@@ -557,12 +555,11 @@ final class UpdateLeadListCommandFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @param int|string $expected
      * @param array<int> $addFieldsToCompany
      * @param array<int> $addFieldsToSegment
      */
     #[DataProvider('provideIncludeExclude')]
-    public function testCompanyCustomFieldIncludeExclude(string $filter, $expected, array $addFieldsToCompany, array $addFieldsToSegment): void
+    public function testCompanyCustomFieldIncludeExclude(string $filter, int $expected, array $addFieldsToCompany, array $addFieldsToSegment): void
     {
         $fieldAlias = 'test_company_inc_ex_field';
 

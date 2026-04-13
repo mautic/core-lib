@@ -166,9 +166,10 @@ class ComplexRelationValueFilterQueryBuilder extends BaseFilterQueryBuilder
                     $expression = $queryBuilder->expr()->and('1 = 0');
                     break;
                 }
-                $expression = $queryBuilder->expr()->in(
+                $parameter  = is_array($filterParametersHolder) ? $filterParametersHolder[0] : $filterParametersHolder;
+                $expression = $queryBuilder->expr()->eq(
                     $tableAlias.'.'.$filter->getField(),
-                    $filterParametersHolder
+                    $parameter
                 );
                 break;
             case OperatorOptions::EXCLUDING_ALL:
@@ -177,9 +178,10 @@ class ComplexRelationValueFilterQueryBuilder extends BaseFilterQueryBuilder
                     $expression = $queryBuilder->expr()->and('1 = 1');
                     break;
                 }
+                $parameter  = is_array($filterParametersHolder) ? $filterParametersHolder[0] : $filterParametersHolder;
                 $expression = $queryBuilder->expr()->or(
                     $queryBuilder->expr()->isNull($tableAlias.'.'.$filter->getField()),
-                    $queryBuilder->expr()->notIn($tableAlias.'.'.$filter->getField(), $filterParametersHolder)
+                    $queryBuilder->expr()->neq($tableAlias.'.'.$filter->getField(), $parameter)
                 );
                 break;
             default:
