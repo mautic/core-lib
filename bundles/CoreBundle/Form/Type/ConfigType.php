@@ -223,7 +223,21 @@ class ConfigType extends AbstractType
                                 // Allowed characters are a-z, 0-9 and "-".
                                 if (0 === preg_match('/^[a-z0-9\-.]+$/i', $value)) {
                                     // Regexp given
-                                    if (false === @preg_match('/'.$value.'/', '')) {
+
+                                    // In environments, which set the `error_reporting` to ALL the code need to be executed without warnings.
+                                    $regexpError = false;
+                                    set_error_handler(static function (int $errorNo, string $errorString) use (&$regexpError): bool {
+                                        $regexpError = str_contains($errorString, 'preg_match');
+
+                                        return true;
+                                    });
+
+                                    // There is no way Mautic can validate rexep better than PCRE library.
+                                    $pregMatchResult = @preg_match('/'.$value.'/', '');
+
+                                    restore_error_handler();
+
+                                    if (false === $pregMatchResult || $regexpError) {
                                         $context->buildViolation('mautic.core.config.form.trusted_hosts.invalid.regexp')->atPath('trusted_hosts')->addViolation();
 
                                         break;
