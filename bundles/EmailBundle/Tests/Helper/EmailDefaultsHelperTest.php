@@ -75,6 +75,7 @@ final class EmailDefaultsHelperTest extends TestCase
             ['email_default_utm_content', null, null],
         ]);
 
+        // Verify helper skips loading when preference center already set
         $this->entityManager->expects($this->never())->method('find');
 
         $this->helper->applyDefaults($email);
@@ -105,6 +106,7 @@ final class EmailDefaultsHelperTest extends TestCase
 
     public function testAppliesDefaultsWhenUtmTagsContainOnlyNullValues(): void
     {
+        // Form submission with clearMissing=true sets all fields to null; verify we treat this as "empty"
         $email = new Email();
         $email->setUtmTags([
             'utmSource'   => null,
@@ -182,6 +184,7 @@ final class EmailDefaultsHelperTest extends TestCase
         $email = new Email();
         $email->setName('Test Email');
         $changesBefore = $email->getChanges();
+        // Verify the email has tracked changes before applying defaults
         $this->assertNotEmpty($changesBefore);
 
         $this->coreParametersHelper->method('get')->willReturnMap([

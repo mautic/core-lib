@@ -78,6 +78,7 @@ final class EmailApiDefaultsFunctionalTest extends MauticMysqlTestCase
 
     public function testNewEmailViaApiDoesNotOverwriteExplicitValues(): void
     {
+        // Verify that explicitly provided UTM values override config defaults
         $payload = [
             'name'       => 'API explicit values test',
             'subject'    => 'Test subject',
