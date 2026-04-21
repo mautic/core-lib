@@ -978,12 +978,7 @@ class Asset extends FormEntity implements UuidInterface
         return $fileInfo;
     }
 
-    /**
-     * Returns file mime type.
-     *
-     * @return ?string
-     */
-    public function getFileMimeType()
+    public function getFileMimeType(): ?string
     {
         if ($this->isRemote()) {
             return $this->getRemoteMimeTypeFromHeader();
