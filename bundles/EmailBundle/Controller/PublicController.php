@@ -219,10 +219,9 @@ class PublicController extends CommonFormController
                             'contentTemplate' => $contentTemplate,
                         ]
                     );
-                } else {
-                    // success message should not persist on page refresh
-                    $session->set($successSessionName, 0);
                 }
+                // success message should not persist on page refresh
+                $session->set($successSessionName, 0);
 
                 $formView = $form->createView();
 
