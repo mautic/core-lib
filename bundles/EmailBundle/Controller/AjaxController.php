@@ -336,10 +336,10 @@ class AjaxController extends CommonAjaxController
     public function getEmailSendToDncStatusAction(Request $request, EmailModel $model): JsonResponse
     {
         $dataArray = [];
-        $objectId  = $request->get('id');
+        $objectId  = $request->request->get('id');
 
         if ($objectId && $entity = $model->getEntity($objectId)) {
-            $yesText                         =  $this->translator->trans('mautic.core.form.yes');
+            $yesText                         = $this->translator->trans('mautic.core.form.yes');
             $noText                          = $this->translator->trans('mautic.core.form.no');
             $dataArray['sendToDncText']      = $entity->getSendToDnc() ? $yesText : $noText;
             $dataArray['sendToDncStatus']    = $entity->getSendToDnc();
