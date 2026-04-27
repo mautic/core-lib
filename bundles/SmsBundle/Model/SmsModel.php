@@ -197,10 +197,9 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         $channel = $options['channel'] ?? null;
         $sendTo  = is_array($sendTo) ? $sendTo : [$sendTo];
 
-        $sentCount       = 0;
-        $failedCount     = 0;
-        $results         = [];
-        $fetchContacts   = [];
+        $failedCount   = 0;
+        $results       = [];
+        $fetchContacts = [];
         foreach ($sendTo as $contact) {
             if (!$contact instanceof Lead) {
                 $fetchContacts[] = $contact;
