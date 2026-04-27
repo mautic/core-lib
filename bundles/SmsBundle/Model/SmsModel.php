@@ -258,7 +258,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         $contacts = $queueEvent->getContacts();
 
         // Check if any contacts remain. If not, return early.
-        if (empty($contacts)) {
+        if (!$contacts) {
             return $results;
         }
 
@@ -274,7 +274,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
         $contacts = $filterEvent->getContacts();
 
-        if (empty($contacts)) {
+        if (!$contacts) {
             return $results;
         }
 
@@ -323,7 +323,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
         try {
             // assumption made that the Sms message is same for all contacts
-            if (!empty($media)) {
+            if ($media) {
                 $this->transport->sendMMS($recipientCollection, $message, $media);
             } else {
                 $this->transport->sendBatchSms($recipientCollection, $message);
