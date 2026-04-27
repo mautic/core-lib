@@ -9,7 +9,7 @@ Mautic.smsOnLoad = function (container, response) {
         });
     }
     mQuery('#media_url').on("keydown", (event) => {
-        // add media from url id enter key (keycode = 13) is pressed.
+        // add media from url if enter key (keycode = 13) is pressed.
         if (event.keyCode == 13) {
             event.preventDefault();
             Mautic.addMediaFromUrl();
