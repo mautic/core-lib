@@ -8,8 +8,6 @@ interface MMSTransportInterface
 {
     /**
      * @param array<mixed> $media
-     *
-     * @return bool|string
      */
-    public function sendMms(Lead $lead, string $content, array $media);
+    public function sendMms(Lead $lead, string $content, array $media): bool|string;
 }
