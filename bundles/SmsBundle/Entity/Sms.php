@@ -171,7 +171,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     {
         $builder = new ClassMetadataBuilder($metadata);
 
-        $builder->setTable('sms_messages')
+        $builder->setTable(self::TABLE_NAME)
             ->setCustomRepositoryClass(SmsRepository::class);
 
         $builder->addIdColumns();
@@ -194,13 +194,12 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
         $builder->createField('media', Types::JSON)
             ->columnName('media')
-            ->nullable()
+            ->option('default', '{}')
             ->build();
 
         $builder->createField('isMms', Types::BOOLEAN)
             ->columnName('is_mms')
             ->option('default', 0)
-            ->nullable(false)
             ->build();
 
         $builder->createManyToMany('lists', LeadList::class)
@@ -236,7 +235,7 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         );
 
         $metadata->addConstraint(new Callback(
-            function (Sms $sms, ExecutionContextInterface $context): void {
+            function (Sms $sms, ExecutionContextInterface $context) use ($metadata): void {
                 $type      = $sms->getSmsType();
                 $validator = $context->getValidator();
                 if ('list' == $type) {
@@ -259,24 +258,12 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
                     }
                 }
 
-                $mediaViolations = $validator->validate(
-                    $sms->getMedia(),
-                    [
-                        new Count(
-                            [
-                                'maxMessage' => 'mautic.sms.form.max.media.error',
-                                'max'        => 10,
-                            ]
-                        ),
-                    ]
+                $metadata->addPropertyConstraint(
+                    'media',
+                    new Count(
+                        max: 10, maxMessage: 'mautic.sms.form.max.media.error'
+                    )
                 );
-                if (count($mediaViolations) > 0) {
-                    foreach ($mediaViolations as $violation) {
-                        $context->buildViolation($violation->getMessage())
-                            ->atPath('media')
-                            ->addViolation();
-                    }
-                }
             },
         ));
 
