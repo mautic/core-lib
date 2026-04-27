@@ -82,9 +82,8 @@ class TransportChain
         if ($this->getPrimaryTransport() instanceof BulkTransportInterface) {
             return $this->getPrimaryTransport()->sendBatchSms($collection, $template);
         }
-        $this->sendMessage($collection, $template);
 
-        return $collection;
+        return $this->sendMessage($collection, $template);
     }
 
     /**
@@ -107,12 +106,12 @@ class TransportChain
     private function sendMessage(RecipientCollection $collection, string $template, array $media = []): RecipientCollection
     {
         // loops through contacts
-        foreach ($collection as &$recipient) {
+        foreach ($collection as $recipient) {
             $substitutionData = $recipient->getSubstitutionData();
             // replace all tokens
             $content = str_replace(array_keys($substitutionData), array_values($substitutionData), $template);
             // As of now media is only supported by twilio
-            if (!empty($media) && ($primaryTransport = $this->getPrimaryTransport()) instanceof MMSTransportInterface) {
+            if ($media && ($primaryTransport = $this->getPrimaryTransport()) instanceof MMSTransportInterface) {
                 $status = $primaryTransport->sendMms($recipient->getLead(), $content, $media);
             } else {
                 $status  = $this->sendSms($recipient->getLead(), $content);
