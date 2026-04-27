@@ -36,7 +36,7 @@ final class SendSmsSubscriber implements EventSubscriberInterface
     {
         $dnc = $this->dncRepo->getChannelList('sms', array_keys($event->getContacts()));
 
-        if (empty($dnc)) {
+        if (!$dnc) {
             return;
         }
 
