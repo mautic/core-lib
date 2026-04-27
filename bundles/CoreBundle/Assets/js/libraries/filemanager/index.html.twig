@@ -18,8 +18,9 @@
     jQuery().ready(function() {
 
         const urlParams = new URL(window.location.href).searchParams;
+        const editorType = urlParams.get('editor');
         let allowedMimeTypes = {{ onlyMimes|raw }};
-        if(urlParams.has('editor') && urlParams.get('editor') === 'media_form') {
+        if('media_form' === editorType) {
             allowedMimeTypes = ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'];
         }
 
@@ -36,10 +37,10 @@
                     fileUrl = file.baseUrl + '' + (file.path).replace('//', '');
                 }
 
-                if (urlParams.has('editor') && urlParams.get('editor') === 'ckeditor') {
+                if ('ckeditor' === editorType) {
                     window.opener.document.ckEditorInsertImages(editor, fileUrl);
                 }
-                else if(urlParams.has('editor') && urlParams.get('editor') === 'media_form') {
+                else if('media_form' === editorType) {
                     window.opener.document.mediaManagerInsertImageCallback(fileUrl);
                 }
                 else {
