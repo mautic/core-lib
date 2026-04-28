@@ -1115,7 +1115,7 @@ class MailHelper
     }
 
     /**
-     * Set from email address and name from user input (defaults to determining automatically unless isGlobal is true).
+     * Set the from email address and name from user input.
      */
     public function setAdvanceFrom(string $fromEmail, ?string $fromName = null): void
     {
