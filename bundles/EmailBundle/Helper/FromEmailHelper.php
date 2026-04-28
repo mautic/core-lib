@@ -139,6 +139,9 @@ class FromEmailHelper
         return $this->getDefaultFrom();
     }
 
+    /**
+     * @param array<string,mixed>|null $contact
+     */
     private function getDefaultFrom(?array $contact = null): AddressDTO
     {
         $systemDefault = $this->defaultFrom ?: $this->getSystemDefaultFrom();
@@ -212,6 +215,9 @@ class FromEmailHelper
         return new AddressDTO($emailAddress, $name);
     }
 
+    /**
+     * @param array<string,mixed> $contact
+     */
     private function getFromEmailAsOwner(array $contact, ?Email $email = null): AddressDTO
     {
         if (empty($contact['owner_id'])) {

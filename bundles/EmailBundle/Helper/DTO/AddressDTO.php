@@ -47,6 +47,8 @@ final class AddressDTO
     }
 
     /**
+     * @param array<string,mixed>|null $contact
+     *
      * @throws TokenNotFoundOrEmptyException
      */
     public function getNameTokenValue(?array $contact = null): string
@@ -55,6 +57,8 @@ final class AddressDTO
     }
 
     /**
+     * @param array<string,mixed>|null $contact
+     *
      * @throws TokenNotFoundOrEmptyException
      */
     public function getEmailTokenValue(?array $contact = null): string
@@ -63,7 +67,7 @@ final class AddressDTO
     }
 
     /**
-     * @param mixed[] $contact
+     * @param array<string,mixed>|null $contact
      *
      * @throws TokenNotFoundOrEmptyException
      */
