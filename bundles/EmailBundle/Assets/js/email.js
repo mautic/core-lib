@@ -300,10 +300,10 @@ Mautic.disabledEmailAction = function(opener, origin) {
 
     opener.mQuery('[id$=_editEmailButton]').prop('disabled', disabled);
     opener.mQuery('[id$=_previewEmailButton]').prop('disabled', disabled);
-    if (!disabled) {
-        Mautic.setEmailSendToDncStatus(emailId);
-    } else {
+    if (disabled) {
         mQuery('#email_send_to_dnc_status, .queue_hide').addClass('hide');
+    } else {
+        Mautic.setEmailSendToDncStatus(emailId);
     }
 };
 
