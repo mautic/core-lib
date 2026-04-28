@@ -46,12 +46,11 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
         $mediaSmsName = 'Media attached sms';
         $this->CreateSms($mediaSmsName, 'sms body', true, range(1, 3));
         $this->CreateSms('sms', 'sms body2');
-        $crawler  = $this->client->request(Request::METHOD_GET, '/s/sms');
-        $response = $this->client->getResponse();
-        $this->assertSame(200, $response->getStatusCode());
+        $crawler = $this->client->request(Request::METHOD_GET, '/s/sms');
+        $this->assertResponseIsSuccessful();
         $this->assertCount(2, $crawler->filter('.sms-list tbody tr'));
-        $this->assertCount(1, $crawler->filter('.sms-list tbody i.fa-file-image-o'));
-        $this->assertStringContainsString($mediaSmsName, $crawler->filter('.sms-list tbody i.fa-file-image-o')->closest('tr')->text());
+        $this->assertCount(1, $crawler->filter('.sms-list tbody i.ri-file-image-line'));
+        $this->assertStringContainsString($mediaSmsName, $crawler->filter('.sms-list tbody i.ri-file-image-line')->closest('tr')->text());
     }
 
     public function testPreviewMMS(): void
