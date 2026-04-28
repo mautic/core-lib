@@ -73,7 +73,7 @@ final class AddressDTO
      */
     private function getTokenValue(?string $content, ?array $contact = null): string
     {
-        if (!TokenHelper::validToken($content)) {
+        if (!$content || !TokenHelper::validToken($content)) {
             throw new TokenNotFoundOrEmptyException();
         }
 
