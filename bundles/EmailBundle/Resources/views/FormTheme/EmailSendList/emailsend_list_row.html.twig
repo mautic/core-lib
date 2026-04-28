@@ -15,11 +15,11 @@
     </div>
     {% endif %}
     <div class="col-xs-6 hide" id="email_send_to_dnc_status">
-        <label class="control-label" data-toggle="tooltip" data-container="body" data-placement="top"
+        <span class="control-label d-block" data-toggle="tooltip" data-container="body" data-placement="top"
             data-original-title="{{ 'mautic.email.send.dnc.tooltip.info'|trans }}">
             {{ 'mautic.email.send.dnc.label'|trans }}
             <i class="fa fa-question-circle"></i>
-        </label>
+        </span>
         <span class="dnc-status-text label"></span>
     </div>
     {% if form.priority is defined %}
