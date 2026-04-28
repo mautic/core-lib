@@ -58,7 +58,7 @@
                             <a href="#email-container" role="tab" data-toggle="tab">{{ 'mautic.core.form.theme'|trans }}</a>
                         </li>
                         <li>
-                            <a href="#advanced-container" role="tab" data-toggle="tab" class="{% if advancedTabHasErrors %}text-danger{% endif %}">{% if advancedTabHasErrors %}<i class="ri-alert-line text-danger"></i> <span class="text-danger">{{ 'mautic.core.advanced'|trans }}</span>{% else %}{{ 'mautic.core.advanced'|trans }}{% endif %}</a>
+                            <a href="#advanced-container" role="tab" data-toggle="tab" class="{% if advancedTabHasErrors %}text-danger{% endif %}">{% if advancedTabHasErrors %}<i class="ri-alert-line text-danger" aria-hidden="true"></i> <span class="text-danger">{{ 'mautic.core.advanced'|trans }}</span>{% else %}{{ 'mautic.core.advanced'|trans }}{% endif %}</a>
                         </li>
                         <li id="dynamic-content-tab" {{ (isCodeMode) ? '' : 'class="hidden"' }}>
                             <a href="#dynamic-content-container" role="tab" data-toggle="tab">{{ 'mautic.core.dynamicContent'|trans }}</a>
