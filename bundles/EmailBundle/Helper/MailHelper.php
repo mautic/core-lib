@@ -78,8 +78,6 @@ class MailHelper
 
     protected ?AddressDTO $from = null;
 
-    protected ?AddressDTO $advancedFrom = null;
-
     protected ?AddressDTO $systemFrom = null;
 
     protected ?string $replyTo = null;
@@ -459,18 +457,20 @@ class MailHelper
             foreach ($this->queuedRecipients as $email => $name) {
                 $from        = $this->fromEmailHelper->getFromAddressConsideringOwner($this->getFrom(), $this->lead, $this->email);
                 $fromAddress = $from->getEmail();
+                // Use composite key (email + name) to ensure contacts with same email but different from names are grouped separately
+                $metadataKey = $fromAddress.'|'.($from->getName() ?? '');
 
                 $tokens                = $this->getTokens();
                 $tokens['{signature}'] = $this->fromEmailHelper->getSignature();
 
-                if (!isset($this->metadata[$fromAddress])) {
-                    $this->metadata[$fromAddress] = [
+                if (!isset($this->metadata[$metadataKey])) {
+                    $this->metadata[$metadataKey] = [
                         'from'     => $from,
                         'contacts' => [],
                     ];
                 }
 
-                $this->metadata[$fromAddress]['contacts'][$email] = $this->buildMetadata($name, $tokens);
+                $this->metadata[$metadataKey]['contacts'][$email] = $this->buildMetadata($name, $tokens);
             }
 
             // Reset recipients
@@ -1120,7 +1120,6 @@ class MailHelper
     public function setAdvanceFrom(string $fromEmail, ?string $fromName = null): void
     {
         $this->setFrom($fromEmail, $fromName);
-        $this->advancedFrom = $this->from;
     }
 
     /**
