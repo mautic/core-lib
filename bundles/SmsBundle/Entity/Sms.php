@@ -194,7 +194,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
 
         $builder->createField('media', Types::JSON)
             ->columnName('media')
-            ->option('default', '{}')
             ->build();
 
         $builder->createField('isMms', Types::BOOLEAN)

@@ -19,6 +19,10 @@ final class Version20230301051300 extends PreUpAssertionMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql(sprintf("ALTER TABLE %s add media JSON NOT NULL DEFAULT ('{}');", $this->getPrefixedTableName(Sms::TABLE_NAME)));
+        $tableName = $this->getPrefixedTableName(Sms::TABLE_NAME);
+
+        $this->addSql(sprintf('ALTER TABLE %s add media JSON DEFAULT NULL;', $tableName));
+        $this->addSql(sprintf("UPDATE %s SET media = '{}' WHERE media IS NULL;", $tableName));
+        $this->addSql(sprintf('ALTER TABLE %s MODIFY media JSON NOT NULL;', $tableName));
     }
 }
