@@ -190,8 +190,6 @@ class FromEmailHelper
 
     /**
      * @param mixed[] $contact
-     *
-     * @throws OwnerNotFoundException
      */
     private function resolveTokensInAddress(AddressDTO $address, ?array $contact = null): AddressDTO
     {
