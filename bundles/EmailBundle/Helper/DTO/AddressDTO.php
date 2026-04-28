@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\EmailBundle\Helper\DTO;
 
 use Mautic\EmailBundle\Helper\Exception\TokenNotFoundOrEmptyException;
+use Mautic\LeadBundle\Helper\TokenHelper;
 use Symfony\Component\Mime\Address;
 
 final class AddressDTO
@@ -46,53 +47,54 @@ final class AddressDTO
     }
 
     /**
-     * @param array<string,mixed> $contact
-     *
      * @throws TokenNotFoundOrEmptyException
      */
-    public function getEmailTokenValue(array $contact): string
+    public function getNameTokenValue(?array $contact = null): string
     {
-        if (!preg_match('/{contactfield=(.*?)}/', $this->email, $matches)) {
-            throw new TokenNotFoundOrEmptyException();
-        }
-
-        $emailToken = $matches[1];
-
-        if (empty($contact[$emailToken])) {
-            throw new TokenNotFoundOrEmptyException("$emailToken was not found or empty in the contact array");
-        }
-
-        return $contact[$emailToken];
+        return $this->getTokenValue($this->getName(), $contact);
     }
 
     /**
-     * @param array<string,mixed> $contact
+     * @throws TokenNotFoundOrEmptyException
+     */
+    public function getEmailTokenValue(?array $contact = null): string
+    {
+        return $this->getTokenValue($this->getEmail(), $contact);
+    }
+
+    /**
+     * @param mixed[] $contact
      *
      * @throws TokenNotFoundOrEmptyException
      */
-    public function getNameTokenValue(array $contact): string
+    private function getTokenValue(?string $content, ?array $contact = null): string
     {
-        if (!preg_match('/{contactfield=(.*?)}/', $this->name, $matches)) {
+        if (!TokenHelper::validToken($content)) {
             throw new TokenNotFoundOrEmptyException();
         }
 
-        $nameToken = $matches[1];
-
-        if (empty($contact[$nameToken])) {
-            throw new TokenNotFoundOrEmptyException("$nameToken was not found or empty in the contact array");
+        if ($contact) {
+            $token = TokenHelper::findLeadTokens($content, $contact, true);
+        } else {
+            // Get the default value from the token {contactfield=field_name|default}
+            $token = TokenHelper::getValueFromTokens([], $content);
         }
 
-        return $contact[$nameToken];
+        if (empty($token)) {
+            throw new TokenNotFoundOrEmptyException(sprintf('%s was not found or empty in the contact array', TokenHelper::getTokenFieldAlias($content)));
+        }
+
+        return (string) $token;
     }
 
     public function isEmailTokenized(): bool
     {
-        return (bool) preg_match('/{contactfield=(.*?)}/', $this->email);
+        return $this->email && (bool) preg_match('/{contactfield=(.*?)}/', $this->email);
     }
 
     public function isNameTokenized(): bool
     {
-        return (bool) ($this->name ? preg_match('/{contactfield=(.*?)}/', $this->name) : false);
+        return $this->name && (bool) preg_match('/{contactfield=(.*?)}/', $this->name);
     }
 
     /**

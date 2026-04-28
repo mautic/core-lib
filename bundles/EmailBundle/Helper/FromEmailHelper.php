@@ -123,7 +123,7 @@ class FromEmailHelper
         $signature = str_replace('|FROM_NAME|', $owner['first_name'].' '.$owner['last_name'], $signature);
 
         foreach ($owner as $key => $value) {
-            $token     = sprintf('|USER_%s|', strtoupper($key));
+            $token     = sprintf('|USER_%s|', strtoupper((string) $key));
             $signature = str_replace($token, (string) $value, (string) $signature);
         }
 
@@ -139,13 +139,15 @@ class FromEmailHelper
         return $this->getDefaultFrom();
     }
 
-    private function getDefaultFrom(): AddressDTO
+    private function getDefaultFrom(?array $contact = null): AddressDTO
     {
-        if ($this->defaultFrom) {
-            return $this->defaultFrom;
+        $systemDefault = $this->defaultFrom ?: $this->getSystemDefaultFrom();
+
+        if ($systemDefault->isEmailTokenized() || $systemDefault->isNameTokenized()) {
+            return $this->resolveTokensInAddress($systemDefault, $contact);
         }
 
-        return $this->getSystemDefaultFrom();
+        return $systemDefault;
     }
 
     private function getSystemDefaultFrom(): AddressDTO
@@ -162,20 +164,12 @@ class FromEmailHelper
     private function getEmailFromToken(AddressDTO $address, ?array $contact = null, bool $asOwner = true, ?Email $email = null): AddressDTO
     {
         try {
-            if (!$contact) {
-                throw new TokenNotFoundOrEmptyException();
-            }
-
             $name = $address->isNameTokenized() ? $address->getNameTokenValue($contact) : $address->getName();
         } catch (TokenNotFoundOrEmptyException) {
             $name = $this->defaultFrom ? $this->defaultFrom->getName() : $this->getSystemDefaultFrom()->getName();
         }
 
         try {
-            if (!$contact) {
-                throw new TokenNotFoundOrEmptyException();
-            }
-
             $emailAddress = $address->isEmailTokenized() ? $address->getEmailTokenValue($contact) : $address->getEmail();
 
             return new AddressDTO($emailAddress, $name);
@@ -187,7 +181,7 @@ class FromEmailHelper
                 }
             }
 
-            return $this->getDefaultFrom();
+            return $this->getDefaultFrom($contact);
         }
     }
 
@@ -196,6 +190,28 @@ class FromEmailHelper
      *
      * @throws OwnerNotFoundException
      */
+    private function resolveTokensInAddress(AddressDTO $address, ?array $contact = null): AddressDTO
+    {
+        try {
+            $emailAddress = $address->isEmailTokenized() ? $address->getEmailTokenValue($contact) : $address->getEmail();
+        } catch (TokenNotFoundOrEmptyException) {
+            $emailAddress = '';
+        }
+
+        if (!$emailAddress) {
+            // Token had no value and no default — fall back to raw system default
+            return $this->getSystemDefaultFrom();
+        }
+
+        try {
+            $name = $address->isNameTokenized() ? $address->getNameTokenValue($contact) : $address->getName();
+        } catch (TokenNotFoundOrEmptyException) {
+            $name = '';
+        }
+
+        return new AddressDTO($emailAddress, $name);
+    }
+
     private function getFromEmailAsOwner(array $contact, ?Email $email = null): AddressDTO
     {
         if (empty($contact['owner_id'])) {

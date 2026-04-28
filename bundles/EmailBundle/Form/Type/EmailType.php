@@ -117,7 +117,10 @@ class EmailType extends AbstractType
                     'preaddon' => 'ri-mail-line',
                     'tooltip'  => 'mautic.email.from_email.tooltip',
                 ],
-                'required' => false,
+                'required'    => false,
+                'constraints' => [
+                    new EmailOrEmailTokenList(),
+                ],
             ]
         );
 

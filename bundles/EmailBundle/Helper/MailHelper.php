@@ -78,6 +78,8 @@ class MailHelper
 
     protected ?AddressDTO $from = null;
 
+    protected ?AddressDTO $advancedFrom = null;
+
     protected ?AddressDTO $systemFrom = null;
 
     protected ?string $replyTo = null;
@@ -538,14 +540,7 @@ class MailHelper
                 $this->message->to();
                 $this->errors = [];
 
-                $email = $this->getEmail();
-
-                if ($email && $email->getUseOwnerAsMailer()) {
-                    $this->setFrom($metadatum['from']->getEmail(), $metadatum['from']->getName());
-                    $this->setMessageFrom(new AddressDTO($metadatum['from']->getEmail(), $metadatum['from']->getName()));
-                } else {
-                    $this->setMessageFrom($this->fromEmailHelper->getFrom($email));
-                }
+                $this->setMessageFrom($metadatum['from']);
 
                 foreach ($metadatum['contacts'] as $email => $contact) {
                     $this->message->addMetadata($email, $contact);
@@ -1117,6 +1112,15 @@ class MailHelper
         } else {
             $this->from = new AddressDTO($fromEmail, $fromName);
         }
+    }
+
+    /**
+     * Set from email address and name from user input (defaults to determining automatically unless isGlobal is true).
+     */
+    public function setAdvanceFrom(string $fromEmail, ?string $fromName = null): void
+    {
+        $this->setFrom($fromEmail, $fromName);
+        $this->advancedFrom = $this->from;
     }
 
     /**
