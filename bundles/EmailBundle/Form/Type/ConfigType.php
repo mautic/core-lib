@@ -196,7 +196,7 @@ class ConfigType extends AbstractType
                             'message' => 'mautic.core.email.required',
                         ]
                     ),
-                    new EmailOrEmailTokenList(),
+                    new EmailOrEmailTokenList(['allowMultiple' => false]),
                 ],
             ]
         );

@@ -1208,6 +1208,11 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             'fromAddress' => 'not-an-email-or-token',
             'expectSaved' => false,
         ];
+
+        yield 'csv from addresses are rejected' => [
+            'fromAddress' => 'sender1@nowhere.com, sender2@nowhere.com',
+            'expectSaved' => false,
+        ];
     }
 
     public function testInvalidFromAddressMarksAdvancedTabAndShowsSingleError(): void

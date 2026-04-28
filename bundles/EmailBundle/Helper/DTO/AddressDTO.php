@@ -78,17 +78,17 @@ final class AddressDTO
         }
 
         if ($contact) {
-            $token = TokenHelper::findLeadTokens($content, $contact, true);
+            $tokenValue = TokenHelper::findLeadTokens($content, $contact, true);
         } else {
-            // Get the default value from the token {contactfield=field_name|default}
-            $token = TokenHelper::getValueFromTokens([], $content);
+            // Use a non-empty lead array so token defaults are resolved while preserving the whole content.
+            $tokenValue = TokenHelper::findLeadTokens($content, ['id' => 0], true);
         }
 
-        if (empty($token)) {
+        if (empty($tokenValue)) {
             throw new TokenNotFoundOrEmptyException(sprintf('%s was not found or empty in the contact array', TokenHelper::getTokenFieldAlias($content)));
         }
 
-        return (string) $token;
+        return (string) $tokenValue;
     }
 
     public function isEmailTokenized(): bool
