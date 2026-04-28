@@ -227,26 +227,23 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
     {
         $metadata->addPropertyConstraint(
             'name',
-            new NotBlank(
-                [
-                    'message' => 'mautic.core.name.required',
-                ]
-            )
+            new NotBlank(message: 'mautic.core.name.required')
+        );
+
+        $metadata->addPropertyConstraint(
+            'media',
+            new Count(max: 10, maxMessage: 'mautic.sms.form.max.media.error')
         );
 
         $metadata->addConstraint(new Callback(
-            function (Sms $sms, ExecutionContextInterface $context) use ($metadata): void {
+            function (Sms $sms, ExecutionContextInterface $context): void {
                 $type      = $sms->getSmsType();
                 $validator = $context->getValidator();
                 if ('list' == $type) {
                     $violations = $validator->validate(
                         $sms->getLists(),
                         [
-                            new NotBlank(
-                                [
-                                    'message' => 'mautic.lead.lists.required',
-                                ]
-                            ),
+                            new NotBlank(message: 'mautic.lead.lists.required'),
                             new LeadListAccess(),
                         ]
                     );
@@ -257,13 +254,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
                             ->addViolation();
                     }
                 }
-
-                $metadata->addPropertyConstraint(
-                    'media',
-                    new Count(
-                        max: 10, maxMessage: 'mautic.sms.form.max.media.error'
-                    )
-                );
             },
         ));
 
