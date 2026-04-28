@@ -84,7 +84,7 @@ final class AddressDTO
             $tokenValue = TokenHelper::findLeadTokens($content, ['id' => 0], true);
         }
 
-        if (empty($tokenValue)) {
+        if (null === $tokenValue || false === $tokenValue || '' === trim((string) $tokenValue)) {
             throw new TokenNotFoundOrEmptyException(sprintf('%s was not found or empty in the contact array', TokenHelper::getTokenFieldAlias($content)));
         }
 
