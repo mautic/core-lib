@@ -312,6 +312,82 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals('Normal Event', $updatedLog->getEvent()->getName());
     }
 
+    /**
+     * Regression test for the infinite reschedule loop in validateSchedule().
+     *
+     * For an INTERVAL event whose computed execution date is in the future
+     * (shouldSchedule() returns true) on the scheduleTogether=false path, the
+     * executor must persist the per-log $executionDate as the new trigger_date.
+     * Setting it to $now caused getScheduled() to re-fetch the row immediately,
+     * looping executeOrRescheduleScheduledEvents() and stalling the cron.
+     */
+    public function testValidateScheduleReschedulesToPerLogExecutionDate(): void
+    {
+        $campaign = $this->createCampaign();
+
+        // Interval event whose computed execution date is dateTriggered + 100000 days
+        // (~273 years out). Far enough in the future that shouldSchedule() returns
+        // true regardless of when this test runs.
+        $event = new Event();
+        $event->setCampaign($campaign);
+        $event->setName('Interval reschedule regression');
+        $event->setType('email.send');
+        $event->setEventType(Event::TYPE_ACTION);
+        $event->setTriggerMode(Event::TRIGGER_MODE_INTERVAL);
+        $event->setTriggerInterval(100000);
+        $event->setTriggerIntervalUnit('d');
+
+        $contact = $this->createContact();
+
+        $dateTriggered         = new \DateTime('-2 days');
+        $expectedExecutionDate = (clone $dateTriggered)->add(new \DateInterval('P100000D'));
+
+        // trigger_date in the past so getScheduled() picks up the row.
+        // setDateTriggered() flips isScheduled to false as a side effect, so
+        // setIsScheduled(true) must come last.
+        $log = new LeadEventLog();
+        $log->setEvent($event);
+        $log->setCampaign($campaign);
+        $log->setLead($contact);
+        $log->setRotation(1);
+        $log->setTriggerDate(new \DateTime('-1 day'), 'Test setup');
+        $log->setDateTriggered($dateTriggered);
+        $log->setIsScheduled(true);
+
+        $this->em->persist($campaign);
+        $this->em->persist($event);
+        $this->em->persist($contact);
+        $this->em->persist($log);
+        $this->em->flush();
+
+        $logId = $log->getId();
+        $this->em->clear();
+
+        $limiter = new ContactLimiter(100, 0, 0, 0);
+        $counter = $this->scheduledExecutioner->execute($campaign, $limiter, new BufferedOutput());
+
+        $this->assertSame(
+            1,
+            $counter->getTotalScheduled(),
+            'The log should be rescheduled (not executed) because its execution date is in the future.'
+        );
+
+        $reloaded = $this->em->find(LeadEventLog::class, $logId);
+        \assert($reloaded instanceof LeadEventLog);
+
+        $this->assertTrue(
+            $reloaded->getIsScheduled(),
+            'The log should remain scheduled for its future execution date.'
+        );
+        $this->assertSame(
+            $expectedExecutionDate->format('Y-m-d H:i:s'),
+            $reloaded->getTriggerDate()?->format('Y-m-d H:i:s'),
+            'trigger_date must be set to dateTriggered + interval, not "now". '
+            .'Setting it to "now" caused getScheduled() to re-fetch the row and '
+            .'executeOrRescheduleScheduledEvents() to loop forever.'
+        );
+    }
+
     public function testRedirectionIncrementsContactRotation(): void
     {
         $campaign      = $this->createCampaign();
