@@ -84,21 +84,23 @@ final class AddressDTO
             $tokenValue = TokenHelper::findLeadTokens($content, ['id' => 0], true);
         }
 
-        if (null === $tokenValue || false === $tokenValue || '' === trim((string) $tokenValue)) {
+        $tokenValue = trim((string) $tokenValue);
+
+        if ('' === $tokenValue) {
             throw new TokenNotFoundOrEmptyException(sprintf('%s was not found or empty in the contact array', TokenHelper::getTokenFieldAlias($content)));
         }
 
-        return (string) $tokenValue;
+        return $tokenValue;
     }
 
     public function isEmailTokenized(): bool
     {
-        return $this->email && (bool) preg_match('/{contactfield=(.*?)}/', $this->email);
+        return $this->email && preg_match('/{contactfield=(.*?)}/', $this->email);
     }
 
     public function isNameTokenized(): bool
     {
-        return $this->name && (bool) preg_match('/{contactfield=(.*?)}/', $this->name);
+        return $this->name && preg_match('/{contactfield=(.*?)}/', $this->name);
     }
 
     /**
