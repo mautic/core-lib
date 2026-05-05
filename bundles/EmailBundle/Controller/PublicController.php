@@ -685,7 +685,7 @@ class PublicController extends CommonFormController
 
             // sanitize variables to prevent malicious content
             $from = filter_var($query['from'], FILTER_SANITIZE_EMAIL);
-            $mailer->setAdvanceFrom($from, '');
+            $mailer->setFrom($from, '');
 
             // Set Content
             $body = htmlspecialchars(filter_var($query['body'], FILTER_FLAG_STRIP_HIGH));

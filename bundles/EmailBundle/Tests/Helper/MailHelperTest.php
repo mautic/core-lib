@@ -539,7 +539,7 @@ class MailHelperTest extends TestCase
 
         $mailer->setEmail($email);
         $mailer->enableQueue();
-        $mailer->setAdvanceFrom('{contactfield=other_email}', '{contactfield=other_name}');
+        $mailer->setFrom('{contactfield=other_email}', '{contactfield=other_name}');
 
         $contacts = [
             [

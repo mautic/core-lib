@@ -1115,14 +1115,6 @@ class MailHelper
     }
 
     /**
-     * Set the from email address and name from user input.
-     */
-    public function setAdvanceFrom(string $fromEmail, ?string $fromName = null): void
-    {
-        $this->setFrom($fromEmail, $fromName);
-    }
-
-    /**
      * Sets FROM for the concreste message that we are currently sending. Can be in the middle of the loop of sending.
      */
     private function setMessageFrom(AddressDTO $from): void
