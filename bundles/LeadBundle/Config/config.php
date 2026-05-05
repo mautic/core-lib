@@ -496,6 +496,14 @@ return [
                     'mautic.helper.core_parameters',
                 ],
             ],
+            'mautic.lead.company.columns.dictionary' => [
+                'class'     => Mautic\LeadBundle\Services\CompanyColumnsDictionary::class,
+                'arguments' => [
+                    'mautic.lead.field.field_list',
+                    'translator',
+                    'mautic.helper.core_parameters',
+                ],
+            ],
             'mautic.lead.model.lead_segment_filter_factory' => [
                 'class'     => Mautic\LeadBundle\Segment\ContactSegmentFilterFactory::class,
                 'arguments' => [
@@ -906,6 +914,14 @@ return [
             '4' => 'points',
             '5' => 'last_active',
             '6' => 'id',
+        ],
+        'company_columns'                     => [
+            '0' => 'companyname',
+            '1' => 'companyemail',
+            '2' => 'companywebsite',
+            '3' => 'score',
+            '4' => 'leadcount',
+            '5' => 'id',
         ],
         Mautic\LeadBundle\Field\Settings\BackgroundSettings::CREATE_CUSTOM_FIELD_IN_BACKGROUND  => false,
         'company_unique_identifiers_operator'                                                   => Doctrine\DBAL\Query\Expression\CompositeExpression::TYPE_OR,
