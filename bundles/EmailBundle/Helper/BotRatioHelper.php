@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Helper;
 
-use DeviceDetector\DeviceDetector;
 use Mautic\CoreBundle\Entity\IpAddress;
 use Mautic\EmailBundle\Entity\Stat;
 use Mautic\LeadBundle\Tracker\Factory\DeviceDetectorFactory\DeviceDetectorFactoryInterface;
@@ -48,7 +47,6 @@ class BotRatioHelper
 
     private function isBotByMatomoDetector(string $userAgent): bool
     {
-        /** @var DeviceDetector $deviceDetector */
         $deviceDetector = $this->deviceDetectorFactory->create($userAgent);
         $deviceDetector->parse();
 
