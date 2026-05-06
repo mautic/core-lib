@@ -31,8 +31,6 @@ class ExportSchedulerCommand extends Command
     {
         $this->addOption('--report', 'report', InputOption::VALUE_OPTIONAL, 'ID of report. Process all reports if not set.');
         $this->addOption('--cleanup-only', 'co', InputOption::VALUE_NONE, 'Only cleanup old files without processing new export.');
-
-        parent::configure();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
