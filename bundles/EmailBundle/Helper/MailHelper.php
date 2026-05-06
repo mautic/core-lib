@@ -353,8 +353,8 @@ class MailHelper
                 // Replace token content
                 $tokens = $this->getTokens();
 
-                if ($ownerSignature = $this->fromEmailHelper->getSignature()) {
-                    $tokens['{signature}'] = $ownerSignature;
+                if ($this->fromEmailHelper->hasSignature()) {
+                    $tokens['{signature}'] = $this->fromEmailHelper->getSignature();
                 }
 
                 if ($brandName = $this->coreParametersHelper->get('brand_name')) {
@@ -455,9 +455,13 @@ class MailHelper
             foreach ($this->queuedRecipients as $email => $name) {
                 $from        = $this->fromEmailHelper->getFromAddressConsideringOwner($this->getFrom(), $this->lead, $this->email);
                 $fromAddress = $from->getEmail();
+                $tokens      = $this->getTokens();
 
-                $tokens                = $this->getTokens();
-                $tokens['{signature}'] = $this->fromEmailHelper->getSignature();
+                $tokens['{signature}'] = '';
+
+                if ($this->fromEmailHelper->hasSignature()) {
+                    $tokens['{signature}'] = $this->fromEmailHelper->getSignature();
+                }
 
                 if (!isset($this->metadata[$fromAddress])) {
                     $this->metadata[$fromAddress] = [

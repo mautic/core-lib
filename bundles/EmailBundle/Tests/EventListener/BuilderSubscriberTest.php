@@ -8,10 +8,12 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\EmailBundle\EventListener\BuilderSubscriber;
+use Mautic\EmailBundle\Helper\FromEmailHelper;
 use Mautic\EmailBundle\Helper\MailHashHelper;
 use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\PageBundle\Model\RedirectModel;
 use Mautic\PageBundle\Model\TrackableModel;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -32,6 +34,8 @@ class BuilderSubscriberTest extends TestCase
 
     private MockObject&TranslatorInterface $translator;
 
+    private MockObject&LeadRepository $leadRepository;
+
     protected function setUp(): void
     {
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
@@ -39,16 +43,57 @@ class BuilderSubscriberTest extends TestCase
         $this->trackableModel       = $this->createMock(TrackableModel::class);
         $this->redirectModel        = $this->createMock(RedirectModel::class);
         $this->translator           = $this->createMock(TranslatorInterface::class);
+        $this->leadRepository       = $this->createMock(LeadRepository::class);
+        $fromEmailHelper            = new FromEmailHelper($this->coreParametersHelper, $this->leadRepository);
         $this->builderSubscriber    = new BuilderSubscriber(
             $this->coreParametersHelper,
             $this->emailModel,
             $this->trackableModel,
             $this->redirectModel,
             $this->translator,
-            new MailHashHelper($this->coreParametersHelper)
+            new MailHashHelper($this->coreParametersHelper),
+            $fromEmailHelper
         );
 
         parent::setUp();
+    }
+
+    public function testOwnerSignatureIsUsedOnEmailGenerate(): void
+    {
+        $email = new Email();
+        $email->setUseOwnerAsMailer(true);
+
+        $event = new EmailSendEvent(null, [
+            'email' => $email,
+            'lead'  => [
+                'owner_id' => 1,
+                'email'    => 'contact1@somewhere.com',
+            ],
+        ]);
+
+        $this->leadRepository->expects($this->once())
+            ->method('getLeadOwner')
+            ->with(1)
+            ->willReturn([
+                'email'      => 'owner1@example.com',
+                'first_name' => 'Owner',
+                'last_name'  => 'One',
+                'signature'  => 'Owner Signature',
+            ]);
+
+        $this->coreParametersHelper->method('get')->willReturnMap([
+            ['unsubscribe_text', null, null],
+            ['webview_text', null, null],
+            ['default_signature_text', null, 'Default Signature'],
+            ['brand_name', null, 'Brand Name'],
+            ['mailer_from_email', null, 'nobody@nowhere.com'],
+            ['mailer_from_name', null, 'No Body'],
+            ['secret_key', null, 'secret'],
+        ]);
+
+        $this->builderSubscriber->onEmailGenerate($event);
+
+        $this->assertSame('Owner Signature', $event->getTokens()['{signature}']);
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('fixEmailAccessibilityContent')]
