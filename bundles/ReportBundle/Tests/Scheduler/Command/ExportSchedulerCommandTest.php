@@ -72,6 +72,7 @@ final class ExportSchedulerCommandTest extends MauticMysqlTestCase
         $report->setDescription('Test report for scheduler command');
         $report->setSource('audit.log');
         $report->setColumns(['al.action', 'al.date_added']);
+        $report->setToAddress('recipient@example.com');
         $report->setIsPublished(true);
         $report->setIsScheduled(true);
         $report->setScheduleUnit(SchedulerEnum::UNIT_DAILY);
