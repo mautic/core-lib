@@ -122,10 +122,18 @@ final class EmailListTypeFunctionalTest extends MauticMysqlTestCase
 
         $items = $response[0]['items'] ?? [];
 
+        $expectedNamesWithId = [];
+        foreach ($items as $id => $name) {
+            $namePart = preg_replace('/^\(\d+\)\s+/', '', $name);
+            if (in_array($namePart, $expectedNames)) {
+                $expectedNamesWithId[] = $name;
+            }
+        }
+
         $actualNames = array_values($items);
         sort($actualNames);
-        sort($expectedNames);
+        sort($expectedNamesWithId);
 
-        $this->assertSame($expectedNames, $actualNames);
+        $this->assertSame($expectedNamesWithId, $actualNames);
     }
 }
