@@ -342,9 +342,14 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $dateTriggered         = new \DateTime('-2 days');
         $expectedExecutionDate = (clone $dateTriggered)->add(new \DateInterval('P100000D'));
 
-        // trigger_date in the past so getScheduled() picks up the row.
-        // setDateTriggered() flips isScheduled to false as a side effect, so
-        // setIsScheduled(true) must come last.
+        // Build the log directly in the buggy state: trigger_date in the past
+        // (so getScheduled() picks it up) but dateTriggered + interval still in
+        // the future (so shouldSchedule() returns true and the executor takes
+        // the validateSchedule->else branch under test). The natural campaign
+        // flow never produces this mismatch — Mautic's kickoff sets
+        // trigger_date = dateTriggered + interval — so mautic:campaigns:update
+        // is not usable here. setDateTriggered() also flips isScheduled to
+        // false as a side effect, so setIsScheduled(true) must come last.
         $log = new LeadEventLog();
         $log->setEvent($event);
         $log->setCampaign($campaign);
@@ -363,14 +368,13 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $logId = $log->getId();
         $this->em->clear();
 
-        $limiter = new ContactLimiter(100, 0, 0, 0);
-        $counter = $this->scheduledExecutioner->execute($campaign, $limiter, new BufferedOutput());
+        $commandTester = $this->testSymfonyCommand('mautic:campaigns:trigger', [
+            '--campaign-id'    => $campaign->getId(),
+            '--scheduled-only' => true,
+            '--contact-id'     => $contact->getId(),
+        ]);
 
-        $this->assertSame(
-            1,
-            $counter->getTotalScheduled(),
-            'The log should be rescheduled (not executed) because its execution date is in the future.'
-        );
+        $this->assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
 
         $reloaded = $this->em->find(LeadEventLog::class, $logId);
         \assert($reloaded instanceof LeadEventLog);
