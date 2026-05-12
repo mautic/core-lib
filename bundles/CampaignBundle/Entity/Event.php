@@ -233,7 +233,7 @@ class Event implements ChannelInterface, UuidInterface
 
     #[Groups(['event:read', 'event:write', 'campaign:read'])]
     private ?\DateTime $dateLinked = null;
-  
+
     /**
      * Collection of events that redirect to this event.
      *
@@ -241,13 +241,13 @@ class Event implements ChannelInterface, UuidInterface
      */
     private Collection $redirectingEvents;
 
-    public function __construct()
+    public function __construct(?\DateTime $dateAdded = null)
     {
         $this->log               = new ArrayCollection();
         $this->children          = new ArrayCollection();
         $this->redirectEvent     = null;
         $this->redirectingEvents = new ArrayCollection();
-      
+
         if ($dateAdded) {
             $this->setDateAdded($dateAdded);
             $this->setDateLinked($dateAdded);
