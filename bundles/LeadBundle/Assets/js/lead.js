@@ -4,6 +4,8 @@ Mautic.companyOnLoad = function (container, response) {
     if (mQuery(container + ' #list-search').length) {
         Mautic.activateSearchAutocomplete('list-search', 'lead.company');
     }
+    Mautic.loadAndProcessPageContent('#company_contact_engagement');
+    Mautic.loadAndProcessPageContent('#contacts-table');
 }
 Mautic.leadOnLoad = function (container, response) {
     Mautic.addKeyboardShortcut('a', 'Quick add a New Contact', function(e) {
@@ -662,9 +664,9 @@ Mautic.addLeadListFilter = function (elId, elObj) {
     var filterBase  = prefix + "[filters][" + filterNum + "]";
     var filterIdBase = prefix + "_filters_" + filterNum + "_";
 
-    if (mQuery('#' + prefix + '_filters div.panel').length == 0) {
+    if (Mautic.segmentFilter().getFilterCount() === 0) {
         // First filter so hide the glue footer
-        prototype.find(".panel-heading .panel-glue").addClass('hide');
+        prototype.find(".panel-glue").addClass('hide');
     }
 
     const filterTypeIcon = filterOption.data('field-icon');
@@ -856,6 +858,8 @@ Mautic.updateLeadFieldProperties = function(selectedVal, onload) {
         selectedVal = 'select';
     }
 
+    mQuery('#leadfield_properties [data-toggle="tooltip"]').tooltip('destroy');
+
     if (mQuery('#field-templates .' + selectedVal).length) {
         mQuery('#leadfield_properties').html(
             mQuery('#field-templates .' + selectedVal).html()
@@ -901,6 +905,8 @@ Mautic.updateLeadFieldProperties = function(selectedVal, onload) {
                 }
             }, 500);
         });
+
+        mQuery('#leadfield_properties [data-toggle="tooltip"]').tooltip();
     } else if (!mQuery('#leadfield_properties .' + selectedVal).length) {
         mQuery('#leadfield_properties').html('');
     }
@@ -1671,7 +1677,7 @@ Mautic.handleAssetDownloadSearch = function(filterNum, fieldObject, fieldAlias, 
 };
 
 Mautic.listOnLoad = function(container, response) {
-    Mautic.lazyLoadContactListOnSegmentDetail();
+    Mautic.loadAndProcessPageContent('#contacts-container');
 
     const segmentDependenciesTab = mQuery('a#segment-dependencies');
     let segmentDependenciesLoaded = false;
@@ -1780,8 +1786,7 @@ Mautic.buildSegmentDependencyNode = function(nodeData) {
     return node;
 }
 
-Mautic.lazyLoadContactListOnSegmentDetail = function() {
-    const containerId = '#contacts-container';
+Mautic.loadAndProcessPageContent = function(containerId) {
     const container = mQuery(containerId);
 
     // Load the contacts only if the container exists.

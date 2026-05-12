@@ -17,6 +17,7 @@ use Mautic\ApiBundle\Serializer\Exclusion\ParentChildrenExclusionStrategy;
 use Mautic\ApiBundle\Serializer\Exclusion\PublishDetailsExclusionStrategy;
 use Mautic\CoreBundle\Controller\FormErrorMessagesTrait;
 use Mautic\CoreBundle\Controller\MauticController;
+use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Form\RequestTrait;
 use Mautic\CoreBundle\Helper\AppVersion;
@@ -28,10 +29,8 @@ use Mautic\CoreBundle\Model\MauticModelInterface;
 use Mautic\CoreBundle\Security\Exception\PermissionException;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
-use Mautic\UserBundle\Entity\User;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -124,11 +123,6 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
      */
     protected $serializerGroups = [];
 
-    /**
-     * @var Translator
-     */
-    protected $translator;
-
     protected ContainerBagInterface $parametersContainer;
 
     /**
@@ -136,7 +130,7 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
      */
     public function __construct(
         protected CorePermissions $security,
-        Translator $translator,
+        protected Translator $translator,
         protected EntityResultHelper $entityResultHelper,
         private AppVersion $appVersion,
         private RequestStack $requestStack,
@@ -145,8 +139,6 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
         protected EventDispatcherInterface $dispatcher,
         protected CoreParametersHelper $coreParametersHelper,
     ) {
-        $this->translator           = $translator;
-
         if (null !== $this->model && !$this->permissionBase && method_exists($this->model, 'getPermissionBase')) {
             $this->permissionBase = $this->model->getPermissionBase();
         }
@@ -411,17 +403,21 @@ class FetchCommonApiController extends AbstractFOSRestController implements Maut
     /**
      * Checks if user has permission to access retrieved entity.
      *
-     * @param mixed  $entity
-     * @param string $action view|create|edit|publish|delete
+     * @param FormEntity $entity
+     * @param string     $action view|create|edit|publish|delete
      *
      * @return bool|Response
      */
     protected function checkEntityAccess($entity, $action = 'view')
     {
-        if ('create' !== $action && is_object($entity) && method_exists($entity, 'getCreatedBy')) {
-            $ownPerm   = "{$this->permissionBase}:{$action}own";
-            $otherPerm = "{$this->permissionBase}:{$action}other";
+        $ownPerm   = "{$this->permissionBase}:{$action}own";
+        $otherPerm = "{$this->permissionBase}:{$action}other";
 
+        if ('publish' === $action) {
+            return $this->security->hasPublishAccessForEntity($entity, $ownPerm, $otherPerm);
+        }
+
+        if ('create' !== $action && is_object($entity) && method_exists($entity, 'getCreatedBy')) {
             $owner = (method_exists($entity, 'getPermissionUser')) ? $entity->getPermissionUser() : $entity->getCreatedBy();
 
             return $this->security->hasEntityAccess($ownPerm, $otherPerm, $owner);
