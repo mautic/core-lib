@@ -232,7 +232,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->assertSame(200, $clientResponse->getStatusCode());
         $this->assertNotEmpty($response);
-        $this->assertEquals('('.$email->getId().') '.$emailName, $response[0]['items'][$email->getId()]);
+        $this->assertEquals($emailName.' ('.$email->getId().')', $response[0]['items'][$email->getId()]);
     }
 
     private function createContact(string $email): Lead

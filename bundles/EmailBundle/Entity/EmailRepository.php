@@ -402,7 +402,7 @@ class EmailRepository extends CommonRepository
                     )
                 )
                     ->setParameter('search', "%{$search}%")
-                    ->setParameter('searchId', "%{$search}%");
+                    ->setParameter('searchId', $search);
             }
         }
 

@@ -124,7 +124,7 @@ final class EmailListTypeFunctionalTest extends MauticMysqlTestCase
 
         $expectedNamesWithId = [];
         foreach ($items as $id => $name) {
-            $namePart = preg_replace('/^\(\d+\)\s+/', '', $name);
+            $namePart = preg_replace('/\s+\(\d+\)$/', '', $name);
             if (in_array($namePart, $expectedNames)) {
                 $expectedNamesWithId[] = $name;
             }
