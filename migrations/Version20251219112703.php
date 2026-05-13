@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Mautic\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
-use Mautic\AllydeBundle\Beanstalk\Job\JobBuilder;
-use Mautic\AllydeBundle\Beanstalk\Tube\AlterTableTube;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
@@ -21,20 +19,13 @@ final class Version20251219112703 extends PreUpAssertionMigration
 
     public function up(Schema $schema): void
     {
-        $jobManager = $this->container->get('mautic.helper.allyde.jobmanager');
-
         $query = sprintf(
             'ALTER TABLE %s ADD INDEX %s (is_scheduled, event_id, trigger_date)',
             $this->getTableName(),
             $this->getIndexName()
         );
 
-        $jobManager->queueJob(
-            JobBuilder::generateJob(
-                AlterTableTube::EXECUTE,
-                ['query' => $query, 'tableName' => $this->getTableName(), 'try' => 50]
-            )
-        );
+        $this->addSql($query);
     }
 
     public function down(Schema $schema): void
