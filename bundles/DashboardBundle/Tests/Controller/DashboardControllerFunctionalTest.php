@@ -231,7 +231,7 @@ class DashboardControllerFunctionalTest extends MauticMysqlTestCase
         $campaignLeadEvent->setLead($lead);
         $campaignLeadEvent->setEvent($event);
         $campaignLeadEvent->setCampaign($campaign);
-        $campaignLeadEvent->setTriggerDate(new \DateTime());
+        $campaignLeadEvent->setTriggerDate(new \DateTime('+1 day'));
         $campaignLeadEvent->setIsScheduled(true);
         $this->em->persist($campaignLeadEvent);
 
