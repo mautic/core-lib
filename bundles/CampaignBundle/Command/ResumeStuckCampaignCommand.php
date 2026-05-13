@@ -38,7 +38,7 @@ final class ResumeStuckCampaignCommand extends Command
     use WriteCountTrait;
 
     public const COMMAND_NAME                      = 'mautic:campaigns:resume-stuck';
-    private const MAX_ALLOWED_RECORDS_EACH_PROCESS = 5000;
+    private const MAX_ALLOWED_RECORDS_EACH_PROCESS = 500;
 
     public function __construct(
         private TranslatorInterface $translator,
@@ -88,7 +88,7 @@ final class ResumeStuckCampaignCommand extends Command
                 '-l',
                 InputOption::VALUE_OPTIONAL,
                 'Set batch size of contacts to process per round. Defaults to 100.',
-                1000
+                100
             );
 
         parent::configure();
