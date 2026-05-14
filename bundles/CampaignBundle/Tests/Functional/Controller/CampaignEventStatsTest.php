@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Mautic\CampaignBundle\Tests\Functional\Controller;
 
-use function GuzzleHttp\json_decode;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -126,12 +126,17 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
         $url    = sprintf('s/campaigns/event/stats/%d/%s/%s', $campaign->getId(), $before->format('Y-m-d'), $after->format('Y-m-d'));
         $this->client->request('GET', $url);
         $response = $this->client->getResponse();
-        $body     = json_decode($response->getContent(), true);
+        $body     = \json_decode($response->getContent(), true);
         $this->client->restart();
+        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
+        $this->loginUser($user);
 
         return new Crawler($body['actions']);
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     private function getEventsStatistics(Campaign $campaign): array
     {
         $crawler = $this->getTestCrawler($campaign);
