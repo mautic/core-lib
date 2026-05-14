@@ -86,7 +86,7 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
             ],
         ];
 
-        Assert::assertSame($expectedEventsStatistics, $eventsStatistics, 'Events statistics doesn\'t match the actual events in the database.');
+        Assert::assertSame($expectedEventsStatistics, $eventsStatistics);
 
         $leadEventLog2 = new LeadEventLog();
         $leadEventLog2->setLead($lead);
@@ -96,7 +96,7 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $eventsStatistics         = $this->getEventsStatistics($campaign);
-        Assert::assertSame($expectedEventsStatistics, $eventsStatistics, 'Events statistics doesn\'t match the actual events in the database.');
+        Assert::assertSame($expectedEventsStatistics, $eventsStatistics);
 
         sleep(5);
 
@@ -115,7 +115,7 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
             ],
         ];
 
-        Assert::assertSame($expectedEventsStatistics, $eventsStatistics, 'Events statistics doesn\'t match the actual events in the database.');
+        Assert::assertSame($expectedEventsStatistics, $eventsStatistics);
     }
 
     private function getTestCrawler(Campaign $campaign): Crawler
@@ -142,14 +142,15 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
         $crawler = $this->getTestCrawler($campaign);
         $events  = [];
         for ($eventIndex = 0;; ++$eventIndex) {
-            $node = $crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3);
+            $crawlerFilter = $crawler->filter('.campaign-event-list')->filter('span');
+            $node          = $crawlerFilter->eq($eventIndex * 3);
             if (1 > $node->count()) {
                 break;
             }
             $events[] = [
-                'successPercent' => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3)->html()),
-                'completed'      => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 1)->html()),
-                'pending'        => trim($crawler->filter('.campaign-event-list')->filter('span')->eq($eventIndex * 3 + 2)->html()),
+                'successPercent' => trim($crawlerFilter->eq($eventIndex * 3)->html()),
+                'completed'      => trim($crawlerFilter->eq($eventIndex * 3 + 1)->html()),
+                'pending'        => trim($crawlerFilter->eq($eventIndex * 3 + 2)->html()),
             ];
         }
 
