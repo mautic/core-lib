@@ -149,6 +149,7 @@ class LeadEventLogRepository extends CommonRepository
         $joinCondition = 'e.id = ll.event_id';
         if (isset($options['type'])) {
             $joinCondition .= ' AND e.type = :type';
+            $query->setParameter('type', $options['type']);
         }
 
         $query->select('ll.event_id,
@@ -180,10 +181,6 @@ class LeadEventLogRepository extends CommonRepository
 
             $query->andWhere('ll.lead_id = :leadId')
                 ->setParameter('leadId', $options['lead']->getId());
-        }
-
-        if (isset($options['type'])) {
-            $query->setParameter('type', $options['type']);
         }
 
         if (isset($options['eventType'])) {
