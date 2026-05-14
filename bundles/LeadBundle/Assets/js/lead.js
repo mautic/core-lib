@@ -155,10 +155,10 @@ Mautic.leadOnLoad = function (container, response) {
     // Adding behavior to be able to create new tags by pressing the `Enter` or `Escape` key
     // when the search field is active (ie: the tag name we are typing is a substring of an existing tag)
     mQuery('#lead_tags_chosen input').keyup(function(el) {
-        const newTag = mQuery('#lead_tags_chosen input').val();
+        const newTag = mQuery('#lead_tags_chosen input').val().trim();
         if ((el.key === "Escape" || el.key === "Enter") && newTag !== '') {
             const selectElement = mQuery('#lead_tags').get();
-            const selectedValues = mQuery('#lead_tags').val();
+            const selectedValues = mQuery('#lead_tags').val() || [];
             const payload = [...selectedValues, newTag];
 
             Mautic.activateLabelLoadingIndicator(mQuery(selectElement).attr('id'));
