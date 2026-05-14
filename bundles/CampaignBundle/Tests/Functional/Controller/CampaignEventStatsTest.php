@@ -7,8 +7,8 @@ namespace Mautic\CampaignBundle\Tests\Functional\Controller;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
-use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
@@ -16,6 +16,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class CampaignEventStatsTest extends MauticMysqlTestCase
 {
+    use CreateTestEntitiesTrait;
+
     protected function setUp(): void
     {
         $this->configParams['campaign_use_summary']     = false;
@@ -56,18 +58,9 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
         $campaignLead->setDateAdded(new \DateTime());
         $this->em->persist($campaignLead);
 
-        $leadEventLog1 = new LeadEventLog();
-        $leadEventLog1->setLead($lead);
-        $leadEventLog1->setEvent($campaignEvent1);
-        $leadEventLog1->setIsScheduled(true);
-        $leadEventLog1->setRotation(1);
-        $this->em->persist($leadEventLog1);
+        $this->createCampaignLeadEventLog($lead, $campaignEvent1, $campaign, 1, true);
 
-        $leadEventLog3 = new LeadEventLog();
-        $leadEventLog3->setLead($lead);
-        $leadEventLog3->setEvent($campaignEvent1);
-        $leadEventLog1->setRotation(2);
-        $this->em->persist($leadEventLog3);
+        $this->createCampaignLeadEventLog($lead, $campaignEvent1, $campaign, 2);
 
         $this->em->flush();
 
@@ -88,11 +81,8 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
 
         Assert::assertSame($expectedEventsStatistics, $eventsStatistics);
 
-        $leadEventLog2 = new LeadEventLog();
-        $leadEventLog2->setLead($lead);
-        $leadEventLog2->setEvent($campaignEvent2);
-        $leadEventLog1->setRotation(1);
-        $this->em->persist($leadEventLog2);
+        $this->createCampaignLeadEventLog($lead, $campaignEvent2, $campaign, 1);
+
         $this->em->flush();
 
         $eventsStatistics         = $this->getEventsStatistics($campaign);
