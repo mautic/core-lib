@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Mautic\CampaignBundle\Tests\Functional\Controller;
 
 use Mautic\CampaignBundle\Entity\Campaign;
-use Mautic\CampaignBundle\Entity\Event;
-use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
-use Mautic\LeadBundle\Entity\Lead;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\DomCrawler\Crawler;
@@ -28,35 +25,15 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
 
     public function testCountsProcessedCampaignsMethodCountsProcessedCampaignsCorrectly(): void
     {
-        $campaign = new Campaign();
-        $campaign->setName('Test Campaign');
-        $this->em->persist($campaign);
+        $campaign = $this->createCampaign('Test Campaign');
 
-        $lead = new Lead();
-        $lead->setFirstname('Test Lead');
-        $this->em->persist($lead);
+        $lead= $this->createLead('Test Lead');
 
-        $campaignEvent1 = new Event();
-        $campaignEvent1->setCampaign($campaign);
-        $campaignEvent1->setName('Send Email 1');
-        $campaignEvent1->setType('email.send');
-        $campaignEvent1->setEventType('action');
-        $campaignEvent1->setProperties([]);
-        $this->em->persist($campaignEvent1);
+        $campaignEvent1 = $this->createEvent('Send Email 1', $campaign, 'email.send', 'action');
 
-        $campaignEvent2 = new Event();
-        $campaignEvent2->setCampaign($campaign);
-        $campaignEvent2->setName('Jump to send email 1');
-        $campaignEvent2->setType('campaign.jump_to_event');
-        $campaignEvent2->setEventType('action');
-        $campaignEvent2->setProperties([]);
-        $this->em->persist($campaignEvent2);
+        $campaignEvent2 = $this->createEvent('ump to send email 1', $campaign, 'campaign.jump_to_event', 'action');
 
-        $campaignLead = new CampaignLead();
-        $campaignLead->setCampaign($campaign);
-        $campaignLead->setLead($lead);
-        $campaignLead->setDateAdded(new \DateTime());
-        $this->em->persist($campaignLead);
+        $this->addContactToCampaign($lead, $campaign);
 
         $this->createCampaignLeadEventLog($lead, $campaignEvent1, $campaign, 1, true);
 
