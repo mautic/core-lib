@@ -336,7 +336,7 @@ class AjaxController extends CommonAjaxController
     public function getEmailSendToDncStatusAction(Request $request, EmailModel $model): JsonResponse
     {
         $dataArray = [];
-        $objectId  = $request->request->get('id');
+        $objectId  = $request->query->get('id');
 
         if ($objectId && $entity = $model->getEntity($objectId)) {
             $yesText                         = $this->translator->trans('mautic.core.form.yes');

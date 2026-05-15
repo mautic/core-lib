@@ -37,7 +37,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $this->setCsrfHeader();
-        $this->client->xmlHttpRequest(Request::METHOD_POST, '/s/ajax', [
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax', [
             'action' => 'email:getEmailSendToDncStatus',
             'id'     => $email->getId(),
         ]);
@@ -45,6 +45,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 
         $content = json_decode((string) $this->client->getResponse()->getContent(), true);
         $this->assertIsArray($content);
+        $this->assertArrayHasKey('sendToDncStatus', $content);
         $this->assertSame($sendToDnc, $content['sendToDncStatus']);
         $this->assertSame(
             static::getContainer()->get('translator')->trans($expectedTranslationKey),
@@ -64,7 +65,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
     public function testGetEmailSendToDncStatusActionWithoutIdReturnsEmptyResponse(): void
     {
         $this->setCsrfHeader();
-        $this->client->xmlHttpRequest(Request::METHOD_POST, '/s/ajax', ['action' => 'email:getEmailSendToDncStatus']);
+        $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax', ['action' => 'email:getEmailSendToDncStatus']);
         $this->assertResponseIsSuccessful();
 
         $content = json_decode((string) $this->client->getResponse()->getContent(), true);
