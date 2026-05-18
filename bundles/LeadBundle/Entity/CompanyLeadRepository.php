@@ -78,7 +78,7 @@ class CompanyLeadRepository extends CommonRepository
     /**
      * @param int[] $ids
      *
-     * @return array<string,mixed>
+     * @return list<array<string, mixed>>
      */
     public function getPrimaryCompaniesByLeadIds(array $ids): array
     {
