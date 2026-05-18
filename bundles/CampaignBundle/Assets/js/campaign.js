@@ -790,7 +790,7 @@ Mautic.launchCampaignEditor = function() {
     Mautic.fitCampaignToView(false);
 
     if (mQuery('#CampaignEvent_newsource').length) {
-        var newSourcePosition = mQuery('#CampaignEvent_newsource').position();
+        const newSourcePosition = mQuery('#CampaignEvent_newsource').position();
         Mautic.campaignBuilderUpdateEventList(['Source'], false, 'list', false, {
             left: newSourcePosition.left - 50,
             top: newSourcePosition.top + 35
@@ -2897,6 +2897,25 @@ Mautic.autoOrganizeCampaign = function () {
     Mautic.fitCampaignToView();
 };
 
+Mautic.shouldStartCampaignCanvasPanning = function (target) {
+    return mQuery(target).closest([
+        '.draggable',
+        '.jtk-endpoint',
+        '.jtk-connector',
+        '.jtk-label',
+        '#CampaignEventPanel',
+        '#EventJumpOverlay',
+        'a',
+        'button',
+        'input',
+        'textarea',
+        'select',
+        'label',
+        '.chosen-container',
+        '.modal'
+    ].join(',')).length === 0;
+};
+
 Mautic.initializeCampaignCanvasPanning = function () {
     const builderContent = mQuery('.campaign-builder.live .builder-content');
     if (!builderContent.length || builderContent.data('campaign-canvas-panning')) return;
@@ -2911,27 +2930,8 @@ Mautic.initializeCampaignCanvasPanning = function () {
     let startScrollTop = 0;
     let suppressNextClick = false;
 
-    function shouldStartPanning(target) {
-        return mQuery(target).closest([
-            '.draggable',
-            '.jtk-endpoint',
-            '.jtk-connector',
-            '.jtk-label',
-            '#CampaignEventPanel',
-            '#EventJumpOverlay',
-            'a',
-            'button',
-            'input',
-            'textarea',
-            'select',
-            'label',
-            '.chosen-container',
-            '.modal'
-        ].join(',')).length === 0;
-    }
-
     builderContent.on('mousedown.campaignpan', function (event) {
-        if (event.which !== 1 || !shouldStartPanning(event.target)) return;
+        if (event.which !== 1 || !Mautic.shouldStartCampaignCanvasPanning(event.target)) return;
 
         isPanning = true;
         hasMoved = false;
