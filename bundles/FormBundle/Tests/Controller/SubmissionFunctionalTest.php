@@ -1468,7 +1468,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
 
         $qb->select('count(*) as count')
             ->from("{$tablePrefix}form_results_{$form['id']}_{$form['alias']}", 't')
-            ->where($qb->expr()->in('t.submission_id', $submissionIds));
+            ->where($qb->expr()->in('t.submission_id', array_map(strval(...), $submissionIds)));
 
         $resultCount = (int) $qb->executeQuery()->fetchOne();
 

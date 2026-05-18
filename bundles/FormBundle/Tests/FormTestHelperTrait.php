@@ -67,7 +67,7 @@ trait FormTestHelperTrait
     {
         $crawler     = $this->client->request(Request::METHOD_GET, "/form/{$form['id']}");
         $formCrawler = $crawler->filter('form[id=mauticform_submissiontestform]');
-        $this->assertSame(1, $formCrawler->count());
+        $this->assertCount(1, $formCrawler);
         $form = $formCrawler->form();
         $form->setValues([
             'mauticform[name]' => 'Name',
