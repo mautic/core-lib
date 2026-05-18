@@ -220,6 +220,7 @@ class LeadEventLogRepository extends CommonRepository
         ?\DateTimeInterface $dateFrom = null,
         ?\DateTimeInterface $dateTo = null,
         ?int $eventId = null,
+        int $cacheTTL = 0,
     ): array {
         $join = $all ? 'leftJoin' : 'innerJoin';
 
@@ -289,11 +290,11 @@ class LeadEventLogRepository extends CommonRepository
         }
 
         if ($this->_em->getConnection()->getConfiguration()->getResultCache()) {
-            $results = $this->_em->getConnection()->executeCacheQuery(
+            $results  = $this->_em->getConnection()->executeCacheQuery(
                 $q->getSQL(),
                 $q->getParameters(),
                 $q->getParameterTypes(),
-                new QueryCacheProfile(600)
+                new QueryCacheProfile($cacheTTL)
             )->fetchAllAssociative();
         } else {
             $results = $q->executeQuery()->fetchAllAssociative();
