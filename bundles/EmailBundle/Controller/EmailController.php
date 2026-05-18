@@ -1061,6 +1061,97 @@ class EmailController extends FormController
     }
 
     /**
+     * Clone an email and its translation/variant family.
+     *
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function cloneWithTranslationsAction(Request $request, EmailModel $model, $objectId)
+    {
+        $session = $request->getSession();
+        $page    = $session->get('mautic.email.page', 1);
+
+        $returnUrl = $this->generateUrl('mautic_email_index', ['page' => $page]);
+
+        $postActionVars = [
+            'returnUrl'       => $returnUrl,
+            'viewParameters'  => ['page' => $page],
+            'contentTemplate' => 'Mautic\EmailBundle\Controller\EmailController::indexAction',
+            'passthroughVars' => [
+                'activeLink'    => 'mautic_email_index',
+                'mauticContent' => 'email',
+            ],
+        ];
+
+        if (Request::METHOD_POST !== $request->getMethod()) {
+            return $this->postActionRedirect($postActionVars);
+        }
+
+        $emailEntity = $model->getEntity($objectId);
+        $flashes     = [];
+
+        if (null === $emailEntity) {
+            $flashes[] = [
+                'type'    => 'error',
+                'msg'     => 'mautic.email.error.notfound',
+                'msgVars' => ['%id%' => $objectId],
+            ];
+        } elseif (!$this->security->isGranted('email:emails:create')
+            || !$this->security->hasEntityAccess(
+                'email:emails:viewown',
+                'email:emails:viewother',
+                $emailEntity->getCreatedBy()
+            )
+        ) {
+            return $this->accessDenied();
+        } elseif ($emailEntity->isTranslation(true) || $emailEntity->isVariant(true)) {
+            $flashes[] = [
+                'type' => 'error',
+                'msg'  => 'mautic.email.error.clone_with_relations_parent_only',
+            ];
+        } elseif ($model->isLocked($emailEntity)) {
+            return $this->isLocked($postActionVars, $emailEntity, 'email');
+        } else {
+            try {
+                $clonedEmails = $this->cloneEmailWithTranslationsAndVariants($emailEntity, $model);
+                $clonedParent = $clonedEmails[0];
+
+                $flashes[] = [
+                    'type'    => 'notice',
+                    'msg'     => 'mautic.email.notice.cloned_with_relations',
+                    'msgVars' => [
+                        '%name%'  => $clonedParent->getName(),
+                        '%count%' => count($clonedEmails),
+                    ],
+                ];
+
+                $postActionVars['viewParameters'] = [
+                    'objectAction' => 'view',
+                    'objectId'     => $clonedParent->getId(),
+                ];
+                $postActionVars['returnUrl']       = $this->generateUrl(
+                    'mautic_email_action',
+                    $postActionVars['viewParameters']
+                );
+                $postActionVars['contentTemplate'] = 'Mautic\EmailBundle\Controller\EmailController::viewAction';
+            } catch (InvalidRenderedHtmlException $e) {
+                $flashes[] = [
+                    'type' => 'error',
+                    'msg'  => $e->getMessage(),
+                ];
+            }
+        }
+
+        return $this->postActionRedirect(
+            array_merge(
+                $postActionVars,
+                [
+                    'flashes' => $flashes,
+                ]
+            )
+        );
+    }
+
+    /**
      * Deletes the entity.
      *
      * @return Response
@@ -1787,6 +1878,68 @@ class EmailController extends FormController
         $clonedEmail->setVariantStartDate($cloningEmail->getVariantStartDate());
         $clonedEmail->setEmailType($cloningEmail->getEmailType());
         $clonedEmail->setDraft($cloningEmail->getDraft());
+    }
+
+    /**
+     * @return list<Email>
+     */
+    private function cloneEmailWithTranslationsAndVariants(Email $email, EmailModel $model): array
+    {
+        $clonedEmails = [];
+
+        $clonedParent = $this->cloneEmailForRelatedClone($email);
+        $model->saveEntity($clonedParent);
+        $clonedEmails[] = $clonedParent;
+
+        foreach ($email->getTranslationChildren() as $translation) {
+            \assert($translation instanceof Email);
+
+            $clonedTranslation = $this->cloneEmailForRelatedClone($translation);
+            $clonedTranslation->setTranslationParent($clonedParent);
+            $model->saveEntity($clonedTranslation);
+            $clonedEmails[] = $clonedTranslation;
+        }
+
+        foreach ($email->getVariantChildren() as $variant) {
+            \assert($variant instanceof Email);
+
+            $clonedVariant = $this->cloneEmailForRelatedClone($variant);
+            $clonedVariant->setVariantParent($clonedParent);
+            $model->saveEntity($clonedVariant);
+            $clonedEmails[] = $clonedVariant;
+
+            foreach ($variant->getTranslationChildren() as $variantTranslation) {
+                \assert($variantTranslation instanceof Email);
+
+                $clonedVariantTranslation = $this->cloneEmailForRelatedClone($variantTranslation);
+                $clonedVariantTranslation->setTranslationParent($clonedVariant);
+                $model->saveEntity($clonedVariantTranslation);
+                $clonedEmails[] = $clonedVariantTranslation;
+            }
+        }
+
+        return $clonedEmails;
+    }
+
+    private function cloneEmailForRelatedClone(Email $email): Email
+    {
+        $clonedEmail = clone $email;
+        $clonedEmail->setEmailType($email->getEmailType());
+        $clonedEmail->setName($this->getRelatedCloneName($email->getName()));
+
+        return $clonedEmail;
+    }
+
+    private function getRelatedCloneName(?string $name): ?string
+    {
+        if (null === $name) {
+            return null;
+        }
+
+        $suffix    = ' (copy)';
+        $maxLength = Email::MAX_NAME_SUBJECT_LENGTH - strlen($suffix);
+
+        return mb_substr($name, 0, $maxLength).$suffix;
     }
 
     private function unpublishIfLackingPermission(Email $entity, CorePermissions $corePermissions): Email
