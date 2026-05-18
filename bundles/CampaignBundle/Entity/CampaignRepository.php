@@ -542,12 +542,11 @@ class CampaignRepository extends CommonRepository
             ->setMaxResults(1);
 
         if ($this->getReplicaConnection()->getConfiguration()->getResultCache()) {
-            $cacheKey = str_replace(['\\', ':'], '_', __METHOD__).'_'.$campaignId;
             $results  = $this->getReplicaConnection()->executeCacheQuery(
                 $q->getSQL(),
                 $q->getParameters(),
                 $q->getParameterTypes(),
-                new QueryCacheProfile($cacheTTL, $cacheKey)
+                new QueryCacheProfile($cacheTTL)
             )->fetchAllAssociative();
         } else {
             $results = $q->executeQuery()->fetchAllAssociative();
