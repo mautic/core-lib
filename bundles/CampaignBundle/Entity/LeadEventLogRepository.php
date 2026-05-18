@@ -144,7 +144,7 @@ class LeadEventLogRepository extends CommonRepository
     {
         $leadIps = [];
 
-        $query = $this->_em->getConnection()->createQueryBuilder();
+        $query = new \Mautic\LeadBundle\Segment\Query\QueryBuilder($this->_em->getConnection());
 
         $joinCondition = 'e.id = ll.event_id';
         if (isset($options['type'])) {
