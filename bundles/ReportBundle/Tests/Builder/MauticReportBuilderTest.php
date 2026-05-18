@@ -181,6 +181,44 @@ final class MauticReportBuilderTest extends TestCase
         ')), $query->getSql());
     }
 
+    public function testEmptyOrFilterValueDoesNotCreateEmptyOrGroup(): void
+    {
+        $report = new Report();
+        $report->setColumns(['a.someField']);
+        $report->setFilters([
+            [
+                'column'    => 'a.isPublished',
+                'glue'      => 'and',
+                'value'     => '1',
+                'condition' => 'eq',
+            ],
+            [
+                'column'    => 'a.name',
+                'glue'      => 'or',
+                'value'     => '',
+                'condition' => 'contains',
+            ],
+        ]);
+        $builder = $this->buildBuilder($report);
+        $query   = $builder->getQuery([
+            'columns' => ['a.someField' => []],
+            'filters' => [
+                'a.isPublished' => [
+                    'label' => 'Is published',
+                    'type'  => 'bool',
+                    'alias' => 'isPublished',
+                ],
+                'a.name' => [
+                    'label' => 'Name',
+                    'type'  => 'string',
+                    'alias' => 'name',
+                ],
+            ],
+        ]);
+
+        Assert::assertSame('SELECT `a`.`someField` WHERE a.isPublished = :i0caisPublished', $query->getSql());
+    }
+
     public function testReportWithPreciseAvg(): void
     {
         $report = new Report();
