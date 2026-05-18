@@ -324,7 +324,15 @@
     height: auto;
     width: auto;
     bottom: 0;
-    overflow: auto;
+}
+
+.campaign-builder.live .builder-content {
+    overflow: hidden;
+    cursor: grab;
+}
+
+.campaign-builder.live .builder-content.campaign-canvas-panning {
+    cursor: grabbing;
 }
 
 #CampaignCanvas {

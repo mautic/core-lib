@@ -85,8 +85,8 @@ Mautic.campaignOnLoad = function (container, response) {
 
         // setup chosen
         mQuery('.campaign-event-selector').on('chosen:showing_dropdown', function (event) {
-            // Disable canvas scrolling
-            mQuery('.builder-content').css('overflow', 'hidden');
+            // Keep the canvas scrollbar-free while the dropdown is open.
+            mQuery('.campaign-builder.live .builder-content').css('overflow', 'hidden');
 
             var thisSelect = mQuery(event.target).attr('id');
             Mautic.campaignBuilderUpdateEventListTooltips(thisSelect, false);
@@ -108,8 +108,8 @@ Mautic.campaignOnLoad = function (container, response) {
         });
 
         mQuery('.campaign-event-selector').on('chosen:hiding_dropdown', function (event) {
-            // Re-enable canvas scrolling
-            mQuery('.builder-content').css('overflow', 'auto');
+            // Keep panning available without exposing scrollbars.
+            mQuery('.campaign-builder.live .builder-content').css('overflow', 'hidden');
 
             var thisSelect = mQuery(event.target).attr('id');
             Mautic.campaignBuilderUpdateEventListTooltips(thisSelect, true);
@@ -372,6 +372,11 @@ Mautic.campaignBuilderUpdateEventListTooltips = function(theSelect, onlyDestroy)
 Mautic.campaignOnUnload = function(container) {
     delete Mautic.campaignBuilderInstance;
     delete Mautic.campaignBuilderLabels;
+    mQuery(document).off('.campaignpan');
+    mQuery('.campaign-builder.live .builder-content')
+        .off('.campaignpan')
+        .removeData('campaign-canvas-panning')
+        .removeClass('campaign-canvas-panning');
 }
 
 Mautic.campaignEventCloneOnLoad = function(container, response) {
@@ -782,6 +787,15 @@ Mautic.launchCampaignEditor = function() {
         Mautic.campaignBuilderInstance.setSuspendDrawing(false, true);
     }
     Mautic.campaignBuilderInstance.repaintEverything();
+    Mautic.fitCampaignToView(false);
+
+    if (mQuery('#CampaignEvent_newsource').length) {
+        var newSourcePosition = mQuery('#CampaignEvent_newsource').position();
+        Mautic.campaignBuilderUpdateEventList(['Source'], false, 'list', false, {
+            left: newSourcePosition.left - 50,
+            top: newSourcePosition.top + 35
+        });
+    }
 };
 
 /**
@@ -1097,6 +1111,7 @@ Mautic.prepareCampaignCanvas = function() {
         mQuery('.builder-content').scroll(function () {
             Mautic.campaignBuilderInstance.repaintEverything();
         });
+        Mautic.initializeCampaignCanvasPanning();
 
         mQuery.each(Mautic.campaignConnectionCallbacks.beforeEndpointsRegistered, function (index, callback) {
             callback();
@@ -2882,9 +2897,88 @@ Mautic.autoOrganizeCampaign = function () {
     Mautic.fitCampaignToView();
 };
 
-Mautic.fitCampaignToView = function () {
+Mautic.initializeCampaignCanvasPanning = function () {
+    const builderContent = mQuery('.campaign-builder.live .builder-content');
+    if (!builderContent.length || builderContent.data('campaign-canvas-panning')) return;
+
+    builderContent.data('campaign-canvas-panning', true);
+
+    let isPanning = false;
+    let hasMoved = false;
+    let startX = 0;
+    let startY = 0;
+    let startScrollLeft = 0;
+    let startScrollTop = 0;
+    let suppressNextClick = false;
+
+    function shouldStartPanning(target) {
+        return mQuery(target).closest([
+            '.draggable',
+            '.jtk-endpoint',
+            '.jtk-connector',
+            '.jtk-label',
+            '#CampaignEventPanel',
+            '#EventJumpOverlay',
+            'a',
+            'button',
+            'input',
+            'textarea',
+            'select',
+            'label',
+            '.chosen-container',
+            '.modal'
+        ].join(',')).length === 0;
+    }
+
+    builderContent.on('mousedown.campaignpan', function (event) {
+        if (event.which !== 1 || !shouldStartPanning(event.target)) return;
+
+        isPanning = true;
+        hasMoved = false;
+        startX = event.pageX;
+        startY = event.pageY;
+        startScrollLeft = builderContent.scrollLeft();
+        startScrollTop = builderContent.scrollTop();
+        builderContent.addClass('campaign-canvas-panning');
+        event.preventDefault();
+    });
+
+    mQuery(document).on('mousemove.campaignpan', function (event) {
+        if (!isPanning) return;
+
+        const deltaX = event.pageX - startX;
+        const deltaY = event.pageY - startY;
+
+        if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+            hasMoved = true;
+        }
+
+        builderContent.scrollLeft(startScrollLeft - deltaX);
+        builderContent.scrollTop(startScrollTop - deltaY);
+        Mautic.campaignBuilderInstance.repaintEverything();
+        event.preventDefault();
+    });
+
+    mQuery(document).on('mouseup.campaignpan', function () {
+        if (!isPanning) return;
+
+        suppressNextClick = hasMoved;
+        isPanning = false;
+        builderContent.removeClass('campaign-canvas-panning');
+    });
+
+    builderContent.on('click.campaignpan', function (event) {
+        if (!suppressNextClick) return;
+
+        suppressNextClick = false;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    });
+};
+
+Mautic.fitCampaignToView = function (animate) {
     const canvas = mQuery('#CampaignCanvas');
-    const nodes = canvas.find('.draggable');
+    const nodes = canvas.find('.draggable, #CampaignEvent_newsource').filter(':visible');
     if (nodes.length === 0) return;
 
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
@@ -2905,19 +2999,79 @@ Mautic.fitCampaignToView = function () {
     maxX += 100;
     maxY += 100;
 
-    const builderContent = mQuery('.builder-content');
+    const builderContent = canvas.closest('.builder-content');
     const contentWidth = builderContent.width();
     const contentHeight = builderContent.height();
     const campaignWidth = maxX - minX;
     const campaignHeight = maxY - minY;
 
-    const scrollLeft = minX + (campaignWidth / 2) - (contentWidth / 2);
-    const scrollTop = minY + (campaignHeight / 2) - (contentHeight / 2);
+    const maxScrollLeft = Math.max(0, canvas.width() - contentWidth);
+    const maxScrollTop = Math.max(0, canvas.height() - contentHeight);
+    const canvasWidth = canvas.width();
+    const canvasHeight = canvas.height();
+    const canvasCenterX = canvasWidth / 2;
+    const canvasCenterY = canvasHeight / 2;
+    let shiftX = canvasCenterX - (minX + (campaignWidth / 2));
+    let shiftY = canvasCenterY - (minY + (campaignHeight / 2));
 
-    builderContent.animate({
-        scrollLeft: Math.max(0, scrollLeft),
-        scrollTop: Math.max(0, scrollTop)
-    }, 500);
+    if (minX + shiftX < 0) {
+        shiftX = -minX;
+    } else if (maxX + shiftX > canvasWidth) {
+        shiftX = canvasWidth - maxX;
+    }
+
+    if (minY + shiftY < 0) {
+        shiftY = -minY;
+    } else if (maxY + shiftY > canvasHeight) {
+        shiftY = canvasHeight - maxY;
+    }
+
+    let scrollLeft = canvasCenterX - (contentWidth / 2);
+    let scrollTop = canvasCenterY - (contentHeight / 2);
+
+    if (shiftX !== 0 || shiftY !== 0) {
+        nodes.each(function () {
+            const node = mQuery(this);
+            const position = node.position();
+            const left = position.left + shiftX;
+            const top = position.top + shiftY;
+
+            node.css({
+                left: left + 'px',
+                top: top + 'px'
+            });
+
+            Mautic.campaignBuilderEventPositions[node.attr('id')] = {
+                'left': Math.round(left),
+                'top': Math.round(top)
+            };
+        });
+
+        minX += shiftX;
+        minY += shiftY;
+        maxX += shiftX;
+        maxY += shiftY;
+        scrollLeft = minX + ((maxX - minX) / 2) - (contentWidth / 2);
+        scrollTop = minY + ((maxY - minY) / 2) - (contentHeight / 2);
+        Mautic.campaignBuilderInstance.repaintEverything();
+    }
+
+    const targetScroll = {
+        scrollLeft: Math.max(0, Math.min(maxScrollLeft, scrollLeft)),
+        scrollTop: Math.max(0, Math.min(maxScrollTop, scrollTop))
+    };
+
+    if (animate === false) {
+        builderContent.scrollLeft(targetScroll.scrollLeft);
+        builderContent.scrollTop(targetScroll.scrollTop);
+        Mautic.campaignBuilderInstance.repaintEverything();
+
+        return;
+    }
+
+    builderContent.stop(true).animate(targetScroll, 500, function () {
+        Mautic.campaignBuilderInstance.repaintEverything();
+    });
 };
 
 Mautic.campaignAuditlogOnLoad = function (container, response) {
