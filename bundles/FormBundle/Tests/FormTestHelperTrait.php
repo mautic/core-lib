@@ -50,13 +50,6 @@ trait FormTestHelperTrait
      */
     protected function createFormViaApi(array $payload): array
     {
-        $this->setUpSymfony(
-            [
-                'api_enabled'           => true,
-                'api_enable_basic_auth' => true,
-            ]
-        );
-
         $this->client->request(Request::METHOD_POST, '/api/forms/new', $payload);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
@@ -90,17 +83,15 @@ trait FormTestHelperTrait
     {
         $conn = $this->em->getConnection();
 
-        $sql  = "SELECT Table_name from information_schema.tables where Table_name like '%form_results%' and table_schema in (SELECT DATABASE())";
+        $sql  = "SELECT Table_name  from information_schema.tables where Table_name like '%form_results%' and table_schema in (SELECT DATABASE())";
         $stmt = $conn->prepare($sql);
 
-        $stmt->execute();
+        $tables = $stmt->executeQuery()->fetchAllAssociative();
 
-        $tables = $stmt->fetchAll();
-
-        $sm = $conn->getSchemaManager();
+        $sm = $conn->createSchemaManager();
 
         foreach ($tables as $table) {
-            $sm->dropTable($table['TABLE_NAME']);
+            $sm->dropTable($table['Table_name']);
         }
     }
 }

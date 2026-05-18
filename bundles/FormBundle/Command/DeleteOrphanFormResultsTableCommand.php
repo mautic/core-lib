@@ -9,56 +9,38 @@ use Doctrine\ORM\EntityManager;
 use Mautic\CoreBundle\Helper\ExitCode;
 use Mautic\FormBundle\Entity\FormRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[AsCommand(
+    name: DeleteOrphanFormResultsTableCommand::COMMAND_NAME,
+    description: 'Deletes form results table for already deleted forms'
+)]
 class DeleteOrphanFormResultsTableCommand extends Command
 {
     public const COMMAND_NAME = 'mautic:forms:delete-results-table';
 
-    private LoggerInterface $logger;
-
     private Connection $conn;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    private EntityManager $entityManager;
-
-    private FormRepository $formRepository;
-
-    public function __construct(EntityManager $entityManager, LoggerInterface $logger, TranslatorInterface $translator, FormRepository $formRepository)
-    {
+    public function __construct(
+        private EntityManager $entityManager,
+        private LoggerInterface $logger,
+        private TranslatorInterface $translator,
+        private FormRepository $formRepository,
+    ) {
         parent::__construct();
 
-        $this->entityManager  = $entityManager;
-        $this->logger         = $logger;
-        $this->conn           = $this->entityManager->getConnection();
-        $this->translator     = $translator;
-        $this->formRepository = $formRepository;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure(): void
-    {
-        $this
-            ->setName(static::COMMAND_NAME)
-            ->setDescription('Deletes form results table for already deleted forms');
-
-        parent::configure();
+        $this->conn = $this->entityManager->getConnection();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $orphanFormResultsTableNames = $this->getOrphanFormResultsTable();
 
-        $sm   = $this->conn->getSchemaManager();
+        $sm = $this->conn->createSchemaManager();
 
         foreach ($orphanFormResultsTableNames as $tableName) {
             try {
@@ -100,7 +82,7 @@ class DeleteOrphanFormResultsTableCommand extends Command
 
         $validFormTables = $tempTables;
 
-        $allTables = $this->conn->getSchemaManager()->listTableNames();
+        $allTables = $this->conn->createSchemaManager()->listTableNames();
 
         $inValidFormResultsTable = [];
 

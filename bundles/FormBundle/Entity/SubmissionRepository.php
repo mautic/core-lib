@@ -541,11 +541,11 @@ class SubmissionRepository extends CommonRepository
         $formAlias  = $submission->getForm()->getAlias();
 
         $qb = $this->getEntityManager()->getConnection()->createQueryBuilder()
-            ->delete($this->getResultsTableName($formId, $formAlias), 't')
-            ->where('t.submission_id = :submissionId')
+            ->delete($this->getResultsTableName($formId, $formAlias))
+            ->where('submission_id = :submissionId')
             ->setParameter('submissionId', $submission->getId());
 
-        $qb->execute();
+        $qb->executeStatement();
     }
 
     /**
@@ -560,17 +560,14 @@ class SubmissionRepository extends CommonRepository
             $form   = $entity->getForm();
 
             $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
-            $qb->delete($this->getResultsTableName($form->getId(), $form->getAlias()), 't')
-               ->where($qb->expr()->in('t.submission_id', $submissionIds));
+            $qb->delete($this->getResultsTableName($form->getId(), $form->getAlias()))
+               ->where($qb->expr()->in('submission_id', $submissionIds));
 
-            $qb->execute();
+            $qb->executeStatement();
         }
     }
 
-    /**
-     * @return QueryBuilder
-     */
-    public function getOrphanSubmissionRecords(string $tableName, int $maxResults)
+    public function getOrphanSubmissionRecords(string $tableName, int $maxResults): DbalQueryBuilder
     {
         $submissionTable =  MAUTIC_TABLE_PREFIX.'form_submissions';
 
@@ -591,8 +588,8 @@ class SubmissionRepository extends CommonRepository
     {
         $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
 
-        $qb->delete($tableName, 'fro')
-            ->where($qb->expr()->in('fro.submission_id', $inValidSubmissionIds))
-            ->execute();
+        $qb->delete($tableName)
+            ->where($qb->expr()->in('submission_id', $inValidSubmissionIds))
+            ->executeStatement();
     }
 }
