@@ -1065,7 +1065,7 @@ class EmailController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneWithTranslationsAction(Request $request, EmailModel $model, $objectId)
+    public function cloneWithTranslationsAction(Request $request, EmailModel $model, int $objectId)
     {
         $session = $request->getSession();
         $page    = $session->get('mautic.email.page', 1);

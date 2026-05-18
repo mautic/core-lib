@@ -536,7 +536,12 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->xmlHttpRequest(
             Request::METHOD_POST,
-            "/s/emails/cloneWithTranslations/{$parent->getId()}"
+            "/s/emails/cloneWithTranslations/{$parent->getId()}",
+            [],
+            [],
+            [
+                'HTTP_X-CSRF-Token' => $this->getCsrfToken('mautic_ajax_post'),
+            ]
         );
         Assert::assertTrue($this->client->getResponse()->isOk());
 
