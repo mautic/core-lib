@@ -7,7 +7,6 @@ namespace Mautic\CampaignBundle\Tests\Functional\Controller;
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Tests\Functional\CreateTestEntitiesTrait;
-use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -94,9 +93,6 @@ class CampaignEventStatsTest extends MauticMysqlTestCase
         $this->client->request('GET', $url);
         $response = $this->client->getResponse();
         $body     = \json_decode($response->getContent(), true);
-        $this->client->restart();
-        $user = $this->em->getRepository(User::class)->findOneBy(['username' => 'admin']);
-        $this->loginUser($user);
 
         return new Crawler($body['actions']);
     }
