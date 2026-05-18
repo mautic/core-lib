@@ -4,10 +4,13 @@ namespace Mautic\LeadBundle\Controller;
 
 use Mautic\CoreBundle\Controller\FormController;
 use Mautic\CoreBundle\Factory\PageHelperFactoryInterface;
+use Mautic\CoreBundle\Form\Type\FindReplaceType;
 use Mautic\CoreBundle\Helper\ExportHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\CompanyLeadRepository;
+use Mautic\LeadBundle\Entity\CustomFieldEntityInterface;
+use Mautic\LeadBundle\Field\CustomFieldFindReplace;
 use Mautic\LeadBundle\Form\Type\CompanyMergeType;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\FieldModel;
@@ -824,6 +827,149 @@ class CompanyController extends FormController
                 ]
             )
         );
+    }
+
+    /**
+     * Bulk find and replace company field values.
+     *
+     * @return JsonResponse|Response
+     */
+    public function batchFindReplaceAction(Request $request)
+    {
+        /** @var CompanyModel $model */
+        $model = $this->getModel('lead.company');
+
+        /** @var FieldModel $fieldModel */
+        $fieldModel  = $this->getModel('lead.field');
+        $findReplace = new CustomFieldFindReplace($fieldModel);
+
+        $permissions = $this->security->isGranted(
+            [
+                'lead:leads:viewown',
+                'lead:leads:viewother',
+                'lead:leads:editown',
+                'lead:leads:editother',
+            ],
+            'RETURN_ARRAY'
+        );
+
+        if (
+            (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother'])
+            || (!$permissions['lead:leads:editown'] && !$permissions['lead:leads:editother'])
+        ) {
+            return $this->accessDenied();
+        }
+
+        if (Request::METHOD_POST === $request->getMethod()) {
+            $requestData = $request->request->all();
+            $data        = $requestData['lead_batch_find_replace'] ?? $requestData['find_replace'] ?? [];
+            $ids         = json_decode($data['ids'] ?? '[]', true);
+            $updated     = [];
+
+            $fieldAlias = $data['field'] ?? null;
+
+            if (is_string($fieldAlias) && is_array($ids)) {
+                $entities = !empty($data['all'])
+                    ? $model->getEntities([
+                        'filter'           => $this->getCurrentCompanyListFilter($request),
+                        'ignore_paginator' => true,
+                    ])
+                    : $model->getEntities([
+                        'filter'           => [
+                            'force' => [
+                                [
+                                    'column' => 'comp.id',
+                                    'expr'   => 'in',
+                                    'value'  => $ids ?: [],
+                                ],
+                            ],
+                        ],
+                        'ignore_paginator' => true,
+                    ]);
+
+                /** @var Company[] $updated */
+                $updated = $findReplace->replace(
+                    'company',
+                    $fieldAlias,
+                    $data['find'] ?? null,
+                    $data['replace'] ?? null,
+                    $entities,
+                    function (CustomFieldEntityInterface $company, array $values) use ($model): void {
+                        \assert($company instanceof Company);
+                        $model->setFieldValues($company, $values, true);
+                    },
+                    function (CustomFieldEntityInterface $company): bool {
+                        \assert($company instanceof Company);
+
+                        return $this->security->hasEntityAccess(
+                            'lead:leads:editown',
+                            'lead:leads:editother',
+                            $company->getPermissionUser()
+                        );
+                    },
+                    function (CustomFieldEntityInterface $company) use ($model): ?CustomFieldEntityInterface {
+                        \assert($company instanceof Company);
+
+                        return $model->getEntity($company->getId());
+                    }
+                );
+
+                if ($updated) {
+                    $model->saveEntities($updated);
+                }
+            }
+
+            $this->addFlashMessage(
+                'mautic.company.batch_companies_affected',
+                [
+                    '%count%' => count($updated),
+                ]
+            );
+
+            return new JsonResponse(
+                [
+                    'closeModal' => true,
+                    'flashes'    => $this->getFlashContent(),
+                ]
+            );
+        }
+
+        $route = $this->generateUrl(
+            'mautic_company_action',
+            [
+                'objectAction' => 'batchFindReplace',
+            ]
+        );
+
+        return $this->delegateView(
+            [
+                'viewParameters' => [
+                    'form' => $this->formFactory->createNamed('lead_batch_find_replace', FindReplaceType::class, [], [
+                        'action'        => $route,
+                        'all_items'     => $request->query->getBoolean('all'),
+                        'field_choices' => $findReplace->getFieldChoices('company'),
+                        'field_label'   => 'mautic.company.batch.find_replace.field',
+                    ])->createView(),
+                ],
+                'contentTemplate' => '@MauticLead/Batch/form.html.twig',
+                'passthroughVars' => [
+                    'activeLink'    => '#mautic_company_index',
+                    'mauticContent' => 'companyBatch',
+                    'route'         => $route,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * @return array<string,array<int,array<string,mixed>>|string>
+     */
+    private function getCurrentCompanyListFilter(Request $request): array
+    {
+        return [
+            'string' => $request->getSession()->get('mautic.company.filter', ''),
+            'force'  => [],
+        ];
     }
 
     /**
