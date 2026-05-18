@@ -264,9 +264,10 @@ class EmailController extends FormController
         $security = $this->security;
 
         /** @var Email $email */
-        $email = $model->getEntity($objectId);
+        $email   = $model->getEntity($objectId);
+        $session = $request->getSession();
         // set the page we came from
-        $page = $request->getSession()->get('mautic.email.page', 1);
+        $page = $session->get('mautic.email.page', 1);
 
         // Init the date range filter form
         $dateRangeValues = $request->query->all()['daterange'] ?? $request->request->all()['daterange'] ?? [];
@@ -369,8 +370,48 @@ class EmailController extends FormController
         \assert($auditLog instanceof AuditLogModel);
         $logs = $auditLog->getLogForObject('email', $email->getId(), $email->getDateAdded());
 
+        if (!$session->has('mautic.email.clicks.orderby')) {
+            $session->set('mautic.email.clicks.orderby', 'r.url');
+            $session->set('mautic.email.clicks.orderbydir', 'DESC');
+        }
+        $this->setListFilters('email.clicks');
+
+        $clickCountsBaseUrl = $this->generateUrl(
+            'mautic_email_action',
+            [
+                'objectAction' => 'view',
+                'objectId'     => $email->getId(),
+            ]
+        );
+
         // Get click through stats
-        $trackableLinks  = $model->getEmailClickStats($email->getId());
+        $trackableLinks = $model->getEmailClickStats(
+            $email->getId(),
+            $session->get('mautic.email.clicks.orderby', 'r.url'),
+            $session->get('mautic.email.clicks.orderbydir', 'DESC')
+        );
+
+        if ('click_counts' === $request->get('tmpl')) {
+            return $this->delegateView(
+                [
+                    'viewParameters' => [
+                        'trackables'          => $trackableLinks,
+                        'entity'              => $email,
+                        'channel'             => 'email',
+                        'clickCountsSortable' => true,
+                        'clickCountsBaseUrl'  => $clickCountsBaseUrl,
+                        'tmpl'                => 'click_counts',
+                    ],
+                    'contentTemplate' => '@MauticPage/Trackable/click_counts.html.twig',
+                    'passthroughVars' => [
+                        'activeLink'    => '#mautic_email_index',
+                        'mauticContent' => 'email',
+                        'route'         => $clickCountsBaseUrl,
+                    ],
+                ]
+            );
+        }
+
         $draftPreviewUrl = null;
         if ($emailConfig->isDraftEnabled() && $email->hasDraft()) {
             $draftPreviewUrl = $this->generateUrl(
@@ -408,14 +449,15 @@ class EmailController extends FormController
                     ]
                 ),
                 'viewParameters' => [
-                    'email'        => $email,
-                    'emailPreview' => $emailPreview,
-                    'trackables'   => $trackableLinks,
-                    'logs'         => $logs,
-                    'isEmbedded'   => $request->get('isEmbedded') ?: false,
-                    'variants'     => $variants,
-                    'translations' => $translations,
-                    'permissions'  => $security->isGranted(
+                    'email'              => $email,
+                    'emailPreview'       => $emailPreview,
+                    'trackables'         => $trackableLinks,
+                    'logs'               => $logs,
+                    'isEmbedded'         => $request->get('isEmbedded') ?: false,
+                    'clickCountsBaseUrl' => $clickCountsBaseUrl,
+                    'variants'           => $variants,
+                    'translations'       => $translations,
+                    'permissions'        => $security->isGranted(
                         [
                             'email:emails:viewown',
                             'email:emails:viewother',

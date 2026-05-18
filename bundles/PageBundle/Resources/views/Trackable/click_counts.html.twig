@@ -1,4 +1,5 @@
 {% set showConversionRate = showConversionRate is defined ? showConversionRate : false %}
+{% set clickCountsSortable = clickCountsSortable is defined ? clickCountsSortable : false %}
 {% if trackables is not empty %}
     <div class="table-responsive">
         <table class="table table-hover click-list"
@@ -6,7 +7,19 @@
             <thead>
             <tr>
                 <td>{{ 'mautic.trackable.click_url'|trans }}</td>
-                <td>{{ 'mautic.trackable.click_count'|trans }}</td>
+                {% if clickCountsSortable %}
+                    {{ include('@MauticCore/Helper/tableheader.html.twig', {
+                        'sessionVar' : 'email.clicks',
+                        'orderBy'    : 't.hits',
+                        'text'       : 'mautic.trackable.click_count',
+                        'class'      : 'text-center',
+                        'target'     : '#clicks-container',
+                        'tmpl'       : 'click_counts',
+                        'baseUrl'    : clickCountsBaseUrl|default(''),
+                    }) }}
+                {% else %}
+                    <td>{{ 'mautic.trackable.click_count'|trans }}</td>
+                {% endif %}
                 <td>{{ 'mautic.trackable.click_unique_count'|trans }}</td>
                 {{ customContent('click_counts_headers', _context) }}
                 {% if showConversionRate %}
