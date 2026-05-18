@@ -463,9 +463,6 @@ class PageModel extends FormModel implements GlobalSearchInterface
         $hit->setTrackingId($this->limitString($trackedDevice->getTrackingId()));
         $hit->setDeviceStat($trackedDevice);
 
-        $this->em->persist($hit);
-        $this->em->flush();
-
         // save hit to the cookie to use to update the exit time
         if ($hit) {
             $this->cookieHelper->setCookie(

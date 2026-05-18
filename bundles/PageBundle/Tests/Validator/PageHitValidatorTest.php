@@ -8,21 +8,16 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\PageBundle\Entity\Hit;
 use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Validator\PageHitValidator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class PageHitValidatorTest extends TestCase
+final class PageHitValidatorTest extends TestCase
 {
-    /**
-     * @var CoreParametersHelper|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $coreParametersHelperMock;
+    private MockObject&CoreParametersHelper $coreParametersHelperMock;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|Constraint
-     */
-    private $constraintMock;
+    private MockObject&Constraint $constraintMock;
 
     public function setUp(): void
     {
@@ -116,13 +111,13 @@ class PageHitValidatorTest extends TestCase
         // mock the violation builder
         $builder = $this->getMockBuilder('Symfony\Component\Validator\Violation\ConstraintViolationBuilder')
             ->disableOriginalConstructor()
-            ->setMethods(['addViolation'])
+            ->onlyMethods(['addViolation'])
             ->getMock();
 
         // mock the validator context
         $context = $this->getMockBuilder('Symfony\Component\Validator\Context\ExecutionContext')
             ->disableOriginalConstructor()
-            ->setMethods(['buildViolation'])
+            ->onlyMethods(['buildViolation'])
             ->getMock();
 
         $builder->expects($this->once())
@@ -131,7 +126,7 @@ class PageHitValidatorTest extends TestCase
         $context->expects($this->once())
             ->method('buildViolation')
             ->with($this->equalTo('page_id / redirect_id / page_url & page_title should not be empty'))
-            ->will($this->returnValue($builder));
+            ->willReturn($builder);
 
         $pageHitValidator = new PageHitValidator($this->coreParametersHelperMock);
 

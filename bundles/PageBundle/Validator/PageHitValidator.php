@@ -10,16 +10,13 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class PageHitValidator extends ConstraintValidator
+final class PageHitValidator extends ConstraintValidator
 {
-    private CoreParametersHelper $coreParametersHelper;
-
-    public function __construct(CoreParametersHelper $coreParametersHelper)
+    public function __construct(private CoreParametersHelper $coreParametersHelper)
     {
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$this->coreParametersHelper->get('validate_page_hit_required_data')) {
             return;

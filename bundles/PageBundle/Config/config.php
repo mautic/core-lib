@@ -115,15 +115,6 @@ return [
                 'arguments' => ['mautic.page.model.page'],
             ],
         ],
-        'validator' => [
-            'mautic.page.validator.page_hit'         => [
-                'class'     => Mautic\PageBundle\Validator\PageHitValidator::class,
-                'arguments' => [
-                    'mautic.helper.core_parameters',
-                ],
-                'tag' => 'validator.constraint_validator',
-            ],
-        ],
         'other' => [
             'mautic.page.helper.token' => [
                 'class'     => Mautic\PageBundle\Helper\TokenHelper::class,

@@ -16,7 +16,7 @@ use Mautic\PageBundle\Entity\Page;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 
-class PageModelValidationTest extends MauticMysqlTestCase
+final class PageModelValidationTest extends MauticMysqlTestCase
 {
     private HitRepository $pageHitRepository;
 
@@ -24,7 +24,7 @@ class PageModelValidationTest extends MauticMysqlTestCase
     {
         $this->configParams['validate_page_hit_required_data'] = true;
         parent::setUp();
-        $this->pageHitRepository = self::$container->get('mautic.page.repository.hit');
+        $this->pageHitRepository = self::getContainer()->get('mautic.page.repository.hit');
     }
 
     public function testPageHitWhenRequiredValuesValidationPass(): void

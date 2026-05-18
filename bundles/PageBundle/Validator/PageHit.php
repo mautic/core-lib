@@ -6,7 +6,7 @@ namespace Mautic\PageBundle\Validator;
 
 use Symfony\Component\Validator\Constraint;
 
-class PageHit extends Constraint
+final class PageHit extends Constraint
 {
     public function getTargets(): string
     {
