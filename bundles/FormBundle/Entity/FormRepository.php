@@ -228,8 +228,8 @@ class FormRepository extends CommonRepository
         return $this->_em->getConnection()->createQueryBuilder()
             ->select("CONCAT('".MAUTIC_TABLE_PREFIX."','form_results_', t.id, '_', t.alias) as validFormTable")
             ->from(MAUTIC_TABLE_PREFIX.'forms', 't')
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
