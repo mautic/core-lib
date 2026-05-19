@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\Field;
 
 use Mautic\CoreBundle\Helper\ArrayHelper;
 use Mautic\LeadBundle\Entity\CustomFieldEntityInterface;
 use Mautic\LeadBundle\Entity\LeadField;
+use Mautic\LeadBundle\Entity\LeadFieldRepository;
 use Mautic\LeadBundle\Helper\CustomFieldHelper;
-use Mautic\LeadBundle\Model\FieldModel;
 
-class CustomFieldFindReplace
+final class CustomFieldFindReplace
 {
     public function __construct(
-        private FieldModel $fieldModel,
+        private FieldList $fieldList,
+        private LeadFieldRepository $leadFieldRepository,
     ) {
     }
 
@@ -21,17 +24,17 @@ class CustomFieldFindReplace
     public function getFieldChoices(string $object): array
     {
         return ArrayHelper::flipArray(
-            $this->fieldModel->getFieldList(true, true, ['isPublished' => true, 'object' => $object])
+            $this->fieldList->getFieldList(true, true, ['isPublished' => true, 'object' => $object])
         );
     }
 
     /**
      * @param iterable<object>                                                      $entities
      * @param callable(CustomFieldEntityInterface,array<string,mixed>): void        $setFieldValues
-     * @param callable(CustomFieldEntityInterface): bool|null                       $canEdit
+     * @param callable(CustomFieldEntityInterface): bool                            $canEdit
      * @param callable(CustomFieldEntityInterface): CustomFieldEntityInterface|null $refreshEntity
      *
-     * @return CustomFieldEntityInterface[]
+     * @return array<int, CustomFieldEntityInterface>
      */
     public function replace(
         string $object,
@@ -85,7 +88,7 @@ class CustomFieldFindReplace
 
     private function getPublishedFieldForObject(string $alias, string $object): ?LeadField
     {
-        $field = $this->fieldModel->getRepository()->findOneBy([
+        $field = $this->leadFieldRepository->findOneBy([
             'alias'  => $alias,
             'object' => $object,
         ]);

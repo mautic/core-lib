@@ -831,18 +831,9 @@ class CompanyController extends FormController
 
     /**
      * Bulk find and replace company field values.
-     *
-     * @return JsonResponse|Response
      */
-    public function batchFindReplaceAction(Request $request)
+    public function batchFindReplaceAction(Request $request, CompanyModel $model, CustomFieldFindReplace $findReplace): JsonResponse|Response
     {
-        /** @var CompanyModel $model */
-        $model = $this->getModel('lead.company');
-
-        /** @var FieldModel $fieldModel */
-        $fieldModel  = $this->getModel('lead.field');
-        $findReplace = new CustomFieldFindReplace($fieldModel);
-
         $permissions = $this->security->isGranted(
             [
                 'lead:leads:viewown',
@@ -929,6 +920,7 @@ class CompanyController extends FormController
             return new JsonResponse(
                 [
                     'closeModal' => true,
+                    'callback'   => 'refreshFindReplaceList',
                     'flashes'    => $this->getFlashContent(),
                 ]
             );

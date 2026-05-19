@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\CoreBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -12,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @extends AbstractType<mixed>
  */
-class FindReplaceType extends AbstractType
+final class FindReplaceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -65,7 +67,7 @@ class FindReplaceType extends AbstractType
             FormButtonsType::class,
             [
                 'apply_text'     => false,
-                'save_text'      => 'mautic.core.form.save',
+                'save_text'      => 'mautic.core.find_replace.replace_all',
                 'cancel_onclick' => 'javascript:void(0);',
                 'cancel_attr'    => [
                     'data-dismiss' => 'modal',

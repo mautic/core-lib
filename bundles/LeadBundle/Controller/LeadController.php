@@ -1662,6 +1662,7 @@ class LeadController extends FormController
             return new JsonResponse(
                 [
                     'closeModal' => true,
+                    'callback'   => 'refreshFindReplaceList',
                     'flashes'    => $this->getFlashContent(),
                 ]
             );
@@ -1986,18 +1987,9 @@ class LeadController extends FormController
 
     /**
      * Bulk find and replace contact field values.
-     *
-     * @return JsonResponse|Response
      */
-    public function batchFindReplaceAction(Request $request)
+    public function batchFindReplaceAction(Request $request, LeadModel $model, CustomFieldFindReplace $findReplace): JsonResponse|Response
     {
-        /** @var LeadModel $model */
-        $model = $this->getModel('lead');
-
-        /** @var FieldModel $fieldModel */
-        $fieldModel  = $this->getModel('lead.field');
-        $findReplace = new CustomFieldFindReplace($fieldModel);
-
         $permissions = $this->security->isGranted(
             [
                 'lead:leads:viewown',

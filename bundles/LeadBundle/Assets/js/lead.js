@@ -1488,11 +1488,11 @@ Mautic.createLeadUtmTag = function (el) {
 };
 
 Mautic.leadBatchSubmit = function() {
-    var findReplacePrefix = mQuery('#lead_batch_find_replace_field').length ? 'lead_batch_find_replace' : 'find_replace';
-    var findReplaceAll = mQuery('#' + findReplacePrefix + '_all').val() === '1';
+    const findReplacePrefix = mQuery('#lead_batch_find_replace_field').length ? 'lead_batch_find_replace' : 'find_replace';
+    const findReplaceAll = mQuery('#' + findReplacePrefix + '_all').val() === '1';
     if (findReplaceAll || Mautic.batchActionPrecheck()) {
         if (mQuery('#lead_batch_remove').val() || mQuery('#lead_batch_add').val() || mQuery('#lead_batch_dnc_reason').length || mQuery('#lead_batch_stage_addstage').length || mQuery('#lead_batch_owner_addowner').length || mQuery('#' + findReplacePrefix + '_field').val() || mQuery('#contact_channels_ids').length || mQuery('#batch_tag_tags_add_tags').val() || mQuery('#batch_tag_tags_remove_tags').val()) {
-            var ids = Mautic.getCheckedListIds(false, true);
+            const ids = Mautic.getCheckedListIds(false, true);
 
             if (mQuery('#lead_batch_ids').length) {
                 mQuery('#lead_batch_ids').val(ids);
@@ -1518,6 +1518,18 @@ Mautic.leadBatchSubmit = function() {
     mQuery('#MauticSharedModal').modal('hide');
 
     return false;
+};
+
+Mautic.refreshFindReplaceList = function(response) {
+    const modalTarget = response.modalId ? '#' + response.modalId : '#MauticSharedModal';
+
+    if (mQuery(modalTarget).length) {
+        mQuery('body').removeClass('noscroll modal-open');
+        mQuery(modalTarget).modal('hide');
+        mQuery('.modal-backdrop').remove();
+    }
+
+    Mautic.loadContent(window.location.href);
 };
 
 Mautic.updateLeadFieldValues = function (field) {
