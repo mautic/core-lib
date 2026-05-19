@@ -117,7 +117,7 @@ class PageTestAbstract extends TestCase
         $coreParametersHelper->expects($this->any())
             ->method('get')
             ->with($this->anything())
-            ->willReturn($this->returnCallback(function ($parameter) use ($transliterationEnabled, $validatePageHitRequiredData) {
+            ->willReturnCallback(function ($parameter) use ($transliterationEnabled, $validatePageHitRequiredData) {
                 if ('transliterate_page_title' === $parameter) {
                     return $transliterationEnabled;
                 }
@@ -125,7 +125,7 @@ class PageTestAbstract extends TestCase
                 if ('validate_page_hit_required_data' === $parameter) {
                     return $validatePageHitRequiredData;
                 }
-            }));
+            });
 
         $deviceTrackerMock           = $this->createMock(DeviceTracker::class);
         $statRepositoryMock          = $this->createMock(StatRepository::class);
