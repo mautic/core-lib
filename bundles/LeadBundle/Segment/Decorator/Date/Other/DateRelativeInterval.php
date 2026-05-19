@@ -68,10 +68,12 @@ class DateRelativeInterval implements FilterDecoratorInterface
 
         $operator = $this->getOperator($contactSegmentFilterCrate);
         $format   = 'Y-m-d';
-        if ($contactSegmentFilterCrate->hasTimeParts()) {
+
+        $isLikeOperator = 'like' === $operator || 'notLike' === $operator;
+        if (!$isLikeOperator && $contactSegmentFilterCrate->hasTimeParts()) {
             $format .= ' H:i:s';
         }
-        if ('like' === $operator || 'notLike' === $operator) {
+        if ($isLikeOperator) {
             $format .= '%';
         }
         if (!$contactSegmentFilterCrate->hasTimeParts() && 'gt' === $operator) {

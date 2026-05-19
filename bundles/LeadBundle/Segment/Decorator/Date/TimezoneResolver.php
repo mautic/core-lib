@@ -22,7 +22,7 @@ class TimezoneResolver
          * All datetime fields are stored in UTC
          * Date field, however, is always stored in a local time (there is no time information, so it cannot be converted to UTC).
          *
-         * We will generate default date according to this. We need midnight as a default date (for relative intervals like "today" or "-1 day"
+         * We will generate default date according to this. We need now as a default date (for relative intervals like "today" or "-1 day"
          *  1) in UTC for datetime fields
          *  2) in the local timezone for date fields
          *

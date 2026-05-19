@@ -14,7 +14,7 @@ use Mautic\LeadBundle\Entity\ListLead;
 final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('getRelativeHours')]
-    public function testSegmentFilterWithRelatveTime(int $hours): void
+    public function testSegmentFilterWithRelativeTime(int $hours): void
     {
         $this->saveContacts();
         $segment = $this->saveSegment($hours);
