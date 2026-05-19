@@ -11,18 +11,15 @@ use Mautic\LeadBundle\Entity\LeadListRepository;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\Entity\ListLead;
 
-class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestCase
+final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestCase
 {
-    /**
-     * @dataProvider getRelativeHours
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getRelativeHours')]
     public function testSegmentFilterWithRelatveTime(int $hours): void
     {
         $this->saveContacts();
-        $segment   = $this->saveSegment($hours);
+        $segment = $this->saveSegment($hours);
 
-        // Run segments update command.
-        $this->runCommand('mautic:segments:update', ['-i' => $segment->getId()]);
+        $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segment->getId()]);
         self::assertCount($hours, $this->em->getRepository(ListLead::class)->findBy(['list' => $segment->getId()]));
     }
 
@@ -66,6 +63,7 @@ class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestCase
         ];
 
         $segment->setName('Segment')
+            ->setPublicName('Segment')
             ->setFilters($filters)
             ->setAlias('segment');
         $segmentRepo->saveEntity($segment);
@@ -74,9 +72,9 @@ class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @return array<mixed>
+     * @return iterable<int[]>
      */
-    public function getRelativeHours(): iterable
+    public static function getRelativeHours(): iterable
     {
         yield [1];
         yield [3];
