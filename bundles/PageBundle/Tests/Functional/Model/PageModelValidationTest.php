@@ -40,7 +40,11 @@ final class PageModelValidationTest extends MauticMysqlTestCase
 
         $ct           = $this->getEncodedClickThroughValue($stat->getTrackingHash(), (int) $lead->getId());
         $requestParam = '?ct='.$ct.'&page_title='.$page->getTitle();
+
+        // hitPage() tracks only anonymous requests.
+        $this->logoutUser();
         $this->client->request(Request::METHOD_GET, '/'.$page->getAlias().$requestParam, [], []);
+        $this->assertResponseIsSuccessful();
 
         $pageHit = $this->pageHitRepository->findOneBy([]);
         Assert::assertNotEmpty($pageHit, 'page hit should not be empty');
