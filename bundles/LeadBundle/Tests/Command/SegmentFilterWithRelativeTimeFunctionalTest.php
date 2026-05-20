@@ -24,16 +24,17 @@ final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestC
     }
 
     /**
-     * @return array<mixed, mixed>
+     * @return Lead[]
      */
     private function saveContacts(): array
     {
         // Add 10 contacts
         /** @var LeadRepository $contactRepo */
         $contactRepo = $this->em->getRepository(Lead::class);
+        /** @var Lead[] $contacts */
         $contacts    = [];
 
-        for ($i =1; $i <= 10; ++$i) {
+        for ($i = 1; $i <= 10; ++$i) {
             $contact = new Lead();
             $contact->setFirstname('fn'.$i);
             $contact->setLastname('ln'.$i);
