@@ -122,7 +122,7 @@ class LeadRepositoryFunctionalTest extends MauticMysqlTestCase
         }
 
         /** @var LeadRepository $repo */
-        $repo     = $this->em->getRepository(Lead::class);
+        $repo = $this->em->getRepository(Lead::class);
         $contacts = $repo->getContacts($contactIds);
 
         $this->assertCount($expectedCount, $contacts);

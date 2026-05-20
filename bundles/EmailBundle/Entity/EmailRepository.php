@@ -12,7 +12,6 @@ use Mautic\ChannelBundle\Entity\MessageQueue;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\LeadBundle\Entity\DoNotContact;
-use MauticPlugin\CustomObjectsBundle\Helper\QueryBuilderManipulatorTrait;
 use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 
 /**
@@ -20,8 +19,6 @@ use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
  */
 class EmailRepository extends CommonRepository
 {
-    use QueryBuilderManipulatorTrait;
-
     use ProjectRepositoryTrait;
     public const EMAILS_PREFIX        = 'e';
 
