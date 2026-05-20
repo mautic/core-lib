@@ -49,7 +49,7 @@ $container->loadFromExtension('framework', [
     ],
     'asset_mapper' => [
         'paths' => [
-            '%kernel.project_dir%/app/bundles/CoreBundle/Assets'                 => '',
+            '%mautic.application_dir%/app/bundles/CoreBundle/Assets'             => '',
             '%kernel.project_dir%/vendor/twbs/bootstrap-sass/assets/javascripts' => 'vendor/bootstrap',
         ],
         'public_prefix'       => '/assets/build/',
@@ -133,7 +133,7 @@ $container->loadFromExtension('framework', [
 
 $container->loadFromExtension('symfonycasts_sass', [
     'root_sass'    => [
-        '%kernel.project_dir%/app/bundles/CoreBundle/Assets/css/app.scss',
+        '%mautic.application_dir%/app/bundles/CoreBundle/Assets/css/app.scss',
     ],
     'sass_options' => [
         'source_map' => false,
