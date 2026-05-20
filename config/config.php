@@ -49,7 +49,7 @@ $container->loadFromExtension('framework', [
     ],
     'asset_mapper' => [
         'paths' => [
-            '%kernel.project_dir%/assets'                                        => '',
+            '%kernel.project_dir%/app/bundles/CoreBundle/Assets'                 => '',
             '%kernel.project_dir%/vendor/twbs/bootstrap-sass/assets/javascripts' => 'vendor/bootstrap',
         ],
         'public_prefix'       => '/assets/build/',
@@ -57,8 +57,18 @@ $container->loadFromExtension('framework', [
         'excluded_patterns'   => [
             '*/assets/build/*',
             '*/assets/build/**',
-            '*/assets/styles/_*.scss',
-            '*/assets/styles/**/_*.scss',
+            '*/app/bundles/CoreBundle/Assets/images/*',
+            '*/app/bundles/CoreBundle/Assets/images/**',
+            '*/app/bundles/CoreBundle/Assets/js/*',
+            '*/app/bundles/CoreBundle/Assets/js/**',
+            '*/app/bundles/CoreBundle/Assets/json/*',
+            '*/app/bundles/CoreBundle/Assets/json/**',
+            '*/app/bundles/CoreBundle/Assets/pictograms/*',
+            '*/app/bundles/CoreBundle/Assets/pictograms/**',
+            '*/app/bundles/CoreBundle/Assets/css/app/scss/_*.scss',
+            '*/app/bundles/CoreBundle/Assets/css/app/scss/**/_*.scss',
+            '*/app/bundles/CoreBundle/Assets/css/libraries/_*.scss',
+            '*/app/bundles/CoreBundle/Assets/css/libraries/**/_*.scss',
         ],
     ],
     'secret' => '%mautic.secret_key%',
@@ -123,7 +133,7 @@ $container->loadFromExtension('framework', [
 
 $container->loadFromExtension('symfonycasts_sass', [
     'root_sass'    => [
-        '%kernel.project_dir%/assets/styles/app.scss',
+        '%kernel.project_dir%/app/bundles/CoreBundle/Assets/css/app.scss',
     ],
     'sass_options' => [
         'source_map' => false,

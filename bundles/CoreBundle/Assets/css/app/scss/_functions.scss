@@ -1,0 +1,13 @@
+@use 'sass:math';
+
+@function fade($color, $amount) {
+  @return rgba($color, math.div($amount, 100%));
+}
+
+@function mautic-contrast($color, $dark: #000, $light: #fff, $threshold: 43%) {
+  @if lightness($color) > $threshold {
+    @return $dark;
+  }
+
+  @return $light;
+}
