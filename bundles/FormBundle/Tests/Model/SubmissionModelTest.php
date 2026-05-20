@@ -7,6 +7,7 @@ use Mautic\CampaignBundle\Membership\MembershipManager;
 use Mautic\CampaignBundle\Model\CampaignModel;
 use Mautic\CoreBundle\Entity\IpAddress;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\CsvHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
@@ -34,6 +35,7 @@ use Mautic\LeadBundle\Tracker\ContactTracker;
 use Mautic\LeadBundle\Tracker\Service\DeviceTrackingService\DeviceTrackingServiceInterface;
 use Mautic\PageBundle\Model\PageModel;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Entity\UserRepository;
 use Monolog\Logger;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -281,12 +283,17 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
 
         $this->companyModel->method('fetchCompanyFields')->willReturn([]);
 
+        $this->campaignModel->method('getCampaignsByForm')->willReturn([]);
+
+        $userMock = $this->createMock(UserRepository::class);
+
         $this->entityManager->expects($this->any())
             ->method('getRepository')
             ->willReturnMap(
                 [
                     [Lead::class, $this->leadRepository],
                     [Submission::class, $this->submissioRepository],
+                    [User::class, $userMock],
                 ]
             );
 
@@ -346,9 +353,8 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
 
     public function testNormalizeValues(): void
     {
-        $reflection = new \ReflectionClass(SubmissionModel::class);
-        $method     = $reflection->getMethod('normalizeValue');
-        $method->setAccessible(true);
+        $reflection            = new \ReflectionClass(SubmissionModel::class);
+        $method                = $reflection->getMethod('normalizeValue');
         $fieldSession          = 'mautic_'.sha1(uniqid((string) mt_rand(), true));
         $fields[$fieldSession] = [
             'label'        => 'Email',
@@ -482,7 +488,6 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
     public function getAccessibleReflectionMethod(string $name): \ReflectionMethod
     {
         $method = $this->submissionModelReflection->getMethod($name);
-        $method->setAccessible(true);
 
         return $method;
     }
@@ -548,7 +553,7 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         }
 
         fclose($handle);
-        $result = array_map('str_getcsv', file($tmpFile));
+        $result = array_map(fn ($line) => CsvHelper::strGetCsv($line), file($tmpFile));
 
         $this->assertCount(1, $result);
         $this->assertSame($header, $result[0]);

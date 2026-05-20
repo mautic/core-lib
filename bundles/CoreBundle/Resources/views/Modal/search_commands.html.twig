@@ -11,7 +11,7 @@
           {{ "mautic.core.help.searchcommands.title" | trans }}
         </p>
       </div>
-      <div class="modal-body">
+      <div class="modal-body modal-scroll-content">
         <div class="row">        
           <h4 class="fw-sb mb-sm mt-md pi-md">{{ 'mautic.core.searchcommands.heading.operators'|trans }}</h4>
           <div class="text-helper mb-md pi-md">
@@ -62,7 +62,8 @@
               'email_read': 'EMAIL_ID',
               'email_queued': 'EMAIL_ID',
               'email_pending': 'EMAIL_ID',
-              'segment': '{segment_alias}'
+              'segment': '{segment_alias}',
+              'campaign': 'CAMPAIGN_ID'
           } %}
 
           <ul id="specificCommandsAccordion" class="accordion">

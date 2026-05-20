@@ -121,6 +121,10 @@ return [
                     'objectId' => '\d+',
                 ],
             ],
+            'mautic_company_graph'     => [
+                'path'       => '/company/graph/{objectId}',
+                'controller' => 'Mautic\LeadBundle\Controller\CompanyController::graphAction',
+            ],
             'mautic_company_action' => [
                 'path'       => '/companies/{objectAction}/{objectId}',
                 'controller' => 'Mautic\LeadBundle\Controller\CompanyController::executeAction',
@@ -362,11 +366,6 @@ return [
             ],
         ],
         'other' => [
-            'mautic.lead.doctrine.subscriber' => [
-                'class'     => Mautic\LeadBundle\EventListener\DoctrineSubscriber::class,
-                'tag'       => 'doctrine.event_subscriber',
-                'arguments' => ['monolog.logger.mautic'],
-            ],
             'mautic.validator.leadlistaccess' => [
                 'class'     => Mautic\LeadBundle\Form\Validator\Constraints\LeadListAccessValidator::class,
                 'arguments' => ['mautic.lead.model.list'],
@@ -675,6 +674,7 @@ return [
                     'mautic.lead.model.list',
                     'mautic.user.model.user',
                     'mautic.lead.model.lead',
+                    'mautic.lead.report.dnc_report_service',
                 ],
             ],
             'mautic.lead.factory.device_detector_factory' => [
@@ -802,16 +802,6 @@ return [
                 'class'     => Mautic\LeadBundle\Segment\Query\Filter\ComplexRelationValueFilterQueryBuilder::class,
                 'arguments' => ['mautic.lead.model.random_parameter_name', 'event_dispatcher'],
             ],
-            'mautic.lead.query.builder.special.leadlist' => [
-                'class'     => Mautic\LeadBundle\Segment\Query\Filter\SegmentReferenceFilterQueryBuilder::class,
-                'arguments' => [
-                    'mautic.lead.model.random_parameter_name',
-                    'mautic.lead.repository.lead_segment_query_builder',
-                    'doctrine.orm.entity_manager',
-                    'mautic.lead.model.lead_segment_filter_factory',
-                    'event_dispatcher',
-                ],
-            ],
             'mautic.lead.query.builder.channel_click.value' => [
                 'class'     => Mautic\LeadBundle\Segment\Query\Filter\ChannelClickQueryBuilder::class,
                 'arguments' => [
@@ -846,10 +836,6 @@ return [
                 'class'     => Mautic\LeadBundle\Twig\Helper\DncReasonHelper::class,
                 'arguments' => ['translator'],
                 'alias'     => 'lead_dnc_reason',
-            ],
-            'mautic.helper.segment.count.cache' => [
-                'class'     => Mautic\LeadBundle\Helper\SegmentCountCacheHelper::class,
-                'arguments' => ['mautic.helper.cache_storage'],
             ],
         ],
         'fixtures' => [
@@ -910,6 +896,8 @@ return [
         'parallel_import_limit'               => 1,
         'background_import_if_more_rows_than' => 0,
         'contact_api_count_cache_ttl'         => 5, // in seconds, set null to disable.
+        'delete_segment_in_background'        => false,
+        'segment_api_count_cache_ttl'         => 43200, // 12 hours in seconds
         'contact_columns'                     => [
             '0' => 'name',
             '1' => 'email',
@@ -927,8 +915,10 @@ return [
         'contact_export_in_background'                                                          => true,
         'contact_export_dir'                                                                    => '%mautic.application_dir%/media/files/temp',
         'contact_export_batch_size'                                                             => 20000,
+        'contact_export_limit'                                                                  => 0,
         'contact_allow_multiple_companies'                                                      => true,
         'import_leads_dir'                                                                      => '%kernel.project_dir%/var/import',
         'update_segment_contact_count_in_background'                                            => false,
+        'clear_export_files_after_days'                                                         => 7,
     ],
 ];

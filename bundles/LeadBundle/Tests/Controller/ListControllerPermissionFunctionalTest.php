@@ -331,22 +331,22 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
             'display'   => '',
             'filter'    => [$listId],
         ]];
-        $segmentA  = $this->createSegment('Segment List A', $this->userTwo, $filter);
+        $segmentB  = $this->createSegment('Segment List B', $this->userTwo, $filter);
 
-        $this->assertSame($filter, $segmentA->getFilters(), 'Filters');
+        $this->assertSame($filter, $segmentB->getFilters(), 'Filters');
         $crawler    = $this->client->request(Request::METHOD_POST, '/s/segments/delete/'.$listId);
-        $this->assertStringContainsString("Segment cannot be deleted, it is required by {$segmentA->getName()}.", $crawler->text());
+        $this->assertStringContainsString("The segment {$this->segmentA->getName()} is used in {$segmentB->getName()}, please go back and check segments before deleting", $crawler->text());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $segmentA->setCheckedOut(new \DateTime());
-        $segmentA->setCheckedOutBy($this->userOne);
-        $this->em->persist($segmentA);
+        $segmentB->setCheckedOut(new \DateTime());
+        $segmentB->setCheckedOutBy($this->userOne);
+        $this->em->persist($segmentB);
         $this->em->flush();
 
-        $crawler = $this->client->request(Request::METHOD_POST, '/s/segments/delete/'.$segmentA->getId());
+        $crawler = $this->client->request(Request::METHOD_POST, '/s/segments/delete/'.$segmentB->getId());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $this->assertStringContainsString("{$segmentA->getName()} is currently checked out by", $crawler->html());
+        $this->assertStringContainsString("{$segmentB->getName()} is currently checked out by", $crawler->html());
 
         // As $segmentA is locked, so it will redirect user to its view page.
         $this->assertStringContainsString('/s/segments/1', $this->client->getRequest()->getRequestUri());
@@ -519,7 +519,7 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         // The segment $segmentA is used as filter in $segmentB.
-        $this->assertStringContainsString("{$segmentA->getName()} cannot be deleted, it is required by other segments.", $crawler->text());
+        $this->assertStringContainsString("Segment(s) \"{$segmentA->getName()}\" cannot be deleted because they are in use by other entities. For more details, please attempt to delete each segment individually.", $crawler->text());
     }
 
     public function testViewSegment(): void
@@ -596,6 +596,78 @@ final class ListControllerPermissionFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $this->assertStringContainsString("{$lead->getPrimaryIdentifier()} is currently checked out by", $crawler->html());
+    }
+
+    public function testUserCanPublishOwnSegmentWithPermission(): void
+    {
+        $userDetails = [
+            'user-name'  => 'testuser_publish',
+            'first-name' => 'Test',
+            'last-name'  => 'Publisher',
+            'email'      => 'testuser_publish@example.com',
+            'role'       => [
+                'name'     => 'Can Publish Own Segments',
+                'perm'     => 'lead:lists',
+                'bitwise'  => 382,  // View own&other, Edit own&other, Create, Delete One, Publish Own
+            ],
+        ];
+
+        $user = $this->createUser($userDetails);
+        $this->loginOtherUser($user->getUserIdentifier());
+
+        $segment = $this->createSegment('My Segment to Publish', $user);
+
+        $this->assertTrue($segment->isPublished());
+
+        $this->client->request(
+            'POST',
+            '/s/ajax',
+            [
+                'action' => 'togglePublishStatus',
+                'model'  => 'lead.list',
+                'id'     => $segment->getId(),
+            ]
+        );
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
+        $this->em->refresh($segment);
+        $this->assertFalse($segment->isPublished());
+    }
+
+    public function testUserCannotPublishOwnSegmentWithoutPermission(): void
+    {
+        $userDetails = [
+            'user-name'  => 'testuser_nopublish',
+            'first-name' => 'Test',
+            'last-name'  => 'NoPublisher',
+            'email'      => 'testuser_nopublish@example.com',
+            'role'       => [
+                'name'     => 'No Publish Permission',
+                'perm'     => 'lead:lists',
+                'bitwise'  => 126,  // View own&other, Edit own&other, Create, Delete One
+            ],
+        ];
+
+        $user = $this->createUser($userDetails);
+        $this->loginOtherUser($user->getUserIdentifier());
+
+        $segment = $this->createSegment('Segment Without Publish', $user);
+
+        $this->client->request(
+            'POST',
+            '/s/ajax',
+            [
+                'action' => 'togglePublishStatus',
+                'model'  => 'lead.list',
+                'id'     => $segment->getId(),
+            ]
+        );
+
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+
+        $this->em->refresh($segment);
+        $this->assertTrue($segment->isPublished());
     }
 
     private function loginOtherUser(string $name): void

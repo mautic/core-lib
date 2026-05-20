@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Mautic\CoreBundle\IpLookup\DoNotSellList\MaxMindDoNotSellList;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +17,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  * CLI Command to purge data from Mautic that appears on the
  * MaxMind Do Not Sell list.
  */
+#[AsCommand(
+    name: 'mautic:max-mind:purge',
+    description: 'Purge data connected to MaxMind Do Not Sell list.'
+)]
 class MaxMindDoNotSellPurgeCommand extends Command
 {
     public function __construct(
@@ -28,7 +33,7 @@ class MaxMindDoNotSellPurgeCommand extends Command
 
     protected function configure()
     {
-        $this->setName('mautic:max-mind:purge')
+        $this
             ->addOption(
                 'dry-run',
                 'd',
@@ -111,15 +116,19 @@ EOT
         return $result->fetchAllAssociative();
     }
 
-    private function purgeData(string $contactId, string $ip): bool
+    private function purgeData(string $contactId, string $ip): void
     {
         /** @var Lead $lead */
         $lead       = $this->leadRepository->findOneBy(['id' => $contactId]);
         $matchedIps = array_filter($lead->getIpAddresses()->getValues(), fn ($item): bool => $item->getIpAddress() == $ip);
 
+        if (!$matchedIps) {
+            return;
+        }
+
         // We only purge data from the contact if it matches the data in the IP details
         if ($ipDetails = $matchedIps[0]->getIpDetails()) {
-            return false;
+            return;
         }
 
         $changed = false;
@@ -142,12 +151,6 @@ EOT
 
         if ($changed) {
             $this->leadRepository->saveEntity($lead);
-
-            return true;
         }
-
-        return false;
     }
-
-    protected static $defaultDescription = 'Purge data connected to MaxMind Do Not Sell list.';
 }

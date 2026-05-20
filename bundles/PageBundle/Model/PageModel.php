@@ -4,6 +4,7 @@ namespace Mautic\PageBundle\Model;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManager;
+use GuzzleHttp\Psr7\Query;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\Chart\LineChart;
 use Mautic\CoreBundle\Helper\Chart\PieChart;
@@ -243,7 +244,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
     /**
      * @throws MethodNotAllowedHttpException
      */
-    protected function dispatchEvent($action, &$entity, $isNew = false, Event $event = null): ?Event
+    protected function dispatchEvent($action, &$entity, $isNew = false, ?Event $event = null): ?Event
     {
         if (!$entity instanceof Page) {
             throw new MethodNotAllowedHttpException(['Page']);
@@ -388,17 +389,18 @@ class PageModel extends FormModel implements GlobalSearchInterface
      *
      * @throws \Exception
      */
-    public function hitPage(Redirect|Page|null $page, Request $request, $code = '200', Lead $lead = null, $query = [], \DateTime $dateTime = null): bool
+    public function hitPage(Redirect|Page|null $page, Request $request, $code = '200', ?Lead $lead = null, $query = [], ?\DateTime $dateTime = null): bool
     {
         // Don't skew results with user hits
         if (!$this->security->isAnonymous() || $request->cookies->get('Blocked-Tracking')) {
             return false;
         }
 
-        $ipAddress = $this->ipLookupHelper->getIpAddress();
-        if (!$ipAddress->isTrackable()) {
+        if (!$this->ipLookupHelper->isRequestTrackable()) {
             return false;
         }
+
+        $ipAddress = $this->ipLookupHelper->getIpAddress();
 
         // Process the query
         if (empty($query) || !is_array($query)) {
@@ -407,7 +409,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
 
         $dateTime  = $dateTime ?: new \DateTime();
         $userAgent = $request->server->get('HTTP_USER_AGENT');
-        if (array_key_exists('ct', $query) && array_key_exists('email', $query['ct']) && array_key_exists('stat', $query['ct'])) {
+        if (array_key_exists('ct', $query) && is_array($query['ct']) && array_key_exists('email', $query['ct']) && array_key_exists('stat', $query['ct'])) {
             /** @var Stat $stat */
             $stat = $this->statRepository->findOneBy(['trackingHash' => $query['ct']['stat']]);
             if (null !== $stat && $this->botRatioHelper->isHitByBot($stat, $dateTime, $ipAddress, (string) $userAgent)) {
@@ -465,12 +467,11 @@ class PageModel extends FormModel implements GlobalSearchInterface
         } catch (\Exception $exception) {
             if (MAUTIC_ENV !== 'prod') {
                 throw $exception;
-            } else {
-                $this->logger->error(
-                    $exception->getMessage(),
-                    ['exception' => $exception]
-                );
             }
+            $this->logger->error(
+                $exception->getMessage(),
+                ['exception' => $exception]
+            );
         }
 
         // save hit to the cookie to use to update the exit time
@@ -514,7 +515,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         Lead $lead,
         bool $trackingNewlyGenerated,
         bool $activeRequest = true,
-        \DateTimeInterface $hitDate = null,
+        ?\DateTimeInterface $hitDate = null,
     ): void {
         // Store Page/Redirect association
         if ($page) {
@@ -635,12 +636,11 @@ class PageModel extends FormModel implements GlobalSearchInterface
                 } catch (\Exception $exception) {
                     if (MAUTIC_ENV !== 'prod') {
                         throw $exception;
-                    } else {
-                        $this->logger->error(
-                            $exception->getMessage(),
-                            ['exception' => $exception]
-                        );
                     }
+                    $this->logger->error(
+                        $exception->getMessage(),
+                        ['exception' => $exception]
+                    );
                 }
             }
         }
@@ -684,12 +684,11 @@ class PageModel extends FormModel implements GlobalSearchInterface
         } catch (\Exception $exception) {
             if (MAUTIC_ENV === 'dev') {
                 throw $exception;
-            } else {
-                $this->logger->error(
-                    $exception->getMessage(),
-                    ['exception' => $exception]
-                );
             }
+            $this->logger->error(
+                $exception->getMessage(),
+                ['exception' => $exception]
+            );
         }
 
         if ($this->dispatcher->hasListeners(PageEvents::PAGE_ON_HIT)) {
@@ -754,7 +753,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
      *
      * @return array
      */
-    public function getBuilderComponents(Page $page = null, $requestedComponents = 'all', string $tokenFilter = '')
+    public function getBuilderComponents(?Page $page = null, $requestedComponents = 'all', string $tokenFilter = '')
     {
         $event = new PageBuilderEvent($this->translator, $page, $requestedComponents, $tokenFilter);
         $this->dispatcher->dispatch($event, PageEvents::PAGE_ON_BUILD);
@@ -767,7 +766,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
      *
      * @return mixed[]
      */
-    public function getBounces(Page $page, \DateTime $fromDate = null): array
+    public function getBounces(Page $page, ?\DateTime $fromDate = null): array
     {
         return $this->getHitRepository()->getBounces($page->getId(), $fromDate);
     }
@@ -785,10 +784,10 @@ class PageModel extends FormModel implements GlobalSearchInterface
     /**
      * Get line chart data of hits.
      *
-     * @param char   $unit          {@link php.net/manual/en/function.date.php#refsect1-function.date-parameters}
-     * @param string $dateFormat
-     * @param array  $filter
-     * @param bool   $canViewOthers
+     * @param ?string $unit          {@link php.net/manual/en/function.date.php#refsect1-function.date-parameters}
+     * @param string  $dateFormat
+     * @param array   $filter
+     * @param bool    $canViewOthers
      */
     public function getHitsLineChartData($unit, \DateTime $dateFrom, \DateTime $dateTo, $dateFormat = null, $filter = [], $canViewOthers = true): array
     {
@@ -965,7 +964,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
      * @param array $filters
      * @param bool  $canViewOthers
      */
-    public function getPopularPages($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $canViewOthers = true): array
+    public function getPopularPages($limit = 10, ?\DateTime $dateFrom = null, ?\DateTime $dateTo = null, $filters = [], $canViewOthers = true): array
     {
         $q = $this->em->getConnection()->createQueryBuilder();
         $q->select('COUNT(DISTINCT t.id) AS hits, p.id, p.title, p.alias')
@@ -994,7 +993,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
      * @param array $filters
      * @param bool  $canViewOthers
      */
-    public function getPageList($limit = 10, \DateTime $dateFrom = null, \DateTime $dateTo = null, $filters = [], $canViewOthers = true): array
+    public function getPageList($limit = 10, ?\DateTime $dateFrom = null, ?\DateTime $dateTo = null, $filters = [], $canViewOthers = true): array
     {
         $q = $this->em->getConnection()->createQueryBuilder();
         $q->select('t.id, t.title AS name, t.date_added, t.date_modified')
@@ -1018,11 +1017,15 @@ class PageModel extends FormModel implements GlobalSearchInterface
      */
     private function getQueryFromUrl(string $pageUrl): array
     {
-        $query             = [];
-        $urlQuery          = parse_url($pageUrl, PHP_URL_QUERY);
+        $query    = [];
+        $urlQuery = parse_url($pageUrl, PHP_URL_QUERY);
+
+        if (empty($urlQuery)) {
+            return $query;
+        }
 
         if (is_string($urlQuery)) {
-            parse_str($urlQuery, $urlQueryArray);
+            $urlQueryArray = Query::parse($urlQuery);
 
             foreach ($urlQueryArray as $key => $value) {
                 if (is_string($value)) {
