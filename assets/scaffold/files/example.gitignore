@@ -27,9 +27,6 @@
 /var/bootstrap*
 
 /app/bundles/CoreBundle/Assets/pictograms/
-/assets/build/*
-/var/dart-sass/*
-/var/sass/*
 
 /app/cache/*
 !/app/cache/.gitkeep
@@ -67,6 +64,9 @@
 !/bin/console
 
 /assets/ckeditor/build/*
+/assets/build/*
+/var/dart-sass/*
+/var/sass/*
 
 /bundles
 /node_modules
