@@ -3,9 +3,6 @@
   "version": "0.0.0",
   "description": "Mautic Open Source Distribution",
   "devDependencies": {
-    "grunt": "^1.6.1",
-    "grunt-contrib-less": "^3.0.0",
-    "grunt-contrib-watch": "^1.1.0",
     "patch-package": "^8.0.1",
     "webpack-cli": "^5.1.4"
   },

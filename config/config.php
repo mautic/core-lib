@@ -47,6 +47,20 @@ $container->loadFromExtension('framework', [
     'assets' => [
         'base_path' => './',
     ],
+    'asset_mapper' => [
+        'paths' => [
+            '%kernel.project_dir%/assets'                                        => '',
+            '%kernel.project_dir%/vendor/twbs/bootstrap-sass/assets/javascripts' => 'vendor/bootstrap',
+        ],
+        'public_prefix'       => '/assets/build/',
+        'missing_import_mode' => 'strict',
+        'excluded_patterns'   => [
+            '*/assets/build/*',
+            '*/assets/build/**',
+            '*/assets/styles/_*.scss',
+            '*/assets/styles/**/_*.scss',
+        ],
+    ],
     'secret' => '%mautic.secret_key%',
     'router' => [
         'resource'            => '%mautic.application_dir%/app/config/routing.php',
@@ -105,6 +119,15 @@ $container->loadFromExtension('framework', [
     /*'validation'           => array(
         'static_method' => array('loadValidatorMetadata')
     )*/
+]);
+
+$container->loadFromExtension('symfonycasts_sass', [
+    'root_sass'    => [
+        '%kernel.project_dir%/assets/styles/app.scss',
+    ],
+    'sass_options' => [
+        'source_map' => false,
+    ],
 ]);
 
 $container->setParameter('mautic.famework.csrf_protection', true);
