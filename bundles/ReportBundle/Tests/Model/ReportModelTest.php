@@ -117,6 +117,17 @@ class ReportModelTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([''], $result['orderBy']);
     }
 
+    public function testEmptyOrderColumnIsRemoved(): void
+    {
+        $allowedColumns          = new \stdClass();
+        $allowedColumns->choices = ['read_ratio' => 'Read ratio'];
+
+        $result = $this->invokeGetOrderBySanitized(['   '], $allowedColumns);
+
+        $this->assertFalse($result['hasOrderBy']);
+        $this->assertSame([''], $result['orderBy']);
+    }
+
     /**
      * @param array<int, string> $orderBys
      *
