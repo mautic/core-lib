@@ -335,7 +335,7 @@
 
         &::before {
           content: "\eb98";
-          font-family: 'remixicon' !important;
+          font-family: 'remixicon', sans-serif !important;
           font-size: 14px;
           color: var(--tag-color-warm-gray);
         }

@@ -57,22 +57,6 @@
 
     &.tile--expandable,
     &.tile--expandable--interactive {
-        padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 16px);
-    }
-
-    &.tile--expandable--interactive {
-        &:hover { 
-            background: var(--layer); 
-            cursor: default;
-        }
-    }
-
-    &.tile--expandable {
-        padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 16px);    
-    }
-
-    &.tile--expandable,
-    &.tile--expandable--interactive {
         padding-bottom: calc(var(--layout-density-padding-inline-local)* 2 + 1rem);    
     }
 
@@ -141,15 +125,11 @@
     font-family: inherit;
     font-size: 100%;
     vertical-align: baseline;
-    display: inline-block;
-    padding: 0;
-    border: 0;
     -webkit-appearance: none;
     appearance: none;
     background: none;
     cursor: pointer;
     text-align: start;
-    inline-size: 100%;
     position: absolute;
     display: flex;
     align-items: center;

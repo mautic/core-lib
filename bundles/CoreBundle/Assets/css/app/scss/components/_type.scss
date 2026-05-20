@@ -366,7 +366,7 @@ blockquote {
     position: absolute;
     top: -1px;
     margin-left: -25px;
-    font-family: "remixicon";
+    font-family: "remixicon", sans-serif;
     font-size: 18px;
     content: "\EC51";
     color: $gray-lighter;
@@ -376,7 +376,7 @@ blockquote {
     position: absolute;
     bottom: -1px;
     margin-left: 5px;
-    font-family: "remixicon";
+    font-family: "remixicon", sans-serif;
     font-size: 18px;
     content: "\EC52";
     color: $gray-lighter;

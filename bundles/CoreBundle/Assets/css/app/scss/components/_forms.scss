@@ -399,15 +399,13 @@ input[type=file] {@include outline();}
     width: 18px;
     flex-shrink: 0;
     vertical-align: top;
-    margin-right: 4px;
+    margin: 0 4px 0 0;
     appearance: none;
     -webkit-appearance: none;
     background-color: transparent;
-    margin: 0;
     border-radius: 50%;
     border: 1px solid var(--icon-primary, #161616);
     outline-offset: -1px;
-    margin-right: 4px;
     @include transition(var(--transition-all-productive));
     @include outline-noff();
 

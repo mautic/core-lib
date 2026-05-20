@@ -9,7 +9,6 @@
   cursor: pointer;
   @include user-select(none);
   -webkit-tap-highlight-color: transparent;
-  tap-highlight-color: transparent;
 
   input {
     position: absolute;

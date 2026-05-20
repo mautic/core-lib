@@ -45,7 +45,7 @@
   &.alert-warning,
   &.alert-danger {
     &:not([class*="col-"]):before {
-      font-family: 'remixicon';
+      font-family: 'remixicon', sans-serif;
       display: inline-flex;
       position: relative;
       font-size: 22px;
