@@ -122,18 +122,26 @@ final class EmailListTypeFunctionalTest extends MauticMysqlTestCase
 
         $items = $response[0]['items'] ?? [];
 
-        $expectedNamesWithId = [];
-        foreach ($items as $id => $name) {
-            $namePart = preg_replace('/\s+\(\d+\)$/', '', $name);
-            if (in_array($namePart, $expectedNames)) {
-                $expectedNamesWithId[] = $name;
-            }
+        // Extract names without IDs from response
+        $actualNamesOnly = [];
+        foreach ($items as $name) {
+            $namePart          = preg_replace('/\s+\(\d+\)$/', '', $name);
+            $actualNamesOnly[] = $namePart;
         }
 
-        $actualNames = array_values($items);
-        sort($actualNames);
-        sort($expectedNamesWithId);
+        sort($actualNamesOnly);
+        sort($expectedNames);
 
-        $this->assertSame($expectedNamesWithId, $actualNames);
+        // Verify correct emails are returned
+        $this->assertSame($expectedNames, $actualNamesOnly);
+
+        // Verify format is "Name (ID)"
+        foreach ($items as $formattedName) {
+            $this->assertMatchesRegularExpression(
+                '/^.+\s+\(\d+\)$/',
+                $formattedName,
+                'Email name should be formatted as "Name (ID)"'
+            );
+        }
     }
 }
