@@ -2955,7 +2955,6 @@ Mautic.initializeCampaignCanvasPanning = function () {
 
         builderContent.scrollLeft(startScrollLeft - deltaX);
         builderContent.scrollTop(startScrollTop - deltaY);
-        Mautic.campaignBuilderInstance.repaintEverything();
         event.preventDefault();
     });
 
@@ -3007,54 +3006,8 @@ Mautic.fitCampaignToView = function (animate) {
 
     const maxScrollLeft = Math.max(0, canvas.width() - contentWidth);
     const maxScrollTop = Math.max(0, canvas.height() - contentHeight);
-    const canvasWidth = canvas.width();
-    const canvasHeight = canvas.height();
-    const canvasCenterX = canvasWidth / 2;
-    const canvasCenterY = canvasHeight / 2;
-    let shiftX = canvasCenterX - (minX + (campaignWidth / 2));
-    let shiftY = canvasCenterY - (minY + (campaignHeight / 2));
-
-    if (minX + shiftX < 0) {
-        shiftX = -minX;
-    } else if (maxX + shiftX > canvasWidth) {
-        shiftX = canvasWidth - maxX;
-    }
-
-    if (minY + shiftY < 0) {
-        shiftY = -minY;
-    } else if (maxY + shiftY > canvasHeight) {
-        shiftY = canvasHeight - maxY;
-    }
-
-    let scrollLeft = canvasCenterX - (contentWidth / 2);
-    let scrollTop = canvasCenterY - (contentHeight / 2);
-
-    if (shiftX !== 0 || shiftY !== 0) {
-        nodes.each(function () {
-            const node = mQuery(this);
-            const position = node.position();
-            const left = position.left + shiftX;
-            const top = position.top + shiftY;
-
-            node.css({
-                left: left + 'px',
-                top: top + 'px'
-            });
-
-            Mautic.campaignBuilderEventPositions[node.attr('id')] = {
-                'left': Math.round(left),
-                'top': Math.round(top)
-            };
-        });
-
-        minX += shiftX;
-        minY += shiftY;
-        maxX += shiftX;
-        maxY += shiftY;
-        scrollLeft = minX + ((maxX - minX) / 2) - (contentWidth / 2);
-        scrollTop = minY + ((maxY - minY) / 2) - (contentHeight / 2);
-        Mautic.campaignBuilderInstance.repaintEverything();
-    }
+    const scrollLeft = minX + (campaignWidth / 2) - (contentWidth / 2);
+    const scrollTop = minY + (campaignHeight / 2) - (contentHeight / 2);
 
     const targetScroll = {
         scrollLeft: Math.max(0, Math.min(maxScrollLeft, scrollLeft)),

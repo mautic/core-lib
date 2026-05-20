@@ -327,8 +327,14 @@
 }
 
 .campaign-builder.live .builder-content {
-    overflow: hidden;
+    overflow: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     cursor: grab;
+}
+
+.campaign-builder.live .builder-content::-webkit-scrollbar {
+    display: none;
 }
 
 .campaign-builder.live .builder-content.campaign-canvas-panning {
