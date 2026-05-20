@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 .label {
-  --layout-size-height-local: unquote("clamp(max(var(--layout-size-height-min), var(--layout-size-height-sm)), var(--layout-size-height, var(--layout-size-height-md)), min(var(--layout-size-height-max), var(--layout-size-height-lg)))");
+  --layout-size-height-local: var(--layout-size-height-md);
   --layout-size-height-sm: 18px;
   --layout-size-height-md: 24px;
   --layout-size-height-lg: 32px;
@@ -21,23 +21,28 @@
   align-items: center;
   transition: var(--transition-all-productive);
   max-width: 100%;
-  @include text-overflow();
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   // Exception for category color labels
   &.label-category,
   &.label-icon {
     min-width: auto;
-    aspect-ratio: 1/1;
+    aspect-ratio: 1 / 1;
   }
 
   // Add hover effects, but only for links
-  a#{&}, > a {
+  &[href],
+  > a {
     color: inherit;
-    @include text-overflow();
-  &:hover,
-  &:focus {
-    text-decoration: none;
-    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    &:hover,
+    &:focus {
+      text-decoration: none;
+      cursor: pointer;
     }
   }
 
@@ -51,9 +56,18 @@
   }
 
   // Sizes
-  &[size="sm"] { --layout-size-height: var(--layout-size-height-sm); padding: 0 var(--spacing-03); }
-  &[size="md"] { --layout-size-height: var(--layout-size-height-md); padding: 0 var(--spacing-03); }
-  &[size="lg"] { --layout-size-height: var(--layout-size-height-lg); padding: 0 var(--spacing-04); }
+  &[size="sm"] {
+    --layout-size-height-local: var(--layout-size-height-sm);
+    padding: 0 var(--spacing-03);
+  }
+  &[size="md"] {
+    --layout-size-height-local: var(--layout-size-height-md);
+    padding: 0 var(--spacing-03);
+  }
+  &[size="lg"] {
+    --layout-size-height-local: var(--layout-size-height-lg);
+    padding: 0 var(--spacing-04);
+  }
 
   // Icons
   i {
@@ -73,7 +87,7 @@
     padding: 0;
     border: 0;
     border-radius: 50%;
-    margin: 0 0 0 .125rem;
+    margin: 0 0 0 0.125rem;
     background-color: rgba(0, 0, 0, 0);
     block-size: var(--layout-size-height-local);
     color: currentColor;
@@ -84,7 +98,7 @@
 }
 
 .label__divider {
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  box-shadow: 0px 6px 24px 0px rgba(0, 0, 0, 0.05), 0px 0px 0px 1px rgba(0, 0, 0, 0.08);
   margin: 5px;
 }
 
@@ -146,16 +160,25 @@
   color: var(--label-color-primary);
 }
 
-.label-brand {
-  background-color: var(--label-background-brand);
-  color: var(--label-color-brand);
+.label-secondary {
+  background-color: var(--label-background-secondary);
+  color: var(--label-color-secondary);
+}
+
+.label-tertiary {
+  background-color: var(--label-background-tertiary);
+  color: var(--label-color-tertiary);
 }
 
 .label-outline,
 .label-selectable {
   background-color: transparent;
   color: var(--text-primary);
-  &, &:hover {border: 1px solid var(--background-inverse);}
+  border: 1px solid var(--background-inverse);
+
+  &:hover {
+    border: 1px solid var(--background-inverse);
+  }
 }
 
 .label-selectable.active {
@@ -169,70 +192,102 @@
   color: var(--text-inverse);
 }
 
-
 // Interactive
 
-.label[href], .label:has(> a) {
+.label[href],
+.label:has(> a) {
   border: 1px solid #00000017;
+
   &.label-gray {
     border: 1px solid var(--label-border-gray);
     color: var(--label-color-gray);
-    &:hover { background-color: var(--label-background-hover-gray); }
+    &:hover {
+      background-color: var(--label-background-hover-gray);
+    }
   }
   &.label-cool-gray {
     border: 1px solid var(--label-border-cool-gray);
     color: var(--label-color-cool-gray);
-    &:hover { background-color: var(--label-background-hover-cool-gray); }
+    &:hover {
+      background-color: var(--label-background-hover-cool-gray);
+    }
   }
   &.label-warm-gray {
     border: 1px solid var(--label-border-warm-gray);
     color: var(--label-color-warm-gray);
-    &:hover { background-color: var(--label-background-hover-warm-gray); }
+    &:hover {
+      background-color: var(--label-background-hover-warm-gray);
+    }
   }
   &.label-red {
     border: 1px solid var(--label-border-red);
     color: var(--label-color-red);
-    &:hover { background-color: var(--label-background-hover-red); }
+    &:hover {
+      background-color: var(--label-background-hover-red);
+    }
   }
   &.label-magenta {
     border: 1px solid var(--label-border-magenta);
     color: var(--label-color-magenta);
-    &:hover { background-color: var(--label-background-hover-magenta); }
+    &:hover {
+      background-color: var(--label-background-hover-magenta);
+    }
   }
   &.label-purple {
     border: 1px solid var(--label-border-purple);
     color: var(--label-color-purple);
-    &:hover { background-color: var(--label-background-hover-purple); }
+    &:hover {
+      background-color: var(--label-background-hover-purple);
+    }
   }
   &.label-blue {
     border: 1px solid var(--label-border-blue);
     color: var(--label-color-blue);
-    &:hover { background-color: var(--label-background-hover-blue); }
+    &:hover {
+      background-color: var(--label-background-hover-blue);
+    }
   }
   &.label-cyan {
     border: 1px solid var(--label-border-cyan);
     color: var(--label-color-cyan);
-    &:hover { background-color: var(--label-background-hover-cyan); }
+    &:hover {
+      background-color: var(--label-background-hover-cyan);
+    }
   }
   &.label-teal {
     border: 1px solid var(--label-border-teal);
     color: var(--label-color-teal);
-    &:hover { background-color: var(--label-background-hover-teal); }
+    &:hover {
+      background-color: var(--label-background-hover-teal);
+    }
   }
   &.label-green {
     border: 1px solid var(--label-border-green);
     color: var(--label-color-green);
-    &:hover { background-color: var(--label-background-hover-green); }
+    &:hover {
+      background-color: var(--label-background-hover-green);
+    }
   }
   &.label-primary {
     border: 1px solid var(--label-border-primary);
     color: var(--label-color-primary);
-    &:hover { background-color: var(--label-background-hover-primary); }
+    &:hover {
+      background-color: var(--label-background-hover-primary);
+    }
   }
-  &.label-brand {
-    border: 1px solid var(--label-border-brand);
-    color: var(--label-color-brand);
-    &:hover { background-color: var(--label-background-hover-brand); }
+  &.label-secondary {
+    border: 1px solid var(--label-border-secondary);
+    color: var(--label-color-secondary);
+    &:hover {
+      background-color: var(--label-background-hover-secondary);
+    }
+  }
+  &.label-tertiary {
+    border: 1px solid var(--label-border-tertiary);
+    color: var(--label-color-tertiary);
+    &:hover {
+      background-color: var(--label-background-hover-tertiary);
+    }
   }
 }
 
