@@ -1,6 +1,5 @@
 .ms-container{
   background: transparent url('libraries/multiselect/switch.png') no-repeat 50% 50%;
-  /*width: 370px;*/
 }
 
 .ms-container:after{
@@ -83,7 +82,7 @@
 .ms-container .ms-selectable li.disabled,
 .ms-container .ms-selection li.disabled{
   background-color: #eee;
-  color: #aaa;
+  color: #525252;
   cursor: text;
 }
 

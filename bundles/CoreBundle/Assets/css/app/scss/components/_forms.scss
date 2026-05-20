@@ -443,6 +443,13 @@ input[type=file] {@include outline();}
       position: absolute;
       z-index: 1;
     }
+
+    &:checked,
+    &:focus {
+      + label {
+        outline: 2px solid var(--focus);
+      }
+    }
   }
   label {
     outline: 2px solid transparent;
@@ -451,14 +458,6 @@ input[type=file] {@include outline();}
     cursor: pointer;
     display: block;
     transition: var(--transition-all-productive);
-  }
-  input[type="radio"] {
-    &:checked,
-    &:focus {
-      + label {
-        outline: 2px solid var(--focus);
-      }
-    }
   }
 }
 

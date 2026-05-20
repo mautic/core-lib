@@ -272,9 +272,6 @@
   height: var(--btn-height);
   line-height: var(--btn-line-height);
   padding: 0 var(--spacing-05);
-  &:hover,
-  &:focus { text-decoration: none; }
-
   span {
     position: relative;
   }

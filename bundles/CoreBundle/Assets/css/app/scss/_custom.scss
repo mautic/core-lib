@@ -635,6 +635,7 @@ code:hover > .copy-icon {
   -o-transform: scale(0.95);
   transform: scale(0.95);
   @include transition(transform var(--duration-productive) var(--easing-standard-productive));
+  animation: modal-fade var(--duration-productive) var(--easing-standard-productive);
 }
 
 .modal.in .modal-dialog {
@@ -647,10 +648,6 @@ code:hover > .copy-icon {
 @keyframes modal-fade {
   0% { opacity: 0; transform: scale(0.95); }
   100% { opacity: 1; transform: scale(1); }
-}
-
-.modal.fade .modal-dialog {
-  animation: modal-fade var(--duration-productive) var(--easing-standard-productive);
 }
 
 .code-snippet {

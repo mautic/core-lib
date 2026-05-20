@@ -14,7 +14,7 @@ span.emoji-outer {
 
 span.emoji-inner {
     background: url(libraries/emoji/emoji.png);
-    /*background-size: 3500% !important; */
+    background-size: 4100%;
     display: -moz-inline-box;
     display: inline-block;
     text-indent: -9999px;
@@ -24,7 +24,6 @@ span.emoji-inner {
     *vertical-align: auto;
     *zoom: 1;
 }
-span.emoji-inner { background-size: 4100%; }
 .emojia9 { background-position: 0% 0% !important; }
 .emojiae { background-position: 0% 2.5% !important; }
 .emoji203c { background-position: 0% 5% !important; }

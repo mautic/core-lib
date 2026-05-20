@@ -299,9 +299,6 @@
         }
       }
 
-      .default {
-        //color: #999;
-      }
     }
 
     .search-choice {
@@ -512,10 +509,9 @@
   }
 }
 
-.chosen-container {
-  .default, .chosen-default {
-    color: var(--text-secondary);
-  }
+.chosen-container .default,
+.chosen-container .chosen-default {
+  color: var(--text-secondary);
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 2dppx) {
@@ -530,11 +526,6 @@
     background-size: 52px 37px !important;
     background-repeat: no-repeat !important;
   }
-}
-
-.has-error select.form-control + .chosen-container.chosen-container-single .chosen-single,
-.has-error select.form-control + .chosen-container-multi .chosen-choices {
-  border-color: $state-danger-text;
 }
 
 .has-error select.form-control + .chosen-container.chosen-container-single .chosen-single,

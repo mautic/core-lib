@@ -1449,7 +1449,7 @@ $accent24: #f14231;
 $accent25: #5c1c51;
 
 // Making available out of the app accent color for preview in user settings
-:root {
+html:root {
     --accent01: #{$primary-color};
     --accent02: #{$accent02};
     --accent03: #{$accent03};

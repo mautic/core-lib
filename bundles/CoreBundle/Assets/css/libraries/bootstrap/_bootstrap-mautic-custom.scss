@@ -5,9 +5,6 @@
   }
 
   @include alert-variant($alert-mautic-bg, $alert-mautic-border, $alert-mautic-text);
-}
-
-.alert-mautic {
   @include alert-styles($alert-mautic-bg);
 }
 

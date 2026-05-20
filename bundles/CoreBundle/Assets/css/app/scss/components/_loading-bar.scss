@@ -20,8 +20,7 @@
 }
 
 @include lh-keyframes(before-anim) {
-  0% { width: 0%; left: 0%; }
-  0% { width: 60%; }
+  0% { width: 60%; left: 0%; }
   19.99% { width: 40%; left: 100%; }
   20% { width: 0%; left: 0%; }
   25% { width: 10%; left: 10%; }
@@ -39,7 +38,6 @@
 }
 
 .loading-bar, .canvas-loading-bar, .modal-loading-bar {
-  //display: none;
   opacity: 0;
   position: absolute;
   bottom: -1px;

@@ -4,14 +4,6 @@
 
 // Base styles
 // -------------------------
-.input-group {
-  .input-group-btn {
-    + .form-control {
-      margin-left: -1px;
-    }
-  }
-}
-
 .input-group-addon {
   border-width: var(--border-bottom);
   border-radius: var(--border-radius-sm);
@@ -37,6 +29,10 @@
 
 .input-group {
   .input-group-btn {
+    + .form-control {
+      margin-left: -1px;
+    }
+
     .btn.btn-ghost {
       width: 100%;
       background-color: var(--field);

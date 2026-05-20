@@ -26,15 +26,12 @@
 
 #app-content {
   position: relative;
-  //z-index: $content-zindex;
-  //min-height: 100%;
   @include clearfix();
   @include transition(all .3s ease);
 
   // content body
   // -------------------------
   > .content-body {
-    //position: relative;
     width: 100%;
     float: left;
 

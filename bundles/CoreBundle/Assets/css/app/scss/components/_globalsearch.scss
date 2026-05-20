@@ -16,7 +16,6 @@
 .gsearch--search-magnifier {
     color: var(--interactive);
 }
-.gsearch--field-addon__icon {}
 .gsearch--field__input {
     background-color: transparent;
     border-width: 0;
@@ -24,13 +23,9 @@
     &:hover { background-color: transparent; }
 }
 
-.gsearch--field-addon {}
-
 .gsearch--interaction-helper {
     background-color: var(--primary-20);
 }
-.gsearch--interaction-navigate {}
-.gsearch--interaction-close {}
 
 .gsearch--results {
     overflow: hidden;
