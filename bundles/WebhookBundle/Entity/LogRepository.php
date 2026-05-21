@@ -38,8 +38,6 @@ class LogRepository extends CommonRepository
      *
      * @param int $webhookId
      * @param int $logMax    how many recent logs should remain, the rest will be deleted
-     *
-     * @return int
      */
     public function removeOldLogs($webhookId, $logMax): int
     {

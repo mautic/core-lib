@@ -369,7 +369,7 @@ class EmailRepository extends CommonRepository
         $maxDate,
         $variantIds = null,
         $listIds = null,
-    ) {
+    ): array {
         $countOnly = false;
         $limit     = null;
 

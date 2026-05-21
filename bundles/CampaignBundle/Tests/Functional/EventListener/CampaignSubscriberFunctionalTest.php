@@ -9,10 +9,10 @@ use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
 use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\EventListener\CampaignSubscriber;
+use Mautic\LeadBundle\Model\FieldModel;
 
 final class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
 {
