@@ -88,9 +88,9 @@ class MessageQueueRepository extends CommonRepository
                     'ids'     => $ids,
                 ],
                 [
-                    Types::STRING,
-                    Types::STRING,
-                    ArrayParameterType::INTEGER,
+                    'channel' => Types::STRING,
+                    'status'  => Types::STRING,
+                    'ids'     => ArrayParameterType::INTEGER,
                 ]
             )->executeQuery()
             ->fetchOne();
