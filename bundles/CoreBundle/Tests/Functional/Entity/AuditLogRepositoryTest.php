@@ -15,9 +15,8 @@ final class AuditLogRepositoryTest extends MauticMysqlTestCase
 {
     /**
      * @param mixed[] $filters
-     *
-     * @dataProvider dataForGetAuditLogsForLeads
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataForGetAuditLogsForLeads')]
     public function testGetAuditLogsForSingleLead(array $filters, int $expectedCount): void
     {
         /** @var LeadModel $contactModel */

@@ -112,9 +112,8 @@ class LeadRepositoryFunctionalTest extends MauticMysqlTestCase
 
     /**
      * @param mixed[] $contactIds
-     *
-     * @dataProvider dataForGetContacts
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dataForGetContacts')]
     public function testGetContacts(array $contactIds, bool $includeLead, int $expectedCount): void
     {
         if ($includeLead) {

@@ -56,7 +56,7 @@ final class AssetDownloadFunctionalTest extends MauticMysqlTestCase
 
         $countByPages = $downloadRepo->getDownloadCountsByPage([$pageA->getId(), $pageB->getId()]);
 
-        $this->assertSame(2, count($countByPages));
+        $this->assertCount(2, $countByPages);
     }
 
     public function testDownloadByEmail(): void
@@ -85,7 +85,7 @@ final class AssetDownloadFunctionalTest extends MauticMysqlTestCase
 
         $countByPages = $downloadRepo->getDownloadCountsByEmail([$emailA->getId(), $emailB->getId()]);
 
-        $this->assertSame(2, count($countByPages));
+        $this->assertCount(2, $countByPages);
     }
 
     private function createAsset(): Asset

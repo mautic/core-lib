@@ -18,7 +18,7 @@ use Mautic\PointBundle\Model\PointModel;
 
 final class LeadSubscriberTest extends MauticMysqlTestCase
 {
-    private ?PointModel $model;
+    private PointModel $model;
 
     protected function setUp(): void
     {

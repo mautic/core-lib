@@ -41,10 +41,10 @@ final class DoNotContactFunctionalTest extends MauticMysqlTestCase
         $this->assertSame(1, $dncRepo->getCount(null, $dnc1->getChannelId()));
         $this->assertSame(2, $dncRepo->getCount(null, [$dnc1->getChannelId(), $dnc2->getChannelId()]));
 
-        $this->assertEmpty($dncRepo->getCount(null, null, '', [$segment->getId()]));
-        $this->assertEmpty($dncRepo->getCount(null, null, '', $segment->getId()));
-        $this->assertEmpty($dncRepo->getCount(null, $dnc1->getChannelId(), '', true));
-        $this->assertEmpty($dncRepo->getCount(null, $dnc1->getChannelId(), '', [$segment->getId()], null, true));
+        $this->assertEmpty($dncRepo->getCount(null, null, null, [$segment->getId()]));
+        $this->assertEmpty($dncRepo->getCount(null, null, null, $segment->getId()));
+        $this->assertEmpty($dncRepo->getCount(null, $dnc1->getChannelId(), null, true));
+        $this->assertEmpty($dncRepo->getCount(null, $dnc1->getChannelId(), null, [$segment->getId()], null, true));
     }
 
     private function createSegment(): LeadList

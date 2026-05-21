@@ -224,11 +224,11 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
             // rewrite query to use expression builder
             $alias     = $model->getRepository()->getTableAlias();
             $expr      = new ExpressionBuilder($this->connection);
-            $composite = $expr->andX();
+            $composite = $expr->and();
 
             $limit = 100;
             if ($data) {
-                $composite->add(
+                $composite = $composite->with(
                     $expr->in($alias.'.id', ':dataIds')
                 );
                 $parameters['dataIds'] = $data;

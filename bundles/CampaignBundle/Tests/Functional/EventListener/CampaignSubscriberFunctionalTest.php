@@ -9,7 +9,7 @@ use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
 use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\FormBundle\Model\FieldModel;
+use Mautic\LeadBundle\Model\FieldModel;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\EventListener\CampaignSubscriber;
@@ -66,8 +66,10 @@ final class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
             'eventSettings'   => [],
         ];
 
+        /** @phpstan-ignore new.deprecated */
         $campaignExecutionEvent = new CampaignExecutionEvent($eventProperties, false);
         $result                 = $this->campaignSubscriber->onCampaignTriggerCondition($campaignExecutionEvent);
+        /** @phpstan-ignore classConstant.deprecatedClass */
         $this->assertInstanceOf(CampaignExecutionEvent::class, $result);
         $this->assertTrue($result->getResult());
     }

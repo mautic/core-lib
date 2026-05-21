@@ -150,7 +150,7 @@ trait FormSubmissionTrait
     {
         $crawler     = $this->client->request(Request::METHOD_GET, "/form/{$formId}");
         $formCrawler = $crawler->filter('form[id=mauticform_'.$formAlias.']');
-        $this::assertSame(1, $formCrawler->count(), $this->client->getResponse()->getContent());
+        $this::assertCount(1, $formCrawler, $this->client->getResponse()->getContent());
         $form = $formCrawler->form();
         $form->setValues($values);
         $this->client->submit($form);

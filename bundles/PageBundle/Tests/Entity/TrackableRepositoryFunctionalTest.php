@@ -15,7 +15,7 @@ use Mautic\PageBundle\Model\TrackableModel;
 
 final class TrackableRepositoryFunctionalTest extends MauticMysqlTestCase
 {
-    private ?TrackableModel $model;
+    private TrackableModel $model;
 
     protected function setUp(): void
     {

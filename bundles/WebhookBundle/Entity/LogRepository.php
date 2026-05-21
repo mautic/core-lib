@@ -41,11 +41,11 @@ class LogRepository extends CommonRepository
      *
      * @return int
      */
-    public function removeOldLogs($webhookId, $logMax)
+    public function removeOldLogs($webhookId, $logMax): int
     {
         // if the hook was deleted then return a count of 0
         if (!$webhookId) {
-            return false;
+            return 0;
         }
 
         $qb = $this->_em->getConnection()->createQueryBuilder();
@@ -66,11 +66,13 @@ class LogRepository extends CommonRepository
 
             $qb = $this->_em->getConnection()->createQueryBuilder();
 
-            $qb->delete(MAUTIC_TABLE_PREFIX.'webhook_logs')
+            return $qb->delete(MAUTIC_TABLE_PREFIX.'webhook_logs')
                 ->where($qb->expr()->in('id', ':id'))
                 ->setParameter('id', $id, ArrayParameterType::INTEGER)
                 ->executeStatement();
         }
+
+        return 0;
     }
 
     /**

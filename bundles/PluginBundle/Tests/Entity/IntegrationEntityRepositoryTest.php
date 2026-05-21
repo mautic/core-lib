@@ -90,7 +90,7 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
             [99999]
         );
 
-        $this->assertSame(1, count($results[self::INTEGRATION_ENTITY]), 'Excluding the random integration id.');
+        $this->assertCount(1, $results[self::INTEGRATION_ENTITY], 'Excluding the random integration id.');
 
         $results = $this->integrationEntityRepository->findLeadsToUpdate(
             self::INTEGRATION,
@@ -103,7 +103,7 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
             [$integrationEntityId]
         );
 
-        $this->assertSame(0, count($results[self::INTEGRATION_ENTITY]), 'Excluding the existing integration id.');
+        $this->assertCount(0, $results[self::INTEGRATION_ENTITY], 'Excluding the existing integration id.');
     }
 
     public function testGetIntegrationEntityByLead(): void
@@ -116,12 +116,12 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
 
         $results = $this->integrationEntityRepository->getIntegrationEntityByLead($lead->getId(), self::INTEGRATION);
         $this->assertNotEmpty($results);
-        $this->assertSame(1, count($results));
+        $this->assertCount(1, $results);
     }
 
     public function testGetIntegrationEntityByLeadWhenNoIntegrationNamePassed(): void
     {
-        $prefix = self::$container->getParameter('mautic.db_table_prefix');
+        $prefix = static::getContainer()->getParameter('mautic.db_table_prefix');
 
         $this->connection->executeQuery('SET FOREIGN_KEY_CHECKS=0;');
         $this->connection->executeQuery("INSERT INTO {$prefix}plugin_integration_settings(plugin_id, name, is_published, api_keys) VALUES (:id, :name, :isPublished, '')", ['id' => 1, 'name' => self::INTEGRATION, 'isPublished' => 1]);
@@ -135,7 +135,7 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
 
         $results = $this->integrationEntityRepository->getIntegrationEntityByLead($lead->getId());
         $this->assertNotEmpty($results);
-        $this->assertSame(1, count($results));
+        $this->assertCount(1, $results);
     }
 
     public function testMarkAsDeleted(): void

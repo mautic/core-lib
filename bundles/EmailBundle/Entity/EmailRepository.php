@@ -351,7 +351,7 @@ class EmailRepository extends CommonRepository
 
         $this->copyParams($pq, $outerQb);
 
-        return (int) $outerQb->executeQuery()->fetchColumn();
+        return (int) $outerQb->executeQuery()->fetchOne();
     }
 
     /**
@@ -361,7 +361,7 @@ class EmailRepository extends CommonRepository
      * @param int[]|null $variantIds
      * @param int[]|null $listIds
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getEmailPendingLeadsIdRange(
         $emailId,
@@ -397,12 +397,10 @@ class EmailRepository extends CommonRepository
         $this->copyParams($pq, $q);
 
         if (null !== $maxDate) {
-            $q->setParameter('max_date', $maxDate, \Doctrine\DBAL\Types\Type::DATETIME);
+            $q->setParameter('max_date', $maxDate, Types::DATETIME_MUTABLE);
         }
 
-        $results = $q->executeQuery()->fetch();
-
-        return $results;
+        return $q->executeQuery()->fetchAllAssociative();
     }
 
     /**

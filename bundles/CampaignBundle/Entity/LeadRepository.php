@@ -141,11 +141,11 @@ class LeadRepository extends CommonRepository
         $q->select('l.campaign_id')
             ->from(MAUTIC_TABLE_PREFIX.'campaign_leads', 'l');
         $q->where(
-                $q->expr()->andX(
-                    $q->expr()->eq('l.lead_id', ':leadId'),
-                    $q->expr()->in('l.campaign_id', ':campaigns')
-                )
+            $q->expr()->and(
+                $q->expr()->eq('l.lead_id', ':leadId'),
+                $q->expr()->in('l.campaign_id', ':campaigns')
             )
+        )
             ->setParameter('campaigns', $options['campaigns'], ArrayParameterType::INTEGER);
 
         if (!empty($options['dataAddedLimit'])) {

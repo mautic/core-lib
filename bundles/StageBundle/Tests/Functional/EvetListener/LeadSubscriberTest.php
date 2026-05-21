@@ -15,7 +15,7 @@ use Mautic\StageBundle\Model\StageModel;
 
 final class LeadSubscriberTest extends MauticMysqlTestCase
 {
-    private ?StageModel $model;
+    private StageModel $model;
 
     protected function setUp(): void
     {
