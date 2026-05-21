@@ -80,7 +80,7 @@ class DateRelativeInterval implements FilterDecoratorInterface
             $format .= ' 23:59:59';
         }
 
-        return $date->toLocalString($format);
+        return $date->toUtcString($format);
     }
 
     public function getQueryType(ContactSegmentFilterCrate $contactSegmentFilterCrate): string
