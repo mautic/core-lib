@@ -222,10 +222,7 @@ class IntegrationEntityRepository extends CommonRepository
                     'i.integration_entity_id',
                     ':excludeIntegrationIds'
                 )
-            )->setParameter('excludeIntegrationIds', array_map(
-                fn ($x): string => "'".$x."'",
-                $excludeIntegrationIds
-            ), ArrayParameterType::STRING);
+            )->setParameter('excludeIntegrationIds', $excludeIntegrationIds, ArrayParameterType::STRING);
         }
 
         $q->andWhere(
@@ -443,8 +440,8 @@ class IntegrationEntityRepository extends CommonRepository
                 ->select('p.name')
                 ->from(MAUTIC_TABLE_PREFIX.'plugin_integration_settings', 'p')
                 ->where('p.is_published = 1');
-            $rows    = $pq->executeQuery()->fetchAllAssociative();
-            $plugins = array_map(static fn ($i): string => "'{$i['name']}'", $rows);
+            $plugins    = $pq->executeQuery()->fetchFirstColumn();
+
             if (count($plugins) > 0) {
                 $q->andWhere($q->expr()->in('i.integration', ':plugins'))
                 ->setParameter('plugins', $plugins, ArrayParameterType::STRING);

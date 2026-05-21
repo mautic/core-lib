@@ -47,14 +47,10 @@ class SubmissionRepository extends CommonRepository
         $form = $args['form'];
 
         // DBAL
-        $viewOnlyFields = $args['viewOnlyFields'] ?: [];
+        $viewOnlyFields = $args['viewOnlyFields'] ?? [];
         if (empty($viewOnlyFields)) {
             $viewOnlyFields = ['button', 'freetext', 'freehtml', 'pagebreak', 'captcha'];
         }
-        $viewOnlyFields = array_map(
-            fn ($value): string => '"'.$value.'"',
-            $args['viewOnlyFields']
-        );
 
         // Get the list of custom fields
         $fq = $this->_em->getConnection()->createQueryBuilder();
