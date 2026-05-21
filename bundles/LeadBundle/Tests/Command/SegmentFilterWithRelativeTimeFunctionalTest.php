@@ -73,25 +73,8 @@ final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestC
         return $segment;
     }
 
-    /**
-     * Reproduces a timezone bug where the segment filter for relative hours generates
-     * a cutoff timestamp in the local (non-UTC) timezone via toLocalString(), but the
-     * `last_active` column is stored in UTC. When Mautic is configured with a non-UTC
-     * timezone (e.g. Europe/Prague, UTC+2), toLocalString() shifts the cutoff forward
-     * by the UTC offset and contacts fall outside the window even though they should match.
-     *
-     * Steps:
-     *   1. Save a contact whose last_active is 30 minutes ago in UTC.
-     *   2. Simulate the configured Mautic timezone being Europe/Prague (UTC+2) by directly
-     *      overwriting DateTimeHelper::$defaultLocalTimezone via reflection.
-     *   3. Run mautic:segments:update with a "-1 hours" filter.
-     *   4. The contact SHOULD be found (30 min < 1 hour), but the bug causes the filter
-     *      to compare the UTC DB value against a Prague-local timestamp (+2 h), so it is
-     *      missed and the assertion fails.
-     */
     public function testSegmentFilterWithRelativeTimeAndNonUtcTimezone(): void
     {
-        // Save a contact last active 30 minutes ago – stored as UTC in the DB.
         /** @var LeadRepository $contactRepo */
         $contactRepo = $this->em->getRepository(Lead::class);
         $contact     = new Lead();
@@ -102,10 +85,6 @@ final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestC
 
         $segment = $this->saveSegment(1); // filter: last_active >= -1 hour
 
-        // DateTimeHelper caches the configured timezone in a static property.
-        // Overwrite it with Europe/Prague (UTC+2) to simulate a non-UTC Mautic install.
-        // toLocalString() will then convert the UTC filter cutoff to Prague local time,
-        // making the generated filter value 2 hours too late and missing the contact.
         $tzProperty             = new \ReflectionProperty(DateTimeHelper::class, 'defaultLocalTimezone');
         $originalCachedTimezone = $tzProperty->getValue();
         $tzProperty->setValue(null, 'Europe/Prague');
@@ -113,10 +92,6 @@ final class SegmentFilterWithRelativeTimeFunctionalTest extends MauticMysqlTestC
         try {
             $this->testSymfonyCommand('mautic:segments:update', ['-i' => $segment->getId()]);
 
-            // The contact was active only 30 minutes ago so it must appear in the -1 hour segment.
-            // Without the fix, toLocalString() converts the UTC cutoff to Prague local time
-            // (+2 h), making the filter value 2 hours ahead of the DB value - the contact is
-            // missed and the assertion fails.
             self::assertCount(
                 1,
                 $this->em->getRepository(ListLead::class)->findBy(['list' => $segment->getId()]),
