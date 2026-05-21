@@ -3,7 +3,6 @@
 namespace Mautic\PluginBundle\Entity;
 
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
@@ -226,8 +225,7 @@ class IntegrationEntityRepository extends CommonRepository
             )->setParameter('excludeIntegrationIds', array_map(
                 fn ($x): string => "'".$x."'",
                 $excludeIntegrationIds
-            ), Connection::PARAM_STR_ARRAY);
-            ;
+            ), ArrayParameterType::STRING);
         }
 
         $q->andWhere(
@@ -449,7 +447,7 @@ class IntegrationEntityRepository extends CommonRepository
             $plugins = array_map(static fn ($i): string => "'{$i['name']}'", $rows);
             if (count($plugins) > 0) {
                 $q->andWhere($q->expr()->in('i.integration', ':plugins'))
-                ->setParameter('plugins', $plugins, Connection::PARAM_STR_ARRAY);
+                ->setParameter('plugins', $plugins, ArrayParameterType::STRING);
             } else {
                 return [];
             }
@@ -499,7 +497,7 @@ class IntegrationEntityRepository extends CommonRepository
             )
             ->setParameter('integration', $integration)
             ->setParameter('entity', $internalEntityType.'-deleted')
-            ->setParameter('integrationIds', $integrationIds, Connection::PARAM_STR_ARRAY)
+            ->setParameter('integrationIds', $integrationIds, ArrayParameterType::STRING)
             ->executeStatement();
     }
 

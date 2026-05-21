@@ -3,7 +3,6 @@
 namespace Mautic\LeadBundle\Entity;
 
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 
@@ -49,7 +48,7 @@ class DoNotContactRepository extends CommonRepository
             $q->where(
                 $q->expr()->in('dnc.channel_id', ':channelIds')
             )
-            ->setParameter('channelIds', $ids, Connection::PARAM_INT_ARRAY);
+            ->setParameter('channelIds', $ids, ArrayParameterType::INTEGER);
         }
 
         if ($channel) {
@@ -167,7 +166,7 @@ class DoNotContactRepository extends CommonRepository
             $q->andWhere(
                 $q->expr()->in('l.id', ':ids')
             )
-                ->setParameter('ids', $contacts, Connection::PARAM_INT_ARRAY);
+                ->setParameter('ids', $contacts, ArrayParameterType::INTEGER);
         }
 
         $results = $q->executeQuery()->fetchAllAssociative();

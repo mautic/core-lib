@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Mautic\CampaignBundle\Tests\Functional\Model;
+
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Model\EventModel;
@@ -9,6 +11,8 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 
 final class EventModelFunctionalTest extends MauticMysqlTestCase
 {
+    protected $useCleanupRollback = false;
+
     public function testDeleteEvents(): void
     {
         // Create a campaign.
@@ -33,13 +37,16 @@ final class EventModelFunctionalTest extends MauticMysqlTestCase
             if (0 == $item % 2) {
                 $currentEvents[$event->getId()] = $event;
             } else {
-                $deletedEvents[] = $event->getId();
+                $deletedEvents[] = [
+                    'id'                => $event->getId(),
+                    'redirect_event_id' => null,
+                ];
             }
         }
 
         // delete them
         /** @var EventModel $eventModel */
-        $eventModel = self::$container->get('mautic.campaign.model.event');
+        $eventModel = self::getContainer()->get('mautic.campaign.model.event');
         $eventModel->deleteEvents($currentEvents, $deletedEvents);
 
         $this->em->clear();

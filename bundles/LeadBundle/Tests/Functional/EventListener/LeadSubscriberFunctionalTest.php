@@ -40,14 +40,14 @@ class LeadSubscriberFunctionalTest extends MauticMysqlTestCase
 
         $leadMergeEvent = new LeadMergeEvent($contactB, $contactA);
 
-        $subscriber = self::$container->get(LeadSubscriber::class);
+        $subscriber = self::getContainer()->get(LeadSubscriber::class);
         \assert($subscriber instanceof LeadSubscriber);
 
         $subscriber->onLeadMerge($leadMergeEvent);
 
         $this->em->clear();
 
-        $prefix = self::$container->getParameter('mautic.db_table_prefix');
+        $prefix = self::getContainer()->getParameter('mautic.db_table_prefix');
         $count  = $this->connection->fetchNumeric("SELECT count(lead_id) FROM {$prefix}lead_lists_leads WHERE leadlist_id = :id", ['id' => $segmentC->getId()]);
 
         $this->assertNotEmpty($count);
@@ -58,6 +58,7 @@ class LeadSubscriberFunctionalTest extends MauticMysqlTestCase
     {
         $segment = new LeadList();
         $segment->setName($name);
+        $segment->setPublicName($name);
         $segment->setAlias($alias);
 
         $this->em->persist($segment);

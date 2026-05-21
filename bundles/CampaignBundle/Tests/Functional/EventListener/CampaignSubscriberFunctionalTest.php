@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Mautic\CampaignBundle\Tests\Functional\EventListener;
+
 use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
@@ -14,12 +16,13 @@ use Mautic\LeadBundle\EventListener\CampaignSubscriber;
 
 final class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
 {
+    protected $useCleanupRollback = false;
     private CampaignSubscriber $campaignSubscriber;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->campaignSubscriber = self::$container->get('mautic.lead.campaignbundle.subscriber');
+        $this->campaignSubscriber = self::getContainer()->get(CampaignSubscriber::class);
     }
 
     public function testCampaignTriggerConditionLeadIsInCampaign(): void
@@ -83,7 +86,7 @@ final class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $field->setAlias($fieldDetails['alias']);
 
         /** @var FieldModel $fieldModel */
-        $fieldModel = self::$container->get('mautic.lead.model.field');
+        $fieldModel = self::getContainer()->get('mautic.lead.model.field');
         $fieldModel->saveEntity($field);
     }
 

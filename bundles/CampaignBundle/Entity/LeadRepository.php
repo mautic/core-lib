@@ -113,7 +113,7 @@ class LeadRepository extends CommonRepository
             $q->andWhere(
                 $q->expr()->notIn('campaign_id', ':ids')
             )
-                ->setParameter('ids', $campaigns, Connection::PARAM_INT_ARRAY)
+                ->setParameter('ids', $campaigns, ArrayParameterType::INTEGER)
                 ->executeStatement();
 
             // Delete remaining leads as the new lead already belongs
@@ -369,7 +369,7 @@ class LeadRepository extends CommonRepository
                     $qb->expr()->in('ll.leadlist_id', ':segments')
                 )
             )
-            ->setParameter('segments', $segments, Connection::PARAM_INT_ARRAY);
+            ->setParameter('segments', $segments, ArrayParameterType::INTEGER);
 
         $this->updateQueryFromContactLimiter('ll', $qb, $limiter, true);
         $this->updateQueryWithExistingMembershipExclusion((int) $campaignId, $qb, (bool) $campaignCanBeRestarted);
@@ -409,7 +409,7 @@ class LeadRepository extends CommonRepository
                     $qb->expr()->in('ll.leadlist_id', ':segments')
                 )
             )
-            ->setParameter('segments', $segments, Connection::PARAM_INT_ARRAY)
+            ->setParameter('segments', $segments, ArrayParameterType::INTEGER)
             ->orderBy('ll.lead_id');
 
         $this->updateQueryFromContactLimiter('ll', $qb, $limiter);
@@ -581,7 +581,7 @@ class LeadRepository extends CommonRepository
                 )
             );
 
-        $qb->setParameter('segments', $segments, Connection::PARAM_INT_ARRAY);
+        $qb->setParameter('segments', $segments, ArrayParameterType::INTEGER);
 
         $qb->andWhere(
             sprintf('NOT EXISTS (%s)', $subq->getSQL())

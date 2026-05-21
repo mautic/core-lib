@@ -3,7 +3,6 @@
 namespace Mautic\WebhookBundle\Entity;
 
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 
@@ -29,7 +28,7 @@ class WebhookQueueRepository extends CommonRepository
             ->where(
                 $qb->expr()->in('id', ':ids')
             )
-            ->setParameter('ids', $idList, Connection::PARAM_INT_ARRAY)
+            ->setParameter('ids', $idList, ArrayParameterType::INTEGER)
             ->executeStatement();
     }
 

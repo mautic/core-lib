@@ -120,7 +120,7 @@ class FieldChangeRepository extends CommonRepository
             )
             ->setParameter('integration', $integration)
             ->setParameter('objectType', $objectType)
-            ->setParameter('objectIds', $objectIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('objectIds', $objectIds, ArrayParameterType::INTEGER)
             // 1. We must sort by f.object_id. Otherwise values stored in PartialObjectReportBuilder::lastProcessedTrackedId will be incorrect.
             // 2. Newer updated fields must override older updated fields
             ->orderBy('f.object_id, f.modified_at', 'ASC');

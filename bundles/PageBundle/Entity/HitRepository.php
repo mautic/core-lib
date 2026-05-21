@@ -2,8 +2,8 @@
 
 namespace Mautic\PageBundle\Entity;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
-use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\LeadBundle\Entity\Lead;
@@ -137,7 +137,7 @@ class HitRepository extends CommonRepository
         $q->select('count(distinct(h.tracking_id)) as hit_count, h.email_id')
             ->from(MAUTIC_TABLE_PREFIX.'page_hits', 'h')
             ->where($q->expr()->in('h.email_id', ':emailIds'))
-            ->setParameter('emailIds', $emailIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('emailIds', $emailIds, ArrayParameterType::INTEGER)
             ->groupBy('h.email_id');
 
         if (null != $fromDate) {
@@ -371,7 +371,7 @@ class HitRepository extends CommonRepository
                     $q->expr()->in('ph.page_id', ':pageIds')
                 )
             )
-            ->setParameter('pageIds', $pageIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('pageIds', $pageIds, ArrayParameterType::INTEGER);
 
         if (isset($options['fromDate'])) {
             // make sure the date is UTC

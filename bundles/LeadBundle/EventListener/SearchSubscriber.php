@@ -8,6 +8,7 @@ use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Event\CommandListEvent;
 use Mautic\CoreBundle\Event\GlobalSearchEvent;
+use Mautic\CoreBundle\Helper\QueryBuilderManipulatorTrait;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Service\GlobalSearch;
 use Mautic\EmailBundle\Entity\Email;
@@ -23,6 +24,7 @@ use Twig\Environment;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
+    use QueryBuilderManipulatorTrait;
     private \Mautic\LeadBundle\Entity\LeadRepository $leadRepo;
 
     public function __construct(

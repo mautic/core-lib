@@ -2,10 +2,10 @@
 
 namespace Mautic\CampaignBundle\Entity;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Query\Expr;
 use Mautic\CampaignBundle\Entity\Result\CountResult;
 use Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter;
@@ -137,7 +137,7 @@ class CampaignRepository extends CommonRepository
             $q->expr()->in('ll.leadlist_id', ':leadLists')
         );
 
-        $q->setParameter('leadLists', $leadLists, Connection::PARAM_INT_ARRAY);
+        $q->setParameter('leadLists', $leadLists, ArrayParameterType::INTEGER);
 
         $results = $q->executeQuery()->fetchAllAssociative();
 
@@ -387,7 +387,7 @@ class CampaignRepository extends CommonRepository
             $q->andWhere(
                 sprintf('NOT EXISTS (%s)', $sq->getSQL())
             )
-                ->setParameter('pendingEvents', $pendingEvents, Connection::PARAM_INT_ARRAY);
+                ->setParameter('pendingEvents', $pendingEvents, ArrayParameterType::INTEGER);
         }
 
         $result = $q->executeQuery()->fetchAssociative();
@@ -629,7 +629,7 @@ class CampaignRepository extends CommonRepository
 
         if (!empty($campaignIds)) {
             $q->where($q->expr()->in('c.id', ':campaignIds'));
-            $q->setParameter('campaignIds', $campaignIds, Connection::PARAM_INT_ARRAY);
+            $q->setParameter('campaignIds', $campaignIds, ArrayParameterType::INTEGER);
         }
 
         return $q->executeQuery()->fetchAllAssociative();

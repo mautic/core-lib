@@ -2,7 +2,7 @@
 
 namespace Mautic\LeadBundle\Entity;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
 /**
@@ -39,7 +39,7 @@ class ListLeadRepository extends CommonRepository
             $q->andWhere(
                 $q->expr()->notIn('leadlist_id', ':ids')
             )
-                ->setParameter('ids', $lists, Connection::PARAM_INT_ARRAY)
+                ->setParameter('ids', $lists, ArrayParameterType::INTEGER)
                 ->executeStatement();
 
             // Delete remaining leads as the new lead already belongs

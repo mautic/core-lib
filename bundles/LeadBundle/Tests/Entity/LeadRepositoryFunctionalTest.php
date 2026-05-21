@@ -122,7 +122,7 @@ class LeadRepositoryFunctionalTest extends MauticMysqlTestCase
         }
 
         /** @var LeadRepository $repo */
-        $repo = $this->em->getRepository(Lead::class);
+        $repo     = $this->em->getRepository(Lead::class);
         $contacts = $repo->getContacts($contactIds);
 
         $this->assertCount($expectedCount, $contacts);
@@ -131,7 +131,7 @@ class LeadRepositoryFunctionalTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, mixed>
      */
-    public function dataForGetContacts(): iterable
+    public static function dataForGetContacts(): iterable
     {
         yield 'No ids' => [
             [],
@@ -151,7 +151,6 @@ class LeadRepositoryFunctionalTest extends MauticMysqlTestCase
             1,
         ];
     }
-
 
     /**
      * @param string[]|string $emails

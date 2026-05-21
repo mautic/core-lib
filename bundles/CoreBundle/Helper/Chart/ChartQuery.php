@@ -2,6 +2,7 @@
 
 namespace Mautic\CoreBundle\Helper\Chart;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Mautic\CoreBundle\Doctrine\GeneratedColumn\GeneratedColumn;
@@ -107,7 +108,7 @@ class ChartQuery extends AbstractChart
                     $valId  = str_replace('t.', '', $valId);
                     if (is_array($value)) {
                         $query->andWhere($query->expr()->in('t.'.$column, ":{$valId}"));
-                        $query->setParameter($valId, array_map('strval', $value), Connection::PARAM_STR_ARRAY);
+                        $query->setParameter($valId, array_map('strval', $value), ArrayParameterType::STRING);
                     } else {
                         $query->andWhere('t.'.$column.' = :'.$valId);
                         $query->setParameter($valId, $value);

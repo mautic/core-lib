@@ -1168,7 +1168,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
             ->where(
                 $qb->expr()->in('l.id', ':ids')
             )
-            ->setParameter('ids', $contactIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('ids', $contactIds, ArrayParameterType::INTEGER);
 
         $results = $qb->executeQuery()->fetchAllAssociative();
 

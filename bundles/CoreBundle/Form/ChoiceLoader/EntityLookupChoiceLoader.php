@@ -3,7 +3,6 @@
 namespace Mautic\CoreBundle\Form\ChoiceLoader;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
 use Mautic\CoreBundle\Factory\ModelFactory;
 use Mautic\CoreBundle\Model\AjaxLookupModelInterface;

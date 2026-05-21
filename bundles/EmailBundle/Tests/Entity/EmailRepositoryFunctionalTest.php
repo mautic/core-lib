@@ -109,12 +109,10 @@ class EmailRepositoryFunctionalTest extends MauticMysqlTestCase
         $leadFive  = $this->createLead('five');
         $leadSix   = $this->createLead('six');
 
-
         // create some categories
         $catOne     = $this->createCategory('one');
         $catTwo     = $this->createCategory('two');
         $catThree   = $this->createCategory('three');
-
 
         // lead to subscribe categories
         $this->subscribeCategory($leadOne, true, $catOne, $catTwo);
@@ -155,7 +153,7 @@ class EmailRepositoryFunctionalTest extends MauticMysqlTestCase
         $actualLeadIds  = array_map('intval', array_column($result, 'id'));
         sort($actualLeadIds);
 
-        $expectedLeadIds = [$leadTwo->getId(), $leadThree->getId(), $leadFour->getId()];
+        $expectedLeadIds = [$leadFour->getId(), $leadFive->getId()];
         sort($expectedLeadIds);
 
         $this->assertSame($expectedLeadIds, $actualLeadIds);

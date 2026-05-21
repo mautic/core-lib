@@ -224,7 +224,7 @@ class ContactObjectHelper implements ObjectHelperInterface
             ->where(
                 $qb->expr()->in('id', ':ids')
             )
-            ->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
+            ->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
         return $qb->executeQuery()->fetchAllAssociative();
     }

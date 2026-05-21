@@ -254,18 +254,17 @@ SQL;
             ->with('l.manually_removed', ':false')
             ->willReturnSelf();
 
-        $this->queryBuilderMock->expects(self::once())
-            ->method('setParameter')
-            ->with('false', false, 'boolean')
-            ->willReturnSelf();
-
+        $expectedCalls = [
+            ['listIds', $listIds, ArrayParameterType::INTEGER],
+            ['false', false, 'boolean'],
+        ];
         $this->queryBuilderMock->expects(self::exactly(2))
             ->method('setParameter')
-            ->withConsecutive(
-                ['listIds', $listIds, Connection::PARAM_INT_ARRAY],
-                ['false', false, 'boolean']
-            )
-            ->willReturnSelf();
+            ->willReturnCallback(function (...$parameters) use (&$expectedCalls) {
+                $this->assertSame(array_shift($expectedCalls), $parameters);
+
+                return $this->queryBuilderMock;
+            });
 
         self::assertSame(array_combine($listIds, $counts), $this->repository->getLeadCount($listIds));
     }

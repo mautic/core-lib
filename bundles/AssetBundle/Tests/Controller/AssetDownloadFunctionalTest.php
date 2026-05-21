@@ -9,12 +9,12 @@ use Mautic\AssetBundle\Entity\Download;
 use Mautic\AssetBundle\Entity\DownloadRepository;
 use Mautic\CoreBundle\Entity\IpAddress;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use PHPUnit\Framework\Assert;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\PageBundle\Entity\Page;
+use PHPUnit\Framework\Assert;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 final class AssetDownloadFunctionalTest extends MauticMysqlTestCase
 {

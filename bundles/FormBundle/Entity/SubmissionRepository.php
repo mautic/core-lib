@@ -3,9 +3,9 @@
 namespace Mautic\FormBundle\Entity;
 
 use Doctrine\Common\Collections\Order;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Query\QueryBuilder as DbalQueryBuilder;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 use Mautic\LeadBundle\Entity\TimelineTrait;
@@ -67,7 +67,7 @@ class SubmissionRepository extends CommonRepository
             )
             ->orderBy('f.field_order, f.id', 'ASC')
             ->setParameter('saveResult', true)
-            ->setParameter('types', $viewOnlyFields, Connection::PARAM_STR_ARRAY);
+            ->setParameter('types', $viewOnlyFields, ArrayParameterType::STRING);
 
         $results = $fq->executeQuery()->fetchAllAssociative();
 
@@ -364,7 +364,7 @@ class SubmissionRepository extends CommonRepository
 
         if (is_array($pageId)) {
             $q->where($q->expr()->in('s.page_id', ':pageIds'))
-                ->setParameter('pageIds', array_map('intval', $pageId), Connection::PARAM_INT_ARRAY)
+                ->setParameter('pageIds', array_map('intval', $pageId), ArrayParameterType::INTEGER)
                 ->groupBy('s.page_id, p.title, p.variant_hits');
         } else {
             $q->where($q->expr()->eq('s.page_id', ':page'))
@@ -397,7 +397,7 @@ class SubmissionRepository extends CommonRepository
 
         if (is_array($emailId)) {
             $q->where($q->expr()->in('e.id', ':ids'))
-                ->setParameter('ids', array_map('intval', $emailId), Connection::PARAM_INT_ARRAY)
+                ->setParameter('ids', array_map('intval', $emailId), ArrayParameterType::INTEGER)
                 ->groupBy('e.id, e.subject, e.variant_sent_count');
         } else {
             $q->where($q->expr()->eq('e.id', ':id'))
@@ -439,7 +439,7 @@ class SubmissionRepository extends CommonRepository
                     $q->expr()->in('s.id', ':ids')
                 )
             )
-            ->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
+            ->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
         $validIds = [];
         $results  = $q->executeQuery()->fetchAllAssociative();

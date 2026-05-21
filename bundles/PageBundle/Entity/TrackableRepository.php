@@ -2,7 +2,7 @@
 
 namespace Mautic\PageBundle\Entity;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 
@@ -140,7 +140,7 @@ class TrackableRepository extends CommonRepository
             $q->andWhere(
                 $q->expr()->in('cut.channel_id', ':channelIds')
             )
-                ->setParameter('channelIds', $channelIds, Connection::PARAM_INT_ARRAY);
+                ->setParameter('channelIds', $channelIds, ArrayParameterType::INTEGER);
         }
 
         if ($listId) {
@@ -154,7 +154,7 @@ class TrackableRepository extends CommonRepository
                     $q->andWhere(
                         $q->expr()->in('cs.leadlist_id', ':listIds')
                     )
-                        ->setParameter('listIds', array_map('intval', $listId), Connection::PARAM_INT_ARRAY);
+                        ->setParameter('listIds', array_map('intval', $listId), ArrayParameterType::INTEGER);
 
                     $q->addSelect('cs.leadlist_id')
                         ->groupBy('cs.leadlist_id');
@@ -169,7 +169,7 @@ class TrackableRepository extends CommonRepository
                     ->andWhere(
                         $q->expr()->in('list.leadlist_id', ':listIds')
                     )
-                    ->setParameter('listIds', array_map('intval', $listId), Connection::PARAM_INT_ARRAY);
+                    ->setParameter('listIds', array_map('intval', $listId), ArrayParameterType::INTEGER);
 
                 $q->innerJoin('ph', sprintf('(%s)', $subQ->getSQL()), 'cs', 'cs.lead_id = ph.lead_id');
             }

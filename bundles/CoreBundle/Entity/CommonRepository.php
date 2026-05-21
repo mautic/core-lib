@@ -1691,7 +1691,7 @@ class CommonRepository extends ServiceEntityRepository
     protected function getIdsExpr(&$q, $filter)
     {
         if ($ids = array_map('intval', explode(',', $filter->string))) {
-            $q->setParameter('idsExpr', $ids, Connection::PARAM_INT_ARRAY);
+            $q->setParameter('idsExpr', $ids, ArrayParameterType::INTEGER);
 
             return $q->expr()->in($this->getTableAlias().'.id', ':idsExpr');
         }

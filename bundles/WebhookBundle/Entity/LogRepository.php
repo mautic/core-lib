@@ -2,7 +2,7 @@
 
 namespace Mautic\WebhookBundle\Entity;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\ParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
@@ -53,7 +53,7 @@ class LogRepository extends CommonRepository
         $count = $qb->select('count(id) as log_count')
             ->from(MAUTIC_TABLE_PREFIX.'webhook_logs', $this->getTableAlias())
             ->where('webhook_id = '.$webhookId)
-            ->execute()->fetch();
+            ->executeQuery()->fetchAssociative();
 
         if ((int) $count['log_count'] >= (int) $logMax) {
             $qb = $this->_em->getConnection()->createQueryBuilder();
@@ -62,14 +62,14 @@ class LogRepository extends CommonRepository
                 ->from(MAUTIC_TABLE_PREFIX.'webhook_logs', $this->getTableAlias())
                 ->where('webhook_id = '.$webhookId)
                 ->orderBy('date_added', 'ASC')->setMaxResults(1)
-                ->execute()->fetch();
+                ->executeQuery()->fetchFirstColumn();
 
             $qb = $this->_em->getConnection()->createQueryBuilder();
 
             $qb->delete(MAUTIC_TABLE_PREFIX.'webhook_logs')
                 ->where($qb->expr()->in('id', ':id'))
-                ->setParameter('id', $id, Connection::PARAM_INT_ARRAY)
-                ->execute();
+                ->setParameter('id', $id, ArrayParameterType::INTEGER)
+                ->executeStatement();
         }
     }
 

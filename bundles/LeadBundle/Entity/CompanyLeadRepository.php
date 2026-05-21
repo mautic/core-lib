@@ -40,7 +40,7 @@ class CompanyLeadRepository extends CommonRepository
 
                 $qb->where(
                     $qb->expr()->in('lead_id', ':leadIds')
-                )->setParameter('leadIds', $contacts, Connection::PARAM_INT_ARRAY)
+                )->setParameter('leadIds', $contacts, ArrayParameterType::INTEGER)
                     ->executeStatement();
             }
         }
@@ -216,7 +216,7 @@ class CompanyLeadRepository extends CommonRepository
         $q->where($q->expr()->eq('cl.company_id', ':companyId'))
             ->setParameter('companyId', $company->getId())
             ->andWhere('cl.is_primary = 1');
-        $leadIds = $q->executeQuery()->fetchOne();
+        $leadIds = $q->executeQuery()->fetchFirstColumn();
         if (!empty($leadIds)) {
             $this->getEntityManager()->getConnection()->createQueryBuilder()
             ->update(MAUTIC_TABLE_PREFIX.'leads')
@@ -225,7 +225,7 @@ class CompanyLeadRepository extends CommonRepository
             ->where(
                 $q->expr()->in('id', ':leadIds')
             )
-            ->setParameter('leadIds', array_keys($leadIds), Connection::PARAM_INT_ARRAY)
+            ->setParameter('leadIds', $leadIds, ArrayParameterType::INTEGER)
             ->executeStatement();
         }
     }

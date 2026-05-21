@@ -4,7 +4,6 @@ namespace Mautic\ChannelBundle\Entity;
 
 use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\LeadBundle\Entity\TimelineTrait;

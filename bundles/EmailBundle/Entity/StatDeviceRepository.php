@@ -2,7 +2,7 @@
 
 namespace Mautic\EmailBundle\Entity;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
 
@@ -26,7 +26,7 @@ class StatDeviceRepository extends CommonRepository
             $qb->where(
                 $qb->expr()->in('es.email_id', ':emailIds')
             )
-            ->setParameter('emailIds', $emailIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('emailIds', $emailIds, ArrayParameterType::INTEGER);
         }
 
         $qb->groupBy('es.list_id, d.device');

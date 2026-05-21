@@ -298,7 +298,7 @@ class LeadListRepository extends CommonRepository
             $expression = $q->expr()->eq('l.leadlist_id', $listIds[0]);
         } else {
             $expression = $q->expr()->in('l.leadlist_id', ':listIds');
-            $q->setParameter('listIds', $listIds, Connection::PARAM_INT_ARRAY);
+            $q->setParameter('listIds', $listIds, ArrayParameterType::INTEGER);
         }
 
         $q->where(

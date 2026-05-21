@@ -14,16 +14,16 @@ use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\DataObject\LeadManipulator;
 use Mautic\LeadBundle\Entity\Lead;
+use Mautic\LeadBundle\Entity\LeadList;
 use Mautic\LeadBundle\Entity\LeadRepository;
+use Mautic\LeadBundle\Entity\ListLead;
+use Mautic\LeadBundle\Entity\Tag;
 use Mautic\LeadBundle\LeadEvents;
+use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\LeadBundle\Segment\OperatorOptions;
 use Mautic\LeadBundle\Tests\Traits\LeadFieldTestTrait;
 use Mautic\PointBundle\Entity\Group;
 use Mautic\PointBundle\Entity\GroupContactScore;
-use Mautic\LeadBundle\Entity\LeadList;
-use Mautic\LeadBundle\Entity\ListLead;
-use Mautic\LeadBundle\Entity\Tag;
-use Mautic\LeadBundle\Model\LeadModel;
 use PHPUnit\Framework\Assert;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
@@ -192,7 +192,7 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         /** @var LeadModel $model */
-        $model = self::$container->get('mautic.lead.model.lead');
+        $model = self::getContainer()->get('mautic.lead.model.lead');
 
         foreach ($contacts as $contact) {
             $model->setTags($contact, [$tag->getId()]);
@@ -201,11 +201,11 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         // Execute the campaign.
-        $this->runCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
+        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaign->getId()]);
 
         $this->em->clear();
 
-        $prefix = self::$container->getParameter('mautic.db_table_prefix');
+        $prefix = self::getContainer()->getParameter('mautic.db_table_prefix');
 
         foreach ($contacts as $contact) {
             $points = $this->connection->fetchOne("SELECT points FROM {$prefix}leads WHERE id = :id", ['id' => $contact->getId()]);
@@ -219,10 +219,10 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $application->setAutoExit(false);
         $applicationTester = new ApplicationTester($application);
 
-        $contactIds = $this->createContacts();
+        $contacts   = $this->createContacts();
         $stageIds   = $this->createStages();
-        $this->addStageToContacts($contactIds, $stageIds[0]);
-        $campaign   = $this->createCampaignWithStageConditionEvent($contactIds);
+        $this->addStageToContacts($contacts, $stageIds[0]);
+        $campaign   = $this->createCampaignWithStageConditionEvent($contacts);
 
         // Force Doctrine to re-fetch the entities otherwise the campaign won't know about any events.
         $this->em->clear();
@@ -240,9 +240,9 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
 
     public function testIsContactInOneOfStages(): void
     {
-        $contactIds = $this->createContacts();
-        $stageIds   = $this->createStages();
-        $this->addStageToContacts($contactIds, $stageIds[0]);
+        $contacts = $this->createContacts();
+        $stageIds = $this->createStages();
+        $this->addStageToContacts($contacts, $stageIds[0]);
 
         $args = [
             'event' => [
@@ -257,8 +257,8 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
             'eventSettings'   => [],
         ];
 
-        foreach ($contactIds as $contactId) {
-            $args['lead'] = $this->contactRepository->getEntity($contactId);
+        foreach ($contacts as $contact) {
+            $args['lead'] = $this->contactRepository->getEntity($contact->getId());
 
             $event  = new CampaignExecutionEvent($args, true);
 
@@ -279,8 +279,8 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $application->setAutoExit(false);
         $applicationTester = new ApplicationTester($application);
 
-        $contactIds = $this->createContacts();
-        $campaign   = $this->createCampaignWithPointEvents($contactIds);
+        $contacts   = $this->createContacts();
+        $campaign   = $this->createCampaignWithPointEvents($contacts);
 
         // Force Doctrine to re-fetch the entities otherwise the campaign won't know about any events.
         $this->em->clear();
@@ -296,11 +296,11 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame(0, $exitCode, $applicationTester->getDisplay());
 
         /** @var Lead $contactA */
-        $contactA = $this->contactRepository->getEntity($contactIds[0]);
+        $contactA = $this->contactRepository->getEntity($contacts[0]->getId());
         /** @var Lead $contactB */
-        $contactB = $this->contactRepository->getEntity($contactIds[1]);
+        $contactB = $this->contactRepository->getEntity($contacts[1]->getId());
         /** @var Lead $contactC */
-        $contactC = $this->contactRepository->getEntity($contactIds[2]);
+        $contactC = $this->contactRepository->getEntity($contacts[2]->getId());
 
         $this->assertEquals(0, $contactA->getPoints());
         $this->assertEquals(0, $contactB->getPoints());
@@ -316,20 +316,20 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $groupA    = $this->createGroup('A');
         $this->em->flush();
 
-        $contactIds = $this->createContacts();
+        $contacts = $this->createContacts();
 
         /** @var Lead $contactB */
-        $contactB = $this->contactRepository->getEntity($contactIds[1]);
+        $contactB = $contacts[1];
         $this->addGroupContactScore($contactB, $groupA, 0);
         $this->em->persist($contactB);
 
         /** @var Lead $contactC */
-        $contactC = $this->contactRepository->getEntity($contactIds[2]);
+        $contactC = $contacts[2];
         $this->addGroupContactScore($contactC, $groupA, 1);
         $this->em->persist($contactC);
         $this->em->flush();
 
-        $campaign   = $this->createCampaignWithPointEvents($contactIds, $groupA->getId());
+        $campaign   = $this->createCampaignWithPointEvents($contacts, $groupA->getId());
 
         // Force Doctrine to re-fetch the entities otherwise the campaign won't know about any events.
         $this->em->clear();
@@ -345,11 +345,11 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         Assert::assertSame(0, $exitCode, $applicationTester->getDisplay());
 
         /** @var Lead $contactA */
-        $contactA = $this->contactRepository->getEntity($contactIds[0]);
+        $contactA = $this->contactRepository->getEntity($contacts[0]->getId());
         /** @var Lead $contactB */
-        $contactB = $this->contactRepository->getEntity($contactIds[1]);
+        $contactB = $this->contactRepository->getEntity($contacts[1]->getId());
         /** @var Lead $contactC */
-        $contactC = $this->contactRepository->getEntity($contactIds[2]);
+        $contactC = $this->contactRepository->getEntity($contacts[2]->getId());
 
         // point update action with selected group shouldn't update contact main points
         $this->assertEquals(0, $contactA->getPoints());
@@ -375,14 +375,14 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $application->setAutoExit(false);
         $applicationTester = new ApplicationTester($application);
 
-        $contactIds = $this->createContacts();
+        $contacts = $this->createContacts();
 
-        $contact = $this->contactRepository->getEntity($contactIds[0]);
+        $contact = $contacts[0];
         $contact->setAddress1('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddd');
         $this->em->persist($contact);
         $this->em->flush();
 
-        $campaign   = $this->createCampaignWithTokens($contactIds);
+        $campaign   = $this->createCampaignWithTokens($contacts);
 
         $this->em->clear();
 
@@ -395,7 +395,7 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $today = new \DateTime('today');
 
         /** @var Lead $contact */
-        $contact = $this->contactRepository->getEntity($contactIds[0]);
+        $contact = $this->contactRepository->getEntity($contacts[0]->getId());
 
         $positionValue = $contact->getFieldValue('position');
         $cityValue     = $contact->getFieldValue('city');
@@ -556,12 +556,12 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @param array<int, int> $contactIds
+     * @param Lead[] $contacts
      */
-    private function addStageToContacts(array $contactIds, int $stageId): void
+    private function addStageToContacts(array $contacts, int $stageId): void
     {
-        foreach ($contactIds as $contactId) {
-            $this->client->request('POST', "/api/stages/$stageId/contact/$contactId/add");
+        foreach ($contacts as $contact) {
+            $this->client->request('POST', "/api/stages/$stageId/contact/{$contact->getId()}/add");
             $clientResponse = $this->client->getResponse();
 
             $this->assertEquals(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
@@ -569,8 +569,6 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @param array<int, int> $contactIds
-     *
      * @throws ORMException
      * @throws OptimisticLockException
      */
@@ -607,6 +605,7 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
     {
         $segment = new LeadList();
         $segment->setName('Segment 1');
+        $segment->setPublicName('Segment 1');
         $segment->setAlias('alias');
 
         $this->em->persist($segment);
@@ -644,7 +643,7 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         return $event;
     }
 
-    private function createContact(string $email, string $firstname, string $lastname, int $points = 0): Lead
+    private function createContact(string $email, string $firstname = '', string $lastname = '', int $points = 0): Lead
     {
         $contact = new Lead();
         $contact->setEmail($email);
@@ -656,6 +655,7 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         }
 
         $this->em->persist($contact);
+        $this->em->flush();
 
         return $contact;
     }
@@ -683,12 +683,12 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @param array<int, int> $contactIds
+     * @param Lead[] $contacts
      *
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    private function createCampaignWithStageConditionEvent(array $contactIds): Campaign
+    private function createCampaignWithStageConditionEvent(array $contacts): Campaign
     {
         $campaign = new Campaign();
         $campaign->setName('Test Update contact');
@@ -696,10 +696,10 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($campaign);
         $this->em->flush();
 
-        foreach ($contactIds as $key => $contactId) {
+        foreach ($contacts as $key => $contact) {
             $campaignLead = new CampaignLead();
             $campaignLead->setCampaign($campaign);
-            $campaignLead->setLead($this->em->getReference(Lead::class, $contactId));
+            $campaignLead->setLead($contact);
             $campaignLead->setDateAdded(new \DateTime());
             $this->em->persist($campaignLead);
             $campaign->addLead($key, $campaignLead);
@@ -837,13 +837,13 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
      * -   Add 1 point   -
      * -------------------
      *
-     * @param array<int, int> $contactIds
-     * @param int|null        $pointGroup optional use of point group in campaign
+     * @param Lead[]   $contacts
+     * @param int|null $pointGroup optional use of point group in campaign
      *
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    private function createCampaignWithPointEvents(array $contactIds, ?int $pointGroup = null): Campaign
+    private function createCampaignWithPointEvents(array $contacts, ?int $pointGroup = null): Campaign
     {
         $campaign = new Campaign();
         $campaign->setName('Test Update contact');
@@ -851,10 +851,10 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($campaign);
         $this->em->flush();
 
-        foreach ($contactIds as $key => $contactId) {
+        foreach ($contacts as $key => $contact) {
             $campaignLead = new CampaignLead();
             $campaignLead->setCampaign($campaign);
-            $campaignLead->setLead($this->em->getReference(Lead::class, $contactId));
+            $campaignLead->setLead($contact);
             $campaignLead->setDateAdded(new \DateTime());
             $this->em->persist($campaignLead);
             $campaign->addLead($key, $campaignLead);
@@ -994,9 +994,9 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
     }
 
     /**
-     * @param array<int, int> $contactIds
+     * @param Lead[] $contacts
      */
-    private function createCampaignWithTokens(array $contactIds): Campaign
+    private function createCampaignWithTokens(array $contacts): Campaign
     {
         $campaign = new Campaign();
         $campaign->setName('Test Update contact');
@@ -1004,11 +1004,11 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->persist($campaign);
         $this->em->flush();
 
-        foreach ($contactIds as $key => $contactId) {
+        foreach ($contacts as $key => $contact) {
             $campaignLead = new CampaignLead();
             $campaignLead->setCampaign($campaign);
             /** @var Lead $lead */
-            $lead = $this->em->getReference(Lead::class, $contactId);
+            $lead = $contact;
             $campaignLead->setLead($lead);
             $campaignLead->setDateAdded(new \DateTime());
             $this->em->persist($campaignLead);
@@ -1064,17 +1064,6 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         Assert::assertInstanceOf(LeadManipulator::class, $leadManipulator);
         Assert::assertSame('campaign', $leadManipulator->getBundleName());
         Assert::assertSame('trigger-action', $leadManipulator->getObjectName());
-    }
-
-    private function createContact(string $email): Lead
-    {
-        $lead = new Lead();
-        $lead->setEmail($email);
-
-        $this->em->persist($lead);
-        $this->em->flush();
-
-        return $lead;
     }
 
     private function addContactToCampaign(Campaign $campaign, Lead $lead): void

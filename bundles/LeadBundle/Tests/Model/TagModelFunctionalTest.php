@@ -14,7 +14,7 @@ class TagModelFunctionalTest extends MauticMysqlTestCase
     public function testDeleteOrphanTags(): void
     {
         /** @var TagModel $model */
-        $model = self::$container->get('mautic.lead.model.tag');
+        $model = self::getContainer()->get('mautic.lead.model.tag');
 
         $tags = [
             'tag1',

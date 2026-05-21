@@ -2,7 +2,7 @@
 
 namespace Mautic\LeadBundle\Entity;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
@@ -63,7 +63,7 @@ trait TimelineTrait
             $query->andWhere(
                 $query->expr()->in($leadColumn, ':leadIds')
             )
-            ->setParameter('leadIds', $options['leadIds'], Connection::PARAM_INT_ARRAY);
+            ->setParameter('leadIds', $options['leadIds'], ArrayParameterType::INTEGER);
         }
 
         if (isset($options['order'])) {

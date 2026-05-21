@@ -51,6 +51,7 @@ final class DoNotContactFunctionalTest extends MauticMysqlTestCase
     {
         $segment = new LeadList();
         $segment->setName('test');
+        $segment->setPublicName('test');
         $segment->setAlias('test-alias');
 
         $this->em->persist($segment);

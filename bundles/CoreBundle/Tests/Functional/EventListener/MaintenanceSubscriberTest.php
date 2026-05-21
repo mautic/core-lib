@@ -8,14 +8,13 @@ use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\Event\MaintenanceEvent;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 final class MaintenanceSubscriberTest extends MauticMysqlTestCase
 {
     public function testMaintenanceDataCleanUp(): void
     {
         // Insert the audit_log and notification
-        $prefix        = self::$container->getParameter('mautic.db_table_prefix');
+        $prefix        = self::getContainer()->getParameter('mautic.db_table_prefix');
         $threeDaysAgo  = (new \DateTime('3 days ago', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s');
         $today         = (new \DateTime('+1 min', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s');
 
@@ -47,12 +46,12 @@ final class MaintenanceSubscriberTest extends MauticMysqlTestCase
         );
 
         /** @var TranslatorInterface $translator */
-        $translator = self::$container->get('translator');
+        $translator = self::getContainer()->get('translator');
 
         /** @var EventDispatcherInterface $dispatcher */
-        $dispatcher = self::$container->get('event_dispatcher');
+        $dispatcher = self::getContainer()->get('event_dispatcher');
 
-        $event = $dispatcher->dispatch(CoreEvents::MAINTENANCE_CLEANUP_DATA, new MaintenanceEvent(2, false, 0));
+        $event = $dispatcher->dispatch(new MaintenanceEvent(2, false, 0), CoreEvents::MAINTENANCE_CLEANUP_DATA);
         $stats = $event->getStats();
 
         $this->assertArrayHasKey($translator->trans('mautic.maintenance.audit_log'), $stats);

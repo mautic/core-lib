@@ -33,7 +33,7 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
     {
         parent::setUp();
         $this->prefix                      = static::getContainer()->getParameter('mautic.db_table_prefix');
-        $this->integrationEntityRepository = $this->em->getRepository(\Mautic\PluginBundle\Entity\IntegrationEntity::class);
+        $this->integrationEntityRepository = $this->em->getRepository(IntegrationEntity::class);
     }
 
     public function testThatGetIntegrationsEntityIdReturnsCorrectValues(): void
@@ -159,7 +159,7 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
         $lead = new Lead();
         $lead->setEmail($email);
         $lead->setFirstname($firstName);
-        $lead->setDateModified((new \DateTime()));
+        $lead->setDateModified(new \DateTime());
 
         $this->em->persist($lead);
         $this->em->flush();

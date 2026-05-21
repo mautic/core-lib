@@ -190,7 +190,7 @@ class StatRepository extends CommonRepository
             ->where(
                 $q->expr()->in('s.email_id', ':emailIds')
             )
-            ->setParameter('emailIds', $emailIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('emailIds', $emailIds, ArrayParameterType::INTEGER);
 
         if ($listId) {
             $q->andWhere('s.list_id = :list')
@@ -267,7 +267,7 @@ class StatRepository extends CommonRepository
             }
             $q->where(
                 $q->expr()->in('s.email_id', ':emailIds')
-            )->setParameter('emailIds', $emailIds, Connection::PARAM_INT_ARRAY);
+            )->setParameter('emailIds', $emailIds, ArrayParameterType::INTEGER);
         }
 
         if ($listId) {
@@ -299,7 +299,7 @@ class StatRepository extends CommonRepository
                     );
 
                 $q->andWhere(sprintf('EXISTS (%s)', $subQ->getSQL()))
-                    ->setParameter('subQListIds', array_map('intval', $listId), Connection::PARAM_INT_ARRAY);
+                    ->setParameter('subQListIds', array_map('intval', $listId), ArrayParameterType::INTEGER);
             }
         }
 
@@ -350,7 +350,7 @@ class StatRepository extends CommonRepository
                     $sq->expr()->in('e.email_id', ':inIds')
                 )
             )->setParameter('false', false, 'boolean')
-            ->setParameter('inIds', $inIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('inIds', $inIds, ArrayParameterType::INTEGER);
 
         if (null !== $fromDate) {
             // make sure the date is UTC
@@ -413,7 +413,7 @@ class StatRepository extends CommonRepository
             $q->where(
                 $q->expr()->in('s.email_id', ':emailIds')
             )
-            ->setParameter('emailIds', $emailIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('emailIds', $emailIds, ArrayParameterType::INTEGER);
         }
 
         $q->andWhere('open_count > 0');
@@ -571,7 +571,7 @@ class StatRepository extends CommonRepository
                     $q->expr()->eq('e.is_failed', ':false')
                 )
             )->setParameter('false', false, 'boolean')
-            ->setParameter('emailIds', $emailIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('emailIds', $emailIds, ArrayParameterType::INTEGER);
 
         if (null !== $fromDate) {
             // make sure the date is UTC
@@ -622,7 +622,7 @@ class StatRepository extends CommonRepository
             ->where(
                 $qb->expr()->in('id', ':ids')
             )
-            ->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY)
+            ->setParameter('ids', $ids, ArrayParameterType::INTEGER)
             ->executeStatement();
     }
 

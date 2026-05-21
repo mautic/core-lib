@@ -2,6 +2,7 @@
 
 namespace Mautic\PageBundle\EventListener;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\CoreEvents;
 use Mautic\CoreBundle\Event\MaintenanceEvent;
@@ -83,8 +84,8 @@ class MaintenanceSubscriber implements EventSubscriberInterface
                   ->where(
                       $qb->expr()->in(
                           'lead_id', ':leadsIds')
-                      )
-                  ->setParameter('leadsIds', array_map('intval', $leadsIds), Connection::PARAM_INT_ARRAY)
+                  )
+                  ->setParameter('leadsIds', array_map('intval', $leadsIds), ArrayParameterType::INTEGER)
                     ->executeStatement();
                 ++$loop;
             }

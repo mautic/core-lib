@@ -2,7 +2,7 @@
 
 namespace Mautic\StageBundle\Entity;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
 /**
@@ -37,7 +37,7 @@ class LeadStageLogRepository extends CommonRepository
             $q->andWhere(
                 $q->expr()->notIn('stage_id', ':actions')
             )
-                ->setParameter('actions', $actions, Connection::PARAM_INT_ARRAY)
+                ->setParameter('actions', $actions, ArrayParameterType::INTEGER)
                 ->executeStatement();
 
             // Delete remaining leads as the new lead already belongs

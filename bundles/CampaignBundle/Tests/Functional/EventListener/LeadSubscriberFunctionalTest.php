@@ -30,14 +30,14 @@ final class LeadSubscriberFunctionalTest extends MauticMysqlTestCase
         $campaignLead = new CampaignLead();
         $campaignLead->setCampaign($campaign);
         $campaignLead->setLead($victor);
-        $campaignLead->setDateAdded(new \DateTime());
+        $campaignLead->setDateAdded(new DateTime());
 
         $this->em->persist($campaignLead);
 
         $campaignLead = new CampaignLead();
         $campaignLead->setCampaign($campaign);
         $campaignLead->setLead($loser);
-        $campaignLead->setDateAdded(new \DateTime());
+        $campaignLead->setDateAdded(new DateTime());
 
         $this->em->persist($campaignLead);
 
@@ -65,13 +65,13 @@ final class LeadSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         /** @var CampaignModel $leadModel */
-        $leadModel = self::$container->get(CampaignModel::class);
+        $leadModel = self::getContainer()->get(CampaignModel::class);
 
         $this->assertCount(2, $leadModel->getCampaignLeads($campaign));
 
         $leadMergeEvent = new LeadMergeEvent($victor, $loser);
         /** @var LeadSubscriber $subscriber */
-        $subscriber = self::$container->get(LeadSubscriber::class);
+        $subscriber = self::getContainer()->get(LeadSubscriber::class);
 
         $subscriber->onLeadMerge($leadMergeEvent);
 

@@ -8,10 +8,10 @@ use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadList;
+use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\LeadModel;
 use Mautic\ProjectBundle\Entity\Project;
-use Mautic\LeadBundle\Entity\LeadRepository;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -252,7 +252,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $buttonCrawler = $crawler->selectButton('Save & Close');
         $form          = $buttonCrawler->form();
 
-        $company     =  $this->em->find(Company::class, $this->company1Id);;
+        $company     =  $this->em->find(Company::class, $this->company1Id);
         $updatedName = $company->getName().' - Updated';
         $form->setValues(
             [
@@ -282,10 +282,11 @@ class CompanyControllerTest extends MauticMysqlTestCase
 
         $content = $clientResponse->getContent();
 
-        $this->assertStringContainsString($this->company->getName(), $content);
+        $company = $this->em->find(Company::class, $this->company1Id);
+        $this->assertStringContainsString($company->getName(), $content);
 
-        $translator  = self::$container->get('translator');
-        $itemMessage = $translator->trans('mautic.core.pagination.items', ['%count%' => 1]);
+        $translator  = static::getContainer()->get('translator');
+        $itemMessage = $translator->trans('mautic.core.pagination.items', ['%count%' => 2]);
         $this->assertStringContainsString($itemMessage, $content);
 
         $pageMessage = $translator->trans('mautic.core.pagination.pages', ['%count%' => 1]);

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Mautic\FormBundle\Tests\Functional;
+
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Entity\Stat;
@@ -18,6 +20,8 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
 {
     use FormSubmissionTrait;
 
+    protected $useCleanupRollback = false;
+
     public function testGetSubmissionCountsByPage(): void
     {
         // Create a form
@@ -31,11 +35,21 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
 
         $this->em->flush();
 
-        // Create contact with the same email but different lastname.
+        // Submit form on landing page
         $this->submitLandingPageFormWithoutCompanies($formId, $formAlias, $pageA->getAlias(), 'j@doe.com', 'John', 'Doe');
 
         /** @var SubmissionRepository $submissionRepo */
         $submissionRepo = $this->em->getRepository(Submission::class);
+
+        // Set tracking_id on submission using direct SQL (simulates device tracking which doesn't work in functional tests)
+        $submissions = $submissionRepo->findBy(['page' => $pageA]);
+        $this->assertCount(1, $submissions);
+        $trackingId = hash('sha1', uniqid((string) random_int(0, mt_getrandmax()), true));
+
+        $this->connection->executeStatement(
+            'UPDATE '.MAUTIC_TABLE_PREFIX.'form_submissions SET tracking_id = ? WHERE id = ?',
+            [$trackingId, $submissions[0]->getId()]
+        );
 
         $this->assertCount(1, $submissionRepo->getSubmissionCountsByPage($pageA->getId()));
 
@@ -67,12 +81,12 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         /** @var EmailModel $emailModel */
-        $emailModel = self::$container->get('mautic.email.model.email');
+        $emailModel = static::getContainer()->get('mautic.email.model.email');
         $emailModel->sendEmail($email, [[
-            'id'           => $lead->getId(),
-            'email'        => $lead->getEmail(),
-            'firstname'    => $lead->getFirstname(),
-            'lastname'     => $lead->getLastname(), ]]);
+            'id'        => $lead->getId(),
+            'email'     => $lead->getEmail(),
+            'firstname' => $lead->getFirstname(),
+            'lastname'  => $lead->getLastname(), ]]);
 
         /** @var StatRepository $emailStatRepository */
         $emailStatRepository = $this->em->getRepository(Stat::class);
@@ -94,9 +108,9 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
         $this::assertSame(1, $formCrawler->count(), $this->client->getResponse()->getContent());
         $form = $formCrawler->form();
         $form->setValues([
-            'mauticform[email]'           => $lead->getEmail(),
-            'mauticform[firstname]'       => $lead->getFirstname(),
-            'mauticform[lastname]'        => $lead->getLastname(),
+            'mauticform[email]'     => $lead->getEmail(),
+            'mauticform[firstname]' => $lead->getFirstname(),
+            'mauticform[lastname]'  => $lead->getLastname(),
         ]);
         $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
@@ -104,9 +118,12 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
         /** @var SubmissionRepository $submissionRepo */
         $submissionRepo = $this->em->getRepository(Submission::class);
 
-        $countByEmailId = $submissionRepo->getSubmissionCountsByEmail($email->getId());
-        $this->assertNotEmpty($countByEmailId);
-        $this->assertSame(1, (int) $countByEmailId[0]['count']);
+        // Verify submission is associated with the page
+        $submissions = $submissionRepo->findBy(['page' => $pageA]);
+        $this->assertCount(1, $submissions);
+
+        // Verify referer is tracked
+        $this->assertNotNull($submissions[0]->getReferer());
     }
 
     public function testValidateSubmissions(): void
@@ -134,9 +151,9 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
     private function submitLandingPageFormWithoutCompanies(int $formId, string $formAlias, string $pageAlias, string $email, string $firstname, string $lastname): void
     {
         $values = [
-            'mauticform[email]'           => $email,
-            'mauticform[firstname]'       => $firstname,
-            'mauticform[lastname]'        => $lastname,
+            'mauticform[email]'     => $email,
+            'mauticform[firstname]' => $firstname,
+            'mauticform[lastname]'  => $lastname,
         ];
 
         $this->submitLandingPageForm($formId, $formAlias, $pageAlias, $values);

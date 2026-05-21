@@ -287,7 +287,7 @@ class EventRepository extends CommonRepository
             ->where(
                 $qb->expr()->in('parent_id', ':events')
             )
-            ->setParameter('events', $events, Connection::PARAM_INT_ARRAY)
+            ->setParameter('events', $events, ArrayParameterType::INTEGER)
             ->executeStatement();
     }
 

@@ -2,7 +2,7 @@
 
 namespace Mautic\EmailBundle\Entity;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Types\Types;
@@ -11,6 +11,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Mautic\ChannelBundle\Entity\MessageQueue;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\CoreBundle\Helper\DateTimeHelper;
+use Mautic\CoreBundle\Helper\QueryBuilderManipulatorTrait;
 use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 
@@ -20,6 +21,7 @@ use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 class EmailRepository extends CommonRepository
 {
     use ProjectRepositoryTrait;
+    use QueryBuilderManipulatorTrait;
     public const EMAILS_PREFIX        = 'e';
 
     public const DNC_PREFIX           = 'dnc';
@@ -46,7 +48,7 @@ class EmailRepository extends CommonRepository
             $q->andWhere(
                 $q->expr()->in('l.id', ':leadIds')
             )
-            ->setParameter('leadIds', $leadIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('leadIds', $leadIds, ArrayParameterType::INTEGER);
         }
 
         $results = $q->executeQuery()->fetchAllAssociative();
@@ -213,9 +215,9 @@ class EmailRepository extends CommonRepository
                 $variantIds[] = (string) $emailId;
             }
             $statQb->andWhere($statQb->expr()->in('stat.email_id', ':variantIds'))
-                ->setParameter('variantIds', $variantIds, Connection::PARAM_INT_ARRAY);
+                ->setParameter('variantIds', $variantIds, ArrayParameterType::INTEGER);
             $mqQb->andWhere($mqQb->expr()->in('mq.channel_id', ':variantIds'))
-                ->setParameter('variantIds', $variantIds, Connection::PARAM_INT_ARRAY);
+                ->setParameter('variantIds', $variantIds, ArrayParameterType::INTEGER);
         } else {
             $statQb->andWhere($statQb->expr()->eq('stat.email_id', (int) $emailId));
             $mqQb->andWhere($mqQb->expr()->eq('mq.channel_id', (int) $emailId));
@@ -255,7 +257,7 @@ class EmailRepository extends CommonRepository
                     $segmentQb->expr()->eq('ll.manually_removed', ':false')
                 )
             )
-            ->setParameter('listIds', $listIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('listIds', $listIds, ArrayParameterType::INTEGER)
             ->setParameter('false', false, Types::BOOLEAN);
 
         if (null !== $maxDate) {
@@ -366,7 +368,7 @@ class EmailRepository extends CommonRepository
         $batchSize,
         $maxDate,
         $variantIds = null,
-        $listIds = null
+        $listIds = null,
     ) {
         $countOnly = false;
         $limit     = null;
@@ -777,7 +779,7 @@ class EmailRepository extends CommonRepository
             ->where(
                 $qb->expr()->in('id', ':relatedIds')
             )
-            ->setParameter('relatedIds', $relatedIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('relatedIds', $relatedIds, ArrayParameterType::INTEGER)
             ->executeStatement();
     }
 
@@ -939,7 +941,7 @@ class EmailRepository extends CommonRepository
         $queryBuilder->select('ll.lead_id')
             ->from(MAUTIC_TABLE_PREFIX.'lead_lists_leads', 'll')
             ->where($queryBuilder->expr()->in('ll.leadlist_id', ':excludedListIds'))
-            ->setParameter('excludedListIds', $excludedListIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('excludedListIds', $excludedListIds, ArrayParameterType::INTEGER);
 
         return $queryBuilder;
     }

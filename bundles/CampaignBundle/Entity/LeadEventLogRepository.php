@@ -188,7 +188,7 @@ class LeadEventLogRepository extends CommonRepository
                 $query->andWhere(
                     $query->expr()->in('e.event_type', ':eventTypes')
                 );
-                $query->setParameter('eventTypes', $options['eventType'], Connection::PARAM_STR_ARRAY);
+                $query->setParameter('eventTypes', $options['eventType'], ArrayParameterType::STRING);
             } else {
                 $query->andwhere('e.event_type = :eventTypes')
                     ->setParameter('eventTypes', $options['eventType']);
@@ -355,7 +355,7 @@ class LeadEventLogRepository extends CommonRepository
             $q->andWhere(
                 $q->expr()->notIn('event_id', ':ids')
             )
-                ->setParameter('ids', $exists, Connection::PARAM_INT_ARRAY)
+                ->setParameter('ids', $exists, ArrayParameterType::INTEGER)
                 ->executeStatement();
 
             // Delete remaining leads as the new lead already belongs
@@ -472,7 +472,7 @@ class LeadEventLogRepository extends CommonRepository
                     $q->expr()->isNull('c.deleted')
                 )
             )
-            ->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
+            ->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
         return new ArrayCollection($q->getQuery()->getResult());
     }
@@ -527,7 +527,7 @@ class LeadEventLogRepository extends CommonRepository
                     $qb->expr()->in('log.lead_id', ':contactIds')
                 )
             )
-            ->setParameter('contactIds', $contactIds, Connection::PARAM_INT_ARRAY);
+            ->setParameter('contactIds', $contactIds, ArrayParameterType::INTEGER);
 
         $results = $qb->executeQuery()->fetchAllAssociative();
 

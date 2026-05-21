@@ -21,7 +21,7 @@ final class AuditLogRepositoryTest extends MauticMysqlTestCase
     public function testGetAuditLogsForSingleLead(array $filters, int $expectedCount): void
     {
         /** @var LeadModel $contactModel */
-        $contactModel = self::$container->get('mautic.lead.model.lead');
+        $contactModel = self::getContainer()->get('mautic.lead.model.lead');
 
         $contact = new Lead();
         $contact->setEmail('john@doe.com');
@@ -49,7 +49,7 @@ final class AuditLogRepositoryTest extends MauticMysqlTestCase
     /**
      * @return iterable<string, mixed>
      */
-    public function dataForGetAuditLogsForLeads(): iterable
+    public static function dataForGetAuditLogsForLeads(): iterable
     {
         yield 'No filters' => [
             [],

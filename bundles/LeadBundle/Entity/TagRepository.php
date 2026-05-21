@@ -3,9 +3,7 @@
 namespace Mautic\LeadBundle\Entity;
 
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Connection;
 use Mautic\CoreBundle\Entity\CommonRepository;
-use PDO;
 
 /**
  * @extends CommonRepository<Tag>
@@ -27,7 +25,7 @@ class TagRepository extends CommonRepository
         $qb->select('t.id')
             ->from(MAUTIC_TABLE_PREFIX.'lead_tags', 't')
             ->having(sprintf('(%s)', $havingQb->getSQL()).' = 0');
-        $delete = $qb->executeQuery()->fetchAssociative();
+        $delete = $qb->executeQuery()->fetchFirstColumn();
 
         if (count($delete)) {
             $qb->resetQueryParts();
@@ -35,7 +33,7 @@ class TagRepository extends CommonRepository
                 ->where(
                     $qb->expr()->in('id', ':deleteIds')
                 )
-                ->setParameter('deleteIds', $delete, Connection::PARAM_STR_ARRAY)
+                ->setParameter('deleteIds', $delete, ArrayParameterType::INTEGER)
                 ->executeStatement();
         }
     }

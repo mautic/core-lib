@@ -56,6 +56,7 @@ final class CampaignRepositoryFunctionalTest extends MauticMysqlTestCase
     {
         $segment = new LeadList();
         $segment->setName('Segment 1');
+        $segment->setPublicName('Segment 1');
         $segment->setAlias('alias');
 
         $this->em->persist($segment);

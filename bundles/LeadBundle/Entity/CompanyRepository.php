@@ -3,7 +3,7 @@
 namespace Mautic\LeadBundle\Entity;
 
 use Doctrine\Common\Collections\Order;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\ORM\QueryBuilder;
 use Mautic\CoreBundle\Entity\CommonRepository;
@@ -289,7 +289,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
         $q->where(
             $q->expr()->in('cl.company_id', ':companyIds')
         )
-            ->setParameter('companyIds', $companyIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('companyIds', $companyIds, ArrayParameterType::INTEGER)
             ->groupBy('cl.company_id');
 
         $result = $q->executeQuery()->fetchAllAssociative();
@@ -363,7 +363,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
                     $qb->expr()->in('l.lead_id', ':leadIds')
                 )
             )
-            ->setParameter('leadIds', $contacts, Connection::PARAM_INT_ARRAY)
+            ->setParameter('leadIds', $contacts, ArrayParameterType::INTEGER)
             ->addOrderBy('l.date_added', 'DESC') // primary should be [0]
             ->addOrderBy('l.company_id', 'DESC');
 

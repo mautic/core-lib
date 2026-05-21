@@ -60,11 +60,11 @@ class HitRepositoryTest extends MauticMysqlTestCase
 
         $leadOne  = $this->createLead();
         $leadTwo  = $this->createLead();
-        $this->createHit($leadOne, new DateTime('-10 second'), 'one-first', $emailOne);
-        $this->createHit($leadOne, new DateTime('-20 second'), 'one-first', $emailTwo);
-        $this->createHit($leadOne, new DateTime('-5 second'), 'one-second', $emailThree);
-        $this->createHit($leadTwo, new DateTime('-50 second'), 'two-first', $emailOne);
-        $this->createHit($leadTwo, new DateTime('-40 second'), 'two-first', $emailTwo);
+        $this->createHit($leadOne, new \DateTime('-10 second'), 'one-first', $emailOne);
+        $this->createHit($leadOne, new \DateTime('-20 second'), 'one-first', $emailTwo);
+        $this->createHit($leadOne, new \DateTime('-5 second'), 'one-second', $emailThree);
+        $this->createHit($leadTwo, new \DateTime('-50 second'), 'two-first', $emailOne);
+        $this->createHit($leadTwo, new \DateTime('-40 second'), 'two-first', $emailTwo);
         $this->em->flush();
 
         $this->em->clear();
@@ -87,11 +87,11 @@ class HitRepositoryTest extends MauticMysqlTestCase
 
         $leadOne  = $this->createLead();
         $leadTwo  = $this->createLead();
-        $this->createHit($leadOne, new DateTime('-10 second'), 'one-first', $pageOne);
-        $this->createHit($leadOne, new DateTime('-20 second'), 'one-first', $pageTwo);
-        $this->createHit($leadOne, new DateTime('-5 second'), 'one-second', $pageThree);
-        $this->createHit($leadTwo, new DateTime('-50 second'), 'two-first', $pageOne);
-        $this->createHit($leadTwo, new DateTime('-40 second'), 'two-first', $pageTwo);
+        $this->createHit($leadOne, new \DateTime('-10 second'), 'one-first', $pageOne);
+        $this->createHit($leadOne, new \DateTime('-20 second'), 'one-first', $pageTwo);
+        $this->createHit($leadOne, new \DateTime('-5 second'), 'one-second', $pageThree);
+        $this->createHit($leadTwo, new \DateTime('-50 second'), 'two-first', $pageOne);
+        $this->createHit($leadTwo, new \DateTime('-40 second'), 'two-first', $pageTwo);
         $this->em->flush();
 
         $this->em->clear();
@@ -104,11 +104,11 @@ class HitRepositoryTest extends MauticMysqlTestCase
         $this->assertSame(1, $counts[$pageThree->getId()]['count']);
     }
 
-    private function assertHitDate(DateTime $expectedHitDate, Lead $lead, ?string $trackingId): void
+    private function assertHitDate(\DateTime $expectedHitDate, Lead $lead, ?string $trackingId): void
     {
         $hitDate = $this->hitRepository->getLatestHitDateByLead((int) $lead->getId(), $trackingId);
 
-        Assert::assertInstanceOf(DateTime::class, $hitDate);
+        Assert::assertInstanceOf(\DateTime::class, $hitDate);
         Assert::assertSame($expectedHitDate->getTimestamp(), $hitDate->getTimestamp());
     }
 

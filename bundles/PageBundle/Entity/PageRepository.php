@@ -2,7 +2,7 @@
 
 namespace Mautic\PageBundle\Entity;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 
@@ -245,7 +245,7 @@ class PageRepository extends CommonRepository
             ->where(
                 $qb->expr()->in('id', ':ids')
             )
-            ->setParameter('ids', $relatedIds, Connection::PARAM_INT_ARRAY)
+            ->setParameter('ids', $relatedIds, ArrayParameterType::INTEGER)
             ->executeStatement();
     }
 

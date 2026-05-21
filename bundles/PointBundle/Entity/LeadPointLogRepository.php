@@ -2,7 +2,7 @@
 
 namespace Mautic\PointBundle\Entity;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 
 /**
@@ -37,7 +37,7 @@ class LeadPointLogRepository extends CommonRepository
             $q->andWhere(
                 $q->expr()->notIn('point_id', ':actions')
             )
-                ->setParameter('actions', $actions, Connection::PARAM_INT_ARRAY)
+                ->setParameter('actions', $actions, ArrayParameterType::INTEGER)
                 ->executeStatement();
 
             // Delete remaining leads as the new lead already belongs

@@ -21,7 +21,7 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
     {
         parent::setUp();
 
-        $this->model = self::$container->get('mautic.stage.model.stage');
+        $this->model = self::getContainer()->get('mautic.stage.model.stage');
     }
 
     public function testUpdateLead(): void
@@ -50,7 +50,7 @@ final class LeadSubscriberTest extends MauticMysqlTestCase
         $leadMergeEvent = new LeadMergeEvent($leadTwo, $leadOne);
 
         /** @var LeadSubscriber $subscriber */
-        $subscriber = self::$container->get(LeadSubscriber::class);
+        $subscriber = self::getContainer()->get(LeadSubscriber::class);
 
         $subscriber->onLeadMerge($leadMergeEvent);
 

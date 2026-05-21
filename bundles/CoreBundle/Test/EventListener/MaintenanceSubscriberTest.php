@@ -3,7 +3,6 @@
 namespace Mautic\CoreBundle\Test\EventListener;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Portability\Statement;
 use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Mautic\CoreBundle\CoreEvents;
@@ -91,31 +90,28 @@ class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
             ->expects($this->exactly(4))
             ->method('where')
             ->willReturn($qb);
-        $statementAlias   = $this->createMock(Statement::class);
         $qb
-            ->expects($this->exactly(6))
-            ->method('execute')
-            ->willReturn($statementAlias);
+            ->expects($this->exactly(4))
+            ->method('executeQuery')
+            ->willReturnCallback(function () {
+                static $callCount = 0;
+                ++$callCount;
+                $result = $this->createMock(\Doctrine\DBAL\Result::class);
+                $result->method('fetchAllAssociative')->willReturn(match ($callCount) {
+                    1       => [['id' => 765]],
+                    3       => [['id' => 764]],
+                    default => [],
+                });
+
+                return $result;
+            });
+        $qb
+            ->expects($this->exactly(2))
+            ->method('executeStatement')
+            ->willReturn(1);
 
         $qb->method('setMaxResults')->with(10000)->willReturn($qb);
         $qb->method('setFirstResult')->with(0)->willReturn($qb);
-
-        $statementAlias
-            ->method('fetchAll')
-            ->willReturnOnConsecutiveCalls(
-                [
-                    [
-                        'id'      => 765,
-                    ],
-                ],
-                [],
-                [
-                    [
-                        'id'      => 764,
-                    ],
-                ],
-                [],
-            );
 
         $connection = $this->createMock(Connection::class);
         $connection
@@ -132,6 +128,6 @@ class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
             ->method('trans')
             ->willReturn($translatedString);
 
-        $subscriber->onDataCleanup($event);
+        $this->assertNull($subscriber->onDataCleanup($event));
     }
 }
