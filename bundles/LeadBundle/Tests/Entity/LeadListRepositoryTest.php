@@ -353,7 +353,7 @@ SQL;
         }
 
         $this->queryBuilderMock->expects(self::once())
-                ->method('where')
+            ->method('where')
             ->with($this->expressionMock)
             ->willReturnSelf();
 

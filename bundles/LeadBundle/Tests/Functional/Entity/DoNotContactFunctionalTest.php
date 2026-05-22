@@ -62,6 +62,7 @@ final class DoNotContactFunctionalTest extends MauticMysqlTestCase
     private function createLead(string $email, DoNotContact $doNotContact): Lead
     {
         $lead = new Lead();
+        $lead->setEmail($email);
         $lead->addDoNotContactEntry($doNotContact);
 
         $this->em->persist($lead);
