@@ -136,6 +136,9 @@ $container->loadFromExtension('symfonycasts_sass', [
         '%mautic.application_dir%/app/bundles/CoreBundle/Assets/css/app.scss',
     ],
     'sass_options' => [
+        'load_path'  => [
+            '%kernel.project_dir%/vendor/twbs/bootstrap-sass/assets/stylesheets',
+        ],
         'source_map' => false,
     ],
 ]);

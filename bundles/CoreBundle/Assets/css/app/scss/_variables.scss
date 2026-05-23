@@ -2,7 +2,7 @@
 //== Bootstrap variable
 //
 //## import bootstrap variable.
-@import '../../../../../../../vendor/twbs/bootstrap-sass/assets/stylesheets/bootstrap/variables';
+@import 'bootstrap/variables';
 @import '../../libraries/bootstrap/bootstrap-mautic-custom-variables';
 @import 'components/brand';
 @import 'mixins';

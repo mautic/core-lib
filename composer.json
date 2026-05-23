@@ -131,6 +131,7 @@
         "[project-root]/.env": "assets/scaffold/files/.env",
         "[project-root]/.gitignore": "assets/scaffold/files/example.gitignore",
         "[project-root]/webpack.config.js": "assets/scaffold/files/webpack.config.js",
+        "[project-root]/importmap.php": "assets/scaffold/files/importmap.php",
         "[project-root]/tsconfig.json": "assets/scaffold/files/tsconfig.json",
         "[project-root]/package.json": "assets/scaffold/files/package.json",
         "[project-root]/package-lock.json": "assets/scaffold/files/package-lock.json",
