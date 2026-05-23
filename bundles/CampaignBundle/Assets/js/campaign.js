@@ -51,7 +51,7 @@ Mautic.campaignOnLoad = function (container, response) {
 
             // add modified events data for event clone and insert requests
             mQuery("#CampaignCanvas .list-campaign-event a[data-toggle='ajax']").off('click.ajax').on('click.ajax', Mautic.handleCampaignEventAjaxClick);
-            mQuery("#EventInsertButton").off('click.ajax').on('click.ajax', Mautic.handleCampaignEventAjaxClick);
+            mQuery("[data-campaign-event-insert-button]").off('click.ajax').on('click.ajax', Mautic.handleCampaignEventAjaxClick);
 
             // adding delete option ajax for sources
             mQuery("#CampaignCanvas .list-campaign-source a[data-toggle='ajax-delete']").on("click.ajax", function (event) {
@@ -2252,7 +2252,7 @@ Mautic.campaignBuilderUpdateEventList = function (groups, hidden, view, active, 
 };
 
 Mautic.campaignBuilderUpdateEventCloneButton = function (groups, eventType, anchorName) {
-    var $insertButton = mQuery('#EventInsertButton');
+    var $insertButton = mQuery('[data-campaign-event-insert-button]');
     var updatedUrl = $insertButton.attr('href').replace(/anchor=(.*?)$/, "anchor=" + anchorName + "&anchorEventType=" + eventType);
     $insertButton.attr('href', updatedUrl);
 };
