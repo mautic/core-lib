@@ -1,3 +1,8 @@
+@mixin mautic-alert-styles($color) {
+  @include gradient-vertical($start-color: $color, $end-color: darken($color, 7.5%));
+  border-color: darken($color, 15%);
+}
+
 .alert-mautic {
   a {
     color: $alert-mautic-text;
@@ -5,7 +10,7 @@
   }
 
   @include alert-variant($alert-mautic-bg, $alert-mautic-border, $alert-mautic-text);
-  @include alert-styles($alert-mautic-bg);
+  @include mautic-alert-styles($alert-mautic-bg);
 }
 
 @mixin transition($transition...) {

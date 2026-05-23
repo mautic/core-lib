@@ -90,7 +90,6 @@
         margin-left: 3px;
         position: absolute;
         @include transition(unquote("opacity .3s ease .1s, margin-left 0s ease .2s"));
-        @include transition(unquote("opacity .3s ease .1s, margin-left 0s ease .2s"));
       }
       > .mautic-brand {
         @include transition(padding-left .3s ease);
