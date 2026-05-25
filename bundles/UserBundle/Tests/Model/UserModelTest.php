@@ -3,12 +3,15 @@
 namespace Mautic\UserBundle\Tests\Model;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\EmailBundle\Helper\MailHelper;
+use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Entity\UserInvite;
 use Mautic\UserBundle\Entity\UserToken;
 use Mautic\UserBundle\Model\UserModel;
 use Mautic\UserBundle\Model\UserToken\UserTokenServiceInterface;
@@ -19,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 
 class UserModelTest extends TestCase
 {
@@ -64,6 +68,11 @@ class UserModelTest extends TestCase
      */
     private MockObject $logger;
 
+    /**
+     * @var MockObject&Environment
+     */
+    private MockObject $twig;
+
     public function setUp(): void
     {
         $this->mailHelper       = $this->createMock(MailHelper::class);
@@ -74,6 +83,7 @@ class UserModelTest extends TestCase
         $this->translator       = $this->createMock(Translator::class);
         $this->userToken        = $this->createMock(UserToken::class);
         $this->logger           = $this->createMock(LoggerInterface::class);
+        $this->twig             = $this->createMock(Environment::class);
 
         $this->userModel = new UserModel(
             $this->mailHelper,
@@ -85,7 +95,8 @@ class UserModelTest extends TestCase
             $this->translator,
             $this->createMock(UserHelper::class),
             $this->logger,
-            $this->createMock(CoreParametersHelper::class)
+            $this->createMock(CoreParametersHelper::class),
+            $this->twig
         );
     }
 
@@ -194,5 +205,104 @@ class UserModelTest extends TestCase
 
         // Means no erros.
         $this->userModel->sendMailToEmailAddresses($toMails, $subject, $content);
+    }
+
+    public function testCreateInviteStoresInviteAndSendsTemplatedEmail(): void
+    {
+        $email = 'invitee@example.com';
+        $link  = 'https://mautic.example/invite/token';
+        $role  = new Role();
+
+        $roleRepository = $this->createMock(EntityRepository::class);
+        $roleRepository->expects($this->once())
+            ->method('find')
+            ->with(12)
+            ->willReturn($role);
+
+        $this->entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with(Role::class)
+            ->willReturn($roleRepository);
+
+        $this->entityManager->expects($this->once())
+            ->method('persist')
+            ->with($this->callback(function (UserInvite $invite) use ($email, $role): bool {
+                return $email === $invite->getEmail()
+                    && 64 === strlen((string) $invite->getToken())
+                    && $role === $invite->getRole()
+                    && $invite->getExpiration() > new \DateTime();
+            }));
+
+        $this->entityManager->expects($this->once())
+            ->method('flush');
+
+        $this->router->expects($this->once())
+            ->method('generate')
+            ->with('mautic_user_invite_register', $this->isType('array'), UrlGeneratorInterface::ABSOLUTE_URL)
+            ->willReturn($link);
+
+        $this->translator->expects($this->exactly(2))
+            ->method('trans')
+            ->willReturnMap([
+                ['mautic.user.invite.subject', [], null, null, 'Invite subject'],
+                ['mautic.user.invite.email.body', ['%invite_link%' => $link], null, null, 'Invite body '.$link],
+            ]);
+
+        $this->twig->expects($this->once())
+            ->method('render')
+            ->with('@MauticUser/Email/invite.html.twig', ['inviteLink' => $link])
+            ->willReturn('<p>Invite html</p>');
+
+        $this->mailHelper->expects($this->once())
+            ->method('getMailer')
+            ->willReturn($this->mailHelper);
+
+        $this->mailHelper->expects($this->once())
+            ->method('setTo')
+            ->with([$email => $email]);
+
+        $this->mailHelper->expects($this->once())
+            ->method('setSubject')
+            ->with('Invite subject');
+
+        $this->mailHelper->expects($this->once())
+            ->method('setBody')
+            ->with('<p>Invite html</p>');
+
+        $this->mailHelper->expects($this->once())
+            ->method('setPlainText')
+            ->with('Invite body '.$link);
+
+        $this->mailHelper->expects($this->once())
+            ->method('send');
+
+        $invite = $this->userModel->createInvite($email, 12);
+
+        $this->assertSame($email, $invite->getEmail());
+        $this->assertSame($role, $invite->getRole());
+    }
+
+    public function testCreateInviteRejectsUnknownRole(): void
+    {
+        $roleRepository = $this->createMock(EntityRepository::class);
+        $roleRepository->expects($this->once())
+            ->method('find')
+            ->with(404)
+            ->willReturn(null);
+
+        $this->entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with(Role::class)
+            ->willReturn($roleRepository);
+
+        $this->translator->expects($this->once())
+            ->method('trans')
+            ->with('mautic.user.invite.error.invalid_role', [], 'validators')
+            ->willReturn('Invalid role');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid role');
+
+        $this->userModel->createInvite('invitee@example.com', 404);
     }
 }

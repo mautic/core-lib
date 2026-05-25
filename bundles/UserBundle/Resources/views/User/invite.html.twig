@@ -15,6 +15,9 @@
         {{ form_widget(form.role) }}
         {{ form_errors(form.role) }}
     </div>
+    {% if form._token is defined %}
+        {{ form_widget(form._token) }}
+    {% endif %}
     <button type="submit" class="sr-only" tabindex="-1" aria-hidden="true"></button>
 {{ form_end(form, {'render_rest': false}) }}
 {% endset %}

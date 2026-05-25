@@ -27,6 +27,7 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\Event;
+use Twig\Environment;
 
 /**
  * @extends FormModel<User>
@@ -44,6 +45,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
         UserHelper $userHelper,
         LoggerInterface $mauticLogger,
         CoreParametersHelper $coreParametersHelper,
+        private Environment $twig,
     ) {
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
@@ -271,7 +273,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
         }
         $resetLink  = $this->router->generate('mautic_user_passwordresetconfirm', ['token' => $resetToken->getSecret()], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $mailer->setTo([$user->getEmail() => $user->getName()]);
+        $mailer->setTo([$user->getEmail() ?? '' => $user->getName()]);
         $mailer->setSubject($this->translator->trans('mautic.user.user.passwordreset.subject'));
         $text = $this->translator->trans(
             'mautic.user.user.passwordreset.email.body',
@@ -328,7 +330,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
     public function emailUser(User $user, string $subject, string $content): void
     {
         $mailer  = $this->prepareEMail($subject, $content);
-        $mailer->setTo([$user->getEmail() => $user->getName()]);
+        $mailer->setTo([$user->getEmail() ?? '' => $user->getName()]);
         $mailer->send();
     }
 
@@ -411,10 +413,12 @@ class UserModel extends FormModel implements GlobalSearchInterface
         $mailer = $this->mailHelper->getMailer();
         $mailer->setTo([$email => $email]);
         $mailer->setSubject($this->translator->trans('mautic.user.invite.subject'));
-        $text = $this->translator->trans('mautic.user.invite.email.body', ['%invite_link%' => '<a href="'.$link.'">'.$link.'</a>']);
+        $text = $this->translator->trans('mautic.user.invite.email.body', ['%invite_link%' => $link]);
         $text = str_replace('\\n', "\n", $text);
-        $html = nl2br($text);
-        $mailer->setBody($html);
+        $mailer->setBody($this->twig->render('@MauticUser/Email/invite.html.twig', [
+            'inviteLink' => $link,
+        ]));
+        $mailer->setPlainText($text);
         $mailer->send();
 
         return $invite;

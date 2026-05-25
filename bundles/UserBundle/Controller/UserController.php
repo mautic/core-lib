@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\UserBundle\Controller;
 
 use JMS\Serializer\SerializerInterface;
@@ -15,6 +17,7 @@ use Mautic\UserBundle\Form\Type\ContactType;
 use Mautic\UserBundle\Form\Type\UserInviteType;
 use Mautic\UserBundle\Model\RoleModel;
 use Mautic\UserBundle\Model\UserModel;
+use Mautic\UserBundle\Security\SAML\Helper as SAMLHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +32,7 @@ class UserController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, $page = 1)
+    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, int $page = 1)
     {
         if (!$this->security->isGranted('user:users:view')) {
             return $this->accessDenied();
@@ -174,7 +177,7 @@ class UserController extends FormController
         ]);
     }
 
-    public function newAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher): Response
+    public function newAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper)
     {
         if (!$this->security->isGranted('user:users:create')) {
             return $this->accessDenied();
@@ -249,20 +252,20 @@ class UserController extends FormController
             if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
                 return $this->postActionRedirect([
                     'returnUrl'       => $returnUrl,
-                    'viewParameters'  => ['page' => $page],
+                    'viewParameters'  => ['page' => $page, 'isSamlUser' => false],
                     'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::indexAction',
                     'passthroughVars' => [
                         'activeLink'    => '#mautic_user_index',
                         'mauticContent' => 'user',
                     ],
                 ]);
-            } elseif ($valid && !$cancelled) {
-                return $this->editAction($request, $languageHelper, $hasher, $user->getId(), true);
+            } elseif ($valid) {
+                return $this->editAction($request, $languageHelper, $hasher, $samlHelper, $user->getId(), true);
             }
         }
 
         return $this->delegateView([
-            'viewParameters'  => ['form' => $form->createView()],
+            'viewParameters'  => ['form' => $form->createView(), 'isSamlUser' => false],
             'contentTemplate' => '@MauticUser/User/form.html.twig',
             'passthroughVars' => [
                 'activeLink'    => '#mautic_user_new',
@@ -280,7 +283,7 @@ class UserController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function editAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, $objectId, $ignorePost = false)
+    public function editAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper, $objectId, $ignorePost = false)
     {
         if (!$this->security->isGranted('user:users:edit')) {
             return $this->accessDenied();
@@ -336,6 +339,11 @@ class UserController extends FormController
 
         $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
         $form   = $model->createForm($user, $this->formFactory, $action);
+
+        $isSamlUser    = $samlHelper->isSamlSession();
+        if ($isSamlUser) {
+            $form->remove('plainPassword');
+        }
 
         // /Check for a submitted form and process it
         if (!$ignorePost && 'POST' === $request->getMethod()) {
@@ -409,11 +417,12 @@ class UserController extends FormController
 
         return $this->delegateView([
             'viewParameters'  => [
-                'form'          => $form->createView(),
-                'logs'          => $userActivity,
-                'users'         => $users,
-                'roles'         => $roles,
-                'editAction'    => true,
+                'form'                   => $form->createView(),
+                'logs'                   => $userActivity,
+                'users'                  => $users,
+                'roles'                  => $roles,
+                'editAction'             => true,
+                'isSamlUser'             => $isSamlUser,
             ],
             'contentTemplate' => '@MauticUser/User/form.html.twig',
             'passthroughVars' => [
