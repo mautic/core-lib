@@ -68,5 +68,4 @@ final class UserInviteType extends AbstractType
             $builder->setAction($options['action']);
         }
     }
-
 }
