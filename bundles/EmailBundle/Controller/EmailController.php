@@ -383,6 +383,13 @@ class EmailController extends FormController
                 'objectId'     => $email->getId(),
             ]
         );
+        $clickCountsSorting = [
+            'sessionVar' => 'email.clicks',
+            'orderBy'    => 't.hits',
+            'target'     => '#clicks-container',
+            'tmpl'       => 'click_counts',
+            'baseUrl'    => $clickCountsBaseUrl,
+        ];
 
         // Get click through stats
         $trackableLinks = $model->getEmailClickStats(
@@ -392,55 +399,51 @@ class EmailController extends FormController
         );
 
         if ('click_counts' === $request->get('tmpl')) {
-            return $this->delegateView(
-                [
-                    'viewParameters' => [
-                        'trackables'          => $trackableLinks,
-                        'entity'              => $email,
-                        'channel'             => 'email',
-                        'clickCountsSortable' => true,
-                        'clickCountsBaseUrl'  => $clickCountsBaseUrl,
-                        'tmpl'                => 'click_counts',
-                    ],
-                    'contentTemplate' => '@MauticPage/Trackable/click_counts.html.twig',
-                    'passthroughVars' => [
-                        'activeLink'    => '#mautic_email_index',
-                        'mauticContent' => 'email',
-                        'route'         => $clickCountsBaseUrl,
-                    ],
-                ]
-            );
-        }
+            $view = [
+                'viewParameters' => [
+                    'trackables'          => $trackableLinks,
+                    'entity'              => $email,
+                    'channel'             => 'email',
+                    'clickCountsSortable' => true,
+                    'clickCountsSorting'  => $clickCountsSorting,
+                    'tmpl'                => 'click_counts',
+                ],
+                'contentTemplate' => '@MauticPage/Trackable/click_counts.html.twig',
+                'passthroughVars' => [
+                    'activeLink'    => '#mautic_email_index',
+                    'mauticContent' => 'email',
+                    'route'         => $clickCountsBaseUrl,
+                ],
+            ];
+        } else {
+            $draftPreviewUrl = null;
+            if ($emailConfig->isDraftEnabled() && $email->hasDraft()) {
+                $draftPreviewUrl = $this->generateUrl(
+                    'mautic_email_preview',
+                    [
+                        'objectId'   => $email->getId(),
+                        'objectType' => 'draft',
+                    ]
+                );
+            }
 
-        $draftPreviewUrl = null;
-        if ($emailConfig->isDraftEnabled() && $email->hasDraft()) {
-            $draftPreviewUrl = $this->generateUrl(
-                'mautic_email_preview',
-                [
-                    'objectId'   => $email->getId(),
-                    'objectType' => 'draft',
-                ]
-            );
-        }
+            $variants = [
+                'parent'             => $parent,
+                'children'           => $children,
+                'properties'         => $properties,
+                'criteria'           => $criteria['criteria'],
+            ];
 
-        $variants = [
-            'parent'             => $parent,
-            'children'           => $children,
-            'properties'         => $properties,
-            'criteria'           => $criteria['criteria'],
-        ];
+            $translations = [
+                'parent'   => $translationParent,
+                'children' => $translationChildren,
+            ];
 
-        $translations = [
-            'parent'   => $translationParent,
-            'children' => $translationChildren,
-        ];
+            $plainTextHelper = new PlainTextHelper();
+            $plainTextHelper->setHtml($email->getCustomHtml());
+            $emailPreview = $plainTextHelper->getPreview();
 
-        $plainTextHelper = new PlainTextHelper();
-        $plainTextHelper->setHtml($email->getCustomHtml());
-        $emailPreview = $plainTextHelper->getPreview();
-
-        return $this->delegateView(
-            [
+            $view = [
                 'returnUrl' => $this->generateUrl(
                     'mautic_email_action',
                     [
@@ -454,7 +457,7 @@ class EmailController extends FormController
                     'trackables'         => $trackableLinks,
                     'logs'               => $logs,
                     'isEmbedded'         => $request->get('isEmbedded') ?: false,
-                    'clickCountsBaseUrl' => $clickCountsBaseUrl,
+                    'clickCountsSorting' => $clickCountsSorting,
                     'variants'           => $variants,
                     'translations'       => $translations,
                     'permissions'        => $security->isGranted(
@@ -504,8 +507,10 @@ class EmailController extends FormController
                     'activeLink'    => '#mautic_email_index',
                     'mauticContent' => 'email',
                 ],
-            ]
-        );
+            ];
+        }
+
+        return $this->delegateView($view);
     }
 
     /**

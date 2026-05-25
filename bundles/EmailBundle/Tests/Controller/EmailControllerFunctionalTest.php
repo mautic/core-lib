@@ -34,6 +34,10 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 {
     use ControllerTrait;
 
+    private const CLICK_URL_LOW  = 'https://example.com/low';
+    private const CLICK_URL_MID  = 'https://example.com/mid';
+    private const CLICK_URL_HIGH = 'https://example.com/high';
+
     public function setUp(): void
     {
         $this->configParams['legacy_builder_enabled'] = true;
@@ -201,29 +205,33 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $fixtures = new EmailFixturesHelper($this->em);
-        $fixtures->createEmailLink('https://example.com/low', $email->getId(), 1, 1);
-        $fixtures->createEmailLink('https://example.com/high', $email->getId(), 5, 1);
-        $fixtures->createEmailLink('https://example.com/mid', $email->getId(), 3, 1);
+        $fixtures->createEmailLink(self::CLICK_URL_LOW, $email->getId(), 1, 1);
+        $fixtures->createEmailLink(self::CLICK_URL_HIGH, $email->getId(), 5, 1);
+        $fixtures->createEmailLink(self::CLICK_URL_MID, $email->getId(), 3, 1);
         $this->em->flush();
+
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}");
+        $this->assertResponseIsSuccessful();
+        Assert::assertGreaterThan(0, $crawler->filter('.click-list thead th[scope="col"]')->count());
 
         $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}?name=email.clicks&orderby=t.hits");
         $this->assertResponseIsSuccessful();
         Assert::assertSame(
             [
-                'https://example.com/high',
-                'https://example.com/mid',
-                'https://example.com/low',
+                self::CLICK_URL_HIGH,
+                self::CLICK_URL_MID,
+                self::CLICK_URL_LOW,
             ],
             $this->getClickCountUrls($crawler)
         );
 
-        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}?name=email.clicks&orderby=t.hits");
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}?tmpl=click_counts&name=email.clicks&orderby=t.hits");
         $this->assertResponseIsSuccessful();
         Assert::assertSame(
             [
-                'https://example.com/low',
-                'https://example.com/mid',
-                'https://example.com/high',
+                self::CLICK_URL_LOW,
+                self::CLICK_URL_MID,
+                self::CLICK_URL_HIGH,
             ],
             $this->getClickCountUrls($crawler)
         );
