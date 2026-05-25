@@ -811,13 +811,13 @@
 .grid-cols-7 { --grid--columns: 7; }
 .grid-cols-8 { --grid--columns: 8; }
 
-@media (min-width: @screen-md-min) {
+@media (min-width: $screen-md-min) {
     .grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (min-width: @screen-lg-min) {
+@media (min-width: $screen-lg-min) {
     .grid {
         grid-template-columns: repeat(var(--grid--columns), 1fr);
     }
