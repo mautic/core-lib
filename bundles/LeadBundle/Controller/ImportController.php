@@ -22,6 +22,7 @@ use Mautic\LeadBundle\Form\Type\LeadImportType;
 use Mautic\LeadBundle\Helper\Progress;
 use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\ImportModel;
+use Mautic\UserBundle\Entity\User;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -158,11 +159,10 @@ class ImportController extends FormController
         /** @var NotificationModel $notificationModel */
         $notificationModel = $this->getModel('core.notification');
 
-        $fileName = basename($fullPath);
-        $message  = $import && $import->getId()
-            ? $this->translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()])
-            : $this->translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
-        $notificationModel->addNotification($message, 'warning');
+        $fileName         = basename($fullPath);
+        $notificationUser = $this->getImportNotificationUser($import);
+        $message          = $this->getImportCancellationMessage($fileName, $import, $notificationUser);
+        $notificationModel->addNotification($message, 'warning', false, null, null, null, $notificationUser);
 
         $this->removeImportFile($fullPath);
         $this->logger->log(LogLevel::INFO, "Import for file {$fullPath} was canceled.");
@@ -637,6 +637,34 @@ class ImportController extends FormController
 
             $this->logger->log(LogLevel::WARNING, "File {$filepath} was removed.");
         }
+    }
+
+    private function getImportNotificationUser(?Import $import): ?User
+    {
+        if (!$import || !$import->getCreatedBy()) {
+            return null;
+        }
+
+        $user = $this->doctrine->getRepository(User::class)->find($import->getCreatedBy());
+
+        return $user instanceof User ? $user : null;
+    }
+
+    private function getImportCancellationMessage(string $fileName, ?Import $import, ?User $notificationUser): string
+    {
+        if (!$import || !$import->getId()) {
+            return $this->translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
+        }
+
+        if ($notificationUser && $this->user && $notificationUser->getId() !== $this->user->getId()) {
+            return $this->translator->trans('mautic.lead.import.canceled.with_id_and_user', [
+                '%file%' => $fileName,
+                '%id%'   => $import->getId(),
+                '%user%' => $this->user->getName(),
+            ]);
+        }
+
+        return $this->translator->trans('mautic.lead.import.canceled.with_id', ['%file%' => $fileName, '%id%' => $import->getId()]);
     }
 
     /**

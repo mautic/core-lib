@@ -284,6 +284,39 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $this->assertNotificationMessageContains('Import canceled for file test.csv (ID '.$import->getId().')');
     }
 
+    public function testCancelActionNotifiesImportOwnerWhenAnotherUserCancels(): void
+    {
+        $ownerRole = $this->createRole(true);
+        $owner     = $this->createUser($ownerRole, 'person.one', 'person.one@email.com', 'Person', 'One');
+
+        $cancellerRole = $this->createRole(true);
+        $canceller     = $this->createUser($cancellerRole, 'person.two', 'person.two@email.com', 'Person', 'Two');
+
+        $import = $this->createQueuedImport($owner);
+
+        $this->loginUser($canceller);
+        $this->client->setServerParameter('PHP_AUTH_USER', $canceller->getUserIdentifier());
+        $this->client->setServerParameter('PHP_AUTH_PW', 'Maut1cR0cks!');
+
+        $this->client->request(Request::METHOD_GET, '/');
+        $session = $this->client->getRequest()->getSession();
+        $session->set('mautic.lead.import.id', $import->getId());
+        $session->set('mautic.lead.import.file', 'test.csv');
+        $session->save();
+
+        $this->client->request(Request::METHOD_GET, '/s/contacts/import/cancel/0');
+
+        Assert::assertTrue($this->client->getResponse()->isSuccessful(), $this->client->getResponse()->getContent());
+        $this->assertNotificationMessageContainsForUser(
+            (int) $owner->getId(),
+            'Import canceled for file test.csv (ID '.$import->getId().') by Person Two'
+        );
+        $this->assertNotificationMessageDoesNotContainForUser(
+            (int) $canceller->getId(),
+            'Import canceled for file test.csv (ID '.$import->getId().') by Person Two'
+        );
+    }
+
     public function testImportWithSkipIfExistsFlagTrue(): void
     {
         $this->createBooleanField();
@@ -400,7 +433,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
         }
     }
 
-    private function createQueuedImport(): Import
+    private function createQueuedImport(?User $createdBy = null): Import
     {
         $import = new Import();
         $import->setObject('lead')
@@ -409,6 +442,9 @@ final class ImportControllerTest extends MauticMysqlTestCase
                ->setIsPublished(true)
                ->setDir('/tmp')
                ->setFile('test.csv');
+        if ($createdBy) {
+            $import->setCreatedBy($createdBy);
+        }
         $this->em->persist($import);
         $this->em->flush();
 
@@ -430,8 +466,13 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
     private function assertNotificationMessageContains(string $expectedSubstring): void
     {
+        $this->assertNotificationMessageContainsForUser(1, $expectedSubstring);
+    }
+
+    private function assertNotificationMessageContainsForUser(int $userId, string $expectedSubstring): void
+    {
         $notificationRepo = $this->em->getRepository(\Mautic\CoreBundle\Entity\Notification::class);
-        $notifications    = $notificationRepo->getNotifications(1);
+        $notifications    = $notificationRepo->getNotifications($userId);
         $found            = false;
         foreach ($notifications as $notification) {
             if (str_contains($notification['message'], $expectedSubstring)) {
@@ -441,6 +482,16 @@ final class ImportControllerTest extends MauticMysqlTestCase
             }
         }
         Assert::assertTrue($found, sprintf('Notification containing "%s" was not found', $expectedSubstring));
+    }
+
+    private function assertNotificationMessageDoesNotContainForUser(int $userId, string $expectedSubstring): void
+    {
+        $notificationRepo = $this->em->getRepository(\Mautic\CoreBundle\Entity\Notification::class);
+        $notifications    = $notificationRepo->getNotifications($userId);
+
+        foreach ($notifications as $notification) {
+            Assert::assertStringNotContainsString($expectedSubstring, $notification['message']);
+        }
     }
 
     private function createLead(?string $email = null, string $firstName = ''): Lead
@@ -480,13 +531,18 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $this->em->persist($permission);
     }
 
-    private function createUser(Role $role): User
-    {
+    private function createUser(
+        Role $role,
+        string $username = 'john.doe',
+        string $email = 'john.doe@email.com',
+        string $firstName = 'John',
+        string $lastName = 'Doe',
+    ): User {
         $user = new User();
-        $user->setFirstName('John');
-        $user->setLastName('Doe');
-        $user->setUsername('john.doe');
-        $user->setEmail('john.doe@email.com');
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
+        $user->setUsername($username);
+        $user->setEmail($email);
         $hasher = self::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
         \assert($hasher instanceof PasswordHasherInterface);
         $user->setPassword($hasher->hash('Maut1cR0cks!'));
