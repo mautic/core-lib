@@ -17,6 +17,7 @@ use Mautic\UserBundle\Entity\UserRepository;
 use Mautic\UserBundle\Entity\UserToken;
 use Mautic\UserBundle\Enum\UserTokenAuthorizator;
 use Mautic\UserBundle\Event\UserEvent;
+use Mautic\UserBundle\Exception\PasswordResetTokenCreationFailedException;
 use Mautic\UserBundle\Form\Type\UserType;
 use Mautic\UserBundle\Model\UserToken\UserTokenServiceInterface;
 use Mautic\UserBundle\UserEvents;
@@ -257,7 +258,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
-     * @throws \RuntimeException
+     * @throws PasswordResetTokenCreationFailedException
      */
     public function sendResetEmail(User $user): void
     {
@@ -269,7 +270,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
             $this->em->flush();
         } catch (\Doctrine\DBAL\Exception $exception) {
             $this->logger->error($this->translator->trans('mautic.user.password.reset.token.creation.database.error', [], 'messages').': '.$exception->getMessage());
-            throw new \RuntimeException($this->translator->trans('mautic.user.password.reset.token.creation.failed'), 0, $exception);
+            throw new PasswordResetTokenCreationFailedException($this->translator->trans('mautic.user.password.reset.token.creation.failed'), 0, $exception);
         }
         $resetLink  = $this->router->generate('mautic_user_passwordresetconfirm', ['token' => $resetToken->getSecret()], UrlGeneratorInterface::ABSOLUTE_URL);
 

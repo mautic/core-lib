@@ -143,78 +143,79 @@ class PublicController extends FormController
 
     public function inviteAction(Request $request, UserPasswordHasherInterface $hasher, UserModel $model, LoggerInterface $logger): mixed
     {
-        $token  = $request->get('token');
-        $invite = $model->getInvite($token);
+        $token    = $request->get('token');
+        $invite   = $model->getInvite($token);
+        $response = null;
+
         if (null === $invite) {
             $this->addFlashMessage('mautic.user.invite.invalid', [], 'error', 'flashes');
 
-            return $this->redirectToRoute('login');
-        }
+            $response = $this->redirectToRoute('login');
+        } else {
+            $action = $this->generateUrl('mautic_user_invite_register', ['token' => $token]);
+            $form   = $this->formFactory->create(UserInviteRegistrationType::class, [], [
+                'action' => $action,
+            ]);
 
-        $action = $this->generateUrl('mautic_user_invite_register', ['token' => $token]);
-        $form   = $this->formFactory->create(UserInviteRegistrationType::class, [], [
-            'action' => $action,
-        ]);
+            if ('POST' === $request->getMethod()) {
+                $form->handleRequest($request);
 
-        if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
+                // Check if user already exists before form validation
+                $existingUser = $model->getRepository()->findOneBy(['email' => $invite->getEmail()]);
+                if ($existingUser) {
+                    $this->addFlashMessage('mautic.user.invite.error.email_exists', [], 'error', 'flashes');
+                    $response = $this->delegateView([
+                        'viewParameters' => [
+                            'form' => $form->createView(),
+                        ],
+                        'contentTemplate' => '@MauticUser/Security/register.html.twig',
+                        'passthroughVars' => [
+                            'route' => $action,
+                        ],
+                    ]);
+                } elseif ($form->isSubmitted() && $form->isValid()) {
+                    try {
+                        $formData = $form->getData();
 
-            // Check if user already exists before form validation
-            $existingUser = $model->getRepository()->findOneBy(['email' => $invite->getEmail()]);
-            if ($existingUser) {
-                $this->addFlashMessage('mautic.user.invite.error.email_exists', [], 'error', 'flashes');
+                        // Create user from form data
+                        $user = new User();
+                        $user->setUsername($formData['username']);
+                        $user->setFirstName($formData['firstName']);
+                        $user->setLastName($formData['lastName']);
+                        $user->setEmail($invite->getEmail());
+                        $user->setPlainPassword($formData['plainPassword']);
+                        $user->setRole($invite->getRole());
 
-                return $this->delegateView([
-                    'viewParameters' => [
-                        'form' => $form->createView(),
-                    ],
-                    'contentTemplate' => '@MauticUser/Security/register.html.twig',
-                    'passthroughVars' => [
-                        'route' => $action,
-                    ],
-                ]);
-            }
+                        if (!empty($formData['locale'])) {
+                            $user->setLocale($formData['locale']);
+                        }
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                try {
-                    $formData = $form->getData();
+                        $encoded = $model->checkNewPassword($user, $hasher, $user->getPlainPassword());
+                        $user->setPassword($encoded);
 
-                    // Create user from form data
-                    $user = new User();
-                    $user->setUsername($formData['username']);
-                    $user->setFirstName($formData['firstName']);
-                    $user->setLastName($formData['lastName']);
-                    $user->setEmail($invite->getEmail());
-                    $user->setPlainPassword($formData['plainPassword']);
-                    $user->setRole($invite->getRole());
+                        $model->saveEntity($user);
+                        $model->markInviteUsed($invite);
+                        $this->addFlashMessage('mautic.user.invite.account_created', [], 'notice', 'flashes');
 
-                    if (!empty($formData['locale'])) {
-                        $user->setLocale($formData['locale']);
+                        $response = $this->redirectToRoute('login');
+                    } catch (\Doctrine\DBAL\Exception $e) {
+                        $logger->error($this->translator->trans('mautic.user.invite.registration.database.error', [], 'messages').': '.$e->getMessage());
+                        $this->addFlashMessage('mautic.user.invite.error.database', [], 'error', 'flashes');
                     }
-
-                    $encoded = $model->checkNewPassword($user, $hasher, $user->getPlainPassword());
-                    $user->setPassword($encoded);
-
-                    $model->saveEntity($user);
-                    $model->markInviteUsed($invite);
-                    $this->addFlashMessage('mautic.user.invite.account_created', [], 'notice', 'flashes');
-
-                    return $this->redirectToRoute('login');
-                } catch (\Doctrine\DBAL\Exception $e) {
-                    $logger->error($this->translator->trans('mautic.user.invite.registration.database.error', [], 'messages').': '.$e->getMessage());
-                    $this->addFlashMessage('mautic.user.invite.error.database', [], 'error', 'flashes');
                 }
             }
+
+            $response ??= $this->delegateView([
+                'viewParameters' => [
+                    'form' => $form->createView(),
+                ],
+                'contentTemplate' => '@MauticUser/Security/register.html.twig',
+                'passthroughVars' => [
+                    'route' => $action,
+                ],
+            ]);
         }
 
-        return $this->delegateView([
-            'viewParameters' => [
-                'form' => $form->createView(),
-            ],
-            'contentTemplate' => '@MauticUser/Security/register.html.twig',
-            'passthroughVars' => [
-                'route' => $action,
-            ],
-        ]);
+        return $response;
     }
 }

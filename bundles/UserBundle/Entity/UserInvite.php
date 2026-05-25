@@ -9,13 +9,13 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class UserInvite
 {
-    private ?int $id;
+    private ?int $id = null;
 
-    private ?string $email;
+    private ?string $email = null;
 
-    private ?string $token;
+    private ?string $token = null;
 
-    private ?\DateTimeInterface $expiration;
+    private ?\DateTimeInterface $expiration = null;
 
     private bool $used = false;
 

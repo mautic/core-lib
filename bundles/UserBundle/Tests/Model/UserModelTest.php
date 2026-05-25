@@ -13,6 +13,7 @@ use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Entity\UserInvite;
 use Mautic\UserBundle\Entity\UserToken;
+use Mautic\UserBundle\Exception\PasswordResetTokenCreationFailedException;
 use Mautic\UserBundle\Model\UserModel;
 use Mautic\UserBundle\Model\UserToken\UserTokenServiceInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -133,7 +134,7 @@ class UserModelTest extends TestCase
     {
         $errorMessage = 'Database connection failed';
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(PasswordResetTokenCreationFailedException::class);
 
         $this->entityManager->expects($this->once())
             ->method('flush')

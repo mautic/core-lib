@@ -28,8 +28,6 @@ class UserController extends FormController
     /**
      * Generate's default user list.
      *
-     * @param int $page
-     *
      * @return JsonResponse|Response
      */
     public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, int $page = 1)
@@ -130,6 +128,7 @@ class UserController extends FormController
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
+            $response = null;
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $data  = $form->getData();
@@ -140,16 +139,16 @@ class UserController extends FormController
                 $this->addFlashMessage('mautic.user.invite.flash.sent', ['%email%' => $email], 'notice', 'flashes');
 
                 if ($request->isXmlHttpRequest()) {
-                    return new JsonResponse([
+                    $response = new JsonResponse([
                         'closeModal' => 1,
                         'redirect'   => $this->generateUrl('mautic_user_index'),
                     ]);
+                } else {
+                    $response = $this->redirect($this->generateUrl('mautic_user_index'));
                 }
-
-                return $this->redirect($this->generateUrl('mautic_user_index'));
             }
 
-            return $this->delegateView([
+            return $response ?? $this->delegateView([
                 'viewParameters' => [
                     'form' => $form->createView(),
                 ],
@@ -177,7 +176,7 @@ class UserController extends FormController
         ]);
     }
 
-    public function newAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper)
+    public function newAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper): JsonResponse|Response
     {
         if (!$this->security->isGranted('user:users:create')) {
             return $this->accessDenied();
