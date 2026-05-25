@@ -306,4 +306,74 @@ class UserModelTest extends TestCase
 
         $this->userModel->createInvite('invitee@example.com', 404);
     }
+
+    public function testGetInviteReturnsNullWhenInviteDoesNotExist(): void
+    {
+        $inviteRepository = $this->createMock(EntityRepository::class);
+        $inviteRepository->expects($this->once())
+            ->method('findOneBy')
+            ->with(['token' => 'missing-token', 'used' => false])
+            ->willReturn(null);
+
+        $this->entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with(UserInvite::class)
+            ->willReturn($inviteRepository);
+
+        $this->assertNull($this->userModel->getInvite('missing-token'));
+    }
+
+    public function testGetInviteReturnsNullWhenInviteExpired(): void
+    {
+        $invite = (new UserInvite(new Role()))
+            ->setExpiration(new \DateTimeImmutable('-1 minute'));
+
+        $inviteRepository = $this->createMock(EntityRepository::class);
+        $inviteRepository->expects($this->once())
+            ->method('findOneBy')
+            ->with(['token' => 'expired-token', 'used' => false])
+            ->willReturn($invite);
+
+        $this->entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with(UserInvite::class)
+            ->willReturn($inviteRepository);
+
+        $this->assertNull($this->userModel->getInvite('expired-token'));
+    }
+
+    public function testGetInviteReturnsActiveInvite(): void
+    {
+        $invite = (new UserInvite(new Role()))
+            ->setExpiration(new \DateTimeImmutable('+1 minute'));
+
+        $inviteRepository = $this->createMock(EntityRepository::class);
+        $inviteRepository->expects($this->once())
+            ->method('findOneBy')
+            ->with(['token' => 'active-token', 'used' => false])
+            ->willReturn($invite);
+
+        $this->entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with(UserInvite::class)
+            ->willReturn($inviteRepository);
+
+        $this->assertSame($invite, $this->userModel->getInvite('active-token'));
+    }
+
+    public function testMarkInviteUsedPersistsInvite(): void
+    {
+        $invite = new UserInvite(new Role());
+
+        $this->entityManager->expects($this->once())
+            ->method('persist')
+            ->with($invite);
+
+        $this->entityManager->expects($this->once())
+            ->method('flush');
+
+        $this->userModel->markInviteUsed($invite);
+
+        $this->assertTrue($invite->isUsed());
+    }
 }
