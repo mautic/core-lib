@@ -596,6 +596,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
                     'variantChildren',
                     'translationParent',
                     'translationChildren',
+                    'preferenceCenter',
                     'unsubscribeForm',
                     'dynamicContent',
                     'lists',
