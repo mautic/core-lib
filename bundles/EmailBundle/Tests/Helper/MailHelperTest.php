@@ -531,11 +531,11 @@ class MailHelperTest extends TestCase
             $this->createMock(EventDispatcherInterface::class),
             $this->requestStack,
             $this->entityManager,
-            $this->createMock(ModelFactory::class),
             $this->createMock(AssetModel::class),
             $this->createMock(TrackableModel::class),
             $this->createMock(RedirectModel::class),
             $this->sMimeHelper,
+            $this->emailStatModel
         );
 
         $email = new Email();
