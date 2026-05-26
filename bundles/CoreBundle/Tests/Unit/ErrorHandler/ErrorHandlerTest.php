@@ -39,6 +39,9 @@ class ErrorHandlerTest extends TestCase
      */
     public function testOfflineTemplateIsRenderedRegardlessOfWorkingDirectory(): void
     {
+        // The regression happens in the production error-page code path. Under
+        // PHPUnit, IS_PHPUNIT prevents register() from installing global PHP
+        // handlers, so this configures the handler without leaking that state.
         ErrorHandler::register('prod');
         $handler = ErrorHandler::getHandler();
         $handler->setDisplayErrors(false);
@@ -51,7 +54,11 @@ class ErrorHandlerTest extends TestCase
         // With the buggy relative paths, Twig's FilesystemLoader would have
         // thrown a LoaderError before any template was rendered, and the
         // catch block in generateResponse would have returned that message.
+        self::assertStringContainsString('<!DOCTYPE html>', $content);
+        self::assertStringContainsString('<div class="container">', $content);
+        self::assertStringContainsString('<div class="alert alert-danger">', $content);
+        self::assertStringContainsString('<div id="previous"></div>', $content);
+        self::assertStringNotContainsString('Twig\\Error\\LoaderError', $content);
         self::assertStringNotContainsString('directory does not exist', $content);
-        self::assertStringContainsString('Site is offline', $content);
     }
 }
