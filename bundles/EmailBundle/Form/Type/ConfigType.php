@@ -10,6 +10,7 @@ use Mautic\CoreBundle\Form\Type\SortableListType;
 use Mautic\CoreBundle\Form\Type\YesNoButtonGroupType;
 use Mautic\EmailBundle\Validator\Dsn;
 use Mautic\EmailBundle\Validator\EmailOrEmailTokenList;
+use Mautic\PageBundle\Form\Type\PreferenceCenterListType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -133,6 +134,79 @@ class ConfigType extends AbstractType
                             '%email%'          => '|EMAIL|',
                         ]
                     ),
+            ]
+        );
+
+        $builder->add(
+            'email_default_preference_center_id',
+            PreferenceCenterListType::class,
+            [
+                'label'      => 'mautic.email.config.default_preference_center_id',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'            => 'form-control',
+                    'tooltip'          => 'mautic.email.config.default_preference_center_id.tooltip',
+                    'data-placeholder' => $this->translator->trans('mautic.core.form.chooseone'),
+                ],
+                'required'    => false,
+                'multiple'    => false,
+                'placeholder' => '',
+            ]
+        );
+
+        $builder->add(
+            'email_default_utm_source',
+            TextType::class,
+            [
+                'label'      => 'mautic.email.config.default_utm_source',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'   => 'form-control',
+                    'tooltip' => 'mautic.email.config.default_utm_source.tooltip',
+                ],
+                'required'   => false,
+            ]
+        );
+
+        $builder->add(
+            'email_default_utm_medium',
+            TextType::class,
+            [
+                'label'      => 'mautic.email.config.default_utm_medium',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'   => 'form-control',
+                    'tooltip' => 'mautic.email.config.default_utm_medium.tooltip',
+                ],
+                'required'   => false,
+            ]
+        );
+
+        $builder->add(
+            'email_default_utm_campaign',
+            TextType::class,
+            [
+                'label'      => 'mautic.email.config.default_utm_campaign',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'   => 'form-control',
+                    'tooltip' => 'mautic.email.config.default_utm_campaign.tooltip',
+                ],
+                'required'   => false,
+            ]
+        );
+
+        $builder->add(
+            'email_default_utm_content',
+            TextType::class,
+            [
+                'label'      => 'mautic.email.config.default_utm_content',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'   => 'form-control',
+                    'tooltip' => 'mautic.email.config.default_utm_content.tooltip',
+                ],
+                'required'   => false,
             ]
         );
 
@@ -375,6 +449,21 @@ class ConfigType extends AbstractType
         );
 
         $builder->add(
+            'disable_unsubscribe_link_header',
+            YesNoButtonGroupType::class,
+            [
+                'label'      => 'mautic.email.config.mailer.disable.unsubscribe.link',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'   => 'form-control',
+                    'tooltip' => 'mautic.email.config.mailer.disable.unsubscribe.link.tooltip',
+                ],
+                'data'       => !empty($options['data']['disable_unsubscribe_link_header']),
+                'required'   => false,
+            ]
+        );
+
+        $builder->add(
             'mailer_is_owner',
             YesNoButtonGroupType::class,
             [
@@ -388,6 +477,7 @@ class ConfigType extends AbstractType
                 'required'   => false,
             ]
         );
+
         $builder->add(
             'email_frequency_number',
             NumberType::class,
