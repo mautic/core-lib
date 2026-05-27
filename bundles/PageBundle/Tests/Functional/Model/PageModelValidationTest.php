@@ -50,6 +50,29 @@ final class PageModelValidationTest extends MauticMysqlTestCase
         Assert::assertNotEmpty($pageHit, 'page hit should not be empty');
     }
 
+    public function testPageHitWhenRequiredValuesValidationFails(): void
+    {
+        $lead = $this->createLeadForValidation();
+        $stat = $this->createStat($lead->getEmail());
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $ct = $this->getEncodedClickThroughValue($stat->getTrackingHash(), (int) $lead->getId());
+        // Use tracking pixel endpoint without page_title to trigger validation failure
+        // This will have no page, no redirect, and no urlTitle (since page_title is missing)
+        $requestParam = '?ct='.$ct;
+
+        $this->logoutUser();
+        $this->client->request(Request::METHOD_GET, '/mtracking.gif'.$requestParam, [], []);
+
+        $this->assertResponseIsSuccessful();
+
+        // Verify no Hit was persisted due to validation failure
+        $pageHit = $this->pageHitRepository->findOneBy([]);
+        Assert::assertNull($pageHit, 'page hit should not be persisted when validation fails');
+    }
+
     /**
      * @throws \Doctrine\ORM\ORMException
      */
@@ -106,6 +129,15 @@ final class PageModelValidationTest extends MauticMysqlTestCase
         $companyLead->setPrimary(true);
         $companyLead->setDateAdded(new \DateTime());
         $this->em->persist($companyLead);
+
+        return $lead;
+    }
+
+    private function createLeadForValidation(): Lead
+    {
+        $lead = new Lead();
+        $lead->setEmail('validation-test@domain.tld');
+        $this->em->persist($lead);
 
         return $lead;
     }
