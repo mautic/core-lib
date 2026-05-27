@@ -17,6 +17,9 @@ final class PageHitCookieTest extends MauticMysqlTestCase
 
     protected function setUp(): void
     {
+        $this->configParams['messenger_dsn_hit']   = 'sync://';
+        $this->configParams['messenger_dsn_email'] = 'sync://';
+
         parent::setUp();
         $this->hitRepository = $this->em->getRepository(Hit::class);
     }
@@ -61,21 +64,51 @@ final class PageHitCookieTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful();
 
         // Refresh the first hit from database
-        $this->em->clear();
-        $firstHitRefreshed = $this->hitRepository->find($firstHit->getId());
+        $this->em->refresh($firstHit);
 
         Assert::assertNotNull(
-            $firstHitRefreshed->getDateLeft(),
+            $firstHit->getDateLeft(),
             'First hit should have date_left updated after second hit'
         );
         Assert::assertInstanceOf(
             \DateTimeInterface::class,
-            $firstHitRefreshed->getDateLeft(),
+            $firstHit->getDateLeft(),
             'date_left should be a DateTime object'
         );
 
         // Verify second hit was created
         $allHits = $this->hitRepository->findBy(['page' => $page->getId()], ['dateHit' => 'ASC']);
         Assert::assertCount(2, $allHits, 'Should have two hits after second page visit');
+        $secondHit = $allHits[1];
+        Assert::assertNull($secondHit->getDateLeft(), 'Second hit should not have date_left set yet');
+
+        // Verify cookie was updated with second hit ID
+        $cookie      = $cookieJar->get('mautic_referer_id');
+        $cookieValue = $cookie?->getValue();
+        Assert::assertNotNull($cookieValue, 'Cookie value should not be null after second hit');
+        Assert::assertEquals((int) $cookieValue, $secondHit->getId(), 'Cookie should contain the second hit ID');
+
+        // Third hit - should update second hit's date_left
+        $this->client->request(Request::METHOD_GET, '/test-page-cookie');
+        $this->assertResponseIsSuccessful();
+
+        // Refresh second hit from database
+        $this->em->refresh($secondHit);
+        Assert::assertNotNull(
+            $secondHit->getDateLeft(),
+            'Second hit should have date_left updated after third hit'
+        );
+
+        // Verify third hit was created
+        $allHits = $this->hitRepository->findBy(['page' => $page->getId()], ['dateHit' => 'ASC']);
+        Assert::assertCount(3, $allHits, 'Should have three hits after third page visit');
+        $thirdHit = $allHits[2];
+        Assert::assertNull($thirdHit->getDateLeft(), 'Third hit should not have date_left set yet');
+
+        // Verify cookie was updated with third hit ID
+        $cookie      = $cookieJar->get('mautic_referer_id');
+        $cookieValue = $cookie?->getValue();
+        Assert::assertNotNull($cookieValue, 'Cookie value should not be null after third hit');
+        Assert::assertEquals((int) $cookieValue, $thirdHit->getId(), 'Cookie should contain the third hit ID');
     }
 }

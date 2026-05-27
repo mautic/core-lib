@@ -463,6 +463,18 @@ class PageModel extends FormModel implements GlobalSearchInterface
         $hit->setTrackingId($this->limitString($trackedDevice->getTrackingId()));
         $hit->setDeviceStat($trackedDevice);
 
+        // Persist first so the message carries a valid hit ID for async processing.
+        $this->em->persist($hit);
+        $this->em->flush();
+
+        if ($hit->getId()) {
+            $this->cookieHelper->setCookie(
+                name: 'mautic_referer_id',
+                value: $hit->getId(),
+                sameSite: Cookie::SAMESITE_NONE
+            );
+        }
+
         $message = new PageHitNotification(
             $hit->getId(),
             $request,
@@ -565,6 +577,9 @@ class PageModel extends FormModel implements GlobalSearchInterface
         $errors = $this->validator->validate($hit);
         if ($errors->count() > 0) {
             $this->logger->error((string) $errors);
+            // Remove the pre-persisted bare hit so no orphan row is left in the database.
+            $this->em->remove($hit);
+            $this->em->flush();
 
             return;
         }
@@ -675,16 +690,6 @@ class PageModel extends FormModel implements GlobalSearchInterface
             $this->logger->error(
                 $exception->getMessage(),
                 ['exception' => $exception]
-            );
-        }
-
-        // Set cookie with hit ID for tracking when user leaves the page
-        // Only set during active request, not when processing from async queue
-        if ($activeRequest && $hit->getId()) {
-            $this->cookieHelper->setCookie(
-                name: 'mautic_referer_id',
-                value: $hit->getId(),
-                sameSite: Cookie::SAMESITE_NONE
             );
         }
 
