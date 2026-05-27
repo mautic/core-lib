@@ -1471,9 +1471,11 @@ class CommonRepository extends ServiceEntityRepository
             );
             $q->setParameter($param, $ids, ArrayParameterType::INTEGER);
         } elseif (!empty($args['ownedBy'])) {
+            $param = $this->generateRandomParameterName();
             $queryExpression->add(
-                $q->expr()->in($this->getTableAlias().'.'.$args['ownedBy'][0], (string) $args['ownedBy'][1])
+                $q->expr()->in($this->getTableAlias().'.'.$args['ownedBy'][0], ':'.$param)
             );
+            $q->setParameter($param, array_map('strval', $args['ownedBy'][1]), ArrayParameterType::STRING);
         }
 
         if (!empty($filter)) {
@@ -1684,9 +1686,10 @@ class CommonRepository extends ServiceEntityRepository
     protected function getIdsExpr(&$q, $filter)
     {
         if ($ids = array_map('intval', explode(',', $filter->string))) {
-            $q->setParameter('idsExpr', $ids, ArrayParameterType::INTEGER);
+            $parameterName = $this->generateRandomParameterName();
+            $q->setParameter($parameterName, $ids, ArrayParameterType::INTEGER);
 
-            return $q->expr()->in($this->getTableAlias().'.id', ':idsExpr');
+            return $q->expr()->in($this->getTableAlias().'.id', ':'.$parameterName);
         }
 
         return false;

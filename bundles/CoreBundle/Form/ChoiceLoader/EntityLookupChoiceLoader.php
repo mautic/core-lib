@@ -234,7 +234,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
                 );
                 $parameters['dataIds'] = $data;
                 if (count($data) > $limit) {
-                    $limit = $data;
+                    $limit = count($data);
                 }
             }
 
