@@ -147,17 +147,21 @@ class PublicController extends CommonFormController
         $status = $form->getPublishStatus();
 
         if ('pending' === $status) {
+            $publishUp = $form->getPublishUp();
+
             return $this->translator->trans(
                 'mautic.form.submit.error.pending',
-                ['%date%' => $dateTemplateHelper->toFull($form->getPublishUp())],
+                ['%date%' => $dateTemplateHelper->toFull($publishUp instanceof \DateTime ? $publishUp : $publishUp->format('Y-m-d H:i:s'))],
                 'flashes'
             );
         }
 
         if ('expired' === $status) {
+            $publishDown = $form->getPublishDown();
+
             return $this->translator->trans(
                 'mautic.form.submit.error.expired',
-                ['%date%' => $dateTemplateHelper->toFull($form->getPublishDown())],
+                ['%date%' => $dateTemplateHelper->toFull($publishDown instanceof \DateTime ? $publishDown : $publishDown->format('Y-m-d H:i:s'))],
                 'flashes'
             );
         }
