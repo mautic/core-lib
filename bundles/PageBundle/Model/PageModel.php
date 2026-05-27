@@ -463,15 +463,6 @@ class PageModel extends FormModel implements GlobalSearchInterface
         $hit->setTrackingId($this->limitString($trackedDevice->getTrackingId()));
         $hit->setDeviceStat($trackedDevice);
 
-        // save hit to the cookie to use to update the exit time
-        if ($hit) {
-            $this->cookieHelper->setCookie(
-                name: 'mautic_referer_id',
-                value: $hit->getId() ?: null,
-                sameSite: Cookie::SAMESITE_NONE
-            );
-        }
-
         $message = new PageHitNotification(
             $hit->getId(),
             $request,
@@ -588,17 +579,18 @@ class PageModel extends FormModel implements GlobalSearchInterface
             // Queue is consuming this hit outside of the lead's active request so this must be set in order for listeners to know who the request belongs to
             $this->contactTracker->setSystemContact($lead);
         }
-        $trackingId = $hit->getTrackingId();
-        if (!$trackingNewlyGenerated) {
-            $lastHit = $request->cookies->get('mautic_referer_id');
-            if (!empty($lastHit) && is_numeric($lastHit)) {
-                // this is not a new session so update the last hit if applicable with the date/time the user left
-                $this->getHitRepository()->updateHitDateLeft((int) $lastHit);
-            }
+
+        // Update previous hit's date_left if cookie exists
+        // This happens when user navigates from one page to another
+        $lastHit = $request->cookies->get('mautic_referer_id');
+        if (!empty($lastHit) && is_numeric($lastHit)) {
+            // Update the last hit with the date/time the user left
+            $this->getHitRepository()->updateHitDateLeft((int) $lastHit);
         }
 
         // Check if this is a unique page hit
-        $isUnique = $this->getHitRepository()->isUniquePageHit($page, $trackingId, $lead);
+        $trackingId = $hit->getTrackingId();
+        $isUnique   = $this->getHitRepository()->isUniquePageHit($page, $trackingId, $lead);
 
         if (!empty($page)) {
             if ($page instanceof Page) {
@@ -683,6 +675,16 @@ class PageModel extends FormModel implements GlobalSearchInterface
             $this->logger->error(
                 $exception->getMessage(),
                 ['exception' => $exception]
+            );
+        }
+
+        // Set cookie with hit ID for tracking when user leaves the page
+        // Only set during active request, not when processing from async queue
+        if ($activeRequest && $hit->getId()) {
+            $this->cookieHelper->setCookie(
+                name: 'mautic_referer_id',
+                value: $hit->getId(),
+                sameSite: Cookie::SAMESITE_NONE
             );
         }
 
