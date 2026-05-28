@@ -1062,13 +1062,10 @@ class EmailController extends FormController
 
     /**
      * Clone an email and its translation/variant family.
-     *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneWithTranslationsAction(Request $request, EmailModel $model, int $objectId)
+    public function cloneWithTranslationsAction(Request $request, EmailModel $model, int $objectId): JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
-        $session = $request->getSession();
-        $page    = $session->get('mautic.email.page', 1);
+        $page    = $request->getSession()->get('mautic.email.page', 1);
 
         $returnUrl = $this->generateUrl('mautic_email_index', ['page' => $page]);
 
@@ -1089,13 +1086,7 @@ class EmailController extends FormController
         $emailEntity = $model->getEntity($objectId);
         $flashes     = [];
 
-        if (null === $emailEntity) {
-            $flashes[] = [
-                'type'    => 'error',
-                'msg'     => 'mautic.email.error.notfound',
-                'msgVars' => ['%id%' => $objectId],
-            ];
-        } elseif (!$this->security->isGranted('email:emails:create')
+        if (!$this->security->isGranted('email:emails:create')
             || !$this->security->hasEntityAccess(
                 'email:emails:viewown',
                 'email:emails:viewother',
@@ -1103,52 +1094,61 @@ class EmailController extends FormController
             )
         ) {
             return $this->accessDenied();
-        } elseif ($emailEntity->isTranslation(true) || $emailEntity->isVariant(true)) {
-            $flashes[] = [
+        }
+        
+        if ($model->isLocked($emailEntity)) {
+            return $this->isLocked($postActionVars, $emailEntity, 'email');
+        } 
+
+        if (null === $emailEntity) {
+            $postActionVars['flashes'][] = [
+                'type'    => 'error',
+                'msg'     => 'mautic.email.error.notfound',
+                'msgVars' => ['%id%' => $objectId],
+            ];
+            
+            return $this->postActionRedirect($postActionVars);
+        } 
+
+        if ($emailEntity->isTranslation(true) || $emailEntity->isVariant(true)) {
+            $postActionVars['flashes'][] = [
                 'type' => 'error',
                 'msg'  => 'mautic.email.error.clone_with_relations_parent_only',
             ];
-        } elseif ($model->isLocked($emailEntity)) {
-            return $this->isLocked($postActionVars, $emailEntity, 'email');
-        } else {
-            try {
-                $clonedEmails = $this->cloneEmailWithTranslationsAndVariants($emailEntity, $model);
-                $clonedParent = $clonedEmails[0];
+            
+            return $this->postActionRedirect($postActionVars);
+        }
+        
+        try {
+            $clonedEmails = $this->cloneEmailWithTranslationsAndVariants($emailEntity, $model);
+            $clonedParent = $clonedEmails[0];
 
-                $flashes[] = [
-                    'type'    => 'notice',
-                    'msg'     => 'mautic.email.notice.cloned_with_relations',
-                    'msgVars' => [
-                        '%name%'  => $clonedParent->getName(),
-                        '%count%' => count($clonedEmails),
-                    ],
-                ];
+            $postActionVars['flashes'] = [
+                'type'    => 'notice',
+                'msg'     => 'mautic.email.notice.cloned_with_relations',
+                'msgVars' => [
+                    '%name%'  => $clonedParent->getName(),
+                    '%count%' => count($clonedEmails),
+                ],
+            ];
 
-                $postActionVars['viewParameters'] = [
-                    'objectAction' => 'view',
-                    'objectId'     => $clonedParent->getId(),
-                ];
-                $postActionVars['returnUrl']       = $this->generateUrl(
-                    'mautic_email_action',
-                    $postActionVars['viewParameters']
-                );
-                $postActionVars['contentTemplate'] = 'Mautic\EmailBundle\Controller\EmailController::viewAction';
-            } catch (InvalidRenderedHtmlException $e) {
-                $flashes[] = [
-                    'type' => 'error',
-                    'msg'  => $e->getMessage(),
-                ];
-            }
+            $postActionVars['viewParameters'] = [
+                'objectAction' => 'view',
+                'objectId'     => $clonedParent->getId(),
+            ];
+            $postActionVars['returnUrl'] = $this->generateUrl(
+                'mautic_email_action',
+                $postActionVars['viewParameters']
+            );
+            $postActionVars['contentTemplate'] = 'Mautic\EmailBundle\Controller\EmailController::viewAction';
+        } catch (InvalidRenderedHtmlException $e) {
+            $postActionVars['flashes'] = [
+                'type' => 'error',
+                'msg'  => $e->getMessage(),
+            ];
         }
 
-        return $this->postActionRedirect(
-            array_merge(
-                $postActionVars,
-                [
-                    'flashes' => $flashes,
-                ]
-            )
-        );
+        return $this->postActionRedirect($postActionVars);
     }
 
     /**
