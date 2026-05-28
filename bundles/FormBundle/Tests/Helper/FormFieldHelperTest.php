@@ -100,6 +100,34 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
                 '<select id="mauticform_input_mautic_select"><option value="myvalue" selected="selected">My Value</option></select>',
                 'Select lists should have their values set appropriately via GET.',
             ],
+            [
+                self::getField('Select', 'select'),
+                'myvalue',
+                '<select name="mauticform[select]" value="" id="mauticform_input_mautic_select" class="form-control"><option value="myvalue">My Value</option></select>',
+                '<select name="mauticform[select]" value="" id="mauticform_input_mautic_select" class="form-control"><option value="myvalue" selected="selected">My Value</option></select>',
+                'Select lists should be auto-filled even when other attributes precede the id attribute.',
+            ],
+            [
+                self::getField('Select', 'select'),
+                'myvalue',
+                '<select id="mauticform_input_mautic_select"><option value="myvalue" >My Value</option></select>',
+                '<select id="mauticform_input_mautic_select"><option value="myvalue" selected="selected">My Value</option></select>',
+                'Select options should be auto-filled even when whitespace precedes the closing bracket.',
+            ],
+            [
+                self::getField('Country', 'country'),
+                'myvalue',
+                '<select name="mauticform[country]" id="mauticform_input_mautic_country" class="form-control"><option value="other">Other</option><option value="myvalue" >My Value</option></select>',
+                '<select name="mauticform[country]" id="mauticform_input_mautic_country" class="form-control"><option value="other">Other</option><option value="myvalue" selected="selected">My Value</option></select>',
+                'Country lists should be auto-filled when attributes precede the id and whitespace precedes the option closing bracket.',
+            ],
+            [
+                self::getField('Select', 'select'),
+                '$1promo',
+                '<select id="mauticform_input_mautic_select"><option value="$1promo">Promo</option></select>',
+                '<select id="mauticform_input_mautic_select"><option value="$1promo" selected="selected">Promo</option></select>',
+                'Option values containing regex backreference characters should be preserved verbatim when marked selected.',
+            ],
         ];
     }
 

@@ -219,14 +219,15 @@ class FormFieldHelper extends AbstractFormFieldHelper
                 break;
             case 'select':
             case 'country':
-                $regex = '/<select\s*id="mauticform_input_'.$formName.'_'.$alias.'"(.*?)<\/select>/is';
+                $regex = '/<select\b(?=[^>]*\bid="mauticform_input_'.$formName.'_'.$alias.'")[^>]*>(.*?)<\/select>/is';
                 if (preg_match($regex, $formHtml, $match)) {
-                    $origText = $match[0];
-                    $replace  = str_replace(
-                        '<option value="'.$this->sanitizeValue($value).'">',
-                        '<option value="'.$this->sanitizeValue($value).'" selected="selected">',
+                    $origText  = $match[0];
+                    $sanitized = $this->sanitizeValue($value);
+                    $replace   = preg_replace_callback(
+                        '/<option\s+value="'.preg_quote($sanitized, '/').'"\s*>/i',
+                        static fn (): string => '<option value="'.$sanitized.'" selected="selected">',
                         $origText
-                    );
+                    ) ?? $origText;
                     $formHtml = str_replace($origText, $replace, $formHtml);
                 }
 
