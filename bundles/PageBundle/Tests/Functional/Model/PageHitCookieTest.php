@@ -49,7 +49,7 @@ final class PageHitCookieTest extends MauticMysqlTestCase
         Assert::assertNotNull($cookie, 'Cookie mautic_referer_id should be set');
 
         $cookieValue = $cookie->getValue();
-        Assert::assertNotNull($cookieValue, 'Cookie value should not be null');
+        Assert::assertNotSame('', $cookieValue, 'Cookie value should not be empty');
         Assert::assertIsNumeric($cookieValue, 'Cookie value should be numeric (the Hit ID)');
 
         // Verify the first hit was created
