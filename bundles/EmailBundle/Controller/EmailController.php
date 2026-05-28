@@ -1065,7 +1065,7 @@ class EmailController extends FormController
      */
     public function cloneWithTranslationsAction(Request $request, EmailModel $model, int $objectId): JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
-        $page    = $request->getSession()->get('mautic.email.page', 1);
+        $page = $request->getSession()->get('mautic.email.page', 1);
 
         $returnUrl = $this->generateUrl('mautic_email_index', ['page' => $page]);
 
@@ -1084,7 +1084,16 @@ class EmailController extends FormController
         }
 
         $emailEntity = $model->getEntity($objectId);
-        $flashes     = [];
+
+        if (null === $emailEntity) {
+            $postActionVars['flashes'][] = [
+                'type'    => 'error',
+                'msg'     => 'mautic.email.error.notfound',
+                'msgVars' => ['%id%' => $objectId],
+            ];
+
+            return $this->postActionRedirect($postActionVars);
+        }
 
         if (!$this->security->isGranted('email:emails:create')
             || !$this->security->hasEntityAccess(
@@ -1095,40 +1104,32 @@ class EmailController extends FormController
         ) {
             return $this->accessDenied();
         }
-        
+
         if ($model->isLocked($emailEntity)) {
             return $this->isLocked($postActionVars, $emailEntity, 'email');
-        } 
-
-        if (null === $emailEntity) {
-            $postActionVars['flashes'][] = [
-                'type'    => 'error',
-                'msg'     => 'mautic.email.error.notfound',
-                'msgVars' => ['%id%' => $objectId],
-            ];
-            
-            return $this->postActionRedirect($postActionVars);
-        } 
+        }
 
         if ($emailEntity->isTranslation(true) || $emailEntity->isVariant(true)) {
             $postActionVars['flashes'][] = [
                 'type' => 'error',
                 'msg'  => 'mautic.email.error.clone_with_relations_parent_only',
             ];
-            
+
             return $this->postActionRedirect($postActionVars);
         }
-        
+
         try {
-            $clonedEmails = $this->cloneEmailWithTranslationsAndVariants($emailEntity, $model);
+            $clonedEmails = $model->cloneEmailWithTranslationsAndVariants($emailEntity);
             $clonedParent = $clonedEmails[0];
 
             $postActionVars['flashes'] = [
-                'type'    => 'notice',
-                'msg'     => 'mautic.email.notice.cloned_with_relations',
-                'msgVars' => [
-                    '%name%'  => $clonedParent->getName(),
-                    '%count%' => count($clonedEmails),
+                [
+                    'type'    => 'notice',
+                    'msg'     => 'mautic.email.notice.cloned_with_relations',
+                    'msgVars' => [
+                        '%name%'  => $clonedParent->getName(),
+                        '%count%' => count($clonedEmails),
+                    ],
                 ],
             ];
 
@@ -1143,8 +1144,10 @@ class EmailController extends FormController
             $postActionVars['contentTemplate'] = 'Mautic\EmailBundle\Controller\EmailController::viewAction';
         } catch (InvalidRenderedHtmlException $e) {
             $postActionVars['flashes'] = [
-                'type' => 'error',
-                'msg'  => $e->getMessage(),
+                [
+                    'type' => 'error',
+                    'msg'  => $e->getMessage(),
+                ],
             ];
         }
 
@@ -1878,68 +1881,6 @@ class EmailController extends FormController
         $clonedEmail->setVariantStartDate($cloningEmail->getVariantStartDate());
         $clonedEmail->setEmailType($cloningEmail->getEmailType());
         $clonedEmail->setDraft($cloningEmail->getDraft());
-    }
-
-    /**
-     * @return list<Email>
-     */
-    private function cloneEmailWithTranslationsAndVariants(Email $email, EmailModel $model): array
-    {
-        $clonedEmails = [];
-
-        $clonedParent = $this->cloneEmailForRelatedClone($email);
-        $model->saveEntity($clonedParent);
-        $clonedEmails[] = $clonedParent;
-
-        foreach ($email->getTranslationChildren() as $translation) {
-            \assert($translation instanceof Email);
-
-            $clonedTranslation = $this->cloneEmailForRelatedClone($translation);
-            $clonedTranslation->setTranslationParent($clonedParent);
-            $model->saveEntity($clonedTranslation);
-            $clonedEmails[] = $clonedTranslation;
-        }
-
-        foreach ($email->getVariantChildren() as $variant) {
-            \assert($variant instanceof Email);
-
-            $clonedVariant = $this->cloneEmailForRelatedClone($variant);
-            $clonedVariant->setVariantParent($clonedParent);
-            $model->saveEntity($clonedVariant);
-            $clonedEmails[] = $clonedVariant;
-
-            foreach ($variant->getTranslationChildren() as $variantTranslation) {
-                \assert($variantTranslation instanceof Email);
-
-                $clonedVariantTranslation = $this->cloneEmailForRelatedClone($variantTranslation);
-                $clonedVariantTranslation->setTranslationParent($clonedVariant);
-                $model->saveEntity($clonedVariantTranslation);
-                $clonedEmails[] = $clonedVariantTranslation;
-            }
-        }
-
-        return $clonedEmails;
-    }
-
-    private function cloneEmailForRelatedClone(Email $email): Email
-    {
-        $clonedEmail = clone $email;
-        $clonedEmail->setEmailType($email->getEmailType());
-        $clonedEmail->setName($this->getRelatedCloneName($email->getName()));
-
-        return $clonedEmail;
-    }
-
-    private function getRelatedCloneName(?string $name): ?string
-    {
-        if (null === $name) {
-            return null;
-        }
-
-        $suffix    = ' (copy)';
-        $maxLength = Email::MAX_NAME_SUBJECT_LENGTH - strlen($suffix);
-
-        return mb_substr($name, 0, $maxLength).$suffix;
     }
 
     private function unpublishIfLackingPermission(Email $entity, CorePermissions $corePermissions): Email
