@@ -100,6 +100,36 @@ class AdderTest extends \PHPUnit\Framework\TestCase
         $this->getAdder()->updateExistingMembership($campaignMember, false);
     }
 
+    public function testManuallyRemovedCanBeAddedBackByManualActionWhenRestartIsDisabled(): void
+    {
+        $campaignMember = new CampaignMember();
+        $campaignMember->setManuallyRemoved(true);
+        $campaignMember->setRotation(1);
+        $campaign = new Campaign();
+        $campaign->setAllowRestart(false);
+        $campaignMember->setCampaign($campaign);
+
+        $this->getAdder()->updateExistingMembership($campaignMember, true);
+
+        $this->assertEquals(true, $campaignMember->wasManuallyAdded());
+        $this->assertEquals(2, $campaignMember->getRotation());
+    }
+
+    public function testNaturallyExitedContactCannotBeAddedBackByAutomaticActionWhenRestartIsDisabled(): void
+    {
+        $this->expectException(ContactCannotBeAddedToCampaignException::class);
+
+        $campaignMember = new CampaignMember();
+        $campaignMember->setManuallyRemoved(false);
+        $campaignMember->setDateLastExited(new \DateTime());
+        $campaignMember->setRotation(1);
+        $campaign = new Campaign();
+        $campaign->setAllowRestart(false);
+        $campaignMember->setCampaign($campaign);
+
+        $this->getAdder()->updateExistingMembership($campaignMember, false);
+    }
+
     /**
      * @return Adder
      */

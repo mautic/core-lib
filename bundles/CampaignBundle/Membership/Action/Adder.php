@@ -48,13 +48,19 @@ class Adder
     public function updateExistingMembership(CampaignMember $campaignMember, $isManualAction): void
     {
         $wasRemoved = $campaignMember->wasManuallyRemoved();
-        if (!$campaignMember->getCampaign()->allowRestart()) {
-            // A contact cannot restart this campaign. This applies to all re-add scenarios:
-            // - Naturally exited contacts being re-added by campaigns:rebuild
-            // - Manually removed contacts being re-added
-            // - Any other re-entry scenario
 
-            throw new ContactCannotBeAddedToCampaignException('Contacts cannot restart the campaign');
+        if (!$campaignMember->getCampaign()->allowRestart()) {
+            // Only exception: manually removed contacts (no exit date) being manually re-added
+            $isManualReAddOfManuallyRemoved = $wasRemoved && null === $campaignMember->getDateLastExited() && $isManualAction;
+
+            if (!$isManualReAddOfManuallyRemoved) {
+                // Block all other re-entry scenarios:
+                // - Natural exits (wasRemoved=false, dateLastExited=set) being auto re-added
+                // - Filter removals (wasRemoved=true, dateLastExited=set) being auto re-added
+                // - Manual removals (wasRemoved=true, dateLastExited=null) being auto re-added
+                // - Manual removals being manually re-added (unless caught above)
+                throw new ContactCannotBeAddedToCampaignException('Contacts cannot restart the campaign');
+            }
         }
 
         if ($wasRemoved && !$isManualAction && null === $campaignMember->getDateLastExited()) {
