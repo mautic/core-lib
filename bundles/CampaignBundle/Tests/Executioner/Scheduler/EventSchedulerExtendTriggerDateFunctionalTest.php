@@ -8,6 +8,8 @@ use Mautic\CampaignBundle\Entity\Campaign;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\Lead as CampaignLead;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
+use Mautic\CampaignBundle\Membership\Action\Adder;
+use Mautic\CampaignBundle\Membership\Exception\ContactCannotBeAddedToCampaignException;
 use Mautic\CoreBundle\Entity\AuditLog;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Lead;
@@ -167,5 +169,85 @@ final class EventSchedulerExtendTriggerDateFunctionalTest extends MauticMysqlTes
 
         $this->assertGreaterThan($lowerBound, $updatedLog->getTriggerDate(), 'Event should be scheduled around 7 days from now');
         $this->assertLessThan($upperBound, $updatedLog->getTriggerDate(), 'Event should be scheduled around 7 days from now');
+    }
+
+    public function testCampaignDoesNotResendImmediateEmailAfterContactExitsAndRejoinsWhenRestartIsDisabled(): void
+    {
+        // Regression test for issue #16133:
+        // When allowRestart=false, a contact who naturally exits the campaign and is
+        // automatically re-added by campaigns:rebuild should NOT have their rotation
+        // incremented, and the immediate action should NOT fire again.
+        //
+        // Root cause: Adder::updateExistingMembership() had a condition that bypassed
+        // the allowRestart check when wasManuallyRemoved=false, introduced in
+        // commit 975ba217a5 ("Allow lead to be manually re-added if removed from campaign").
+
+        $contact = new Lead();
+        $contact->setEmail('test-natural-exit@example.com');
+        $this->em->persist($contact);
+
+        $campaign = new Campaign();
+        $campaign->setName('Test Restart Disabled Campaign');
+        $campaign->setIsPublished(true);
+        $campaign->setAllowRestart(false);
+        $this->em->persist($campaign);
+
+        $event = new Event();
+        $event->setName('Immediate Email');
+        $event->setType('email.send');
+        $event->setEventType('action');
+        $event->setCampaign($campaign);
+        $event->setTriggerMode(Event::TRIGGER_MODE_IMMEDIATE);
+        $this->em->persist($event);
+
+        $campaignLead = new CampaignLead();
+        $campaignLead->setCampaign($campaign);
+        $campaignLead->setLead($contact);
+        $campaignLead->setDateAdded(new \DateTime('-1 day'));
+        $campaignLead->setManuallyAdded(false);
+        $campaignLead->setManuallyRemoved(false);
+        $campaignLead->setRotation(1);
+        $this->em->persist($campaignLead);
+
+        $this->em->flush();
+
+        $campaignId = $campaign->getId();
+        $eventId    = $event->getId();
+        $contactId  = $contact->getId();
+        $db         = $this->em->getConnection();
+        $prefix     = static::getContainer()->getParameter('mautic.db_table_prefix');
+
+        $this->em->clear();
+
+        // First trigger run: action executes, log created at rotation=1
+        $this->testSymfonyCommand('mautic:campaigns:trigger', ['--campaign-id' => $campaignId]);
+        $this->em->clear();
+
+        $logs = $db->createQueryBuilder()
+            ->select('rotation')
+            ->from($prefix.'campaign_lead_event_log', 'log')
+            ->where('log.event_id = :eventId AND log.lead_id = :leadId')
+            ->setParameters(['eventId' => $eventId, 'leadId' => $contactId])
+            ->executeQuery()->fetchAllAssociative();
+
+        $this->assertCount(1, $logs);
+        $this->assertEquals(1, $logs[0]['rotation']);
+
+        // Contact naturally exits (e.g. via segment move — NOT manually removed)
+        $db->executeStatement(
+            'UPDATE '.MAUTIC_TABLE_PREFIX.'campaign_leads SET date_last_exited = NOW() WHERE campaign_id = ? AND lead_id = ?',
+            [$campaignId, $contactId]
+        );
+        $this->em->clear();
+
+        // campaigns:rebuild tries to auto-re-add the contact (isManualAction=false)
+        // With the bug: allowRestart check was skipped → startNewRotation() called → rotation=2
+        // With the fix: allowRestart=false throws ContactCannotBeAddedToCampaignException
+        $campaignLeadEntity = $this->em->getRepository(CampaignLead::class)->findOneBy([
+            'lead' => $contactId, 'campaign' => $campaignId,
+        ]);
+
+        $this->expectException(ContactCannotBeAddedToCampaignException::class);
+        static::getContainer()->get(Adder::class)->updateExistingMembership($campaignLeadEntity, false);
     }
 }
