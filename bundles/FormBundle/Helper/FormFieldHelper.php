@@ -224,8 +224,10 @@ class FormFieldHelper extends AbstractFormFieldHelper
                     $origText  = $match[0];
                     $sanitized = $this->sanitizeValue($value);
                     $replace   = preg_replace_callback(
-                        '/<option\s+value="'.preg_quote($sanitized, '/').'"\s*>/i',
-                        static fn (): string => '<option value="'.$sanitized.'" selected="selected">',
+                        '/<option\s+value="([^"]*)"\s*>/i',
+                        static fn (array $optionMatch): string => $optionMatch[1] === $sanitized
+                            ? '<option value="'.$sanitized.'" selected="selected">'
+                            : $optionMatch[0],
                         $origText
                     ) ?? $origText;
                     $formHtml = str_replace($origText, $replace, $formHtml);
