@@ -378,7 +378,8 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
             )
             ->setParameter('leadIds', $contacts, ArrayParameterType::INTEGER)
             ->andWhere($qb->expr()->isNull('c.deleted'))
-            ->orderBy('l.date_added, l.company_id', 'DESC'); // primary should be [0]
+            ->addOrderBy('l.date_added', 'DESC') // primary should be [0]
+            ->addOrderBy('l.company_id', 'DESC');
 
         $companies = $qb->executeQuery()->fetchAllAssociative();
 
