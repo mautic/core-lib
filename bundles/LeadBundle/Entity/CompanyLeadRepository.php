@@ -262,8 +262,9 @@ class CompanyLeadRepository extends CommonRepository
             ->prepare("DELETE FROM {$tableName} WHERE company_id = :companyId LIMIT ".self::BATCH_SIZE);
         $statement->bindValue('companyId', $companyId, ParameterType::INTEGER);
 
-        while ($statement->executeStatement()) {
-        }
+        do {
+            $affected = $statement->executeStatement();
+        } while ($affected);
     }
 
     public function changePrimaryCompanyToLatest(int $companyId): void
