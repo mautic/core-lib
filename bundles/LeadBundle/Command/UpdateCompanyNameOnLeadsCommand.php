@@ -17,18 +17,12 @@ final class UpdateCompanyNameOnLeadsCommand extends Command
 {
     public const COMMAND_NAME = 'mautic:company:update_lead_company';
 
-    private CompanyLeadRepository $companyLeadRepository;
-
-    private CompanyRepository $companyRepository;
-
     private OutputInterface $output;
 
     public function __construct(
-        CompanyLeadRepository $companyLeadRepository,
-        CompanyRepository $companyRepository,
+        private CompanyLeadRepository $companyLeadRepository,
+        private CompanyRepository $companyRepository,
     ) {
-        $this->companyLeadRepository   = $companyLeadRepository;
-        $this->companyRepository       = $companyRepository;
         parent::__construct();
     }
 
