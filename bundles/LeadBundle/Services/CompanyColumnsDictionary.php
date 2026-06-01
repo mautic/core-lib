@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\Services;
 
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\LeadBundle\Field\FieldList;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class CompanyColumnsDictionary
+final class CompanyColumnsDictionary
 {
     /**
      * @var array<string, string>

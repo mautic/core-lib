@@ -496,14 +496,6 @@ return [
                     'mautic.helper.core_parameters',
                 ],
             ],
-            'mautic.lead.company.columns.dictionary' => [
-                'class'     => Mautic\LeadBundle\Services\CompanyColumnsDictionary::class,
-                'arguments' => [
-                    'mautic.lead.field.field_list',
-                    'translator',
-                    'mautic.helper.core_parameters',
-                ],
-            ],
             'mautic.lead.model.lead_segment_filter_factory' => [
                 'class'     => Mautic\LeadBundle\Segment\ContactSegmentFilterFactory::class,
                 'arguments' => [
