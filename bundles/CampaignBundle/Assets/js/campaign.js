@@ -2252,8 +2252,8 @@ Mautic.campaignBuilderUpdateEventList = function (groups, hidden, view, active, 
 };
 
 Mautic.campaignBuilderUpdateEventCloneButton = function (groups, eventType, anchorName) {
-    var $insertButton = mQuery('[data-campaign-event-insert-button]');
-    var updatedUrl = $insertButton.attr('href').replace(/anchor=(.*?)$/, "anchor=" + anchorName + "&anchorEventType=" + eventType);
+    const $insertButton = mQuery('[data-campaign-event-insert-button]');
+    const updatedUrl = $insertButton.attr('href').replace(/anchor=(.*?)$/, "anchor=" + anchorName + "&anchorEventType=" + eventType);
     $insertButton.attr('href', updatedUrl);
 };
 
