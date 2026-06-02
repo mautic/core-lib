@@ -23,6 +23,7 @@ use Mautic\LeadBundle\Helper\Progress;
 use Mautic\LeadBundle\LeadEvents;
 use Mautic\LeadBundle\Model\ImportModel;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Entity\UserRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -141,7 +142,7 @@ class ImportController extends FormController
      *
      * @return JsonResponse|RedirectResponse
      */
-    public function cancelAction(Request $request): Response
+    public function cancelAction(Request $request, NotificationModel $notificationModel, UserRepository $userRepository): Response
     {
         $initEvent   = $this->dispatchImportOnInit();
         $object      = $initEvent->objectSingular;
@@ -156,11 +157,8 @@ class ImportController extends FormController
 
         $this->resetImport($object);
 
-        /** @var NotificationModel $notificationModel */
-        $notificationModel = $this->getModel('core.notification');
-
         $fileName         = basename($fullPath);
-        $notificationUser = $this->getImportNotificationUser($import);
+        $notificationUser = $this->getImportNotificationUser($import, $userRepository);
         $message          = $this->getImportCancellationMessage($fileName, $import, $notificationUser);
         $notificationModel->addNotification($message, 'warning', false, null, null, null, $notificationUser);
 
@@ -639,13 +637,13 @@ class ImportController extends FormController
         }
     }
 
-    private function getImportNotificationUser(?Import $import): ?User
+    private function getImportNotificationUser(?Import $import, UserRepository $userRepository): ?User
     {
         if (!$import || !$import->getCreatedBy()) {
             return null;
         }
 
-        $user = $this->doctrine->getRepository(User::class)->find($import->getCreatedBy());
+        $user = $userRepository->find($import->getCreatedBy());
 
         return $user instanceof User ? $user : null;
     }
