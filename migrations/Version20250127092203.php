@@ -21,7 +21,7 @@ final class Version20250127092203 extends PreUpAssertionMigration
 
     public function up(Schema $schema): void
     {
-        $table = $schema->createTable($this->prefix.'user_invites');
+        $table = $schema->createTable($this->prefix.self::TABLE_NAME);
         $table->addColumn('id', 'integer', ['autoincrement' => true, 'unsigned' => true, 'notnull' => true]);
         $table->addColumn('email', 'string', ['length' => 191, 'notnull' => true]);
         $table->addColumn('token', 'string', ['length' => 64, 'notnull' => true]);
@@ -45,6 +45,6 @@ final class Version20250127092203 extends PreUpAssertionMigration
 
     public function down(Schema $schema): void
     {
-        $schema->dropTable($this->prefix.'user_invites');
+        $schema->dropTable($this->prefix.self::TABLE_NAME);
     }
 }

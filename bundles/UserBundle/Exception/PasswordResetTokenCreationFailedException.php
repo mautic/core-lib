@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\UserBundle\Exception;
 
-class PasswordResetTokenCreationFailedException extends \RuntimeException
+final class PasswordResetTokenCreationFailedException extends \RuntimeException
 {
 }

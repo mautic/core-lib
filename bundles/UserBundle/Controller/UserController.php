@@ -30,7 +30,7 @@ class UserController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, int $page = 1)
+    public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, int $page = 1): JsonResponse|Response
     {
         if (!$this->security->isGranted('user:users:view')) {
             return $this->accessDenied();
@@ -118,7 +118,7 @@ class UserController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function inviteAction(Request $request, UserModel $model)
+    public function inviteAction(Request $request, UserModel $model): JsonResponse|Response
     {
         if (!$this->security->isGranted('user:users:create')) {
             return $this->accessDenied();

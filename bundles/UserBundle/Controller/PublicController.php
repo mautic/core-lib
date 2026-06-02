@@ -9,7 +9,9 @@ use Mautic\UserBundle\Form\Type\PasswordResetType;
 use Mautic\UserBundle\Form\Type\UserInviteRegistrationType;
 use Mautic\UserBundle\Model\UserModel;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class PublicController extends FormController
@@ -17,7 +19,7 @@ class PublicController extends FormController
     /**
      * Generates a new password for the user and emails it to them.
      */
-    public function passwordResetAction(Request $request, LoggerInterface $logger): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function passwordResetAction(Request $request, LoggerInterface $logger): RedirectResponse|Response
     {
         /** @var UserModel $model */
         $model = $this->getModel('user');
@@ -72,7 +74,7 @@ class PublicController extends FormController
         ]);
     }
 
-    public function passwordResetConfirmAction(Request $request, UserPasswordHasherInterface $hasher): mixed
+    public function passwordResetConfirmAction(Request $request, UserPasswordHasherInterface $hasher): RedirectResponse|Response
     {
         /** @var UserModel $model */
         $model = $this->getModel('user');
@@ -141,7 +143,7 @@ class PublicController extends FormController
         ]);
     }
 
-    public function inviteAction(Request $request, UserPasswordHasherInterface $hasher, UserModel $model, LoggerInterface $logger): mixed
+    public function inviteAction(Request $request, UserPasswordHasherInterface $hasher, UserModel $model, LoggerInterface $logger): RedirectResponse|Response
     {
         $token    = $request->get('token');
         $invite   = $model->getInvite($token);
