@@ -14,9 +14,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Rating field properties form.
  *
- * @extends AbstractType<FormFieldRatingType>
+ * @extends AbstractType<mixed>
  */
-class FormFieldRatingType extends AbstractType
+final class FormFieldRatingType extends AbstractType
 {
     public function __construct(private TranslatorInterface $translator)
     {
