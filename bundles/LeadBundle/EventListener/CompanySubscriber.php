@@ -88,7 +88,7 @@ class CompanySubscriber implements EventSubscriberInterface
         if ($this->coreParametersHelper->get('update_company_mapping_data_in_background', false)) {
             return;
         }
-        $this->companyLeadRepository->changePrimaryCompanyToLatest($event->getCompany()->getId());
+        $this->companyModel->changePrimaryCompanyToLatest($event->getCompany()->getId());
         $this->companyLeadRepository->deleteCompanyLeads($event->getCompany()->getId());
         $this->companyModel->permanentDeleteCompany($event->getCompany());
     }

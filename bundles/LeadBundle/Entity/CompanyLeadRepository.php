@@ -6,7 +6,6 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\ParameterType;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\LeadBundle\Exception\PrimaryCompanyNotFoundException;
-use Mautic\LeadBundle\Model\CompanyModel;
 
 /**
  * @extends CommonRepository<CompanyLead>
@@ -15,16 +14,6 @@ class CompanyLeadRepository extends CommonRepository
 {
     public const DELETE_BATCH_SIZE = 1000;
     public const BATCH_SIZE        = 5000;
-
-    private CompanyModel $companyModel;
-
-    /**
-     * Sets company model.
-     */
-    public function setCompanyModel(CompanyModel $companyModel): void
-    {
-        $this->companyModel = $companyModel;
-    }
 
     /**
      * @param CompanyLead[] $entities
@@ -265,15 +254,6 @@ class CompanyLeadRepository extends CommonRepository
         do {
             $affected = $statement->executeStatement();
         } while ($affected);
-    }
-
-    public function changePrimaryCompanyToLatest(int $companyId): void
-    {
-        while ($companyLeads = $this->findBy(['company' => $companyId, 'primary' => 1], [], self::BATCH_SIZE, 0)) {
-            foreach ($companyLeads as $companyLead) {
-                $this->companyModel->removeLeadFromCompany($companyLead->getCompany(), $companyLead->getlead());
-            }
-        }
     }
 
     public function removeContactPrimaryCompany(int $leadId): void

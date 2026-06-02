@@ -18,6 +18,7 @@ use Mautic\EmailBundle\Helper\EmailValidator;
 use Mautic\LeadBundle\Deduplicate\CompanyDeduper;
 use Mautic\LeadBundle\Entity\Company;
 use Mautic\LeadBundle\Entity\CompanyLead;
+use Mautic\LeadBundle\Entity\CompanyLeadRepository;
 use Mautic\LeadBundle\Entity\CompanyRepository;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadField;
@@ -124,7 +125,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     }
 
     /**
-     * @return \Mautic\LeadBundle\Entity\CompanyLeadRepository
+     * @return CompanyLeadRepository
      */
     public function getCompanyLeadRepository()
     {
@@ -982,8 +983,6 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     }
 
     /**
-     * Delete an entity.
-     *
      * @param Company $entity
      */
     public function deleteEntity($entity): void
@@ -997,9 +996,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     }
 
     /**
-     * Delete an array of companies.
-     *
-     * @param array<mixed> $ids
+     * @param array<int> $ids
      *
      * @return array<int,Company>
      */
@@ -1022,6 +1019,24 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
         $company->deletedId = $company->getId();
         $this->getRepository()->deleteEntity($company);
         $this->dispatchEvent('post_delete', $company);
+    }
+
+    public function changePrimaryCompanyToLatest(int $companyId): void
+    {
+        while ($companyLeads = $this->getCompanyLeadRepository()->findBy(['company' => $companyId, 'primary' => 1], [], CompanyLeadRepository::BATCH_SIZE, 0)) {
+            foreach ($companyLeads as $companyLead) {
+                $this->removeLeadFromCompany($companyLead->getCompany(), $companyLead->getlead());
+            }
+        }
+    }
+
+    public function deleteCompanyPermanently(int $companyId): void
+    {
+        $company = $this->getRepository()->find($companyId);
+
+        if ($company) {
+            $this->permanentDeleteCompany($company);
+        }
     }
 
     /**

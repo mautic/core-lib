@@ -5,8 +5,6 @@ declare(strict_types=1);
 use Mautic\CoreBundle\DependencyInjection\MauticCoreExtension;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
-
 return function (ContainerConfigurator $configurator): void {
     $services = $configurator->services()
         ->defaults()
@@ -34,14 +32,11 @@ return function (ContainerConfigurator $configurator): void {
         ->tag(Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\ServiceRepositoryCompilerPass::REPOSITORY_SERVICE_TAG);
     $services->alias('mautic.lead.model.lead', Mautic\LeadBundle\Model\LeadModel::class);
     $services->get(Mautic\LeadBundle\Entity\CompanyRepository::class)
-        ->call('setCompanyModel', [service(Mautic\LeadBundle\Model\CompanyModel::class)])
         ->call('setUniqueIdentifiersOperator', ['%mautic.company_unique_identifiers_operator%']);
-    $services->get(Mautic\LeadBundle\Entity\CompanyLeadRepository::class)
-        ->call('setCompanyModel', [service(Mautic\LeadBundle\Model\CompanyModel::class)]);
     $services->get(Mautic\LeadBundle\Entity\LeadRepository::class)
         ->call('setUniqueIdentifiersOperator', ['%mautic.contact_unique_identifiers_operator%'])
-        ->call('setListLeadRepository', [service('mautic.lead.repository.list_lead')])
-        ->call('setLeadFieldRepository', [service('mautic.lead.repository.field')]);
+        ->call('setListLeadRepository', [\Symfony\Component\DependencyInjection\Loader\Configurator\service('mautic.lead.repository.list_lead')])
+        ->call('setLeadFieldRepository', [\Symfony\Component\DependencyInjection\Loader\Configurator\service('mautic.lead.repository.field')]);
 
     $services->alias('mautic.lead.model.field', Mautic\LeadBundle\Model\FieldModel::class);
     $services->alias('mautic.lead.model.list', Mautic\LeadBundle\Model\ListModel::class);

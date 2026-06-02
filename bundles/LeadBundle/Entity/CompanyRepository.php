@@ -9,7 +9,6 @@ use Doctrine\ORM\QueryBuilder;
 use Mautic\CoreBundle\Entity\CommonRepository;
 use Mautic\LeadBundle\Event\CompanyBuildSearchEvent;
 use Mautic\LeadBundle\LeadEvents;
-use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\ProjectBundle\Entity\ProjectRepositoryTrait;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -30,13 +29,6 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
      * @var EventDispatcherInterface|null
      */
     private $dispatcher;
-
-    private CompanyModel $companyModel;
-
-    public function setCompanyModel(CompanyModel $companyModel): void
-    {
-        $this->companyModel = $companyModel;
-    }
 
     /**
      * Used by search functions to search using aliases as commands.
@@ -600,14 +592,6 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
             ->setMaxResults(50);
 
         return $q->executeQuery()->fetchAllAssociative();
-    }
-
-    public function deleteCompanyPermanently(int $companyId): void
-    {
-        $company = $this->find($companyId);
-        if ($company) {
-            $this->companyModel->permanentDeleteCompany($company);
-        }
     }
 
     /**

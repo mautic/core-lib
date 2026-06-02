@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
@@ -197,7 +198,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
             ->nullable()
             ->build();
 
-        $builder->addNullableField('deleted', 'datetime');
+        $builder->addNullableField('deleted', Types::DATETIME_MUTABLE);
 
         self::loadFixedFieldMetadata(
             $builder,
