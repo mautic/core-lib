@@ -292,6 +292,8 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $cancellerRole = $this->createRole(true);
         $canceller     = $this->createUser($cancellerRole, 'person.two', 'person.two@email.com', 'Person', 'Two');
 
+        $this->em->flush();
+
         $import = $this->createQueuedImport($owner);
 
         $this->loginUser($canceller);
