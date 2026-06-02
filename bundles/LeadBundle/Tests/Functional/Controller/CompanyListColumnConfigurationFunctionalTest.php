@@ -28,7 +28,7 @@ final class CompanyListColumnConfigurationFunctionalTest extends MauticMysqlTest
 
         $crawler = $this->client->request('GET', '/s/companies');
 
-        Assert::assertTrue($this->client->getResponse()->isSuccessful());
+        $this->assertResponseIsSuccessful();
 
         $headerCells = $crawler->filter('table#companyTable thead tr th');
         Assert::assertCount(3, $headerCells);
