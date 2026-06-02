@@ -27,8 +27,6 @@ class UserController extends FormController
 {
     /**
      * Generate's default user list.
-     *
-     * @return JsonResponse|Response
      */
     public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, int $page = 1): JsonResponse|Response
     {
@@ -115,8 +113,6 @@ class UserController extends FormController
 
     /**
      * Generate's form and processes new post data.
-     *
-     * @return JsonResponse|Response
      */
     public function inviteAction(Request $request, UserModel $model): JsonResponse|Response
     {
