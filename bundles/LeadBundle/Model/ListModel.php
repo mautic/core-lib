@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\Model;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CategoryBundle\Model\CategoryModel;
+use Mautic\CoreBundle\Event\DependencyErrorEventInterface;
+use Mautic\CoreBundle\Exception\DeleteEntitiesDependencyException;
+use Mautic\CoreBundle\Exception\DeleteEntityDependencyException;
 use Mautic\CoreBundle\Helper\Chart\BarChart;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\Chart\LineChart;
@@ -16,6 +21,7 @@ use Mautic\CoreBundle\Model\FormModel;
 use Mautic\CoreBundle\Model\GlobalSearchInterface;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
+use Mautic\LeadBundle\Entity\DoNotContactRepository;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadList;
@@ -66,6 +72,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
         private SegmentChartQueryFactory $segmentChartQueryFactory,
         private RequestStack $requestStack,
         private SegmentCountCacheHelper $segmentCountCacheHelper,
+        private DoNotContactRepository $doNotContactRepository,
         EntityManagerInterface $em,
         CorePermissions $security,
         EventDispatcherInterface $dispatcher,
@@ -158,6 +165,62 @@ class ListModel extends FormModel implements GlobalSearchInterface
     }
 
     /**
+     * @param array<int> $ids
+     *
+     * @return array<object>
+     */
+    public function deleteEntities($ids): array
+    {
+        $deleted        = [];
+        $unableToDelete = [];
+
+        foreach ($ids as $id) {
+            $entity = $this->getEntity($id);
+
+            if ($entity) {
+                try {
+                    $this->deleteEntity($entity);
+                    $deleted[$id] = $entity;
+                } catch (DeleteEntityDependencyException) {
+                    $unableToDelete[$id] = $entity;
+                }
+            }
+        }
+
+        if ($unableToDelete) {
+            throw new DeleteEntitiesDependencyException($deleted, $unableToDelete);
+        }
+
+        return $deleted;
+    }
+
+    /**
+     * @param LeadList $entity
+     */
+    public function deleteEntity($entity): void
+    {
+        $id    = $entity->getId();
+        $event = $this->dispatchEvent('pre_delete', $entity);
+
+        if ($event instanceof DependencyErrorEventInterface && $event->getDependencyErrors()) {
+            throw new DeleteEntityDependencyException($event->getDependencyErrors());
+        }
+
+        $this->getRepository()->setSegmentAsDeleted($id);
+
+        $entity->deletedId = $id;
+        $this->dispatchEvent('on_list_delete', $entity);
+        $entity->setId(null);
+    }
+
+    public function hardDeleteEntity(LeadList $leadList): void
+    {
+        $leadList->deletedId = $leadList->getId();
+        $this->getRepository()->deleteEntity($leadList);
+        $this->dispatchEvent('post_delete', $leadList);
+    }
+
+    /**
      * @param string|null $action
      * @param array       $options
      *
@@ -188,6 +251,11 @@ class ListModel extends FormModel implements GlobalSearchInterface
         return parent::getEntity($id);
     }
 
+    public function getSoftDeletedEntity(int $id): ?LeadList
+    {
+        return $this->getRepository()->getSoftDeletedEntity($id);
+    }
+
     /**
      * @throws MethodNotAllowedHttpException
      */
@@ -213,6 +281,9 @@ class ListModel extends FormModel implements GlobalSearchInterface
             case 'pre_unpublish':
                 $name = LeadEvents::LIST_PRE_UNPUBLISH;
                 break;
+            case 'on_list_delete':
+                $name = LeadEvents::ON_LIST_DELETE;
+                break;
             default:
                 return null;
         }
@@ -225,9 +296,9 @@ class ListModel extends FormModel implements GlobalSearchInterface
             $this->dispatcher->dispatch($event, $name);
 
             return $event;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -793,6 +864,11 @@ class ListModel extends FormModel implements GlobalSearchInterface
         unset($lead, $deleteLists, $persistLists, $lists);
     }
 
+    public function removeLeadsByListId(int $listId): void
+    {
+        $this->getListLeadRepository()->removeLeadsByListId($listId);
+    }
+
     /**
      * Batch sleep according to settings.
      */
@@ -1285,7 +1361,7 @@ class ListModel extends FormModel implements GlobalSearchInterface
                 $choices['categories'] = [];
                 $categories            = $this->categoryModel->getLookupResults('segment');
                 foreach ($categories as $category) {
-                    $choices['categories'][$category['id']] = $category['title'];
+                    $choices['categories'][$category['alias']] = $category['title'];
                 }
         }
 
@@ -1336,11 +1412,19 @@ class ListModel extends FormModel implements GlobalSearchInterface
             } else {
                 $count               = $this->getRepository()->getLeadCount($listId);
                 $leadCounts[$listId] = $count;
-                $this->segmentCountCacheHelper->setSegmentContactCount($listId, $count);
+                $this->segmentCountCacheHelper->setSegmentContactCount($listId, (int) $count);
             }
         }
 
         return $leadCounts;
+    }
+
+    public function getActiveSegmentContactCount(int $segmentId): int
+    {
+        $total = $this->getRepository()->getLeadCount($segmentId);
+        $dnc   = $this->doNotContactRepository->getCount(null, null, null, $segmentId);
+
+        return max(0, $total - $dnc);
     }
 
     /**

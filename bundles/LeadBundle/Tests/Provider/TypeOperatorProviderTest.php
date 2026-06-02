@@ -45,19 +45,19 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
-                    'label'        => 'is exactly',
+                    'label'        => 'is equal to',
                     'expr'         => 'eq',
                     'negagte_expr' => 'neq',
                 ],
                 OperatorOptions::NOT_EQUAL_TO => [
-                    'label'        => 'is not exactly',
+                    'label'        => 'is not equal to',
                     'expr'         => 'neq',
                     'negagte_expr' => 'eq',
                 ],
             ]);
 
         $this->assertSame(
-            ['is exactly' => OperatorOptions::EQUAL_TO],
+            ['is equal to' => OperatorOptions::EQUAL_TO],
             $this->provider->getOperatorsIncluding([OperatorOptions::EQUAL_TO])
         );
     }
@@ -68,12 +68,12 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
-                    'label'        => 'is exactly',
+                    'label'        => 'is equal to',
                     'expr'         => 'eq',
                     'negagte_expr' => 'neq',
                 ],
                 OperatorOptions::NOT_EQUAL_TO => [
-                    'label'        => 'is not exactly',
+                    'label'        => 'is not equal to',
                     'expr'         => 'neq',
                     'negagte_expr' => 'eq',
                 ],
@@ -91,16 +91,16 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
-                    'label'        => 'is exactly',
+                    'label'        => 'is equal to',
                     'expr'         => 'eq',
                     'negagte_expr' => 'neq',
                 ],
                 OperatorOptions::NOT_EQUAL_TO => [
-                    'label'        => 'is not exactly',
+                    'label'        => 'is not equal to',
                     'expr'         => 'neq',
                     'negagte_expr' => 'eq',
                 ],
-                OperatorOptions::IN => [
+                OperatorOptions::INCLUDING_ANY => [
                     'label'        => 'in',
                     'expr'         => 'in',
                     'negagte_expr' => 'notIn',
@@ -126,8 +126,8 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(
             [
-                'is exactly'     => OperatorOptions::EQUAL_TO,
-                'is not exactly' => OperatorOptions::NOT_EQUAL_TO,
+                'is equal to'     => OperatorOptions::EQUAL_TO,
+                'is not equal to' => OperatorOptions::NOT_EQUAL_TO,
             ],
             $this->provider->getOperatorsForFieldType('text')
         );
@@ -139,12 +139,12 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
             ->method('getAllOperators')
             ->willReturn([
                 OperatorOptions::EQUAL_TO => [
-                    'label'        => 'is exactly',
+                    'label'        => 'is equal to',
                     'expr'         => 'eq',
                     'negagte_expr' => 'neq',
                 ],
                 OperatorOptions::NOT_EQUAL_TO => [
-                    'label'        => 'is not exactly',
+                    'label'        => 'is not equal to',
                     'expr'         => 'neq',
                     'negagte_expr' => 'eq',
                 ],
@@ -189,8 +189,8 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(
             [
-                'is exactly'       => OperatorOptions::EQUAL_TO,
-                'is not exactly'   => OperatorOptions::NOT_EQUAL_TO,
+                'is equal to'      => OperatorOptions::EQUAL_TO,
+                'is not equal to'  => OperatorOptions::NOT_EQUAL_TO,
                 'starts with'      => OperatorOptions::STARTS_WITH,
             ],
             $this->provider->getOperatorsForField('text', 'email')
