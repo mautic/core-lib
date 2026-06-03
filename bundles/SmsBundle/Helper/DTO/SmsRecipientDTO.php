@@ -13,7 +13,7 @@ final class SmsRecipientDTO implements \JsonSerializable
     /**
      * @param array<mixed> $substitutionData
      */
-    public function __construct(private Lead $lead, private array $substitutionData = [])
+    public function __construct(private Lead $lead, private array $substitutionData, private string $finalMessage)
     {
     }
 
@@ -61,5 +61,13 @@ final class SmsRecipientDTO implements \JsonSerializable
         }
 
         return $json;
+    }
+
+    /**
+     * Returns SMS message with replaced tokens for the recipient.
+     */
+    public function getFinalMessage(): string
+    {
+        return $this->finalMessage;
     }
 }

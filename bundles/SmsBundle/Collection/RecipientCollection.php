@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace Mautic\SmsBundle\Collection;
 
+use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Exception\RecipientNotFoundException;
 use Mautic\SmsBundle\Helper\DTO\SmsRecipientDTO;
 
 final class RecipientCollection extends \ArrayIterator
 {
+    public function __construct(private Sms $sms, array $recipients = [])
+    {
+        parent::__construct($recipients);
+    }
+
     /**
      * @return array<SmsRecipientDTO>
      */
@@ -37,5 +43,10 @@ final class RecipientCollection extends \ArrayIterator
         }
 
         throw new RecipientNotFoundException("Recipient with key {$key} was not found.");
+    }
+
+    public function getSms(): Sms
+    {
+        return $this->sms;
     }
 }

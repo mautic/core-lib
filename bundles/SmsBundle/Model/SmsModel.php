@@ -195,16 +195,19 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
     public function sendSms(Sms $sms, $sendTo, $options = [], array &$contacts = []): array
     {
         $channel = $options['channel'] ?? null;
+        $listId  = $options['listId'] ?? null;
         $sendTo  = is_array($sendTo) ? $sendTo : [$sendTo];
 
-        $failedCount   = 0;
-        $results       = [];
-        $fetchContacts = [];
+        $sentCount       = [];
+        $stats           = [];
+        $results         = [];
+        $contacts        = []; // Shall we reset the passed contacts param here?
+        $fetchContacts   = [];
         foreach ($sendTo as $contact) {
-            if (!$contact instanceof Lead) {
-                $fetchContacts[] = $contact;
-            } else {
+            if ($contact instanceof Lead) {
                 $contacts[$contact->getId()] = $contact;
+            } else {
+                $fetchContacts[] = $contact;
             }
         }
 
@@ -238,7 +241,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
             ];
         }
 
-        $contacts = $dncEvent->getContacts();
+        $contacts = $dncEvent->getContacts(); // The contacts param is reset here too, no?
 
         // Check if any contacts remain. If not, return early.
         if (empty($contacts)) {
@@ -278,89 +281,101 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
             return $results;
         }
 
-        $recipientCollection = new RecipientCollection();
-        $message             = $sms->getMessage();
-        $media               = $sms->getMedia();
+        $recipientCollections = [];
+
         /** @var array<int, Stat> $stats */
-        $stats               = [];
+        $stats = [];
 
         /** @var Lead $contact */
         foreach ($contacts as $contact) {
-            $stats[$contact->getId()] = $stat = $this->createStatEntry($sms, $contact, $channel, false);
+            [, $translatedSms] = $this->getTranslatedEntity($sms, $contact);
+            \assert($translatedSms instanceof Sms);
+            
+            $stat    = $this->createStatEntry($translatedSms, $contact, $channel, false, $listId);
+            $stats[] = $stat;
 
-            [, $sms] = $this->getTranslatedEntity($sms, $contact);
-            \assert($sms instanceof Sms);
-
-            $smsEvent = new SmsSendEvent($sms->getMessage(), $contact);
-
-            $smsEvent->setSmsId($sms->getId());
+            $smsEvent = new SmsSendEvent($translatedSms->getMessage(), $contact);
+            $smsEvent->setSmsId($translatedSms->getId());
             $this->dispatcher->dispatch($smsEvent, SmsEvents::SMS_ON_SEND);
 
-            $tokenEvent = new TokenReplacementEvent(
-                $smsEvent->getContent(),
-                $contact,
-                [
-                    'channel' => [
-                        'sms',          // Keep BC pre 2.14.1
-                        $sms->getId(),  // Keep BC pre 2.14.1
-                        'sms' => $sms->getId(),
-                    ],
-                    'stat'    => $stat->getTrackingHash(),
-                ]
+            $tokenEvent = $this->dispatcher->dispatch(
+                new TokenReplacementEvent(
+                    $smsEvent->getContent(),
+                    $contact,
+                    [
+                        'channel' => [
+                            'sms',          // Keep BC pre 2.14.1
+                            $translatedSms->getId(),  // Keep BC pre 2.14.1
+                            'sms' => $translatedSms->getId(),
+                        ],
+                        'stat'    => $stat->getTrackingHash(),
+                    ]
+                ),
+                SmsEvents::TOKEN_REPLACEMENT
             );
 
-            $this->dispatcher->dispatch($tokenEvent, SmsEvents::TOKEN_REPLACEMENT);
-            $recipientCollection->append(new SmsRecipientDTO($contact, $tokenEvent->getTokens()));
+            if (!isset($recipientCollections[$translatedSms->getId()])) {
+                $recipientCollections[$translatedSms->getId()] = new RecipientCollection($translatedSms);
+            }
+            $recipientCollections[$translatedSms->getId()]->append(new SmsRecipientDTO($contact, $tokenEvent->getTokens(), $tokenEvent->getContent()));
 
-            // capture the message to be used later
-            $message = $tokenEvent->getContent();
             unset($smsEvent, $tokenEvent);
         }
 
-        if (0 === $recipientCollection->count()) {
+        if (!$recipientCollections) {
             return $results;
         }
 
-        try {
-            // assumption made that the Sms message is same for all contacts
-            if ($media) {
-                $this->transport->sendMMS($recipientCollection, $message, $media);
-            } else {
-                $this->transport->sendBatchSms($recipientCollection, $message);
-            }
-        } catch (PrimaryTransportNotEnabledException $e) {
-            $this->logger->warning($e->getMessage());
+        foreach ($recipientCollections as $recipientCollection) {
+            $translatedSms = $recipientCollection->getSms();
+            $media = $translatedSms->getMedia();
 
-            return $results;
-        }
+            try {
+                // assumption made that the Sms message is same for all contacts
+                $message = $translatedSms->getMessage();
+                if ($media) {
+                    $this->transport->sendMMS($recipientCollection, $message, $media);
+                } else {
+                    $this->transport->sendBatchSms($recipientCollection, $message);
+                }
+            } catch (PrimaryTransportNotEnabledException $e) {
+                $this->logger->warning($e->getMessage());
 
-        $sentCount         = 0;
-        $defaultSendResult = [
-            'sent'    => false,
-            'type'    => 'mautic.sms.sms',
-            'status'  => 'mautic.sms.timeline.status.delivered',
-            'id'      => $sms->getId(),
-            'name'    => $sms->getName(),
-            'content' => $sms->getMessage(),
-        ];
-
-        foreach ($recipientCollection as $recipient) {
-            if (true !== $recipient->getResult()) {
-                $defaultSendResult['sent']   = false;
-                $defaultSendResult['status'] = $recipient->getResult();
-                unset($stats[$recipient->getKey()]);
-                ++$failedCount;
-            } else {
-                $defaultSendResult['sent']   = true;
-                $defaultSendResult['status'] = 'mautic.sms.timeline.status.delivered';
-                ++$sentCount;
+                return $results;
             }
 
-            $results[$recipient->getKey()] = $defaultSendResult;
+            $defaultSendResult = [
+                'sent'    => false,
+                'type'    => 'mautic.sms.sms',
+                'status'  => 'mautic.sms.timeline.status.delivered',
+                'id'      => $recipientCollection->getSms()->getId(),
+                'name'    => $recipientCollection->getSms()->getName(),
+            ];
+
+            foreach ($recipientCollection as $recipient) {
+                $defaultSendResult['content'] = $recipient->getFinalMessage();
+                if (true !== $recipient->getResult()) {
+                    $defaultSendResult['sent']   = false;
+                    $defaultSendResult['status'] = $recipient->getResult();
+                    unset($stats[$recipient->getKey()]);
+                } else {
+                    $defaultSendResult['sent']   = true;
+                    $defaultSendResult['status'] = 'mautic.sms.timeline.status.delivered';
+                    $sentCount[$translatedSms->getId()] = ($sentCount[$translatedSms->getId()] ?? 0) + 1;
+                }
+
+                $results[$recipient->getKey()] = $defaultSendResult;
+            }
         }
 
-        if ($sentCount || $failedCount) {
-            $this->getRepository()->upCount($sms->getId(), 'sent', $sentCount);
+        if ($sentCount) {
+            $repo = $this->getRepository();
+            foreach ($sentCount as $id => $count) {
+                $repo->upCount($id, 'sent', $count);
+            }
+        }
+
+        if (count($stats)) {
             $this->getStatRepository()->saveEntities($stats);
 
             foreach ($stats as $stat) {

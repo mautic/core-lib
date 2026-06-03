@@ -6,6 +6,7 @@ namespace Mautic\SmsBundle\Tests\Helper\DTO;
 
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\SmsBundle\Collection\RecipientCollection;
+use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Helper\DTO\SmsRecipientDTO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -48,25 +49,23 @@ class SmsRecipientDTOTest extends TestCase
     private function initData(): void
     {
         $this->lead = $this->createMock(Lead::class);
-        $this->lead->expects($this->any())
-            ->method('getId')
-            ->willReturn(1);
+        $this->lead->method('getId')->willReturn(1);
 
         $lead2 = $this->createMock(Lead::class);
-        $lead2->expects($this->any())
-            ->method('getId')
-            ->willReturn(2);
+        $lead2->method('getId')->willReturn(2);
 
         $this->dto1 = new SmsRecipientDTO(
             $this->lead,
-            []
+            [],
+            'final message 1'
         );
 
         $this->dto2 = new SmsRecipientDTO(
             $lead2,
-            ['key' => 'value']
+            ['key' => 'value'],
+            'final message 2'
         );
 
-        $this->collection = new RecipientCollection([$this->dto1, $this->dto2]);
+        $this->collection = new RecipientCollection(new Sms(), [$this->dto1, $this->dto2]);
     }
 }
