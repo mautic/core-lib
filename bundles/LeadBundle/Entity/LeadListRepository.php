@@ -773,7 +773,7 @@ SQL;
 
         $segmentIds = [];
         foreach ($query->getResult() as $property) {
-            $property       = unserialize($property['properties']);
+            $property       = \Mautic\CoreBundle\Helper\Serializer::decode($property['properties']);
             $segmentIds     = array_merge($property['addToLists'], $property['removeFromLists'], $segmentIds);
         }
 
@@ -796,7 +796,7 @@ SQL;
 
         foreach ($query->getResult() as $rowFilters) {
             $segmentMembershipFilters = array_filter(
-                unserialize($rowFilters['filters']),
+                \Mautic\CoreBundle\Helper\Serializer::decode($rowFilters['filters']),
                 fn (array $filter) => 'leadlist' === $filter['type']
             );
 
@@ -875,7 +875,7 @@ SQL;
 
         $segmentIds = [];
         foreach ($query->getResult() as $property) {
-            $property       = unserialize($property['properties']);
+            $property       = \Mautic\CoreBundle\Helper\Serializer::decode($property['properties']);
             $segmentIds     = array_merge($property['addToLists'], $property['removeFromLists'], $segmentIds);
         }
 
