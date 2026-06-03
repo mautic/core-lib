@@ -515,7 +515,12 @@ class PublicController extends AbstractFormController
                 }
 
                 if ($lead) {
-                    $emailId  = (int) (ClickthroughHelper::decodeArrayFromUrl($ct)['email'] ?? null);
+                    try {
+                        $emailId = (int) (ClickthroughHelper::decodeArrayFromUrl($ct)['email'] ?? null);
+                    } catch (InvalidDecodedStringException) {
+                        $emailId = null;
+                    }
+
                     $urlEvent = new UrlTokenReplaceEvent($url, $lead, $emailId ?: null);
                     $this->dispatcher->dispatch($urlEvent);
                     $url = $urlEvent->getContent();
