@@ -19,8 +19,6 @@ class AbTestResultService
      * @param array<mixed>|null $criteria
      *
      * @return array|mixed
-     *
-     * @throws \ReflectionException
      */
     public function getAbTestResult(VariantEntityInterface $parentVariant, ?array $criteria = null)
     {
@@ -40,31 +38,6 @@ class AbTestResultService
                 $determineWinnerEvent = new DetermineWinnerEvent($args);
                 $this->dispatcher->dispatch($determineWinnerEvent, $testSettings['event']);
                 $abTestResults = $determineWinnerEvent->getAbTestResults();
-            }
-
-            // execute the callback
-            if (isset($testSettings['callback']) && is_callable($testSettings['callback'])) {
-                if (is_array($testSettings['callback'])) {
-                    $reflection = new \ReflectionMethod($testSettings['callback'][0], $testSettings['callback'][1]);
-                    $instance   = is_object($testSettings['callback'][0]) ? $testSettings['callback'][0] : null;
-                } elseif (str_contains($testSettings['callback'], '::')) {
-                    $parts      = explode('::', $testSettings['callback']);
-                    $reflection = new \ReflectionMethod($parts[0], $parts[1]);
-                    $instance   = null;
-                } else {
-                    $reflection = new \ReflectionMethod('', $testSettings['callback']);
-                    $instance   = null;
-                }
-
-                $pass = [];
-                foreach ($reflection->getParameters() as $param) {
-                    if (isset($args[$param->getName()])) {
-                        $pass[] = $args[$param->getName()];
-                    } else {
-                        $pass[] = null;
-                    }
-                }
-                $abTestResults = $reflection->invokeArgs($instance, $pass);
             }
         }
 

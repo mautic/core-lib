@@ -28,7 +28,6 @@ class SendWinnerService
     }
 
     /**
-     * @throws \ReflectionException
      * @throws \Exception
      */
     public function processWinnerEmails(?int $emailId = null): void
@@ -80,7 +79,6 @@ class SendWinnerService
 
     /**
      * @throws NotReadyToSendWinnerException
-     * @throws \ReflectionException
      */
     private function processWinnerEmail(Email $email): void
     {
@@ -135,7 +133,6 @@ class SendWinnerService
     }
 
     /**
-     * @throws \ReflectionException
      * @throws NotReadyToSendWinnerException
      */
     private function getWinner(Email $parentVariant, string $winnerCriteria): ?Email
