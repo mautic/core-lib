@@ -22,7 +22,7 @@ class AbTestResultService
      *
      * @throws \ReflectionException
      */
-    public function getAbTestResult(VariantEntityInterface $parentVariant, $criteria)
+    public function getAbTestResult(VariantEntityInterface $parentVariant, ?array $criteria = null)
     {
         // get A/B test information
         [$parent, $children] = $parentVariant->getVariants();

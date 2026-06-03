@@ -202,7 +202,7 @@ class DownloadRepository extends CommonRepository
                 ->setParameter('date', $dh->toUtcString());
         }
 
-        if (null != $toDate) {
+        if (null !== $toDate) {
             $dh = new DateTimeHelper($toDate);
             $q->andWhere($q->expr()->lte('a.date_download', ':dateTo'))
                 ->setParameter('dateTo', $dh->toUtcString());

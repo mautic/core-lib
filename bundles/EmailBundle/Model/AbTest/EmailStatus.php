@@ -6,7 +6,7 @@ namespace Mautic\EmailBundle\Model\AbTest;
 
 use Mautic\EmailBundle\Entity\Email;
 
-class EmailStatus
+final class EmailStatus
 {
     /**
      * @var array<int|string, mixed>

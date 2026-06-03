@@ -11,7 +11,7 @@ use Mautic\EmailBundle\Entity\Email;
 class AbTestSettingsService
 {
     /**
-     * @const integer
+     * @var integer
      */
     public const DEFAULT_TOTAL_WEIGHT = 100;
 
@@ -59,10 +59,7 @@ class AbTestSettingsService
         return $settings;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getSendWinnerDelay(Email $entity)
+    public function getSendWinnerDelay(Email $entity): ?int
     {
         $settings = $this->getAbTestSettings($entity);
         if ($settings['totalWeight'] < self::DEFAULT_TOTAL_WEIGHT
