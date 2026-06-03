@@ -12,14 +12,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class PageSubscriber implements EventSubscriberInterface
 {
-    private LeadRepository $leadRepository;
-
-    private PrimaryCompanyHelper $primaryCompanyHelper;
-
-    public function __construct(LeadRepository $leadRepository, PrimaryCompanyHelper $primaryCompanyHelper)
+    public function __construct(
+        private LeadRepository $leadRepository,
+        private PrimaryCompanyHelper $primaryCompanyHelper)
     {
-        $this->leadRepository            = $leadRepository;
-        $this->primaryCompanyHelper      = $primaryCompanyHelper;
     }
 
     public static function getSubscribedEvents(): array
