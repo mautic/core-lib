@@ -938,16 +938,15 @@ class StatRepository extends CommonRepository
 
     public function getEmailSentLastDate(int $emailId): ?string
     {
-        $query = $this->getEntityManager()->getConnection()->createQueryBuilder();
-        $query->from(MAUTIC_TABLE_PREFIX.'email_stats', 's');
-        $query->select('max(s.date_sent) as last_sent_date')
-            ->join('s', MAUTIC_TABLE_PREFIX.'emails', 'e', 's.email_id = e.id')
-            ->where('s.email_id = :email')
-            ->orWhere('e.variant_parent_id = :email')
-            ->setParameter('email', $emailId);
+        $result = $this->createQueryBuilder('s')
+            ->select('MAX(s.dateSent)')
+            ->join('s.email', 'e')
+            ->where('s.email = :emailId')
+            ->orWhere('e.variantParent = :emailId')
+            ->setParameter('emailId', $emailId)
+            ->getQuery()
+            ->getSingleScalarResult();
 
-        $result = $query->executeQuery()->fetchAssociative();
-
-        return $result['last_sent_date'] ?? null;
+        return null === $result ? null : (string) $result;
     }
 }
