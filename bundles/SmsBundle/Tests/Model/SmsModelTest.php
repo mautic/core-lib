@@ -68,6 +68,8 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
         $this->userHelper           = $this->createMock(UserHelper::class);
         $this->logger               = $this->createMock(LoggerInterface::class);
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
+        $this->dispatcher->method('dispatch')
+            ->willReturnArgument(0);
         $this->smsModel             = new SmsModel(
             $this->pageTrackableModel,
             $this->leadModel,

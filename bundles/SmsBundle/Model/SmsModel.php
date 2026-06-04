@@ -290,7 +290,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
         foreach ($contacts as $contact) {
             [, $translatedSms] = $this->getTranslatedEntity($sms, $contact);
             \assert($translatedSms instanceof Sms);
-            
+
             $stat    = $this->createStatEntry($translatedSms, $contact, $channel, false, $listId);
             $stats[] = $stat;
 
@@ -328,7 +328,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
 
         foreach ($recipientCollections as $recipientCollection) {
             $translatedSms = $recipientCollection->getSms();
-            $media = $translatedSms->getMedia();
+            $media         = $translatedSms->getMedia();
 
             try {
                 // assumption made that the Sms message is same for all contacts
@@ -359,8 +359,8 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
                     $defaultSendResult['status'] = $recipient->getResult();
                     unset($stats[$recipient->getKey()]);
                 } else {
-                    $defaultSendResult['sent']   = true;
-                    $defaultSendResult['status'] = 'mautic.sms.timeline.status.delivered';
+                    $defaultSendResult['sent']          = true;
+                    $defaultSendResult['status']        = 'mautic.sms.timeline.status.delivered';
                     $sentCount[$translatedSms->getId()] = ($sentCount[$translatedSms->getId()] ?? 0) + 1;
                 }
 
