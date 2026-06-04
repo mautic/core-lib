@@ -39,7 +39,6 @@ class FormSubscriberTest extends TestCase
         $translator        = $this->createMock(TranslatorInterface::class);
         $router            = $this->createMock(RouterInterface::class);
         $languageHelper    = $this->createMock(LanguageHelper::class);
-        $formRepository    = $this->createMock(\Mautic\FormBundle\Entity\FormRepository::class);
         $this->mailer->expects($this->once())
             ->method('getMailer')
             ->willReturnSelf();
@@ -50,8 +49,7 @@ class FormSubscriberTest extends TestCase
             $this->mailer,
             $translator,
             $router,
-            $languageHelper,
-            $formRepository
+            $languageHelper
         );
     }
 

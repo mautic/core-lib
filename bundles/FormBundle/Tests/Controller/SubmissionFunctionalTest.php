@@ -1375,6 +1375,11 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $this->assertArrayHasKey('submissions', $submissionsData);
         $this->assertCount(1, $submissionsData['submissions']);
 
+        // The denormalised counter must match the single submission that was just created.
+        $prefix   = static::getContainer()->getParameter('mautic.db_table_prefix');
+        $countSql = "SELECT submission_count FROM {$prefix}forms WHERE id = ?";
+        $this->assertSame(1, (int) $this->connection->fetchOne($countSql, [$formId]));
+
         // Second submission should be blocked by the submission limit and redirect with the custom message.
         $this->client->followRedirects(false);
         $this->client->request(
@@ -1405,6 +1410,17 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $this->assertSame(Response::HTTP_OK, $finalSubmissionsResponse->getStatusCode(), $finalSubmissionsResponse->getContent());
         $this->assertArrayHasKey('submissions', $finalSubmissionsData);
         $this->assertCount(1, $finalSubmissionsData['submissions']);
+
+        // A blocked attempt must not move the counter.
+        $this->assertSame(1, (int) $this->connection->fetchOne($countSql, [$formId]));
+
+        // Deleting the submission decrements the counter symmetrically (via the postRemove listener).
+        $submissionId    = $finalSubmissionsData['submissions'][0]['id'];
+        $submissionModel = static::getContainer()->get('mautic.form.model.submission');
+        $submission      = $submissionModel->getEntity($submissionId);
+        $submissionModel->deleteEntity($submission);
+
+        $this->assertSame(0, (int) $this->connection->fetchOne($countSql, [$formId]));
     }
 
     /**

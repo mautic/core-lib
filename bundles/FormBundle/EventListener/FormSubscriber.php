@@ -11,7 +11,6 @@ use Mautic\CoreBundle\Helper\LanguageHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\FormBundle\Entity\Form;
-use Mautic\FormBundle\Entity\FormRepository;
 use Mautic\FormBundle\Event as Events;
 use Mautic\FormBundle\Exception\ValidationException;
 use Mautic\FormBundle\Form\Type\SubmitActionEmailType;
@@ -35,7 +34,6 @@ class FormSubscriber implements EventSubscriberInterface
         private TranslatorInterface $translator,
         private RouterInterface $router,
         private LanguageHelper $languageHelper,
-        private FormRepository $formRepository,
     ) {
         $this->mailer = $mailer->getMailer();
     }
@@ -50,14 +48,7 @@ class FormSubscriber implements EventSubscriberInterface
                 ['onFormSubmitActionSendEmail', 0],
                 ['onFormSubmitActionRepost', 0],
             ],
-            FormEvents::FORM_ON_SUBMIT => ['increaseFormSubmissionCount', 0],
         ];
-    }
-
-    public function increaseFormSubmissionCount(Events\SubmissionEvent $event): void
-    {
-        $form = $event->getForm();
-        $this->formRepository->incrementSubmissionCount($form->getId());
     }
 
     /**

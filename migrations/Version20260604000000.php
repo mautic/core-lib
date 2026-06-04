@@ -7,8 +7,9 @@ namespace Mautic\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 use Mautic\FormBundle\Entity\Form;
+use Mautic\FormBundle\Entity\Submission;
 
-final class Version20240206000000 extends PreUpAssertionMigration
+final class Version20260604000000 extends PreUpAssertionMigration
 {
     protected const TABLE_NAME = Form::TABLE_NAME;
 
@@ -22,21 +23,30 @@ final class Version20240206000000 extends PreUpAssertionMigration
 
     public function up(Schema $schema): void
     {
-        $table = $schema->getTable($this->getPrefixedTableName());
+        $forms = $this->getPrefixedTableName();
+        $table = $schema->getTable($forms);
+
         if (!$table->hasColumn('submission_limit')) {
-            $table->addColumn('submission_limit', 'integer', ['notnull' => false, 'default' => null]);
+            $this->addSql("ALTER TABLE {$forms} ADD submission_limit INT DEFAULT NULL");
         }
+
         if (!$table->hasColumn('submission_limit_message')) {
-            $table->addColumn('submission_limit_message', 'text', ['notnull' => false, 'default' => null]);
+            $this->addSql("ALTER TABLE {$forms} ADD submission_limit_message LONGTEXT DEFAULT NULL");
         }
+
         if (!$table->hasColumn('submission_count')) {
-            $table->addColumn('submission_count', 'integer', ['notnull' => true, 'default' => 0]);
+            $submissions = $this->getPrefixedTableName(Submission::TABLE_NAME);
+
+            $this->addSql("ALTER TABLE {$forms} ADD submission_count INT DEFAULT 0 NOT NULL");
+            // Backfill the counter from existing submissions so the limit accounts for historical data.
+            $this->addSql("UPDATE {$forms} f SET f.submission_count = (SELECT COUNT(*) FROM {$submissions} s WHERE s.form_id = f.id)");
         }
     }
 
     public function down(Schema $schema): void
     {
         $table = $schema->getTable($this->getPrefixedTableName());
+
         if ($table->hasColumn('submission_limit')) {
             $table->dropColumn('submission_limit');
         }
