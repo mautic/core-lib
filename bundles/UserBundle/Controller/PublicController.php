@@ -4,11 +4,13 @@ namespace Mautic\UserBundle\Controller;
 
 use Mautic\CoreBundle\Controller\FormController;
 use Mautic\UserBundle\Entity\User;
+use Mautic\UserBundle\Entity\UserInvite;
 use Mautic\UserBundle\Form\Type\PasswordResetConfirmType;
 use Mautic\UserBundle\Form\Type\PasswordResetType;
 use Mautic\UserBundle\Form\Type\UserInviteRegistrationType;
 use Mautic\UserBundle\Model\UserModel;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,10 +81,10 @@ class PublicController extends FormController
         /** @var UserModel $model */
         $model = $this->getModel('user');
 
-        $data   = ['identifier' => '', 'password' => '', 'password_confirm' => ''];
-        $action = $this->generateUrl('mautic_user_passwordresetconfirm');
-        $form   = $this->formFactory->create(PasswordResetConfirmType::class, [], ['action' => $action]);
-        $token  = $request->query->get('token');
+        $action   = $this->generateUrl('mautic_user_passwordresetconfirm');
+        $form     = $this->formFactory->create(PasswordResetConfirmType::class, [], ['action' => $action]);
+        $token    = $request->query->get('token');
+        $response = null;
 
         if ($token) {
             $request->getSession()->set('resetToken', $token);
@@ -91,47 +93,47 @@ class PublicController extends FormController
         // /Check for a submitted form and process it
         if ('POST' === $request->getMethod()) {
             if ($isValid = $this->isFormValid($form)) {
-                // find the user
-                $data = $form->getData();
-                /** @var User $user */
-                $user = $model->getRepository()->findByIdentifier($data['identifier']);
-
-                if (null == $user) {
-                    $this->addFlashMessage('mautic.user.user.notice.passwordreset.success');
-
-                    return $this->redirectToRoute('login');
-                }
-                if ($request->getSession()->has('resetToken')) {
-                    $resetToken = $request->getSession()->get('resetToken');
-
-                    if ($model->confirmResetToken($user, $resetToken)) {
-                        $encodedPassword = $model->checkNewPassword($user, $hasher, $data['plainPassword']);
-                        $user->setPassword($encodedPassword);
-                        $model->saveEntity($user);
-
-                        $this->addFlashMessage('mautic.user.user.notice.passwordreset.success');
-
-                        $request->getSession()->remove('resetToken');
-
-                        return $this->redirectToRoute('login');
-                    }
-
-                    return $this->delegateView([
-                        'viewParameters' => [
-                            'form' => $form->createView(),
-                        ],
-                        'contentTemplate' => '@MauticUser/Security/resetconfirm.html.twig',
-                        'passthroughVars' => [
-                            'route' => $action,
-                        ],
-                    ]);
-                }
-                $this->addFlashMessage('mautic.user.user.notice.passwordreset.missingtoken');
-
-                return $this->redirectToRoute('mautic_user_passwordresetconfirm');
+                $data     = $form->getData();
+                $response = $this->handlePasswordResetConfirm($request, $model, $hasher, $data);
             }
         }
 
+        return $response ?? $this->renderPasswordResetConfirmForm($form, $action);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function handlePasswordResetConfirm(Request $request, UserModel $model, UserPasswordHasherInterface $hasher, array $data): ?Response
+    {
+        $response = null;
+        /** @var User|null $user */
+        $user = $model->getRepository()->findByIdentifier($data['identifier']);
+
+        if (null === $user) {
+            $this->addFlashMessage('mautic.user.user.notice.passwordreset.success');
+
+            $response = $this->redirectToRoute('login');
+        } elseif (!$request->getSession()->has('resetToken')) {
+            $this->addFlashMessage('mautic.user.user.notice.passwordreset.missingtoken');
+
+            $response = $this->redirectToRoute('mautic_user_passwordresetconfirm');
+        } elseif ($model->confirmResetToken($user, $request->getSession()->get('resetToken'))) {
+            $encodedPassword = $model->checkNewPassword($user, $hasher, $data['plainPassword']);
+            $user->setPassword($encodedPassword);
+            $model->saveEntity($user);
+
+            $this->addFlashMessage('mautic.user.user.notice.passwordreset.success');
+            $request->getSession()->remove('resetToken');
+
+            $response = $this->redirectToRoute('login');
+        }
+
+        return $response;
+    }
+
+    private function renderPasswordResetConfirmForm(FormInterface $form, string $action): Response
+    {
         return $this->delegateView([
             'viewParameters' => [
                 'form' => $form->createView(),
@@ -178,22 +180,7 @@ class PublicController extends FormController
                 } elseif ($form->isSubmitted() && $form->isValid()) {
                     try {
                         $formData = $form->getData();
-
-                        // Create user from form data
-                        $user = new User();
-                        $user->setUsername($formData['username']);
-                        $user->setFirstName($formData['firstName']);
-                        $user->setLastName($formData['lastName']);
-                        $user->setEmail($invite->getEmail());
-                        $user->setPlainPassword($formData['plainPassword']);
-                        $user->setRole($invite->getRole());
-
-                        if (!empty($formData['locale'])) {
-                            $user->setLocale($formData['locale']);
-                        }
-
-                        $encoded = $model->checkNewPassword($user, $hasher, $user->getPlainPassword());
-                        $user->setPassword($encoded);
+                        $user     = $this->createInvitedUser($invite, $formData, $model, $hasher);
 
                         $model->saveEntity($user);
                         $model->markInviteUsed($invite);
@@ -219,5 +206,27 @@ class PublicController extends FormController
         }
 
         return $response;
+    }
+
+    /**
+     * @param array<string, mixed> $formData
+     */
+    private function createInvitedUser(UserInvite $invite, array $formData, UserModel $model, UserPasswordHasherInterface $hasher): User
+    {
+        $user = new User();
+        $user->setUsername($formData['username']);
+        $user->setFirstName($formData['firstName']);
+        $user->setLastName($formData['lastName']);
+        $user->setEmail($invite->getEmail());
+        $user->setPlainPassword($formData['plainPassword']);
+        $user->setRole($invite->getRole());
+
+        if (!empty($formData['locale'])) {
+            $user->setLocale($formData['locale']);
+        }
+
+        $user->setPassword($model->checkNewPassword($user, $hasher, $user->getPlainPassword()));
+
+        return $user;
     }
 }
