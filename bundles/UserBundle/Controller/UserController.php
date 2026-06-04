@@ -186,12 +186,6 @@ class UserController extends FormController
         // retrieve the user entity
         $user = $model->getEntity();
 
-        // set the return URL for post actions
-        $returnUrl = $this->generateUrl('mautic_user_index');
-
-        // set the page we came from
-        $page = $request->getSession()->get('mautic.user.page', 1);
-
         // get the user form factory
         $action   = $this->generateUrl('mautic_user_action', ['objectAction' => 'new']);
         $form     = $model->createForm($user, $this->formFactory, $action);
@@ -199,13 +193,13 @@ class UserController extends FormController
 
         // Check for a submitted form and process it
         if ('POST' === $request->getMethod()) {
-            $response = $this->handleNewUserPost($request, $languageHelper, $hasher, $samlHelper, $model, $user, $form, $returnUrl, $page);
+            $response = $this->handleNewUserPost($request, $languageHelper, $hasher, $samlHelper, $model, $user, $form);
         }
 
         return $response ?? $this->renderNewUserForm($form, $action);
     }
 
-    private function handleNewUserPost(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper, UserModel $model, User $user, FormInterface $form, string $returnUrl, int $page): JsonResponse|Response|null
+    private function handleNewUserPost(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper, UserModel $model, User $user, FormInterface $form): JsonResponse|Response|null
     {
         $response  = null;
         $cancelled = $this->isFormCancelled($form);
@@ -217,8 +211,8 @@ class UserController extends FormController
 
         if ($cancelled || ($valid && $this->getFormButton($form, ['buttons', 'save'])->isClicked())) {
             $response = $this->postActionRedirect([
-                'returnUrl'       => $returnUrl,
-                'viewParameters'  => ['page' => $page, 'isSamlUser' => false],
+                'returnUrl'       => $this->generateUrl('mautic_user_index'),
+                'viewParameters'  => ['page' => $request->getSession()->get('mautic.user.page', 1), 'isSamlUser' => false],
                 'contentTemplate' => 'Mautic\UserBundle\Controller\UserController::indexAction',
                 'passthroughVars' => [
                     'activeLink'    => '#mautic_user_index',
