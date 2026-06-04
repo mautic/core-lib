@@ -54,13 +54,18 @@ class FormRepository extends CommonRepository
     }
 
     /**
-     * @param string $search
-     * @param int    $limit
-     * @param int    $start
-     * @param bool   $viewOther
+     * @param string      $search
+     * @param int         $limit
+     * @param int         $start
+     * @param bool        $viewOther
+     * @param string|null $formType  @deprecated since Mautic 7.1, this parameter is ignored and will be removed in 8.0
      */
     public function getFormList($search = '', $limit = 10, $start = 0, $viewOther = false, $formType = null): array
     {
+        if (null !== $formType) {
+            trigger_deprecation('mautic/mautic', '7.1', 'The $formType parameter in FormRepository::getFormList() is deprecated and will be removed in 8.0.');
+        }
+
         $q = $this->createQueryBuilder('f');
         $q->select('partial f.{id, name, alias}');
 
@@ -211,6 +216,20 @@ class FormRepository extends CommonRepository
         }
 
         return $query->executeQuery()->fetchAllAssociative();
+    }
+
+    /**
+     * @return array<int, array<string,string>>
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getValidFormResultsTable(): array
+    {
+        return $this->_em->getConnection()->createQueryBuilder()
+            ->select("CONCAT('".MAUTIC_TABLE_PREFIX."','form_results_', t.id, '_', t.alias) as validFormTable")
+            ->from(MAUTIC_TABLE_PREFIX.'forms', 't')
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
