@@ -83,7 +83,7 @@ class TransportChain
             return $this->getPrimaryTransport()->sendBatchSms($collection, $template);
         }
 
-        return $this->sendMessage($collection, $template);
+        return $this->sendMessage($collection);
     }
 
     /**
@@ -94,7 +94,7 @@ class TransportChain
      */
     public function sendMMS(RecipientCollection $collection, string $template, array $media = []): RecipientCollection
     {
-        return $this->sendMessage($collection, $template, $media);
+        return $this->sendMessage($collection, $media);
     }
 
     /**
@@ -103,7 +103,7 @@ class TransportChain
      *
      * @return RecipientCollection<SmsRecipientDTO>
      */
-    private function sendMessage(RecipientCollection $collection, string $template, array $media = []): RecipientCollection
+    private function sendMessage(RecipientCollection $collection, array $media = []): RecipientCollection
     {
         // loops through contacts
         foreach ($collection as $recipient) {
