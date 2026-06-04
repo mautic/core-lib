@@ -7,6 +7,7 @@ namespace Mautic\SmsBundle\Tests\Sms;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\SmsBundle\Collection\RecipientCollection;
+use Mautic\SmsBundle\Entity\Sms;
 use Mautic\SmsBundle\Helper\DTO\SmsRecipientDTO;
 use Mautic\SmsBundle\Integration\Twilio\TwilioTransport;
 use Mautic\SmsBundle\Sms\BulkTransportInterface;
@@ -141,9 +142,9 @@ final class TransportChainTest extends MauticMysqlTestCase
         $lead2->setMobile('+123456790');
         $lead2->setId(2);
 
-        $recipientCollection = new RecipientCollection();
-        $recipientCollection->append(new SmsRecipientDTO($lead1, []));
-        $recipientCollection->append(new SmsRecipientDTO($lead2, []));
+        $recipientCollection = new RecipientCollection(new Sms());
+        $recipientCollection->append(new SmsRecipientDTO($lead1, [], 'Yeah'));
+        $recipientCollection->append(new SmsRecipientDTO($lead2, [], 'Yeah'));
 
         if ($transport instanceof MMSTransportInterface) {
             $recipientCollection = $transportChain->sendMMS($recipientCollection, 'Yeah', ['test.png']);
