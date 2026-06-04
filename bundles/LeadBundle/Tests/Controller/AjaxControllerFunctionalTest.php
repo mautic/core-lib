@@ -104,12 +104,12 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $user->setUsername('no-campaign-edit-user');
         $user->setRole($role);
 
-        $encoder = self::$container->get('security.encoder_factory')->getEncoder($user);
+        $hasher = static::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
 
-        $user->setPassword($encoder->encodePassword('mautic', null));
+        $user->setPassword($hasher->hash('mautic'));
         $userRepository->saveEntity($user);
 
-        $this->loginUser('no-campaign-edit-user');
+        $this->loginUser($user);
 
         $this->client->setServerParameter('PHP_AUTH_USER', 'no-campaign-edit-user');
         $payload = [
@@ -120,7 +120,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         ];
 
         $this->client->request(Request::METHOD_POST, '/s/ajax', $payload, [], $this->createAjaxHeaders());
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode(), 'The user without campaign edit own/others permissions should not access toggle lead campaign action.');
+        $this->assertEquals(401, $this->client->getResponse()->getStatusCode(), 'The user without campaign edit own/others permissions should not access toggle lead campaign action.');
     }
 
     public function testSegmentDependencyTreeWithNotExistingSegment(): void
