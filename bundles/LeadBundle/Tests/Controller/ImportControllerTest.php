@@ -31,6 +31,8 @@ final class ImportControllerTest extends MauticMysqlTestCase
 {
     protected $useCleanupRollback = false;
 
+    private const IMPORT_CANCELED_MESSAGE = 'Import canceled for file test.csv';
+
     public function testImportWithoutFile(): void
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
@@ -267,21 +269,13 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $import = $this->createQueuedImport();
 
         $this->addCancellationNotification($import);
-        $this->assertNotificationMessageContains('Import canceled for file test.csv (ID '.$import->getId().')');
+        $this->assertNotificationMessageContains($this->getImportCanceledMessage($import));
     }
 
     public function testCancelActionNotificationLogicWithoutImport(): void
     {
         $this->addCancellationNotification();
-        $this->assertNotificationMessageContains('Import canceled for file test.csv');
-    }
-
-    public function testResetImportFunctionality(): void
-    {
-        $import = $this->createQueuedImport();
-
-        $this->addCancellationNotification($import);
-        $this->assertNotificationMessageContains('Import canceled for file test.csv (ID '.$import->getId().')');
+        $this->assertNotificationMessageContains(self::IMPORT_CANCELED_MESSAGE);
     }
 
     public function testCancelActionNotifiesImportOwnerWhenAnotherUserCancels(): void
@@ -311,11 +305,11 @@ final class ImportControllerTest extends MauticMysqlTestCase
         Assert::assertTrue($this->client->getResponse()->isSuccessful(), $this->client->getResponse()->getContent());
         $this->assertNotificationMessageContainsForUser(
             (int) $owner->getId(),
-            'Import canceled for file test.csv (ID '.$import->getId().') by Person Two'
+            $this->getImportCanceledMessage($import, ' by Person Two')
         );
         $this->assertNotificationMessageDoesNotContainForUser(
             (int) $canceller->getId(),
-            'Import canceled for file test.csv (ID '.$import->getId().') by Person Two'
+            $this->getImportCanceledMessage($import, ' by Person Two')
         );
     }
 
@@ -464,6 +458,11 @@ final class ImportControllerTest extends MauticMysqlTestCase
             : $translator->trans('mautic.lead.import.canceled', ['%file%' => $fileName]);
 
         $notificationModel->addNotification($message, 'warning');
+    }
+
+    private function getImportCanceledMessage(Import $import, string $suffix = ''): string
+    {
+        return self::IMPORT_CANCELED_MESSAGE.' (ID '.$import->getId().')'.$suffix;
     }
 
     private function assertNotificationMessageContains(string $expectedSubstring): void
