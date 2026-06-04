@@ -107,9 +107,7 @@ class TransportChain
     {
         // loops through contacts
         foreach ($collection as $recipient) {
-            $substitutionData = $recipient->getSubstitutionData();
-            // replace all tokens
-            $content = str_replace(array_keys($substitutionData), array_values($substitutionData), $template);
+            $content = $recipient->getFinalMessage();
             // As of now media is only supported by twilio
             if ($media && ($primaryTransport = $this->getPrimaryTransport()) instanceof MMSTransportInterface) {
                 $status = $primaryTransport->sendMms($recipient->getLead(), $content, $media);

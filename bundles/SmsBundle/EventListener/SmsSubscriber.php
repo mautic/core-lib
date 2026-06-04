@@ -99,10 +99,11 @@ class SmsSubscriber implements EventSubscriberInterface
                  * @var Trackable $trackable
                  */
                 foreach ($trackables as $token => $trackable) {
-                    $event->addToken($token, $this->trackableModel->generateTrackableUrl($trackable, $clickthrough, $shortenEnabled));
+                    $tokens[$token] = $this->trackableModel->generateTrackableUrl($trackable, $clickthrough, $shortenEnabled);
                 }
             }
 
+            $content = str_replace(array_keys($tokens), array_values($tokens), $content);
             foreach ($tokens as $token => $value) {
                 $event->addToken($token, $value);
             }
