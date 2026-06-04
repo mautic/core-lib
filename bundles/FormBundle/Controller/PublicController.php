@@ -450,29 +450,26 @@ class PublicController extends CommonFormController
      */
     private function getStandardRedirectResponse(array $context, array $submissionResult): ?Response
     {
-        $error = $submissionResult['error'];
+        $error    = $submissionResult['error'];
+        $response = null;
 
         if (!empty($error) && $context['return']) {
             $form = $submissionResult['form'];
             $hash = ($form instanceof Form) ? '#'.strtolower($form->getAlias()) : '';
 
-            return $this->redirect($context['return'].$context['query'].'mauticError='.rawurlencode((string) $error).$hash); // NOSONAR return URL is sanitized in createSubmitContext().
-        }
-
-        if ('redirect' === $submissionResult['postAction']) {
-            return $this->redirect((string) $submissionResult['postActionProperty']);
-        }
-
-        if ('return' === $submissionResult['postAction'] && !empty($context['return'])) {
+            $response = $this->redirect($context['return'].$context['query'].'mauticError='.rawurlencode((string) $error).$hash); // NOSONAR return URL is sanitized in createSubmitContext().
+        } elseif ('redirect' === $submissionResult['postAction']) {
+            $response = $this->redirect((string) $submissionResult['postActionProperty']);
+        } elseif ('return' === $submissionResult['postAction'] && !empty($context['return'])) {
             $return = (string) $context['return'];
             if (!empty($submissionResult['postActionProperty'])) {
                 $return .= $context['query'].'mauticMessage='.rawurlencode((string) $submissionResult['postActionProperty']);
             }
 
-            return $this->redirect($return); // NOSONAR return URL is sanitized in createSubmitContext().
+            $response = $this->redirect($return); // NOSONAR return URL is sanitized in createSubmitContext().
         }
 
-        return null;
+        return $response;
     }
 
     /**
