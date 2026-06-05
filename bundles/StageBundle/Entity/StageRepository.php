@@ -28,6 +28,9 @@ class StageRepository extends CommonRepository
         return 's';
     }
 
+    /**
+     * @return array<int, array{id: int, name: string, weight: int}>
+     */
     public function getStageWeights(): array
     {
         return $this->createQueryBuilder('s')
