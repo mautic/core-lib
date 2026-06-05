@@ -201,11 +201,7 @@ class StageController extends AbstractFormController
             $themes[] = $actions['actions'][$actionType]['formTheme'];
         }
 
-        $stageWeights = $model->getRepository()->createQueryBuilder('s')
-            ->select('s.id, s.name, s.weight')
-            ->orderBy('s.weight', 'ASC')
-            ->getQuery()
-            ->getArrayResult();
+        $stageWeights = $model->getRepository()->getStageWeights();
 
         return $this->delegateView(
             [
@@ -359,11 +355,7 @@ class StageController extends AbstractFormController
             $themes[] = $actions['actions'][$actionType]['formTheme'];
         }
 
-        $stageWeights = $model->getRepository()->createQueryBuilder('s')
-            ->select('s.id, s.name, s.weight')
-            ->orderBy('s.weight', 'ASC')
-            ->getQuery()
-            ->getArrayResult();
+        $stageWeights = $model->getRepository()->getStageWeights();
 
         return $this->delegateView(
             [

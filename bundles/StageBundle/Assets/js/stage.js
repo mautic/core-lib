@@ -1,13 +1,17 @@
 //StageBundle
 Mautic.stageOnLoad = function (container, response) {
-    if (mQuery(container + ' #stage-weight-sequence').length) {
-        const stageWeights = mQuery('#stage-weight-sequence').data('weights');
-        const weightFieldId = mQuery('#stage-weight-sequence').data('weight-field-id');
-        const entityId = mQuery('#stage-weight-sequence').data('entity-id');
+    const sequence = mQuery('#stage-weight-sequence');
 
-        if (stageWeights && weightFieldId) {
-            Mautic.initStageWeightConflictCheck(stageWeights, weightFieldId, entityId);
-        }
+    if (!sequence.length) {
+        return;
+    }
+
+    const stageWeights = sequence.data('weights');
+    const weightFieldId = sequence.data('weight-field-id');
+
+    if (stageWeights && weightFieldId) {
+        const entityId = sequence.data('entity-id');
+        Mautic.initStageWeightConflictCheck(stageWeights, weightFieldId, entityId);
     }
 };
 
