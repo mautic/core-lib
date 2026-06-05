@@ -111,7 +111,6 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->loginUser($user);
 
-        $this->client->setServerParameter('PHP_AUTH_USER', 'no-campaign-edit-user');
         $payload = [
             'action'         => 'lead:toggleLeadCampaign',
             'leadId'         => $contact->getId(),
@@ -119,8 +118,9 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
             'campaignAction' => 'remove',
         ];
 
-        $this->client->request(Request::METHOD_POST, '/s/ajax', $payload, [], $this->createAjaxHeaders());
-        $this->assertEquals(401, $this->client->getResponse()->getStatusCode(), 'The user without campaign edit own/others permissions should not access toggle lead campaign action.');
+        $this->setCsrfHeader();
+        $this->client->xmlHttpRequest(Request::METHOD_POST, '/s/ajax', $payload);
+        $this->assertEquals(403, $this->client->getResponse()->getStatusCode(), 'The user without campaign edit own/others permissions should not access toggle lead campaign action.');
     }
 
     public function testSegmentDependencyTreeWithNotExistingSegment(): void
