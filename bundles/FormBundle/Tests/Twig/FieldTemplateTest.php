@@ -10,6 +10,7 @@ use Mautic\FormBundle\Entity\Field;
 final class FieldTemplateTest extends MauticMysqlTestCase
 {
     private const FIELD_LABEL         = 'Test Field';
+    private const FULL_WIDTH_CLASS    = 'mauticform-100';
     private const TEXT_FIELD_TEMPLATE = '@MauticForm/Field/text.html.twig';
 
     public function testFieldTemplateRendersWithCssClasses(): void
@@ -24,13 +25,13 @@ final class FieldTemplateTest extends MauticMysqlTestCase
     {
         $html = $this->renderTextField($this->createField());
 
-        $this->assertStringContainsString('mauticform-100', $html);
+        $this->assertStringContainsString(self::FULL_WIDTH_CLASS, $html);
     }
 
     public function testFieldTemplateMapsAllWidthValuesCorrectly(): void
     {
         $widthMappings = [
-            '100%'   => 'mauticform-100',
+            '100%'   => self::FULL_WIDTH_CLASS,
             '75%'    => 'mauticform-75',
             '66.66%' => 'mauticform-66',
             '50%'    => 'mauticform-50',
@@ -44,6 +45,34 @@ final class FieldTemplateTest extends MauticMysqlTestCase
             $this->assertStringContainsString($expectedClass, $html, "Field width {$percentage} should map to class {$expectedClass}");
             $this->assertStringNotContainsString("style=\"width: {$percentage}\"", $html, "Field width {$percentage} should not have inline style");
         }
+    }
+
+    public function testFieldTemplateDefaultsEmptyWidthToFullWidth(): void
+    {
+        $html = $this->renderTextField($this->createField(''));
+
+        $this->assertStringContainsString(self::FULL_WIDTH_CLASS, $html);
+        $this->assertStringNotContainsString('style="width:', $html);
+    }
+
+    public function testFieldTemplateDoesNotRenderDecimalClassSuffix(): void
+    {
+        $html = $this->renderTextField($this->createField('33.33%'));
+
+        $this->assertStringContainsString('mauticform-33', $html);
+        $this->assertStringNotContainsString('mauticform-33.33', $html);
+    }
+
+    public function testFieldTemplateKeepsCustomContainerAttributesWithWidthClass(): void
+    {
+        $field = $this->createField('25%');
+        $field->setContainerAttributes('class="custom-row" data-test="custom-attr"');
+
+        $html = $this->renderTextField($field);
+
+        $this->assertStringContainsString('custom-row', $html);
+        $this->assertStringContainsString('data-test="custom-attr"', $html);
+        $this->assertStringContainsString('mauticform-25', $html);
     }
 
     private function createField(?string $fieldWidth = null): Field
