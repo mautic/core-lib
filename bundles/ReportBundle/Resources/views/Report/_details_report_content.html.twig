@@ -24,11 +24,11 @@
                             <i class="ri-arrow-down-s-line"></i>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#" onclick="Mautic.setDateRange('today'); event.preventDefault();">{{ 'mautic.report.date.today'|trans }}</a></li>
-                            <li><a href="#" onclick="Mautic.setDateRange('yesterday'); event.preventDefault();">{{ 'mautic.report.date.yesterday'|trans }}</a></li>
-                            <li><a href="#" onclick="Mautic.setDateRange(7); event.preventDefault();">{{ 'mautic.report.date.last_7_days'|trans }}</a></li>
-                            <li><a href="#" onclick="Mautic.setDateRange(30); event.preventDefault();">{{ 'mautic.report.date.last_30_days'|trans }}</a></li>
-                            <li><a href="#" onclick="Mautic.setDateRange(90); event.preventDefault();">{{ 'mautic.report.date.last_90_days'|trans }}</a></li>
+                            <li><a href="#" data-date-range-option="today">{{ 'mautic.report.date.today'|trans }}</a></li>
+                            <li><a href="#" data-date-range-option="yesterday">{{ 'mautic.report.date.yesterday'|trans }}</a></li>
+                            <li><a href="#" data-date-range-option="7">{{ 'mautic.report.date.last_7_days'|trans }}</a></li>
+                            <li><a href="#" data-date-range-option="30">{{ 'mautic.report.date.last_30_days'|trans }}</a></li>
+                            <li><a href="#" data-date-range-option="90">{{ 'mautic.report.date.last_90_days'|trans }}</a></li>
                         </ul>
                     </div>
                 </div>
