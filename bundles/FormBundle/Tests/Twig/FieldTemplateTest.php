@@ -10,11 +10,14 @@ use Mautic\FormBundle\Entity\Form;
 
 final class FieldTemplateTest extends MauticMysqlTestCase
 {
+    private const FIELD_LABEL         = 'Test Field';
+    private const TEXT_FIELD_TEMPLATE = '@MauticForm/Field/text.html.twig';
+
     public function testFieldTemplateRendersWithCssClasses(): void
     {
         $field = new Field();
         $field->setType('text');
-        $field->setLabel('Test Field');
+        $field->setLabel(self::FIELD_LABEL);
         $field->setAlias('test_field');
         $field->setFieldWidth('50%');
         $field->setOrder(1);
@@ -24,7 +27,7 @@ final class FieldTemplateTest extends MauticMysqlTestCase
         $form->setAlias('test_form');
 
         $twig     = $this->getContainer()->get('twig');
-        $template = $twig->load('@MauticForm/Field/text.html.twig');
+        $template = $twig->load(self::TEXT_FIELD_TEMPLATE);
 
         $html = $template->render([
             'field'          => $field,
@@ -44,7 +47,7 @@ final class FieldTemplateTest extends MauticMysqlTestCase
     {
         $field = new Field();
         $field->setType('text');
-        $field->setLabel('Test Field');
+        $field->setLabel(self::FIELD_LABEL);
         $field->setAlias('test_field');
         $field->setOrder(1);
 
@@ -53,7 +56,7 @@ final class FieldTemplateTest extends MauticMysqlTestCase
         $form->setAlias('test_form');
 
         $twig     = $this->getContainer()->get('twig');
-        $template = $twig->load('@MauticForm/Field/text.html.twig');
+        $template = $twig->load(self::TEXT_FIELD_TEMPLATE);
 
         $html = $template->render([
             'field'          => $field,
@@ -82,13 +85,13 @@ final class FieldTemplateTest extends MauticMysqlTestCase
         foreach ($widthMappings as $percentage => $expectedClass) {
             $field = new Field();
             $field->setType('text');
-            $field->setLabel('Test Field');
+            $field->setLabel(self::FIELD_LABEL);
             $field->setAlias('test_field');
             $field->setFieldWidth($percentage);
             $field->setOrder(1);
 
             $twig     = $this->getContainer()->get('twig');
-            $template = $twig->load('@MauticForm/Field/text.html.twig');
+            $template = $twig->load(self::TEXT_FIELD_TEMPLATE);
 
             $html = $template->render([
                 'field'          => $field,
