@@ -52,7 +52,7 @@ final class SendSmsSubscriberTest extends TestCase
                 1 => new Lead(),
             ]);
 
-        $event = new DncEvent(array_merge($contacts = [
+        $event = new DncEvent(array_merge([
             2 => new Lead(),
         ], $contactToRemove));
 

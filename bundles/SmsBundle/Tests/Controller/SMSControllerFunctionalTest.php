@@ -12,6 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class SMSControllerFunctionalTest extends MauticMysqlTestCase
 {
+    private const EDIT_SMS_PATH       = '/s/sms/edit/';
+    private const DEFAULT_SMS_MESSAGE = 'sms body';
+    private const SAVE_AND_CLOSE      = 'Save & Close';
+
     protected function setUp(): void
     {
         $this->configParams['site_url'] = 'https://localhost';
@@ -20,7 +24,7 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testSmsWithProject(): void
     {
-        $sms = $this->CreateSms();
+        $sms = $this->createSms();
 
         $project = new Project();
         $project->setName('Test Project');
@@ -29,7 +33,7 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $crawler = $this->client->request('GET', '/s/sms/edit/'.$sms->getId());
+        $crawler = $this->client->request('GET', self::EDIT_SMS_PATH.$sms->getId());
         $form    = $crawler->selectButton('Save')->form();
         $form['sms[projects]']->setValue((string) $project->getId());
 
@@ -44,8 +48,8 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
     public function testListPageMMSIndicator(): void
     {
         $mediaSmsName = 'Media attached sms';
-        $this->CreateSms($mediaSmsName, 'sms body', true, range(1, 3));
-        $this->CreateSms('sms', 'sms body2');
+        $this->createSms($mediaSmsName, self::DEFAULT_SMS_MESSAGE, true, range(1, 3));
+        $this->createSms('sms', 'sms body2');
         $crawler = $this->client->request(Request::METHOD_GET, '/s/sms');
         $this->assertResponseIsSuccessful();
         $this->assertCount(2, $crawler->filter('.sms-list tbody tr'));
@@ -65,14 +69,14 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
 
     public function testSmsWithMediaLimitError(): void
     {
-        $sms            = $this->CreateSms('sms', 'sms body', true, range(1, 11));
-        $crawler        = $this->client->request(Request::METHOD_GET, '/s/sms/edit/'.$sms->getId());
-        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $sms            = $this->createSms('sms', self::DEFAULT_SMS_MESSAGE, true, range(1, 11));
+        $crawler        = $this->client->request(Request::METHOD_GET, self::EDIT_SMS_PATH.$sms->getId());
+        $buttonCrawler  = $crawler->selectButton(self::SAVE_AND_CLOSE);
         $form           = $buttonCrawler->form();
 
         $form->setValues([
             'sms[name]'    => 'sms',
-            'sms[message]' => 'sms body',
+            'sms[message]' => self::DEFAULT_SMS_MESSAGE,
             'sms[isMms]'   => 1,
             'sms[media]'   => range(1, 11),
         ]);
@@ -89,11 +93,11 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
         $clonedMessage = 'sms body clone';
         $media         = ['a.png', 'b.jpg'];
 
-        $sms = $this->CreateSms('sms', 'sms body', true, $media);
+        $sms = $this->createSms('sms', self::DEFAULT_SMS_MESSAGE, true, $media);
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/sms/clone/'.$sms->getId());
 
-        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $buttonCrawler  = $crawler->selectButton(self::SAVE_AND_CLOSE);
         $form           = $buttonCrawler->form();
         $form->setValues([
             'sms[name]'    => 'sms clone',
@@ -113,10 +117,10 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
     public function testSaveSmsWithMediaFalse(): void
     {
         $media   = ['a.png', 'b.jpg'];
-        $sms     = $this->CreateSms('sms', 'sms body', true, $media);
-        $crawler = $this->client->request(Request::METHOD_GET, '/s/sms/edit/'.$sms->getId());
+        $sms     = $this->createSms('sms', self::DEFAULT_SMS_MESSAGE, true, $media);
+        $crawler = $this->client->request(Request::METHOD_GET, self::EDIT_SMS_PATH.$sms->getId());
 
-        $buttonCrawler  =  $crawler->selectButton('Save & Close');
+        $buttonCrawler  = $crawler->selectButton(self::SAVE_AND_CLOSE);
         $form           = $buttonCrawler->form();
         $form->setValues([
             'sms[isMms]'    => 0,
@@ -134,7 +138,7 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
     /**
      * @param array<mixed> $media
      */
-    private function CreateSms(string $name = 'sms', string $message = 'sms body', bool $isMms = false, ?array $media = null): Sms
+    private function createSms(string $name = 'sms', string $message = self::DEFAULT_SMS_MESSAGE, bool $isMms = false, ?array $media = null): Sms
     {
         $sms = new Sms();
         $sms->setName($name);
@@ -153,7 +157,7 @@ final class SMSControllerFunctionalTest extends MauticMysqlTestCase
     private function createAndVerifyMedia(string $page): void
     {
         $media    = range(1, 3);
-        $sms      = $this->CreateSms('Media attached sms', 'sms body', true, $media);
+        $sms      = $this->createSms('Media attached sms', self::DEFAULT_SMS_MESSAGE, true, $media);
         $crawler  = $this->client->request(Request::METHOD_GET, '/s/sms/'.$page.'/'.$sms->getId());
         $response = $this->client->getResponse();
         $this->assertSame(200, $response->getStatusCode());

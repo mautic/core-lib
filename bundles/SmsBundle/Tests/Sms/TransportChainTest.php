@@ -126,9 +126,7 @@ final class TransportChainTest extends MauticMysqlTestCase
             {
                 $transports = $this->getTransports();
 
-                return array_map(function ($v) {
-                    return $v['service'];
-                }, $transports);
+                return array_map(fn ($v) => $v['service'], $transports);
             }
         };
 
@@ -147,7 +145,7 @@ final class TransportChainTest extends MauticMysqlTestCase
         $recipientCollection->append(new SmsRecipientDTO($lead2, [], 'Yeah'));
 
         if ($transport instanceof MMSTransportInterface) {
-            $recipientCollection = $transportChain->sendMMS($recipientCollection, 'Yeah', ['test.png']);
+            $recipientCollection = $transportChain->sendMMS($recipientCollection, ['test.png']);
         } elseif ($transport instanceof BulkTransportInterface) {
             $recipientCollection = $transportChain->sendBatchSms($recipientCollection, 'Yeah');
         }

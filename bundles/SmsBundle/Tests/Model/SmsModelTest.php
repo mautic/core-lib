@@ -195,13 +195,13 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
         if ($isMMS) {
             $this->transport->expects($this->once())
                 ->method('sendMMS')
-                ->willReturnCallback(function (RecipientCollection $recipientCollection, string $message, array $media) {
+                ->willReturnCallback(function (RecipientCollection $recipientCollection) {
                     return $this->setRecipientResult($recipientCollection);
                 });
         } else {
             $this->transport->expects($this->once())
                 ->method('sendBatchSms')
-                ->willReturnCallback(function (RecipientCollection $recipientCollection, string $message) {
+                ->willReturnCallback(function (RecipientCollection $recipientCollection) {
                     return $this->setRecipientResult($recipientCollection);
                 });
         }

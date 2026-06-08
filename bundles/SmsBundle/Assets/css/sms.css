@@ -408,6 +408,24 @@
     width: 60px;
   }
 
+/* SMS media URL input group */
+.sms-media-url-group {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+}
+
+.sms-media-url-group .form-control {
+  flex: 1;
+  min-width: 0;
+}
+
+.sms-media-upload-btn {
+  flex-shrink: 0;
+  border-left: 0;
+  margin-left: -1px;
+}
+
 ul #media_row {
   list-style-type: none;
 }
@@ -437,7 +455,7 @@ ul #media_row {
 
 #media_row label::before {
   background-color: white;
-  color: white;
+  color: #c9302c;
   content: " ";
   display: block;
   border-radius: 50%;
@@ -467,6 +485,7 @@ ul #media_row {
 #media_row :checked+label::before {
   content: "x";
   background-color: #ff0000c9;
+  color: white;
   transform: scale(1);
 }
 

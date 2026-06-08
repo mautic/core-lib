@@ -75,7 +75,6 @@ final class CampaignSendSubscriberTest extends \PHPUnit\Framework\TestCase
     {
         $sms      = new Sms();
         $event    = new Event();
-        $campaign = new Campaign();
         $contact  = new Lead();
         $leadLog  = new class extends LeadEventLog {
             public function getId(): int

@@ -334,7 +334,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface, GlobalSear
                 // assumption made that the Sms message is same for all contacts
                 $message = $translatedSms->getMessage();
                 if ($media) {
-                    $this->transport->sendMMS($recipientCollection, $message, $media);
+                    $this->transport->sendMMS($recipientCollection, $media);
                 } else {
                     $this->transport->sendBatchSms($recipientCollection, $message);
                 }
