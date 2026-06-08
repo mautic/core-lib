@@ -308,7 +308,10 @@ class AjaxController extends CommonAjaxController
 
     public function toggleLeadCampaignAction(Request $request, MembershipManager $membershipManager, LeadModel $leadModel, CampaignModel $campaignModel): JsonResponse
     {
-        $this->checkForValidPermissions();
+        if (!$this->security->isGranted('campaign:campaigns:editown')
+            && !$this->security->isGranted('campaign:campaigns:editother')) {
+            return $this->accessDenied();
+        }
 
         $dataArray  = ['success' => 0];
         $leadId     = (int) $request->request->get('leadId');
@@ -841,18 +844,5 @@ class AjaxController extends CommonAjaxController
                 'form' => $form->createView(),
             ]
         );
-    }
-
-    /**
-     * @return array<mixed>|JsonResponse|RedirectResponse
-     */
-    private function checkForValidPermissions()
-    {
-        if (!$this->security->isGranted('campaign:campaigns:editown')
-            && !$this->security->isGranted('campaign:campaigns:editother')) {
-            return $this->accessDenied();
-        }
-
-        return [];
     }
 }
