@@ -76,7 +76,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         // Ensure the contact 1 was removed as a member of campaign 1 member now.
         $this->assertSame([['lead_id' => (string) $contact->getId(), 'manually_added' => '0', 'manually_removed' => '1']], $this->getMembersForCampaign($campaign->getId()));
 
-        $this->assertTrue($clientResponse->isOk(), $clientResponse->getContent());
+        $this->assertResponseIsSuccessful($clientResponse->getContent());
         $this->assertTrue(isset($response['success']), 'The response does not contain the `success` param.');
         $this->assertSame(1, $response['success']);
     }
@@ -477,8 +477,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         ]);
         $clientResponse = $this->client->getResponse();
 
-        $response = json_decode($clientResponse->getContent(), true);
-        $this->assertTrue($clientResponse->isOk(), $clientResponse->getContent());
+        $this->assertResponseIsSuccessful($clientResponse->getContent());
 
         // Assert the tag is removed from the lead
         $updatedLead = $this->em->getRepository(Lead::class)->find($lead->getId());

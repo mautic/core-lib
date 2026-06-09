@@ -9,7 +9,6 @@ use Mautic\StageBundle\Entity\Stage;
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Model\UserModel;
-use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -93,7 +92,7 @@ class CategoryControllerFunctionalTest extends MauticMysqlTestCase
         $form['category_form[inForm]']->setValue('1');
 
         $this->client->submit($form);
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
         $clientResponse = $this->client->getResponse();
         $body           = json_decode($clientResponse->getContent(), true);
         $this->assertArrayHasKey('categoryId', $body);
@@ -134,9 +133,8 @@ class CategoryControllerFunctionalTest extends MauticMysqlTestCase
         $form['category_form[inForm]']->setValue('1');
 
         $this->client->submit($form);
-        Assert::assertTrue($this->client->getResponse()->isOk());
-        $clientResponse = $this->client->getResponse();
-        $body           = json_decode($clientResponse->getContent(), true);
+        self::assertResponseIsSuccessful();
+
         $this->assertNotEmpty($crawler->filter('select#category_form_bundle')->count(), 'The "Type" (bundle) field should remain visible after validation failure.');
     }
 

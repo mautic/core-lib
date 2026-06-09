@@ -186,7 +186,6 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $response       = json_decode($clientResponse->getContent(), true);
         $this->assertSame(Response::HTTP_CREATED, $clientResponse->getStatusCode(), json_encode($languageHelper->getLanguageChoices()));
         $form     = $response['form'];
-        $formId   = $form['id'];
 
         $crawler = $this->client->request('GET', '/form/'.$form['id']);
         $this->assertStringContainsString('Merci de patienter...', $crawler->html());
@@ -288,7 +287,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertResponseIsSuccessful();
 
         // Visit the form preview page
-        $crawler = $this->client->request('GET', sprintf('/s/forms/preview/%d', $form->getId()));
+        $this->client->request('GET', sprintf('/s/forms/preview/%d', $form->getId()));
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('First Option', $this->client->getResponse()->getContent());
         $this->assertStringContainsString('Second Option', $this->client->getResponse()->getContent());

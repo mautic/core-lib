@@ -86,8 +86,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     public function testIndexActionWhenFiltering(): void
     {
         $this->client->request('GET', '/s/emails?search=has%3Aresults&tmpl=list');
-        $clientResponse = $this->client->getResponse();
-        $this->assertResponseIsSuccessful('Return code must be 200.');
+        $this->assertResponseIsSuccessful();
     }
 
     /**

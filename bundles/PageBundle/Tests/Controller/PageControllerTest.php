@@ -218,8 +218,7 @@ class PageControllerTest extends MauticMysqlTestCase
     public function testNewActionPage(): void
     {
         $this->client->request('GET', '/s/pages/new/');
-        $clientResponse         = $this->client->getResponse();
-        $clientResponseContent  = $clientResponse->getContent();
+        $clientResponse = $this->client->getResponse();
         $this->assertEquals(Response::HTTP_OK, $clientResponse->getStatusCode());
     }
 
@@ -228,9 +227,7 @@ class PageControllerTest extends MauticMysqlTestCase
     {
         $this->client->request('GET', 's/pages/results/'.$this->id);
         $clientResponse         = $this->client->getResponse();
-        $clientResponseContent  = $clientResponse->getContent();
-        $model                  = static::getContainer()->get('mautic.page.model.page');
-        $page                   = $model->getEntity($this->id);
+
         $this->assertEquals(Response::HTTP_OK, $clientResponse->getStatusCode());
     }
 
@@ -241,10 +238,7 @@ class PageControllerTest extends MauticMysqlTestCase
     {
         $this->loadFixtures([LoadPageCategoryData::class, LoadPageData::class]);
 
-        ob_start();
         $this->client->request(Request::METHOD_GET, '/s/pages/results/'.$this->id.'/export');
-        $content = ob_get_contents();
-        ob_end_clean();
 
         $clientResponse = $this->client->getResponse();
 
@@ -259,10 +253,7 @@ class PageControllerTest extends MauticMysqlTestCase
     {
         $this->loadFixtures([LoadPageCategoryData::class, LoadPageData::class]);
 
-        ob_start();
         $this->client->request(Request::METHOD_GET, '/s/pages/results/'.$this->id.'/export/xlsx');
-        $content = ob_get_contents();
-        ob_end_clean();
 
         $clientResponse = $this->client->getResponse();
 
@@ -277,10 +268,7 @@ class PageControllerTest extends MauticMysqlTestCase
     {
         $this->loadFixtures([LoadPageCategoryData::class, LoadPageData::class]);
 
-        ob_start();
         $this->client->request(Request::METHOD_GET, '/s/pages/results/'.$this->id.'/export/html');
-        $content = ob_get_contents();
-        ob_end_clean();
 
         $clientResponse = $this->client->getResponse();
 

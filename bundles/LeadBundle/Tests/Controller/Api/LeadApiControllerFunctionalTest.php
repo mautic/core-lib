@@ -807,7 +807,6 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
 
         // Remove contact
         $this->client->request(Request::METHOD_DELETE, "/api/contacts/$contactId/delete");
-        $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
     }
 
@@ -1091,7 +1090,6 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
 
         // Remove contact
         $this->client->request(Request::METHOD_DELETE, "/api/contacts/$contactId/delete");
-        $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
     }
 
@@ -1191,7 +1189,6 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
 
         // Remove the contact.
         $this->client->request(Request::METHOD_DELETE, "/api/contacts/$contactId/delete");
-        $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful();
     }
 

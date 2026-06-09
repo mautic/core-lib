@@ -80,8 +80,6 @@ class CampaignRotationTest extends MauticMysqlTestCase
 
         $this->client->request('GET', sprintf('/%s', $this->page->getAlias()));
 
-        $response = $this->client->getResponse();
-
         self::assertResponseIsSuccessful();
 
         $withJumpLog    = $this->campaignLeadRepository->getContactRotations([$this->lead->getId()], $this->campaignWithJump->getId());
@@ -100,8 +98,6 @@ class CampaignRotationTest extends MauticMysqlTestCase
         );
 
         $this->client->request('GET', sprintf('/%s', $this->page->getAlias()));
-
-        $response = $this->client->getResponse();
 
         self::assertResponseIsSuccessful();
 

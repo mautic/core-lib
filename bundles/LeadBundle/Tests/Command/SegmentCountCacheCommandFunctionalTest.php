@@ -37,7 +37,6 @@ class SegmentCountCacheCommandFunctionalTest extends MauticMysqlTestCase
         // Delete 1 contact.
         $contact = $contacts[0];
         $this->client->request(Request::METHOD_POST, '/s/contacts/delete/'.$contact->getId());
-        $clientResponse = $this->client->getResponse();
         self::assertResponseIsSuccessful();
 
         // Run segment count cache command again.

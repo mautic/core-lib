@@ -154,7 +154,7 @@ final class ProjectAddEntityTest extends MauticMysqlTestCase
 
     public function testAddEntityActionWithoutPermission(): void
     {
-        $user = $this->createAndLoginUser();
+        $this->createAndLoginUser();
 
         $url = '/s/projects/addEntity/'.$this->testProject->getId().'?entityType=email';
         $this->client->request('GET', $url);

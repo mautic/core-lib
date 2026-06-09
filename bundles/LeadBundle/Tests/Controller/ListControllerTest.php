@@ -51,7 +51,7 @@ class ListControllerTest extends MauticMysqlTestCase
 
         $this->client->request('GET', '/s/segments');
         $clientResponse = $this->client->getResponse();
-        $this->assertResponseIsSuccessful('Return code must be 200.');
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('February 7, 2020', $clientResponse->getContent());
         $this->assertStringContainsString('March 21, 2020', $clientResponse->getContent());
         $this->assertStringContainsString('Test User', $clientResponse->getContent());
@@ -63,7 +63,6 @@ class ListControllerTest extends MauticMysqlTestCase
     public function testIndexActionWhenFiltering(): void
     {
         $this->client->request('GET', '/s/segments?search=has%3Aresults&tmpl=list');
-        $clientResponse = $this->client->getResponse();
         $this->assertResponseIsSuccessful('Return code must be 200.');
     }
 

@@ -469,7 +469,7 @@ class LeadControllerTest extends MauticMysqlTestCase
     {
         $contactA = $this->createContact('contact@a.email');
         $contactB = $this->createContact('contact@b.email');
-        $contactC = $this->createContact('contact@c.email');
+        $this->createContact('contact@c.email');
 
         $companyName = 'Doe Corp';
         $company     = new Company();
@@ -506,7 +506,7 @@ class LeadControllerTest extends MauticMysqlTestCase
                 'lead_quickemail[replyToAddress]' => $replyTo,
             ]
         );
-        $crawler = $this->client->submit($form);
+        $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
         $this->assertQueuedEmailCount(1);
 
@@ -556,7 +556,7 @@ class LeadControllerTest extends MauticMysqlTestCase
                 'lead_quickemail[replyToAddress]' => $replyTo,
             ]
         );
-        $crawler = $this->client->submit($form);
+        $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
         $this->assertQueuedEmailCount(1);
 
@@ -991,7 +991,7 @@ EMAIL;
         $this->setCsrfHeader();
         $this->client->xmlHttpRequest($form->getMethod(), $form->getUri(), $form->getPhpValues());
         $this->assertResponseIsSuccessful();
-        $response = $this->client->getResponse();
+        $this->client->getResponse();
 
         $scores = $contact->getGroupScores();
         $this->assertCount(2, $scores);
@@ -1056,7 +1056,7 @@ EMAIL;
                 'lead_batch_dnc[ids]'    => json_encode([$contact->getId()]),
             ]
         );
-        $crawler = $this->client->submit($form);
+        $this->client->submit($form);
         $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
 
         $clientResponse = $this->client->getResponse();

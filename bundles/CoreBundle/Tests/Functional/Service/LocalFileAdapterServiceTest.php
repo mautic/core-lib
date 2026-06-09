@@ -62,7 +62,6 @@ class LocalFileAdapterServiceTest extends MauticMysqlTestCase
             Request::METHOD_POST,
             "efconnect?cmd=mkdir&name=$this->folderName&target=fls1_Lw"
         );
-        $response = $this->client->getResponse();
         self::assertResponseIsSuccessful();
         /** @var PathsHelper $pathsHelper */
         $pathsHelper = static::getContainer()->get('mautic.helper.paths');
