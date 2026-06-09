@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\UserBundle\Tests\Form\Type;
 
 use Mautic\CoreBundle\Helper\LanguageHelper;
+use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Form\Type\UserInviteRegistrationType;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -42,7 +43,7 @@ final class UserInviteRegistrationTypeTest extends TestCase
 
         $fieldNames = [];
         $builder    = $this->createMock(FormBuilderInterface::class);
-        $builder->expects($this->exactly(7))
+        $builder->expects($this->exactly(6))
             ->method('add')
             ->willReturnCallback(function (string $name) use (&$fieldNames, $builder): FormBuilderInterface {
                 $fieldNames[] = $name;
@@ -53,7 +54,7 @@ final class UserInviteRegistrationTypeTest extends TestCase
         $this->type->buildForm($builder, []);
 
         $this->assertSame(
-            ['username', 'firstName', 'lastName', 'email', 'plainPassword', 'locale', 'buttons'],
+            ['username', 'firstName', 'lastName', 'plainPassword', 'locale', 'buttons'],
             $fieldNames
         );
     }
@@ -66,8 +67,11 @@ final class UserInviteRegistrationTypeTest extends TestCase
 
         $this->assertSame(
             [
-                'data_class'         => null,
-                'validation_groups'  => false,
+                'data_class'         => User::class,
+                'validation_groups'  => [
+                    User::class,
+                    'determineValidationGroups',
+                ],
                 'ignore_formexit'    => true,
                 'allow_extra_fields' => true,
             ],

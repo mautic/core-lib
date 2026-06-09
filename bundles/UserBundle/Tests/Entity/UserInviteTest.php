@@ -18,14 +18,16 @@ final class UserInviteTest extends TestCase
         $invite     = new UserInvite($role);
 
         $invite->setEmail('invitee@example.com')
-            ->setToken('token')
+            ->setTokenSelector('selector')
+            ->setTokenVerifierHash('verifier-hash')
             ->setExpiration($expiration)
             ->setUsed(true)
             ->setRole($newRole);
 
         $this->assertNull($invite->getId());
         $this->assertSame('invitee@example.com', $invite->getEmail());
-        $this->assertSame('token', $invite->getToken());
+        $this->assertSame('selector', $invite->getTokenSelector());
+        $this->assertSame('verifier-hash', $invite->getTokenVerifierHash());
         $this->assertSame($expiration, $invite->getExpiration());
         $this->assertTrue($invite->isUsed());
         $this->assertSame($newRole, $invite->getRole());

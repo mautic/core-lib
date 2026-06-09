@@ -90,9 +90,9 @@ class PublicControllerTest extends MauticMysqlTestCase
 
     public function testInviteShowsRegistrationFormForValidToken(): void
     {
-        $invite = $this->createInvite('invitee@example.com', 'valid-invite-token');
+        [, $token] = $this->createInvite('invitee@example.com', 'valid-invite-token');
 
-        $this->client->request(Request::METHOD_GET, '/invite/'.$invite->getToken());
+        $this->client->request(Request::METHOD_GET, '/invite/'.$token);
 
         $clientResponse = $this->client->getResponse();
 
@@ -105,9 +105,9 @@ class PublicControllerTest extends MauticMysqlTestCase
         $user = $this->em->getRepository(User::class)->find(1);
         \assert($user instanceof User);
 
-        $invite = $this->createInvite($user->getEmail(), 'existing-user-invite-token');
+        [, $token] = $this->createInvite($user->getEmail(), 'existing-user-invite-token');
 
-        $this->client->request(Request::METHOD_POST, '/invite/'.$invite->getToken());
+        $this->client->request(Request::METHOD_POST, '/invite/'.$token);
 
         $clientResponse = $this->client->getResponse();
 
@@ -115,21 +115,26 @@ class PublicControllerTest extends MauticMysqlTestCase
         $this->assertStringContainsString('Email is already in use. Please contact your system administrator.', $clientResponse->getContent());
     }
 
-    private function createInvite(string $email, string $token): UserInvite
+    /**
+     * @return array{UserInvite, string}
+     */
+    private function createInvite(string $email, string $token): array
     {
         $role = (new Role())
             ->setName('Invite role '.$token)
             ->setIsPublished(true);
+        $tokenVerifier = $token.'-verifier';
 
         $invite = (new UserInvite($role))
             ->setEmail($email)
-            ->setToken($token)
+            ->setTokenSelector($token)
+            ->setTokenVerifierHash(password_hash($tokenVerifier, PASSWORD_DEFAULT))
             ->setExpiration(new \DateTime('+1 day'));
 
         $this->em->persist($role);
         $this->em->persist($invite);
         $this->em->flush();
 
-        return $invite;
+        return [$invite, $token.'.'.$tokenVerifier];
     }
 }

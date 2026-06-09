@@ -13,7 +13,9 @@ class UserInvite
 
     private ?string $email = null;
 
-    private ?string $token = null;
+    private ?string $tokenSelector = null;
+
+    private ?string $tokenVerifierHash = null;
 
     private ?\DateTimeInterface $expiration = null;
 
@@ -34,9 +36,15 @@ class UserInvite
             ->length(191)
             ->build();
 
-        $builder->createField('token', 'string')
-            ->length(64)
+        $builder->createField('tokenSelector', 'string')
+            ->columnName('token_selector')
+            ->length(32)
             ->unique()
+            ->build();
+
+        $builder->createField('tokenVerifierHash', 'string')
+            ->columnName('token_verifier_hash')
+            ->length(255)
             ->build();
 
         $builder->createField('expiration', 'datetime')
@@ -67,14 +75,26 @@ class UserInvite
         return $this;
     }
 
-    public function getToken(): ?string
+    public function getTokenSelector(): ?string
     {
-        return $this->token;
+        return $this->tokenSelector;
     }
 
-    public function setToken(string $token): self
+    public function setTokenSelector(string $tokenSelector): self
     {
-        $this->token = $token;
+        $this->tokenSelector = $tokenSelector;
+
+        return $this;
+    }
+
+    public function getTokenVerifierHash(): ?string
+    {
+        return $this->tokenVerifierHash;
+    }
+
+    public function setTokenVerifierHash(string $tokenVerifierHash): self
+    {
+        $this->tokenVerifierHash = $tokenVerifierHash;
 
         return $this;
     }

@@ -35,6 +35,9 @@ use Twig\Environment;
  */
 class UserModel extends FormModel implements GlobalSearchInterface
 {
+    private const INVITE_TOKEN_SELECTOR_BYTES = 16;
+    private const INVITE_TOKEN_VERIFIER_BYTES = 32;
+
     public function __construct(
         protected MailHelper $mailHelper,
         private UserTokenServiceInterface $userTokenService,
@@ -402,15 +405,17 @@ class UserModel extends FormModel implements GlobalSearchInterface
             throw new \InvalidArgumentException($this->translator->trans('mautic.user.invite.error.invalid_role', [], 'validators'));
         }
 
-        $token  = bin2hex(random_bytes(32));
-        $invite = (new UserInvite($role))
+        $inviteToken = $this->createInviteToken();
+        $invite      = (new UserInvite($role))
             ->setEmail($email)
-            ->setToken($token)
+            ->setTokenSelector($inviteToken['selector'])
+            ->setTokenVerifierHash(password_hash($inviteToken['verifier'], PASSWORD_DEFAULT))
             ->setExpiration((new \DateTime())->add(new \DateInterval('PT48H')));
+        $this->revokeOutstandingInvites($email);
         $this->em->persist($invite);
         $this->em->flush();
 
-        $link   = $this->router->generate('mautic_user_invite_register', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
+        $link   = $this->router->generate('mautic_user_invite_register', ['token' => $inviteToken['token']], UrlGeneratorInterface::ABSOLUTE_URL);
         $mailer = $this->mailHelper->getMailer();
         $mailer->setTo([$email => $email]);
         $mailer->setSubject($this->translator->trans('mautic.user.invite.subject'));
@@ -427,12 +432,20 @@ class UserModel extends FormModel implements GlobalSearchInterface
 
     public function getInvite(string $token): ?UserInvite
     {
+        $inviteToken = $this->parseInviteToken($token);
+        if (null === $inviteToken) {
+            return null;
+        }
+
         /** @var UserInvite|null $invite */
-        $invite = $this->em->getRepository(UserInvite::class)->findOneBy(['token' => $token, 'used' => false]);
+        $invite = $this->em->getRepository(UserInvite::class)->findOneBy(['tokenSelector' => $inviteToken['selector'], 'used' => false]);
         if (null === $invite) {
             return null;
         }
         if ($invite->getExpiration() < new \DateTime()) {
+            return null;
+        }
+        if (!password_verify($inviteToken['verifier'], (string) $invite->getTokenVerifierHash())) {
             return null;
         }
 
@@ -444,5 +457,51 @@ class UserModel extends FormModel implements GlobalSearchInterface
         $invite->setUsed(true);
         $this->em->persist($invite);
         $this->em->flush();
+    }
+
+    /**
+     * @return array{selector: string, verifier: string, token: string}
+     */
+    private function createInviteToken(): array
+    {
+        $selector = bin2hex(random_bytes(self::INVITE_TOKEN_SELECTOR_BYTES));
+        $verifier = bin2hex(random_bytes(self::INVITE_TOKEN_VERIFIER_BYTES));
+
+        return [
+            'selector' => $selector,
+            'verifier' => $verifier,
+            'token'    => $selector.'.'.$verifier,
+        ];
+    }
+
+    /**
+     * @return array{selector: string, verifier: string}|null
+     */
+    private function parseInviteToken(string $token): ?array
+    {
+        $tokenParts = explode('.', $token, 2);
+        if (2 !== count($tokenParts)) {
+            return null;
+        }
+
+        [$selector, $verifier] = $tokenParts;
+        if ('' === $selector || '' === $verifier) {
+            return null;
+        }
+
+        return [
+            'selector' => $selector,
+            'verifier' => $verifier,
+        ];
+    }
+
+    private function revokeOutstandingInvites(string $email): void
+    {
+        /** @var UserInvite[] $invites */
+        $invites = $this->em->getRepository(UserInvite::class)->findBy(['email' => $email, 'used' => false]);
+
+        foreach ($invites as $invite) {
+            $invite->setUsed(true);
+        }
     }
 }

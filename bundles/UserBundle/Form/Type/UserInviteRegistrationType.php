@@ -6,9 +6,9 @@ namespace Mautic\UserBundle\Form\Type;
 
 use Mautic\CoreBundle\Form\Type\FormButtonsType;
 use Mautic\CoreBundle\Helper\LanguageHelper;
+use Mautic\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -58,14 +58,6 @@ final class UserInviteRegistrationType extends AbstractType
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => ['class' => 'form-control'],
                 'required'   => true,
-            ]
-        );
-
-        $builder->add(
-            'email',
-            HiddenType::class,
-            [
-                'required' => true,
             ]
         );
 
@@ -132,8 +124,11 @@ final class UserInviteRegistrationType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class'         => null,
-                'validation_groups'  => false,
+                'data_class'         => User::class,
+                'validation_groups'  => [
+                    User::class,
+                    'determineValidationGroups',
+                ],
                 'ignore_formexit'    => true,
                 'allow_extra_fields' => true,
             ]

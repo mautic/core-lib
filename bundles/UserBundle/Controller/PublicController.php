@@ -157,7 +157,8 @@ class PublicController extends FormController
             $response = $this->redirectToRoute('login');
         } else {
             $action = $this->generateUrl('mautic_user_invite_register', ['token' => $token]);
-            $form   = $this->formFactory->create(UserInviteRegistrationType::class, [], [
+            $user   = $this->createInvitedUser($invite);
+            $form   = $this->formFactory->create(UserInviteRegistrationType::class, $user, [
                 'action' => $action,
             ]);
 
@@ -179,11 +180,12 @@ class PublicController extends FormController
                     ]);
                 } elseif ($form->isSubmitted() && $form->isValid()) {
                     try {
-                        $formData = $form->getData();
-                        $user     = $this->createInvitedUser($invite, $formData, $model, $hasher);
+                        $formUser          = $request->request->all()['user_invite_registration'] ?? [];
+                        $submittedPassword = $formUser['plainPassword']['password'] ?? null;
 
-                        $model->saveEntity($user);
+                        $user->setPassword($model->checkNewPassword($user, $hasher, $submittedPassword));
                         $model->markInviteUsed($invite);
+                        $model->saveEntity($user);
                         $this->addFlashMessage('mautic.user.invite.account_created', [], 'notice', 'flashes');
 
                         $response = $this->redirectToRoute('login');
@@ -208,24 +210,11 @@ class PublicController extends FormController
         return $response;
     }
 
-    /**
-     * @param array<string, mixed> $formData
-     */
-    private function createInvitedUser(UserInvite $invite, array $formData, UserModel $model, UserPasswordHasherInterface $hasher): User
+    private function createInvitedUser(UserInvite $invite): User
     {
         $user = new User();
-        $user->setUsername($formData['username']);
-        $user->setFirstName($formData['firstName']);
-        $user->setLastName($formData['lastName']);
         $user->setEmail($invite->getEmail());
-        $user->setPlainPassword($formData['plainPassword']);
         $user->setRole($invite->getRole());
-
-        if (!empty($formData['locale'])) {
-            $user->setLocale($formData['locale']);
-        }
-
-        $user->setPassword($model->checkNewPassword($user, $hasher, $user->getPlainPassword()));
 
         return $user;
     }

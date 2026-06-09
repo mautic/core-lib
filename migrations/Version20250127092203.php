@@ -24,13 +24,14 @@ final class Version20250127092203 extends PreUpAssertionMigration
         $table = $schema->createTable($this->prefix.self::TABLE_NAME);
         $table->addColumn('id', 'integer', ['autoincrement' => true, 'unsigned' => true, 'notnull' => true]);
         $table->addColumn('email', 'string', ['length' => 191, 'notnull' => true]);
-        $table->addColumn('token', 'string', ['length' => 64, 'notnull' => true]);
+        $table->addColumn('token_selector', 'string', ['length' => 32, 'notnull' => true]);
+        $table->addColumn('token_verifier_hash', 'string', ['length' => 255, 'notnull' => true]);
         $table->addColumn('expiration', 'datetime', ['notnull' => true]);
         $table->addColumn('used', 'boolean', ['notnull' => true, 'default' => false]);
         $table->addColumn('role_id', 'integer', ['unsigned' => true, 'notnull' => true]);
 
         $table->setPrimaryKey(['id']);
-        $table->addUniqueIndex(['token'], 'UNIQ_USER_INVITES_TOKEN');
+        $table->addUniqueIndex(['token_selector'], 'UNIQ_USER_INVITES_TOKEN_SELECTOR');
         $table->addIndex(['email'], 'IDX_USER_INVITES_EMAIL');
         $table->addIndex(['expiration'], 'IDX_USER_INVITES_EXPIRATION');
         $table->addIndex(['used'], 'IDX_USER_INVITES_USED');
