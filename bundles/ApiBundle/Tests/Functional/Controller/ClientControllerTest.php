@@ -7,7 +7,6 @@ namespace Mautic\ApiBundle\Tests\Functional\Controller;
 use Mautic\ApiBundle\Entity\oAuth2\Client;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class ClientControllerTest extends MauticMysqlTestCase
 {
