@@ -707,7 +707,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $dateAdded        = $campaign->getDateAdded();
 
         $objEffectiveDate = ($publishUp instanceof \DateTime) ? $publishUp : $dateAdded;
-        if (!($objEffectiveDate instanceof \DateTime)) {
+        if (!$objEffectiveDate instanceof \DateTime) {
             return false;
         }
 
