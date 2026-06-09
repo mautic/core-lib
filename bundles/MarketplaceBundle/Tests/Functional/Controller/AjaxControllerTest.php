@@ -57,7 +57,7 @@ final class AjaxControllerTest extends AbstractMauticTestCase
         $response = $controller->installPackageAction($request);
 
         Assert::assertSame('{"success":true}', $response->getContent());
-        self::assertResponseIsSuccessful();
+        Assert::assertSame(200, $response->getStatusCode());
     }
 
     public function testRemovePackageAction(): void
@@ -75,7 +75,7 @@ final class AjaxControllerTest extends AbstractMauticTestCase
         $response = $controller->removePackageAction($request);
 
         Assert::assertSame('{"success":true}', $response->getContent());
-        self::assertResponseIsSuccessful();
+        Assert::assertSame(200, $response->getStatusCode());
     }
 
     private function generateController(bool $isPackageInstalled): AjaxController
