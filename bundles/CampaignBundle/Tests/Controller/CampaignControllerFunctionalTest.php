@@ -14,7 +14,6 @@ use Mautic\LeadBundle\Entity\Lead;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
 {
@@ -309,7 +308,7 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
         $this->client->request(Request::METHOD_POST, '/s/campaigns/delete/'.$campaign->getId());
 
         $response = $this->client->getResponse();
-        Assert::assertSame(Response::HTTP_OK, $response->getStatusCode(), $response->getContent());
+        self::assertResponseIsSuccessful($response->getContent());
 
         $eventLogs = $this->em->getRepository(LeadEventLog::class)->findAll();
         Assert::assertCount(0, $eventLogs);

@@ -235,7 +235,7 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
     private function assertPageContent(string $url, string $expectedContent): void
     {
         $crawler = $this->client->request(Request::METHOD_GET, $url);
-        self::assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
         self::assertSame($expectedContent, $crawler->filter('body')->text());
     }
 

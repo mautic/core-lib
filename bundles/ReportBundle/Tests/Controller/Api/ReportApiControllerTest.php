@@ -26,14 +26,14 @@ class ReportApiControllerTest extends MauticMysqlTestCase
     {
         $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', [], false, true);
         $this->client->request('GET', '/api/reports/'.$reportId);
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
     }
 
     public function testGetReportSuccessByNoCorrectAccessToViewOther(): void
     {
         $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', ['report:reports'=>['viewother']]);
         $this->client->request('GET', '/api/reports/'.$reportId);
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
     }
 
     public function testReportFailByNoCorrectAccessToViewOwn(): void
@@ -47,7 +47,7 @@ class ReportApiControllerTest extends MauticMysqlTestCase
     {
         $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', ['report:reports'=>['viewown']], true);
         $this->client->request('GET', '/api/reports/'.$reportId);
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
     }
 
     /**

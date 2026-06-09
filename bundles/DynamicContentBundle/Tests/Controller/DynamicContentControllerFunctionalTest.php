@@ -34,7 +34,7 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
         $this->createAndLoginUser(self::PERMISSION_CREATE);
         $this->client->request(Request::METHOD_GET, '/s/dwc/new');
 
-        Assert::assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
     }
 
     public function testNoNestingValidationNewAction(): void
@@ -78,7 +78,7 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
         $this->createAndLoginUser(self::PERMISSION_DELETE_OWN);
         $this->client->request(Request::METHOD_POST, '/s/dwc/delete');
 
-        Assert::assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful($this->client->getResponse()->getContent());
     }
 
     public function testForbiddenDeleteAction(): void

@@ -83,7 +83,7 @@ class SamlTest extends MauticMysqlTestCase
         ]);
         $this->client->submit($configForm);
         $clientResponse = $this->client->getResponse();
-        Assert::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        self::assertResponseIsSuccessful();
         $content = $clientResponse->getContent();
         Assert::assertNotFalse($content);
         Assert::assertStringContainsString('Configuration successfully updated', $content);
@@ -130,7 +130,7 @@ class SamlTest extends MauticMysqlTestCase
         // Get the form for authentication.
         $response = $guzzleClient->request(Request::METHOD_GET, $url);
         \assert($response instanceof \GuzzleHttp\Psr7\Response);
-        Assert::assertSame(Response::HTTP_OK, $response->getStatusCode());
+        self::assertResponseIsSuccessful();
 
         $body    = (string) $response->getBody();
         $crawler = new Crawler($body, $url);
@@ -150,7 +150,7 @@ class SamlTest extends MauticMysqlTestCase
         );
         \assert($response instanceof \GuzzleHttp\Psr7\Response);
         // Because guzzle does not support javascript the answer is a form.
-        Assert::assertSame(Response::HTTP_OK, $response->getStatusCode());
+        self::assertResponseIsSuccessful();
 
         $body        = (string) $response->getBody();
         $crawler     = new Crawler($body, $url);
@@ -174,7 +174,7 @@ class SamlTest extends MauticMysqlTestCase
 
         $this->client->followRedirect();
         $clientResponse = $this->client->getResponse();
-        Assert::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        self::assertResponseIsSuccessful();
         $content = $clientResponse->getContent();
         Assert::assertNotFalse($content);
         Assert::assertStringContainsString('user1@example.com user1@example.com', $content);

@@ -264,7 +264,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request('PUT', '/api/contacts/batch/edit', $payload);
         $clientResponse = $this->client->getResponse();
 
-        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
 
         $response = json_decode($clientResponse->getContent(), true);
 
@@ -1274,7 +1274,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         // Call endpoint
         $this->client->request('GET', '/api/contacts/activity');
         $clientResponse = $this->client->getResponse();
-        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $responseJson = json_decode($clientResponse->getContent());
         $this->assertSame($expectedActivites, $responseJson->total);
     }
@@ -1302,7 +1302,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         // Call endpoint
         $this->client->request('GET', '/api/contacts/'.(string) $contact->getId().'/activity');
         $clientResponse = $this->client->getResponse();
-        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $responseJson = json_decode($clientResponse->getContent());
         $resultOrder  = [];
         foreach ($responseJson->events as $event) {

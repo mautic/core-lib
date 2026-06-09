@@ -216,7 +216,7 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
         // Call endpoint
         $this->client->request('GET', '/api/contacts/'.(string) $contact->getId());
         $clientResponse = $this->client->getResponse();
-        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $responseJson = \json_decode($clientResponse->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
         self::assertArrayHasKey('contact', $responseJson);
@@ -328,7 +328,7 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
         // Call endpoint
         $this->client->request('GET', '/api/contacts/'.(string) $contact->getId());
         $clientResponse = $this->client->getResponse();
-        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $responseJson = \json_decode($clientResponse->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
         self::assertArrayHasKey('contact', $responseJson);

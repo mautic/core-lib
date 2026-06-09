@@ -312,7 +312,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         // Remove 1 contact from segment.
         $this->client->request(Request::METHOD_POST, '/api/segments/'.$segmentId.'/contact/'.$contact1Id.'/remove');
         self::assertSame('{"success":1}', $this->client->getResponse()->getContent());
-        self::assertSame(200, $this->client->getResponse()->getStatusCode());
+        self::assertResponseIsSuccessful();
 
         $this->testSymfonyCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
@@ -325,7 +325,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $parameters = ['ids' => [$contact1Id]];
         $this->client->request(Request::METHOD_POST, '/api/segments/'.$segmentId.'/contacts/add', $parameters);
         self::assertSame('{"success":1,"details":{"'.$contact1Id.'":{"success":true}}}', $this->client->getResponse()->getContent());
-        self::assertSame(200, $this->client->getResponse()->getStatusCode());
+        self::assertResponseIsSuccessful();
 
         $this->testSymfonyCommand(SegmentCountCacheCommand::COMMAND_NAME);
 
@@ -558,7 +558,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request('POST', 's/segments/batchDelete?'.$parameters, [], [], $this->createAjaxHeaders());
 
         $clientResponse = $this->client->getResponse();
-        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
+        $this->assertResponseIsSuccessful();
         $clientResponseBody = json_decode($clientResponse->getContent(), true);
 
         $this->assertStringContainsString($expectedErrorMessage, $clientResponseBody['flashes']);
@@ -790,7 +790,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
         $clientResponse = $this->client->getResponse();
 
-        $this->assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('1 segments have been deleted!', $clientResponse->getContent());
 
         $this->em->clear();

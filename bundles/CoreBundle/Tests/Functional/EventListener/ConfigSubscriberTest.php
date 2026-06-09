@@ -165,7 +165,7 @@ class ConfigSubscriberTest extends MauticMysqlTestCase
         );
 
         $crawler = $this->client->submit($form);
-        Assert::assertSame(200, $this->client->getResponse()->getStatusCode());
+        self::assertResponseIsSuccessful();
 
         return $crawler;
     }

@@ -227,7 +227,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        $this->assertSame(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertSame($segmentId, $response['list']['id'], 'ID of the created segment does not match with the edited one.');
         $this->assertEquals('API segment renamed', $response['list']['name']);
         $this->assertEquals($payload['description'], $response['list']['description']);
@@ -237,7 +237,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        $this->assertSame(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertSame($segmentId, $response['list']['id'], 'ID of the created segment does not match with the fetched one.');
         $this->assertEquals('API segment renamed', $response['list']['name']);
         $this->assertEquals($payload['description'], $response['list']['description']);
@@ -247,7 +247,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        $this->assertSame(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertNull($response['list']['id']);
         $this->assertEquals('API segment renamed', $response['list']['name']);
         $this->assertEquals($payload['description'], $response['list']['description']);
@@ -430,7 +430,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request('PATCH', "/api/segments/{$segment->getId()}/edit", ['isPublished' => 0]);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
-        Assert::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        self::assertResponseIsSuccessful();
         Assert::assertArrayNotHasKey('errors', $response);
     }
 
@@ -642,7 +642,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        Assert::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        self::assertResponseIsSuccessful();
         Assert::assertArrayHasKey('lists', $response);
         Assert::assertArrayHasKey($segment->getId(), $response['lists']);
         Assert::assertArrayNotHasKey(
@@ -655,7 +655,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        Assert::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        self::assertResponseIsSuccessful();
         Assert::assertArrayHasKey('lists', $response);
         Assert::assertArrayHasKey($segment->getId(), $response['lists']);
         Assert::assertArrayHasKey(
@@ -680,7 +680,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        Assert::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode());
+        self::assertResponseIsSuccessful();
         Assert::assertSame(
             2,
             $response['lists'][$segment->getId()]['contactCount'],
@@ -763,7 +763,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        Assert::assertSame(Response::HTTP_OK, $clientResponse->getStatusCode(), $clientResponse->getContent());
+        self::assertResponseIsSuccessful($clientResponse->getContent());
         Assert::assertArrayHasKey('errors', $response);
 
         $expectedErrorMessage1 = $this->translator->trans(

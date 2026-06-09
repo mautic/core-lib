@@ -1361,7 +1361,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $submissionsResponse = $this->client->getResponse();
         $submissionsData     = json_decode($submissionsResponse->getContent(), true);
 
-        $this->assertSame(Response::HTTP_OK, $submissionsResponse->getStatusCode(), $submissionsResponse->getContent());
+        $this->assertResponseIsSuccessful();
         $this->assertArrayHasKey('submissions', $submissionsData);
         $this->assertCount(1, $submissionsData['submissions']);
 
@@ -1397,7 +1397,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $finalSubmissionsResponse = $this->client->getResponse();
         $finalSubmissionsData     = json_decode($finalSubmissionsResponse->getContent(), true);
 
-        $this->assertSame(Response::HTTP_OK, $finalSubmissionsResponse->getStatusCode(), $finalSubmissionsResponse->getContent());
+        $this->assertResponseIsSuccessful();
         $this->assertArrayHasKey('submissions', $finalSubmissionsData);
         $this->assertCount(1, $finalSubmissionsData['submissions']);
 

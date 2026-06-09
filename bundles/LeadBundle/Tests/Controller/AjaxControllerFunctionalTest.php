@@ -135,7 +135,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
     {
         $this->client->request(Request::METHOD_GET, '/s/ajax?action=lead:getLookupChoiceList&searchKey=lead.company&lead.company=unicorn');
         $response = $this->client->getResponse();
-        Assert::assertSame(200, $response->getStatusCode());
+        self::assertResponseIsSuccessful();
         Assert::assertSame('[]', $response->getContent());
     }
 
@@ -148,7 +148,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->request(Request::METHOD_GET, '/s/ajax?action=lead:getLookupChoiceList&searchKey=lead.company&lead.company=sa');
         $response = $this->client->getResponse();
-        Assert::assertSame(200, $response->getStatusCode());
+        self::assertResponseIsSuccessful();
         Assert::assertSame('[{"text":"SaaS Company","value":"'.$company->getId().'"}]', $response->getContent());
     }
 
@@ -177,7 +177,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $response = $this->client->getResponse();
         $content  = json_decode($response->getContent(), true);
 
-        Assert::assertSame(200, $response->getStatusCode());
+        self::assertResponseIsSuccessful();
         Assert::assertIsArray($content);
         Assert::assertCount(1, $content, 'The result should contain only one element');
         Assert::assertSame('Company 1', $content[0]['text']);
@@ -187,7 +187,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $response = $this->client->getResponse();
         $content  = json_decode($response->getContent(), true);
 
-        Assert::assertSame(200, $response->getStatusCode());
+        self::assertResponseIsSuccessful();
         Assert::assertIsArray($content);
         Assert::assertCount(1, $content, 'The result should contain only one element');
         Assert::assertSame('Company 2', $content[0]['text']);

@@ -62,7 +62,7 @@ class ClientControllerTest extends MauticMysqlTestCase
     private function assertPaginationDetails(int $pageCount): void
     {
         $content = $this->client->getResponse()->getContent();
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
 
         $translator = static::getContainer()->get('translator');
 

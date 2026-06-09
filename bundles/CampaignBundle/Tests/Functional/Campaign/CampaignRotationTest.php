@@ -82,7 +82,7 @@ class CampaignRotationTest extends MauticMysqlTestCase
 
         $response = $this->client->getResponse();
 
-        Assert::assertSame(200, $response->getStatusCode());
+        self::assertResponseIsSuccessful();
 
         $withJumpLog    = $this->campaignLeadRepository->getContactRotations([$this->lead->getId()], $this->campaignWithJump->getId());
         $withoutJumpLog = $this->campaignLeadRepository->getContactRotations([$this->lead->getId()], $this->campaignWithoutJump->getId());
@@ -103,7 +103,7 @@ class CampaignRotationTest extends MauticMysqlTestCase
 
         $response = $this->client->getResponse();
 
-        Assert::assertSame(200, $response->getStatusCode());
+        self::assertResponseIsSuccessful();
 
         $withJumpLog    = $this->campaignLeadRepository->getContactRotations([$this->lead->getId()], $this->campaignWithJump->getId());
         $withoutJumpLog = $this->campaignLeadRepository->getContactRotations([$this->lead->getId()], $this->campaignWithoutJump->getId());

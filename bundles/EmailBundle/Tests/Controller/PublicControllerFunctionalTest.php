@@ -81,7 +81,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         self::getContainer()->get('event_dispatcher')->addListener(EmailEvents::ON_TRANSPORT_WEBHOOK, fn (TransportWebhookEvent $event) => $event->setResponse(new Response('OK')));
         $this->client->request('POST', '/mailer/callback');
 
-        Assert::assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        self::assertResponseIsSuccessful();
         Assert::assertSame('OK', $this->client->getResponse()->getContent());
     }
 
@@ -565,7 +565,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
             'Record not found.',
             strip_tags((string) $this->client->getResponse()->getContent())
         );
-        Assert::assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        self::assertResponseIsSuccessful();
     }
 
     public function testUnsubscribeWithEmailStat(): void
@@ -593,7 +593,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
             'We are sorry to see you go! john@doe.email will no longer receive emails from us. If this was by mistake, click here to re-subscribe.',
             strip_tags((string) $this->client->getResponse()->getContent())
         );
-        Assert::assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        self::assertResponseIsSuccessful();
 
         /** @var DoNotContactRepository $dncRepository */
         $dncRepository = $this->em->getRepository(DoNotContact::class);
