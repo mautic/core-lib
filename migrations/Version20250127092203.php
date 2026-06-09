@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mautic\Migrations;
 
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Types\Types;
 use Mautic\CoreBundle\Doctrine\PreUpAssertionMigration;
 
 final class Version20250127092203 extends PreUpAssertionMigration
@@ -22,13 +23,13 @@ final class Version20250127092203 extends PreUpAssertionMigration
     public function up(Schema $schema): void
     {
         $table = $schema->createTable($this->prefix.self::TABLE_NAME);
-        $table->addColumn('id', 'integer', ['autoincrement' => true, 'unsigned' => true, 'notnull' => true]);
-        $table->addColumn('email', 'string', ['length' => 191, 'notnull' => true]);
-        $table->addColumn('token_selector', 'string', ['length' => 32, 'notnull' => true]);
-        $table->addColumn('token_verifier_hash', 'string', ['length' => 255, 'notnull' => true]);
-        $table->addColumn('expiration', 'datetime', ['notnull' => true]);
-        $table->addColumn('used', 'boolean', ['notnull' => true, 'default' => false]);
-        $table->addColumn('role_id', 'integer', ['unsigned' => true, 'notnull' => true]);
+        $table->addColumn('id', Types::INTEGER, ['autoincrement' => true, 'unsigned' => true, 'notnull' => true]);
+        $table->addColumn('email', Types::STRING, ['length' => 191, 'notnull' => true]);
+        $table->addColumn('token_selector', Types::STRING, ['length' => 32, 'notnull' => true]);
+        $table->addColumn('token_verifier_hash', Types::STRING, ['length' => 255, 'notnull' => true]);
+        $table->addColumn('expiration', Types::DATETIME_MUTABLE, ['notnull' => true]);
+        $table->addColumn('used', Types::BOOLEAN, ['notnull' => true]);
+        $table->addColumn('role_id', Types::INTEGER, ['unsigned' => true, 'notnull' => true]);
 
         $table->setPrimaryKey(['id']);
         $table->addUniqueIndex(['token_selector'], 'UNIQ_USER_INVITES_TOKEN_SELECTOR');

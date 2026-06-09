@@ -147,7 +147,7 @@ class PublicController extends FormController
 
     public function inviteAction(Request $request, UserPasswordHasherInterface $hasher, UserModel $model, LoggerInterface $logger): RedirectResponse|Response
     {
-        $token    = $request->get('token');
+        $token    = $request->attributes->getString('token');
         $invite   = $model->getInvite($token);
         $response = null;
 

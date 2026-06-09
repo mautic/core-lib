@@ -13,6 +13,7 @@ use Mautic\EmailBundle\Helper\MailHelper;
 use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Entity\UserInvite;
+use Mautic\UserBundle\Entity\UserInviteRepositoryInterface;
 use Mautic\UserBundle\Entity\UserRepository;
 use Mautic\UserBundle\Entity\UserToken;
 use Mautic\UserBundle\Enum\UserTokenAuthorizator;
@@ -398,20 +399,15 @@ class UserModel extends FormModel implements GlobalSearchInterface
         return $this->getRepository()->getOwnerListChoices();
     }
 
-    public function createInvite(string $email, int $roleId): UserInvite
+    public function createInvite(string $email, Role $role): UserInvite
     {
-        $role = $this->em->getRepository(Role::class)->find($roleId);
-        if (!$role) {
-            throw new \InvalidArgumentException($this->translator->trans('mautic.user.invite.error.invalid_role', [], 'validators'));
-        }
-
         $inviteToken = $this->createInviteToken();
         $invite      = (new UserInvite($role))
             ->setEmail($email)
             ->setTokenSelector($inviteToken['selector'])
             ->setTokenVerifierHash(password_hash($inviteToken['verifier'], PASSWORD_DEFAULT))
             ->setExpiration((new \DateTime())->add(new \DateInterval('PT48H')));
-        $this->revokeOutstandingInvites($email);
+        $this->getUserInviteRepository()->revokeOutstandingInvites($email);
         $this->em->persist($invite);
         $this->em->flush();
 
@@ -434,18 +430,30 @@ class UserModel extends FormModel implements GlobalSearchInterface
     {
         $inviteToken = $this->parseInviteToken($token);
         if (null === $inviteToken) {
+            $this->logInvalidInvite('token format is invalid');
+
             return null;
         }
 
-        /** @var UserInvite|null $invite */
-        $invite = $this->em->getRepository(UserInvite::class)->findOneBy(['tokenSelector' => $inviteToken['selector'], 'used' => false]);
+        $invite = $this->getUserInviteRepository()->findOneByTokenSelector($inviteToken['selector']);
         if (null === $invite) {
+            $this->logInvalidInvite('token selector was not found', ['selector' => $inviteToken['selector']]);
+
+            return null;
+        }
+        if ($invite->isUsed()) {
+            $this->logInvalidInvite('invite has already been used', $this->getInviteLogContext($invite));
+
             return null;
         }
         if ($invite->getExpiration() < new \DateTime()) {
+            $this->logInvalidInvite('invite has expired', $this->getInviteLogContext($invite));
+
             return null;
         }
         if (!password_verify($inviteToken['verifier'], (string) $invite->getTokenVerifierHash())) {
+            $this->logInvalidInvite('token verifier did not match', $this->getInviteLogContext($invite));
+
             return null;
         }
 
@@ -495,13 +503,30 @@ class UserModel extends FormModel implements GlobalSearchInterface
         ];
     }
 
-    private function revokeOutstandingInvites(string $email): void
+    private function getUserInviteRepository(): UserInviteRepositoryInterface
     {
-        /** @var UserInvite[] $invites */
-        $invites = $this->em->getRepository(UserInvite::class)->findBy(['email' => $email, 'used' => false]);
+        $repository = $this->em->getRepository(UserInvite::class);
+        \assert($repository instanceof UserInviteRepositoryInterface);
 
-        foreach ($invites as $invite) {
-            $invite->setUsed(true);
-        }
+        return $repository;
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    private function logInvalidInvite(string $reason, array $context = []): void
+    {
+        $this->logger->warning('User invite link rejected: '.$reason, $context);
+    }
+
+    /**
+     * @return array{invite_id: int|null, email: string|null}
+     */
+    private function getInviteLogContext(UserInvite $invite): array
+    {
+        return [
+            'invite_id' => $invite->getId(),
+            'email'     => $invite->getEmail(),
+        ];
     }
 }

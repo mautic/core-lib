@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\UserBundle\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
@@ -29,28 +30,33 @@ class UserInvite
     {
         $builder = new ClassMetadataBuilder($metadata);
 
-        $builder->setTable('user_invites');
+        $builder->setTable('user_invites')
+            ->setCustomRepositoryClass(UserInviteRepository::class)
+            ->addIndex(['email'], 'IDX_USER_INVITES_EMAIL')
+            ->addIndex(['expiration'], 'IDX_USER_INVITES_EXPIRATION')
+            ->addIndex(['role_id'], 'IDX_USER_INVITES_ROLE')
+            ->addIndex(['used'], 'IDX_USER_INVITES_USED')
+            ->addUniqueConstraint(['token_selector'], 'UNIQ_USER_INVITES_TOKEN_SELECTOR');
         $builder->addId();
 
-        $builder->createField('email', 'string')
+        $builder->createField('email', Types::STRING)
             ->length(191)
             ->build();
 
-        $builder->createField('tokenSelector', 'string')
+        $builder->createField('tokenSelector', Types::STRING)
             ->columnName('token_selector')
             ->length(32)
-            ->unique()
             ->build();
 
-        $builder->createField('tokenVerifierHash', 'string')
+        $builder->createField('tokenVerifierHash', Types::STRING)
             ->columnName('token_verifier_hash')
             ->length(255)
             ->build();
 
-        $builder->createField('expiration', 'datetime')
+        $builder->createField('expiration', Types::DATETIME_MUTABLE)
             ->build();
 
-        $builder->createField('used', 'boolean')
+        $builder->createField('used', Types::BOOLEAN)
             ->build();
 
         $builder->createManyToOne('role', Role::class)

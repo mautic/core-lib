@@ -13,6 +13,7 @@ use Mautic\CoreBundle\Helper\LanguageHelper;
 use Mautic\CoreBundle\Model\AuditLogModel;
 use Mautic\CoreBundle\Model\FormModel;
 use Mautic\EmailBundle\Helper\MailHelper;
+use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Form\Type\ContactType;
 use Mautic\UserBundle\Form\Type\UserInviteType;
@@ -132,8 +133,10 @@ class UserController extends FormController
                 $data  = $form->getData();
                 $email = $data['email'];
                 $role  = $data['role'];
+                \assert(is_string($email));
+                \assert($role instanceof Role);
 
-                $model->createInvite($email, $role->getId());
+                $model->createInvite($email, $role);
                 $this->addFlashMessage('mautic.user.invite.flash.sent', ['%email%' => $email], 'notice', 'flashes');
 
                 if ($request->isXmlHttpRequest()) {
