@@ -106,6 +106,7 @@
     "symfonycasts/sass-bundle": "^0.9",
     "twilio/sdk": "^5.25",
     "twbs/bootstrap-sass": "3.4.1",
+    "twig/string-extra": "^3.21",
     "wikimedia/less.php": "^5.5"
   },
   "conflict": {
