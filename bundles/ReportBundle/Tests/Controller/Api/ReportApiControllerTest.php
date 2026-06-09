@@ -19,7 +19,7 @@ class ReportApiControllerTest extends MauticMysqlTestCase
     {
         $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', []);
         $this->client->request('GET', '/api/reports/'.$reportId);
-        $this->assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testGetReportSuccessByCorrectAccessIsAdmin(): void
@@ -40,7 +40,7 @@ class ReportApiControllerTest extends MauticMysqlTestCase
     {
         $reportId = $this->createReportStructure('Maut1cR0cks!!!!!', ['report:reports'=>['viewown']]);
         $this->client->request('GET', '/api/reports/'.$reportId);
-        $this->assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testReportSuccessViewOwnBySameUser(): void

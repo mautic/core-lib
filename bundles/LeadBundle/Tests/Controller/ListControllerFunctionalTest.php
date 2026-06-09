@@ -458,7 +458,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $expectedErrorMessage = sprintf('The segment %s is used in %s, please go back and check segments before unpublishing', $list1->getName(), $list2->getName());
 
         $this->client->request(Request::METHOD_POST, '/s/ajax', ['action' => 'togglePublishStatus', 'model' => 'lead.list', 'id' => $list1->getId()]);
-        $this->assertSame(Response::HTTP_UNPROCESSABLE_ENTITY, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString($expectedErrorMessage, $this->client->getResponse()->getContent());
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/edit/'.$list1->getId());
         $form    = $crawler->selectButton('leadlist_buttons_apply')->form();

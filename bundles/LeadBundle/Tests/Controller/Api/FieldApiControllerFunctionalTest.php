@@ -131,7 +131,7 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
         $errorResponse  = json_decode($clientResponse->getContent(), true);
 
         Assert::assertArrayHasKey('errors', $errorResponse);
-        Assert::assertSame($errorResponse['errors'][0]['code'], $clientResponse->getStatusCode());
+        self::assertResponseStatusCodeSame($errorResponse['errors'][0]['code']);
         Assert::assertSame($expectedMessage, $errorResponse['errors'][0]['message']);
     }
 

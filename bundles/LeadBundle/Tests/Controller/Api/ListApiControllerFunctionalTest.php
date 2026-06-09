@@ -85,7 +85,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
 
-        Assert::assertSame($expectedResponseCode, $this->client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame($expectedResponseCode);
 
         if ($expectedErrorMessage) {
             Assert::assertStringContainsString(
@@ -165,7 +165,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $segmentId = $response['list']['id'];
 
-        $this->assertSame(201, $clientResponse->getStatusCode());
+        $this->assertResponseStatusCodeSame(201);
         $this->assertGreaterThan(0, $segmentId);
         $this->assertEquals($payload['name'], $response['list']['name']);
         $this->assertEquals($payload['description'], $response['list']['description']);
@@ -257,7 +257,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        $this->assertSame(404, $clientResponse->getStatusCode());
+        $this->assertResponseStatusCodeSame(404);
         $this->assertSame(404, $response['errors'][0]['code']);
     }
 
@@ -397,7 +397,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request('PATCH', "/api/segments/{$segment->getId()}/edit", ['isPublished' => 0]);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
-        Assert::assertSame(Response::HTTP_UNPROCESSABLE_ENTITY, $clientResponse->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         Assert::assertArrayHasKey('errors', $response);
         $errorMessage = $this->translator->trans(
             'mautic.lead.lists.used_in_campaigns.unpublish',
@@ -464,7 +464,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
-        $this->assertSame(Response::HTTP_UNPROCESSABLE_ENTITY, $clientResponse->getStatusCode());
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertSame($expectedErrorMessage, $response['errors'][0]['message']);
     }
 
@@ -537,7 +537,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request('PATCH', "/api/segments/{$list1->getId()}/edit", ['isPublished' => false]);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
-        Assert::assertSame(Response::HTTP_UNPROCESSABLE_ENTITY, $clientResponse->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         Assert::assertArrayHasKey('errors', $response);
 
         $expectedErrorMessage = sprintf(
@@ -710,7 +710,7 @@ class ListApiControllerFunctionalTest extends MauticMysqlTestCase
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
 
-        Assert::assertSame(Response::HTTP_CONFLICT, $clientResponse->getStatusCode(), $clientResponse->getContent());
+        self::assertResponseStatusCodeSame(Response::HTTP_CONFLICT);
         Assert::assertArrayHasKey('errors', $response);
 
         $expectedErrorMessage = $this->translator->trans(

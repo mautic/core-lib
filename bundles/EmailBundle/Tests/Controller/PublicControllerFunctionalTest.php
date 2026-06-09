@@ -63,7 +63,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
     {
         $this->client->request('POST', '/mailer/callback');
 
-        Assert::assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
         Assert::assertSame('No email transport that could process this callback was found', $this->client->getResponse()->getContent());
     }
 
@@ -72,7 +72,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         self::getContainer()->get('event_dispatcher')->addListener(EmailEvents::ON_TRANSPORT_WEBHOOK, fn () => null /* exists but does nothing */);
         $this->client->request('POST', '/mailer/callback');
 
-        Assert::assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
         Assert::assertSame('No email transport that could process this callback was found', $this->client->getResponse()->getContent());
     }
 

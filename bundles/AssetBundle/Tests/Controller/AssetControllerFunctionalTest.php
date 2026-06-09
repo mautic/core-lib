@@ -256,7 +256,7 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
 
         $this->client->request(Request::METHOD_GET, "/s/assets/{$route}/{$asset->getId()}");
 
-        Assert::assertSame($expectedStatusCode, $this->client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame($expectedStatusCode);
     }
 
     /**

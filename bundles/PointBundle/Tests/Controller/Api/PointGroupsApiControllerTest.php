@@ -26,7 +26,7 @@ final class PointGroupsApiControllerTest extends MauticMysqlTestCase
 
         $createResponse = $this->client->getResponse();
 
-        $this->assertSame(Response::HTTP_CREATED, $createResponse->getStatusCode());
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $responseData = json_decode($createResponse->getContent(), true);
         $this->assertArrayHasKey('pointGroup', $responseData);
         $createdData = $responseData['pointGroup'];
@@ -77,7 +77,7 @@ final class PointGroupsApiControllerTest extends MauticMysqlTestCase
         // Try to GET the group that should no longer exist
         $this->client->request('GET', "/api/points/groups/{$createdData['id']}");
         $getResponse = $this->client->getResponse();
-        $this->assertSame(Response::HTTP_NOT_FOUND, $getResponse->getStatusCode());
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
         $responseData = json_decode($getResponse->getContent(), true);
         $this->assertArrayHasKey('errors', $responseData);
         $this->assertCount(1, $responseData['errors']);
@@ -138,7 +138,7 @@ final class PointGroupsApiControllerTest extends MauticMysqlTestCase
         // Try to GET the group points that should not exist
         $this->client->request('GET', "/api/contacts/{$contact->getId()}/points/groups/0");
         $response = $this->client->getResponse();
-        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('errors', $responseData);
         $this->assertCount(1, $responseData['errors']);
@@ -148,7 +148,7 @@ final class PointGroupsApiControllerTest extends MauticMysqlTestCase
         // Try to GET the group points for a contact that should not exist
         $this->client->request('GET', '/api/contacts/0/points/groups/0');
         $response = $this->client->getResponse();
-        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('errors', $responseData);
         $this->assertCount(1, $responseData['errors']);

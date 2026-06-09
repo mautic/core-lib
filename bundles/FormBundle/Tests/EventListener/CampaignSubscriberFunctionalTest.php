@@ -63,7 +63,7 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->client->request('POST', '/api/forms/new', $formPayload);
         $clientResponse = $this->client->getResponse();
 
-        $this->assertSame(Response::HTTP_CREATED, $clientResponse->getStatusCode(), $clientResponse->getContent());
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $response = json_decode($clientResponse->getContent(), true);
         $formId   = $response['form']['id'];
 

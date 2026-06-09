@@ -50,7 +50,7 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
         $this->createAndLoginUser();
         $this->client->request(Request::METHOD_GET, '/s/dwc/new');
 
-        Assert::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testNoNestingValidationEditAction(): void
@@ -86,7 +86,7 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
         $this->createAndLoginUser();
         $this->client->request('GET', '/s/dwc/delete');
 
-        Assert::assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testDwcWithProject(): void

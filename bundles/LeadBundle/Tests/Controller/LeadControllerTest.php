@@ -265,8 +265,6 @@ class LeadControllerTest extends MauticMysqlTestCase
 
         $this->client->submit($form);
 
-        $clientResponse = $this->client->getResponse();
-
         self::assertResponseIsSuccessful();
 
         /** @var Lead $contact */

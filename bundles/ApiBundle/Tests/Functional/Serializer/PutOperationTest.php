@@ -162,7 +162,7 @@ final class PutOperationTest extends MauticMysqlTestCase
             ])
         );
 
-        Assert::assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     /**

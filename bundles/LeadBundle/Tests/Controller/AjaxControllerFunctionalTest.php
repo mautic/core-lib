@@ -127,7 +127,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
     {
         $this->client->request(Request::METHOD_GET, '/s/ajax?action=lead:getSegmentDependencyTree&id=9999');
         $response = $this->client->getResponse();
-        Assert::assertSame(404, $response->getStatusCode());
+        self::assertResponseStatusCodeSame(404);
         Assert::assertSame('{"message":"Segment 9999 could not be found."}', $response->getContent());
     }
 
@@ -156,7 +156,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
     {
         $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/ajax?action=lead:getLookupChoiceList&lead.company=unicorn');
         $response = $this->client->getResponse();
-        Assert::assertSame(400, $response->getStatusCode());
+        self::assertResponseStatusCodeSame(400);
         Assert::assertStringContainsString('Bad Request - The searchKey parameter is required', $response->getContent());
     }
 

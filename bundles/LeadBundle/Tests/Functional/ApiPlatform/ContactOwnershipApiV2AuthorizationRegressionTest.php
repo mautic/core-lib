@@ -52,11 +52,7 @@ final class ContactOwnershipApiV2AuthorizationRegressionTest extends OwnershipSc
         $endpoint = sprintf($endpointTemplate, (int) $foreignContact->getId());
         $this->client->request('GET', $endpoint);
 
-        self::assertSame(
-            Response::HTTP_FORBIDDEN,
-            $this->client->getResponse()->getStatusCode(),
-            $this->client->getResponse()->getContent()
-        );
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     /**

@@ -184,7 +184,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request('POST', '/api/forms/new', $formPayload);
         $clientResponse = $this->client->getResponse();
         $response       = json_decode($clientResponse->getContent(), true);
-        $this->assertSame(Response::HTTP_CREATED, $clientResponse->getStatusCode(), json_encode($languageHelper->getLanguageChoices()));
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED, json_encode($languageHelper->getLanguageChoices()));
         $form     = $response['form'];
 
         $crawler = $this->client->request('GET', '/form/'.$form['id']);

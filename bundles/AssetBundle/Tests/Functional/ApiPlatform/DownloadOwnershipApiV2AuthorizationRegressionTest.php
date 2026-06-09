@@ -65,11 +65,9 @@ final class DownloadOwnershipApiV2AuthorizationRegressionTest extends OwnershipS
 
         // Try to access the foreign download - should be forbidden
         $this->client->request('GET', '/api/v2/downloads/'.$foreignDownload->getId());
-        $response = $this->client->getResponse();
 
-        self::assertSame(
+        self::assertResponseStatusCodeSame(
             Response::HTTP_FORBIDDEN,
-            $response->getStatusCode(),
             'User with viewown permission should not be able to access downloads of assets they do not own. '.
             'This validates that ApiPermissionVoter correctly uses getPermissionUser() for Download entities.'
         );

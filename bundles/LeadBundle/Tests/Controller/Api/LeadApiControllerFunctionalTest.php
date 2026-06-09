@@ -178,7 +178,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->request($method, $route, $payload);
 
-        $this->assertSame($expectedStatusCode, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertResponseStatusCodeSame($expectedStatusCode);
         $assertResponse($this->client->getResponse(), $contact1->getId(), $contact2->deletedId);
     }
 
@@ -211,7 +211,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->request('POST', '/api/contacts/batch/new', $payload);
         $clientResponse = $this->client->getResponse();
 
-        $this->assertSame(Response::HTTP_CREATED, $clientResponse->getStatusCode());
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         $response = json_decode($clientResponse->getContent(), true);
 
