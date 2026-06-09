@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\LeadBundle\Form\Type;
 
 use Mautic\LeadBundle\Model\ListModel;
@@ -8,9 +10,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class CampaignEventLeadAttachedType extends AbstractType
+final class CampaignEventLeadAttachedType extends AbstractType
 {
-    public function __construct(protected ListModel $listModel)
+    public function __construct(private ListModel $listModel)
     {
     }
 

@@ -14,15 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 final class CampaignEventLeadAttachedTypeTest extends TestCase
 {
-    /**
-     * @var CampaignEventLeadAttachedType
-     */
-    private $campaignEventLeadAttachedType;
-
-    /**
-     * @var FormBuilderInterface<FormBuilderInterface>&MockObject
-     */
-    private $formBuilderInterface;
+    private CampaignEventLeadAttachedType $campaignEventLeadAttachedType;
+    private FormBuilderInterface|MockObject $formBuilderInterface;
 
     protected function setUp(): void
     {
