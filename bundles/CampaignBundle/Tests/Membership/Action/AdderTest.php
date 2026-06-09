@@ -115,19 +115,21 @@ class AdderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, $campaignMember->getRotation());
     }
 
-    public function testNaturallyExitedContactCannotBeAddedBackByAutomaticActionWhenRestartIsDisabled(): void
+    public function testNaturallyExitedContactCannotBeAddedBackByCampaignActionWhenRestartIsDisabled(): void
     {
         $this->expectException(ContactCannotBeAddedToCampaignException::class);
 
         $campaignMember = new CampaignMember();
-        $campaignMember->setManuallyRemoved(false);
+        // Natural exits are marked as removed with an exit date.
+        $campaignMember->setManuallyRemoved(true);
         $campaignMember->setDateLastExited(new \DateTime());
         $campaignMember->setRotation(1);
         $campaign = new Campaign();
         $campaign->setAllowRestart(false);
         $campaignMember->setCampaign($campaign);
 
-        $this->getAdder()->updateExistingMembership($campaignMember, false);
+        // Campaign action "add to campaign" uses manual=true, which was the regression path.
+        $this->getAdder()->updateExistingMembership($campaignMember, true);
     }
 
     /**

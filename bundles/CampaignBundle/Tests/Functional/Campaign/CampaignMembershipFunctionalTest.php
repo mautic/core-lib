@@ -46,7 +46,7 @@ final class CampaignMembershipFunctionalTest extends MauticMysqlTestCase
         $campaignLead->setLead($contact);
         $campaignLead->setDateAdded(new \DateTime('-1 day'));
         $campaignLead->setManuallyAdded(false);
-        $campaignLead->setManuallyRemoved(false); // Natural exit, NOT manual removal
+        $campaignLead->setManuallyRemoved(false);
         $campaignLead->setRotation(1);
         $this->em->persist($campaignLead);
 
@@ -75,7 +75,7 @@ final class CampaignMembershipFunctionalTest extends MauticMysqlTestCase
         $this->assertEquals(1, $logsPhase1[0]['rotation'], 'Phase 1: Log at rotation=1');
 
         $db->executeStatement(
-            'UPDATE '.MAUTIC_TABLE_PREFIX.'campaign_leads SET date_last_exited = NOW() WHERE campaign_id = ? AND lead_id = ?',
+            'UPDATE '.MAUTIC_TABLE_PREFIX.'campaign_leads SET manually_removed = 1, date_last_exited = NOW() WHERE campaign_id = ? AND lead_id = ?',
             [$campaignId, $contactId]
         );
         $this->em->clear();
@@ -86,20 +86,29 @@ final class CampaignMembershipFunctionalTest extends MauticMysqlTestCase
             'campaign' => $campaignId,
         ]);
 
+        $didThrow = false;
         try {
-            $adder->updateExistingMembership($campaignLeadEntity, false);
-            $rotationAfterAttempt = $campaignLeadEntity->getRotation();
-            $this->assertEquals(
-                1,
-                $rotationAfterAttempt,
-                'Rotation should not increment when fix prevents re-entry'
-            );
+            // Regression path: campaign action add-to-campaign re-adds with manual=true.
+            $adder->updateExistingMembership($campaignLeadEntity, true);
         } catch (ContactCannotBeAddedToCampaignException $e) {
+            $didThrow = true;
             $this->assertStringContainsString(
                 'cannot restart',
                 $e->getMessage()
             );
         }
+
+        $this->assertTrue($didThrow, 'Exited contacts must not be re-added when allowRestart=false.');
+
+        $rotationAfterAttempt = (int) $db->createQueryBuilder()
+            ->select('rotation')
+            ->from($prefix.'campaign_leads', 'cl')
+            ->where('cl.campaign_id = :campaignId AND cl.lead_id = :leadId')
+            ->setParameters(['campaignId' => $campaignId, 'leadId' => $contactId])
+            ->executeQuery()
+            ->fetchOne();
+
+        $this->assertEquals(1, $rotationAfterAttempt, 'Rotation must stay unchanged when re-entry is blocked.');
 
         $this->em->clear();
 
