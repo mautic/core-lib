@@ -219,7 +219,7 @@ class AssetControllerFunctionalTest extends AbstractAssetTestCase
 
         $this->assertResponseIsSuccessful($content);
         $this->assertNotEquals($this->expectedPngContent, $content);
-        PageControllerTest::assertTrue($response->isOk());
+        self::assertResponseIsSuccessful();
 
         PageControllerTest::assertStringContainsString(
             '/asset/'.$this->asset->getSlug(),

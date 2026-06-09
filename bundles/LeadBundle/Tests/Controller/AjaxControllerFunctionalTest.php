@@ -267,7 +267,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->request(Request::METHOD_GET, "/s/ajax?action=lead:getSegmentDependencyTree&id={$segmentA->getId()}");
         $response = $this->client->getResponse();
-        self::assertTrue($response->isOk(), $response->getContent());
+        self::assertResponseIsSuccessful();
 
         Assert::assertSame(
             [
@@ -387,7 +387,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->request(Request::METHOD_GET, "/s/ajax?action=lead:getSegmentDependencyTree&id={$segmentA->getId()}");
         $response = $this->client->getResponse();
-        self::assertTrue($response->isOk(), $response->getContent());
+        self::assertResponseIsSuccessful();
 
         $responseData = json_decode($response->getContent(), true);
 
@@ -520,7 +520,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         // Check suggestions for admin user.
         $this->client->request(Request::METHOD_GET, '/s/ajax?action=lead:contactList&field=undefined&filter=user');
         $response = $this->client->getResponse();
-        self::assertTrue($response->isOk());
+        self::assertResponseIsSuccessful();
 
         $data       = json_decode($response->getContent(), true);
         $foundNames = array_column($data, 'value');
@@ -604,7 +604,7 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->setServerParameter('PHP_AUTH_PW', $passwordNonAdmin);
         $this->client->request(Request::METHOD_GET, '/s/ajax?action=lead:contactList&field=undefined&filter=user');
         $response = $this->client->getResponse();
-        self::assertTrue($response->isOk());
+        self::assertResponseIsSuccessful();
 
         $data       = json_decode($response->getContent(), true);
         $foundNames = array_column($data, 'value');
@@ -630,11 +630,10 @@ class AjaxControllerFunctionalTest extends MauticMysqlTestCase
         $this->client->xmlHttpRequest(Request::METHOD_POST, '/s/ajax', $payload);
 
         // Get the response HTML
-        $response    = $this->client->getResponse();
-        $htmlContent = $response->getContent();
+        $htmlContent = $this->client->getResponse()->getContent();
 
         // Assert the response is successful
-        $this->assertTrue($response->isOk(), "Response was not OK for object: $object, group: $group");
+        $this->assertResponseIsSuccessful();
         $this->assertStringNotContainsString('<form', $htmlContent, 'Response contains a form instead of just field order.');
         $this->assertStringContainsString('<select', $htmlContent, 'Response contains select tag.');
 

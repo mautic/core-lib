@@ -52,7 +52,7 @@ class PublicControllerTest extends MauticMysqlTestCase
 
         $this->client->submit($form);
         $clientResponse = $this->client->getResponse();
-        $this->assertTrue($clientResponse->isOk(), $clientResponse->getContent());
+        $this->assertResponseIsSuccessful();
 
         $responseData = $clientResponse->getContent();
         $this->assertStringContainsString('A new password has been generated and will be emailed to you, if this user exists. If you do not receive it within a few minutes, check your spam box and/or contact the system administrator.', $responseData);
@@ -71,7 +71,7 @@ class PublicControllerTest extends MauticMysqlTestCase
         $this->client->submit($form);
 
         $clientResponse = $this->client->getResponse();
-        $this->assertEquals(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('A new password has been generated and will be emailed to you, if this user exists. If you do not receive it within a few minutes, check your spam box and/or contact the system administrator.', $clientResponse->getContent());
     }
 }

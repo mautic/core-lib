@@ -62,7 +62,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
     public function testActivityApi(): void
     {
         $this->client->request('GET', '/api/contacts/activity');
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
         Assert::assertArrayHasKey('events', json_decode($this->client->getResponse()->getContent(), true));
         Assert::assertArrayHasKey('filters', json_decode($this->client->getResponse()->getContent(), true));
         Assert::assertArrayHasKey('order', json_decode($this->client->getResponse()->getContent(), true));
@@ -505,7 +505,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
     {
         $this->client->request('GET', '/api/contacts?where[0][val]=unicorn&where[0][col]=email&where[0][expr]=eq');
         $clientResponse = $this->client->getResponse();
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
         $this->assertEquals('{"total":"0","contacts":{}}', $clientResponse->getContent());
     }
 
@@ -575,7 +575,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
             ]
         );
         $clientResponse = $this->client->getResponse();
-        Assert::assertTrue($this->client->getResponse()->isOk(), $clientResponse->getContent());
+        self::assertResponseIsSuccessful();
         $payload = json_decode($clientResponse->getContent(), true);
         Assert::assertEquals(1, $payload['total']);
         $contactFromApi = $payload['contacts'][$contact->getId()];

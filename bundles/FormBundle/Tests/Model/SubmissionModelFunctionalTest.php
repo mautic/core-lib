@@ -202,6 +202,6 @@ final class SubmissionModelFunctionalTest extends MauticMysqlTestCase
         $form = $formCrawler->form();
         $form->setValues($values);
         $this->client->submit($form);
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
     }
 }

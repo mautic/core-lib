@@ -40,7 +40,7 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
     public function testNoNestingValidationNewAction(): void
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/s/dwc/new');
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
 
         $this->submitFormAndAssertNoNestingValidation($crawler);
     }
@@ -56,7 +56,7 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
     public function testNoNestingValidationEditAction(): void
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/s/dwc/new');
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
 
         $buttonCrawler = $crawler->selectButton('Save');
         $form          = $buttonCrawler->form();
@@ -66,7 +66,7 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
         ]);
         $crawler = $this->client->submit($form);
 
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
         Assert::assertStringNotContainsString(self::NO_NESTING_VALIDATION_MESSAGE, $crawler->text());
         Assert::assertStringContainsString('Edit Dynamic Content', $crawler->text());
 
@@ -227,7 +227,7 @@ class DynamicContentControllerFunctionalTest extends MauticMysqlTestCase
         ]);
         $crawler = $this->client->submit($form);
 
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
         Assert::assertStringContainsString(self::NO_NESTING_VALIDATION_MESSAGE, $crawler->text());
     }
 }

@@ -9,7 +9,6 @@ use Mautic\PageBundle\DataFixtures\ORM\LoadPageCategoryData;
 use Mautic\PageBundle\DataFixtures\ORM\LoadPageData;
 use Mautic\PageBundle\Entity\Page;
 use Mautic\PageBundle\Model\PageModel;
-use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -83,7 +82,7 @@ class PageControllerTest extends MauticMysqlTestCase
         $leadsBeforeTest   = $this->connection->fetchAllAssociative('SELECT `id` FROM `'.$this->prefix.'leads`;');
         $leadIdsBeforeTest = array_column($leadsBeforeTest, 'id');
         $this->client->request('GET', '/page-page-landingPageTracking');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
 
         $sql = 'SELECT `id` FROM `'.$this->prefix.'leads`';
         if (!empty($leadIdsBeforeTest)) {
@@ -122,7 +121,7 @@ class PageControllerTest extends MauticMysqlTestCase
         $leadsBeforeTest   = $this->connection->fetchAllAssociative('SELECT `id` FROM `'.$this->prefix.'leads`;');
         $leadIdsBeforeTest = array_column($leadsBeforeTest, 'id');
         $this->client->request('GET', '/page-page-landingPageTrackingSecondVisit');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $sql = 'SELECT `id` FROM `'.$this->prefix.'leads`';
         if (!empty($leadIdsBeforeTest)) {
             $sql .= ' WHERE `id` NOT IN ('.implode(',', $leadIdsBeforeTest).');';
@@ -139,7 +138,7 @@ class PageControllerTest extends MauticMysqlTestCase
         $this->assertCount(1, $eventLogsAfterFirstVisit);
         $this->assertSame('created_contact', reset($eventLogsAfterFirstVisit)['action']);
         $this->client->request('GET', '/page-page-landingPageTrackingSecondVisit');
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $eventLogsAfterSecondVisit = $this->connection->fetchAllAssociative('
           SELECT `id`, `action`
           FROM `'.$this->prefix.'lead_event_log`
@@ -289,7 +288,6 @@ class PageControllerTest extends MauticMysqlTestCase
         $pageModel->saveEntity($parentPage);
 
         $this->client->request(Request::METHOD_GET, '/this_is_my_page');
-        $response = $this->client->getResponse();
-        Assert::assertTrue($response->isOk());
+        self::assertResponseIsSuccessful();
     }
 }

@@ -267,7 +267,7 @@ class LeadControllerTest extends MauticMysqlTestCase
 
         $clientResponse = $this->client->getResponse();
 
-        Assert::assertTrue($clientResponse->isOk(), $clientResponse->getContent());
+        self::assertResponseIsSuccessful();
 
         /** @var Lead $contact */
         $contact = $this->em->getRepository(Lead::class)->findOneBy(['email' => 'john_23657@doe.com']);
@@ -297,7 +297,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         $this->loadFixtures([LoadLeadData::class]);
         $this->client->request(Request::METHOD_GET, '/s/contacts/batchExport?filetype=csv');
         $clientResponse = $this->client->getResponse();
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
         Assert::assertStringContainsString(
             'Contact export scheduled for CSV file type.',
             $clientResponse->getContent()
@@ -496,7 +496,7 @@ class LeadControllerTest extends MauticMysqlTestCase
 
         $this->client->request(Request::METHOD_GET, "/s/contacts/email/{$contact->getId()}");
 
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
         $crawler = new Crawler(json_decode($this->client->getResponse()->getContent(), true)['newContent'], $this->client->getInternalRequest()->getUri());
         $form    = $crawler->selectButton('Send')->form();
         $form->setValues(
@@ -507,7 +507,7 @@ class LeadControllerTest extends MauticMysqlTestCase
             ]
         );
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
         $this->assertQueuedEmailCount(1);
 
         $email = $this->getMailerMessage();
@@ -546,7 +546,7 @@ class LeadControllerTest extends MauticMysqlTestCase
 
         $this->client->request(Request::METHOD_GET, "/s/contacts/email/{$contact->getId()}");
 
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
         $crawler = new Crawler(json_decode($this->client->getResponse()->getContent(), true)['newContent'], $this->client->getInternalRequest()->getUri());
         $form    = $crawler->selectButton('Send')->form();
         $form->setValues(
@@ -557,7 +557,7 @@ class LeadControllerTest extends MauticMysqlTestCase
             ]
         );
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
         $this->assertQueuedEmailCount(1);
 
         $email = $this->getMailerMessage();
@@ -820,9 +820,9 @@ EMAIL;
 
         $this->client->submit($form);
 
-        $clientResponse = $this->client->getResponse();
+        $this->client->submit($form);
 
-        Assert::assertTrue($clientResponse->isOk(), $clientResponse->getContent());
+        self::assertResponseIsSuccessful();
 
         /** @var Lead $contact */
         $contact = $this->em->getRepository(Lead::class)->findOneBy(['email' => 'john_23657@doe.com']);
@@ -1030,7 +1030,7 @@ EMAIL;
         $this->client->request(Request::METHOD_GET, '/s/companies/merge/'.$companyA->getId());
         $response = $this->client->getResponse();
 
-        Assert::assertTrue($response->isOk());
+        self::assertResponseIsSuccessful();
 
         $content = $response->getContent();
 
@@ -1047,7 +1047,7 @@ EMAIL;
         $this->em->clear();
 
         $this->client->xmlHttpRequest(Request::METHOD_GET, '/s/contacts/batchDnc');
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
         $crawler = new Crawler(json_decode($this->client->getResponse()->getContent(), true)['newContent'], $this->client->getInternalRequest()->getUri());
         $form    = $crawler->selectButton('Save')->form();
         $form->setValues(
@@ -1057,7 +1057,7 @@ EMAIL;
             ]
         );
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful();
 
         $clientResponse = $this->client->getResponse();
 

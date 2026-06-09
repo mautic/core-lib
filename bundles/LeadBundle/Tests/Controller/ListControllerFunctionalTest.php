@@ -76,7 +76,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/edit/'.$segment->getId());
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
         Assert::assertGreaterThan(0, $crawler->filter('#leadlist_filters_0_operator option')->count());
     }
 
@@ -380,15 +380,15 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $segmentsCountBefore = $this->em->getRepository(LeadList::class)->count([]);
         // Go to clone segment action
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/clone/'.$segmentId);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
         // First submit
         $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
         $crawler = $this->client->submit($form);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), 'Correct Apply');
+        $this->assertResponseIsSuccessful();
         // Second submit
         $form = $crawler->selectButton('leadlist_buttons_apply')->form();
         $this->client->submit($form);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), 'Correct Apply');
+        $this->assertResponseIsSuccessful();
         // Number of segments after clone
         $segmentsCountAfter = $this->em->getRepository(LeadList::class)->count([]);
         // Check that just one segment was created
@@ -411,11 +411,11 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
     private function getAliasWhenCloneSegment(int $segmentId): string
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/clone/'.$segmentId);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
         // Save cloned segment
         $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
         $crawler = $this->client->submit($form);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), 'Correct Apply');
+        $this->assertResponseIsSuccessful();
 
         return $crawler->filter('#leadlist_alias')->attr('value');
     }
@@ -464,7 +464,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
         $form['leadlist[isPublished]']->setValue('0');
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString($expectedErrorMessage, $this->client->getResponse()->getContent());
     }
 
@@ -475,13 +475,13 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
 
         $this->client->request(Request::METHOD_POST, '/s/ajax', ['action' => 'togglePublishStatus', 'model' => 'lead.list', 'id' => $list1->getId()]);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/segments/edit/'.$list2->getId());
         $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
         $form['leadlist[isPublished]']->setValue('0');
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         $rows = $this->listRepo->findAll();
         $this->assertCount(2, $rows);
@@ -826,7 +826,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
         $form    = $crawler->selectButton('leadlist_buttons_apply')->form();
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         if ($shouldContainError) {
             $this->assertStringContainsString('Date field filter value &quot;'.$filter.'&quot; is invalid', $this->client->getResponse()->getContent());

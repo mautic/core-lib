@@ -75,7 +75,7 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         $form['mauticform[email]']->setValue('testing@ampersand.select');
 
         $this->client->submit($form);
-        Assert::assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
 
         // Create some necessary entities.
         $campaignEvent = new Event();

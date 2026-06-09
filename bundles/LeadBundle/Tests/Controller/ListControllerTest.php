@@ -213,7 +213,7 @@ class ListControllerTest extends MauticMysqlTestCase
 
         $this->client->request('GET', '/api/segments?search=filters_field:custom_field_test');
         $clientResponse = $this->client->getResponse();
-        $this->assertEquals(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Segment filter', $clientResponse->getContent());
     }
 

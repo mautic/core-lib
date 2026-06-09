@@ -123,7 +123,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         // Now let's simulate email opens
         foreach ($stats as $stat) {
             $this->client->request('GET', '/email/'.$stat['tracking_hash'].'.gif');
-            $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), var_export($this->client->getResponse()->getContent(), true));
+            $this->assertResponseIsSuccessful();
         }
 
         $byEvent = $this->getCampaignEventLogs([3, 4, 5, 10, 14, 15]);
@@ -290,7 +290,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         // Now let's simulate email opens
         foreach ($stats as $stat) {
             $this->client->request('GET', '/email/'.$stat['tracking_hash'].'.gif');
-            $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), var_export($this->client->getResponse()->getContent(), true));
+            $this->assertResponseIsSuccessful();
         }
 
         $byEvent = $this->getCampaignEventLogs([3, 4, 5, 10, 14, 15]);
@@ -450,7 +450,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         // Now let's simulate email opens
         foreach ($stats as $stat) {
             $this->client->request('GET', '/email/'.$stat['tracking_hash'].'.gif');
-            $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), var_export($this->client->getResponse()->getContent(), true));
+            $this->assertResponseIsSuccessful();
         }
 
         $byEvent = $this->getCampaignEventLogs([3, 4, 5, 10, 14, 15]);

@@ -59,10 +59,10 @@ final class ResultControllerFunctionalTest extends MauticMysqlTestCase
             'mauticform[file_field]' => $file,
         ]);
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         $this->client->request(Request::METHOD_GET, "/forms/results/file/{$fieldId}/filename/{$fileName}");
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         $field = $fieldModel->getEntity($fieldId);
         unlink($fileName);

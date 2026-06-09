@@ -364,7 +364,7 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
         $campaign = $this->saveSomeCampaignLeadEventLogs();
         $crawler  = $this->client->request('GET', sprintf('/s/campaigns/view/%d', $campaign->getId()));
         $response = $this->client->getResponse();
-        self::assertTrue($response->isOk());
+        self::assertResponseIsSuccessful();
         self::assertStringContainsString('Campaign ABC', $response->getContent());
         self::assertSame('', trim($crawler->filter('#decisions-container')->text()));
         self::assertSame('', trim($crawler->filter('#actions-container')->text()));
@@ -379,7 +379,7 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
         $campaign = $this->saveSomeCampaignLeadEventLogs();
         $this->client->request('GET', sprintf('s/campaigns/event/stats/%d/%s/%s', $campaign->getId(), $from, $to));
         $response = $this->client->getResponse();
-        self::assertTrue($response->isOk());
+        self::assertResponseIsSuccessful();
         $body     = json_decode($response->getContent(), true);
         self::assertCount(2, $body);
         self::arrayHasKey('actions');
