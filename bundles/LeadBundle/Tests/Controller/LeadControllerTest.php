@@ -37,6 +37,11 @@ class LeadControllerTest extends MauticMysqlTestCase
 {
     use CreateTestEntitiesTrait;
 
+    private const CONTACT_A_EMAIL               = 'contact@a.email';
+    private const CONTACT_B_EMAIL               = 'contact@b.email';
+    private const CONTACT_C_EMAIL               = 'contact@c.email';
+    private const CLOSE_MODAL_ASSERTION_MESSAGE = 'The response does not contain the `closeModal` param.';
+
     protected function setUp(): void
     {
         $this->configParams['mailer_from_email']   = 'admin@mautic-community.test';
@@ -156,9 +161,9 @@ class LeadControllerTest extends MauticMysqlTestCase
 
     public function testContactsAreAddedToThenRemovedFromCampaignsInBatch(): void
     {
-        $contactA = $this->createContact('contact@a.email');
-        $contactB = $this->createContact('contact@b.email');
-        $contactC = $this->createContact('contact@c.email');
+        $contactA = $this->createContact(self::CONTACT_A_EMAIL);
+        $contactB = $this->createContact(self::CONTACT_B_EMAIL);
+        $contactC = $this->createContact(self::CONTACT_C_EMAIL);
         $campaign = $this->createCampaign();
         $payload  = [
             'lead_batch' => [
@@ -197,7 +202,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         );
 
         $response = json_decode($clientResponse->getContent(), true);
-        $this->assertTrue(isset($response['closeModal']), 'The response does not contain the `closeModal` param.');
+        $this->assertTrue(isset($response['closeModal']), self::CLOSE_MODAL_ASSERTION_MESSAGE);
         $this->assertTrue($response['closeModal']);
         $this->assertStringContainsString('3 contacts affected', $response['flashes']);
 
@@ -238,16 +243,16 @@ class LeadControllerTest extends MauticMysqlTestCase
         );
 
         $response = json_decode($clientResponse->getContent(), true);
-        $this->assertTrue(isset($response['closeModal']), 'The response does not contain the `closeModal` param.');
+        $this->assertTrue(isset($response['closeModal']), self::CLOSE_MODAL_ASSERTION_MESSAGE);
         $this->assertTrue($response['closeModal']);
         $this->assertStringContainsString('3 contacts affected', $response['flashes']);
     }
 
     public function testContactFieldsAreUpdatedWithBatchFindAndReplace(): void
     {
-        $contactA = $this->createContact('contact@a.email');
-        $contactB = $this->createContact('contact@b.email');
-        $contactC = $this->createContact('contact@c.email');
+        $contactA = $this->createContact(self::CONTACT_A_EMAIL);
+        $contactB = $this->createContact(self::CONTACT_B_EMAIL);
+        $contactC = $this->createContact(self::CONTACT_C_EMAIL);
 
         /** @var LeadModel $contactModel */
         $contactModel = static::getContainer()->get('mautic.lead.model.lead');
@@ -287,7 +292,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         Assert::assertSame('fr_FR', $contactC->getPreferredLocale());
 
         $response = json_decode($clientResponse->getContent(), true);
-        $this->assertTrue(isset($response['closeModal']), 'The response does not contain the `closeModal` param.');
+        $this->assertTrue(isset($response['closeModal']), self::CLOSE_MODAL_ASSERTION_MESSAGE);
         $this->assertTrue($response['closeModal']);
         $this->assertStringContainsString('2 contacts affected', $response['flashes']);
     }
@@ -357,7 +362,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         Assert::assertSame('en', $contactG->getPreferredLocale());
 
         $response = json_decode($clientResponse->getContent(), true);
-        $this->assertTrue(isset($response['closeModal']), 'The response does not contain the `closeModal` param.');
+        $this->assertTrue(isset($response['closeModal']), self::CLOSE_MODAL_ASSERTION_MESSAGE);
         $this->assertTrue($response['closeModal']);
         $this->assertStringContainsString('5 contacts affected', $response['flashes']);
     }
@@ -584,9 +589,9 @@ class LeadControllerTest extends MauticMysqlTestCase
 
     public function testCompanyIdSearchCommand(): void
     {
-        $contactA = $this->createContact('contact@a.email');
-        $contactB = $this->createContact('contact@b.email');
-        $this->createContact('contact@c.email');
+        $contactA = $this->createContact(self::CONTACT_A_EMAIL);
+        $contactB = $this->createContact(self::CONTACT_B_EMAIL);
+        $this->createContact(self::CONTACT_C_EMAIL);
 
         $companyName = 'Doe Corp';
         $company     = new Company();

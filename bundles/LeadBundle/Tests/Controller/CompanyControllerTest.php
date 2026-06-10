@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CompanyControllerTest extends MauticMysqlTestCase
 {
+    private const COUNTRY_UNITED_STATES = 'United States';
+
     private int $company1Id;
 
     private int $company2Id;
@@ -30,14 +32,14 @@ class CompanyControllerTest extends MauticMysqlTestCase
                 'name'     => 'Amazon',
                 'state'    => 'Washington',
                 'city'     => 'Seattle',
-                'country'  => 'United States',
+                'country'  => self::COUNTRY_UNITED_STATES,
                 'industry' => 'Goods',
             ],
             2 => [
                 'name'     => 'Google',
                 'state'    => 'Washington',
                 'city'     => 'Seattle',
-                'country'  => 'United States',
+                'country'  => self::COUNTRY_UNITED_STATES,
                 'industry' => 'Services',
             ],
         ];
@@ -380,7 +382,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
             ->setName($name)
             ->setState('Washington')
             ->setCity('Seattle')
-            ->setCountry('United States')
+            ->setCountry(self::COUNTRY_UNITED_STATES)
             ->setIndustry($industry);
 
         /** @var CompanyModel $companyModel */

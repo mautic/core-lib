@@ -1529,7 +1529,7 @@ Mautic.refreshFindReplaceList = function(response) {
         mQuery('.modal-backdrop').remove();
     }
 
-    Mautic.loadContent(window.location.href);
+    Mautic.loadContent(globalThis.location.href);
 };
 
 Mautic.updateLeadFieldValues = function (field) {

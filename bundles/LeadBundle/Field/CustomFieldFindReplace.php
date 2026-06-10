@@ -8,6 +8,7 @@ use Mautic\CoreBundle\Helper\ArrayHelper;
 use Mautic\LeadBundle\Entity\CustomFieldEntityInterface;
 use Mautic\LeadBundle\Entity\LeadField;
 use Mautic\LeadBundle\Entity\LeadFieldRepository;
+use Mautic\LeadBundle\Field\DTO\CustomFieldFindReplaceCriteria;
 use Mautic\LeadBundle\Helper\CustomFieldHelper;
 
 final class CustomFieldFindReplace
@@ -37,16 +38,13 @@ final class CustomFieldFindReplace
      * @return array<int, CustomFieldEntityInterface>
      */
     public function replace(
-        string $object,
-        string $fieldAlias,
-        mixed $findValue,
-        mixed $replaceValue,
+        CustomFieldFindReplaceCriteria $criteria,
         iterable $entities,
         callable $setFieldValues,
         ?callable $canEdit = null,
         ?callable $refreshEntity = null,
     ): array {
-        $field = $this->getPublishedFieldForObject($fieldAlias, $object);
+        $field = $this->getPublishedFieldForObject($criteria->fieldAlias, $criteria->object);
 
         if (!$field instanceof LeadField) {
             return [];
@@ -54,8 +52,8 @@ final class CustomFieldFindReplace
 
         $alias        = $field->getAlias();
         $fieldType    = $field->getType();
-        $findValue    = $this->normalizeValue($fieldType, $findValue);
-        $replaceValue = $this->normalizeValue($fieldType, $replaceValue);
+        $findValue    = $this->normalizeValue($fieldType, $criteria->findValue);
+        $replaceValue = $this->normalizeValue($fieldType, $criteria->replaceValue);
         $updated      = [];
 
         if ($findValue === $replaceValue) {
