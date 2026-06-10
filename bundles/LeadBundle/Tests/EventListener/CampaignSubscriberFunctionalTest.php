@@ -373,7 +373,6 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
     {
         $application = new Application(self::$kernel);
         $application->setAutoExit(false);
-        $applicationTester = new ApplicationTester($application);
 
         $contacts = $this->createContacts();
 
