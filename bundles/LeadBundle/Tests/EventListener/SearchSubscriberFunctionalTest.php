@@ -45,7 +45,7 @@ class SearchSubscriberFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $crawler = $this->client->request('GET', sprintf('/s/contacts?search=email_pending:%d', $this->email->getId()));
-        Assert::assertTrue($this->client->getResponse()->isOk());
+        self::assertResponseIsSuccessful();
 
         $text = $crawler->text();
         Assert::assertStringContainsString('Lead-test-1', $text);

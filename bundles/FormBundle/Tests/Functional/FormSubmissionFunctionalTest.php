@@ -113,7 +113,7 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
             'mauticform[lastname]'  => $lead->getLastname(),
         ]);
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful($this->client->getResponse()->getContent());
 
         /** @var SubmissionRepository $submissionRepo */
         $submissionRepo = $this->em->getRepository(Submission::class);
@@ -170,7 +170,7 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
         $form = $formCrawler->form();
         $form->setValues($values);
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful($this->client->getResponse()->getContent());
     }
 
     private function createLandingPage(string $title, string $alias, string $content): Page

@@ -17,9 +17,9 @@ final class RoleRepositoryFunctionalTest extends MauticMysqlTestCase
     {
         $roleOne   = $this->createRole();
         $roleTwo   = $this->createRole();
-        $userOne   = $this->createUser($roleOne, 'one@example.com');
-        $userTwo   = $this->createUser($roleOne, 'two@example.com');
-        $userThree = $this->createUser($roleTwo, 'three@example.com');
+        $this->createUser($roleOne, 'one@example.com');
+        $this->createUser($roleOne, 'two@example.com');
+        $this->createUser($roleTwo, 'three@example.com');
 
         $this->em->flush();
         $this->em->clear();

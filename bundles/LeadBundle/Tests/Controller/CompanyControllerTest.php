@@ -247,7 +247,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $leadB = $this->createLead('F1', 'L1', 'f@l.com', '123');
 
         $crawler = $this->client->request('GET', '/s/companies/edit/'.$this->company1Id);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
 
         $buttonCrawler = $crawler->selectButton('Save & Close');
         $form          = $buttonCrawler->form();
@@ -265,7 +265,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         );
 
         $this->client->submit($form);
-        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertResponseIsSuccessful();
         $this->assertMatchesRegularExpression('/\/s\/companies\/view\/'.$this->company1Id.'/', $this->client->getRequest()->getUri());
 
         /** @var LeadRepository $leadRepo */
