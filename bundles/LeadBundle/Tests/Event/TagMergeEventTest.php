@@ -12,11 +12,11 @@ class TagMergeEventTest extends TestCase
 {
     public function testConstructGettersSetters(): void
     {
-        $victor = new Tag();
-        $loser  = new Tag();
-        $event  = new TagMergeEvent($victor, $loser);
+        $primaryTag   = new Tag();
+        $secondaryTag = new Tag();
+        $event        = new TagMergeEvent($primaryTag, $secondaryTag);
 
-        $this->assertEquals($victor, $event->getVictor());
-        $this->assertEquals($loser, $event->getLoser());
+        $this->assertSame($primaryTag, $event->getPrimaryTag());
+        $this->assertSame($secondaryTag, $event->getSecondaryTag());
     }
 }

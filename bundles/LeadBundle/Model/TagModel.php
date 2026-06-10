@@ -116,81 +116,90 @@ class TagModel extends FormModel
         return null;
     }
 
-    public function tagMerge(Tag $mainTag, Tag $secTag): Tag
+    public function tagMerge(Tag $primaryTag, Tag $secondaryTag): Tag
     {
         $this->logger->debug('TAG: Merging tags');
 
-        if ($mainTag->getId() === $secTag->getId()) {
-            return $mainTag;
+        if ($primaryTag->getId() === $secondaryTag->getId()) {
+            return $primaryTag;
         }
 
-        $conn    = $this->em->getConnection();
-        $leadIds = $conn->createQueryBuilder()
-            ->select('lead_id')
-            ->from(MAUTIC_TABLE_PREFIX.'lead_tags_xref', 'ltx')
-            ->where('ltx.tag_id = :id')
-            ->setParameter('id', $secTag->getId())
-            ->executeQuery()
-            ->fetchFirstColumn();
+        $event = new TagMergeEvent($primaryTag, $secondaryTag);
+        $this->em->beginTransaction();
 
-        if ($leadIds) {
-            $repo = $this->getRepository();
-            $repo->addTagsToLeads($leadIds, [$mainTag->getId()]);
-            $repo->removeTagsFromLeads($leadIds, [$secTag->getId()]);
+        try {
+            $this->dispatcher->dispatch($event, LeadEvents::TAG_PRE_MERGE);
+            $this->replaceLeadTagAssociations($primaryTag, $secondaryTag);
+            $this->replaceMergedTagReferences($primaryTag, $secondaryTag);
+            $this->saveEntity($primaryTag, false);
+            $this->deleteEntity($secondaryTag);
+            $this->dispatcher->dispatch($event, LeadEvents::TAG_POST_MERGE);
+            $this->em->commit();
+        } catch (\Throwable $exception) {
+            $this->em->rollback();
+
+            throw $exception;
         }
 
-        $this->replaceMergedTagReferences($mainTag, $secTag);
-
-        $event = new TagMergeEvent($mainTag, $secTag);
-        $this->dispatcher->dispatch($event, LeadEvents::TAG_PRE_MERGE);
-
-        $this->saveEntity($mainTag, false);
-
-        $this->dispatcher->dispatch($event, LeadEvents::TAG_POST_MERGE);
-
-        $this->deleteEntity($secTag);
-
-        return $mainTag;
+        return $primaryTag;
     }
 
-    private function replaceMergedTagReferences(Tag $mainTag, Tag $secTag): void
+    private function replaceLeadTagAssociations(Tag $primaryTag, Tag $secondaryTag): void
     {
-        $mainTagId = (int) $mainTag->getId();
-        $secTagId  = (int) $secTag->getId();
+        $connection = $this->em->getConnection();
+
+        $connection->executeStatement(
+            sprintf('UPDATE IGNORE %slead_tags_xref SET tag_id = :primaryTagId WHERE tag_id = :secondaryTagId', MAUTIC_TABLE_PREFIX),
+            [
+                'primaryTagId'   => (int) $primaryTag->getId(),
+                'secondaryTagId' => (int) $secondaryTag->getId(),
+            ],
+        );
+
+        $connection->executeStatement(
+            sprintf('DELETE FROM %slead_tags_xref WHERE tag_id = :secondaryTagId', MAUTIC_TABLE_PREFIX),
+            ['secondaryTagId' => (int) $secondaryTag->getId()],
+        );
+    }
+
+    private function replaceMergedTagReferences(Tag $primaryTag, Tag $secondaryTag): void
+    {
+        $primaryTagId   = (int) $primaryTag->getId();
+        $secondaryTagId = (int) $secondaryTag->getId();
 
         $this->replaceTagPropertiesInEntities(
             $this->em->getRepository(CampaignEvent::class)->findBy(['type' => ['lead.changetags', 'lead.tags']]),
-            $mainTag,
-            $secTag,
+            $primaryTag,
+            $secondaryTag,
         );
 
         $this->replaceTagPropertiesInEntities(
             $this->em->getRepository(Action::class)->findBy(['type' => 'lead.changetags']),
-            $mainTag,
-            $secTag,
+            $primaryTag,
+            $secondaryTag,
         );
 
         $this->replaceTagPropertiesInEntities(
             $this->em->getRepository(TriggerEvent::class)->findBy(['type' => 'lead.changetags']),
-            $mainTag,
-            $secTag,
+            $primaryTag,
+            $secondaryTag,
         );
 
-        $this->replaceTagFiltersInSegments($mainTagId, $secTagId);
-        $this->replaceTagFiltersInReports($mainTagId, $secTagId);
+        $this->replaceTagFiltersInSegments($primaryTagId, $secondaryTagId);
+        $this->replaceTagFiltersInReports($primaryTagId, $secondaryTagId);
     }
 
     /**
      * @param iterable<CampaignEvent|Action|TriggerEvent> $entities
      */
-    private function replaceTagPropertiesInEntities(iterable $entities, Tag $mainTag, Tag $secTag): void
+    private function replaceTagPropertiesInEntities(iterable $entities, Tag $primaryTag, Tag $secondaryTag): void
     {
         foreach ($entities as $entity) {
             $properties = $entity->getProperties();
-            $updated    = $this->replaceTagValuesInConfiguredProperties($properties, $secTag->getTag(), $mainTag->getTag());
+            $updated    = $this->replaceTagValuesInConfiguredProperties($properties, $secondaryTag->getTag(), $primaryTag->getTag());
 
             if ($entity instanceof CampaignEvent) {
-                $updated = $this->replaceTagIdsInNestedProperties($updated, (int) $secTag->getId(), (int) $mainTag->getId());
+                $updated = $this->replaceTagIdsInNestedProperties($updated, (int) $secondaryTag->getId(), (int) $primaryTag->getId());
             }
 
             if ($updated === $properties) {
@@ -202,7 +211,7 @@ class TagModel extends FormModel
         }
     }
 
-    private function replaceTagFiltersInSegments(int $mainTagId, int $secTagId): void
+    private function replaceTagFiltersInSegments(int $primaryTagId, int $secondaryTagId): void
     {
         /** @var LeadList $segment */
         foreach ($this->em->getRepository(LeadList::class)->createQueryBuilder('l')
@@ -211,7 +220,7 @@ class TagModel extends FormModel
             ->getQuery()
             ->getResult() as $segment) {
             $filters = $segment->getFilters();
-            $updated = $this->replaceTagValuesInSegmentFilters($filters, $secTagId, $mainTagId);
+            $updated = $this->replaceTagValuesInSegmentFilters($filters, $secondaryTagId, $primaryTagId);
 
             if ($updated === $filters) {
                 continue;
@@ -222,7 +231,7 @@ class TagModel extends FormModel
         }
     }
 
-    private function replaceTagFiltersInReports(int $mainTagId, int $secTagId): void
+    private function replaceTagFiltersInReports(int $primaryTagId, int $secondaryTagId): void
     {
         /** @var Report $report */
         foreach ($this->em->getRepository(Report::class)->createQueryBuilder('r')
@@ -231,7 +240,7 @@ class TagModel extends FormModel
             ->getQuery()
             ->getResult() as $report) {
             $filters = $report->getFilters();
-            $updated = $this->replaceTagValuesInReportFilters($filters, $secTagId, $mainTagId);
+            $updated = $this->replaceTagValuesInReportFilters($filters, $secondaryTagId, $primaryTagId);
 
             if ($updated === $filters) {
                 continue;

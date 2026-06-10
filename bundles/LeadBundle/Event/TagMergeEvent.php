@@ -10,18 +10,18 @@ use Symfony\Contracts\EventDispatcher\Event;
 final class TagMergeEvent extends Event
 {
     public function __construct(
-        private Tag $victor,
-        private Tag $loser,
+        private Tag $primaryTag,
+        private Tag $secondaryTag,
     ) {
     }
 
-    public function getVictor(): Tag
+    public function getPrimaryTag(): Tag
     {
-        return $this->victor;
+        return $this->primaryTag;
     }
 
-    public function getLoser(): Tag
+    public function getSecondaryTag(): Tag
     {
-        return $this->loser;
+        return $this->secondaryTag;
     }
 }
