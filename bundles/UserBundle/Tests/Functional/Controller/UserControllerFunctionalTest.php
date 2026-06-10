@@ -67,7 +67,7 @@ class UserControllerFunctionalTest extends MauticMysqlTestCase
     {
         $crawler = $this->client->request('GET', '/s/users');
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertGreaterThan(0, $crawler->filter('#invite-user-form')->count());
     }
 
@@ -75,7 +75,7 @@ class UserControllerFunctionalTest extends MauticMysqlTestCase
     {
         $crawler = $this->client->request('GET', '/s/users/invite');
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertGreaterThan(0, $crawler->filter('#invite-user-form')->count());
     }
 
@@ -83,7 +83,7 @@ class UserControllerFunctionalTest extends MauticMysqlTestCase
     {
         $this->client->request('POST', '/s/users/invite');
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('name="user_invite"', $this->client->getResponse()->getContent());
     }
 

@@ -84,7 +84,7 @@ class PublicControllerTest extends MauticMysqlTestCase
 
         $clientResponse = $this->client->getResponse();
 
-        $this->assertSame(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Dashboard', $clientResponse->getContent());
     }
 
@@ -96,7 +96,7 @@ class PublicControllerTest extends MauticMysqlTestCase
 
         $clientResponse = $this->client->getResponse();
 
-        $this->assertSame(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Create Account', $clientResponse->getContent());
     }
 
@@ -111,7 +111,7 @@ class PublicControllerTest extends MauticMysqlTestCase
 
         $clientResponse = $this->client->getResponse();
 
-        $this->assertSame(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Email is already in use. Please contact your system administrator.', $clientResponse->getContent());
     }
 
