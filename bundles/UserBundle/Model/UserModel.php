@@ -399,6 +399,11 @@ class UserModel extends FormModel implements GlobalSearchInterface
         return $this->getRepository()->getOwnerListChoices();
     }
 
+    public function hasUserWithEmail(string $email): bool
+    {
+        return null !== $this->getRepository()->findOneBy(['email' => $email]);
+    }
+
     public function createInvite(string $email, Role $role): UserInvite
     {
         $inviteToken = $this->createInviteToken();

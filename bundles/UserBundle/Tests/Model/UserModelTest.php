@@ -12,6 +12,7 @@ use Mautic\UserBundle\Entity\Role;
 use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Entity\UserInvite;
 use Mautic\UserBundle\Entity\UserInviteRepositoryInterface;
+use Mautic\UserBundle\Entity\UserRepository;
 use Mautic\UserBundle\Entity\UserToken;
 use Mautic\UserBundle\Exception\PasswordResetTokenCreationFailedException;
 use Mautic\UserBundle\Model\UserModel;
@@ -281,6 +282,24 @@ class UserModelTest extends TestCase
 
         $this->assertSame($email, $invite->getEmail());
         $this->assertSame($role, $invite->getRole());
+    }
+
+    public function testHasUserWithEmailReturnsWhetherUserExists(): void
+    {
+        $email      = 'invitee@example.com';
+        $repository = $this->createMock(UserRepository::class);
+
+        $repository->expects($this->once())
+            ->method('findOneBy')
+            ->with(['email' => $email])
+            ->willReturn(new User());
+
+        $this->entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with(User::class)
+            ->willReturn($repository);
+
+        $this->assertTrue($this->userModel->hasUserWithEmail($email));
     }
 
     public function testGetInviteReturnsNullWhenInviteDoesNotExist(): void

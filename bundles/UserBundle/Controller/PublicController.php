@@ -166,8 +166,7 @@ class PublicController extends FormController
                 $form->handleRequest($request);
 
                 // Check if user already exists before form validation
-                $existingUser = $model->getRepository()->findOneBy(['email' => $invite->getEmail()]);
-                if ($existingUser) {
+                if ($model->hasUserWithEmail((string) $invite->getEmail())) {
                     $this->addFlashMessage('mautic.user.invite.error.email_exists', [], 'error', 'flashes');
                     $response = $this->delegateView([
                         'viewParameters' => [
