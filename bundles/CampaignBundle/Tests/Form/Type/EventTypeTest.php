@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Mautic\CampaignBundle\Tests\Form\Type;
 
 use Mautic\CampaignBundle\Form\Type\EventType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class EventTypeTest extends TestCase
 {
     /**
-     * @dataProvider timeValueProvider
+     * @param string|array{date: string} $value
      */
+    #[DataProvider('timeValueProvider')]
     public function testGetTimeValueParsesTimeOnlyStringsWithoutThrowing(string|array $value, string $expected): void
     {
         $type   = new EventType();
@@ -24,6 +26,9 @@ class EventTypeTest extends TestCase
         $this->assertSame($expected, $parsed->format('H:i'));
     }
 
+    /**
+     * @return iterable<string, array{0: string|array{date: string}, 1: string}>
+     */
     public static function timeValueProvider(): iterable
     {
         yield 'zero padded hour string' => ['04', '04:00'];
