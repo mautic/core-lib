@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Mautic\CampaignBundle\Tests\Form\Type;
+
+use Mautic\CampaignBundle\Form\Type\EventType;
+use PHPUnit\Framework\TestCase;
+
+class EventTypeTest extends TestCase
+{
+    /**
+     * @dataProvider timeValueProvider
+     */
+    public function testGetTimeValueParsesTimeOnlyStringsWithoutThrowing(string|array $value, string $expected): void
+    {
+        $type   = new EventType();
+        $method = new \ReflectionMethod(EventType::class, 'getTimeValue');
+
+        /** @var \DateTime $parsed */
+        $parsed = $method->invoke($type, ['triggerHour' => $value], 'triggerHour');
+
+        $this->assertInstanceOf(\DateTime::class, $parsed);
+        $this->assertSame($expected, $parsed->format('H:i'));
+    }
+
+    public static function timeValueProvider(): iterable
+    {
+        yield 'zero padded hour string' => ['04', '04:00'];
+        yield 'hour and minute string' => ['04:00', '04:00'];
+        yield 'array date value' => [['date' => '08:00'], '08:00'];
+    }
+}
