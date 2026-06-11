@@ -20,6 +20,7 @@ use Mautic\EmailBundle\Event\EmailSendEvent;
 use Mautic\EmailBundle\Exception\InvalidEmailException;
 use Mautic\EmailBundle\Form\Type\ConfigType;
 use Mautic\EmailBundle\Helper\DTO\AddressDTO;
+use Mautic\EmailBundle\Helper\Exception\OwnerNotFoundException;
 use Mautic\EmailBundle\Mailer\Exception\BatchQueueMaxException;
 use Mautic\EmailBundle\Mailer\Message\MauticMessage;
 use Mautic\EmailBundle\Mailer\Transport\TokenTransportInterface;
@@ -1965,6 +1966,72 @@ class MailHelper
 
         $this->systemReplyTo = $systemReplyToEmail ?: $fromEmail;
         $this->replyTo       = $this->systemReplyTo;
+    }
+
+    private function setFromForSingleMessage(): void
+    {
+        $email = $this->getEmail();
+
+        if ($this->lead && $email && $email->getUseOwnerAsMailer()) {
+            if (!isset($this->lead['owner_id'])) {
+                $this->lead['owner_id'] = 0;
+            }
+
+            $from = $this->fromEmailHelper->getFromAddressConsideringOwner($this->getFrom(), $this->lead, $email);
+            $this->setMessageFrom($from);
+
+            return;
+        }
+
+        if ($email) {
+            $fromEmail = $email->getFromAddress();
+            $fromName  = $email->getFromName();
+            if (!empty($fromEmail) || !empty($fromName)) {
+                if (empty($fromName)) {
+                    $fromName = $this->getFrom()->getName();
+                } elseif (empty($fromEmail)) {
+                    $fromEmail = $this->getFrom()->getEmail();
+                }
+
+                $this->from = new AddressDTO($fromEmail, $fromName);
+            }
+        }
+
+        $from = $this->fromEmailHelper->getFromAddressDto($this->getFrom(), $this->lead, $email);
+
+        $this->setMessageFrom($from);
+    }
+
+    private function setReplyToForSingleMessage(?Email $emailToSend): void
+    {
+        // 1. Set the reply to address from the email "reply-to" setting if set.
+        if ($emailToSend && null !== $emailToSend->getReplyToAddress()) {
+            $this->setMessageReplyTo($emailToSend->getReplyToAddress());
+
+            return;
+        }
+
+        // 2. Set the reply to address from the lead owner if set.
+        if (!empty($this->lead['owner_id'])) {
+            try {
+                $owner = $this->fromEmailHelper->getContactOwner((int) $this->lead['owner_id'], $emailToSend);
+                $this->setMessageReplyTo($owner['email']);
+            } catch (OwnerNotFoundException) {
+                $this->setMessageReplyTo($this->getSystemReplyTo());
+            }
+
+            return;
+        }
+
+        // 3. Set the reply to address from the email "from" setting if set.
+        if ($emailToSend && null !== $emailToSend->getFromAddress() && empty($this->coreParametersHelper->get('mailer_reply_to_email'))) {
+            $this->setMessageReplyTo($emailToSend->getFromAddress());
+
+            return;
+        }
+
+        // 4. Set the reply to address from the global config if nothing from above is set.
+        $this->setMessageReplyTo($this->getReplyTo());
     }
 
     private function getMessageInstance(): MauticMessage
