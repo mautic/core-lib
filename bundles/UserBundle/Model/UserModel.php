@@ -516,22 +516,16 @@ class UserModel extends FormModel implements GlobalSearchInterface
         return $repository;
     }
 
-    /**
-     * @param array<string, mixed> $context
-     */
-    private function logInvalidInvite(string $reason, array $context = []): void
+    private function logInvalidInvite(string $reason, ?UserInvite $invite = null): void
     {
-        $this->logger->warning('User invite link rejected: '.$reason, $context);
-    }
+        $context = [];
+        if ($invite) {
+            $context = [
+                'invite_id' => $invite->getId(),
+                'email'     => $invite->getEmail(),
+            ];
+        }
 
-    /**
-     * @return array{invite_id: int|null, email: string|null}
-     */
-    private function getInviteLogContext(UserInvite $invite): array
-    {
-        return [
-            'invite_id' => $invite->getId(),
-            'email'     => $invite->getEmail(),
-        ];
+        $this->logger->warning('User invite link rejected: '.$reason, $context);
     }
 }

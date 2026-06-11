@@ -157,7 +157,7 @@ class PublicController extends FormController
             $response = $this->redirectToRoute('login');
         } else {
             $action = $this->generateUrl('mautic_user_invite_register', ['token' => $token]);
-            $user   = $this->createInvitedUser($invite);
+            $user   = User::createFromInvite($invite);
             $form   = $this->formFactory->create(UserInviteRegistrationType::class, $user, [
                 'action' => $action,
             ]);
