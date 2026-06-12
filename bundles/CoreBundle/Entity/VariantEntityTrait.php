@@ -190,7 +190,7 @@ trait VariantEntityTrait
             return (null === $parent) ? false : true;
         }
 
-        return (!empty($parent) || count($children)) ? true : false;
+        return !empty($parent) || count($children);
     }
 
     public function isParent(): bool
@@ -277,9 +277,9 @@ trait VariantEntityTrait
     {
         if ($this->getVariantParent()) {
             return $this->variantSettingsKeys;
-        } else {
-            return $this->parentSettingsKeys;
         }
+
+        return $this->parentSettingsKeys;
     }
 
     public function clearVariantSettings(): void
