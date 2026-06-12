@@ -198,6 +198,20 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->assertStringNotContainsString('disabled', $html, $html);
     }
 
+    public function testEmailDetailPageForListEmailShowsScheduleButton(): void
+    {
+        $segment = $this->createSegment('Segment A', 'segment-a');
+        $email   = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'test html', $segment);
+        $this->em->flush();
+
+        $crawler = $this->client->request(Request::METHOD_GET, "/s/emails/view/{$email->getId()}");
+        $html    = $crawler->filterXPath('//*[@id="toolbar"]')->html();
+
+        $this->assertStringContainsString('aria-label="Schedule"', $html, $html);
+        $this->assertStringContainsString("/s/emails/scheduleSend/{$email->getId()}", $html, $html);
+        $this->assertStringContainsString('data-header="Schedule"', $html, $html);
+    }
+
     public function testEmailDetailClickCountsCanBeSortedByClicks(): void
     {
         $email = $this->createEmail('Email A', 'Subject A', 'list', 'blank', 'test html');

@@ -59,6 +59,22 @@
 
         {% set customButtons = customButtons|merge([sendButton]) %}
     {% endif %}
+    {% if 'list' == emailType and not email.isEnableAbTest() %}
+        {% set scheduleButton = {
+            'attr' : {
+                'class'       : 'btn btn-tertiary btn-nospin',
+                'data-toggle' : 'ajaxmodal',
+                'data-target' : '#MauticSharedModal',
+                'href'        : path('mautic_email_action', {'objectAction' : 'scheduleSend', 'objectId' : email.getId()}),
+                'data-header' : 'mautic.email.send.schedule'|trans,
+            },
+            'iconClass' : 'ri-calendar-schedule-line',
+            'btnText'   : 'mautic.email.send.schedule',
+            'primary'   : true,
+        } %}
+
+        {% set customButtons = customButtons|merge([scheduleButton]) %}
+    {% endif %}
     {% set sendExampleButton = {
         'attr' : {
             'id'          : 'sendEmailButton',
