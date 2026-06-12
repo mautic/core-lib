@@ -45,10 +45,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
      */
     private \PHPUnit\Framework\MockObject\MockObject $logger;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject&CompanyLeadRepository
-     */
-    private \PHPUnit\Framework\MockObject\MockObject $companyLeadRepo;
+    private \PHPUnit\Framework\MockObject\MockObject&CompanyLeadRepository $companyLeadRepo;
 
     protected function setUp(): void
     {
