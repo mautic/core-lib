@@ -258,10 +258,7 @@ class ContactMerger
                 continue;
             }
 
-            $companyLead = new CompanyLead();
-            $companyLead->setCompany($loserCompanyLead->getCompany());
-            $companyLead->setLead($winner);
-            $companyLead->setDateAdded(\DateTime::createFromInterface($loserCompanyLead->getDateAdded()));
+            $companyLead = $loserCompanyLead;
 
             // The winner keeps its own primary company; otherwise it inherits the loser's
             if (!$winnerHasPrimary && $loserCompanyLead->getPrimary()) {
