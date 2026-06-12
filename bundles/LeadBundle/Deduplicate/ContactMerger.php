@@ -233,10 +233,8 @@ class ContactMerger
 
     /**
      * Merge company associations from loser into winner.
-     *
-     * @return $this
      */
-    public function mergeCompanies(Lead $winner, Lead $loser)
+    public function mergeCompanies(Lead $winner, Lead $loser): self
     {
         $loserCompanyLeads = $this->companyLeadRepository->findBy(['lead' => $loser]);
 
