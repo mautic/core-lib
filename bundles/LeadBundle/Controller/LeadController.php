@@ -193,7 +193,7 @@ class LeadController extends FormController
         $lists = $leadListModel->getUserLists();
 
         // check to see if in a single list
-        $inSingleList = (1 === substr_count($search, "$listCommand:")) ? true : false;
+        $inSingleList = 1 === substr_count($search, "$listCommand:");
         $list         = [];
         if ($inSingleList) {
             preg_match("/$listCommand:(.*?)(?=\s|$)/", $search, $matches);
@@ -1370,7 +1370,7 @@ class LeadController extends FormController
             $leadsCampaigns = $campaignModel->getLeadCampaigns($lead, true);
 
             foreach ($campaigns as $c) {
-                $campaigns[$c['id']]['inCampaign'] = (isset($leadsCampaigns[$c['id']])) ? true : false;
+                $campaigns[$c['id']]['inCampaign'] = isset($leadsCampaigns[$c['id']]);
             }
         } else {
             $campaigns = [];
