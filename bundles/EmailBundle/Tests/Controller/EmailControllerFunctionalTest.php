@@ -549,11 +549,11 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
             'list',
             'blank',
             'Variant html',
-            $segment,
-            $variantSettings
+            $segment
         );
         $variant->setLanguage('en_US');
         $variant->setVariantParent($parent);
+        $variant->setVariantSettings($variantSettings);
         $parent->addVariantChild($variant);
 
         $variantTranslation = $this->createEmail(
