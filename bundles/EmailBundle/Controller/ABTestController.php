@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace Mautic\EmailBundle\Controller;
 
-use Doctrine\Persistence\ManagerRegistry;
 use Mautic\CoreBundle\Controller\AbstractFormController;
-use Mautic\CoreBundle\Factory\ModelFactory;
-use Mautic\CoreBundle\Helper\CoreParametersHelper;
-use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Model\AbTest\AbTestSettingsService;
-use Mautic\CoreBundle\Security\Permissions\CorePermissions;
-use Mautic\CoreBundle\Service\FlashBag;
-use Mautic\CoreBundle\Translation\Translator;
+use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Form\Type\GenerateABTestType;
 use Mautic\EmailBundle\Model\EmailModel;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 final class ABTestController extends AbstractFormController
 {
@@ -25,24 +17,9 @@ final class ABTestController extends AbstractFormController
 
     public const TOTAL_WEIGHT = 10;
 
-    public function __construct(
-        private EmailModel $emailModel,
-        ManagerRegistry $doctrine,
-        ModelFactory $modelFactory,
-        UserHelper $userHelper,
-        CoreParametersHelper $coreParametersHelper,
-        EventDispatcherInterface $dispatcher,
-        Translator $translator,
-        FlashBag $flashBag,
-        RequestStack $requestStack,
-        CorePermissions $security,
-    ) {
-        parent::__construct($doctrine, $modelFactory, $userHelper, $coreParametersHelper, $dispatcher, $translator, $flashBag, $requestStack, $security);
-    }
-
-    public function generateABTestAction(Request $request, int $objectId): \Symfony\Component\HttpFoundation\Response
+    public function generateABTestAction(Request $request, EmailModel $emailModel, int $objectId): \Symfony\Component\HttpFoundation\Response
     {
-        if (!$parent = $this->emailModel->getEntity($objectId)) {
+        if (!$parent = $emailModel->getEntity($objectId)) {
             return $this->notFound();
         }
 
@@ -64,7 +41,7 @@ final class ABTestController extends AbstractFormController
             $data           = $form->getData();
 
             if (!$isCancelled && $isValid) {
-                $this->updateExistingParentVariant($parent, $data);
+                $this->updateExistingParentVariant($parent, $data, $emailModel);
             }
 
             if ($isCancelled || $isValid) {
@@ -89,8 +66,8 @@ final class ABTestController extends AbstractFormController
 
         return $this->delegateView(
             [
-                'viewParameters'  => [
-                    'form'                  => $form->createView(),
+                'viewParameters' => [
+                    'form' => $form->createView(),
                 ],
                 'contentTemplate' => '@MauticEmail/Email/abtest.html.twig',
             ]
@@ -100,7 +77,7 @@ final class ABTestController extends AbstractFormController
     /**
      * @param array<string, mixed> $data
      */
-    protected function updateExistingParentVariant(\Mautic\EmailBundle\Entity\Email $parent, array $data): void
+    private function updateExistingParentVariant(Email $parent, array $data, EmailModel $emailModel): void
     {
         $variantSettings                    = $parent->getVariantSettings();
         $variantSettings['winnerCriteria']  = $data['winnerCriteria'] ?? 'email.openrate';
@@ -110,6 +87,6 @@ final class ABTestController extends AbstractFormController
 
         $parent->setVariantSettings($variantSettings);
 
-        $this->emailModel->saveEntity($parent);
+        $emailModel->saveEntity($parent);
     }
 }
