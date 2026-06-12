@@ -11,7 +11,7 @@ use Mautic\CoreBundle\Entity\VariantEntityInterface;
 class VariantConverterService
 {
     /**
-     * @const integer
+     * @var int
      */
     public const DEFAULT_WEIGHT = 100;
 

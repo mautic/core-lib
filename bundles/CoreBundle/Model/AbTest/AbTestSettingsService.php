@@ -11,7 +11,7 @@ use Mautic\EmailBundle\Entity\Email;
 class AbTestSettingsService
 {
     /**
-     * @var integer
+     * @var int
      */
     public const DEFAULT_TOTAL_WEIGHT = 100;
 
