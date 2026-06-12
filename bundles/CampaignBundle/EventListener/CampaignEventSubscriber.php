@@ -64,10 +64,12 @@ class CampaignEventSubscriber implements EventSubscriberInterface
         $changes  = $campaign->getChanges();
 
         // isPublished set to true for new / edit
-        if ($campaign->isNew() || array_key_exists('isPublished', $changes)) {
-            if ($campaign->getIsPublished() && !$campaign->getPublishUp()) {
-                $campaign->setPublishUp(new \DateTime());
-            }
+        if (
+            ($campaign->isNew() || array_key_exists('isPublished', $changes))
+            && $campaign->getIsPublished()
+            && !$campaign->getPublishUp()
+        ) {
+            $campaign->setPublishUp(new \DateTime());
         }
 
         if (array_key_exists('isPublished', $changes)) {
