@@ -18,9 +18,9 @@ final class AbTestResultService
     /**
      * @param mixed[] $criteria
      *
-     * @return array{winners?:array,support?:mixed,supportTemplate?:string}
+     * @return array{winners?: array<int, int|string>, support?: mixed, basedOn?: string, supportTemplate?: string}
      */
-    public function getAbTestResult(VariantEntityInterface $parentVariant, ?array $criteria = [])
+    public function getAbTestResult(VariantEntityInterface $parentVariant, array $criteria = [])
     {
         // get A/B test information
         [$parent, $children] = $parentVariant->getVariants();

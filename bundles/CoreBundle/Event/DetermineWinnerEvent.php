@@ -8,8 +8,9 @@ class DetermineWinnerEvent extends Event
 {
     /**
      * @var array{
-     *             winners: array,
+     *             winners: array<int, int|string>,
      *             support?: mixed,
+     *             basedOn?: string,
      *             supportTemplate?: string
      *             }
      */
@@ -43,9 +44,10 @@ class DetermineWinnerEvent extends Event
 
     /**
      * @return array{
-     *                winners:array,
-     *                support?:mixed,
-     *                supportTemplate?:string
+     *                winners: array<int, int|string>,
+     *                support?: mixed,
+     *                basedOn?: string,
+     *                supportTemplate?: string
      *                }
      */
     public function getAbTestResults()
@@ -55,9 +57,10 @@ class DetermineWinnerEvent extends Event
 
     /**
      * @param array{
-     *   winners:array,
-     *   support?:mixed,
-     *   supportTemplate?:string
+     *   winners: array<int, int|string>,
+     *   support?: mixed,
+     *   basedOn?: string,
+     *   supportTemplate?: string
      * } $abTestResults The following parameters are available:
      * - (required) winners - Array of IDs of the winners (empty array in case of a tie)
      * - (optional) support - Data passed to the view defined by supportTemplate below in order to render visual support for the winners (such as a graph, etc)
