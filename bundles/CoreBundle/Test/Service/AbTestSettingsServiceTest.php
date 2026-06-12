@@ -8,7 +8,7 @@ use Mautic\CoreBundle\Model\AbTest\AbTestSettingsService;
 use Mautic\EmailBundle\Entity\Email;
 use PHPUnit\Framework\TestCase;
 
-class AbTestSettingsServiceTest extends TestCase
+final class AbTestSettingsServiceTest extends TestCase
 {
     /**
      * Tests that service is returning proper AB test settings for a parent variant.

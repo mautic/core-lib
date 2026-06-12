@@ -14,7 +14,7 @@ use Mautic\EmailBundle\Model\EmailModel;
 /**
  * Service for sending a winner variant email to remaining contacts.
  */
-class SendWinnerService
+final class SendWinnerService
 {
     /**
      * @var array<string>

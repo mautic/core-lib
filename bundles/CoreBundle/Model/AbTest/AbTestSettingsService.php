@@ -22,7 +22,7 @@ class AbTestSettingsService
     /**
      * @var array<int,array<string|int>>
      */
-    private ?array $variantsSettings = null;
+    private array $variantsSettings = [];
 
     private ?string $winnerCriteria = null;
 
@@ -30,9 +30,9 @@ class AbTestSettingsService
 
     private int $sendWinnerDelay = 0;
 
-    private ?bool $configurationError = null;
+    private bool $configurationError = false;
 
-    private ?bool $setCriteriaFromVariants = null;
+    private bool $setCriteriaFromVariants = false;
 
     /**
      * @return array<mixed>

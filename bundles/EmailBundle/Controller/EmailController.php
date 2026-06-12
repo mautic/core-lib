@@ -315,7 +315,7 @@ class EmailController extends FormController
         $abTestSettings = null;
         if (count($children) > 0) {
             $abTestSettings = $abTestSettingsService->getAbTestSettings($parent);
-            $abTestResults  = $abTestResultService->getAbTestResult($parent, $criteria['criteria'][$abTestSettings['winnerCriteria']] ?? null);
+            $abTestResults  = $abTestResultService->getAbTestResult($parent, $criteria['criteria'][$abTestSettings['winnerCriteria']] ?? []);
         }
 
         // get related translations

@@ -8,7 +8,7 @@ use Mautic\CoreBundle\Entity\VariantEntityInterface;
 use Mautic\CoreBundle\Event\DetermineWinnerEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class AbTestResultService
+final class AbTestResultService
 {
     public function __construct(
         private EventDispatcherInterface $dispatcher,
@@ -16,17 +16,17 @@ class AbTestResultService
     }
 
     /**
-     * @param array<mixed>|null $criteria
+     * @param mixed[] $criteria
      *
-     * @return array|mixed
+     * @return array{winners?:array,support?:mixed,supportTemplate?:string}
      */
-    public function getAbTestResult(VariantEntityInterface $parentVariant, ?array $criteria = null)
+    public function getAbTestResult(VariantEntityInterface $parentVariant, ?array $criteria = [])
     {
         // get A/B test information
         [$parent, $children] = $parentVariant->getVariants();
 
         $abTestResults = [];
-        if (isset($criteria)) {
+        if ($criteria) {
             $testSettings = $criteria;
             $args         = [
                 'email'    => $parentVariant,
