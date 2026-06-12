@@ -407,7 +407,7 @@ class EmailType extends AbstractType
             ]
         );
 
-        $variantSettingsModifier = function (FormEvent $event, bool $isParent, bool $isExisting = false) {
+        $variantSettingsModifier = function (FormEvent $event, bool $isParent, bool $isExisting = false): void {
             $event->getForm()->add(
                 'variantSettings',
                 VariantType::class,
@@ -424,7 +424,7 @@ class EmailType extends AbstractType
         // Building the form
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) use ($variantSettingsModifier) {
+            function (FormEvent $event) use ($variantSettingsModifier): void {
                 /** @var Email $emailEntity */
                 $emailEntity     = $event->getData();
                 $variantChildren = $emailEntity->getVariantChildren();

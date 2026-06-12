@@ -895,15 +895,14 @@ class EmailRepository extends CommonRepository
      *
      * @return array<Email>
      */
-    public function getPublishedEmailsWithVariant()
+    public function getPublishedEmailsWithVariant(): array
     {
-        $qb = $this->getEntityManager()
-            ->createQueryBuilder();
+        $qb   = $this->getEntityManager()->createQueryBuilder();
         $expr = $this->getPublishedByDateExpression($qb, $this->getTableAlias());
 
         $qb->select($this->getTableAlias())
-            ->from('MauticEmailBundle:Email', $this->getTableAlias())
-            ->innerJoin('MauticEmailBundle:Email', 'v', Expr\Join::WITH, $qb->expr()->andX(
+            ->from(Email::class, $this->getTableAlias())
+            ->innerJoin(Email::class, 'v', Expr\Join::WITH, $qb->expr()->andX(
                 $qb->expr()->eq($this->getTableAlias(), 'v.variantParent'),
                 $qb->expr()->eq('v.isPublished', true)
             ))
