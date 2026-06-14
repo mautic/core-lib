@@ -356,7 +356,7 @@ class EventType extends AbstractType
             }
         }
 
-        return new \DateTime($value);
+        return new \DateTime($trimmedValue);
     }
 
     public function getBlockPrefix(): string

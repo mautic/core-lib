@@ -32,7 +32,9 @@ class EventTypeTest extends TestCase
     public static function timeValueProvider(): iterable
     {
         yield 'zero padded hour string' => ['04', '04:00'];
+        yield 'zero padded hour string with whitespace' => [' 04 ', '04:00'];
         yield 'hour and minute string' => ['04:00', '04:00'];
+        yield 'hour and minute string with whitespace' => [' 04:00 ', '04:00'];
         yield 'array date value' => [['date' => '08:00'], '08:00'];
     }
 }
