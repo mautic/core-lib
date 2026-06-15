@@ -1663,7 +1663,6 @@ class LeadController extends FormController
             return new JsonResponse(
                 [
                     'closeModal' => true,
-                    'callback'   => 'refreshFindReplaceList',
                     'flashes'    => $this->getFlashContent(),
                 ]
             );
@@ -2045,6 +2044,7 @@ class LeadController extends FormController
         return new JsonResponse(
             [
                 'closeModal' => true,
+                'callback'   => 'refreshFindReplaceList',
                 'flashes'    => $this->getFlashContent(),
             ]
         );
