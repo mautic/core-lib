@@ -913,7 +913,7 @@ class CompanyController extends FormController
                     [
                         'column' => 'comp.id',
                         'expr'   => 'in',
-                        'value'  => $ids ?: [],
+                        'value'  => $ids,
                     ],
                 ],
             ],

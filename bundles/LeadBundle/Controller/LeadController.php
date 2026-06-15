@@ -2072,7 +2072,7 @@ class LeadController extends FormController
                     [
                         'column' => 'l.id',
                         'expr'   => 'in',
-                        'value'  => $ids ?: [],
+                        'value'  => $ids,
                     ],
                 ],
             ],
