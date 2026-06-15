@@ -380,6 +380,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             case 'post_delete':
                 $name = EmailEvents::EMAIL_POST_DELETE;
                 break;
+            case 'on_toggle_publish':
+                $name = EmailEvents::EMAIL_ON_TOGGLE_PUBLISH;
+                break;
             default:
                 return null;
         }
@@ -694,6 +697,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
      */
     public function getEmailListStats($email, $includeVariants = false, ?\DateTime $dateFrom = null, ?\DateTime $dateTo = null): array
     {
+        $dateTo = $dateTo ? (clone $dateTo)->setTime(23, 59, 59) : null;
+
         if (!$email instanceof Email) {
             $email = $this->getEntity($email);
         }
@@ -893,6 +898,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
      */
     public function getEmailGeneralStats($email, $includeVariants, $unit, \DateTime $dateFrom, \DateTime $dateTo): array
     {
+        $dateTo = (clone $dateTo)->setTime(23, 59, 59);
+
         if (!$email instanceof Email) {
             $email = $this->getEntity($email);
         }
