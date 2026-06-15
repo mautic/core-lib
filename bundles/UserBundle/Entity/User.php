@@ -846,4 +846,13 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
     {
         return [self::CACHE_NAMESPACE];
     }
+
+    public static function createFromInvite(UserInvite $invite): self
+    {
+        $user = new self();
+        $user->setEmail($invite->getEmail());
+        $user->setRole($invite->getRole());
+
+        return $user;
+    }
 }

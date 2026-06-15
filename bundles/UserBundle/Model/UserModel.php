@@ -442,22 +442,22 @@ class UserModel extends FormModel implements GlobalSearchInterface
 
         $invite = $this->getUserInviteRepository()->findOneByTokenSelector($inviteToken['selector']);
         if (null === $invite) {
-            $this->logInvalidInvite('token selector was not found', ['selector' => $inviteToken['selector']]);
+            $this->logInvalidInvite('token selector was not found');
 
             return null;
         }
         if ($invite->isUsed()) {
-            $this->logInvalidInvite('invite has already been used', $this->getInviteLogContext($invite));
+            $this->logInvalidInvite('invite has already been used', $invite);
 
             return null;
         }
         if ($invite->getExpiration() < new \DateTime()) {
-            $this->logInvalidInvite('invite has expired', $this->getInviteLogContext($invite));
+            $this->logInvalidInvite('invite has expired', $invite);
 
             return null;
         }
         if (!password_verify($inviteToken['verifier'], (string) $invite->getTokenVerifierHash())) {
-            $this->logInvalidInvite('token verifier did not match', $this->getInviteLogContext($invite));
+            $this->logInvalidInvite('token verifier did not match', $invite);
 
             return null;
         }

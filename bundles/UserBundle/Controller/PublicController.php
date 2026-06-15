@@ -209,12 +209,4 @@ class PublicController extends FormController
         return $response;
     }
 
-    private function createInvitedUser(UserInvite $invite): User
-    {
-        $user = new User();
-        $user->setEmail($invite->getEmail());
-        $user->setRole($invite->getRole());
-
-        return $user;
-    }
 }
