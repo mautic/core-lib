@@ -6,6 +6,7 @@ namespace Mautic\PageBundle\Tests\Entity;
 
 use Mautic\CoreBundle\Entity\IpAddress;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\EmailBundle\Entity\Email;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\PageBundle\Entity\Hit;
 use Mautic\PageBundle\Entity\HitRepository;
@@ -48,6 +49,32 @@ class HitRepositoryTest extends MauticMysqlTestCase
         Assert::assertNull($this->hitRepository->getLatestHitDateByLead((int) $leadTwo->getId(), 'one-second'));
     }
 
+    public function testGetEmailClickthroughHitCountRespectsToDateFilter(): void
+    {
+        $lead  = $this->createLead();
+        $email = new Email();
+        $email->setName('Email A/B');
+        $email->setSubject('Email A/B Subject');
+        $email->setEmailType('list');
+        $this->em->persist($email);
+
+        $this->createEmailHit($lead, $email, new \DateTime('2026-03-10 12:00:00', new \DateTimeZone('UTC')), 'in-range', 200);
+        $this->createEmailHit($lead, $email, new \DateTime('2026-03-30 12:00:00', new \DateTimeZone('UTC')), 'in-range-2', 200);
+        $this->createEmailHit($lead, $email, new \DateTime('2026-04-10 12:00:00', new \DateTimeZone('UTC')), 'after-range', 200);
+        $this->createEmailHit($lead, $email, new \DateTime('2026-03-15 12:00:00', new \DateTimeZone('UTC')), 'wrong-code', 404);
+        $this->em->flush();
+
+        $result = $this->hitRepository->getEmailClickthroughHitCount(
+            [(int) $email->getId()],
+            new \DateTime('2026-03-01 00:00:00', new \DateTimeZone('UTC')),
+            200,
+            new \DateTime('2026-03-31 23:59:59', new \DateTimeZone('UTC'))
+        );
+
+        Assert::assertArrayHasKey((string) $email->getId(), $result);
+        Assert::assertSame('2', (string) $result[(string) $email->getId()]);
+    }
+
     private function createHit(Lead $lead, \DateTime $dateHit, string $trackingId): void
     {
         $hit = new Hit();
@@ -65,6 +92,18 @@ class HitRepositoryTest extends MauticMysqlTestCase
         $this->em->persist($lead);
 
         return $lead;
+    }
+
+    private function createEmailHit(Lead $lead, Email $email, \DateTime $dateHit, string $trackingId, int $code): void
+    {
+        $hit = new Hit();
+        $hit->setLead($lead);
+        $hit->setEmail($email);
+        $hit->setIpAddress($this->getIpAddress());
+        $hit->setDateHit($dateHit);
+        $hit->setTrackingId($trackingId);
+        $hit->setCode($code);
+        $this->em->persist($hit);
     }
 
     private function getIpAddress(): IpAddress
