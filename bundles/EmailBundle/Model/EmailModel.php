@@ -380,6 +380,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             case 'post_delete':
                 $name = EmailEvents::EMAIL_POST_DELETE;
                 break;
+            case 'on_toggle_publish':
+                $name = EmailEvents::EMAIL_ON_TOGGLE_PUBLISH;
+                break;
             default:
                 return null;
         }
@@ -694,6 +697,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
      */
     public function getEmailListStats($email, $includeVariants = false, ?\DateTime $dateFrom = null, ?\DateTime $dateTo = null): array
     {
+        $dateTo = $dateTo ? (clone $dateTo)->setTime(23, 59, 59) : null;
+
         if (!$email instanceof Email) {
             $email = $this->getEntity($email);
         }
@@ -893,6 +898,8 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
      */
     public function getEmailGeneralStats($email, $includeVariants, $unit, \DateTime $dateFrom, \DateTime $dateTo): array
     {
+        $dateTo = (clone $dateTo)->setTime(23, 59, 59);
+
         if (!$email instanceof Email) {
             $email = $this->getEntity($email);
         }
@@ -942,9 +949,30 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
     /**
      * Get an array of tracked links.
      */
-    public function getEmailClickStats($emailId): array
+    public function getEmailClickStats($emailId, ?string $orderBy = null, ?string $orderByDir = null): array
     {
-        return $this->pageTrackableModel->getTrackableList('email', $emailId);
+        $stats = $this->pageTrackableModel->getTrackableList('email', $emailId);
+
+        if ('t.hits' !== $orderBy) {
+            return $stats;
+        }
+
+        $direction = 'DESC' === strtoupper((string) $orderByDir) ? -1 : 1;
+
+        usort(
+            $stats,
+            static function (array $first, array $second) use ($direction): int {
+                $comparison = (int) $first['hits'] <=> (int) $second['hits'];
+
+                if (0 === $comparison) {
+                    $comparison = strcmp((string) $first['url'], (string) $second['url']);
+                }
+
+                return $comparison * $direction;
+            }
+        );
+
+        return $stats;
     }
 
     /**
@@ -1359,7 +1387,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
             }
         }
 
-        /** @var EmailRepository $emailRepo */
         $emailRepo = $this->getRepository();
 
         // get email settings such as templates, weights, etc
@@ -1904,19 +1931,19 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         $flag    = ArrayHelper::pickValue('flag', $filter, false);
         $dataset = ArrayHelper::pickValue('dataset', $filter, []);
 
-        if (!is_null($companyId = ArrayHelper::pickValue('companyId', $filter, null))) {
+        if (!is_null($companyId = ArrayHelper::pickValue('companyId', $filter))) {
             $fetchOptions->setCompanyId((int) $companyId);
         }
 
-        if (!is_null($campaignId = ArrayHelper::pickValue('campaignId', $filter, null))) {
+        if (!is_null($campaignId = ArrayHelper::pickValue('campaignId', $filter))) {
             $fetchOptions->setCampaignId((int) $campaignId);
         }
 
-        if (!is_null($segmentId = ArrayHelper::pickValue('segmentId', $filter, null))) {
+        if (!is_null($segmentId = ArrayHelper::pickValue('segmentId', $filter))) {
             $fetchOptions->setSegmentId((int) $segmentId);
         }
 
-        if (!is_null($emailId = ArrayHelper::pickValue('email_id', $filter, null))) {
+        if (!is_null($emailId = ArrayHelper::pickValue('email_id', $filter))) {
             $fetchOptions->setEmailIds([(int) $emailId]);
         }
 
@@ -2151,7 +2178,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
 
                 foreach ($emails as $email) {
                     if (empty($options['name_is_key'])) {
-                        $results[$email['language']][$email['id']] = $email['name'];
+                        $results[$email['language']][$email['id']] = sprintf('%s (%s)', $email['name'], $email['id']);
                     } else {
                         $results[$email['language']][$email['name']] = $email['id'];
                     }
@@ -2164,35 +2191,6 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface, GlobalSe
         }
 
         return $results;
-    }
-
-    /**
-     * @param string|array<string> $filter
-     * @param array<string,mixed>  $options
-     *
-     * @return array<string,array<string,string>>
-     */
-    public function getLookupResultsWithIdName(
-        string $type, string|array $filter = '', int $limit = 10, int $start = 0, array $options = [],
-    ): array {
-        $results    = $this->getLookupResults($type, $filter, $limit, $start, $options);
-        $newResults = [];
-
-        foreach ($results as $language => $emails) {
-            if (!isset($options['name_is_key']) || empty($options['name_is_key'])) {
-                foreach ($emails as $name => $id) {
-                    $newResults[$language][$name] = sprintf('%s (%s)', $id, $name);
-                }
-            } else {
-                foreach ($emails as $id => $name) {
-                    $newResults[$language][$id] = sprintf('%s (%s)', $name, $id);
-                }
-            }
-        }
-        // sort by language
-        ksort($newResults);
-
-        return $newResults;
     }
 
     /**

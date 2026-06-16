@@ -9,6 +9,7 @@ use Mautic\CoreBundle\Doctrine\Helper\TableSchemaHelper;
 use Mautic\CoreBundle\DTO\GlobalSearchFilterDTO;
 use Mautic\CoreBundle\Helper\Chart\ChartQuery;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\CoreBundle\Helper\ThemeHelperInterface;
 use Mautic\CoreBundle\Helper\UserHelper;
 use Mautic\CoreBundle\Model\FormModel as CommonFormModel;
@@ -199,16 +200,8 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
             }
             $field->setForm($entity);
             $field->setSessionId($key);
-            if (!$field->getParent()) {
-                $field->setOrder($order);
-                ++$order;
-            } else {
-                if (isset($sessionFields[$field->getParent()]['order'])) {
-                    $field->setOrder($sessionFields[$field->getParent()]['order']);
-                } else {
-                    $field->setOrder($order);
-                }
-            }
+            $field->setOrder($order);
+            ++$order;
             $entity->addField($properties['id'], $field);
         }
 
@@ -354,6 +347,12 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
      */
     public function getContent(Form $form, $withScript = true, $useCache = true): string
     {
+        if ($form->isSubmissionLimitReached()) {
+            $message = $form->getSubmissionLimitMessage() ?? $this->translator->trans('mautic.form.submission.limit_reached');
+
+            return sprintf('<div class="mautic-form-message">%s</div>', InputHelper::strict_html($message));
+        }
+
         $html = $this->getFormHtml($form, $useCache);
 
         if ($withScript) {
@@ -445,7 +444,7 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         $fields = $entity->getFields()->toArray();
 
         // Ensure the correct order in case this is generated right after a form save with new fields
-        uasort($fields, fn ($a, $b): int => $a->getOrder() <=> $b->getOrder());
+        uasort($fields, fn (Field $a, Field $b): int => $this->compareFieldOrder($a, $b));
 
         $viewOnlyFields     = $this->getCustomComponents()['viewOnlyFields'];
         $displayManager     = new DisplayManager($entity, !empty($viewOnlyFields) ? $viewOnlyFields : []);
@@ -1095,5 +1094,16 @@ class FormModel extends CommonFormModel implements GlobalSearchInterface
         }
 
         return $this->getRepository()->getEntitiesForGlobalSearch($filter);
+    }
+
+    private function compareFieldOrder(Field $a, Field $b): int
+    {
+        $order = $a->getOrder() <=> $b->getOrder();
+
+        if (0 !== $order) {
+            return $order;
+        }
+
+        return ($a->getId() ?? 0) <=> ($b->getId() ?? 0);
     }
 }
