@@ -281,7 +281,7 @@ class Download
     }
 
     /**
-     * @param int $trackingId
+     * @param string $trackingId
      *
      * @return Download
      */
@@ -293,7 +293,7 @@ class Download
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getTrackingId()
     {

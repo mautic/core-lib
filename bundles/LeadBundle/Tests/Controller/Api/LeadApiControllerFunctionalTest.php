@@ -1216,7 +1216,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
                 $assetDownload->setLead($contact);
                 $assetDownload->setDateDownload(date_create('2013-03-15'));
                 $assetDownload->setCode(13);
-                $assetDownload->setTrackingId(13);
+                $assetDownload->setTrackingId('13');
                 $assetDownload->setIpAddress($ipAddress);
                 $this->em->persist($assetDownload);
             }
