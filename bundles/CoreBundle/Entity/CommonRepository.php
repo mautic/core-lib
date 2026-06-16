@@ -1476,6 +1476,7 @@ class CommonRepository extends ServiceEntityRepository
         if (isset($args['ids'])) {
             $ids   = array_map('intval', $args['ids']);
             $param = $this->generateRandomParameterName();
+            // @phpstan-ignore-next-line $q accepts ORM and DBAL QueryBuilder; add() is deprecated only on DBAL CompositeExpression, not on ORM Andx
             $queryExpression->add(
                 $q->expr()->in($this->getTableAlias().'.id', ':'.$param)
             );
