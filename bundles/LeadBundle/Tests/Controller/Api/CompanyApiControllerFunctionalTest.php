@@ -277,8 +277,8 @@ final class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
         $company = $this->createCompany();
         $this->client->request('DELETE', sprintf('/api/companies/%d/delete', $company->getId()));
 
-        $clientResponse = $this->client->getResponse();
-        $this->assertEquals(200, $clientResponse->getStatusCode());
+        $this->client->getResponse();
+        $this->assertResponseIsSuccessful();
 
         $company = $this->getCompanyRepository()->find($company->getId());
         $this->asserttrue($company->isDeleted());
@@ -290,8 +290,8 @@ final class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
         $companyId = $company->getId();
         $this->client->request('DELETE', sprintf('/api/companies/%d/delete', $company->getId()));
 
-        $clientResponse = $this->client->getResponse();
-        $this->assertEquals(200, $clientResponse->getStatusCode());
+        $this->client->getResponse();
+        $this->assertResponseIsSuccessful();
         $company = $this->getCompanyRepository()->find($companyId);
         $this->assertNull($company);
     }
@@ -311,8 +311,8 @@ final class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->request('DELETE', sprintf('/api/companies/batch/delete?ids=%s', implode(',', $payload)));
 
-        $clientResponse = $this->client->getResponse();
-        $this->assertEquals(200, $clientResponse->getStatusCode());
+        $this->client->getResponse();
+        $this->assertResponseIsSuccessful();
         $company1 = $this->getCompanyRepository()->find($companyId1);
         $this->assertNull($company1);
         $company2 = $this->getCompanyRepository()->find($companyId2);
@@ -331,8 +331,8 @@ final class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
 
         $this->client->request('DELETE', sprintf('/api/companies/batch/delete?ids=%s', implode(',', $payload)));
 
-        $clientResponse = $this->client->getResponse();
-        $this->assertEquals(200, $clientResponse->getStatusCode());
+        $this->client->getResponse();
+        $this->assertResponseIsSuccessful();
         $company1 = $this->getCompanyRepository()->find($company1->getId());
         $this->asserttrue($company1->isDeleted());
         $company2 = $this->getCompanyRepository()->find($company2->getId());
@@ -369,10 +369,10 @@ final class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
         ];
 
         $this->client->request('PATCH', '/api/companies/batch/edit', $payload);
-        $clientResponse = $this->client->getResponse();
+        $this->client->getResponse();
         $this->em->clear();
 
-        $this->assertEquals(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertSame($company1UpdatedName, $this->getCompanyRepository()->find($company1Id)->getName());
         $this->assertSame($company2UpdatedName, $this->getCompanyRepository()->find($company2Id)->getName());
 
@@ -402,10 +402,10 @@ final class CompanyApiControllerFunctionalTest extends MauticMysqlTestCase
         ];
 
         $this->client->request('PATCH', sprintf('/api/companies/%d/edit', $company1Id), $payload);
-        $clientResponse = $this->client->getResponse();
+        $this->client->getResponse();
         $this->em->clear();
 
-        $this->assertEquals(200, $clientResponse->getStatusCode());
+        $this->assertResponseIsSuccessful();
         $this->assertSame($company1UpdatedName, $this->getCompanyRepository()->find($company1Id)->getName());
 
         $contactRepo = $this->getContactRepository();
