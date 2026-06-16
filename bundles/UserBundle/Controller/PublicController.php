@@ -4,7 +4,6 @@ namespace Mautic\UserBundle\Controller;
 
 use Mautic\CoreBundle\Controller\FormController;
 use Mautic\UserBundle\Entity\User;
-use Mautic\UserBundle\Entity\UserInvite;
 use Mautic\UserBundle\Form\Type\PasswordResetConfirmType;
 use Mautic\UserBundle\Form\Type\PasswordResetType;
 use Mautic\UserBundle\Form\Type\UserInviteRegistrationType;
@@ -107,8 +106,7 @@ class PublicController extends FormController
     private function handlePasswordResetConfirm(Request $request, UserModel $model, UserPasswordHasherInterface $hasher, array $data): ?Response
     {
         $response = null;
-        /** @var User|null $user */
-        $user = $model->getRepository()->findByIdentifier($data['identifier']);
+        $user     = $model->getRepository()->findByIdentifier($data['identifier']);
 
         if (null === $user) {
             $this->addFlashMessage('mautic.user.user.notice.passwordreset.success');
@@ -208,5 +206,4 @@ class PublicController extends FormController
 
         return $response;
     }
-
 }

@@ -442,7 +442,7 @@ class UserModel extends FormModel implements GlobalSearchInterface
 
         $invite = $this->getUserInviteRepository()->findOneByTokenSelector($inviteToken['selector']);
         if (null === $invite) {
-            $this->logInvalidInvite('token selector was not found');
+            $this->logInvalidInvite('token selector was not found', null, $inviteToken['selector']);
 
             return null;
         }
@@ -516,14 +516,17 @@ class UserModel extends FormModel implements GlobalSearchInterface
         return $repository;
     }
 
-    private function logInvalidInvite(string $reason, ?UserInvite $invite = null): void
+    private function logInvalidInvite(string $reason, ?UserInvite $invite = null, ?string $selector = null): void
     {
-        $context = [];
         if ($invite) {
             $context = [
                 'invite_id' => $invite->getId(),
                 'email'     => $invite->getEmail(),
             ];
+        } elseif (null !== $selector) {
+            $context = ['selector' => $selector];
+        } else {
+            $context = [];
         }
 
         $this->logger->warning('User invite link rejected: '.$reason, $context);
