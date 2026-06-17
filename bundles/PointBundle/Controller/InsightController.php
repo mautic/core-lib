@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\PointBundle\Controller;
 
 use Mautic\CoreBundle\Controller\AbstractStandardFormController;

@@ -4,6 +4,7 @@ namespace Mautic\PointBundle\Tests\Controller\Api;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use Mautic\CoreBundle\Translation\Translator;
+use Mautic\PointBundle\Entity\PointInsight;
 use Symfony\Component\HttpFoundation\Response;
 
 class PointInsightApiControllerTest extends MauticMysqlTestCase
@@ -16,8 +17,8 @@ class PointInsightApiControllerTest extends MauticMysqlTestCase
         $this->client->request('POST', '/api/points/insights/new', [
             'name'          => 'New Point Insight',
             'description'   => 'Description of the new point insight',
-            'insightType'   => 'compare_point_groups',
-            'insightAction' => 'set_custom_field',
+            'insightType'   => PointInsight::INSIGHT_TYPE_COMPARE_POINT_GROUPS,
+            'insightAction' => PointInsight::INSIGHT_ACTION_SET_CUSTOM_FIELD,
         ]);
 
         $createResponse = $this->client->getResponse();
@@ -30,9 +31,9 @@ class PointInsightApiControllerTest extends MauticMysqlTestCase
         $this->assertEquals('New Point Insight', $createdData['name']);
         $this->assertEquals('Description of the new point insight', $createdData['description']);
         $this->assertArrayHasKey('insightType', $createdData);
-        $this->assertEquals('compare_point_groups', $createdData['insightType']);
+        $this->assertEquals(PointInsight::INSIGHT_TYPE_COMPARE_POINT_GROUPS, $createdData['insightType']);
         $this->assertArrayHasKey('insightAction', $createdData);
-        $this->assertEquals('set_custom_field', $createdData['insightAction']);
+        $this->assertEquals(PointInsight::INSIGHT_ACTION_SET_CUSTOM_FIELD, $createdData['insightAction']);
 
         $this->client->request('GET', '/api/points/insights');
         $getAllResponse = $this->client->getResponse();
@@ -48,8 +49,8 @@ class PointInsightApiControllerTest extends MauticMysqlTestCase
 
         $updatePayload = [
             'name'          => 'Updated Point Insight',
-            'insightType'   => 'compare_point_groups',
-            'insightAction' => 'set_custom_field',
+            'insightType'   => PointInsight::INSIGHT_TYPE_COMPARE_POINT_GROUPS,
+            'insightAction' => PointInsight::INSIGHT_ACTION_SET_CUSTOM_FIELD,
         ];
 
         $this->client->request('PATCH', "/api/points/insights/{$createdData['id']}/edit", $updatePayload);

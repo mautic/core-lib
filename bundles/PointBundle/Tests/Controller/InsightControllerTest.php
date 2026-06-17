@@ -126,8 +126,8 @@ final class InsightControllerTest extends MauticMysqlTestCase
         $insight = new PointInsight();
         $insight->setName($name);
         $insight->setDescription('Test Description');
-        $insight->setInsightType('compare_point_groups');
-        $insight->setInsightAction('set_custom_field');
+        $insight->setInsightType(PointInsight::INSIGHT_TYPE_COMPARE_POINT_GROUPS);
+        $insight->setInsightAction(PointInsight::INSIGHT_ACTION_SET_CUSTOM_FIELD);
         $insight->setCustomField('test_field');
         $insight->setPointGroups([1, 2]);
         $insight->setIsPublished(true);

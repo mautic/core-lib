@@ -19,7 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PointInsightType extends AbstractType
+final class PointInsightType extends AbstractType
 {
     public function __construct(
         private FieldList $fieldList,
@@ -82,7 +82,7 @@ class PointInsightType extends AbstractType
         );
 
         $insightTypes = [
-            'mautic.point.insight.compare_point_groups' => 'compare_point_groups',
+            'mautic.point.insight.compare_point_groups' => PointInsight::INSIGHT_TYPE_COMPARE_POINT_GROUPS,
         ];
 
         $builder->add(
@@ -101,7 +101,7 @@ class PointInsightType extends AbstractType
         );
 
         $insightActions = [
-            'mautic.point.insight.action.set_custom_field' => 'set_custom_field',
+            'mautic.point.insight.action.set_custom_field' => PointInsight::INSIGHT_ACTION_SET_CUSTOM_FIELD,
         ];
 
         $builder->add(

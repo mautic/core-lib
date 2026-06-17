@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mautic\PointBundle\Model;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -81,11 +83,10 @@ class InsightModel extends CommonFormModel
 
     public function executePointInsights(Lead $contact): void
     {
-        // Hole alle aktiven Point Insights vom Typ "compare_point_groups"
         $insights = $this->getRepository()->findBy([
             'isPublished'   => true,
-            'insightType'   => 'compare_point_groups',
-            'insightAction' => 'set_custom_field',
+            'insightType'   => PointInsight::INSIGHT_TYPE_COMPARE_POINT_GROUPS,
+            'insightAction' => PointInsight::INSIGHT_ACTION_SET_CUSTOM_FIELD,
         ]);
 
         foreach ($insights as $insight) {
@@ -102,7 +103,6 @@ class InsightModel extends CommonFormModel
             return;
         }
 
-        // Ein einziger Query für alle Group Scores - sortiert nach Score (DESC) und ID (ASC)
         $qb      = $this->em->createQueryBuilder();
         $results = $qb
             ->select('g.id', 'g.name', 'COALESCE(s.score, 0) as score')
@@ -115,7 +115,7 @@ class InsightModel extends CommonFormModel
             )
             ->where('g.id IN (:groupIds)')
             ->orderBy('score', 'DESC')
-            ->addOrderBy('g.id', 'ASC')  // Bei gleicher Score: niedrigste ID gewinnt
+            ->addOrderBy('g.id', 'ASC')
             ->setParameter('contactId', $contact->getId())
             ->setParameter('groupIds', $pointGroupIds)
             ->getQuery()

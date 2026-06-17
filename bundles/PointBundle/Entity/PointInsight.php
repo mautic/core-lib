@@ -13,6 +13,10 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class PointInsight extends FormEntity
 {
+    public const INSIGHT_TYPE_COMPARE_POINT_GROUPS = 'compare_point_groups';
+
+    public const INSIGHT_ACTION_SET_CUSTOM_FIELD = 'set_custom_field';
+
     private ?int $id = null;
 
     private string $name = '';
@@ -25,12 +29,12 @@ class PointInsight extends FormEntity
     /**
      * @var string
      */
-    private $insightType = 'compare_point_groups';
+    private $insightType = self::INSIGHT_TYPE_COMPARE_POINT_GROUPS;
 
     /**
      * @var string
      */
-    private $insightAction = 'set_custom_field';
+    private $insightAction = self::INSIGHT_ACTION_SET_CUSTOM_FIELD;
 
     /**
      * @var string|null

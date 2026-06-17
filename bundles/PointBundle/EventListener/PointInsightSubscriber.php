@@ -9,7 +9,7 @@ use Mautic\PointBundle\Model\InsightModel;
 use Mautic\PointBundle\PointGroupEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class PointInsightSubscriber implements EventSubscriberInterface
+final class PointInsightSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private InsightModel $insightModel,
