@@ -30,7 +30,7 @@ final class InsightControllerTest extends MauticMysqlTestCase
     {
         $crawler = $this->client->request(Request::METHOD_GET, '/s/points/insights/new');
 
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful($this->client->getResponse()->getContent());
         $this->assertStringContainsString('New Point Insight', $crawler->filter('h1')->text());
     }
 
@@ -41,7 +41,7 @@ final class InsightControllerTest extends MauticMysqlTestCase
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/points/insights/edit/'.$insight->getId());
 
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful($this->client->getResponse()->getContent());
         $this->assertStringContainsString('Edit Insight', $crawler->filter('h1')->text());
     }
 
@@ -83,7 +83,7 @@ final class InsightControllerTest extends MauticMysqlTestCase
         $this->assertCount(1, $insightRepo->findAll());
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/points/insights/clone/'.$insight->getId());
-        $this->assertTrue($this->client->getResponse()->isOk(), $this->client->getResponse()->getContent());
+        $this->assertResponseIsSuccessful($this->client->getResponse()->getContent());
 
         $form = $crawler->selectButton('Save')->form();
         $this->client->submit($form);

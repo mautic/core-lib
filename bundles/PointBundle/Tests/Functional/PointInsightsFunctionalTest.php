@@ -30,7 +30,7 @@ class PointInsightsFunctionalTest extends MauticMysqlTestCase
         $contact     = $this->createContact('winner@example.com');
         $customField = $this->createCustomField('winner_group');
 
-        $insight = $this->createPointInsight(
+        $this->createPointInsight(
             'Single Winner Test',
             [$groupA->getId(), $groupB->getId()],
             $customField->getAlias()
@@ -62,7 +62,7 @@ class PointInsightsFunctionalTest extends MauticMysqlTestCase
         $contact     = $this->createContact('tiebreaker@example.com');
         $customField = $this->createCustomField('tie_winner');
 
-        $insight = $this->createPointInsight(
+        $this->createPointInsight(
             'Tie Breaker Test',
             [$groupA->getId(), $groupB->getId(), $groupC->getId()],
             $customField->getAlias()
@@ -104,7 +104,7 @@ class PointInsightsFunctionalTest extends MauticMysqlTestCase
         $groupB      = $this->createGroup('Multi Group B');
         $customField = $this->createCustomField('multi_winner');
 
-        $insight = $this->createPointInsight(
+        $this->createPointInsight(
             'Multiple Contacts Test',
             [$groupA->getId(), $groupB->getId()],
             $customField->getAlias()
