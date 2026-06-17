@@ -15,6 +15,8 @@ use Mautic\PointBundle\Model\PointGroupModel;
 
 class PointInsightsFunctionalTest extends MauticMysqlTestCase
 {
+    private const GROUP_A_SUFFIX = ' (Group A)';
+
     protected $useCleanupRollback = false;
 
     public function testPointInsightExecutionWithSingleWinner(): void
@@ -44,7 +46,7 @@ class PointInsightsFunctionalTest extends MauticMysqlTestCase
         $this->em->clear();
         $contact = $leadModel->getEntity($contact->getId());
 
-        $expectedValue = $groupA->getId().' (Group A)';
+        $expectedValue = $groupA->getId().self::GROUP_A_SUFFIX;
         $this->assertEquals($expectedValue, $contact->getFieldValue($customField->getAlias()));
     }
 
@@ -80,13 +82,13 @@ class PointInsightsFunctionalTest extends MauticMysqlTestCase
         $winnerGroupName = $contact->getFieldValue($customField->getAlias());
 
         $expectedValues = [
-            $groupA->getId().' (Group A)',
+            $groupA->getId().self::GROUP_A_SUFFIX,
             $groupC->getId().' (Group C)',
         ];
         $this->assertContains($winnerGroupName, $expectedValues);
 
         if ($groupA->getId() < $groupC->getId()) {
-            $this->assertEquals($groupA->getId().' (Group A)', $winnerGroupName);
+            $this->assertEquals($groupA->getId().self::GROUP_A_SUFFIX, $winnerGroupName);
         } else {
             $this->assertEquals($groupC->getId().' (Group C)', $winnerGroupName);
         }

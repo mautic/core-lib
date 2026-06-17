@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PointInsightApiControllerTest extends MauticMysqlTestCase
 {
+    private const UPDATED_NAME = 'Updated Point Insight';
+
     public function testPointInsightCRUDActions(): void
     {
         /** @var Translator $translator */
@@ -48,7 +50,7 @@ class PointInsightApiControllerTest extends MauticMysqlTestCase
         $this->assertCount(1, $allData);
 
         $updatePayload = [
-            'name'          => 'Updated Point Insight',
+            'name'          => self::UPDATED_NAME,
             'insightType'   => PointInsight::INSIGHT_TYPE_COMPARE_POINT_GROUPS,
             'insightAction' => PointInsight::INSIGHT_ACTION_SET_CUSTOM_FIELD,
         ];
@@ -60,7 +62,7 @@ class PointInsightApiControllerTest extends MauticMysqlTestCase
         $responseData = json_decode($updateResponse->getContent(), true);
         $this->assertArrayHasKey('insight', $responseData);
         $updatedData = $responseData['insight'];
-        $this->assertEquals('Updated Point Insight', $updatedData['name']);
+        $this->assertEquals(self::UPDATED_NAME, $updatedData['name']);
 
         $this->client->request('DELETE', "/api/points/insights/{$createdData['id']}/delete");
         $deleteResponse = $this->client->getResponse();
@@ -69,7 +71,7 @@ class PointInsightApiControllerTest extends MauticMysqlTestCase
         $responseData = json_decode($deleteResponse->getContent(), true);
         $this->assertArrayHasKey('insight', $responseData);
         $deleteData = $responseData['insight'];
-        $this->assertEquals('Updated Point Insight', $deleteData['name']);
+        $this->assertEquals(self::UPDATED_NAME, $deleteData['name']);
 
         $this->client->request('GET', "/api/points/insights/{$createdData['id']}");
         $getResponse = $this->client->getResponse();
