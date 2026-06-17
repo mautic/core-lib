@@ -93,7 +93,7 @@ final class BroadcastSubscriberFunctionalTest extends MauticMysqlTestCase
         return $email;
     }
 
-    private function addLeadToSegment(LeadList $segment, Lead $lead, \DateTimeInterface $dateAdded): void
+    private function addLeadToSegment(LeadList $segment, Lead $lead, \DateTime $dateAdded): void
     {
         $listLead = new ListLead();
         $listLead->setList($segment);
@@ -105,6 +105,8 @@ final class BroadcastSubscriberFunctionalTest extends MauticMysqlTestCase
 
     /**
      * @param array<string, array{success:int, failed:int, failedRecipientsByList:array<int, array<int, string>>}> $results
+     *
+     * @return array<string, int|array<int, array<int, string>>>|null
      */
     private function getResultForEmailName(array $results, string $emailName): ?array
     {
