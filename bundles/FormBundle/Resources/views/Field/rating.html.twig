@@ -70,7 +70,7 @@
               'value': i|e,
       }) %}
 
-      <input {% for attrName, attrValue in listInputAttributes %}{{ attrName }}="{% if attrValue is iterable %}{{ attrValue|join(' ') }}{% else %}{{ attrValue }}{% endif %}"{% endfor %} />
+      <input id="mauticform_{{ containerType }}_{{ type }}_{{ id }}" {% for attrName, attrValue in listInputAttributes|filter((v, k) => k != 'id') %}{{ attrName }}="{% if attrValue is iterable %}{{ attrValue|join(' ') }}{% else %}{{ attrValue }}{% endif %}"{% endfor %} />
       <label class="mauticform-rating-label" id="mauticform_{{ containerType }}_label_{{ id }}" for="mauticform_{{ containerType }}_{{ type }}_{{ id }}">{{ symbol }}</label>
     {% endfor %}
   </div>
