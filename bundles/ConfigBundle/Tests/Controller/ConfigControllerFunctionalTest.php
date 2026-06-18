@@ -165,7 +165,9 @@ class ConfigControllerFunctionalTest extends MauticMysqlTestCase
         $form           = $buttonCrawler->form();
 
         // Fetch available option for 404_page field
-        $availableOptions = $form['config[coreconfig][404_page]']->availableOptionValues();
+        /** @var ChoiceFormField $page404Field */
+        $page404Field     = $form['config[coreconfig][404_page]'];
+        $availableOptions = $page404Field->availableOptionValues();
 
         // page 2 should not be available in option list because it is unpublished
         $this->assertEquals(['', $page1, $page3], $availableOptions);
