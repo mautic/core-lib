@@ -382,7 +382,7 @@ class CommonApiController extends FetchCommonApiController
      *
      * @return mixed
      */
-    protected function preSaveEntity(&$entity, $form, $parameters, string $action = 'edit')
+    protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
     {
     }
 

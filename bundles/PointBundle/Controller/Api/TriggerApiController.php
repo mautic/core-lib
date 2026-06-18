@@ -57,11 +57,12 @@ class TriggerApiController extends CommonApiController
     }
 
     /**
-     * @param Trigger                $entity
-     * @param FormInterface<mixed>   $form
-     * @param array<mixed>           $parameters
+     * @param Trigger              $entity
+     * @param FormInterface<mixed> $form
+     * @param array<mixed>         $parameters
+     * @param string               $action
      */
-    protected function preSaveEntity(&$entity, $form, $parameters, string $action = 'edit')
+    protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
     {
         $method            = $this->requestStack->getCurrentRequest()->getMethod();
         $triggerEventModel = $this->getModel('point.triggerevent');
@@ -88,7 +89,7 @@ class TriggerApiController extends CommonApiController
             foreach ($parameters['events'] as &$eventParams) {
                 if (empty($eventParams['id'])) {
                     // Create an unique ID if not set - the following code requires one
-                    $eventParams['id']  = 'new'.hash('sha1', uniqid(mt_rand()));
+                    $eventParams['id']  = 'new'.hash('sha1', uniqid((string) mt_rand()));
                     $triggerEventEntity = $triggerEventModel->getEntity();
                 } else {
                     $triggerEventEntity  = $triggerEventModel->getEntity($eventParams['id']);
