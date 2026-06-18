@@ -468,12 +468,10 @@ class CommonController extends AbstractController implements MauticController
             throw new AccessDeniedHttpException($this->translator->trans($msg, ['%url%' => $request->getRequestUri()]));
         }
 
-        if ($batch) {
-            return [
-                'type' => 'error',
-                'msg'  => $this->translator->trans('mautic.core.error.accessdenied', [], 'flashes'),
-            ];
-        }
+        return [
+            'type' => 'error',
+            'msg'  => $this->translator->trans('mautic.core.error.accessdenied', [], 'flashes'),
+        ];
     }
 
     /**

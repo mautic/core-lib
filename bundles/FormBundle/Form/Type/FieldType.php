@@ -295,56 +295,53 @@ class FieldType extends AbstractType
             );
         }
 
-        if ($addLabelAttributes) {
-            $builder->add(
-                'labelAttributes',
-                TextType::class,
-                [
-                    'label'      => (!empty($labelAttributesText)) ? $labelAttributesText : 'mautic.form.field.form.labelattr',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => [
-                        'class'     => 'form-control',
-                        'tooltip'   => 'mautic.form.field.help.attr',
-                        'maxlength' => '191',
-                    ],
-                    'required' => false,
-                ]
-            );
-        }
+        $labelAttributesLabel = $labelAttributesText ?? 'mautic.form.field.form.labelattr';
+        $inputAttributesLabel = $inputAttributesText ?? 'mautic.form.field.form.inputattr';
 
-        if ($addInputAttributes) {
-            $builder->add(
-                'inputAttributes',
-                TextType::class,
-                [
-                    'label'      => (!empty($inputAttributesText)) ? $inputAttributesText : 'mautic.form.field.form.inputattr',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => [
-                        'class'     => 'form-control',
-                        'tooltip'   => 'mautic.form.field.help.attr',
-                        'maxlength' => '191',
-                    ],
-                    'required' => false,
-                ]
-            );
-        }
+        $builder->add(
+            'labelAttributes',
+            TextType::class,
+            [
+                'label'      => $labelAttributesLabel,
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'     => 'form-control',
+                    'tooltip'   => 'mautic.form.field.help.attr',
+                    'maxlength' => '191',
+                ],
+                'required' => false,
+            ]
+        );
 
-        if ($addContainerAttributes) {
-            $builder->add(
-                'containerAttributes',
-                TextType::class,
-                [
-                    'label'      => 'mautic.form.field.form.container_attr',
-                    'label_attr' => ['class' => 'control-label'],
-                    'attr'       => [
-                        'class'     => 'form-control',
-                        'tooltip'   => 'mautic.form.field.help.container_attr',
-                        'maxlength' => '191',
-                    ],
-                    'required' => false,
-                ]
-            );
-        }
+        $builder->add(
+            'inputAttributes',
+            TextType::class,
+            [
+                'label'      => $inputAttributesLabel,
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'     => 'form-control',
+                    'tooltip'   => 'mautic.form.field.help.attr',
+                    'maxlength' => '191',
+                ],
+                'required' => false,
+            ]
+        );
+
+        $builder->add(
+            'containerAttributes',
+            TextType::class,
+            [
+                'label'      => 'mautic.form.field.form.container_attr',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'class'     => 'form-control',
+                    'tooltip'   => 'mautic.form.field.help.container_attr',
+                    'maxlength' => '191',
+                ],
+                'required' => false,
+            ]
+        );
 
         if ($addFieldWidth) {
             $builder->add(
