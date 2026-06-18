@@ -81,7 +81,7 @@ class StatDevice
     }
 
     /**
-     * @return IpAddress
+     * @return IpAddress|null
      */
     public function getIpAddress()
     {
@@ -107,7 +107,7 @@ class StatDevice
     }
 
     /**
-     * @return mixed
+     * @return \DateTimeInterface
      */
     public function getDateOpened()
     {
@@ -123,7 +123,7 @@ class StatDevice
     }
 
     /**
-     * @return mixed
+     * @return LeadDevice|null
      */
     public function getDevice()
     {
