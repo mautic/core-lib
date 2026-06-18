@@ -8,9 +8,9 @@ use Mautic\LeadBundle\Entity\DoNotContact;
 use Mautic\LeadBundle\Entity\LeadRepository;
 use Mautic\LeadBundle\Model\DoNotContact as DoNotContactModel;
 use Mautic\PluginBundle\Helper\IntegrationHelper;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class NotificationHelper
 {
@@ -19,7 +19,7 @@ class NotificationHelper
         protected AssetsHelper $assetsHelper,
         protected CoreParametersHelper $coreParametersHelper,
         protected IntegrationHelper $integrationHelper,
-        protected Router $router,
+        protected RouterInterface $router,
         protected RequestStack $requestStack,
         private DoNotContactModel $doNotContact,
     ) {
