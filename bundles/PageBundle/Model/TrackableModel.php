@@ -719,9 +719,6 @@ class TrackableModel extends AbstractCommonModel
 
             // Replace URLs in content with tokens
             $content = $this->prepareContentWithTrackableTokens($content, $contentType);
-        } elseif (!empty($this->contentReplacements['first_pass'])) {
-            // Replace URLs in content with tokens
-            $content = $this->prepareContentWithTrackableTokens($content, $contentType);
         }
 
         return $content;
