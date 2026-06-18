@@ -369,7 +369,7 @@ class FieldType extends AbstractType
         }
 
         if ($addSaveResult) {
-            $default = (!isset($options['data']['saveResult']) || null === $options['data']['saveResult']) ? true
+            $default = !isset($options['data']['saveResult']) ? true
                 : (bool) $options['data']['saveResult'];
             $builder->add(
                 'saveResult',
@@ -398,7 +398,7 @@ class FieldType extends AbstractType
                 ]
             );
 
-            $default = (!isset($options['data']['showWhenValueExists']) || null === $options['data']['showWhenValueExists']) ? true
+            $default = !isset($options['data']['showWhenValueExists']) ? true
                 : (bool) $options['data']['showWhenValueExists'];
             $builder->add(
                 'showWhenValueExists',

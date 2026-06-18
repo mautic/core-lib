@@ -390,13 +390,7 @@ class CommonController extends AbstractController implements MauticController
             );
         }
 
-        if ($newContent instanceof Response) {
-            $response = $newContent;
-        } else {
-            $response = new JsonResponse($dataArray, $code);
-        }
-
-        return $response;
+        return new JsonResponse($dataArray, $code);
     }
 
     /**
