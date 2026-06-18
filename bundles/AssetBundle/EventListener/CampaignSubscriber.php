@@ -69,7 +69,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $assetId       = $eventDetails->getId();
         $limitToAssets = $event->getConfig()['assets'];
 
-        if (!empty($limitToAssets) && !in_array($assetId, $limitToAssets, true)) {
+        if (!empty($limitToAssets) && !in_array($assetId, $limitToAssets)) {
             // no points change
             return $event->setResult(false);
         }
