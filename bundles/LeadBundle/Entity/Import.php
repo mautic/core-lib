@@ -530,6 +530,8 @@ class Import extends FormEntity
 
     /**
      * Modify the entity for the end of import.
+     *
+     * @phpstan-impure
      */
     public function end($removeFile = true): self
     {
