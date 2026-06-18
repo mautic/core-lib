@@ -448,11 +448,11 @@ class CommonController extends AbstractController implements MauticController
      * @param bool   $batch Flag if a batch action is being performed
      * @param string $msg   Message that is logged
      *
-     * @return JsonResponse|RedirectResponse|array
+     * @return array{type: string, msg: string}
      *
      * @throws AccessDeniedHttpException
      */
-    public function accessDenied($batch = false, $msg = 'mautic.core.url.error.401')
+    public function accessDenied($batch = false, $msg = 'mautic.core.url.error.401'): array
     {
         $request = $this->getCurrentRequest();
 
