@@ -167,7 +167,7 @@ trait CustomFieldsApiControllerTrait
      * @param Lead|Company         $entity
      * @param FormInterface<mixed> $form
      * @param mixed[]              $parameters
-     * @param bool         $isPostOrPatch
+     * @param bool                 $isPostOrPatch
      *
      * @return bool|void
      */
