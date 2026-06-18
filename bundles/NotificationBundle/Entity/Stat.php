@@ -31,7 +31,7 @@ class Stat
      */
     private $list;
 
-    private ?IpAddress $ipAddress;
+    private ?IpAddress $ipAddress = null;
 
     /**
      * @var \DateTimeInterface
