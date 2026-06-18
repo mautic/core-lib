@@ -28,7 +28,9 @@ class NotificationHelper
     /**
      * @param string $notification
      *
-     * @return bool
+     * @return bool|DoNotContact
+     *
+     * @deprecated as unused. To be removed in 8.0
      */
     public function unsubscribe($notification)
     {
