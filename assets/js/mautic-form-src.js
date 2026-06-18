@@ -637,14 +637,12 @@ var t,e;t=this,e=function(){"use strict";function t(t,e){var n=Object.keys(t);if
                         if (typeof theForm.elements[name] != 'undefined') {
                             switch (field.type) {
                                 case 'radiogrp':
-                                    var elOptions = theForm.elements[name];
+                                case 'rating':
+                                case 'checkboxgrp': {
+                                    const elOptions = theForm.elements[name];
                                     valid = validator.validateOptions(elOptions);
                                     break;
-
-                                case 'checkboxgrp':
-                                    var elOptions = theForm.elements[name];
-                                    valid = validator.validateOptions(elOptions);
-                                    break;
+                                }
 
                                 case 'email':
                                     valid = validator.validateEmail(theForm.elements[name].value);
@@ -719,6 +717,7 @@ var t,e;t=this,e=function(){"use strict";function t(t,e){var n=Object.keys(t);if
                             }
 
                             elErrorSpan.style.display = (valid) ? 'none' : '';
+                            elErrorSpan.setAttribute('aria-hidden', valid ? 'true' : 'false');
                             elContainer.className = elContainer.className + " mauticform-has-error";
                         }
                     }
@@ -741,6 +740,7 @@ var t,e;t=this,e=function(){"use strict";function t(t,e){var n=Object.keys(t);if
                             var elErrorSpan = elContainer.querySelector('.mauticform-errormsg');
                             if (elErrorSpan) {
                                 elErrorSpan.style.display = 'none';
+                                elErrorSpan.setAttribute('aria-hidden', 'true');
                                 elContainer.className = elContainer.className.replace(" mauticform-has-error", "");
                             }
                         }

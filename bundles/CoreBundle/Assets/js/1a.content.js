@@ -318,6 +318,8 @@ Mautic.processPageContent = function (response) {
  * Initiate various functions on page load, manual or ajax
  */
 Mautic.onPageLoad = function (container, response, inModal) {
+    mQuery(container).trigger('mautic:onPageLoad:before', [container, response, inModal]);
+
     Mautic.initDateRangePicker(container + ' #daterange_date_from', container + ' #daterange_date_to');
 
     //initiate links
@@ -723,6 +725,8 @@ Mautic.onPageLoad = function (container, response, inModal) {
             }
         }, false));
     }
+
+    mQuery(container).trigger('mautic:onPageLoad:after', [container, response, inModal]);
 };
 
 Mautic.setDynamicContentEditors = function(container) {
@@ -1164,7 +1168,7 @@ Mautic.activateMultiSelect = function(el) {
 
             var isSortable = mQuery(el).data('sortable');
             if (isSortable) {
-                mQuery(el).parent('.choice-wrapper').find('.ms-selection').first().sortable({
+                mQuery(el).parent().find('.ms-selection').first().sortable({
                     items: '.ms-elem-selection',
                     helper: 'clone',
                     axis: 'y',
