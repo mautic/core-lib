@@ -428,12 +428,15 @@ class LegacyEventDispatcherTest extends TestCase
 
         $this->dispatcher->method('dispatch')
             ->with($this->isInstanceOf(CampaignExecutionEvent::class), 'something') // @phpstan-ignore classConstant.deprecatedClass
-            ->willReturnCallback(function (object $event) {
-                $this->assertInstanceOf(CampaignExecutionEvent::class, $event); // @phpstan-ignore classConstant.deprecatedClass
-                $event->setResult(true);
+            ->willReturnCallback(
+                // @phpstan-ignore return.deprecatedClass
+                function (object $event) {
+                    $this->assertInstanceOf(CampaignExecutionEvent::class, $event); // @phpstan-ignore classConstant.deprecatedClass
+                    $event->setResult(true);
 
-                return $event;
-            });
+                    return $event;
+                }
+            );
 
         $this->getLegacyEventDispatcher()->dispatchCustomEvent($this->config, $logs, true, $this->pendingEvent);
     }
