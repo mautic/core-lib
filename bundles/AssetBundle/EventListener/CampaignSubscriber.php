@@ -3,6 +3,7 @@
 namespace Mautic\AssetBundle\EventListener;
 
 use Mautic\AssetBundle\AssetEvents;
+use Mautic\AssetBundle\Entity\Asset;
 use Mautic\AssetBundle\Event\AssetLoadEvent;
 use Mautic\AssetBundle\Form\Type\CampaignEventAssetDownloadType;
 use Mautic\CampaignBundle\CampaignEvents;
@@ -61,10 +62,14 @@ class CampaignSubscriber implements EventSubscriberInterface
             return $event->setResult(true);
         }
 
+        if (!$eventDetails instanceof Asset) {
+            return $event->setResult(false);
+        }
+
         $assetId       = $eventDetails->getId();
         $limitToAssets = $event->getConfig()['assets'];
 
-        if (!empty($limitToAssets) && !in_array($assetId, $limitToAssets)) {
+        if (!empty($limitToAssets) && !in_array($assetId, $limitToAssets, true)) {
             // no points change
             return $event->setResult(false);
         }

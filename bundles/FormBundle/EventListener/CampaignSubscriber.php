@@ -7,6 +7,7 @@ use Mautic\CampaignBundle\Event\CampaignBuilderEvent;
 use Mautic\CampaignBundle\Event\CampaignExecutionEvent;
 use Mautic\CampaignBundle\Executioner\RealTimeExecutioner;
 use Mautic\CoreBundle\Helper\InputHelper;
+use Mautic\FormBundle\Entity\Form;
 use Mautic\FormBundle\Event\SubmissionEvent;
 use Mautic\FormBundle\Form\Type\CampaignEventFormFieldValueType;
 use Mautic\FormBundle\Form\Type\CampaignEventFormSubmitType;
@@ -76,10 +77,14 @@ class CampaignSubscriber implements EventSubscriberInterface
             return $event->setResult(true);
         }
 
+        if (!$eventDetails instanceof Form) {
+            return $event->setResult(false);
+        }
+
         $limitToForms = $event->getConfig()['forms'];
 
         // check against selected forms
-        if (!empty($limitToForms) && !in_array($eventDetails->getId(), $limitToForms)) {
+        if (!empty($limitToForms) && !in_array($eventDetails->getId(), $limitToForms, true)) {
             return $event->setResult(false);
         }
 
