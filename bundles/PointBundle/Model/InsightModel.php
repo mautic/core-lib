@@ -81,7 +81,7 @@ class InsightModel extends CommonFormModel
         return parent::getEntity($id);
     }
 
-    public function executePointInsights(Lead $contact): void
+    public function executePointInsights(Lead $contact, Group $changedGroup): void
     {
         $insights = $this->getRepository()->findBy([
             'isPublished'   => true,
@@ -89,18 +89,28 @@ class InsightModel extends CommonFormModel
             'insightAction' => PointInsight::INSIGHT_ACTION_SET_CUSTOM_FIELD,
         ]);
 
+        $hasUpdates = false;
         foreach ($insights as $insight) {
-            $this->executePointInsight($insight, $contact);
+            if (!in_array($changedGroup->getId(), $insight->getPointGroups(), true)) {
+                continue;
+            }
+            if ($this->executePointInsight($insight, $contact)) {
+                $hasUpdates = true;
+            }
+        }
+
+        if ($hasUpdates) {
+            $this->leadModel->saveEntity($contact, false);
         }
     }
 
-    private function executePointInsight(PointInsight $insight, Lead $contact): void
+    private function executePointInsight(PointInsight $insight, Lead $contact): bool
     {
         $pointGroupIds = $insight->getPointGroups();
         $customField   = $insight->getCustomField();
 
         if (empty($pointGroupIds) || empty($customField)) {
-            return;
+            return false;
         }
 
         $qb      = $this->em->createQueryBuilder();
@@ -122,30 +132,26 @@ class InsightModel extends CommonFormModel
             ->getArrayResult();
 
         if (empty($results)) {
-            return;
+            return false;
         }
 
         $winner   = $results[0];
         $maxScore = (int) $winner['score'];
 
         if (0 === $maxScore) {
-            return;
+            return false;
         }
 
         $hasMultipleWinners = isset($results[1]) && (int) $results[1]['score'] === $maxScore;
         $currentValue       = $contact->getFieldValue($customField);
 
         if ($hasMultipleWinners && !empty($currentValue)) {
-            return;
+            return false;
         }
 
         $newValue = $winner['id'].' ('.$winner['name'].')';
-        $this->updateCustomField($contact, $customField, $newValue);
-    }
+        $contact->addUpdatedField($customField, $newValue);
 
-    private function updateCustomField(Lead $contact, string $fieldAlias, string $value): void
-    {
-        $contact->addUpdatedField($fieldAlias, $value);
-        $this->leadModel->saveEntity($contact, false);
+        return true;
     }
 }

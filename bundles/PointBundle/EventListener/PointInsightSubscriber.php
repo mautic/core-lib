@@ -25,6 +25,6 @@ final class PointInsightSubscriber implements EventSubscriberInterface
 
     public function onGroupScoreChange(GroupScoreChangeEvent $event): void
     {
-        $this->insightModel->executePointInsights($event->getContact());
+        $this->insightModel->executePointInsights($event->getContact(), $event->getGroup());
     }
 }
