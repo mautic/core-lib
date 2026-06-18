@@ -370,7 +370,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Get file.
      *
-     * @return UploadedFile
+     * @return File|null
      */
     public function getFile()
     {
@@ -410,7 +410,7 @@ class Asset extends FormEntity implements UuidInterface
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getExtension()
     {
@@ -426,7 +426,7 @@ class Asset extends FormEntity implements UuidInterface
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getMime()
     {
@@ -459,7 +459,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Get originalFileName.
      *
-     * @return string
+     * @return string|null
      */
     public function getOriginalFileName()
     {
@@ -484,7 +484,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Get storage location.
      *
-     * @return string
+     * @return string|null
      */
     public function getStorageLocation()
     {
@@ -572,7 +572,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Get publishUp.
      *
-     * @return \DateTimeInterface
+     * @return \DateTimeInterface|null
      */
     public function getPublishUp()
     {
@@ -597,7 +597,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Get publishDown.
      *
-     * @return \DateTimeInterface
+     * @return \DateTimeInterface|null
      */
     public function getPublishDown()
     {
@@ -693,7 +693,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Get category.
      *
-     * @return \Mautic\CategoryBundle\Entity\Category
+     * @return \Mautic\CategoryBundle\Entity\Category|null
      */
     public function getCategory()
     {
@@ -1169,7 +1169,7 @@ class Asset extends FormEntity implements UuidInterface
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getDescription()
     {
@@ -1364,7 +1364,7 @@ class Asset extends FormEntity implements UuidInterface
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getDisallow()
     {

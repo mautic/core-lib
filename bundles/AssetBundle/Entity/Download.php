@@ -237,7 +237,7 @@ class Download
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getReferer()
     {
@@ -255,7 +255,7 @@ class Download
     }
 
     /**
-     * @return Asset
+     * @return Asset|null
      */
     public function getAsset()
     {
@@ -273,7 +273,7 @@ class Download
     }
 
     /**
-     * @return IpAddress
+     * @return IpAddress|null
      */
     public function getIpAddress()
     {
@@ -293,7 +293,7 @@ class Download
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getTrackingId()
     {
@@ -301,7 +301,7 @@ class Download
     }
 
     /**
-     * @return mixed
+     * @return Lead|null
      */
     public function getLead()
     {
@@ -317,7 +317,7 @@ class Download
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getSource()
     {
@@ -333,7 +333,7 @@ class Download
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getSourceId()
     {
@@ -349,7 +349,7 @@ class Download
     }
 
     /**
-     * @return mixed
+     * @return Email|null
      */
     public function getEmail()
     {
