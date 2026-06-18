@@ -156,13 +156,13 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
             'mauticform[lastname]'  => $lastname,
         ];
 
-        $this->submitLandingPageForm($formId, $formAlias, $pageAlias, $values);
+        $this->submitLandingPageForm($formAlias, $pageAlias, $values);
     }
 
     /**
      * @param array<string, mixed> $values
      */
-    private function submitLandingPageForm(int $formId, string $formAlias, string $pageAlias, array $values): void
+    private function submitLandingPageForm(string $formAlias, string $pageAlias, array $values): void
     {
         $crawler     = $this->client->request(Request::METHOD_GET, "/{$pageAlias}");
         $formCrawler = $crawler->filter('form[id=mauticform_'.$formAlias.']');
