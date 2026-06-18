@@ -35,6 +35,7 @@ class EventTypeTest extends TestCase
         yield 'zero padded hour string with whitespace' => [' 04 ', '04:00'];
         yield 'hour and minute string' => ['04:00', '04:00'];
         yield 'hour and minute string with whitespace' => [' 04:00 ', '04:00'];
+        yield 'fallback datetime string with whitespace' => [' 2024-01-02 03:04:00 ', '03:04'];
         yield 'array date value' => [['date' => '08:00'], '08:00'];
     }
 }
