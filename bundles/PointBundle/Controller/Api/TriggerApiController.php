@@ -11,6 +11,7 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Translation\Translator;
 use Mautic\PointBundle\Entity\Trigger;
+use Mautic\PointBundle\Entity\TriggerEvent;
 use Mautic\PointBundle\Model\TriggerEventModel;
 use Mautic\PointBundle\Model\TriggerModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -55,10 +56,17 @@ class TriggerApiController extends CommonApiController
         parent::__construct($security, $translator, $entityResultHelper, $router, $formFactory, $appVersion, $requestStack, $doctrine, $modelFactory, $dispatcher, $coreParametersHelper);
     }
 
-    protected function preSaveEntity(&$entity, $form, $parameters, $action = 'edit')
+    /**
+     * @param Trigger                $entity
+     * @param FormInterface<mixed>   $form
+     * @param array<mixed>           $parameters
+     */
+    protected function preSaveEntity(&$entity, $form, $parameters, string $action = 'edit')
     {
         $method            = $this->requestStack->getCurrentRequest()->getMethod();
         $triggerEventModel = $this->getModel('point.triggerevent');
+        \assert($triggerEventModel instanceof TriggerEventModel);
+
         $isNew             = false;
 
         // Set timestamps
@@ -85,6 +93,10 @@ class TriggerApiController extends CommonApiController
                 } else {
                     $triggerEventEntity  = $triggerEventModel->getEntity($eventParams['id']);
                     $requestTriggerIds[] = $eventParams['id'];
+                }
+
+                if (null === $triggerEventEntity) {
+                    return $this->notFound();
                 }
 
                 $triggerEventForm = $this->createTriggerEventEntityForm($triggerEventEntity);
@@ -114,7 +126,7 @@ class TriggerApiController extends CommonApiController
     /**
      * @return FormInterface<mixed>
      */
-    protected function createTriggerEventEntityForm($entity): FormInterface
+    protected function createTriggerEventEntityForm(TriggerEvent $entity): FormInterface
     {
         $triggerEventModel = $this->getModel('point.triggerevent');
         \assert($triggerEventModel instanceof TriggerEventModel);
@@ -132,6 +144,8 @@ class TriggerApiController extends CommonApiController
 
     /**
      * Return array of available point trigger event types.
+     *
+     * @return Response
      */
     public function getPointTriggerEventTypesAction()
     {
