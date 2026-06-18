@@ -48,7 +48,7 @@ class FrequencyRule extends CommonEntity
     /**
      * @var bool
      */
-    private $preferredChannel = 0;
+    private $preferredChannel = false;
 
     /**
      * @var \DateTimeInterface
