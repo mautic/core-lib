@@ -8,7 +8,7 @@ use Mautic\CampaignBundle\Form\Type\EventType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class EventTypeTest extends TestCase
+final class EventTypeTest extends TestCase
 {
     /**
      * @param string|array{date: string} $value
