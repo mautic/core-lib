@@ -449,7 +449,7 @@ class PublicController extends CommonFormController
                     $emailEntity->getCreatedBy()
                 ))
         ) {
-            return $this->accessDenied();
+            $this->checkAccessDenied();
         }
 
         // bogus ID

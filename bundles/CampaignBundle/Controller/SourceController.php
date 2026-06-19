@@ -258,7 +258,7 @@ class SourceController extends CommonFormController
                 'MATCH_ONE'
             )
         ) {
-            return $this->accessDenied();
+            $this->checkAccessDenied();
         }
 
         if ('POST' == $request->getMethod()) {

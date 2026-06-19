@@ -285,7 +285,7 @@ class AjaxController extends CommonAjaxController
             $email->getCreatedBy()
         )
         ) {
-            return $this->accessDenied();
+            $this->checkAccessDenied();
         }
 
         $content           = $email->getCustomHtml();

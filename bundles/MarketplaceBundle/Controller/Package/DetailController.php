@@ -49,7 +49,7 @@ class DetailController extends CommonController
         }
 
         if (!$this->security->isGranted(MarketplacePermissions::CAN_VIEW_PACKAGES)) {
-            return $this->accessDenied();
+            $this->checkAccessDenied();
         }
 
         $isInstalled = $this->composer->isInstalled("{$vendor}/{$package}");

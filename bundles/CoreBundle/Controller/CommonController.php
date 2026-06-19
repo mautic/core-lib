@@ -443,7 +443,30 @@ class CommonController extends AbstractController implements MauticController
     }
 
     /**
+     * @throws AccessDeniedHttpException
+     */
+    public function checkAccessDenied(string $msg = 'mautic.core.url.error.401'): void
+    {
+        if ($this->security->isAnonymous()) {
+            throw new AccessDeniedHttpException($this->translator->trans($msg, ['%url%' => $this->getCurrentRequest()->getRequestUri()]));
+        }
+    }
+
+    /**
+     * @return array{type: string, msg: string}
+     */
+    public function getAccessDeniedFlash(string $msg = 'mautic.core.url.error.401'): array
+    {
+        return [
+            'type' => 'error',
+            'msg'  => $this->translator->trans('mautic.core.error.accessdenied', [], 'flashes'),
+        ];
+    }
+
+    /**
      * Generates access denied message.
+     *
+     * @deprecated Use getAccessDeniedFlash or checkAccessDenied
      *
      * @param bool   $batch Flag if a batch action is being performed
      * @param string $msg   Message that is logged

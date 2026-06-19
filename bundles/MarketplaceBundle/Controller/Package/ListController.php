@@ -47,7 +47,7 @@ class ListController extends CommonController
         }
 
         if (!$this->security->isGranted(MarketplacePermissions::CAN_VIEW_PACKAGES)) {
-            return $this->accessDenied();
+            $this->checkAccessDenied();
         }
 
         $this->setListFilters();
