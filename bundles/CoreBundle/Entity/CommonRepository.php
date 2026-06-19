@@ -461,11 +461,13 @@ class CommonRepository extends ServiceEntityRepository
                 foreach ($orGroup as $subFilter) {
                     [$subExpr, $subParameters] = $this->getFilterExpr($q, $subFilter);
 
+                    // @phpstan-ignore-next-line $q accepts ORM and DBAL QueryBuilder; add() is deprecated only on DBAL CompositeExpression, not on ORM Andx
                     $groupExpr->add($subExpr);
                     if (!empty($subParameters)) {
                         $parameter = array_merge($parameter, $subParameters);
                     }
                 }
+                // @phpstan-ignore-next-line $q accepts ORM and DBAL QueryBuilder; add() is deprecated only on DBAL CompositeExpression, not on ORM Andx
                 $expr->add($groupExpr);
             }
         } elseif (str_contains($filter['column'], ',')) {
@@ -482,6 +484,7 @@ class CommonRepository extends ServiceEntityRepository
                     $setParameter = true;
                 }
 
+                // @phpstan-ignore-next-line $q accepts ORM and DBAL QueryBuilder; add() is deprecated only on DBAL CompositeExpression, not on ORM Andx
                 $expr->add($subExpr);
             }
             if ($setParameter) {
@@ -723,6 +726,13 @@ class CommonRepository extends ServiceEntityRepository
                 $q->expr()->eq($prefix.'is_published', ':true')
             )
               ->setParameter('true', true, 'boolean');
+        }
+
+        // Non Deleted Only
+        if ($reflection->hasMethod('getDeleted')) {
+            $q->andWhere(
+                $q->expr()->isNull($prefix.'deleted')
+            );
         }
 
         if ($limit) {
@@ -1492,6 +1502,7 @@ class CommonRepository extends ServiceEntityRepository
                         // defined columns with keys of column, expr, value
                         foreach ($criteria as $criterion) {
                             if ($criterion instanceof Query\Expr || $criterion instanceof CompositeExpression) {
+                                // @phpstan-ignore-next-line $q accepts ORM and DBAL QueryBuilder; add() is deprecated only on DBAL CompositeExpression, not on ORM Andx
                                 $queryExpression->add($criterion);
 
                                 if (isset($criterion->parameters) && is_array($criterion->parameters)) {
@@ -1500,6 +1511,7 @@ class CommonRepository extends ServiceEntityRepository
                                 }
                             } elseif (is_array($criterion)) {
                                 [$expr, $parameters] = $this->getFilterExpr($q, $criterion);
+                                // @phpstan-ignore-next-line $q accepts ORM and DBAL QueryBuilder; add() is deprecated only on DBAL CompositeExpression, not on ORM Andx
                                 $queryExpression->add($expr);
                                 if (is_array($parameters)) {
                                     $queryParameters = array_merge($queryParameters, $parameters);
