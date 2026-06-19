@@ -28,7 +28,6 @@ use PHPUnit\Framework\Assert;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
 {
@@ -260,9 +259,7 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
         foreach ($contacts as $contact) {
             $args['lead'] = $this->contactRepository->getEntity($contact->getId());
 
-            $event  = new CampaignExecutionEvent($args, true);
-
-            /** @var EventDispatcherInterface $dispatcher */
+            $event      = new CampaignExecutionEvent($args, true); // @phpstan-ignore new.deprecated
             $dispatcher = static::getContainer()->get('event_dispatcher');
             $result     = $dispatcher->dispatch(
                 $event,
@@ -1055,7 +1052,7 @@ class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
             'eventSettings'   => [],
         ];
 
-        $event           = new CampaignExecutionEvent($args, false, $log);
+        $event           = new CampaignExecutionEvent($args, false, $log); // @phpstan-ignore new.deprecated
         $eventDispatcher = static::getContainer()->get('event_dispatcher');
         $eventDispatcher->dispatch($event, 'mautic.lead.on_campaign_trigger_action');
 
