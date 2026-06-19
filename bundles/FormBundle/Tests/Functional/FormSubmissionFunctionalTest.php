@@ -36,7 +36,7 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         // Submit form on landing page
-        $this->submitLandingPageFormWithoutCompanies($formId, $formAlias, $pageA->getAlias(), 'j@doe.com', 'John', 'Doe');
+        $this->submitLandingPageFormWithoutCompanies($formAlias, $pageA->getAlias(), 'j@doe.com', 'John', 'Doe');
 
         /** @var SubmissionRepository $submissionRepo */
         $submissionRepo = $this->em->getRepository(Submission::class);
@@ -137,7 +137,7 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
         $this->em->flush();
 
         // Create contact with the same email but different lastname.
-        $this->submitLandingPageFormWithoutCompanies($formId, $formAlias, $page->getAlias(), 'j@doe.com', 'John', 'Doe');
+        $this->submitLandingPageFormWithoutCompanies($formAlias, $page->getAlias(), 'j@doe.com', 'John', 'Doe');
 
         /** @var SubmissionRepository $submissionRepo */
         $submissionRepo = $this->em->getRepository(Submission::class);
@@ -148,7 +148,7 @@ final class FormSubmissionFunctionalTest extends MauticMysqlTestCase
         $this->assertCount(1, $submissionRepo->validateSubmissions($submissionIds, $formId));
     }
 
-    private function submitLandingPageFormWithoutCompanies(int $formId, string $formAlias, string $pageAlias, string $email, string $firstname, string $lastname): void
+    private function submitLandingPageFormWithoutCompanies(string $formAlias, string $pageAlias, string $email, string $firstname, string $lastname): void
     {
         $values = [
             'mauticform[email]'     => $email,
