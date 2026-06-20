@@ -316,10 +316,7 @@ class EventType extends AbstractType
         $resolver->setRequired(['settings']);
     }
 
-    /**
-     * @return \DateTime|mixed|null
-     */
-    private function getTimeValue(array $data, $name)
+    private function getTimeValue(array $data, string $name): ?\DateTime
     {
         if (empty($data[$name])) {
             return null;
