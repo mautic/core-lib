@@ -26,6 +26,16 @@ final class EventTypeTest extends TestCase
         $this->assertSame($expected, $parsed->format('H:i'));
     }
 
+    public function testGetTimeValueReturnsNullForUnsupportedValue(): void
+    {
+        $type   = new EventType();
+        $method = new \ReflectionMethod(EventType::class, 'getTimeValue');
+
+        $parsed = $method->invoke($type, ['triggerHour' => 1], 'triggerHour');
+
+        $this->assertNull($parsed);
+    }
+
     /**
      * @return iterable<string, array{0: string|array{date: string}, 1: string}>
      */
