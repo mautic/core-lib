@@ -21,7 +21,6 @@ use Mautic\EmailBundle\Form\Type\BatchSendType;
 use Mautic\EmailBundle\Form\Type\ExampleSendType;
 use Mautic\EmailBundle\Form\Type\ScheduleSendType;
 use Mautic\EmailBundle\Helper\EmailConfig;
-use Mautic\EmailBundle\Helper\PlainTextHelper;
 use Mautic\EmailBundle\Model\EmailModel;
 use Mautic\LeadBundle\Controller\EntityContactsTrait;
 use Mautic\LeadBundle\Helper\FakeContactHelper;
@@ -439,10 +438,6 @@ class EmailController extends FormController
                 'children' => $translationChildren,
             ];
 
-            $plainTextHelper = new PlainTextHelper();
-            $plainTextHelper->setHtml($email->getCustomHtml());
-            $emailPreview = $plainTextHelper->getPreview();
-
             $view = [
                 'returnUrl' => $this->generateUrl(
                     'mautic_email_action',
@@ -453,7 +448,6 @@ class EmailController extends FormController
                 ),
                 'viewParameters' => [
                     'email'              => $email,
-                    'emailPreview'       => $emailPreview,
                     'trackables'         => $trackableLinks,
                     'logs'               => $logs,
                     'isEmbedded'         => $request->get('isEmbedded') ?: false,
