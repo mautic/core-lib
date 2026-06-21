@@ -253,10 +253,6 @@
       <div class="col-md-9 height-auto">
           <div>
 
-          <!-- email preview -->
-          {% include '@MauticEmail/Email/Details/preview.html.twig' %}
-          <!--/ email preview -->
-
           <!-- email detail collapseable -->
           <div class="collapse pr-md pl-md" id="email-details">
               <div class="pr-md pl-md pb-md">
@@ -532,6 +528,18 @@
 
       <!-- right section -->
       <div class="col-md-3 bdr-l height-auto">
+
+        <!-- email preview -->
+        <div class="pa-16">
+            <iframe
+                id="content_preview_frame"
+                scrolling="no"
+                src="{{ previewUrl|e }}"
+                title="{{ 'mautic.email.preview.iframe_title'|trans }}"
+                style="width: 100%; min-height: 1000px; border: 0; zoom: 0.35; overflow: hidden;">
+            </iframe>
+        </div>
+        <!--/ email preview -->
           <!-- preview URL -->
           <div class="panel shd-none bdr-rds-0 bdr-w-0 mt-sm mb-0">
               <div class="panel-heading">
