@@ -521,7 +521,6 @@ class FormController extends CommonFormController
         }
 
         $session    = $request->getSession();
-        $cleanSlate = true;
 
         // set the page we came from
         $page = $request->getSession()->get('mautic.form.page', 1);
@@ -692,7 +691,6 @@ class FormController extends CommonFormController
                 );
             } elseif ($valid && $form->get('buttons')->get('apply')->isClicked()) {
                 // Rebuild everything to include new ids
-                $cleanSlate = true;
                 $reorder    = true;
 
                 // Rebuild the form with new action so that apply doesn't keep creating a clone
@@ -700,8 +698,6 @@ class FormController extends CommonFormController
                 $form   = $model->createForm($entity, $this->formFactory, $action);
             }
         } else {
-            $cleanSlate = true;
-
             // lock the entity
             $model->lockEntity($entity);
         }
@@ -713,7 +709,6 @@ class FormController extends CommonFormController
         // Get field and action settings
         $availableFields = $this->fieldHelper->getChoiceList($customComponents['fields']);
 
-        if ($cleanSlate) {
             // clean slate
             $this->clearSessionComponents($request, $objectId);
             $this->alreadyMappedFieldCollector->removeAllForForm($objectId);
@@ -818,7 +813,6 @@ class FormController extends CommonFormController
 
             $session->set('mautic.form.'.$objectId.'.actions.modified', $modifiedActions);
             $deletedActions = [];
-        }
 
         return $this->delegateView(
             [
