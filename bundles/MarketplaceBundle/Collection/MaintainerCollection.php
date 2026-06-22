@@ -28,7 +28,7 @@ class MaintainerCollection implements \Iterator, \Countable, \ArrayAccess
     {
         return new self(
             array_map(
-                fn (array $record) => Maintainer::fromArray($record),
+                fn (array $record): \Mautic\MarketplaceBundle\DTO\Maintainer => Maintainer::fromArray($record),
                 $array
             )
         );
