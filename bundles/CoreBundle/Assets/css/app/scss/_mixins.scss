@@ -20,38 +20,49 @@
 // ------------------------
 @mixin text-emphasis-variants($color) {
   color: $color;
-  a#{&}:hover {
+
+  @at-root a#{&}:hover {
     color: darken($color, 10%);
   }
-  &.light-xs {
+
+  @at-root #{&}.light-xs {
     color: lighten($color, 15%);
-    a#{&}:hover {
-      color: lighten($color, 10%);
-    }
   }
-  &.dark-xs {
+
+  @at-root a#{&}.light-xs:hover {
+    color: lighten($color, 10%);
+  }
+
+  @at-root #{&}.dark-xs {
     color: darken($color, 15%);
-    a#{&}:hover {
-      color: darken($color, 20%);
-    }
   }
-  &.dark-sm {
+
+  @at-root a#{&}.dark-xs:hover {
+    color: darken($color, 20%);
+  }
+
+  @at-root #{&}.dark-sm {
     color: darken($color, 30%);
-    a#{&}:hover {
-      color: darken($color, 35%);
-    }
   }
-  &.dark-md {
+
+  @at-root a#{&}.dark-sm:hover {
+    color: darken($color, 35%);
+  }
+
+  @at-root #{&}.dark-md {
     color: darken($color, 45%);
-    a#{&}:hover {
-      color: darken($color, 50%);
-    }
   }
-  &.dark-lg {
+
+  @at-root a#{&}.dark-md:hover {
+    color: darken($color, 50%);
+  }
+
+  @at-root #{&}.dark-lg {
     color: darken($color, 60%);
-    a#{&}:hover {
-      color: darken($color, 65%);
-    }
+  }
+
+  @at-root a#{&}.dark-lg:hover {
+    color: darken($color, 65%);
   }
 }
 
@@ -208,28 +219,31 @@
   }
 }
 
-// loading bar variant
-// ------------------------
-@mixin loading-bar-variant($bgcolor) {
-  background-color: lighten($bgcolor, 45%);
-  &:after,
-  &:before {
-    background-color: $bgcolor;
-  }
-}
-
 @mixin outline() {
   outline: 2px var(--outline-style) transparent;
   outline-offset: -2px;
-  &:hover { outline: 2px var(--outline-style) transparent; }
-  &:focus, &.focus, &:focus-visible { outline: 2px var(--outline-style) var(--focus); }
+
+  @at-root #{&}:hover {
+    outline: 2px var(--outline-style) transparent;
+  }
+
+  @at-root #{&}:focus,
+    #{&}.focus,
+    #{&}:focus-visible {
+    outline: 2px var(--outline-style) var(--focus);
+  }
 }
 
 @mixin outline-noff() {
   outline: 2px solid transparent;
   outline-offset: 1px;
-  &:hover { outline: 2px solid transparent; }
-  &:focus, &.focus {
+
+  @at-root #{&}:hover {
+    outline: 2px solid transparent;
+  }
+
+  @at-root #{&}:focus,
+    #{&}.focus {
     outline: 2px solid var(--focus);
     outline-offset: 1px;
   }
@@ -259,24 +273,24 @@
 
   i { color: $text-color; }
 
-  &:hover {
+  @at-root #{&}:hover {
     color: $hover-text-color;
     background-color: $hover-background;
     border: 1px solid $hover-background;
     i { color: $hover-text-color; }
   }
 
-  &:active,
-  &.active,
-  .open > &.dropdown-toggle {
+  @at-root #{&}:active,
+    #{&}.active,
+    .open > #{&}.dropdown-toggle {
     color: $hover-text-color;
     background-color: $active-background;
     border: 1px solid transparent;
     i { color: $hover-text-color; }
 
-    &:hover,
-    &:focus,
-    &.focus {
+    @at-root #{&}:hover,
+      #{&}:focus,
+      #{&}.focus {
       color: $hover-text-color;
       background-color: $active-background;
       border-color: $active-background;
@@ -284,8 +298,8 @@
     }
   }
 
-  &:focus,
-  &.focus {
+  @at-root #{&}:focus,
+    #{&}.focus {
     color: $hover-text-color;
     background-color: $active-background;
     border: 1px solid $active-background;
@@ -293,17 +307,21 @@
     i { color: $hover-text-color; }
   }
 
-  &[disabled],
-  &.disabled,
-  fieldset[disabled] & {
-    &,
-    &:hover,
-    &:focus,
-    &.focus {
-      background-color: $disabled-background;
-      color: $disabled-text-color;
-      border: 1px solid;
-      i { color: $disabled-text-color; }
-    }
+  @at-root #{&}[disabled],
+    #{&}.disabled,
+    fieldset[disabled] #{&},
+    #{&}[disabled]:hover,
+    #{&}.disabled:hover,
+    fieldset[disabled] #{&}:hover,
+    #{&}[disabled]:focus,
+    #{&}.disabled:focus,
+    fieldset[disabled] #{&}:focus,
+    #{&}[disabled].focus,
+    #{&}.disabled.focus,
+    fieldset[disabled] #{&}.focus {
+    background-color: $disabled-background;
+    color: $disabled-text-color;
+    border: 1px solid;
+    i { color: $disabled-text-color; }
   }
 }
