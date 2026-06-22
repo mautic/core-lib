@@ -187,11 +187,9 @@ class DoNotContact
     }
 
     /**
-     * @param string $comments
-     *
      * @return DoNotContact
      */
-    public function setComments($comments)
+    public function setComments(?string $comments)
     {
         $this->comments = InputHelper::string((string) $comments);
 
