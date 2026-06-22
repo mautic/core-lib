@@ -1103,7 +1103,7 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * Set the value of triggerRestrictedStartHour.
      *
-     * @param \DateTime|null $triggerRestrictedStartHour
+     * @param \DateTime|string|array<string,string>|null $triggerRestrictedStartHour
      *
      * @return self
      */
@@ -1131,7 +1131,7 @@ class Event implements ChannelInterface, UuidInterface
     /**
      * Set the value of triggerRestrictedStopHour.
      *
-     * @param \DateTime|null $triggerRestrictedStopHour
+     * @param \DateTime|string|array<string,string>|null $triggerRestrictedStopHour
      *
      * @return self
      */
