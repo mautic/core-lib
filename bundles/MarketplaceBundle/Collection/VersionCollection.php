@@ -45,7 +45,7 @@ class VersionCollection implements \Iterator, \Countable, \ArrayAccess
 
         usort(
             $records,
-            fn (Version $versionA, Version $versionB): int|float => $versionB->time->getTimestamp() - $versionA->time->getTimestamp()
+            fn (Version $versionA, Version $versionB): int => $versionB->time->getTimestamp() - $versionA->time->getTimestamp()
         );
 
         return new self($records);
