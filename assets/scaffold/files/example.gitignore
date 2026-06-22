@@ -26,11 +26,7 @@
 
 /var/bootstrap*
 
-/app/bundles/CoreBundle/Assets/css/app/less/**/*.css
 /app/bundles/CoreBundle/Assets/pictograms/
-/app/bundles/CoreBundle/Assets/css/libraries/**/*.css
-!/app/bundles/CoreBundle/Assets/css/libraries/builder.css
-!/app/bundles/CoreBundle/Assets/css/*.css
 
 /app/cache/*
 !/app/cache/.gitkeep
@@ -68,6 +64,9 @@
 !/bin/console
 
 /assets/ckeditor/build/*
+/assets/build/*
+/var/dart-sass/*
+/var/sass/*
 
 /bundles
 /node_modules
@@ -97,6 +96,7 @@
 !/media/images/.htaccess
 /media/css/app.css
 /media/css/libraries.css
+/media/css/offline.css
 /media/css/mediaelementplayer.min.css
 /media/css/modal.min.css
 /media/js/app.js
