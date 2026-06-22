@@ -695,11 +695,9 @@ class FormController extends CommonFormController
                 $cleanSlate = true;
                 $reorder    = true;
 
-                if ($valid) {
-                    // Rebuild the form with new action so that apply doesn't keep creating a clone
-                    $action = $this->generateUrl('mautic_form_action', ['objectAction' => 'edit', 'objectId' => $entity->getId()]);
-                    $form   = $model->createForm($entity, $this->formFactory, $action);
-                }
+                // Rebuild the form with new action so that apply doesn't keep creating a clone
+                $action = $this->generateUrl('mautic_form_action', ['objectAction' => 'edit', 'objectId' => $entity->getId()]);
+                $form   = $model->createForm($entity, $this->formFactory, $action);
             }
         } else {
             $cleanSlate = true;
