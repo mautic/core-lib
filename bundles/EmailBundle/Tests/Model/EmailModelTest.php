@@ -15,6 +15,7 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 use Mautic\CoreBundle\Helper\IpLookupHelper;
 use Mautic\CoreBundle\Helper\ThemeHelperInterface;
 use Mautic\CoreBundle\Helper\UserHelper;
+use Mautic\CoreBundle\Model\AbTest\AbTestSettingsService;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Test\Doctrine\DBALMocker;
 use Mautic\CoreBundle\Translation\Translator;
@@ -213,7 +214,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $botRatioHelperMock;
 
-    private MockObject $abTestSettingsServiceMock;
+    private MockObject&AbTestSettingsService $abTestSettingsServiceMock;
 
     protected function setUp(): void
     {
@@ -251,7 +252,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->eventDispatcher           = $this->createMock(EventDispatcherInterface::class);
         $this->leadDeviceRepository      = $this->createMock(LeadDeviceRepository::class);
         $this->botRatioHelperMock        = $this->createMock(BotRatioHelper::class);
-        $this->abTestSettingsServiceMock = $this->createMock(\Mautic\CoreBundle\Model\AbTest\AbTestSettingsService::class);
+        $this->abTestSettingsServiceMock = $this->createMock(AbTestSettingsService::class);
 
         $this->ipLookupHelper->method('isRequestTrackable')->willReturn(true);
 
