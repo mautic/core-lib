@@ -2,39 +2,15 @@
 
 namespace Mautic\CoreBundle\Form;
 
+use Mautic\EmailBundle\Validator\MultipleEmailsValid;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 trait ToBcBccFieldsTrait
 {
     protected function addToBcBccFields(FormBuilderInterface $builder): void
     {
-        $multipleEmailConstraint = new Callback(function (?string $value, ExecutionContextInterface $context): void {
-            if (empty($value)) {
-                return;
-            }
-
-            $emailValidator = new Email(['message' => 'mautic.core.email.required']);
-            $validator      = $context->getValidator();
-
-            foreach (array_map('trim', explode(',', $value)) as $email) {
-                if ('' === $email) {
-                    continue;
-                }
-
-                $violations = $validator->validate($email, $emailValidator);
-
-                if (count($violations) > 0) {
-                    $context->buildViolation('mautic.core.email.required')
-                        ->addViolation();
-
-                    return;
-                }
-            }
-        });
+        $multipleEmailConstraint = new MultipleEmailsValid();
 
         $builder->add(
             'to',
