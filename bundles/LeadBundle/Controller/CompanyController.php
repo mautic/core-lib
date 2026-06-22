@@ -44,7 +44,7 @@ class CompanyController extends FormController
         );
 
         if (!$permissions['lead:leads:viewother'] && !$permissions['lead:leads:viewown']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -132,7 +132,7 @@ class CompanyController extends FormController
     public function contactsListAction(Request $request, $objectId, $page = 1): Response
     {
         if (empty($objectId)) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $permissions = $this->security->isGranted(
@@ -192,7 +192,7 @@ class CompanyController extends FormController
         }
 
         if (!$this->security->isGranted('lead:leads:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -370,7 +370,7 @@ class CompanyController extends FormController
             'lead:leads:editown',
             'lead:leads:editother',
             $entity->getPermissionUser())) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'lead.company');
@@ -570,7 +570,7 @@ class CompanyController extends FormController
             $company->getPermissionUser()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $fields = $company->getFields();
@@ -686,7 +686,7 @@ class CompanyController extends FormController
 
         if (null != $entity) {
             if (!$this->security->isGranted('lead:leads:create')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity = clone $entity;
@@ -730,7 +730,7 @@ class CompanyController extends FormController
                     'msgVars' => ['%id%' => $objectId],
                 ];
             } elseif (!$this->security->isGranted('lead:leads:deleteother')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'lead.company');
             }
@@ -843,7 +843,7 @@ class CompanyController extends FormController
             (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother'])
             || (!$permissions['lead:leads:editown'] && !$permissions['lead:leads:editother'])
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if (Request::METHOD_POST === $request->getMethod()) {
@@ -1010,7 +1010,7 @@ class CompanyController extends FormController
         );
 
         if (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /** @var CompanyModel $model */
@@ -1086,7 +1086,7 @@ class CompanyController extends FormController
                             )
                         );
                     } elseif (!$permissions['lead:leads:editother']) {
-                        $this->checkAccessDenied();
+                        $this->throwAccessDenied();
                     } elseif ($model->isLocked($secondaryCompany)) {
                         // deny access if the entity is locked
                         return $this->isLocked($postActionVars, $primaryCompany, 'lead.company');
@@ -1173,7 +1173,7 @@ class CompanyController extends FormController
         );
 
         if (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /** @var CompanyModel $companyModel */

@@ -32,7 +32,7 @@ class AssetController extends FormController
         ], 'RETURN_ARRAY');
 
         if (!$permissions['asset:assets:viewown'] && !$permissions['asset:assets:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -162,7 +162,7 @@ class AssetController extends FormController
                 ],
             ]);
         } elseif (!$this->security->hasEntityAccess('asset:assets:viewown', 'asset:assets:viewother', $activeAsset->getCreatedBy())) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // Audit Log
@@ -281,7 +281,7 @@ class AssetController extends FormController
         $session = $request->getSession();
 
         if (!$this->security->isGranted('asset:assets:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $maxSize    = $model->getMaxUploadSize();
@@ -404,7 +404,7 @@ class AssetController extends FormController
         $entity = $model->getEntity($objectId);
 
         if (!$this->security->hasEntityAccess('asset:assets:editown', 'asset:assets:editother', $entity->getCreatedBy())) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $entity->setMaxSize(FileHelper::convertMegabytesToBytes($this->coreParametersHelper->get('max_size')));
@@ -456,7 +456,7 @@ class AssetController extends FormController
             'asset:assets:viewown', 'asset:assets:viewother', $entity->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'asset.asset');
@@ -573,7 +573,7 @@ class AssetController extends FormController
                     'asset:assets:viewown', 'asset:assets:viewother', $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $clone = clone $entity;
@@ -624,7 +624,7 @@ class AssetController extends FormController
                 $entity->getCreatedBy()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'asset.asset');
             }

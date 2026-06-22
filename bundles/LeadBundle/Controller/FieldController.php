@@ -32,7 +32,7 @@ class FieldController extends FormController
         $session = $request->getSession();
 
         if (!$permissions['lead:fields:view'] && !$permissions['lead:fields:full']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -121,7 +121,7 @@ class FieldController extends FormController
     public function newAction(Request $request, ?LeadField $entity = null)
     {
         if (!$this->security->isGranted('lead:fields:full')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // retrieve the entity
@@ -241,7 +241,7 @@ class FieldController extends FormController
     public function editAction(Request $request, $objectId, $ignorePost = false)
     {
         if (!$this->security->isGranted('lead:fields:full')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /** @var FieldModel $model */
@@ -403,7 +403,7 @@ class FieldController extends FormController
     public function deleteAction(Request $request, $objectId)
     {
         if (!$this->security->isGranted('lead:fields:full')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $returnUrl = $this->generateUrl('mautic_contactfield_index');
@@ -433,7 +433,7 @@ class FieldController extends FormController
                 return $this->isLocked($postActionVars, $field, 'lead.field');
             } elseif ($field->isFixed()) {
                 // cannot delete fixed fields
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             try {
@@ -469,7 +469,7 @@ class FieldController extends FormController
     public function batchDeleteAction(Request $request): Response
     {
         if (!$this->security->isGranted('lead:fields:full')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $returnUrl = $this->generateUrl('mautic_contactfield_index');

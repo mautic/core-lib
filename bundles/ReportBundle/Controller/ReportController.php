@@ -47,7 +47,7 @@ class ReportController extends FormController
         );
 
         if (!$permissions['report:reports:viewown'] && !$permissions['report:reports:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -140,7 +140,7 @@ class ReportController extends FormController
                     $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity = clone $entity;
@@ -440,7 +440,7 @@ class ReportController extends FormController
     public function newAction(ReportModel $model, Request $request, ?Report $entity = null): Response
     {
         if (!$this->security->isGranted('report:reports:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if (!$entity instanceof Report) {
@@ -562,7 +562,7 @@ class ReportController extends FormController
                 ]
             );
         } elseif (!$security->hasEntityAccess('report:reports:viewown', 'report:reports:viewother', $entity->getCreatedBy())) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -752,7 +752,7 @@ class ReportController extends FormController
                 )
             );
         } elseif (!$this->security->hasEntityAccess($permissions[0], $permissions[1], $entity->getCreatedBy())) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, $modelName);
@@ -798,9 +798,9 @@ class ReportController extends FormController
                 ]
             );
         } elseif (!$security->hasEntityAccess('report:reports:viewown', 'report:reports:viewother', $entity->getCreatedBy())) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif (!$this->security->isAdmin() && !$this->security->isGranted('report:export:enable', 'MATCH_ONE')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $session  = $request->getSession();
@@ -892,7 +892,7 @@ class ReportController extends FormController
         }
 
         if (!$security->hasEntityAccess('report:reports:viewown', 'report:reports:viewother', $report->getCreatedBy())) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if (!$fileHandler->compressedCsvFileForReportExists($report)) {

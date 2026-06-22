@@ -44,7 +44,7 @@ class CacheController extends CommonController
         }
 
         if (!$this->security->isGranted(MarketplacePermissions::CAN_VIEW_PACKAGES)) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->allowlist->clearCache();

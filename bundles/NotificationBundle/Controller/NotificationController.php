@@ -44,7 +44,7 @@ class NotificationController extends AbstractFormController
         );
 
         if (!$permissions['notification:notifications:viewown'] && !$permissions['notification:notifications:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if ('POST' == $request->getMethod()) {
@@ -182,7 +182,7 @@ class NotificationController extends AbstractFormController
             $notification->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // Audit Log
@@ -263,7 +263,7 @@ class NotificationController extends AbstractFormController
         $session = $request->getSession();
 
         if (!$this->security->isGranted('notification:notifications:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -427,7 +427,7 @@ class NotificationController extends AbstractFormController
             $entity->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'notification');
@@ -559,7 +559,7 @@ class NotificationController extends AbstractFormController
                     $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity      = clone $entity;
@@ -610,7 +610,7 @@ class NotificationController extends AbstractFormController
                 $entity->getCreatedBy()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'notification');
             }

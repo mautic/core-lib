@@ -44,7 +44,7 @@ class MobileNotificationController extends FormController
         );
 
         if (!$permissions['notification:mobile_notifications:viewown'] && !$permissions['notification:mobile_notifications:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $session = $request->getSession();
@@ -183,7 +183,7 @@ class MobileNotificationController extends FormController
             $notification->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // Audit Log
@@ -270,7 +270,7 @@ class MobileNotificationController extends FormController
         $session = $request->getSession();
 
         if (!$this->security->isGranted('notification:mobile_notifications:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -437,7 +437,7 @@ class MobileNotificationController extends FormController
             $entity->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'notification');
@@ -571,7 +571,7 @@ class MobileNotificationController extends FormController
                     $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity      = clone $entity;
@@ -622,7 +622,7 @@ class MobileNotificationController extends FormController
                 $entity->getCreatedBy()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'notification');
             }

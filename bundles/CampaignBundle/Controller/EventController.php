@@ -376,7 +376,7 @@ class EventController extends CommonFormController
                 'MATCH_ONE'
             )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
@@ -443,7 +443,7 @@ class EventController extends CommonFormController
                 'MATCH_ONE'
             )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;
@@ -510,7 +510,7 @@ class EventController extends CommonFormController
                 'MATCH_ONE'
             )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $event = (array_key_exists($objectId, $modifiedEvents)) ? $modifiedEvents[$objectId] : null;

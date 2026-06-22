@@ -29,7 +29,7 @@ class ThemeController extends FormController
         ], 'RETURN_ARRAY');
 
         if (!$permissions['core:themes:view']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $dir    = $pathsHelper->getSystemPath('themes', true);
@@ -108,7 +108,7 @@ class ThemeController extends FormController
         $error   = false;
 
         if (!$this->security->isGranted('core:themes:view')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $themeName = $objectId;
@@ -241,7 +241,7 @@ class ThemeController extends FormController
                 'msgVars' => ['%theme%' => $themeName],
             ];
         } elseif (!$this->security->isGranted('core:themes:delete')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif (in_array($themeName, $themeHelper->getDefaultThemes())) {
             $flashes[] = [
                 'type'    => 'error',
@@ -294,7 +294,7 @@ class ThemeController extends FormController
     public function visibilityAction(string $objectId, Request $request, CorePermissions $corePermissions, ThemeHelperInterface $themeHelper): Response
     {
         if (!$corePermissions->isGranted('core:themes:view')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $flashes = [];

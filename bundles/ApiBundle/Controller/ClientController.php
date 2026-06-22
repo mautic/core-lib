@@ -51,7 +51,7 @@ class ClientController extends AbstractStandardFormController
     public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, $page = 1): Response
     {
         if (!$this->security->isGranted('api:clients:view')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -193,7 +193,7 @@ class ClientController extends AbstractStandardFormController
     public function newAction(Request $request, $objectId = 0)
     {
         if (!$this->security->isGranted('api:clients:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $apiMode = (0 === $objectId) ? $request->getSession()->get('mautic.client.filter.api_mode', 'oauth2') : $objectId;
@@ -293,7 +293,7 @@ class ClientController extends AbstractStandardFormController
     public function editAction(Request $request, $objectId, $ignorePost = false)
     {
         if (!$this->security->isGranted('api:clients:editother')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $client    = $this->clientModel->getEntity($objectId);
@@ -397,7 +397,7 @@ class ClientController extends AbstractStandardFormController
     public function deleteAction(Request $request, $objectId)
     {
         if (!$this->security->isGranted('api:clients:delete')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $returnUrl = $this->generateUrl('mautic_client_index');

@@ -309,7 +309,7 @@ class AjaxController extends CommonAjaxController
     {
         if (!$this->security->isGranted('campaign:campaigns:editown')
             && !$this->security->isGranted('campaign:campaigns:editother')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $dataArray  = ['success' => 0];

@@ -38,7 +38,7 @@ class PublicController extends CommonFormController
         UserRepository $userRepository,
     ) {
         if ('POST' !== $request->getMethod()) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $context          = $this->createSubmitContext($request);

@@ -17,7 +17,7 @@ class TimelineController extends CommonController
     public function indexAction(Request $request, $leadId, $page = 1)
     {
         if (empty($leadId)) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $lead = $this->checkLeadAccess($leadId, 'view');
@@ -190,7 +190,7 @@ class TimelineController extends CommonController
     public function batchExportAction(Request $request, DateHelper $dateHelper, ExportHelper $exportHelper, $leadId): array|Response
     {
         if (empty($leadId)) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $lead = $this->checkLeadAccess($leadId, 'view');
@@ -199,7 +199,7 @@ class TimelineController extends CommonController
         }
 
         if (!$this->security->isGranted('report:export:enable', 'MATCH_ONE')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();

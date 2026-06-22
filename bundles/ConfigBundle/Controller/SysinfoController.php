@@ -39,7 +39,7 @@ class SysinfoController extends FormController
     public function indexAction(): \Symfony\Component\HttpFoundation\Response
     {
         if (!$this->user->isAdmin() || $this->coreParametersHelper->get('sysinfo_disabled')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         return $this->delegateView([

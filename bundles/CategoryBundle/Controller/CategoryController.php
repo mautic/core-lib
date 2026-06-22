@@ -96,7 +96,7 @@ class CategoryController extends AbstractFormController
         );
 
         if (!$permissions[$permissionBase.':view']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -480,7 +480,7 @@ class CategoryController extends AbstractFormController
                     'msgVars' => ['%id%' => $objectId],
                 ];
             } elseif (!$this->security->isGranted($model->getPermissionBase($bundle).':delete')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'category.category');
             }

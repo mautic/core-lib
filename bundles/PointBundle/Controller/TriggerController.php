@@ -29,7 +29,7 @@ class TriggerController extends FormController
         ], 'RETURN_ARRAY');
 
         if (!$permissions['point:triggers:view']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -132,7 +132,7 @@ class TriggerController extends FormController
                 ],
             ]);
         } elseif (!$permissions['point:triggers:view']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         return $this->delegateView([
@@ -172,7 +172,7 @@ class TriggerController extends FormController
         $sessionId = $this->getSessionBase();
 
         if (!$this->security->isGranted('point:triggers:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -325,7 +325,7 @@ class TriggerController extends FormController
                 ])
             );
         } elseif (!$this->security->isGranted('point:triggers:edit')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'point.trigger');
@@ -465,7 +465,7 @@ class TriggerController extends FormController
 
         if (null != $entity) {
             if (!$this->security->isGranted('point:triggers:create')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $existingActions = $entity->getEvents()->toArray();
@@ -518,7 +518,7 @@ class TriggerController extends FormController
                     'msgVars' => ['%id%' => $objectId],
                 ];
             } elseif (!$this->security->isGranted('point:triggers:delete')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'point.trigger');
             }

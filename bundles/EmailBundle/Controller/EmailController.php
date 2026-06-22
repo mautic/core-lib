@@ -65,7 +65,7 @@ class EmailController extends FormController
         );
 
         if (!$permissions['email:emails:viewown'] && !$permissions['email:emails:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -298,7 +298,7 @@ class EmailController extends FormController
             $email->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // get A/B test information
@@ -533,7 +533,7 @@ class EmailController extends FormController
         $session = $request->getSession();
 
         if (!$this->security->isGranted('email:emails:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -736,7 +736,7 @@ class EmailController extends FormController
             $entity->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'email');
@@ -992,7 +992,7 @@ class EmailController extends FormController
                 $emailEntity->getCreatedBy()
             )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'email');
@@ -1145,7 +1145,7 @@ class EmailController extends FormController
                 $emailEntity->getCreatedBy()
             )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if ($model->isLocked($emailEntity)) {
@@ -1235,7 +1235,7 @@ class EmailController extends FormController
                 $entity->getCreatedBy()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'email');
             }
@@ -1279,7 +1279,7 @@ class EmailController extends FormController
         if (str_contains($objectId, 'new')) {
             $isNew = true;
             if (!$this->security->isGranted('email:emails:create')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
             $entity = $model->getEntity();
             $entity->setSessionId($objectId);
@@ -1293,7 +1293,7 @@ class EmailController extends FormController
                     $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
         }
 
@@ -1348,7 +1348,7 @@ class EmailController extends FormController
                     $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             // Note this since it's cleared on __clone()
@@ -1403,7 +1403,7 @@ class EmailController extends FormController
                 $entity->getCreatedBy()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'email');
             }
@@ -1512,7 +1512,7 @@ class EmailController extends FormController
                 $entity->getCreatedBy()
             )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // Check that the parent is getting sent

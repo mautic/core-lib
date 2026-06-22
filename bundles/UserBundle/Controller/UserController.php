@@ -34,7 +34,7 @@ class UserController extends FormController
     public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, int $page = 1): JsonResponse|Response
     {
         if (!$this->security->isGranted('user:users:view')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
         $pageHelper = $pageHelperFactory->make('mautic.user', $page);
 
@@ -120,7 +120,7 @@ class UserController extends FormController
     public function inviteAction(Request $request, UserModel $model): JsonResponse|Response
     {
         if (!$this->security->isGranted('user:users:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
         $action = $this->generateUrl('mautic_user_action', ['objectAction' => 'invite']);
         $form   = $this->createForm(UserInviteType::class, [], ['action' => $action]);
@@ -180,7 +180,7 @@ class UserController extends FormController
     public function newAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper): JsonResponse|Response
     {
         if (!$this->security->isGranted('user:users:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /** @var UserModel $model */
@@ -296,7 +296,7 @@ class UserController extends FormController
     public function editAction(Request $request, LanguageHelper $languageHelper, UserPasswordHasherInterface $hasher, SAMLHelper $samlHelper, $objectId, $ignorePost = false)
     {
         if (!$this->security->isGranted('user:users:edit')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
         $model = $this->getModel('user.user');
         \assert($model instanceof UserModel);
@@ -453,7 +453,7 @@ class UserController extends FormController
     public function deleteAction(Request $request, $objectId)
     {
         if (!$this->security->isGranted('user:users:delete')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $currentUser    = $this->user;

@@ -28,7 +28,7 @@ class PointController extends AbstractFormController
         ], 'RETURN_ARRAY');
 
         if (!$permissions['point:points:view']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -112,7 +112,7 @@ class PointController extends AbstractFormController
         }
 
         if (!$this->security->isGranted('point:points:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -244,7 +244,7 @@ class PointController extends AbstractFormController
                 ])
             );
         } elseif (!$this->security->isGranted('point:points:edit')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'point');
@@ -346,7 +346,7 @@ class PointController extends AbstractFormController
 
         if (null != $entity) {
             if (!$this->security->isGranted('point:points:create')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity = clone $entity;
@@ -391,7 +391,7 @@ class PointController extends AbstractFormController
                     'msgVars' => ['%id%' => $objectId],
                 ];
             } elseif (!$this->security->isGranted('point:points:delete')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'point');
             }

@@ -301,7 +301,7 @@ class DashboardController extends AbstractFormController
     {
         // Accept only AJAX POST requests because those are check for CSRF tokens
         if (!$request->isMethod(Request::METHOD_POST) || !$request->isXmlHttpRequest()) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $name = $this->getNameFromRequest($request);

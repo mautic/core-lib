@@ -50,7 +50,7 @@ abstract class AbstractFormController extends CommonController
             return $this->redirect($returnUrl);
         }
 
-        $this->checkAccessDenied();
+        $this->throwAccessDenied();
     }
 
     /**

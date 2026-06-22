@@ -51,7 +51,7 @@ class PageController extends FormController
         ], 'RETURN_ARRAY');
 
         if (!$permissions['page:pages:viewown'] && !$permissions['page:pages:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -202,7 +202,7 @@ class PageController extends FormController
             && !$this->security->hasEntityAccess(
                 'page:preference_center:viewown', 'page:preference_center:viewother', $activePage->getCreatedBy()
             ))) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // get A/B test information
@@ -373,7 +373,7 @@ class PageController extends FormController
         $method  = $request->getMethod();
         $session = $request->getSession();
         if (!$this->security->isGranted('page:pages:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -521,7 +521,7 @@ class PageController extends FormController
             || ($entity->getIsPreferenceCenter() && !$this->security->hasEntityAccess(
                 'page:preference_center:viewown', 'page:preference_center:viewother', $entity->getCreatedBy()
             ))) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'page.page');
@@ -686,7 +686,7 @@ class PageController extends FormController
                     'page:pages:viewown', 'page:pages:viewother', $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity = clone $entity;
@@ -741,7 +741,7 @@ class PageController extends FormController
                 'page:pages:deleteother',
                 $entity->getCreatedBy()
             )) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'page.page');
             }
@@ -845,7 +845,7 @@ class PageController extends FormController
         if (str_contains((string) $objectId, 'new')) {
             $isNew = true;
             if (!$this->security->isGranted('page:pages:create')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
             $entity = $model->getEntity();
             $entity->setSessionId($objectId);
@@ -855,7 +855,7 @@ class PageController extends FormController
             if (null == $entity || !$this->security->hasEntityAccess(
                 'page:pages:viewown', 'page:pages:viewother', $entity->getCreatedBy()
             )) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
         }
 
@@ -899,7 +899,7 @@ class PageController extends FormController
                     'page:pages:viewown', 'page:pages:viewother', $entity->getCreatedBy()
                 )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $clone = clone $entity;
@@ -952,7 +952,7 @@ class PageController extends FormController
                 'page:pages:editother',
                 $entity->getCreatedBy()
             )) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'page.page');
             }
@@ -1022,7 +1022,7 @@ class PageController extends FormController
             $activePage->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if ('POST' == $request->getMethod()) {
@@ -1161,7 +1161,7 @@ class PageController extends FormController
             $activePage->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $orderBy    = $session->get('mautic.pageresult.'.$objectId.'.orderby', 's.date_submitted');

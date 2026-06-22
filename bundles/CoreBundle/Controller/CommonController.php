@@ -445,17 +445,15 @@ class CommonController extends AbstractController implements MauticController
     /**
      * @throws AccessDeniedHttpException
      */
-    public function checkAccessDenied(string $msg = 'mautic.core.url.error.401'): void
+    public function throwAccessDenied(string $msg = 'mautic.core.url.error.401'): void
     {
-        if ($this->security->isAnonymous()) {
-            throw new AccessDeniedHttpException($this->translator->trans($msg, ['%url%' => $this->getCurrentRequest()->getRequestUri()]));
-        }
+        throw new AccessDeniedHttpException($this->translator->trans($msg, ['%url%' => $this->getCurrentRequest()->getRequestUri()]));
     }
 
     /**
      * @return array{type: string, msg: string}
      */
-    public function getAccessDeniedFlash(string $msg = 'mautic.core.url.error.401'): array
+    public function getAccessDeniedFlash(): array
     {
         return [
             'type' => 'error',
@@ -466,7 +464,7 @@ class CommonController extends AbstractController implements MauticController
     /**
      * Generates access denied message.
      *
-     * @deprecated Use getAccessDeniedFlash or checkAccessDenied
+     * @deprecated Use getAccessDeniedFlash or throwAccessDenied
      *
      * @param bool   $batch Flag if a batch action is being performed
      * @param string $msg   Message that is logged
@@ -477,18 +475,11 @@ class CommonController extends AbstractController implements MauticController
      */
     public function accessDenied($batch = false, $msg = 'mautic.core.url.error.401'): array
     {
-        $request = $this->getCurrentRequest();
-
-        $anonymous = $this->security->isAnonymous();
-
-        if ($anonymous || !$batch) {
-            throw new AccessDeniedHttpException($this->translator->trans($msg, ['%url%' => $request->getRequestUri()]));
+        if ($this->security->isAnonymous() || !$batch) {
+            $this->throwAccessDenied($msg);
         }
 
-        return [
-            'type' => 'error',
-            'msg'  => $this->translator->trans('mautic.core.error.accessdenied', [], 'flashes'),
-        ];
+        return $this->getAccessDeniedFlash();
     }
 
     /**

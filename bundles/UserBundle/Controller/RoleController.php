@@ -38,7 +38,7 @@ class RoleController extends FormController
     public function indexAction(Request $request, PageHelperFactoryInterface $pageHelperFactory, $page = 1): Response
     {
         if (!$this->security->isGranted('user:roles:view')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -116,7 +116,7 @@ class RoleController extends FormController
     public function newAction(Request $request)
     {
         if (!$this->security->isGranted('user:roles:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // retrieve the entity
@@ -200,7 +200,7 @@ class RoleController extends FormController
     public function editAction(Request $request, $objectId, $ignorePost = false)
     {
         if (!$this->security->isGranted('user:roles:edit')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /** @var RoleModel $model */
@@ -358,7 +358,7 @@ class RoleController extends FormController
     public function deleteAction(Request $request, $objectId)
     {
         if (!$this->security->isGranted('user:roles:delete')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $page           = $request->getSession()->get('mautic.role.page', 1);

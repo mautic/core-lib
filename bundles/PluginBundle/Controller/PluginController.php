@@ -24,7 +24,7 @@ class PluginController extends FormController
     public function indexAction(Request $request, IntegrationHelper $integrationHelper): Response
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /** @var PluginModel $pluginModel */
@@ -129,7 +129,7 @@ class PluginController extends FormController
     public function configAction(Request $request, EntityManagerInterface $em, IntegrationHelper $integrationHelper, LoggerInterface $mauticLogger, $name, $activeTab = 'details-container', $page = 1)
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
         if (!empty($request->get('activeTab'))) {
             $activeTab = $request->get('activeTab');
@@ -363,7 +363,7 @@ class PluginController extends FormController
     public function infoAction(IntegrationHelper $integrationHelper, $name): Response
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /** @var PluginModel $pluginModel */
@@ -376,7 +376,7 @@ class PluginController extends FormController
         );
 
         if (!$bundle) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $bundle->splitDescriptions();
@@ -404,7 +404,7 @@ class PluginController extends FormController
     public function reloadAction(Request $request, ReloadFacade $reloadFacade): Response
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->addFlashMessage(

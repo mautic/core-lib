@@ -74,7 +74,7 @@ class FormController extends CommonFormController
         );
 
         if (!$permissions['form:forms:viewown'] && !$permissions['form:forms:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -191,7 +191,7 @@ class FormController extends CommonFormController
             $activeForm->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $permissions = $this->security->isGranted(
@@ -296,7 +296,7 @@ class FormController extends CommonFormController
         $session = $request->getSession();
 
         if (!$this->security->isGranted('form:forms:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -556,7 +556,7 @@ class FormController extends CommonFormController
             $entity->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'form.form');
@@ -867,7 +867,7 @@ class FormController extends CommonFormController
                     $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity = clone $entity;
@@ -1010,7 +1010,7 @@ class FormController extends CommonFormController
                 $entity->getCreatedBy()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'form.form');
             }

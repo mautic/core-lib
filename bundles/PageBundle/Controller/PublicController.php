@@ -84,7 +84,7 @@ class PublicController extends AbstractFormController
                 }
                 $model->hitPage($entity, $request, 401);
 
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $lead  = null;
@@ -346,7 +346,7 @@ class PublicController extends AbstractFormController
             'page:pages:viewother',
             $page->getCreatedBy()
         ))) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if ($contactId && (!$security->isAdmin() || !$security->hasEntityAccess(
@@ -354,7 +354,7 @@ class PublicController extends AbstractFormController
             'lead:leads:viewother'
         ))) {
             // disallow displaying contact information
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if (empty($content) && !empty($BCcontent)) {

@@ -41,7 +41,7 @@ class DynamicContentController extends FormController
         $permissions = $this->getPermissions();
 
         if (!$permissions['dynamiccontent:dynamiccontents:viewown'] && !$permissions['dynamiccontent:dynamiccontents:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -112,7 +112,7 @@ class DynamicContentController extends FormController
     public function newAction(Request $request, $entity = null)
     {
         if (!$this->security->isGranted('dynamiccontent:dynamiccontents:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if (!$entity instanceof DynamicContent) {
@@ -258,7 +258,7 @@ class DynamicContentController extends FormController
                 )
             );
         } elseif (!$this->security->hasEntityAccess(true, 'dynamiccontent:dynamiccontents:editother', $entity->getCreatedBy())) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'dynamicContent');
@@ -369,7 +369,7 @@ class DynamicContentController extends FormController
             $entity->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /* @var DynamicContent $parent */
@@ -438,7 +438,7 @@ class DynamicContentController extends FormController
                     $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity = clone $entity;
@@ -487,7 +487,7 @@ class DynamicContentController extends FormController
                 $entity->getCreatedBy()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'notification');
             }

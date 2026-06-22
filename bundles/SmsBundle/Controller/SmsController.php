@@ -45,7 +45,7 @@ class SmsController extends FormController
         );
 
         if (!$permissions['sms:smses:viewown'] && !$permissions['sms:smses:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -173,7 +173,7 @@ class SmsController extends FormController
             $sms->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // Audit Log
@@ -266,7 +266,7 @@ class SmsController extends FormController
         $session = $request->getSession();
 
         if (!$this->security->isGranted('sms:smses:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -433,7 +433,7 @@ class SmsController extends FormController
             $entity->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'sms');
@@ -568,7 +568,7 @@ class SmsController extends FormController
                     $entity->getCreatedBy()
                 )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity = clone $entity;
@@ -615,7 +615,7 @@ class SmsController extends FormController
                 $entity->getCreatedBy()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'sms');
             }

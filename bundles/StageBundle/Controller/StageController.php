@@ -31,7 +31,7 @@ class StageController extends AbstractFormController
         );
 
         if (!$permissions['stage:stages:view']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -121,7 +121,7 @@ class StageController extends AbstractFormController
         }
 
         if (!$this->security->isGranted('stage:stages:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -275,7 +275,7 @@ class StageController extends AbstractFormController
                 )
             );
         } elseif (!$this->security->isGranted('stage:stages:edit')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($entity)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $entity, 'stage');
@@ -394,7 +394,7 @@ class StageController extends AbstractFormController
 
         if (null != $entity) {
             if (!$this->security->isGranted('stage:stages:create')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             }
 
             $entity = clone $entity;
@@ -439,7 +439,7 @@ class StageController extends AbstractFormController
                     'msgVars' => ['%id%' => $objectId],
                 ];
             } elseif (!$this->security->isGranted('stage:stages:delete')) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'stage');
             }

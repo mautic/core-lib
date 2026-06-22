@@ -84,7 +84,7 @@ class ResultController extends CommonFormController
             $form->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if ('POST' === $request->getMethod()) {
@@ -210,7 +210,7 @@ class ResultController extends CommonFormController
             'form:forms:viewother',
             $submission->getForm()->getCreatedBy())
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $fileName = $results[$field];
@@ -240,7 +240,7 @@ class ResultController extends CommonFormController
             'form:forms:viewother',
             $fieldEntity->getForm()->getCreatedBy())
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $file = $formUploader->getCompleteFilePath($fieldEntity, $fileName);
@@ -277,7 +277,7 @@ class ResultController extends CommonFormController
         $returnUrl = $this->generateUrl('mautic_form_index', ['page' => $formPage]);
 
         if (!$this->security->isAdmin() && !$this->security->isGranted('form:export:enable', 'MATCH_ONE')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if (null === $form) {
@@ -306,7 +306,7 @@ class ResultController extends CommonFormController
             $form->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $orderBy    = $session->get('mautic.formresult.'.$objectId.'.orderby', 's.date_submitted');
@@ -352,7 +352,7 @@ class ResultController extends CommonFormController
                     'msgVars' => ['%id%' => $objectId],
                 ];
             } elseif (!$this->security->hasEntityAccess('form:forms:editown', 'form:forms:editother', $entity->getCreatedBy())) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } else {
                 $id = $entity->getId();
                 $model->deleteEntity($entity);
@@ -483,7 +483,7 @@ class ResultController extends CommonFormController
                 ],
             ]);
         } elseif (!$this->security->hasEntityAccess('form:forms:viewown', 'form:forms:viewother', $form->getCreatedBy())) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $orderBy    = $session->get('mautic.formresult.'.$objectId.'.orderby', 's.date_submitted');

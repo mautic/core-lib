@@ -67,7 +67,7 @@ class ListController extends FormController
 
         // If no permission set to the current user.
         if (!in_array(1, $permissions)) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -171,7 +171,7 @@ class ListController extends FormController
     public function newAction(Request $request, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $listModel, AuditLogModel $auditLogModel): Response
     {
         if (!$this->security->isGranted(LeadPermissions::LISTS_CREATE)) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // retrieve the entity
@@ -199,7 +199,7 @@ class ListController extends FormController
     public function cloneAction(Request $request, SegmentDependencies $segmentDependencies, SegmentCampaignShare $segmentCampaignShare, ListModel $listModel, AuditLogModel $auditLogModel, $objectId, $ignorePost = false): Response
     {
         if (!$this->security->isGranted(LeadPermissions::LISTS_CREATE)) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
         $postActionVars = $this->getPostActionVars($request, $objectId);
 
@@ -512,7 +512,7 @@ class ListController extends FormController
                 LeadPermissions::LISTS_DELETE_OWN, LeadPermissions::LISTS_DELETE_OTHER, $list->getCreatedBy()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($list)) {
                 return $this->isLocked($postActionVars, $list, 'lead.list');
             } else {
@@ -678,7 +678,7 @@ class ListController extends FormController
             } elseif (!$this->security->hasEntityAccess(
                 LeadPermissions::LISTS_EDIT_OWN, LeadPermissions::LISTS_EDIT_OTHER, $lead->getPermissionUser()
             )) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif (null === $list) {
                 $flashes[] = [
                     'type'    => 'error',
@@ -688,7 +688,7 @@ class ListController extends FormController
             } elseif (!$list->isGlobal() && !$this->security->hasEntityAccess(
                 LeadPermissions::LISTS_VIEW_OWN, LeadPermissions::LISTS_VIEW_OTHER, $list->getCreatedBy()
             )) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($lead)) {
                 return $this->isLocked($postActionVars, $lead, 'lead');
             } else {
@@ -765,7 +765,7 @@ class ListController extends FormController
             $list->getCreatedBy()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $dateRangeValues              = $request->query->all()['daterange'] ?? $request->request->all()['daterange'] ?? [];

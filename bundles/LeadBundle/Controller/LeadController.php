@@ -91,7 +91,7 @@ class LeadController extends FormController
         );
 
         if (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $this->setListFilters();
@@ -264,7 +264,7 @@ class LeadController extends FormController
             && !$permissions['lead:leads:editown']
             && !$permissions['lead:leads:editother']
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
         /** @var LeadModel $model */
         $model = $this->getModel('lead.lead');
@@ -393,7 +393,7 @@ class LeadController extends FormController
             $lead->getPermissionUser()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $fields            = $lead->getFields();
@@ -493,7 +493,7 @@ class LeadController extends FormController
         $lead  = $model->getEntity();
 
         if (!$this->security->isGranted('lead:leads:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
@@ -704,7 +704,7 @@ class LeadController extends FormController
             $lead->getPermissionUser()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif ($model->isLocked($lead)) {
             // deny access if the entity is locked
             return $this->isLocked($postActionVars, $lead, 'lead.lead');
@@ -980,7 +980,7 @@ class LeadController extends FormController
                         !$this->security->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $mainLead->getPermissionUser())
                         || !$this->security->hasEntityAccess('lead:leads:editown', 'lead:leads:editother', $secLead->getPermissionUser())
                     ) {
-                        $this->checkAccessDenied();
+                        $this->throwAccessDenied();
                     } elseif ($model->isLocked($mainLead)) {
                         // deny access if the entity is locked
                         return $this->isLocked($postActionVars, $secLead, 'lead');
@@ -1065,7 +1065,7 @@ class LeadController extends FormController
                 $lead->getPermissionUser()
             )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $viewParameters = [
@@ -1163,7 +1163,7 @@ class LeadController extends FormController
                 $entity->getPermissionUser()
             )
             ) {
-                $this->checkAccessDenied();
+                $this->throwAccessDenied();
             } elseif ($model->isLocked($entity)) {
                 return $this->isLocked($postActionVars, $entity, 'lead.lead');
             } else {
@@ -1888,7 +1888,7 @@ class LeadController extends FormController
     public function batchOwnersAction(Request $request, $objectId = 0)
     {
         if (!$this->security->isGranted('user:users:view')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if ('POST' == $request->getMethod()) {
@@ -1998,7 +1998,7 @@ class LeadController extends FormController
             (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother'])
             || (!$permissions['lead:leads:editown'] && !$permissions['lead:leads:editother'])
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         if (Request::METHOD_POST === $request->getMethod()) {
@@ -2185,9 +2185,9 @@ class LeadController extends FormController
         );
 
         if (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif (!$this->security->isAdmin() && !$this->security->isGranted('lead:export:enable', 'MATCH_ONE')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $fileType = $request->get('filetype', 'csv');
@@ -2290,9 +2290,9 @@ class LeadController extends FormController
         );
 
         if (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif (!$this->security->isAdmin() && !$this->security->isGranted('lead:export:enable', 'MATCH_ONE')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /** @var LeadModel $leadModel */
@@ -2332,7 +2332,7 @@ class LeadController extends FormController
             ->isGranted(['lead:leads:viewown', 'lead:leads:viewother'], 'RETURN_ARRAY');
 
         if (!$permissions['lead:leads:viewown'] && !$permissions['lead:leads:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         /** @var ContactExportSchedulerModel $model */
@@ -2384,7 +2384,7 @@ class LeadController extends FormController
             $lead->getPermissionUser()
         )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         return $this->delegateView(
@@ -2412,7 +2412,7 @@ class LeadController extends FormController
                 $lead->getPermissionUser()
             )
         ) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $pointGroups = $pointGroupModel->getEntities();

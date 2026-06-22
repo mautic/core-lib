@@ -176,7 +176,7 @@ class CampaignController extends AbstractStandardFormController
         if (!$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
             $this->logger->error('Access denied for campaign export', ['user' => $this->user->getId()]);
 
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $campaign = $campaignModel->getEntity($objectId);
@@ -220,9 +220,9 @@ class CampaignController extends AbstractStandardFormController
         );
 
         if (!$permissions['campaign:campaigns:viewown'] && !$permissions['campaign:campaigns:viewother']) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         } elseif (!$this->security->isGranted('campaign:export:enable', 'MATCH_ONE')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $session     = $request->getSession();
@@ -447,7 +447,7 @@ class CampaignController extends AbstractStandardFormController
         $campaign = $model->getEntity();
 
         if (!$this->security->isGranted('campaign:campaigns:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         // set the page we came from
