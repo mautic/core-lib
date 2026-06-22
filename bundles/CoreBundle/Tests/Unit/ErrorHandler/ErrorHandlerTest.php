@@ -7,20 +7,26 @@ namespace Mautic\CoreBundle\Tests\Unit\ErrorHandler;
 use Mautic\CoreBundle\ErrorHandler\ErrorHandler;
 use PHPUnit\Framework\TestCase;
 
-class ErrorHandlerTest extends TestCase
+final class ErrorHandlerTest extends TestCase
 {
     private string $originalCwd;
+
+    private ?ErrorHandler $originalHandler = null;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->originalCwd = getcwd() ?: sys_get_temp_dir();
+        $this->originalCwd     = getcwd() ?: sys_get_temp_dir();
+        $this->originalHandler = ErrorHandler::$handler;
     }
 
     protected function tearDown(): void
     {
         chdir($this->originalCwd);
+        // register() assigns the static ErrorHandler::$handler singleton; restore
+        // it so this test cannot leak handler state into later tests.
+        ErrorHandler::$handler = $this->originalHandler;
 
         parent::tearDown();
     }
