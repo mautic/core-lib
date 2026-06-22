@@ -264,7 +264,7 @@ class CampaignApiController extends CommonApiController
         /** @var array<ConstraintViolationListInterface<ConstraintViolationInterface>> $eventViolations */
         $eventViolations = array_filter(
             array_map(
-                fn (Event $event): \Symfony\Component\Validator\ConstraintViolationListInterface => $this->validator->validate($event),
+                fn (Event $event): ConstraintViolationListInterface => $this->validator->validate($event),
                 $entity->getEvents()->toArray()
             ),
             fn ($error): bool => $error->count() > 0
