@@ -449,7 +449,7 @@ class FormEntity extends CommonEntity
      *
      * @throws \BadMethodCallException
      */
-    public function getPublishStatus()
+    public function getPublishStatus(): string
     {
         $dt      = new DateTimeHelper();
         $current = $dt->getLocalDateTime();
