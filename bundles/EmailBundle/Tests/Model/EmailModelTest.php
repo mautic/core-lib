@@ -242,6 +242,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->sendToContactModel        = new SendEmailToContact($this->mailHelper, $this->statHelper, $this->dncModel, $this->translator);
         $this->deviceTrackerMock         = $this->createMock(DeviceTracker::class);
         $this->redirectRepositoryMock    = $this->createMock(RedirectRepository::class);
+        // @phpstan-ignore classConstant.deprecatedClass
         $this->cacheStorageHelperMock    = $this->createMock(CacheStorageHelper::class);
         $this->contactTracker            = $this->createMock(ContactTracker::class);
         $this->doNotContact              = $this->createMock(DoNotContact::class);
@@ -251,8 +252,6 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->leadDeviceRepository      = $this->createMock(LeadDeviceRepository::class);
         $this->botRatioHelperMock        = $this->createMock(BotRatioHelper::class);
         $this->abTestSettingsServiceMock = $this->createMock(\Mautic\CoreBundle\Model\AbTest\AbTestSettingsService::class);
-
-        $this->ipLookupHelper->method('isRequestTrackable')->willReturn(true);
 
         $this->ipLookupHelper->method('isRequestTrackable')->willReturn(true);
 
@@ -1028,7 +1027,8 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         self::assertEquals(self::SEGMENT_B, $result['datasets'][2]['label']);
     }
 
-    private function getEmailListStats(ArrayCollection $lists)
+    /** @return array<string, mixed> */
+    private function getEmailListStats(ArrayCollection $lists): array
     {
         $trackableRepo    = $this->createMock(TrackableRepository::class);
         $doNotContactRepo = $this->createMock(DoNotContactRepository::class);
