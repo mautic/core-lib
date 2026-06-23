@@ -46,10 +46,7 @@ class ContactTracker
     ) {
     }
 
-    /**
-     * @return Lead|null
-     */
-    public function getContact()
+    public function getContact(): ?Lead
     {
         if (null !== $this->getRequest() && $this->getRequest()->cookies->get('Blocked-Tracking')) {
             return null;
@@ -172,10 +169,7 @@ class ContactTracker
         $this->ipLookupHelper->reset();
     }
 
-    /**
-     * @return Lead|null
-     */
-    private function getSystemContact()
+    private function getSystemContact(): ?Lead
     {
         if ($this->useSystemContact() && $this->systemContact) {
             $this->logger->debug('CONTACT: System lead is being used');

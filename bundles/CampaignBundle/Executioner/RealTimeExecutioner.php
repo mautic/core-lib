@@ -22,10 +22,7 @@ use Psr\Log\LoggerInterface;
 
 class RealTimeExecutioner
 {
-    /**
-     * @var Lead
-     */
-    private $contact;
+    private ?Lead $contact = null;
 
     /**
      * @var array

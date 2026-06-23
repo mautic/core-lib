@@ -40,10 +40,8 @@ class InputHelper
     /**
      * @param bool $html
      * @param bool $strict
-     *
-     * @return InputFilter
      */
-    private static function getFilter($html = false, $strict = false)
+    private static function getFilter($html = false, $strict = false): ?InputFilter
     {
         if (!self::$htmlFilter instanceof InputFilter) {
             // Most of Mautic's HTML uses include full HTML documents so use blacklist method

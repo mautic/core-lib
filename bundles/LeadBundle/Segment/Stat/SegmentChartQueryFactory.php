@@ -19,9 +19,6 @@ class SegmentChartQueryFactory
         return $query->getAddedEventLogStats();
     }
 
-    /**
-     * @return array
-     */
     public function getContactsRemoved(SegmentContactsLineChartQuery $query): ?array
     {
         return $query->getRemovedEventLogStats();
