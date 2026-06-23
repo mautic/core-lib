@@ -41,7 +41,7 @@ final class CampaignRestartFromSegmentTest extends MauticMysqlTestCase
         $this->em->persist($listLead);
 
         // Create a "change points" action in the campaign (simple, observable side-effect)
-        $event = $this->createEvent(
+        $this->createEvent(
             'Add 10 points',
             $campaign,
             'lead.changepoints',

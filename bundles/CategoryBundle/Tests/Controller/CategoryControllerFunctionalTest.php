@@ -126,10 +126,7 @@ class CategoryControllerFunctionalTest extends MauticMysqlTestCase
         // so the form has no "apply" child. editAction used to call
         // $form->get('buttons')->get('apply') unconditionally, which threw
         // OutOfBoundsException "Child \"apply\" does not exist" (HTTP 500) on a valid save.
-        Assert::assertTrue(
-            $this->client->getResponse()->isOk(),
-            $this->client->getResponse()->getContent()
-        );
+        $this->assertResponseIsSuccessful($this->client->getResponse()->getContent());
 
         $body = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertSame('Category for color edit', $body['categoryName']);
