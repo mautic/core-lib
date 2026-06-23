@@ -164,12 +164,14 @@ class MailHelper
      * @var string
      */
     protected $subject              = '';
+
     private ?string $subjectInitial = null;
 
     /**
      * @var string
      */
     protected $plainText              = '';
+
     private ?string $plainTextInitial = null;
 
     /**
