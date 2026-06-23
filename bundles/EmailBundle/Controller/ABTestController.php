@@ -10,6 +10,7 @@ use Mautic\EmailBundle\Entity\Email;
 use Mautic\EmailBundle\Form\Type\GenerateABTestType;
 use Mautic\EmailBundle\Model\EmailModel;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 final class ABTestController extends AbstractFormController
 {
@@ -17,7 +18,7 @@ final class ABTestController extends AbstractFormController
 
     public const TOTAL_WEIGHT = 10;
 
-    public function generateABTestAction(Request $request, EmailModel $emailModel, int $objectId): \Symfony\Component\HttpFoundation\Response
+    public function generateABTestAction(Request $request, EmailModel $emailModel, int $objectId): Response
     {
         if (!$parent = $emailModel->getEntity($objectId)) {
             return $this->notFound();
@@ -28,7 +29,7 @@ final class ABTestController extends AbstractFormController
             'email:emails:editother',
             $parent->getCreatedBy()
         )) {
-            return $this->accessDenied();
+            $this->throwAccessDenied();
         }
 
         $action = $this->generateUrl('mautic_abtest_generate', ['objectId' => $objectId]);

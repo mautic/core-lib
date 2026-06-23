@@ -59,7 +59,7 @@ final class GenerateABTestType extends AbstractType
                 ]
             );
 
-            $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($criteria) {
+            $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($criteria): void {
                 $form = $event->getForm();
                 $data = $event->getData();
 
