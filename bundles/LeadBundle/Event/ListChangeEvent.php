@@ -8,7 +8,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ListChangeEvent extends Event
 {
-    private Lead $lead;
+    private ?Lead $lead = null;
 
     /**
      * @var Lead[]|null
@@ -34,7 +34,7 @@ class ListChangeEvent extends Event
     /**
      * Returns the Lead entity.
      */
-    public function getLead(): Lead
+    public function getLead(): ?Lead
     {
         return $this->lead;
     }
