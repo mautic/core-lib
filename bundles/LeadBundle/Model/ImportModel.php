@@ -432,7 +432,7 @@ class ImportModel extends FormModel
             if ($diffCount > 0) {
                 // Fill in the data with empty string
                 $fill = array_fill($dataCount, $diffCount, '');
-                $data = $data + $fill;
+                $data += $fill;
             } else {
                 return true;
             }
