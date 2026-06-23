@@ -280,6 +280,9 @@ class PlainTextHelper
         $this->converted = true;
     }
 
+    /**
+     * @phpstan-impure
+     */
     protected function converter(&$text)
     {
         $this->convertBlockquotes($text);
@@ -353,9 +356,9 @@ class PlainTextHelper
             return $display.' ['.($index + 1).']';
         } elseif ('nextline' == $linkMethod) {
             return $display."\n[".$url.']';
-        } else { // link_method defaults to inline
-            return $display.' ['.$url.']';
-        }
+        }   // link_method defaults to inline
+
+        return $display.' ['.$url.']';
     }
 
     protected function convertPre(&$text)

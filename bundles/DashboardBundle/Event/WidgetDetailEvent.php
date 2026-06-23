@@ -103,7 +103,7 @@ class WidgetDetailEvent extends CommonEvent
     /**
      * Set the cache timeout.
      *
-     * @param string $cacheTimeout
+     * @param int|null $cacheTimeout
      */
     public function setCacheTimeout($cacheTimeout): void
     {
@@ -333,9 +333,6 @@ class WidgetDetailEvent extends CommonEvent
      */
     public function hasPermissions(array $permissions): bool
     {
-        if (!$this->security) {
-            return true;
-        }
         $perm = $this->security->isGranted($permissions, 'RETURN_ARRAY');
 
         return in_array(true, $perm);
@@ -350,10 +347,6 @@ class WidgetDetailEvent extends CommonEvent
      */
     public function hasPermission($permission)
     {
-        if (!$this->security) {
-            return true;
-        }
-
         return $this->security->isGranted($permission);
     }
 

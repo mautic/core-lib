@@ -94,7 +94,7 @@ class CheckStep implements StepInterface
 
         foreach (\DateTimeZone::listAbbreviations() as $abbreviations) {
             foreach ($abbreviations as $abbreviation) {
-                $timezones[$abbreviation['timezone_id']] = true;
+                $timezones[$abbreviation['timezone_id'] ?? ''] = true;
             }
         }
 
@@ -210,9 +210,7 @@ class CheckStep implements StepInterface
 
         if (class_exists('\\Collator')) {
             try {
-                if (is_null(new \Collator('fr_FR'))) {
-                    $messages[] = 'mautic.install.intl.config';
-                }
+                new \Collator('fr_FR');
             } catch (\Exception) {
                 $messages[] = 'mautic.install.intl.config';
             }

@@ -24,7 +24,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
     /**
      * Define the widget(s).
      *
-     * @var string
+     * @var array<string, array<string, string>>
      */
     protected $types = [
         'emails.in.time' => [
@@ -185,7 +185,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
             $widget = $event->getWidget();
             $params = $widget->getParams();
             $height = $widget->getHeight();
-            $limit  = round(($height - 80) / 60);
+            $limit  = round(($height - 80) / 80);
 
             $upcomingEmails = $this->emailModel->getUpcomingEmails($limit, $canViewOthers);
 

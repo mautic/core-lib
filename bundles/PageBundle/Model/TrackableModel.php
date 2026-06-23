@@ -47,6 +47,11 @@ class TrackableModel extends AbstractCommonModel
     protected $contentReplacements = [];
 
     /**
+     * Indicates whether first-pass replacements were collected while parsing content.
+     */
+    protected bool $hasFirstPassReplacements = false;
+
+    /**
      * Used to rebuild correct URLs when the tokenized URL contains query parameters.
      *
      * @var bool
@@ -93,15 +98,31 @@ class TrackableModel extends AbstractCommonModel
      *
      * @return string
      */
-    public function generateTrackableUrl(Trackable $trackable, $clickthrough = [], $shortenUrl = false, $utmTags = [])
-    {
+    public function generateTrackableUrl(
+        Trackable $trackable,
+        $clickthrough = [],
+        $shortenUrl = false,
+        $utmTags = [],
+    ) {
         if (!isset($clickthrough['channel'])) {
             $clickthrough['channel'] = [$trackable->getChannel() => $trackable->getChannelId()];
         }
 
         $redirect = $trackable->getRedirect();
 
-        return $this->getRedirectModel()->generateRedirectUrl($redirect, $clickthrough, $shortenUrl, $utmTags);
+        $redirectModel = $this->getRedirectModel();
+
+        $trackedUrl = $redirectModel->generateRedirectUrl($redirect, $clickthrough);
+
+        if ([] !== $utmTags) {
+            $trackedUrl = $redirectModel->applyUtmTags($trackedUrl, $utmTags);
+        }
+
+        if ($shortenUrl) {
+            $trackedUrl = $redirectModel->shortenUrl($trackedUrl);
+        }
+
+        return $trackedUrl;
     }
 
     /**
@@ -301,15 +322,16 @@ class TrackableModel extends AbstractCommonModel
         // Sort longer to shorter strings to ensure that URLs that share the same base are appropriately replaced
         uksort($this->contentReplacements['second_pass'], fn ($a, $b): int => strlen($b) - strlen($a));
 
-        if ('html' == $type) {
-            // For HTML, replace only the links; leaving the link text (if a URL) intact
+        if ('html' === $type) {
+            // Hours spent trying to handle through \DomDocument: 9h. The issue is that tokens "{token}" is replaced
+            // by the \DomDocument::save will encode those on all doc, but here we need to replace only `href`.
             foreach ($this->contentReplacements['second_pass'] as $search => $replace) {
                 // Make the search regular expression match both "&" and "&amp;".
                 $search  = preg_quote($search, '/');
                 $search  = str_replace('&amp;', '&', $search);
                 $search  = str_replace('&', '(?:&|&amp;)', $search);
                 $content = preg_replace(
-                    '/<(.*?) href=(["\'])'.$search.'(.*?)\\2(.*?)>/i',
+                    '/<(.*?) href=(["\'])(?:\R|)(?:\s*)'.$search.'(.*?)(?:\s*)(?:\R|)\\2(.*?)>/i',
                     '<$1 href=$2'.$replace.'$3$2$4>',
                     $content
                 );
@@ -325,6 +347,8 @@ class TrackableModel extends AbstractCommonModel
     }
 
     /**
+     * @phpstan-impure
+     *
      * @return array
      */
     protected function extractTrackablesFromContent($content)
@@ -439,6 +463,7 @@ class TrackableModel extends AbstractCommonModel
             if ($token === $tokenizedHost && $scheme = (!empty($urlParts['scheme'])) ? $urlParts['scheme'] : false) {
                 // Token has a schema so let's get rid of it before replacing tokens
                 $this->contentReplacements['first_pass'][$scheme.'://'.$tokenizedHost] = $tokenizedHost;
+                $this->hasFirstPassReplacements                                        = true;
                 unset($urlParts['scheme']);
             }
 
@@ -453,7 +478,8 @@ class TrackableModel extends AbstractCommonModel
                 $trackableKey = $trackableUrl;
 
                 // Replace the URL token with the actual URL
-                $this->contentReplacements['first_pass'][$url] = $trackableUrl;
+                $this->contentReplacements['first_pass'][$url]  = $trackableUrl;
+                $this->hasFirstPassReplacements                 = true;
             }
         } else {
             // Regular URL without a tokenized host
@@ -668,6 +694,8 @@ class TrackableModel extends AbstractCommonModel
      */
     private function parseContent($content, $channel, $channelId, array &$trackableTokens)
     {
+        $this->hasFirstPassReplacements = false;
+
         // Reset content replacement arrays
         $this->contentReplacements = [
             // PHPSTAN reported duplicate keys in this array. I can't determine which is the right one.
@@ -702,8 +730,8 @@ class TrackableModel extends AbstractCommonModel
 
             // Replace URLs in content with tokens
             $content = $this->prepareContentWithTrackableTokens($content, $contentType);
-        } elseif (!empty($this->contentReplacements['first_pass'])) {
-            // Replace URLs in content with tokens
+        } elseif ($this->hasFirstPassReplacements) {
+            // Apply first-pass replacements even when no trackables are created.
             $content = $this->prepareContentWithTrackableTokens($content, $contentType);
         }
 
@@ -740,12 +768,8 @@ class TrackableModel extends AbstractCommonModel
     {
         $trackableUrls = [];
         /** @var \DOMElement $link */
-        foreach ($links as $link) {
+        foreach ($this->extractHrefs($links) as $link) {
             $url = $link->getAttribute('href');
-
-            if ('' === $url) {
-                continue;
-            }
 
             // Check for a do not track
             // @deprecated since 7.x — Will be removed in 8.0. Use data-mautic-disable-tracking.
@@ -767,5 +791,22 @@ class TrackableModel extends AbstractCommonModel
         }
 
         return $trackableUrls;
+    }
+
+    /**
+     * @return \Generator<int, \DOMElement>
+     */
+    private function extractHrefs(\DOMNodeList $elements): \Generator
+    {
+        /** @var \DOMElement $element */
+        foreach ($elements as $element) {
+            $url = $element->getAttribute('href');
+
+            if ('' === $url) {
+                continue;
+            }
+
+            yield $element;
+        }
     }
 }
