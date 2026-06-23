@@ -238,7 +238,7 @@ class Import extends FormEntity
      */
     public function isBackgroundProcess(): bool
     {
-        return !(self::MANUAL === $this->getStatus());
+        return self::MANUAL !== $this->getStatus();
     }
 
     /**
