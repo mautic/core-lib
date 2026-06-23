@@ -47,13 +47,8 @@ class ActionDispatcher
 
             $this->validateProcessedLogs($logs, $success, $failed);
 
-            if ($success) {
-                $this->dispatchExecutedEvent($config, $event, $success);
-            }
-
-            if ($failed) {
-                $this->dispatchFailedEvent($config, $failed);
-            }
+            $this->dispatchExecutedEvent($config, $event, $success);
+            $this->dispatchFailedEvent($config, $failed);
 
             // Dispatch legacy ON_EVENT_EXECUTION event for BC
             $this->legacyDispatcher->dispatchExecutionEvents($config, $success, $failed);
