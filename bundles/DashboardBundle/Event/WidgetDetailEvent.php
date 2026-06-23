@@ -164,8 +164,6 @@ class WidgetDetailEvent extends CommonEvent
 
     /**
      * Returns the widget entity.
-     *
-     * @return Widget $widget
      */
     public function getWidget(): Widget
     {
