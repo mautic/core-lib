@@ -1061,7 +1061,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
             }
         }
 
-        if ($queryHasUtmTags && $lead) {
+        if ($queryHasUtmTags) {
             $utmTags = new UtmTag();
             $utmTags->setDateAdded($hit->getDateHit());
             $utmTags->setUrl($hit->getUrl());
