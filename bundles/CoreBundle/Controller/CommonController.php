@@ -663,6 +663,8 @@ class CommonController extends AbstractController implements MauticController
      * Overwrite in your controller if required.
      *
      * @param AbstractCommonModel<object> $model
+     *
+     * @return array
      */
     protected function getDataForExport(AbstractCommonModel $model, array $args, ?callable $resultsCallback = null, ?int $start = 0)
     {
