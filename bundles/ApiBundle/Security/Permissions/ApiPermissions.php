@@ -8,6 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ApiPermissions extends AbstractPermissions
 {
+    /**
+     * @param mixed[] $params
+     */
     public function __construct(array $params)
     {
         parent::__construct($params);

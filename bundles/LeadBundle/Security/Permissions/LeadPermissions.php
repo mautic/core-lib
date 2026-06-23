@@ -26,6 +26,9 @@ class LeadPermissions extends AbstractPermissions
 
     public const LISTS_FULL         = 'lead:lists:full';
 
+    /**
+     * @param mixed[] $params
+     */
     public function __construct(array $params)
     {
         parent::__construct($params);
