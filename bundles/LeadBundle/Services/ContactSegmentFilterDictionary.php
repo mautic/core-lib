@@ -19,7 +19,7 @@ class ContactSegmentFilterDictionary
     /**
      * @var mixed[]
      */
-    private $filters = [];
+    private array $filters = [];
 
     public function __construct(
         private EventDispatcherInterface $dispatcher,
