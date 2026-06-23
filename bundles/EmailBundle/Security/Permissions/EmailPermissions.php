@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class EmailPermissions extends AbstractPermissions
 {
-    public function __construct($params)
+    public function __construct(array $params)
     {
         parent::__construct($params);
 

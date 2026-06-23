@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DynamicContentPermissions extends AbstractPermissions
 {
-    public function __construct($params)
+    public function __construct(array $params)
     {
         parent::__construct($params);
 
