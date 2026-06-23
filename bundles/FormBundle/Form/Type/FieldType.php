@@ -463,7 +463,7 @@ class FieldType extends AbstractType
             );
         }
 
-        $func = function (FormEvent $event) use ($addMappedFieldList, $type) {
+        $func = function (FormEvent $event) use ($addMappedFieldList, $type): void {
             $fieldData = $event->getData();
             $form      = $event->getForm();
 
