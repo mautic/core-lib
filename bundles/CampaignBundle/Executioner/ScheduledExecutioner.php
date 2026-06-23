@@ -75,7 +75,7 @@ class ScheduledExecutioner implements ExecutionerInterface, ResetInterface
      * @throws NotSchedulableException
      * @throws QueryException
      */
-    public function execute(Campaign $campaign, ContactLimiter $limiter, ?OutputInterface $output = null)
+    public function execute(Campaign $campaign, ContactLimiter $limiter, ?OutputInterface $output = null): ?Counter
     {
         $this->campaign   = $campaign;
         $this->limiter    = $limiter;
@@ -99,15 +99,13 @@ class ScheduledExecutioner implements ExecutionerInterface, ResetInterface
     }
 
     /**
-     * @return Counter
-     *
      * @throws LogNotProcessedException
      * @throws LogPassedAndFailedException
      * @throws CannotProcessEventException
      * @throws NotSchedulableException
      * @throws QueryException
      */
-    public function executeByIds(array $logIds, ?OutputInterface $output = null, ?\DateTime $now = null)
+    public function executeByIds(array $logIds, ?OutputInterface $output = null, ?\DateTime $now = null): ?Counter
     {
         $now ??= $this->now ?? new \DateTime();
         $this->output  = $output ?: new NullOutput();

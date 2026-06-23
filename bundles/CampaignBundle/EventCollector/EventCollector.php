@@ -23,10 +23,7 @@ class EventCollector
     ) {
     }
 
-    /**
-     * @return EventAccessor
-     */
-    public function getEvents()
+    public function getEvents(): EventAccessor
     {
         if (empty($this->eventsArray)) {
             $this->buildEventList();
