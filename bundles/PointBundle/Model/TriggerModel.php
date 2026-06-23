@@ -40,7 +40,7 @@ class TriggerModel extends CommonFormModel implements GlobalSearchInterface
     /**
      * @var array<string, mixed[]>
      */
-    private $cachedEvents = [];
+    private array $cachedEvents = [];
 
     public function __construct(
         protected IpLookupHelper $ipLookupHelper,
