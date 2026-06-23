@@ -26,15 +26,8 @@ class ConsoleErrorListener
             $exception->getMessage(),
             $exception->getFile(),
             $exception->getLine(),
-<<<<<<< HEAD
-<<<<<<< HEAD
+
             $command instanceof \Symfony\Component\Console\Command\Command ? $command->getName() : 'UNKNOWN',
-=======
-            !$command instanceof \Symfony\Component\Console\Command\Command ? 'UNKNOWN' : $command->getName(),
->>>>>>> cb1dc198b9 ([types] make use of instanceof on empty object checks)
-=======
-            $command instanceof \Symfony\Component\Console\Command\Command ? $command->getName() : 'UNKNOWN',
->>>>>>> 2849359f06 (flip ternary to improve readability)
             "\n[stack trace]\n".$exception->getTraceAsString()
         );
 
