@@ -664,7 +664,7 @@ class CommonController extends AbstractController implements MauticController
      *
      * @param AbstractCommonModel<object> $model
      */
-    protected function getDataForExport(AbstractCommonModel $model, array $args, ?callable $resultsCallback = null, ?int $start = 0): ?array
+    protected function getDataForExport(AbstractCommonModel $model, array $args, ?callable $resultsCallback = null, ?int $start = 0)
     {
         $data = new DataExporterHelper();
 

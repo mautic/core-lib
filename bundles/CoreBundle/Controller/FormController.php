@@ -71,7 +71,10 @@ class FormController extends AbstractStandardFormController
         return $this->deprecatedModelName;
     }
 
-    protected function getJsLoadMethodPrefix(): ?string
+    /**
+     * @return mixed
+     */
+    protected function getJsLoadMethodPrefix()
     {
         return $this->deprecatedMauticContent;
     }
