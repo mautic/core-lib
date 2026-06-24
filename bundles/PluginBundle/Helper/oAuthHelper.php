@@ -112,6 +112,8 @@ class oAuthHelper
 
     /**
      * Build base string for OAuth 1 signature signing.
+     *
+     * @param array<string, mixed> $params
      */
     private function buildBaseString($baseURI, $method, array $params): string
     {
@@ -122,6 +124,8 @@ class oAuthHelper
 
     /**
      * Build header for OAuth 1 authorization.
+     *
+     * @param array<string, mixed> $oauth
      */
     private function buildAuthorizationHeader(array $oauth): string
     {
