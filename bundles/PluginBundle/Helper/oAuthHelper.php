@@ -142,7 +142,7 @@ class oAuthHelper
      *
      * @return string|array<string,string>
      */
-    private function normalizeParameters($parameters, $encode = false, bool $returnarray = false, $normalized = [], $key = '')
+    private function normalizeParameters(array $parameters, $encode = false, bool $returnarray = false, $normalized = [], $key = '')
     {
         // Sort by key
         ksort($parameters);

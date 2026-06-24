@@ -30,7 +30,6 @@ class ConnectionBuilder
     }
 
     /**
-     * @param string $eventType
      * @param string $key
      */
     private static function addTypeConnection(int|string $eventType, $key, array $event): void
@@ -84,7 +83,7 @@ class ConnectionBuilder
      * @param string $eventType
      * @param string $key
      */
-    private static function addDeprecatedAnchorRestrictions($eventType, $key, array $event): void
+    private static function addDeprecatedAnchorRestrictions(string|int $eventType, $key, array $event): void
     {
         switch ($eventType) {
             case Event::TYPE_DECISION:
