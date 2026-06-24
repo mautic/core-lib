@@ -107,7 +107,7 @@ class NoteModel extends FormModel
         }
 
         if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
+            if (!$event instanceof Event) {
                 $event = new LeadNoteEvent($entity, $isNew);
                 $event->setEntityManager($this->em);
             }
@@ -115,9 +115,9 @@ class NoteModel extends FormModel
             $this->dispatcher->dispatch($event, $name);
 
             return $event;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

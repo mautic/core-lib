@@ -11,6 +11,7 @@ use Mautic\LeadBundle\Services\PeakInteractionTimer;
 class Optimized implements ScheduleModeInterface
 {
     public const OPTIMIZED_TIME         = 0;
+
     public const OPTIMIZED_DAY_AND_TIME = 1;
 
     /** @var string[] */
@@ -30,8 +31,8 @@ class Optimized implements ScheduleModeInterface
     {
         if (self::OPTIMIZED_DAY_AND_TIME === $event->getTriggerWindow()) {
             return $this->peakInteractionTimer->getOptimalTimeAndDay($contact);
-        } else {
-            return $this->peakInteractionTimer->getOptimalTime($contact);
         }
+
+        return $this->peakInteractionTimer->getOptimalTime($contact);
     }
 }

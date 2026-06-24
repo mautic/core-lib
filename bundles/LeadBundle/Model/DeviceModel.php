@@ -39,10 +39,7 @@ class DeviceModel extends FormModel
         parent::__construct($em, $security, $dispatcher, $router, $translator, $userHelper, $mauticLogger, $coreParametersHelper);
     }
 
-    /**
-     * @return LeadDeviceRepository
-     */
-    public function getRepository()
+    public function getRepository(): LeadDeviceRepository
     {
         return $this->leadDeviceRepository;
     }
@@ -107,7 +104,7 @@ class DeviceModel extends FormModel
         }
 
         if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
+            if (!$event instanceof Event) {
                 $event = new LeadDeviceEvent($entity, $isNew);
                 $event->setEntityManager($this->em);
             }
@@ -115,8 +112,8 @@ class DeviceModel extends FormModel
             $this->dispatcher->dispatch($event, $name);
 
             return $event;
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

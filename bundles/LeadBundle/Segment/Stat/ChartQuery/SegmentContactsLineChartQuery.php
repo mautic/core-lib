@@ -62,9 +62,9 @@ class SegmentContactsLineChartQuery extends ChartQuery
             $totalSum += $sum;
             if ($total > -1) {
                 return $total;
-            } else {
-                return 0;
             }
+
+            return 0;
         }, $sums);
 
         return array_reverse($totals);
@@ -112,18 +112,12 @@ class SegmentContactsLineChartQuery extends ChartQuery
         return $this->segmentId;
     }
 
-    /**
-     * @return array
-     */
-    public function getAddedEventLogStats()
+    public function getAddedEventLogStats(): ?array
     {
         return $this->addedEventLogStats;
     }
 
-    /**
-     * @return array
-     */
-    public function getRemovedEventLogStats()
+    public function getRemovedEventLogStats(): ?array
     {
         return $this->removedEventLogStats;
     }

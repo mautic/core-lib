@@ -19,12 +19,12 @@ class DynamicContentHelper
     use MatchFilterForLeadTrait;
 
     /**
-     * @const DYNAMIC_CONTENT_REGEX
+     * @var string
      */
     public const DYNAMIC_CONTENT_REGEX = '/{(dynamiccontent)=(\w+)(?:\/}|}(?:([^{]*(?:{(?!\/\1})[^{]*)*){\/\1})?)/is';
 
     /**
-     * @const DYNAMIC_WEB_CONTENT_REGEX
+     * @var string
      */
     public const DYNAMIC_WEB_CONTENT_REGEX = '/{dwc=(.*?)}/';
 
@@ -86,7 +86,7 @@ class DynamicContentHelper
                 continue;
             }
             if ($lead && $this->filtersMatchContact($dwc->getFilters(), $leadArray)) {
-                return $lead ? $this->getRealDynamicContent($dwc->getSlotName(), $lead, $dwc) : '';
+                return $this->getRealDynamicContent($dwc->getSlotName(), $lead, $dwc);
             }
         }
 

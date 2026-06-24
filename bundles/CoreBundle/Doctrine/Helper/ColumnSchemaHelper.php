@@ -73,7 +73,7 @@ class ColumnSchemaHelper
      *
      * @return \Doctrine\DBAL\Schema\AbstractSchemaManager<\Doctrine\DBAL\Platforms\AbstractMySQLPlatform>
      */
-    public function getSchemaManager()
+    public function getSchemaManager(): \Doctrine\DBAL\Schema\AbstractSchemaManager
     {
         return $this->sm;
     }
@@ -236,11 +236,11 @@ class ColumnSchemaHelper
         if (!$this->sm->tablesExist([$table])) {
             if ($throwException) {
                 throw new SchemaException("Table $table does not exist!");
-            } else {
-                return false;
             }
-        } else {
-            return true;
+
+            return false;
         }
+
+        return true;
     }
 }

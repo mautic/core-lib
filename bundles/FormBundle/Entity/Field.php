@@ -24,10 +24,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
     operations: [
         new GetCollection(security: "is_granted('form:forms:viewown')"),
         new Post(security: "is_granted('form:forms:create')"),
-        new Get(security: "is_granted('form:forms:viewown')"),
-        new Put(security: "is_granted('form:forms:editown')"),
-        new Patch(security: "is_granted('form:forms:editother')"),
-        new Delete(security: "is_granted('form:forms:deleteown')"),
+        new Get(security: "is_granted('form:forms:viewown', object)"),
+        new Put(security: "is_granted('form:forms:editown', object)"),
+        new Patch(security: "is_granted('form:forms:editother', object)"),
+        new Delete(security: "is_granted('form:forms:deleteown', object)"),
     ],
     normalizationContext: [
         'groups'                  => ['field:read'],
@@ -43,6 +43,7 @@ class Field implements UuidInterface
     use UuidTrait;
 
     public const TABLE_NAME  = 'form_fields';
+
     public const ENTITY_NAME = 'form_field';
 
     /**
@@ -265,6 +266,7 @@ class Field implements UuidInterface
         $builder->createManyToOne('form', 'Form')
             ->inversedBy('fields')
             ->addJoinColumn('form_id', 'id', false, false, 'CASCADE')
+            ->isOwnershipParent()
             ->build();
 
         $builder->addNullableField('labelAttributes', Types::STRING, 'label_attr');
@@ -349,7 +351,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getId()
     {
@@ -370,7 +372,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getLabel()
     {
@@ -391,7 +393,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getAlias()
     {
@@ -412,7 +414,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getType()
     {
@@ -433,7 +435,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getDefaultValue()
     {
@@ -485,7 +487,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getOrder()
     {
@@ -548,7 +550,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getValidationMessage()
     {
@@ -587,7 +589,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getLabelAttributes()
     {
@@ -608,7 +610,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getInputAttributes()
     {
@@ -616,7 +618,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
     public function getContainerAttributes()
     {
@@ -686,7 +688,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getHelpMessage()
     {
@@ -762,7 +764,7 @@ class Field implements UuidInterface
     /**
      * @deprecated, to be removed in Mautic 4. Use mappedObject and mappedField instead.
      *
-     * @return mixed
+     * @return string|null
      */
     public function getLeadField()
     {
@@ -780,7 +782,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return mixed
+     * @return bool|null
      */
     public function getSaveResult()
     {
@@ -812,7 +814,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function getShowWhenValueExists()
     {
@@ -828,7 +830,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getShowAfterXSubmissions()
     {
@@ -901,11 +903,11 @@ class Field implements UuidInterface
             return true;
         }
 
-        if (!isset($data[$parentField->getAlias()])) {
+        if (!isset($data[$parentField->getAlias() ?? ''])) {
             return false;
         }
 
-        $sendValues = $data[$parentField->getAlias()];
+        $sendValues = $data[$parentField->getAlias() ?? ''];
         if (!is_array($sendValues)) {
             $sendValues = [$sendValues];
         }
@@ -948,7 +950,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
     public function isAlwaysDisplay()
     {
@@ -998,7 +1000,7 @@ class Field implements UuidInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getParent()
     {
@@ -1079,5 +1081,10 @@ class Field implements UuidInterface
     public function setIsReadOnly(?bool $isReadOnly): void
     {
         $this->isReadOnly = $isReadOnly ?? false;
+    }
+
+    public function getPermissionUser(): mixed
+    {
+        return $this->getForm()?->getCreatedBy();
     }
 }

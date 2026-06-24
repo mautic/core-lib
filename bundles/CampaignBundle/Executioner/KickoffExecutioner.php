@@ -52,14 +52,12 @@ class KickoffExecutioner implements ExecutionerInterface
     }
 
     /**
-     * @return Counter
-     *
      * @throws Dispatcher\Exception\LogNotProcessedException
      * @throws Dispatcher\Exception\LogPassedAndFailedException
      * @throws Exception\CannotProcessEventException
      * @throws NotSchedulableException
      */
-    public function execute(Campaign $campaign, ContactLimiter $limiter, ?OutputInterface $output = null)
+    public function execute(Campaign $campaign, ContactLimiter $limiter, ?OutputInterface $output = null): ?Counter
     {
         $this->campaign = $campaign;
         $this->limiter  = $limiter;
@@ -99,7 +97,7 @@ class KickoffExecutioner implements ExecutionerInterface
         }
         $this->logger->debug('CAMPAIGN: Processing the following events: '.implode(', ', $this->rootEvents->getKeys()));
         $totalKickoffEvents = 0;
-        if (!($this->output instanceof NullOutput)) {
+        if (!$this->output instanceof NullOutput) {
             $totalContacts      = $this->kickoffContactFinder->getContactCount($this->campaign->getId(), $this->rootEvents->getKeys(), $this->limiter);
             $totalKickoffEvents = $totalRootEvents * $totalContacts;
 

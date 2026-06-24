@@ -40,12 +40,10 @@ class InputHelper
     /**
      * @param bool $html
      * @param bool $strict
-     *
-     * @return InputFilter
      */
-    private static function getFilter($html = false, $strict = false)
+    private static function getFilter($html = false, $strict = false): ?InputFilter
     {
-        if (empty(self::$htmlFilter)) {
+        if (!self::$htmlFilter instanceof InputFilter) {
             // Most of Mautic's HTML uses include full HTML documents so use blacklist method
             self::$htmlFilter               = new InputFilter([], [], 1, 1);
             self::$htmlFilter->blockedTags  = [
@@ -149,9 +147,9 @@ class InputHelper
             return $value;
         } elseif (is_string($mask) && method_exists(self::class, $mask)) {
             return self::$mask($value, $urldecode);
-        } else {
-            return self::getFilter()->clean($value, $mask);
         }
+
+        return self::getFilter()->clean($value, $mask);
     }
 
     /**
@@ -205,12 +203,9 @@ class InputHelper
         }
 
         $delimiter = '~';
-        if (false && in_array($delimiter, $allowedCharacters)) {
-            $delimiter = '#';
-        }
 
         if (!empty($allowedCharacters)) {
-            $regex = $delimiter.'[^0-9a-z'.preg_quote(implode('', $allowedCharacters)).']+'.$delimiter.'i';
+            $regex = $delimiter.'[^0-9a-z'.preg_quote(implode('', $allowedCharacters), $delimiter).']+'.$delimiter.'i';
         } else {
             $regex = $delimiter.'[^0-9a-z]+'.$delimiter.'i';
         }
@@ -488,7 +483,7 @@ class InputHelper
         $transId = 'Any-Latin; Latin-ASCII';
         if (function_exists('transliterator_transliterate') && $trans = \Transliterator::create($transId)) {
             // Use intl by default
-            return $trans->transliterate($value);
+            return $trans->transliterate((string) $value);
         }
 
         return \URLify::transliterate((string) $value);
@@ -598,7 +593,7 @@ class InputHelper
      */
     public static function stripTags(string $input, array $allowedTags = []): string
     {
-        $allowed = implode('', array_map(fn ($tag) => "<$tag>", $allowedTags));
+        $allowed = implode('', array_map(fn ($tag): string => "<$tag>", $allowedTags));
 
         return strip_tags($input, $allowed);
     }
