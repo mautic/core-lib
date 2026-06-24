@@ -79,7 +79,10 @@ class FormController extends AbstractStandardFormController
         return $this->deprecatedMauticContent;
     }
 
-    protected function getRouteBase(): ?string
+    /**
+     * @return mixed
+     */
+    protected function getRouteBase()
     {
         return $this->deprecatedRouteBase;
     }
@@ -92,17 +95,26 @@ class FormController extends AbstractStandardFormController
         return $this->deprecatedSessionBase ?? parent::getSessionBase($objectId);
     }
 
-    protected function getTemplateBase(): ?string
+    /**
+     * @return mixed
+     */
+    protected function getTemplateBase()
     {
         return $this->deprecatedTemplateBase;
     }
 
-    protected function getTranslationBase(): ?string
+    /**
+     * @return mixed
+     */
+    protected function getTranslationBase()
     {
         return $this->deprecatedTranslationBase;
     }
 
-    protected function getPermissionBase(): ?string
+    /**
+     * @return mixed
+     */
+    protected function getPermissionBase()
     {
         return $this->deprecatedPermissionBase;
     }
