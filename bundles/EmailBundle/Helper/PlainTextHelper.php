@@ -522,7 +522,7 @@ class PlainTextHelper
      *
      * @return string Converted text
      */
-    private function strtoupper(array|string $str): string
+    private function strtoupper(string $str): string
     {
         $str = html_entity_decode($str, ENT_COMPAT, self::ENCODING);
 
