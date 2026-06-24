@@ -70,7 +70,7 @@ class MenuBuilder
     /**
      * @return mixed
      */
-    private function buildMenu($name)
+    private function buildMenu(string|array $name)
     {
         static $menus = [];
 

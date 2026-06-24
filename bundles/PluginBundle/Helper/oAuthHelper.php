@@ -113,7 +113,7 @@ class oAuthHelper
     /**
      * Build base string for OAuth 1 signature signing.
      */
-    private function buildBaseString($baseURI, $method, $params): string
+    private function buildBaseString($baseURI, $method, array $params): string
     {
         $r = $this->normalizeParameters($params);
 
@@ -123,7 +123,7 @@ class oAuthHelper
     /**
      * Build header for OAuth 1 authorization.
      */
-    private function buildAuthorizationHeader($oauth): string
+    private function buildAuthorizationHeader(array $oauth): string
     {
         $r      = 'Authorization: OAuth ';
         $values = $this->normalizeParameters($oauth, true, true);
@@ -135,11 +135,10 @@ class oAuthHelper
      * Normalize parameters.
      *
      * @param bool $encode
-     * @param bool $returnarray
      *
      * @return string|array<string,string>
      */
-    private function normalizeParameters($parameters, $encode = false, $returnarray = false, $normalized = [], $key = '')
+    private function normalizeParameters($parameters, $encode = false, bool $returnarray = false, $normalized = [], $key = '')
     {
         // Sort by key
         ksort($parameters);

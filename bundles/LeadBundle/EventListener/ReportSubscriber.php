@@ -784,7 +784,7 @@ class ReportSubscriber implements EventSubscriberInterface
     /**
      * @param string $type
      */
-    private function injectAttributionReportData(ReportBuilderEvent $event, array $columns, array $filters, $type): void
+    private function injectAttributionReportData(ReportBuilderEvent $event, array $columns, array $filters, string|array $type): void
     {
         $attributionColumns = [
             'log.campaign_id' => [

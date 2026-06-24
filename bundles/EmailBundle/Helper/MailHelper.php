@@ -1937,7 +1937,7 @@ class MailHelper
         }
     }
 
-    private function setDefaultFrom($overrideFrom, AddressDTO $systemFrom): void
+    private function setDefaultFrom(bool $overrideFrom, AddressDTO $systemFrom): void
     {
         if (is_array($overrideFrom)) {
             $fromEmail    = key($overrideFrom);

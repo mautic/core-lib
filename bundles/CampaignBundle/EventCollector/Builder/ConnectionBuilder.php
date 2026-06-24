@@ -33,7 +33,7 @@ class ConnectionBuilder
      * @param string $eventType
      * @param string $key
      */
-    private static function addTypeConnection($eventType, $key, array $event): void
+    private static function addTypeConnection(int|string $eventType, $key, array $event): void
     {
         if (!isset(self::$connectionRestrictions[$key])) {
             self::$connectionRestrictions[$key] = [
