@@ -152,7 +152,7 @@ class TokenHelper
         return '' !== $value ? $value : $defaultValue;
     }
 
-    private static function getTokenDefaultValue(string|array $match): string
+    private static function getTokenDefaultValue(string $match): string
     {
         $fallbackCheck = explode('|', $match);
         if (!isset($fallbackCheck[1])) {
@@ -162,7 +162,7 @@ class TokenHelper
         return $fallbackCheck[1];
     }
 
-    private static function getFieldAlias(string|array $match): string
+    private static function getFieldAlias(string $match): string
     {
         $fallbackCheck = explode('|', $match);
 
