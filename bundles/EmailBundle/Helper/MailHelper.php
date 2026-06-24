@@ -1059,7 +1059,7 @@ class MailHelper
     /**
      * Set reply to address(es) for this mailer instance.
      *
-     * @param string             $name
+     * @param string $name
      */
     public function setReplyTo(?string $addresses, $name = null): void
     {
