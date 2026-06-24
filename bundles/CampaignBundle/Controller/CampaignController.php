@@ -1043,6 +1043,9 @@ class CampaignController extends AbstractStandardFormController
                 $isEmailStatsEnabled = (bool) $this->coreParametersHelper->get('campaign_email_stats_enabled', true);
                 $showEmailStats      = $isEmailStatsEnabled && $entity->isEmailCampaign();
 
+                $contactCounts = $this->getCampaignModel()->getCampaignLeadRepository()->getCampaignContactCounts([$entity->getId()]);
+                $contactCount  = (int) ($contactCounts[0]['contact_count'] ?? 0);
+
                 $args['viewParameters'] = array_merge(
                     $args['viewParameters'],
                     [
@@ -1052,6 +1055,7 @@ class CampaignController extends AbstractStandardFormController
                         'dateRangeForm'    => $dateRangeForm->createView(),
                         'campaignElements' => $this->campaignElements,
                         'lastPublishDate'  => $this->publishStateService->getLastPublishDate($entity),
+                        'contactCount'     => $contactCount,
                     ]
                 );
                 break;
