@@ -24,7 +24,7 @@ class PointEventHelper
         }
 
         // no points change
-        return !(!empty($limitToEmails) && !in_array($emailId, $limitToEmails));
+        return empty($limitToEmails) || in_array($emailId, $limitToEmails);
     }
 
     public function sendEmail($event, Lead $lead): bool

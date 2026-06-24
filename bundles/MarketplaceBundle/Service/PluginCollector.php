@@ -62,7 +62,7 @@ class PluginCollector
                 return false;
             }
 
-            return !(!empty($entry->maximumMauticVersion) && !version_compare($mauticVersion, $entry->maximumMauticVersion, '<='));
+            return empty($entry->maximumMauticVersion) || version_compare($mauticVersion, $entry->maximumMauticVersion, '<=');
         });
     }
 

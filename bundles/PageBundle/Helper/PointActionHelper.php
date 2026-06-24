@@ -30,7 +30,7 @@ class PointActionHelper
         }
 
         // no points change
-        return !(!empty($limitToPages) && !in_array($pageHitId, $limitToPages));
+        return empty($limitToPages) || in_array($pageHitId, $limitToPages);
     }
 
     public function validateUrlHit($eventDetails, $action): bool

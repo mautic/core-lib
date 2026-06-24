@@ -10,6 +10,6 @@ class PointActionHelper
         $limitToAssets = $action['properties']['assets'];
 
         // no points change
-        return !(!empty($limitToAssets) && !in_array($assetId, $limitToAssets));
+        return empty($limitToAssets) || in_array($assetId, $limitToAssets);
     }
 }

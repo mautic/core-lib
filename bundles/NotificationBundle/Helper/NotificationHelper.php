@@ -188,6 +188,6 @@ JS;
         }
 
         // disable on Landing pages
-        return !(false === $landingPage && !in_array('tracking_page_enabled', $supportedFeatures));
+        return false !== $landingPage || in_array('tracking_page_enabled', $supportedFeatures);
     }
 }

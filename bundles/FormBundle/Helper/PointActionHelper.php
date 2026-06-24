@@ -11,6 +11,6 @@ class PointActionHelper
         $limitToForms = $action['properties']['forms'];
 
         // no points change
-        return !(!empty($limitToForms) && !in_array($formId, $limitToForms));
+        return empty($limitToForms) || in_array($formId, $limitToForms);
     }
 }
