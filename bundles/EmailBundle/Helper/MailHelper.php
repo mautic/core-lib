@@ -1061,10 +1061,9 @@ class MailHelper
     /**
      * Set reply to address(es) for this mailer instance.
      *
-     * @param array<string>|string $addresses
-     * @param string               $name
+     * @param string $name
      */
-    public function setReplyTo($addresses, $name = null): void
+    public function setReplyTo(?string $addresses, $name = null): void
     {
         $this->replyTo = $addresses;
     }
