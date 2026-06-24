@@ -5,6 +5,7 @@
 
 // The editor creator to use.
 import 'ckeditor5/ckeditor5.css';
+import enTranslations from 'ckeditor5/translations/en.js';
 import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
@@ -91,6 +92,8 @@ export default class ClassicEditor extends ClassicEditorBase {
     ];
 
     public static override defaultConfig = {
-        licenseKey: 'GPL'
+        licenseKey: 'GPL',
+        language: 'en',
+        translations: [enTranslations]
     };
 }
