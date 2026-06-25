@@ -4,7 +4,7 @@
 
 {% block headerTitle %}
     {{ 'mautic.email.send.list'|trans({'%name%': email.getName()})|purify }}
-    <i title="{{ 'mautic.email.icon_tooltip.abtest.part'|trans }}" class="fa fa-fw fa-sitemap"></i>
+    <i title="{{ 'mautic.email.icon_tooltip.abtest.part'|trans }}" class="ri-fw ri-organization-chart"></i>
 {% endblock %}
 
 {% block content %}
@@ -27,7 +27,7 @@
                                         'message'         : 'mautic.email.form.confirmsend'|trans({'%name%' : email.getName()}),
                                         'confirmText'     : 'mautic.email.send'|trans,
                                         'confirmCallback' : 'submitAbSendForm',
-                                        'iconClass'       : 'fa fa-send-o',
+                                        'iconClass'       : 'ri-send-plane-line',
                                         'btnText'         : 'mautic.email.send'|trans,
                                         'btnClass'        : 'btn btn-primary btn-send' ~ ((pending) ? '' : ' disabled')
                                     }) -}}
