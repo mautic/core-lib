@@ -40,7 +40,7 @@ class AbTestSettingsService
     public function getAbTestSettings(VariantEntityInterface $variant): array
     {
         $parentVariant = $variant->getVariantParent();
-        if (empty($parentVariant)) {
+        if (!$parentVariant instanceof VariantEntityInterface) {
             $parentVariant = $variant;
         }
 
@@ -120,7 +120,7 @@ class AbTestSettingsService
         $weight           = $variantsSettings['weight'] ?? 0;
         $parentVariant    = $variant->getVariantParent();
 
-        if (!empty($parentVariant)) {
+        if ($parentVariant instanceof VariantEntityInterface) {
             $weight = (int) floor(100 / (count($parentVariant->getVariantChildren()) + 1));
         }
 

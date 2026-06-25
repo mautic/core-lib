@@ -37,7 +37,7 @@ final class SendWinnerService
         } else {
             $emailEntity = $this->emailModel->getEntity($emailId);
 
-            if (empty($emailEntity)) {
+            if (!$emailEntity instanceof Email) {
                 throw new RecordNotFoundException('Email id '.$emailId.' not found');
             }
 

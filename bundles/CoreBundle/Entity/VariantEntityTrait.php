@@ -309,7 +309,7 @@ trait VariantEntityTrait
             return $pendingCount;
         }
 
-        $pendingCount = $pendingCount + (int) (method_exists($this, 'getVariantSentCount') ? $this->getVariantSentCount(true) : 0);
+        $pendingCount += (int) (method_exists($this, 'getVariantSentCount') ? $this->getVariantSentCount(true) : 0);
 
         $totalWeight = $this->variantSettings['totalWeight'] ?? null;
         if ($this->getVariantParent()) {

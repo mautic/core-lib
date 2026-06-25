@@ -23,6 +23,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class VariantType extends AbstractType
 {
     public const DEFAULT_WINNER_DELAY = 24;
+
     public const DEFAULT_WEIGHT       = 10;
 
     public function __construct(
@@ -171,7 +172,7 @@ class VariantType extends AbstractType
             'is_parent'         => true,
             'is_existing'       => false,
             'add_buttons'       => false,
-            'validation_groups' => function (Form $form) {
+            'validation_groups' => function (Form $form): array {
                 $data = $form->getData();
 
                 $groups = ['Default'];

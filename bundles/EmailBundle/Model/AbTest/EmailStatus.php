@@ -12,7 +12,9 @@ final class EmailStatus
      * @var array<int|string, mixed>
      */
     private array $children = [];
+
     private ?Email $parent  = null;
+
     private ?string $status = null;
 
     public function __construct(private Email $email, private string $publishStatus)

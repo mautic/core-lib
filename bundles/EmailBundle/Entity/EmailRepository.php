@@ -722,7 +722,7 @@ class EmailRepository extends CommonRepository
     {
         /** @var Email $parent */
         $parent    = $entity->getVariantParent() ?: $entity;
-        $hasParent = !empty($entity->getVariantParent());
+        $hasParent = $entity->getVariantParent() instanceof \Mautic\CoreBundle\Entity\VariantEntityInterface;
 
         if ($hasParent) {
             $entity->setPublishUp($parent->getPublishUp());

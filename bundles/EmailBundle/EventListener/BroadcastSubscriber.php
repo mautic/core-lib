@@ -127,7 +127,7 @@ class BroadcastSubscriber implements EventSubscriberInterface
     {
         $diff = ($emailEntity->getVariantSentCount(true) + $limit) - $totalLeadCountForVariants;
         if ($diff > 0) {
-            $limit = $limit - $diff;
+            $limit -= $diff;
         }
 
         return max(0, $limit);
