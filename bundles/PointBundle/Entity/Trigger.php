@@ -230,7 +230,7 @@ class Trigger extends FormEntity implements UuidInterface
      *
      * @return Trigger
      */
-    public function setDescription($description)
+    public function setDescription($description): static
     {
         $this->isChanged('description', $description);
         $this->description = $description;
@@ -255,7 +255,7 @@ class Trigger extends FormEntity implements UuidInterface
      *
      * @return Trigger
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->isChanged('name', $name);
         $this->name = $name;
@@ -278,7 +278,7 @@ class Trigger extends FormEntity implements UuidInterface
      *
      * @return Point
      */
-    public function addTriggerEvent($key, TriggerEvent $event)
+    public function addTriggerEvent($key, TriggerEvent $event): static
     {
         if ($changes = $event->getChanges()) {
             $this->isChanged('events', [$key, $changes]);
@@ -313,7 +313,7 @@ class Trigger extends FormEntity implements UuidInterface
      *
      * @return Point
      */
-    public function setPublishUp($publishUp)
+    public function setPublishUp($publishUp): static
     {
         $this->isChanged('publishUp', $publishUp);
         $this->publishUp = $publishUp;
@@ -338,7 +338,7 @@ class Trigger extends FormEntity implements UuidInterface
      *
      * @return Point
      */
-    public function setPublishDown($publishDown)
+    public function setPublishDown($publishDown): static
     {
         $this->isChanged('publishDown', $publishDown);
         $this->publishDown = $publishDown;

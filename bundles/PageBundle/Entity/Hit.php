@@ -307,7 +307,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setDateHit($dateHit)
+    public function setDateHit($dateHit): static
     {
         $this->dateHit = $dateHit;
 
@@ -337,7 +337,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setDateLeft($dateLeft)
+    public function setDateLeft($dateLeft): static
     {
         $this->dateLeft = $dateLeft;
 
@@ -351,7 +351,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setCountry($country)
+    public function setCountry($country): static
     {
         $this->country = $country;
 
@@ -375,7 +375,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setRegion($region)
+    public function setRegion($region): static
     {
         $this->region = $region;
 
@@ -399,7 +399,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setCity($city)
+    public function setCity($city): static
     {
         $this->city = $city;
 
@@ -423,7 +423,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setIsp($isp)
+    public function setIsp($isp): static
     {
         $this->isp = $isp;
 
@@ -447,7 +447,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setOrganization($organization)
+    public function setOrganization($organization): static
     {
         $this->organization = $organization;
 
@@ -471,7 +471,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setCode($code)
+    public function setCode($code): static
     {
         $this->code = $code;
 
@@ -495,7 +495,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setReferer($referer)
+    public function setReferer($referer): static
     {
         $this->referer = $referer;
 
@@ -519,7 +519,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setUrl($url)
+    public function setUrl($url): static
     {
         $this->url = $url;
 
@@ -543,7 +543,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setUrlTitle($urlTitle)
+    public function setUrlTitle($urlTitle): static
     {
         $urlTitle       = mb_strlen($urlTitle) <= 191 ? $urlTitle : mb_substr($urlTitle, 0, 191);
         $this->urlTitle = $urlTitle;
@@ -568,7 +568,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setUserAgent($userAgent)
+    public function setUserAgent($userAgent): static
     {
         $this->userAgent = $userAgent;
 
@@ -592,7 +592,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setRemoteHost($remoteHost)
+    public function setRemoteHost($remoteHost): static
     {
         $this->remoteHost = $remoteHost;
 
@@ -614,7 +614,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setPage(?Page $page = null)
+    public function setPage(?Page $page = null): static
     {
         $this->page = $page;
 
@@ -629,7 +629,7 @@ class Hit
     /**
      * @return Hit
      */
-    public function setIpAddress(IpAddress $ipAddress)
+    public function setIpAddress(IpAddress $ipAddress): static
     {
         $this->ipAddress = $ipAddress;
 
@@ -649,7 +649,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setTrackingId($trackingId)
+    public function setTrackingId($trackingId): static
     {
         $this->trackingId = $trackingId;
 
@@ -673,7 +673,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setPageLanguage($pageLanguage)
+    public function setPageLanguage($pageLanguage): static
     {
         $this->pageLanguage = $pageLanguage;
 
@@ -697,7 +697,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setBrowserLanguages($browserLanguages)
+    public function setBrowserLanguages($browserLanguages): static
     {
         $this->browserLanguages = $browserLanguages;
 
@@ -725,7 +725,7 @@ class Hit
     /**
      * @return Hit
      */
-    public function setLead(Lead $lead)
+    public function setLead(Lead $lead): static
     {
         $this->lead = $lead;
 
@@ -745,7 +745,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setSource($source)
+    public function setSource($source): static
     {
         $this->source = $source;
 
@@ -765,7 +765,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setSourceId($sourceId)
+    public function setSourceId($sourceId): static
     {
         $this->sourceId = (int) $sourceId;
 
@@ -783,7 +783,7 @@ class Hit
     /**
      * @return Hit
      */
-    public function setRedirect(Redirect $redirect)
+    public function setRedirect(Redirect $redirect): static
     {
         $this->redirect = $redirect;
 
@@ -813,7 +813,7 @@ class Hit
      *
      * @return Hit
      */
-    public function setQuery($query)
+    public function setQuery($query): static
     {
         $this->query = $query;
 
@@ -831,7 +831,7 @@ class Hit
     /**
      * @return Hit
      */
-    public function setDeviceStat(LeadDevice $device)
+    public function setDeviceStat(LeadDevice $device): static
     {
         $this->device = $device;
 

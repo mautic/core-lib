@@ -71,7 +71,7 @@ class MergeRecord
     /**
      * @return MergeRecord
      */
-    public function setContact(Lead $contact)
+    public function setContact(Lead $contact): static
     {
         $this->contact = $contact;
 
@@ -89,7 +89,7 @@ class MergeRecord
     /**
      * @return MergeRecord
      */
-    public function setDateAdded(?\DateTime $dateAdded = null)
+    public function setDateAdded(?\DateTime $dateAdded = null): static
     {
         if (null === $dateAdded) {
             $dateAdded = new \DateTime();
@@ -113,7 +113,7 @@ class MergeRecord
      *
      * @return MergeRecord
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->name = $name;
 
@@ -133,7 +133,7 @@ class MergeRecord
      *
      * @return MergeRecord
      */
-    public function setMergedId($mergedId)
+    public function setMergedId($mergedId): static
     {
         $this->mergedId = (int) $mergedId;
 

@@ -245,7 +245,7 @@ class MessageQueue
      *
      * @return MessageQueue
      */
-    public function setChannelId($channelId)
+    public function setChannelId($channelId): static
     {
         $this->channelId = $channelId;
 
@@ -263,7 +263,7 @@ class MessageQueue
     /**
      * @return MessageQueue
      */
-    public function setEvent(Event $event)
+    public function setEvent(Event $event): static
     {
         $this->event = $event;
 
@@ -432,7 +432,7 @@ class MessageQueue
      *
      * @return MessageQueue
      */
-    public function setFailed($failed = true)
+    public function setFailed($failed = true): static
     {
         $this->failed = $failed;
 
@@ -452,7 +452,7 @@ class MessageQueue
      *
      * @return MessageQueue
      */
-    public function setProcessed($processed = true)
+    public function setProcessed($processed = true): static
     {
         $this->processed = $processed;
 

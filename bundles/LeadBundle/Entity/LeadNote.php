@@ -95,7 +95,7 @@ class LeadNote extends FormEntity
      *
      * @return LeadNote
      */
-    public function setText($text)
+    public function setText($text): static
     {
         $this->isChanged('text', $text);
         $this->text = $text;
@@ -120,7 +120,7 @@ class LeadNote extends FormEntity
      *
      * @return LeadNote
      */
-    public function setType($type)
+    public function setType($type): static
     {
         $this->isChanged('type', $type);
         $this->type = $type;

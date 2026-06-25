@@ -79,7 +79,7 @@ class Cache
      *
      * @return Cache
      */
-    public function setId($id)
+    public function setId($id): static
     {
         $this->id = $id;
 
@@ -99,7 +99,7 @@ class Cache
      *
      * @return Cache
      */
-    public function setData($data)
+    public function setData($data): static
     {
         $this->data = $data;
 
@@ -119,7 +119,7 @@ class Cache
      *
      * @return Cache
      */
-    public function setLifetime($lifetime)
+    public function setLifetime($lifetime): static
     {
         $this->lifetime = $lifetime;
 
@@ -139,7 +139,7 @@ class Cache
      *
      * @return Cache
      */
-    public function setTime($time)
+    public function setTime($time): static
     {
         $this->time = $time;
 

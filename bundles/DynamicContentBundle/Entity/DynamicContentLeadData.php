@@ -83,7 +83,7 @@ class DynamicContentLeadData extends CommonEntity
      *
      * @return DynamicContentLeadData
      */
-    public function setDateAdded($dateAdded)
+    public function setDateAdded($dateAdded): static
     {
         $this->dateAdded = $dateAdded;
 
@@ -103,7 +103,7 @@ class DynamicContentLeadData extends CommonEntity
      *
      * @return DynamicContentLeadData
      */
-    public function setDynamicContent($dynamicContent)
+    public function setDynamicContent($dynamicContent): static
     {
         $this->dynamicContent = $dynamicContent;
 
@@ -123,7 +123,7 @@ class DynamicContentLeadData extends CommonEntity
      *
      * @return DynamicContentLeadData
      */
-    public function setLead($lead)
+    public function setLead($lead): static
     {
         $this->lead = $lead;
 
@@ -143,7 +143,7 @@ class DynamicContentLeadData extends CommonEntity
      *
      * @return DynamicContentLeadData
      */
-    public function setDataAdded($dataAdded)
+    public function setDataAdded($dataAdded): static
     {
         $this->dataAdded = $dataAdded;
 
@@ -163,7 +163,7 @@ class DynamicContentLeadData extends CommonEntity
      *
      * @return DynamicContentLeadData
      */
-    public function setSlot($slot)
+    public function setSlot($slot): static
     {
         $this->slot = $slot;
 

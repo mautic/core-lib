@@ -227,7 +227,7 @@ class PlainTextHelper
      *
      * @return PlainTextHelper
      */
-    public function setHtml($html)
+    public function setHtml($html): static
     {
         $this->html      = $html ?? '';
         $this->converted = false;

@@ -135,7 +135,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function setLead(Lead $lead)
+    public function setLead(Lead $lead): static
     {
         $this->lead = $lead;
 
@@ -159,7 +159,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function setUserId($userId)
+    public function setUserId($userId): static
     {
         $this->userId = $userId;
 
@@ -183,7 +183,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function setObject($object)
+    public function setObject($object): static
     {
         $this->object = $object;
 
@@ -207,7 +207,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function setObjectId($objectId)
+    public function setObjectId($objectId): static
     {
         $this->objectId = $objectId;
 
@@ -231,7 +231,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function setAction($action)
+    public function setAction($action): static
     {
         $this->action = $action;
 
@@ -253,7 +253,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function setProperties(array $properties)
+    public function setProperties(array $properties): static
     {
         $this->properties = $properties;
 
@@ -268,7 +268,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function addProperty($key, $value)
+    public function addProperty($key, $value): static
     {
         $this->properties[$key] = $value;
 
@@ -292,7 +292,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function setDateAdded($dateAdded)
+    public function setDateAdded($dateAdded): static
     {
         $this->dateAdded = $dateAdded;
 
@@ -316,7 +316,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function setBundle($bundle)
+    public function setBundle($bundle): static
     {
         $this->bundle = $bundle;
 
@@ -340,7 +340,7 @@ class LeadEventLog
      *
      * @return LeadEventLog
      */
-    public function setUserName($userName)
+    public function setUserName($userName): static
     {
         $this->userName = $userName;
 

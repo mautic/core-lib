@@ -81,7 +81,7 @@ class UserToken
      *
      * @return UserToken
      */
-    public function setUser($user)
+    public function setUser($user): static
     {
         $this->user = $user;
 
@@ -101,7 +101,7 @@ class UserToken
      *
      * @return UserToken
      */
-    public function setAuthorizator($authorizator)
+    public function setAuthorizator($authorizator): static
     {
         $this->authorizator = $authorizator;
 
@@ -123,7 +123,7 @@ class UserToken
      *
      * @return UserToken
      */
-    public function setSecret($secret)
+    public function setSecret($secret): static
     {
         $this->secret = $secret;
 
@@ -143,7 +143,7 @@ class UserToken
      *
      * @return UserToken
      */
-    public function setExpiration($expiration = null)
+    public function setExpiration($expiration = null): static
     {
         $this->expiration = $expiration;
 
@@ -163,7 +163,7 @@ class UserToken
      *
      * @return UserToken
      */
-    public function setOneTimeOnly($oneTimeOnly = true)
+    public function setOneTimeOnly($oneTimeOnly = true): static
     {
         $this->oneTimeOnly = $oneTimeOnly;
 

@@ -423,7 +423,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->isChanged('name', $name);
         $this->name = $name;
@@ -444,7 +444,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setDescription($description)
+    public function setDescription($description): static
     {
         $this->isChanged('description', $description);
         $this->description = $description;
@@ -471,7 +471,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setCachedHtml($cachedHtml)
+    public function setCachedHtml($cachedHtml): static
     {
         $this->cachedHtml = $cachedHtml;
 
@@ -499,7 +499,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setPostAction($postAction)
+    public function setPostAction($postAction): static
     {
         $this->isChanged('postAction', $postAction);
         $this->postAction = $postAction;
@@ -520,7 +520,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setPostActionProperty($postActionProperty)
+    public function setPostActionProperty($postActionProperty): static
     {
         $this->isChanged('postActionProperty', $postActionProperty);
         $this->postActionProperty = $postActionProperty;
@@ -547,7 +547,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setPublishUp($publishUp)
+    public function setPublishUp($publishUp): static
     {
         $this->isChanged('publishUp', $publishUp);
         $this->publishUp = $publishUp;
@@ -568,7 +568,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setPublishDown($publishDown)
+    public function setPublishDown($publishDown): static
     {
         $this->isChanged('publishDown', $publishDown);
         $this->publishDown = $publishDown;
@@ -589,7 +589,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function addField($key, Field $field)
+    public function addField($key, Field $field): static
     {
         if ($changes = $field->getChanges()) {
             $this->isChanged('fields', [$key, $changes]);
@@ -675,7 +675,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setAlias($alias)
+    public function setAlias($alias): static
     {
         $this->isChanged('alias', $alias);
         $this->alias = $alias;
@@ -694,7 +694,7 @@ class Form extends FormEntity implements UuidInterface
     /**
      * @return Form
      */
-    public function addSubmission(Submission $submissions)
+    public function addSubmission(Submission $submissions): static
     {
         $this->submissions[] = $submissions;
 
@@ -719,7 +719,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function addAction($key, Action $action)
+    public function addAction($key, Action $action): static
     {
         if ($changes = $action->getChanges()) {
             $this->isChanged('actions', [$key, $changes]);
@@ -833,7 +833,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setFormType($formType)
+    public function setFormType($formType): static
     {
         trigger_deprecation('mautic/mautic', '7.1', 'Form::setFormType() is deprecated and will be removed in 8.0.');
         $this->formType = $formType;
@@ -864,7 +864,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setFormAttributes($formAttributes)
+    public function setFormAttributes($formAttributes): static
     {
         $this->isChanged('formAttributes', $formAttributes);
         $this->formAttributes = $formAttributes;
@@ -963,7 +963,7 @@ class Form extends FormEntity implements UuidInterface
      *
      * @return Form
      */
-    public function setProgressiveProfilingLimit($progressiveProfilingLimit)
+    public function setProgressiveProfilingLimit($progressiveProfilingLimit): static
     {
         $this->isChanged('progressiveProfilingLimit', $progressiveProfilingLimit);
         $this->progressiveProfilingLimit = $progressiveProfilingLimit;

@@ -133,7 +133,7 @@ class DoNotContact
     /**
      * @return DoNotContact
      */
-    public function setLead(Lead $lead)
+    public function setLead(Lead $lead): static
     {
         $this->lead = $lead;
 
@@ -151,7 +151,7 @@ class DoNotContact
     /**
      * @return DoNotContact
      */
-    public function setDateAdded(\DateTime $dateAdded)
+    public function setDateAdded(\DateTime $dateAdded): static
     {
         $this->dateAdded = $dateAdded;
 
@@ -171,7 +171,7 @@ class DoNotContact
      *
      * @return DoNotContact
      */
-    public function setReason($reason)
+    public function setReason($reason): static
     {
         $this->reason = $reason;
 
@@ -189,7 +189,7 @@ class DoNotContact
     /**
      * @return DoNotContact
      */
-    public function setComments(?string $comments)
+    public function setComments(?string $comments): static
     {
         $this->comments = InputHelper::string((string) $comments);
 
@@ -209,7 +209,7 @@ class DoNotContact
      *
      * @return DoNotContact
      */
-    public function setChannel($channel)
+    public function setChannel($channel): static
     {
         $this->channel = $channel;
 
@@ -229,7 +229,7 @@ class DoNotContact
      *
      * @return DoNotContact
      */
-    public function setChannelId($channelId)
+    public function setChannelId($channelId): static
     {
         $this->channelId = $channelId;
 

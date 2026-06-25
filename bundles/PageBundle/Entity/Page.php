@@ -430,7 +430,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setTitle($title)
+    public function setTitle($title): static
     {
         $this->isChanged('title', $title);
         $this->title = $title;
@@ -455,7 +455,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setAlias($alias)
+    public function setAlias($alias): static
     {
         $this->isChanged('alias', $alias);
         $this->alias = $alias;
@@ -480,7 +480,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setContent($content)
+    public function setContent($content): static
     {
         $this->isChanged('content', $content);
         $this->content = $content;
@@ -505,7 +505,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setPublishUp($publishUp)
+    public function setPublishUp($publishUp): static
     {
         $this->isChanged('publishUp', $publishUp);
         $this->publishUp = $publishUp;
@@ -530,7 +530,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setPublishDown($publishDown)
+    public function setPublishDown($publishDown): static
     {
         $this->isChanged('publishDown', $publishDown);
         $this->publishDown = $publishDown;
@@ -555,7 +555,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setHits($hits)
+    public function setHits($hits): static
     {
         $this->hits = $hits;
 
@@ -581,7 +581,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setRevision($revision)
+    public function setRevision($revision): static
     {
         $this->revision = $revision;
 
@@ -605,7 +605,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setMetaDescription($metaDescription)
+    public function setMetaDescription($metaDescription): static
     {
         $this->isChanged('metaDescription', $metaDescription);
         $this->metaDescription = $metaDescription;
@@ -630,7 +630,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setHeadScript($headScript)
+    public function setHeadScript($headScript): static
     {
         $this->headScript = $headScript;
 
@@ -654,7 +654,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setFooterScript($footerScript)
+    public function setFooterScript($footerScript): static
     {
         $this->footerScript = $footerScript;
 
@@ -676,7 +676,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setRedirectType($redirectType)
+    public function setRedirectType($redirectType): static
     {
         $this->isChanged('redirectType', $redirectType);
         $this->redirectType = $redirectType;
@@ -699,7 +699,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setRedirectUrl($redirectUrl)
+    public function setRedirectUrl($redirectUrl): static
     {
         $this->isChanged('redirectUrl', $redirectUrl);
         $this->redirectUrl = $redirectUrl;
@@ -722,7 +722,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setCategory(?Category $category = null)
+    public function setCategory(?Category $category = null): static
     {
         $this->isChanged('category', $category);
         $this->category = $category;
@@ -745,7 +745,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setIsPreferenceCenter($isPreferenceCenter)
+    public function setIsPreferenceCenter($isPreferenceCenter): static
     {
         $sanitizedValue = null === $isPreferenceCenter ? null : (bool) $isPreferenceCenter;
         $this->isChanged('isPreferenceCenter', $sanitizedValue);
@@ -787,7 +787,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setSessionId($id)
+    public function setSessionId($id): static
     {
         $this->sessionId = $id;
 
@@ -811,7 +811,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setTemplate($template)
+    public function setTemplate($template): static
     {
         $this->isChanged('template', $template);
         $this->template = $template;
@@ -852,7 +852,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      *
      * @return Page
      */
-    public function setUniqueHits($uniqueHits)
+    public function setUniqueHits($uniqueHits): static
     {
         $this->uniqueHits = $uniqueHits;
 

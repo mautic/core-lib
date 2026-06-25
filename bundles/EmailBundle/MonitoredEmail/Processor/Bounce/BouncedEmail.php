@@ -44,7 +44,7 @@ class BouncedEmail
      *
      * @return BouncedEmail
      */
-    public function setContactEmail($email)
+    public function setContactEmail($email): static
     {
         $this->email = $email;
 
@@ -64,7 +64,7 @@ class BouncedEmail
      *
      * @return BouncedEmail
      */
-    public function setRuleCategory($ruleCategory)
+    public function setRuleCategory($ruleCategory): static
     {
         $this->ruleCategory = $ruleCategory;
 
@@ -84,7 +84,7 @@ class BouncedEmail
      *
      * @return BouncedEmail
      */
-    public function setRuleNumber($ruleNumber)
+    public function setRuleNumber($ruleNumber): static
     {
         $this->ruleNumber = $ruleNumber;
 
@@ -104,7 +104,7 @@ class BouncedEmail
      *
      * @return BouncedEmail
      */
-    public function setType($bounceType)
+    public function setType($bounceType): static
     {
         $this->bounceType = $bounceType;
 
@@ -121,7 +121,7 @@ class BouncedEmail
      *
      * @return BouncedEmail
      */
-    public function setIsFinal($final)
+    public function setIsFinal($final): static
     {
         $this->final = (bool) $final;
 
@@ -139,7 +139,7 @@ class BouncedEmail
     /**
      * @return BouncedEmail
      */
-    public function setBounceAddress($bounceAddress)
+    public function setBounceAddress($bounceAddress): static
     {
         $this->bounceAddress = $bounceAddress;
 

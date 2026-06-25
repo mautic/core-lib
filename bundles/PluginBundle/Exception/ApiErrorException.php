@@ -34,7 +34,7 @@ class ApiErrorException extends \Exception
      *
      * @return ApiErrorException
      */
-    public function setContactId($contactId)
+    public function setContactId($contactId): static
     {
         $this->contactId = $contactId;
 
@@ -49,7 +49,7 @@ class ApiErrorException extends \Exception
     /**
      * @return ApiErrorException
      */
-    public function setContact(Lead $contact)
+    public function setContact(Lead $contact): static
     {
         $this->contact = $contact;
 

@@ -119,7 +119,7 @@ class SubmissionEvent extends CommonEvent
     /**
      * @return SubmissionEvent
      */
-    public function setResults(array $results)
+    public function setResults(array $results): static
     {
         $this->results = $results;
 
@@ -134,7 +134,7 @@ class SubmissionEvent extends CommonEvent
     /**
      * @return SubmissionEvent
      */
-    public function setFields(array $fields)
+    public function setFields(array $fields): static
     {
         $this->fields = $fields;
 
@@ -149,7 +149,7 @@ class SubmissionEvent extends CommonEvent
     /**
      * @return SubmissionEvent
      */
-    public function setTokens(array $tokens)
+    public function setTokens(array $tokens): static
     {
         $this->tokens = $tokens;
 
@@ -164,7 +164,7 @@ class SubmissionEvent extends CommonEvent
     /**
      * @return SubmissionEvent
      */
-    public function setContactFieldMatches(array $contactFieldMatches)
+    public function setContactFieldMatches(array $contactFieldMatches): static
     {
         $this->contactFieldMatches = $contactFieldMatches;
 
@@ -260,7 +260,7 @@ class SubmissionEvent extends CommonEvent
      *
      * @return SubmissionEvent
      */
-    public function setPostSubmitCallbackResponse($key, $callbackResponse)
+    public function setPostSubmitCallbackResponse($key, $callbackResponse): static
     {
         $this->callbackResponses[$key] = $callbackResponse;
 

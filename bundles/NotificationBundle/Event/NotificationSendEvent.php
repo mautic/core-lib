@@ -46,7 +46,7 @@ class NotificationSendEvent extends CommonEvent
      *
      * @return NotificationSendEvent
      */
-    public function setHeading($heading)
+    public function setHeading($heading): static
     {
         $this->heading = $heading;
 

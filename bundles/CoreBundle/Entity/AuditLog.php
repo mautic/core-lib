@@ -118,7 +118,7 @@ class AuditLog
      *
      * @return AuditLog
      */
-    public function setUserId($userId)
+    public function setUserId($userId): static
     {
         $this->userId = $userId;
 
@@ -142,7 +142,7 @@ class AuditLog
      *
      * @return AuditLog
      */
-    public function setObject($object)
+    public function setObject($object): static
     {
         $this->object = $object;
 
@@ -166,7 +166,7 @@ class AuditLog
      *
      * @return AuditLog
      */
-    public function setObjectId($objectId)
+    public function setObjectId($objectId): static
     {
         $this->objectId = (string) $objectId;
 
@@ -188,7 +188,7 @@ class AuditLog
      *
      * @return AuditLog
      */
-    public function setAction($action)
+    public function setAction($action): static
     {
         $this->action = $action;
 
@@ -210,7 +210,7 @@ class AuditLog
      *
      * @return AuditLog
      */
-    public function setDetails(array $details)
+    public function setDetails(array $details): static
     {
         $this->details = $details;
 
@@ -234,7 +234,7 @@ class AuditLog
      *
      * @return AuditLog
      */
-    public function setDateAdded($dateAdded)
+    public function setDateAdded($dateAdded): static
     {
         $this->dateAdded = $dateAdded;
 
@@ -258,7 +258,7 @@ class AuditLog
      *
      * @return AuditLog
      */
-    public function setIpAddress($ipAddress)
+    public function setIpAddress($ipAddress): static
     {
         $this->ipAddress = $ipAddress;
 
@@ -282,7 +282,7 @@ class AuditLog
      *
      * @return AuditLog
      */
-    public function setBundle($bundle)
+    public function setBundle($bundle): static
     {
         $this->bundle = $bundle;
 
@@ -306,7 +306,7 @@ class AuditLog
      *
      * @return AuditLog
      */
-    public function setUserName($userName)
+    public function setUserName($userName): static
     {
         $this->userName = $userName;
 

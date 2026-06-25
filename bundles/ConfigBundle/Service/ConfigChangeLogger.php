@@ -35,7 +35,7 @@ class ConfigChangeLogger
     /**
      * @return ConfigChangeLogger
      */
-    public function setOriginalNormData(array $originalNormData)
+    public function setOriginalNormData(array $originalNormData): static
     {
         $this->originalNormData = $originalNormData;
 

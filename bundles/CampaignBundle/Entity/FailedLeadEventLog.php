@@ -68,7 +68,7 @@ class FailedLeadEventLog
     /**
      * @return FailedLeadEventLog
      */
-    public function setLog(?LeadEventLog $log = null)
+    public function setLog(?LeadEventLog $log = null): static
     {
         $this->log = $log;
 
@@ -90,7 +90,7 @@ class FailedLeadEventLog
     /**
      * @return FailedLeadEventLog
      */
-    public function setDateAdded(?\DateTime $dateAdded = null)
+    public function setDateAdded(?\DateTime $dateAdded = null): static
     {
         if (null === $dateAdded) {
             $dateAdded = new \DateTime();
@@ -114,7 +114,7 @@ class FailedLeadEventLog
      *
      * @return FailedLeadEventLog
      */
-    public function setReason($reason)
+    public function setReason($reason): static
     {
         $this->reason = $reason;
 

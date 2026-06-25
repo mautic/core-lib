@@ -26,7 +26,7 @@ class RequestDAO
     /**
      * @return self
      */
-    public function addObject(ObjectDAO $objectDAO)
+    public function addObject(ObjectDAO $objectDAO): static
     {
         $this->objects[] = $objectDAO;
 

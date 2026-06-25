@@ -90,7 +90,7 @@ class CompanyChangeLog
      *
      * @return CompanyChangeLog
      */
-    public function setType($type)
+    public function setType($type): static
     {
         $this->type = $type;
 
@@ -114,7 +114,7 @@ class CompanyChangeLog
      *
      * @return CompanyChangeLog
      */
-    public function setEventName($eventName)
+    public function setEventName($eventName): static
     {
         $this->eventName = $eventName;
 
@@ -138,7 +138,7 @@ class CompanyChangeLog
      *
      * @return CompanyChangeLog
      */
-    public function setActionName($actionName)
+    public function setActionName($actionName): static
     {
         $this->actionName = $actionName;
 
@@ -162,7 +162,7 @@ class CompanyChangeLog
      *
      * @return CompanyChangeLog
      */
-    public function setCompany($company)
+    public function setCompany($company): static
     {
         $this->company = $company;
 
@@ -186,7 +186,7 @@ class CompanyChangeLog
      *
      * @return CompanyChangeLog
      */
-    public function setDateAdded($dateAdded)
+    public function setDateAdded($dateAdded): static
     {
         $this->dateAdded = $dateAdded;
 
@@ -208,7 +208,7 @@ class CompanyChangeLog
      *
      * @return CompanyChangeLog
      */
-    public function setLead(Lead $lead)
+    public function setLead(Lead $lead): static
     {
         $this->lead = $lead;
 

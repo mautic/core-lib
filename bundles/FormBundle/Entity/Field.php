@@ -362,7 +362,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setLabel($label)
+    public function setLabel($label): static
     {
         $this->isChanged('label', $label);
         $this->label = $label;
@@ -383,7 +383,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setAlias($alias)
+    public function setAlias($alias): static
     {
         $this->isChanged('alias', $alias);
         $this->alias = $alias;
@@ -404,7 +404,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setType($type)
+    public function setType($type): static
     {
         $this->isChanged('type', $type);
         $this->type = $type;
@@ -425,7 +425,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setDefaultValue($defaultValue)
+    public function setDefaultValue($defaultValue): static
     {
         $this->isChanged('defaultValue', $defaultValue);
         $this->defaultValue = $defaultValue;
@@ -446,7 +446,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setIsRequired($isRequired)
+    public function setIsRequired($isRequired): static
     {
         $this->isChanged('isRequired', $isRequired);
         $this->isRequired = $isRequired;
@@ -477,7 +477,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setOrder($order)
+    public function setOrder($order): static
     {
         $this->isChanged('order', $order);
         $this->order = $order;
@@ -498,7 +498,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setProperties($properties)
+    public function setProperties($properties): static
     {
         $this->isChanged('properties', $properties);
         $this->properties = $properties;
@@ -519,7 +519,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setValidation($validation)
+    public function setValidation($validation): static
     {
         $this->isChanged('validation', $validation);
         $this->validation = $validation;
@@ -540,7 +540,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setValidationMessage($validationMessage)
+    public function setValidationMessage($validationMessage): static
     {
         $this->isChanged('validationMessage', $validationMessage);
         $this->validationMessage = $validationMessage;
@@ -559,7 +559,7 @@ class Field implements UuidInterface
     /**
      * @return Field
      */
-    public function setForm(Form $form)
+    public function setForm(Form $form): static
     {
         $this->form = $form;
 
@@ -579,7 +579,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setLabelAttributes($labelAttributes)
+    public function setLabelAttributes($labelAttributes): static
     {
         $this->isChanged('labelAttributes', $labelAttributes);
         $this->labelAttributes = $labelAttributes;
@@ -600,7 +600,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setInputAttributes($inputAttributes)
+    public function setInputAttributes($inputAttributes): static
     {
         $this->isChanged('inputAttributes', $inputAttributes);
         $this->inputAttributes = $inputAttributes;
@@ -627,7 +627,7 @@ class Field implements UuidInterface
     /**
      * @return $this
      */
-    public function setContainerAttributes($containerAttributes)
+    public function setContainerAttributes($containerAttributes): static
     {
         $this->containerAttributes = $containerAttributes;
 
@@ -647,7 +647,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setShowLabel($showLabel)
+    public function setShowLabel($showLabel): static
     {
         $this->isChanged('showLabel', $showLabel);
         $this->showLabel = $showLabel;
@@ -678,7 +678,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setHelpMessage($helpMessage)
+    public function setHelpMessage($helpMessage): static
     {
         $this->isChanged('helpMessage', $helpMessage);
         $this->helpMessage = $helpMessage;
@@ -699,7 +699,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setIsCustom($isCustom)
+    public function setIsCustom($isCustom): static
     {
         $this->isCustom = $isCustom;
 
@@ -729,7 +729,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setCustomParameters($customParameters)
+    public function setCustomParameters($customParameters): static
     {
         $this->customParameters = $customParameters;
 
@@ -977,7 +977,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setConditions($conditions)
+    public function setConditions($conditions): static
     {
         $this->isChanged('conditions', $conditions);
         $this->conditions = $conditions;
@@ -990,7 +990,7 @@ class Field implements UuidInterface
      *
      * @return Field
      */
-    public function setParent($parent)
+    public function setParent($parent): static
     {
         $this->isChanged('parent', $parent);
         $this->parent = $parent;

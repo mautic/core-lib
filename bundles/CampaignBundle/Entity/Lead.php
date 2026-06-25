@@ -203,7 +203,7 @@ class Lead
      *
      * @return Lead
      */
-    public function setRotation($rotation)
+    public function setRotation($rotation): static
     {
         $this->rotation = (int) $rotation;
 
@@ -213,7 +213,7 @@ class Lead
     /**
      * @return $this
      */
-    public function startNewRotation()
+    public function startNewRotation(): static
     {
         ++$this->rotation;
         $this->dateAdded = new \DateTime();
@@ -232,7 +232,7 @@ class Lead
     /**
      * @return Lead
      */
-    public function setDateLastExited(?\DateTime $dateLastExited = null)
+    public function setDateLastExited(?\DateTime $dateLastExited = null): static
     {
         $this->dateLastExited = $dateLastExited;
 

@@ -83,7 +83,7 @@ class StagesChangeLog
      *
      * @return StagesChangeLog
      */
-    public function setEventName($eventName)
+    public function setEventName($eventName): static
     {
         $this->eventName = $eventName;
 
@@ -107,7 +107,7 @@ class StagesChangeLog
      *
      * @return StagesChangeLog
      */
-    public function setActionName($actionName)
+    public function setActionName($actionName): static
     {
         $this->actionName = $actionName;
 
@@ -131,7 +131,7 @@ class StagesChangeLog
      *
      * @return StagesChangeLog
      */
-    public function setDateAdded($dateAdded)
+    public function setDateAdded($dateAdded): static
     {
         $this->dateAdded = $dateAdded;
 
@@ -153,7 +153,7 @@ class StagesChangeLog
      *
      * @return StagesChangeLog
      */
-    public function setLead(Lead $lead)
+    public function setLead(Lead $lead): static
     {
         $this->lead = $lead;
 
@@ -175,7 +175,7 @@ class StagesChangeLog
      *
      * @return StagesChangeLog
      */
-    public function setStage(Stage $stage)
+    public function setStage(Stage $stage): static
     {
         $this->stage = $stage;
 

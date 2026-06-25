@@ -186,7 +186,7 @@ class Download
      *
      * @return Download
      */
-    public function setDateDownload($dateDownload)
+    public function setDateDownload($dateDownload): static
     {
         $this->dateDownload = $dateDownload;
 
@@ -206,7 +206,7 @@ class Download
      *
      * @return Download
      */
-    public function setCode($code)
+    public function setCode($code): static
     {
         $this->code = $code;
 
@@ -226,7 +226,7 @@ class Download
      *
      * @return Download
      */
-    public function setReferer($referer)
+    public function setReferer($referer): static
     {
         $this->referer = $referer;
 
@@ -244,7 +244,7 @@ class Download
     /**
      * @return Download
      */
-    public function setAsset(?Asset $asset = null)
+    public function setAsset(?Asset $asset = null): static
     {
         $this->asset = $asset;
 
@@ -262,7 +262,7 @@ class Download
     /**
      * @return Download
      */
-    public function setIpAddress(IpAddress $ipAddress)
+    public function setIpAddress(IpAddress $ipAddress): static
     {
         $this->ipAddress = $ipAddress;
 
@@ -282,7 +282,7 @@ class Download
      *
      * @return Download
      */
-    public function setTrackingId($trackingId)
+    public function setTrackingId($trackingId): static
     {
         $this->trackingId = $trackingId;
 

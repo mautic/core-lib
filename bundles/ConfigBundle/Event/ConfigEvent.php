@@ -113,7 +113,7 @@ class ConfigEvent extends CommonEvent
      *
      * @return ConfigEvent
      */
-    public function setError($message, $messageVars = [], $key = null, $field = null)
+    public function setError($message, $messageVars = [], $key = null, $field = null): static
     {
         if (!empty($key) && !empty($field)) {
             if (!isset($this->errors[$key])) {
@@ -168,7 +168,7 @@ class ConfigEvent extends CommonEvent
     /**
      * @return ConfigEvent
      */
-    public function setOriginalNormData(array $normData)
+    public function setOriginalNormData(array $normData): static
     {
         $this->originalNormData = $normData;
 

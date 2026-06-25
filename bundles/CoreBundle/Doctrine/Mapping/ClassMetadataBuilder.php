@@ -117,7 +117,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addId()
+    public function addId(): static
     {
         $this->createField('id', Types::INTEGER)
             ->makePrimaryKey()
@@ -137,7 +137,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return ClassMetadataBuilder
      */
-    public function addBigIntIdField($fieldName = 'id', $columnName = 'id', $isPrimary = true, $isNullable = false)
+    public function addBigIntIdField($fieldName = 'id', $columnName = 'id', $isPrimary = true, $isNullable = false): static
     {
         $cm = $this->getClassMetadata();
         $cm->mapField(
@@ -165,7 +165,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addUuid()
+    public function addUuid(): static
     {
         $this->createField('id', 'guid')
             ->makePrimaryKey()
@@ -182,7 +182,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addIdColumns($nameColumn = 'name', $descriptionColumn = 'description')
+    public function addIdColumns($nameColumn = 'name', $descriptionColumn = 'description'): static
     {
         $this->addId();
 
@@ -205,7 +205,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addCategory()
+    public function addCategory(): static
     {
         $this->createManyToOne('category', Category::class)
             ->cascadeMerge()
@@ -221,7 +221,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addPublishDates()
+    public function addPublishDates(): static
     {
         $this->createField('publishUp', Types::DATETIME_MUTABLE)
             ->columnName('publish_up')
@@ -243,7 +243,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addDateAdded($nullable = false)
+    public function addDateAdded($nullable = false): static
     {
         $dateAdded = $this->createField('dateAdded', Types::DATETIME_MUTABLE)
             ->columnName('date_added');
@@ -267,7 +267,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addContact($nullable = false, $onDelete = 'CASCADE', $isPrimaryKey = false, $inversedBy = null)
+    public function addContact($nullable = false, $onDelete = 'CASCADE', $isPrimaryKey = false, $inversedBy = null): static
     {
         $lead = $this->createManyToOne('contact', Lead::class);
 
@@ -297,7 +297,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addLead($nullable = false, $onDelete = 'CASCADE', $isPrimaryKey = false, $inversedBy = null)
+    public function addLead($nullable = false, $onDelete = 'CASCADE', $isPrimaryKey = false, $inversedBy = null): static
     {
         $lead = $this->createManyToOne('lead', Lead::class);
 
@@ -323,7 +323,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addIpAddress($nullable = false)
+    public function addIpAddress($nullable = false): static
     {
         $this->createManyToOne('ipAddress', IpAddress::class)
             ->cascadePersist()
@@ -344,7 +344,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addNullableField($name, $type = Types::STRING, $columnName = null)
+    public function addNullableField($name, $type = Types::STRING, $columnName = null): static
     {
         $field = $this->createField($name, $type)
             ->nullable();
@@ -369,7 +369,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      *
      * @return $this
      */
-    public function addNamedField($name, $type, $columnName, $nullable = false)
+    public function addNamedField($name, $type, $columnName, $nullable = false): static
     {
         $field = $this->createField($name, $type)
             ->columnName($columnName);

@@ -515,7 +515,7 @@ class Stat
      *
      * @return Stat
      */
-    public function setOpenCount($openCount)
+    public function setOpenCount($openCount): static
     {
         $this->addChange('openCount', $this->openCount, $openCount);
         $this->openCount = $openCount;
@@ -540,7 +540,7 @@ class Stat
      *
      * @return Stat
      */
-    public function upOpenCount()
+    public function upOpenCount(): static
     {
         $count = (int) $this->openCount + 1;
         $this->addChange('openCount', $this->openCount, $count);
@@ -574,7 +574,7 @@ class Stat
     /**
      * @return Stat
      */
-    public function setOpenDetails(array $openDetails)
+    public function setOpenDetails(array $openDetails): static
     {
         $this->openDetails = $openDetails;
 
@@ -592,7 +592,7 @@ class Stat
     /**
      * @return Stat
      */
-    public function setStoredCopy(Copy $storedCopy)
+    public function setStoredCopy(Copy $storedCopy): static
     {
         $this->storedCopy = $storedCopy;
 

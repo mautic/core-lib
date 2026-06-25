@@ -56,7 +56,7 @@ class Copy
     /**
      * @return $this
      */
-    public function setId($id)
+    public function setId($id): static
     {
         $this->id = $id;
 
@@ -84,7 +84,7 @@ class Copy
      *
      * @return Copy
      */
-    public function setDateCreated($dateCreated)
+    public function setDateCreated($dateCreated): static
     {
         $this->dateCreated = $dateCreated;
 
@@ -104,7 +104,7 @@ class Copy
      *
      * @return Copy
      */
-    public function setBody($body)
+    public function setBody($body): static
     {
         $this->body = $body;
 
@@ -124,7 +124,7 @@ class Copy
      *
      * @return Copy
      */
-    public function setSubject($subject)
+    public function setSubject($subject): static
     {
         $this->subject = $subject;
 

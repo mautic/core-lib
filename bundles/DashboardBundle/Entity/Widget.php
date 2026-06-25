@@ -122,7 +122,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->name = InputHelper::string($name);
         $this->isChanged('name', $this->name);
@@ -147,7 +147,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setType($type)
+    public function setType($type): static
     {
         $this->type = InputHelper::string($type);
         $this->isChanged('type', $this->type);
@@ -172,7 +172,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setWidth($width)
+    public function setWidth($width): static
     {
         $this->width = (int) $width;
         $this->isChanged('width', $this->width);
@@ -197,7 +197,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setHeight($height)
+    public function setHeight($height): static
     {
         $this->height = (int) $height;
         $this->isChanged('height', $this->height);
@@ -222,7 +222,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setCacheTimeout($cacheTimeout)
+    public function setCacheTimeout($cacheTimeout): static
     {
         $this->isChanged('cacheTimeout', $cacheTimeout);
         $this->cacheTimeout = $cacheTimeout;
@@ -247,7 +247,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setOrdering($ordering)
+    public function setOrdering($ordering): static
     {
         $this->ordering = (int) $ordering;
         $this->isChanged('ordering', $this->ordering);
@@ -280,7 +280,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setParams(array $params)
+    public function setParams(array $params): static
     {
         $this->isChanged('params', $params);
         $this->params = $params;
@@ -295,7 +295,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setTemplate($template)
+    public function setTemplate($template): static
     {
         $this->isChanged('template', $template);
         $this->template = $template;
@@ -328,7 +328,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setTemplateData(array $templateData)
+    public function setTemplateData(array $templateData): static
     {
         $this->isChanged('templateData', $templateData);
         $this->templateData = $templateData;
@@ -343,7 +343,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setErrorMessage($errorMessage)
+    public function setErrorMessage($errorMessage): static
     {
         $this->errorMessage = $errorMessage;
 
@@ -367,7 +367,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setCached($cached)
+    public function setCached($cached): static
     {
         $this->cached = $cached;
 
@@ -391,7 +391,7 @@ class Widget extends FormEntity
      *
      * @return Widget
      */
-    public function setLoadTime($loadTime)
+    public function setLoadTime($loadTime): static
     {
         $this->loadTime = $loadTime;
 

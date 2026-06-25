@@ -280,7 +280,7 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
      *
      * @return Report
      */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->isChanged('name', $name);
         $this->name = $name;
@@ -303,7 +303,7 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
      *
      * @return Report
      */
-    public function setSystem($system)
+    public function setSystem($system): static
     {
         $this->isChanged('system', $system);
         $this->system = $system;
@@ -326,7 +326,7 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
      *
      * @return Report
      */
-    public function setSource($source)
+    public function setSource($source): static
     {
         $this->isChanged('source', $source);
         $this->source = $source;
@@ -347,7 +347,7 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
      *
      * @return Report
      */
-    public function setColumns($columns)
+    public function setColumns($columns): static
     {
         $this->isChanged('columns', $columns);
         $this->columns = $columns;
@@ -368,7 +368,7 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
      *
      * @return Report
      */
-    public function setFilters($filters)
+    public function setFilters($filters): static
     {
         $this->isChanged('filters', $filters);
         $this->filters = $filters;
