@@ -57,12 +57,13 @@
                         </div>
                     {% endif %}
 
-                    <div class="d-flex gap-sm">
+                    <div class="d-flex fd-column gap-sm abtest-sidebar-actions">
                         {% include '@MauticCore/Helper/button.html.twig' with {
                             buttons: [{
                                 label: 'mautic.email.ab_test.form.abtest.add',
                                 variant: 'tertiary',
                                 icon: 'ri-add-line',
+                                wide: true,
                                 href: path('mautic_email_action', {'objectAction': 'abTest', 'objectId': parentId}),
                                 attributes: {
                                     'data-toggle': 'ajax'
@@ -76,6 +77,7 @@
                                     label: 'mautic.email.ab_test.form.abtest.schedule.sending',
                                     variant: 'primary',
                                     icon: 'ri-send-plane-line',
+                                    wide: true,
                                     href: path('mautic_email_action', {'objectAction': 'scheduleSend', 'objectId': parentId}),
                                     attributes: {
                                         'data-toggle': 'ajaxmodal',
@@ -93,12 +95,13 @@
                             '%date%': dateToFullConcat(email.getPublishUp())
                         }) }}
                     </div>
-                    <div class="d-flex gap-sm">
+                    <div class="d-flex fd-column gap-sm abtest-sidebar-actions">
                         {% include '@MauticCore/Helper/button.html.twig' with {
                             buttons: [{
                                 label: 'mautic.email.ab_test.form.abtest.add',
                                 variant: 'tertiary',
                                 icon: 'ri-add-line',
+                                wide: true,
                                 href: path('mautic_email_action', {'objectAction': 'abTest', 'objectId': parentId}),
                                 attributes: {
                                     'data-toggle': 'ajax'
@@ -110,6 +113,7 @@
                                 label: 'mautic.email.reschedule.send',
                                 variant: 'primary',
                                 icon: 'ri-time-line',
+                                wide: true,
                                 href: path('mautic_email_action', {'objectAction': 'scheduleSend', 'objectId': parentId}),
                                 attributes: {
                                     'data-toggle': 'ajaxmodal',

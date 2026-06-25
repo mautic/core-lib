@@ -19,13 +19,14 @@
     </div>
 
     {# Main content #}
-    <div class="variant-content fg-1">
+    <div class="variant-content fg-1" style="min-width: 0;">
         {# Title and status #}
-        <div class="variant-title d-flex ai-center fs-14">
+        <div class="variant-title d-flex ai-center fs-14" style="min-width: 0; overflow: hidden;">
             <a href="{{ path(actionRoute, {'objectAction': 'view', 'objectId': variant.id}) }}"
                data-toggle="ajax"
                title="{{ variant.subject }}"
-               class="variant-name {% if isCurrent %}fw-b{% endif %}">
+               class="variant-name {% if isCurrent %}fw-b{% endif %}"
+               style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 {{ attribute(variant, nameGetter) }}
             </a>
 
@@ -44,23 +45,23 @@
     </div>
 
     {# Action buttons #}
-    <div class="variant-actions d-flex gap-2">
+    <div class="variant-actions d-flex" style="flex-shrink: 0;">
         <a href="{{ path('mautic_email_preview', {'objectId': variant.id}) }}"
-           class="btn btn-ghost btn-icon btn-sm"
+           class="btn btn-ghost btn--icon-only btn-sm btn-nospin"
            title="{{ 'mautic.core.preview'|trans }}"
            target="_blank">
             <i class="ri-external-link-line"></i>
         </a>
 
         <a href="{{ path(actionRoute, {'objectAction': 'edit', 'objectId': variant.id}) }}"
-           class="btn btn-ghost btn-icon btn-sm"
+           class="btn btn-ghost btn--icon-only btn-sm btn-nospin"
            title="{{ 'mautic.core.form.edit'|trans }}"
            data-toggle="ajax">
             <i class="ri-pencil-line"></i>
         </a>
 
         <a href="{{ path(actionRoute, {'objectAction': 'delete', 'objectId': variant.id, 'parentId': variant.variantParent ? variant.variantParent.id : 0}) }}"
-           class="btn btn-ghost btn-icon btn-sm"
+           class="btn btn-ghost btn--icon-only btn-sm btn-nospin"
            title="{{ 'mautic.core.form.delete'|trans }}"
            data-toggle="confirmation"
            data-message="{{ (variant.variantParent ? 'mautic.email.form.confirmdelete.variant' : 'mautic.email.form.confirmdelete')|trans({'%name%': attribute(variant, nameGetter) ~ ' (' ~ variant.id ~ ')'})|escape }}"
