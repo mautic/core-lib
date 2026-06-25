@@ -110,8 +110,6 @@ class StatsEvent extends Event
      * Set the source repository to fetch the results from.
      *
      * @param CommonRepository<object> $repository
-     *
-     * @return string
      */
     public function setRepository(CommonRepository $repository, array $permissions = []): static
     {
