@@ -181,7 +181,7 @@ class CampaignController extends AbstractStandardFormController
 
         $campaign = $campaignModel->getEntity($objectId);
 
-        if (empty($campaign)) {
+        if (!$campaign instanceof Campaign) {
             $this->logger->error('Campaign not found for export', ['objectId' => $objectId]);
 
             return $this->notFound();
@@ -427,12 +427,12 @@ class CampaignController extends AbstractStandardFormController
         return $this->indexStandard($request, $page);
     }
 
-    protected function getDefaultOrderColumn()
+    protected function getDefaultOrderColumn(): string
     {
         return 'dateModified';
     }
 
-    protected function getDefaultOrderDirection()
+    protected function getDefaultOrderDirection(): string
     {
         return 'DESC';
     }

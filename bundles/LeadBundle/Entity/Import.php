@@ -238,7 +238,7 @@ class Import extends FormEntity
      */
     public function isBackgroundProcess(): bool
     {
-        return !(self::MANUAL === $this->getStatus());
+        return self::MANUAL !== $this->getStatus();
     }
 
     /**
@@ -519,7 +519,7 @@ class Import extends FormEntity
      */
     public function start(): self
     {
-        if (empty($this->getDateStarted())) {
+        if (!$this->getDateStarted() instanceof \DateTimeInterface) {
             $this->setDateStarted(new \DateTime());
         }
 
@@ -619,11 +619,9 @@ class Import extends FormEntity
     }
 
     /**
-     * @param string $object
-     *
      * @return Import
      */
-    public function setObject($object)
+    public function setObject(string $object)
     {
         $this->isChanged('object', $object);
         $this->object = $object;
@@ -631,10 +629,7 @@ class Import extends FormEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getObject()
+    public function getObject(): string
     {
         return $this->object;
     }

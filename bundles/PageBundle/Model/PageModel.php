@@ -277,7 +277,7 @@ class PageModel extends FormModel implements GlobalSearchInterface
         }
 
         if ($this->dispatcher->hasListeners($name)) {
-            if (empty($event)) {
+            if (!$event instanceof Event) {
                 $event = new PageEvent($entity, $isNew);
                 $event->setEntityManager($this->em);
             }
