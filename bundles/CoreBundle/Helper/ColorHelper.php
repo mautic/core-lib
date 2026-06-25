@@ -34,8 +34,6 @@ class ColorHelper
 
     /**
      * Sets random values to RGB properties. It will avoid too black or too wight colors.
-     *
-     * @return ColorHelper
      */
     public function buildRandomColor(): static
     {

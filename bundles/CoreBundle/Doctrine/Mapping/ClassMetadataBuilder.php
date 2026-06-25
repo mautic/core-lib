@@ -134,8 +134,6 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
      * @param string $columnName
      * @param bool   $isPrimary
      * @param bool   $isNullable
-     *
-     * @return ClassMetadataBuilder
      */
     public function addBigIntIdField($fieldName = 'id', $columnName = 'id', $isPrimary = true, $isNullable = false): static
     {

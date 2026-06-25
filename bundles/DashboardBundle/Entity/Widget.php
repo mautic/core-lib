@@ -119,8 +119,6 @@ class Widget extends FormEntity
      * Set name.
      *
      * @param string $name
-     *
-     * @return Widget
      */
     public function setName($name): static
     {
@@ -144,8 +142,6 @@ class Widget extends FormEntity
      * Set type.
      *
      * @param string $type
-     *
-     * @return Widget
      */
     public function setType($type): static
     {
@@ -169,8 +165,6 @@ class Widget extends FormEntity
      * Set width.
      *
      * @param int $width
-     *
-     * @return Widget
      */
     public function setWidth($width): static
     {
@@ -194,8 +188,6 @@ class Widget extends FormEntity
      * Set height.
      *
      * @param int $height
-     *
-     * @return Widget
      */
     public function setHeight($height): static
     {
@@ -219,8 +211,6 @@ class Widget extends FormEntity
      * Set cache timeout.
      *
      * @param int $cacheTimeout (minutes)
-     *
-     * @return Widget
      */
     public function setCacheTimeout($cacheTimeout): static
     {
@@ -244,8 +234,6 @@ class Widget extends FormEntity
      * Set ordering.
      *
      * @param int $ordering
-     *
-     * @return Widget
      */
     public function setOrdering($ordering): static
     {
@@ -277,8 +265,6 @@ class Widget extends FormEntity
 
     /**
      * Set params.
-     *
-     * @return Widget
      */
     public function setParams(array $params): static
     {
@@ -292,8 +278,6 @@ class Widget extends FormEntity
      * Set template.
      *
      * @param string $template
-     *
-     * @return Widget
      */
     public function setTemplate($template): static
     {
@@ -325,8 +309,6 @@ class Widget extends FormEntity
 
     /**
      * Set template data.
-     *
-     * @return Widget
      */
     public function setTemplateData(array $templateData): static
     {
@@ -340,8 +322,6 @@ class Widget extends FormEntity
      * Set errorMessage.
      *
      * @param string $errorMessage
-     *
-     * @return Widget
      */
     public function setErrorMessage($errorMessage): static
     {
@@ -364,8 +344,6 @@ class Widget extends FormEntity
      * Set cached flag.
      *
      * @param bool $cached
-     *
-     * @return Widget
      */
     public function setCached($cached): static
     {
@@ -388,8 +366,6 @@ class Widget extends FormEntity
      * Set loadTime.
      *
      * @param string|float|int $loadTime
-     *
-     * @return Widget
      */
     public function setLoadTime($loadTime): static
     {

@@ -181,8 +181,6 @@ class TriggerEvent implements UuidInterface
 
     /**
      * @param int $order
-     *
-     * @return TriggerEvent
      */
     public function setOrder($order): static
     {
@@ -203,8 +201,6 @@ class TriggerEvent implements UuidInterface
 
     /**
      * @param array $properties
-     *
-     * @return TriggerEvent
      */
     public function setProperties($properties): static
     {
@@ -223,9 +219,6 @@ class TriggerEvent implements UuidInterface
         return $this->properties;
     }
 
-    /**
-     * @return self
-     */
     public function setTrigger(Trigger $trigger): static
     {
         $this->trigger = $trigger;
@@ -243,8 +236,6 @@ class TriggerEvent implements UuidInterface
 
     /**
      * @param string $type
-     *
-     * @return TriggerEvent
      */
     public function setType($type): static
     {
@@ -269,8 +260,6 @@ class TriggerEvent implements UuidInterface
 
     /**
      * @param string $description
-     *
-     * @return TriggerEvent
      */
     public function setDescription($description): static
     {
@@ -290,8 +279,6 @@ class TriggerEvent implements UuidInterface
 
     /**
      * @param string $name
-     *
-     * @return TriggerEvent
      */
     public function setName($name): static
     {
@@ -309,9 +296,6 @@ class TriggerEvent implements UuidInterface
         return $this->name;
     }
 
-    /**
-     * @return self
-     */
     public function addLog(LeadTriggerLog $log): static
     {
         $this->log[] = $log;

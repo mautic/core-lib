@@ -132,8 +132,6 @@ class Stat
 
     /**
      * Up the sent count.
-     *
-     * @return Stat
      */
     public function upSentCount(): static
     {

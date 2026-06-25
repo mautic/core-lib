@@ -143,8 +143,6 @@ class ObjectMapping
 
     /**
      * @param int $id
-     *
-     * @return ObjectMapping
      */
     public function setId($id): static
     {
@@ -168,8 +166,6 @@ class ObjectMapping
 
     /**
      * @param string $integration
-     *
-     * @return ObjectMapping
      */
     public function setIntegration($integration): static
     {
@@ -188,8 +184,6 @@ class ObjectMapping
 
     /**
      * @param string $internalObjectName
-     *
-     * @return ObjectMapping
      */
     public function setInternalObjectName($internalObjectName): static
     {
@@ -205,8 +199,6 @@ class ObjectMapping
 
     /**
      * @param int $internalObjectId
-     *
-     * @return ObjectMapping
      */
     public function setInternalObjectId($internalObjectId): static
     {
@@ -225,8 +217,6 @@ class ObjectMapping
 
     /**
      * @param string $integrationObjectName
-     *
-     * @return ObjectMapping
      */
     public function setIntegrationObjectName($integrationObjectName): static
     {
@@ -245,8 +235,6 @@ class ObjectMapping
 
     /**
      * @param string $integrationObjectId
-     *
-     * @return ObjectMapping
      */
     public function setIntegrationObjectId($integrationObjectId): static
     {
@@ -262,8 +250,6 @@ class ObjectMapping
 
     /**
      * @param \DateTimeInterface|null $lastSyncDate
-     *
-     * @return ObjectMapping
      */
     public function setLastSyncDate($lastSyncDate): static
     {
@@ -286,8 +272,6 @@ class ObjectMapping
 
     /**
      * @param array $internalStorage
-     *
-     * @return ObjectMapping
      */
     public function setInternalStorage($internalStorage): static
     {
@@ -316,8 +300,6 @@ class ObjectMapping
 
     /**
      * @param bool $isDeleted
-     *
-     * @return ObjectMapping
      */
     public function setIsDeleted($isDeleted): static
     {
@@ -336,8 +318,6 @@ class ObjectMapping
 
     /**
      * @param string|null $integrationReferenceId
-     *
-     * @return ObjectMapping
      */
     public function setIntegrationReferenceId($integrationReferenceId): static
     {

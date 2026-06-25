@@ -92,8 +92,6 @@ class LeadNote extends FormEntity
      * Set text.
      *
      * @param string $text
-     *
-     * @return LeadNote
      */
     public function setText($text): static
     {
@@ -117,8 +115,6 @@ class LeadNote extends FormEntity
      * Set type.
      *
      * @param string $type
-     *
-     * @return LeadNote
      */
     public function setType($type): static
     {

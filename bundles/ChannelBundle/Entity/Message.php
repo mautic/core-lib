@@ -173,8 +173,6 @@ class Message extends FormEntity implements UuidInterface
 
     /**
      * @param ?string $name
-     *
-     * @return Message
      */
     public function setName($name): static
     {
@@ -194,8 +192,6 @@ class Message extends FormEntity implements UuidInterface
 
     /**
      * @param ?string $description
-     *
-     * @return Message
      */
     public function setDescription($description): static
     {
@@ -215,8 +211,6 @@ class Message extends FormEntity implements UuidInterface
 
     /**
      * @param ?\DateTime $publishUp
-     *
-     * @return Message
      */
     public function setPublishUp($publishUp): static
     {
@@ -236,8 +230,6 @@ class Message extends FormEntity implements UuidInterface
 
     /**
      * @param ?\DateTime $publishDown
-     *
-     * @return Message
      */
     public function setPublishDown($publishDown): static
     {
@@ -257,8 +249,6 @@ class Message extends FormEntity implements UuidInterface
 
     /**
      * @param ?Category $category
-     *
-     * @return Message
      */
     public function setCategory($category): static
     {
@@ -278,8 +268,6 @@ class Message extends FormEntity implements UuidInterface
 
     /**
      * @param ArrayCollection<int,Channel> $channels
-     *
-     * @return Message
      */
     public function setChannels($channels): static
     {

@@ -24,8 +24,6 @@ class SegmentDictionaryGenerationEvent extends CommonEvent
 
     /**
      * @param mixed[] $attributes
-     *
-     * @return SegmentDictionaryGenerationEvent
      */
     public function addTranslation(string $key, $attributes): static
     {

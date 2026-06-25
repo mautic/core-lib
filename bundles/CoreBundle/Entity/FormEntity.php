@@ -356,8 +356,6 @@ class FormEntity extends CommonEntity
      * Set modifiedBy.
      *
      * @param User|int|null $modifiedBy
-     *
-     * @return mixed
      */
     public function setModifiedBy($modifiedBy = null): static
     {
@@ -388,8 +386,6 @@ class FormEntity extends CommonEntity
      * Set checkedOutBy.
      *
      * @param User $checkedOutBy
-     *
-     * @return mixed
      */
     public function setCheckedOutBy($checkedOutBy = null): static
     {

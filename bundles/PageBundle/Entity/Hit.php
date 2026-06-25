@@ -304,8 +304,6 @@ class Hit
      * Set dateHit.
      *
      * @param \DateTime $dateHit
-     *
-     * @return Hit
      */
     public function setDateHit($dateHit): static
     {
@@ -334,8 +332,6 @@ class Hit
 
     /**
      * @param \DateTime $dateLeft
-     *
-     * @return Hit
      */
     public function setDateLeft($dateLeft): static
     {
@@ -348,8 +344,6 @@ class Hit
      * Set country.
      *
      * @param string $country
-     *
-     * @return Hit
      */
     public function setCountry($country): static
     {
@@ -372,8 +366,6 @@ class Hit
      * Set region.
      *
      * @param string $region
-     *
-     * @return Hit
      */
     public function setRegion($region): static
     {
@@ -396,8 +388,6 @@ class Hit
      * Set city.
      *
      * @param string $city
-     *
-     * @return Hit
      */
     public function setCity($city): static
     {
@@ -420,8 +410,6 @@ class Hit
      * Set isp.
      *
      * @param string $isp
-     *
-     * @return Hit
      */
     public function setIsp($isp): static
     {
@@ -444,8 +432,6 @@ class Hit
      * Set organization.
      *
      * @param string $organization
-     *
-     * @return Hit
      */
     public function setOrganization($organization): static
     {
@@ -468,8 +454,6 @@ class Hit
      * Set code.
      *
      * @param int $code
-     *
-     * @return Hit
      */
     public function setCode($code): static
     {
@@ -492,8 +476,6 @@ class Hit
      * Set referer.
      *
      * @param string $referer
-     *
-     * @return Hit
      */
     public function setReferer($referer): static
     {
@@ -516,8 +498,6 @@ class Hit
      * Set url.
      *
      * @param string $url
-     *
-     * @return Hit
      */
     public function setUrl($url): static
     {
@@ -540,8 +520,6 @@ class Hit
      * Set url title.
      *
      * @param string $urlTitle
-     *
-     * @return Hit
      */
     public function setUrlTitle($urlTitle): static
     {
@@ -565,8 +543,6 @@ class Hit
      * Set userAgent.
      *
      * @param string $userAgent
-     *
-     * @return Hit
      */
     public function setUserAgent($userAgent): static
     {
@@ -589,8 +565,6 @@ class Hit
      * Set remoteHost.
      *
      * @param string $remoteHost
-     *
-     * @return Hit
      */
     public function setRemoteHost($remoteHost): static
     {
@@ -611,8 +585,6 @@ class Hit
 
     /**
      * Set page.
-     *
-     * @return Hit
      */
     public function setPage(?Page $page = null): static
     {
@@ -626,9 +598,6 @@ class Hit
         return $this->page;
     }
 
-    /**
-     * @return Hit
-     */
     public function setIpAddress(IpAddress $ipAddress): static
     {
         $this->ipAddress = $ipAddress;
@@ -646,8 +615,6 @@ class Hit
 
     /**
      * @param string $trackingId
-     *
-     * @return Hit
      */
     public function setTrackingId($trackingId): static
     {
@@ -670,8 +637,6 @@ class Hit
      * Set pageLanguage.
      *
      * @param string $pageLanguage
-     *
-     * @return Hit
      */
     public function setPageLanguage($pageLanguage): static
     {
@@ -694,8 +659,6 @@ class Hit
      * Set browserLanguages.
      *
      * @param array<string> $browserLanguages
-     *
-     * @return Hit
      */
     public function setBrowserLanguages($browserLanguages): static
     {
@@ -722,9 +685,6 @@ class Hit
         return $this->lead;
     }
 
-    /**
-     * @return Hit
-     */
     public function setLead(Lead $lead): static
     {
         $this->lead = $lead;
@@ -742,8 +702,6 @@ class Hit
 
     /**
      * @param string $source
-     *
-     * @return Hit
      */
     public function setSource($source): static
     {
@@ -762,8 +720,6 @@ class Hit
 
     /**
      * @param int $sourceId
-     *
-     * @return Hit
      */
     public function setSourceId($sourceId): static
     {
@@ -780,9 +736,6 @@ class Hit
         return $this->redirect;
     }
 
-    /**
-     * @return Hit
-     */
     public function setRedirect(Redirect $redirect): static
     {
         $this->redirect = $redirect;
@@ -810,8 +763,6 @@ class Hit
 
     /**
      * @param array $query
-     *
-     * @return Hit
      */
     public function setQuery($query): static
     {
@@ -828,9 +779,6 @@ class Hit
         return $this->device;
     }
 
-    /**
-     * @return Hit
-     */
     public function setDeviceStat(LeadDevice $device): static
     {
         $this->device = $device;

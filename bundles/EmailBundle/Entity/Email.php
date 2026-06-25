@@ -655,8 +655,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @param ?string $description
-     *
-     * @return Email
      */
     public function setDescription($description): static
     {
@@ -859,8 +857,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @param mixed $fromAddress
-     *
-     * @return Email
      */
     public function setFromAddress($fromAddress): static
     {
@@ -880,8 +876,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @param mixed $fromName
-     *
-     * @return Email
      */
     public function setFromName($fromName): static
     {
@@ -901,8 +895,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @param mixed $replyToAddress
-     *
-     * @return Email
      */
     public function setReplyToAddress($replyToAddress): static
     {
@@ -935,8 +927,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @param mixed $bccAddress
-     *
-     * @return Email
      */
     public function setBccAddress($bccAddress): static
     {
@@ -1055,8 +1045,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * Add list.
-     *
-     * @return Email
      */
     public function addList(LeadList $list): static
     {
@@ -1234,8 +1222,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @param mixed $emailType
-     *
-     * @return Email
      */
     public function setEmailType($emailType): static
     {
@@ -1246,8 +1232,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * Add asset.
-     *
-     * @return Email
      */
     public function addAssetAttachment(Asset $asset): static
     {
@@ -1284,8 +1268,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
 
     /**
      * @param array $headers
-     *
-     * @return Email
      */
     public function setHeaders($headers): static
     {

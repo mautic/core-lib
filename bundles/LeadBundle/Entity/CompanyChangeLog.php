@@ -87,8 +87,6 @@ class CompanyChangeLog
      * Set type.
      *
      * @param string $type
-     *
-     * @return CompanyChangeLog
      */
     public function setType($type): static
     {
@@ -111,8 +109,6 @@ class CompanyChangeLog
      * Set eventName.
      *
      * @param string $eventName
-     *
-     * @return CompanyChangeLog
      */
     public function setEventName($eventName): static
     {
@@ -135,8 +131,6 @@ class CompanyChangeLog
      * Set actionName.
      *
      * @param string $actionName
-     *
-     * @return CompanyChangeLog
      */
     public function setActionName($actionName): static
     {
@@ -159,8 +153,6 @@ class CompanyChangeLog
      * Set delta.
      *
      * @param int $company
-     *
-     * @return CompanyChangeLog
      */
     public function setCompany($company): static
     {
@@ -183,8 +175,6 @@ class CompanyChangeLog
      * Set dateAdded.
      *
      * @param \DateTime $dateAdded
-     *
-     * @return CompanyChangeLog
      */
     public function setDateAdded($dateAdded): static
     {
@@ -205,8 +195,6 @@ class CompanyChangeLog
 
     /**
      * Set lead.
-     *
-     * @return CompanyChangeLog
      */
     public function setLead(Lead $lead): static
     {

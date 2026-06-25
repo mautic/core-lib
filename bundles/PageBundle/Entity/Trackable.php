@@ -86,9 +86,6 @@ class Trackable
         return $this->redirect;
     }
 
-    /**
-     * @return Trackable
-     */
     public function setRedirect(Redirect $redirect): static
     {
         $this->redirect = $redirect;
@@ -106,8 +103,6 @@ class Trackable
 
     /**
      * @param string $channel
-     *
-     * @return Trackable
      */
     public function setChannel($channel): static
     {
@@ -126,8 +121,6 @@ class Trackable
 
     /**
      * @param int $channelId
-     *
-     * @return Trackable
      */
     public function setChannelId($channelId): static
     {
@@ -146,8 +139,6 @@ class Trackable
 
     /**
      * @param int $hits
-     *
-     * @return Trackable
      */
     public function setHits($hits): static
     {
@@ -166,8 +157,6 @@ class Trackable
 
     /**
      * @param int $uniqueHits
-     *
-     * @return Trackable
      */
     public function setUniqueHits($uniqueHits): static
     {

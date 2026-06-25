@@ -344,8 +344,6 @@ class LeadDevice
 
     /**
      * @param string $trackingId
-     *
-     * @return self
      */
     public function setTrackingId($trackingId): static
     {

@@ -590,8 +590,6 @@ class Notification extends FormEntity implements UuidInterface, TranslationEntit
 
     /**
      * Add list.
-     *
-     * @return Notification
      */
     public function addList(LeadList $list): static
     {

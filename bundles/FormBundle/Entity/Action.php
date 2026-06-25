@@ -180,8 +180,6 @@ class Action implements UuidInterface
      * Set order.
      *
      * @param int $order
-     *
-     * @return Action
      */
     public function setOrder($order): static
     {
@@ -206,8 +204,6 @@ class Action implements UuidInterface
      * Set properties.
      *
      * @param array $properties
-     *
-     * @return Action
      */
     public function setProperties($properties): static
     {
@@ -230,8 +226,6 @@ class Action implements UuidInterface
 
     /**
      * Set form.
-     *
-     * @return Action
      */
     public function setForm(Form $form): static
     {
@@ -254,8 +248,6 @@ class Action implements UuidInterface
      * Set type.
      *
      * @param string $type
-     *
-     * @return Action
      */
     public function setType($type): static
     {
@@ -284,8 +276,6 @@ class Action implements UuidInterface
      * Set description.
      *
      * @param string $description
-     *
-     * @return Action
      */
     public function setDescription($description): static
     {
@@ -309,8 +299,6 @@ class Action implements UuidInterface
      * Set name.
      *
      * @param string $name
-     *
-     * @return Action
      */
     public function setName($name): static
     {

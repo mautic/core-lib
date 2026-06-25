@@ -100,8 +100,6 @@ class PointsChangeLog
      * Set type.
      *
      * @param string $type
-     *
-     * @return PointsChangeLog
      */
     public function setType($type): static
     {
@@ -124,8 +122,6 @@ class PointsChangeLog
      * Set eventName.
      *
      * @param string $eventName
-     *
-     * @return PointsChangeLog
      */
     public function setEventName($eventName): static
     {
@@ -148,8 +144,6 @@ class PointsChangeLog
      * Set actionName.
      *
      * @param string $actionName
-     *
-     * @return PointsChangeLog
      */
     public function setActionName($actionName): static
     {
@@ -172,8 +166,6 @@ class PointsChangeLog
      * Set delta.
      *
      * @param int $delta
-     *
-     * @return PointsChangeLog
      */
     public function setDelta($delta): static
     {
@@ -196,8 +188,6 @@ class PointsChangeLog
      * Set dateAdded.
      *
      * @param \DateTime $dateAdded
-     *
-     * @return PointsChangeLog
      */
     public function setDateAdded($dateAdded): static
     {
@@ -218,8 +208,6 @@ class PointsChangeLog
 
     /**
      * Set lead.
-     *
-     * @return PointsChangeLog
      */
     public function setLead(Lead $lead): static
     {
@@ -238,9 +226,6 @@ class PointsChangeLog
         return $this->lead;
     }
 
-    /**
-     * @return PointsChangeLog
-     */
     public function setIpAddress(IpAddress $ipAddress): static
     {
         $this->ipAddress = $ipAddress;

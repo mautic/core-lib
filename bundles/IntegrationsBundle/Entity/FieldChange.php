@@ -110,8 +110,6 @@ class FieldChange
 
     /**
      * @param string $integration
-     *
-     * @return FieldChange
      */
     public function setIntegration($integration): static
     {

@@ -78,8 +78,6 @@ class UserToken
 
     /**
      * @param User $user
-     *
-     * @return UserToken
      */
     public function setUser($user): static
     {
@@ -98,8 +96,6 @@ class UserToken
 
     /**
      * @param string $authorizator
-     *
-     * @return UserToken
      */
     public function setAuthorizator($authorizator): static
     {
@@ -120,8 +116,6 @@ class UserToken
      * Use \Mautic\UserBundle\Entity\UserTokenRepositoryInterface::generateSecret to get valid secret.
      *
      * @param string $secret
-     *
-     * @return UserToken
      */
     public function setSecret($secret): static
     {
@@ -140,8 +134,6 @@ class UserToken
 
     /**
      * @param \DateTime|null $expiration
-     *
-     * @return UserToken
      */
     public function setExpiration($expiration = null): static
     {
@@ -160,8 +152,6 @@ class UserToken
 
     /**
      * @param bool $oneTimeOnly
-     *
-     * @return UserToken
      */
     public function setOneTimeOnly($oneTimeOnly = true): static
     {

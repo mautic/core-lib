@@ -275,8 +275,6 @@ class VideoHit
      * Set dateHit.
      *
      * @param \DateTime $dateHit
-     *
-     * @return VideoHit
      */
     public function setDateHit($dateHit): static
     {
@@ -305,8 +303,6 @@ class VideoHit
 
     /**
      * @param \DateTime $dateLeft
-     *
-     * @return VideoHit
      */
     public function setDateLeft($dateLeft): static
     {
@@ -319,8 +315,6 @@ class VideoHit
      * Set country.
      *
      * @param string $country
-     *
-     * @return VideoHit
      */
     public function setCountry($country): static
     {
@@ -343,8 +337,6 @@ class VideoHit
      * Set region.
      *
      * @param string $region
-     *
-     * @return VideoHit
      */
     public function setRegion($region): static
     {
@@ -367,8 +359,6 @@ class VideoHit
      * Set city.
      *
      * @param string $city
-     *
-     * @return VideoHit
      */
     public function setCity($city): static
     {
@@ -391,8 +381,6 @@ class VideoHit
      * Set isp.
      *
      * @param string $isp
-     *
-     * @return VideoHit
      */
     public function setIsp($isp): static
     {
@@ -415,8 +403,6 @@ class VideoHit
      * Set organization.
      *
      * @param string $organization
-     *
-     * @return VideoHit
      */
     public function setOrganization($organization): static
     {
@@ -439,8 +425,6 @@ class VideoHit
      * Set code.
      *
      * @param int $code
-     *
-     * @return VideoHit
      */
     public function setCode($code): static
     {
@@ -463,8 +447,6 @@ class VideoHit
      * Set referer.
      *
      * @param string $referer
-     *
-     * @return VideoHit
      */
     public function setReferer($referer): static
     {
@@ -487,8 +469,6 @@ class VideoHit
      * Set url.
      *
      * @param string $url
-     *
-     * @return VideoHit
      */
     public function setUrl($url): static
     {
@@ -511,8 +491,6 @@ class VideoHit
      * Set userAgent.
      *
      * @param string $userAgent
-     *
-     * @return VideoHit
      */
     public function setUserAgent($userAgent): static
     {
@@ -535,8 +513,6 @@ class VideoHit
      * Set remoteHost.
      *
      * @param string $remoteHost
-     *
-     * @return VideoHit
      */
     public function setRemoteHost($remoteHost): static
     {
@@ -555,9 +531,6 @@ class VideoHit
         return $this->remoteHost;
     }
 
-    /**
-     * @return VideoHit
-     */
     public function setIpAddress(IpAddress $ipAddress): static
     {
         $this->ipAddress = $ipAddress;
@@ -577,8 +550,6 @@ class VideoHit
      * Set pageLanguage.
      *
      * @param string $pageLanguage
-     *
-     * @return VideoHit
      */
     public function setPageLanguage($pageLanguage): static
     {
@@ -601,8 +572,6 @@ class VideoHit
      * Set browserLanguages.
      *
      * @param array<string> $browserLanguages
-     *
-     * @return VideoHit
      */
     public function setBrowserLanguages($browserLanguages): static
     {
@@ -629,9 +598,6 @@ class VideoHit
         return $this->lead;
     }
 
-    /**
-     * @return VideoHit
-     */
     public function setLead(Lead $lead): static
     {
         $this->lead = $lead;
@@ -649,8 +615,6 @@ class VideoHit
 
     /**
      * @param string $channel
-     *
-     * @return VideoHit
      */
     public function setChannel($channel): static
     {
@@ -669,8 +633,6 @@ class VideoHit
 
     /**
      * @param int $channelId
-     *
-     * @return VideoHit
      */
     public function setChannelId($channelId): static
     {
@@ -687,9 +649,6 @@ class VideoHit
         return $this->redirect;
     }
 
-    /**
-     * @return VideoHit
-     */
     public function setRedirect(Redirect $redirect): static
     {
         $this->redirect = $redirect;
@@ -707,8 +666,6 @@ class VideoHit
 
     /**
      * @param array $query
-     *
-     * @return VideoHit
      */
     public function setQuery($query): static
     {
@@ -725,9 +682,6 @@ class VideoHit
         return $this->timeWatched;
     }
 
-    /**
-     * @return VideoHit
-     */
     public function setTimeWatched($timeWatched): static
     {
         $this->timeWatched = $timeWatched;
@@ -745,8 +699,6 @@ class VideoHit
 
     /**
      * @param string $guid
-     *
-     * @return VideoHit
      */
     public function setGuid($guid): static
     {
@@ -765,8 +717,6 @@ class VideoHit
 
     /**
      * @param int $duration
-     *
-     * @return VideoHit
      */
     public function setDuration($duration): static
     {

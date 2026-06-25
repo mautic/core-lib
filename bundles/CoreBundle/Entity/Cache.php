@@ -76,8 +76,6 @@ class Cache
 
     /**
      * @param int $id
-     *
-     * @return Cache
      */
     public function setId($id): static
     {
@@ -96,8 +94,6 @@ class Cache
 
     /**
      * @param string $data
-     *
-     * @return Cache
      */
     public function setData($data): static
     {
@@ -116,8 +112,6 @@ class Cache
 
     /**
      * @param int $lifetime
-     *
-     * @return Cache
      */
     public function setLifetime($lifetime): static
     {
@@ -136,8 +130,6 @@ class Cache
 
     /**
      * @param int $time
-     *
-     * @return Cache
      */
     public function setTime($time): static
     {

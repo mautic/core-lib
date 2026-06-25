@@ -120,8 +120,6 @@ class IntegrationEntity extends CommonEntity
 
     /**
      * @param string $integration
-     *
-     * @return IntegrationEntity
      */
     public function setIntegration($integration): static
     {
@@ -140,8 +138,6 @@ class IntegrationEntity extends CommonEntity
 
     /**
      * @param string $integrationEntity
-     *
-     * @return IntegrationEntity
      */
     public function setIntegrationEntity($integrationEntity): static
     {
@@ -160,8 +156,6 @@ class IntegrationEntity extends CommonEntity
 
     /**
      * @param string $integrationEntityId
-     *
-     * @return IntegrationEntity
      */
     public function setIntegrationEntityId($integrationEntityId): static
     {
@@ -180,8 +174,6 @@ class IntegrationEntity extends CommonEntity
 
     /**
      * @param \DateTime $dateAdded
-     *
-     * @return IntegrationEntity
      */
     public function setDateAdded($dateAdded): static
     {
@@ -200,8 +192,6 @@ class IntegrationEntity extends CommonEntity
 
     /**
      * @param \DateTime $lastSyncDate
-     *
-     * @return IntegrationEntity
      */
     public function setLastSyncDate($lastSyncDate): static
     {
@@ -220,8 +210,6 @@ class IntegrationEntity extends CommonEntity
 
     /**
      * @param string $internalEntity
-     *
-     * @return IntegrationEntity
      */
     public function setInternalEntity($internalEntity): static
     {
@@ -240,8 +228,6 @@ class IntegrationEntity extends CommonEntity
 
     /**
      * @param int $internalEntityId
-     *
-     * @return IntegrationEntity
      */
     public function setInternalEntityId($internalEntityId): static
     {
@@ -260,8 +246,6 @@ class IntegrationEntity extends CommonEntity
 
     /**
      * @param array $internal
-     *
-     * @return IntegrationEntity
      */
     public function setInternal($internal): static
     {

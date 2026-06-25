@@ -54,8 +54,6 @@ class ReportBuilderEvent extends AbstractReportEvent
      *
      * @param string $context Context for data
      * @param array  $data    Data array for the table
-     *
-     * @return ReportBuilderEvent
      */
     public function addTable($context, array $data, $group = null): static
     {

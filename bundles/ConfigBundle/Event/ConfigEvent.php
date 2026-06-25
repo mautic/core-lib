@@ -110,8 +110,6 @@ class ConfigEvent extends CommonEvent
      * @param array       $messageVars for translation
      * @param string|null $key
      * @param string|null $field
-     *
-     * @return ConfigEvent
      */
     public function setError($message, $messageVars = [], $key = null, $field = null): static
     {
@@ -165,9 +163,6 @@ class ConfigEvent extends CommonEvent
         return $this->originalNormData;
     }
 
-    /**
-     * @return ConfigEvent
-     */
     public function setOriginalNormData(array $normData): static
     {
         $this->originalNormData = $normData;

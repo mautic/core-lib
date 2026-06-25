@@ -420,8 +420,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param string $name
-     *
-     * @return Form
      */
     public function setName($name): static
     {
@@ -441,8 +439,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param string $description
-     *
-     * @return Form
      */
     public function setDescription($description): static
     {
@@ -468,8 +464,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param string $cachedHtml
-     *
-     * @return Form
      */
     public function setCachedHtml($cachedHtml): static
     {
@@ -496,8 +490,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param string $postAction
-     *
-     * @return Form
      */
     public function setPostAction($postAction): static
     {
@@ -517,8 +509,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param string $postActionProperty
-     *
-     * @return Form
      */
     public function setPostActionProperty($postActionProperty): static
     {
@@ -544,8 +534,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param \DateTime $publishUp
-     *
-     * @return Form
      */
     public function setPublishUp($publishUp): static
     {
@@ -565,8 +553,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param \DateTime $publishDown
-     *
-     * @return Form
      */
     public function setPublishDown($publishDown): static
     {
@@ -586,8 +572,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param int|string $key
-     *
-     * @return Form
      */
     public function addField($key, Field $field): static
     {
@@ -672,8 +656,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param string $alias
-     *
-     * @return Form
      */
     public function setAlias($alias): static
     {
@@ -691,9 +673,6 @@ class Form extends FormEntity implements UuidInterface
         return $this->alias;
     }
 
-    /**
-     * @return Form
-     */
     public function addSubmission(Submission $submissions): static
     {
         $this->submissions[] = $submissions;
@@ -716,8 +695,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param int|string $key
-     *
-     * @return Form
      */
     public function addAction($key, Action $action): static
     {
@@ -830,8 +807,6 @@ class Form extends FormEntity implements UuidInterface
      * @deprecated since Mautic 7.1, will be removed in 8.0. Form types are no longer used.
      *
      * @param mixed $formType
-     *
-     * @return Form
      */
     public function setFormType($formType): static
     {
@@ -861,8 +836,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param string $formAttributes
-     *
-     * @return Form
      */
     public function setFormAttributes($formAttributes): static
     {
@@ -960,8 +933,6 @@ class Form extends FormEntity implements UuidInterface
 
     /**
      * @param int $progressiveProfilingLimit
-     *
-     * @return Form
      */
     public function setProgressiveProfilingLimit($progressiveProfilingLimit): static
     {

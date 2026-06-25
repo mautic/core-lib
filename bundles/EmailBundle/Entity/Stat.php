@@ -512,8 +512,6 @@ class Stat
 
     /**
      * @param int $openCount
-     *
-     * @return Stat
      */
     public function setOpenCount($openCount): static
     {
@@ -537,8 +535,6 @@ class Stat
 
     /**
      * Up the sent count.
-     *
-     * @return Stat
      */
     public function upOpenCount(): static
     {
@@ -571,9 +567,6 @@ class Stat
         return $this->openDetails;
     }
 
-    /**
-     * @return Stat
-     */
     public function setOpenDetails(array $openDetails): static
     {
         $this->openDetails = $openDetails;
@@ -589,9 +582,6 @@ class Stat
         return $this->storedCopy;
     }
 
-    /**
-     * @return Stat
-     */
     public function setStoredCopy(Copy $storedCopy): static
     {
         $this->storedCopy = $storedCopy;

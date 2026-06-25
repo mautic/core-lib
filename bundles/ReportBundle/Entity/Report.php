@@ -277,8 +277,6 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
 
     /**
      * @param string $name
-     *
-     * @return Report
      */
     public function setName($name): static
     {
@@ -300,8 +298,6 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
 
     /**
      * @param string $system
-     *
-     * @return Report
      */
     public function setSystem($system): static
     {
@@ -323,8 +319,6 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
      * Set source.
      *
      * @param string $source
-     *
-     * @return Report
      */
     public function setSource($source): static
     {
@@ -344,8 +338,6 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
 
     /**
      * @param mixed[] $columns
-     *
-     * @return Report
      */
     public function setColumns($columns): static
     {
@@ -365,8 +357,6 @@ class Report extends FormEntity implements SchedulerInterface, UuidInterface
 
     /**
      * @param mixed[] $filters
-     *
-     * @return Report
      */
     public function setFilters($filters): static
     {

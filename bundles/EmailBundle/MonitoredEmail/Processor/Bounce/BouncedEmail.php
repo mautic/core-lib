@@ -41,8 +41,6 @@ class BouncedEmail
 
     /**
      * @param string $email
-     *
-     * @return BouncedEmail
      */
     public function setContactEmail($email): static
     {
@@ -61,8 +59,6 @@ class BouncedEmail
 
     /**
      * @param string $ruleCategory
-     *
-     * @return BouncedEmail
      */
     public function setRuleCategory($ruleCategory): static
     {
@@ -81,8 +77,6 @@ class BouncedEmail
 
     /**
      * @param string $ruleNumber
-     *
-     * @return BouncedEmail
      */
     public function setRuleNumber($ruleNumber): static
     {
@@ -101,8 +95,6 @@ class BouncedEmail
 
     /**
      * @param mixed $bounceType
-     *
-     * @return BouncedEmail
      */
     public function setType($bounceType): static
     {
@@ -118,8 +110,6 @@ class BouncedEmail
 
     /**
      * @param bool $final
-     *
-     * @return BouncedEmail
      */
     public function setIsFinal($final): static
     {
@@ -136,9 +126,6 @@ class BouncedEmail
         return $this->bounceAddress;
     }
 
-    /**
-     * @return BouncedEmail
-     */
     public function setBounceAddress($bounceAddress): static
     {
         $this->bounceAddress = $bounceAddress;

@@ -389,8 +389,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set title.
      *
      * @param string $title
-     *
-     * @return Asset
      */
     public function setTitle($title): static
     {
@@ -444,8 +442,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set originalFileName.
      *
      * @param string $originalFileName
-     *
-     * @return Asset
      */
     public function setOriginalFileName($originalFileName): static
     {
@@ -469,8 +465,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set storage location.
      *
      * @param string $storageLocation
-     *
-     * @return Asset
      */
     public function setStorageLocation($storageLocation): static
     {
@@ -557,8 +551,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set publishUp.
      *
      * @param \DateTime $publishUp
-     *
-     * @return Asset
      */
     public function setPublishUp($publishUp): static
     {
@@ -582,8 +574,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set publishDown.
      *
      * @param \DateTimeInterface $publishDown
-     *
-     * @return Asset
      */
     public function setPublishDown($publishDown): static
     {
@@ -607,8 +597,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set downloadCount.
      *
      * @param int $downloadCount
-     *
-     * @return Asset
      */
     public function setDownloadCount($downloadCount): static
     {
@@ -631,8 +619,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set revision.
      *
      * @param int $revision
-     *
-     * @return Asset
      */
     public function setRevision($revision): static
     {
@@ -655,8 +641,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set language.
      *
      * @param string $language
-     *
-     * @return Asset
      */
     public function setLanguage($language): static
     {
@@ -678,8 +662,6 @@ class Asset extends FormEntity implements UuidInterface
 
     /**
      * Set category.
-     *
-     * @return Asset
      */
     public function setCategory(?\Mautic\CategoryBundle\Entity\Category $category = null): static
     {
@@ -703,8 +685,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set uniqueDownloadCount.
      *
      * @param int $uniqueDownloadCount
-     *
-     * @return Asset
      */
     public function setUniqueDownloadCount($uniqueDownloadCount): static
     {
@@ -881,8 +861,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set uploadDir.
      *
      * @param string $uploadDir
-     *
-     * @return Asset
      */
     public function setUploadDir($uploadDir): static
     {
@@ -910,8 +888,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set max size.
      *
      * @param string $maxSize
-     *
-     * @return Asset
      */
     public function setMaxSize($maxSize): static
     {
@@ -1181,8 +1157,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set temporary ID.
      *
      * @param string $tempId
-     *
-     * @return Asset
      */
     public function setTempId($tempId): static
     {
@@ -1205,8 +1179,6 @@ class Asset extends FormEntity implements UuidInterface
      * Set temporary file name.
      *
      * @param string $tempName
-     *
-     * @return Asset
      */
     public function setTempName($tempName): static
     {
@@ -1258,8 +1230,6 @@ class Asset extends FormEntity implements UuidInterface
 
     /**
      * @param mixed $size
-     *
-     * @return Asset
      */
     public function setSize($size): static
     {
@@ -1336,8 +1306,6 @@ class Asset extends FormEntity implements UuidInterface
 
     /**
      * @param string|null $downloadUrl
-     *
-     * @return Asset
      */
     public function setDownloadUrl($downloadUrl): static
     {

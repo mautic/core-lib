@@ -162,8 +162,6 @@ class Category extends FormEntity implements UuidInterface
      * Set title.
      *
      * @param string $title
-     *
-     * @return Category
      */
     public function setTitle($title): static
     {
@@ -187,8 +185,6 @@ class Category extends FormEntity implements UuidInterface
      * Set alias.
      *
      * @param string $alias
-     *
-     * @return Category
      */
     public function setAlias($alias): static
     {
@@ -212,8 +208,6 @@ class Category extends FormEntity implements UuidInterface
      * Set description.
      *
      * @param string $description
-     *
-     * @return Category
      */
     public function setDescription($description): static
     {

@@ -107,9 +107,6 @@ class Tag implements UuidInterface
         return $this->tag;
     }
 
-    /**
-     * @return Tag
-     */
     public function setTag(string $tag): static
     {
         $this->tag = $this->validateTag($tag);
@@ -127,8 +124,6 @@ class Tag implements UuidInterface
 
     /**
      * @param string $description
-     *
-     * @return Tag
      */
     public function setDescription($description): static
     {

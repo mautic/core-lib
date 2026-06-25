@@ -137,9 +137,6 @@ class PointInsight extends FormEntity
         return $this->name;
     }
 
-    /**
-     * @return PointInsight
-     */
     public function setName(string $name): static
     {
         $this->isChanged('name', $name);
@@ -158,8 +155,6 @@ class PointInsight extends FormEntity
 
     /**
      * @param string|null $description
-     *
-     * @return PointInsight
      */
     public function setDescription($description): static
     {
@@ -179,8 +174,6 @@ class PointInsight extends FormEntity
 
     /**
      * @param string|null $insightType
-     *
-     * @return PointInsight
      */
     public function setInsightType($insightType): static
     {
@@ -200,8 +193,6 @@ class PointInsight extends FormEntity
 
     /**
      * @param string|null $insightAction
-     *
-     * @return PointInsight
      */
     public function setInsightAction($insightAction): static
     {
@@ -221,8 +212,6 @@ class PointInsight extends FormEntity
 
     /**
      * @param string|null $customField
-     *
-     * @return PointInsight
      */
     public function setCustomField($customField): static
     {
@@ -242,8 +231,6 @@ class PointInsight extends FormEntity
 
     /**
      * @param array<int> $pointGroups
-     *
-     * @return PointInsight
      */
     public function setPointGroups($pointGroups): static
     {
@@ -263,8 +250,6 @@ class PointInsight extends FormEntity
 
     /**
      * @param Category|null $category
-     *
-     * @return PointInsight
      */
     public function setCategory($category): static
     {
@@ -297,7 +282,7 @@ class PointInsight extends FormEntity
      *
      * @return PointInsight
      */
-    public function setActive($active)
+    public function setActive($active): FormEntity
     {
         return $this->setIsPublished($active);
     }

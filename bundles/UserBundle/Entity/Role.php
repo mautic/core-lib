@@ -165,8 +165,6 @@ class Role extends FormEntity implements CacheInvalidateInterface, UuidInterface
      * Set name.
      *
      * @param string $name
-     *
-     * @return Role
      */
     public function setName($name): static
     {
@@ -188,8 +186,6 @@ class Role extends FormEntity implements CacheInvalidateInterface, UuidInterface
 
     /**
      * Add permissions.
-     *
-     * @return Role
      */
     public function addPermission(Permission $permissions): static
     {
@@ -222,8 +218,6 @@ class Role extends FormEntity implements CacheInvalidateInterface, UuidInterface
      * Set description.
      *
      * @param string $description
-     *
-     * @return Role
      */
     public function setDescription($description): static
     {
@@ -247,8 +241,6 @@ class Role extends FormEntity implements CacheInvalidateInterface, UuidInterface
      * Set isAdmin.
      *
      * @param bool $isAdmin
-     *
-     * @return Role
      */
     public function setIsAdmin($isAdmin): static
     {
@@ -299,8 +291,6 @@ class Role extends FormEntity implements CacheInvalidateInterface, UuidInterface
 
     /**
      * Add users.
-     *
-     * @return Role
      */
     public function addUser(User $users): static
     {

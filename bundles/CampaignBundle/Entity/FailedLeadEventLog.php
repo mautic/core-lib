@@ -65,9 +65,6 @@ class FailedLeadEventLog
         return $this->log;
     }
 
-    /**
-     * @return FailedLeadEventLog
-     */
     public function setLog(?LeadEventLog $log = null): static
     {
         $this->log = $log;
@@ -87,9 +84,6 @@ class FailedLeadEventLog
         return $this->dateAdded;
     }
 
-    /**
-     * @return FailedLeadEventLog
-     */
     public function setDateAdded(?\DateTime $dateAdded = null): static
     {
         if (null === $dateAdded) {
@@ -111,8 +105,6 @@ class FailedLeadEventLog
 
     /**
      * @param string $reason
-     *
-     * @return FailedLeadEventLog
      */
     public function setReason($reason): static
     {

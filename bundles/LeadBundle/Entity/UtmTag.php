@@ -130,8 +130,6 @@ class UtmTag
 
     /**
      * Set date added.
-     *
-     * @return UtmTag
      */
     public function setDateAdded(\DateTimeInterface $date): static
     {
@@ -158,9 +156,6 @@ class UtmTag
         return $this->lead;
     }
 
-    /**
-     * @return UtmTag
-     */
     public function setLead(Lead $lead): static
     {
         $this->lead = $lead;
@@ -178,8 +173,6 @@ class UtmTag
 
     /**
      * @param array $query
-     *
-     * @return UtmTag
      */
     public function setQuery($query): static
     {
@@ -192,8 +185,6 @@ class UtmTag
      * Set referer.
      *
      * @param string $referer
-     *
-     * @return UtmTag
      */
     public function setReferer($referer): static
     {
@@ -216,8 +207,6 @@ class UtmTag
      * Set remoteHost.
      *
      * @param string $remoteHost
-     *
-     * @return UtmTag
      */
     public function setRemoteHost($remoteHost): static
     {
@@ -240,8 +229,6 @@ class UtmTag
      * Set url.
      *
      * @param string $url
-     *
-     * @return UtmTag
      */
     public function setUrl($url): static
     {
@@ -264,8 +251,6 @@ class UtmTag
      * Set userAgent.
      *
      * @param string $userAgent
-     *
-     * @return UtmTag
      */
     public function setUserAgent($userAgent): static
     {
@@ -294,8 +279,6 @@ class UtmTag
 
     /**
      * @param string $utmCampaign
-     *
-     * @return UtmTag
      */
     public function setUtmCampaign($utmCampaign): static
     {
@@ -314,8 +297,6 @@ class UtmTag
 
     /**
      * @param string $utmContent
-     *
-     * @return UtmTag
      */
     public function setUtmContent($utmContent): static
     {
@@ -335,8 +316,6 @@ class UtmTag
 
     /**
      * @param string $utmMedium
-     *
-     * @return UtmTag
      */
     public function setUtmMedium($utmMedium): static
     {
@@ -355,8 +334,6 @@ class UtmTag
 
     /**
      * @param string $utmSource
-     *
-     * @return UtmTag
      */
     public function setUtmSource($utmSource): static
     {
@@ -375,8 +352,6 @@ class UtmTag
 
     /**
      * @param string $utmTerm
-     *
-     * @return UtmTag
      */
     public function setUtmTerm($utmTerm): static
     {

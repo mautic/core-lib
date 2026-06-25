@@ -81,8 +81,6 @@ class Copy
 
     /**
      * @param \DateTime $dateCreated
-     *
-     * @return Copy
      */
     public function setDateCreated($dateCreated): static
     {
@@ -101,8 +99,6 @@ class Copy
 
     /**
      * @param string $body
-     *
-     * @return Copy
      */
     public function setBody($body): static
     {
@@ -121,8 +117,6 @@ class Copy
 
     /**
      * @param mixed $subject
-     *
-     * @return Copy
      */
     public function setSubject($subject): static
     {

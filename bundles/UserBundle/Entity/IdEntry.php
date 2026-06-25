@@ -54,8 +54,6 @@ class IdEntry
 
     /**
      * @param string $entityId
-     *
-     * @return IdEntry
      */
     public function setEntityId($entityId): static
     {
@@ -72,9 +70,6 @@ class IdEntry
         return $dt;
     }
 
-    /**
-     * @return IdEntry
-     */
     public function setExpiryTime(\DateTime $expiryTime): static
     {
         $this->expiryTimestamp = $expiryTime->getTimestamp();
@@ -92,8 +87,6 @@ class IdEntry
 
     /**
      * @param string $id
-     *
-     * @return IdEntry
      */
     public function setId($id): static
     {

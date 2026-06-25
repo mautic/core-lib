@@ -229,8 +229,6 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @param array $properties
-     *
-     * @return self
      */
     public function setProperties($properties): static
     {
@@ -251,8 +249,6 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @param string $type
-     *
-     * @return self
      */
     public function setType($type): static
     {
@@ -277,8 +273,6 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @param string $description
-     *
-     * @return self
      */
     public function setDescription($description): static
     {
@@ -298,8 +292,6 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @param string $name
-     *
-     * @return self
      */
     public function setName($name): static
     {
@@ -317,9 +309,6 @@ class Point extends FormEntity implements UuidInterface
         return $this->name;
     }
 
-    /**
-     * @return self
-     */
     public function addLog(LeadPointLog $log): static
     {
         $this->log[] = $log;
@@ -342,8 +331,6 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @param \DateTime $publishUp
-     *
-     * @return Point
      */
     public function setPublishUp($publishUp): static
     {
@@ -363,8 +350,6 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @param \DateTime $publishDown
-     *
-     * @return Point
      */
     public function setPublishDown($publishDown): static
     {
@@ -416,8 +401,6 @@ class Point extends FormEntity implements UuidInterface
 
     /**
      * @param bool $repeatable
-     *
-     * @return Point
      */
     public function setRepeatable($repeatable): static
     {

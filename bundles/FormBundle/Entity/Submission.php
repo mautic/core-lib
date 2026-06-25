@@ -142,8 +142,6 @@ class Submission
      * Set dateSubmitted.
      *
      * @param \DateTime $dateSubmitted
-     *
-     * @return Submission
      */
     public function setDateSubmitted($dateSubmitted): static
     {
@@ -166,8 +164,6 @@ class Submission
      * Set referer.
      *
      * @param string $referer
-     *
-     * @return Submission
      */
     public function setReferer($referer): static
     {
@@ -188,8 +184,6 @@ class Submission
 
     /**
      * Set form.
-     *
-     * @return Submission
      */
     public function setForm(Form $form): static
     {
@@ -210,8 +204,6 @@ class Submission
 
     /**
      * Set ipAddress.
-     *
-     * @return Submission
      */
     public function setIpAddress(?IpAddress $ipAddress = null): static
     {
@@ -240,8 +232,6 @@ class Submission
 
     /**
      * Get results.
-     *
-     * @return Submission
      */
     public function setResults($results): static
     {
@@ -252,8 +242,6 @@ class Submission
 
     /**
      * Set page.
-     *
-     * @return Submission
      */
     public function setPage(?Page $page = null): static
     {

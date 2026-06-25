@@ -31,8 +31,6 @@ class ApiErrorException extends \Exception
 
     /**
      * @param mixed $contactId
-     *
-     * @return ApiErrorException
      */
     public function setContactId($contactId): static
     {
@@ -46,9 +44,6 @@ class ApiErrorException extends \Exception
         return $this->contact;
     }
 
-    /**
-     * @return ApiErrorException
-     */
     public function setContact(Lead $contact): static
     {
         $this->contact = $contact;

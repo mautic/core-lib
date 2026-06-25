@@ -394,8 +394,6 @@ class Stat
 
     /**
      * @param mixed $clickCount
-     *
-     * @return Stat
      */
     public function setClickCount($clickCount): static
     {
@@ -413,8 +411,6 @@ class Stat
 
     /**
      * Up the sent count.
-     *
-     * @return Stat
      */
     public function upClickCount(): static
     {
@@ -432,9 +428,6 @@ class Stat
         return $this->lastClicked;
     }
 
-    /**
-     * @return Stat
-     */
     public function setLastClicked(\DateTime $lastClicked): static
     {
         $this->lastClicked = $lastClicked;
@@ -452,8 +445,6 @@ class Stat
 
     /**
      * @param mixed $clickDetails
-     *
-     * @return Stat
      */
     public function setClickDetails($clickDetails): static
     {
@@ -472,8 +463,6 @@ class Stat
 
     /**
      * @param \DateTime $dateRead
-     *
-     * @return Stat
      */
     public function setDateRead($dateRead): static
     {

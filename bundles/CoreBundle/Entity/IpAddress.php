@@ -126,8 +126,6 @@ class IpAddress
 
     /**
      * @param array<string,string> $ipDetails
-     *
-     * @return IpAddress
      */
     public function setIpDetails($ipDetails): static
     {

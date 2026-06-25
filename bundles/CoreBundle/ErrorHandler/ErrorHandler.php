@@ -334,8 +334,6 @@ namespace Mautic\CoreBundle\ErrorHandler {
 
         /**
          * @param mixed $displayErrors
-         *
-         * @return ErrorHandler
          */
         public function setDisplayErrors($displayErrors): static
         {
@@ -346,8 +344,6 @@ namespace Mautic\CoreBundle\ErrorHandler {
 
         /**
          * @param string $environment
-         *
-         * @return ErrorHandler
          */
         public function setEnvironment($environment): static
         {
@@ -358,8 +354,6 @@ namespace Mautic\CoreBundle\ErrorHandler {
 
         /**
          * @param LoggerInterface $logger
-         *
-         * @return ErrorHandler
          */
         public function setLogger($logger): static
         {
@@ -370,8 +364,6 @@ namespace Mautic\CoreBundle\ErrorHandler {
 
         /**
          * @param mixed $mainLogger
-         *
-         * @return ErrorHandler
          */
         public function setMainLogger($mainLogger): static
         {

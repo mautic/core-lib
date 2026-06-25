@@ -359,8 +359,6 @@ class Field implements UuidInterface
 
     /**
      * @param string $label
-     *
-     * @return Field
      */
     public function setLabel($label): static
     {
@@ -380,8 +378,6 @@ class Field implements UuidInterface
 
     /**
      * @param string $alias
-     *
-     * @return Field
      */
     public function setAlias($alias): static
     {
@@ -401,8 +397,6 @@ class Field implements UuidInterface
 
     /**
      * @param string $type
-     *
-     * @return Field
      */
     public function setType($type): static
     {
@@ -422,8 +416,6 @@ class Field implements UuidInterface
 
     /**
      * @param string $defaultValue
-     *
-     * @return Field
      */
     public function setDefaultValue($defaultValue): static
     {
@@ -443,8 +435,6 @@ class Field implements UuidInterface
 
     /**
      * @param bool $isRequired
-     *
-     * @return Field
      */
     public function setIsRequired($isRequired): static
     {
@@ -474,8 +464,6 @@ class Field implements UuidInterface
 
     /**
      * @param int $order
-     *
-     * @return Field
      */
     public function setOrder($order): static
     {
@@ -495,8 +483,6 @@ class Field implements UuidInterface
 
     /**
      * @param array $properties
-     *
-     * @return Field
      */
     public function setProperties($properties): static
     {
@@ -516,8 +502,6 @@ class Field implements UuidInterface
 
     /**
      * @param array $validation
-     *
-     * @return Field
      */
     public function setValidation($validation): static
     {
@@ -537,8 +521,6 @@ class Field implements UuidInterface
 
     /**
      * @param string $validationMessage
-     *
-     * @return Field
      */
     public function setValidationMessage($validationMessage): static
     {
@@ -556,9 +538,6 @@ class Field implements UuidInterface
         return $this->validationMessage;
     }
 
-    /**
-     * @return Field
-     */
     public function setForm(Form $form): static
     {
         $this->form = $form;
@@ -576,8 +555,6 @@ class Field implements UuidInterface
 
     /**
      * @param string $labelAttributes
-     *
-     * @return Field
      */
     public function setLabelAttributes($labelAttributes): static
     {
@@ -597,8 +574,6 @@ class Field implements UuidInterface
 
     /**
      * @param string $inputAttributes
-     *
-     * @return Field
      */
     public function setInputAttributes($inputAttributes): static
     {
@@ -644,8 +619,6 @@ class Field implements UuidInterface
 
     /**
      * @param bool $showLabel
-     *
-     * @return Field
      */
     public function setShowLabel($showLabel): static
     {
@@ -675,8 +648,6 @@ class Field implements UuidInterface
 
     /**
      * @param string $helpMessage
-     *
-     * @return Field
      */
     public function setHelpMessage($helpMessage): static
     {
@@ -696,8 +667,6 @@ class Field implements UuidInterface
 
     /**
      * @param bool $isCustom
-     *
-     * @return Field
      */
     public function setIsCustom($isCustom): static
     {
@@ -726,8 +695,6 @@ class Field implements UuidInterface
 
     /**
      * @param array $customParameters
-     *
-     * @return Field
      */
     public function setCustomParameters($customParameters): static
     {
@@ -974,8 +941,6 @@ class Field implements UuidInterface
 
     /**
      * @param array<string, mixed> $conditions
-     *
-     * @return Field
      */
     public function setConditions($conditions): static
     {
@@ -987,8 +952,6 @@ class Field implements UuidInterface
 
     /**
      * @param string $parent
-     *
-     * @return Field
      */
     public function setParent($parent): static
     {

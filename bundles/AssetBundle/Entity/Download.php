@@ -183,8 +183,6 @@ class Download
 
     /**
      * @param \DateTime $dateDownload
-     *
-     * @return Download
      */
     public function setDateDownload($dateDownload): static
     {
@@ -203,8 +201,6 @@ class Download
 
     /**
      * @param int $code
-     *
-     * @return Download
      */
     public function setCode($code): static
     {
@@ -223,8 +219,6 @@ class Download
 
     /**
      * @param string $referer
-     *
-     * @return Download
      */
     public function setReferer($referer): static
     {
@@ -241,9 +235,6 @@ class Download
         return $this->referer;
     }
 
-    /**
-     * @return Download
-     */
     public function setAsset(?Asset $asset = null): static
     {
         $this->asset = $asset;
@@ -259,9 +250,6 @@ class Download
         return $this->asset;
     }
 
-    /**
-     * @return Download
-     */
     public function setIpAddress(IpAddress $ipAddress): static
     {
         $this->ipAddress = $ipAddress;
@@ -279,8 +267,6 @@ class Download
 
     /**
      * @param int $trackingId
-     *
-     * @return Download
      */
     public function setTrackingId($trackingId): static
     {

@@ -399,8 +399,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set label.
      *
      * @param string $label
-     *
-     * @return LeadField
      */
     public function setLabel($label): static
     {
@@ -424,10 +422,8 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Proxy function to setLabel().
      *
      * @param string $label
-     *
-     * @return LeadField
      */
-    public function setName($label)
+    public function setName($label): static
     {
         $this->isChanged('label', $label);
 
@@ -448,8 +444,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set type.
      *
      * @param string $type
-     *
-     * @return LeadField
      */
     public function setType($type): static
     {
@@ -473,8 +467,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set defaultValue.
      *
      * @param string|array<string> $defaultValue
-     *
-     * @return LeadField
      */
     public function setDefaultValue($defaultValue): static
     {
@@ -499,8 +491,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set isRequired.
      *
      * @param bool $isRequired
-     *
-     * @return LeadField
      */
     public function setIsRequired($isRequired): static
     {
@@ -534,8 +524,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set isFixed.
      *
      * @param bool $isFixed
-     *
-     * @return LeadField
      */
     public function setIsFixed($isFixed): static
     {
@@ -566,8 +554,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
 
     /**
      * @param mixed[] $properties
-     *
-     * @return LeadField
      */
     public function setProperties($properties): static
     {
@@ -589,8 +575,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set order.
      *
      * @param int $order
-     *
-     * @return LeadField
      */
     public function setOrder($order): static
     {
@@ -636,8 +620,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set object.
      *
      * @param string $object
-     *
-     * @return LeadField
      */
     public function setObject($object): static
     {
@@ -661,8 +643,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set isVisible.
      *
      * @param bool $isVisible
-     *
-     * @return LeadField
      */
     public function setIsVisible($isVisible): static
     {
@@ -735,8 +715,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set the unique identifer state of the field.
      *
      * @param mixed $isUniqueIdentifer
-     *
-     * @return LeadField
      */
     public function setIsUniqueIdentifer($isUniqueIdentifer): static
     {
@@ -763,10 +741,8 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Wrapper for incorrectly spelled setIsUniqueIdentifer.
      *
      * @param mixed $isUniqueIdentifier
-     *
-     * @return LeadField
      */
-    public function setIsUniqueIdentifier($isUniqueIdentifier)
+    public function setIsUniqueIdentifier($isUniqueIdentifier): static
     {
         return $this->setIsUniqueIdentifer($isUniqueIdentifier);
     }
@@ -775,8 +751,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set alias.
      *
      * @param string $alias
-     *
-     * @return LeadField
      */
     public function setAlias($alias): static
     {
@@ -800,8 +774,6 @@ class LeadField extends FormEntity implements CacheInvalidateInterface, UuidInte
      * Set isListable.
      *
      * @param bool $isListable
-     *
-     * @return LeadField
      */
     public function setIsListable($isListable): static
     {

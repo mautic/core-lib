@@ -427,8 +427,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set title.
      *
      * @param string $title
-     *
-     * @return Page
      */
     public function setTitle($title): static
     {
@@ -452,8 +450,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set alias.
      *
      * @param string $alias
-     *
-     * @return Page
      */
     public function setAlias($alias): static
     {
@@ -477,8 +473,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set content.
      *
      * @param array<string> $content
-     *
-     * @return Page
      */
     public function setContent($content): static
     {
@@ -502,8 +496,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set publishUp.
      *
      * @param \DateTime $publishUp
-     *
-     * @return Page
      */
     public function setPublishUp($publishUp): static
     {
@@ -527,8 +519,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set publishDown.
      *
      * @param \DateTime $publishDown
-     *
-     * @return Page
      */
     public function setPublishDown($publishDown): static
     {
@@ -552,8 +542,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set hits.
      *
      * @param int $hits
-     *
-     * @return Page
      */
     public function setHits($hits): static
     {
@@ -578,8 +566,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set revision.
      *
      * @param int $revision
-     *
-     * @return Page
      */
     public function setRevision($revision): static
     {
@@ -602,8 +588,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set metaDescription.
      *
      * @param string $metaDescription
-     *
-     * @return Page
      */
     public function setMetaDescription($metaDescription): static
     {
@@ -627,8 +611,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set headScript.
      *
      * @param string $headScript
-     *
-     * @return Page
      */
     public function setHeadScript($headScript): static
     {
@@ -651,8 +633,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set footerScript.
      *
      * @param string $footerScript
-     *
-     * @return Page
      */
     public function setFooterScript($footerScript): static
     {
@@ -673,8 +653,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
 
     /**
      * @param ?string $redirectType
-     *
-     * @return Page
      */
     public function setRedirectType($redirectType): static
     {
@@ -696,8 +674,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set redirectUrl.
      *
      * @param string $redirectUrl
-     *
-     * @return Page
      */
     public function setRedirectUrl($redirectUrl): static
     {
@@ -719,8 +695,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
 
     /**
      * Set category.
-     *
-     * @return Page
      */
     public function setCategory(?Category $category = null): static
     {
@@ -742,8 +716,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
 
     /**
      * @param bool|null $isPreferenceCenter
-     *
-     * @return Page
      */
     public function setIsPreferenceCenter($isPreferenceCenter): static
     {
@@ -784,8 +756,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set sessionId.
      *
      * @param string $id
-     *
-     * @return Page
      */
     public function setSessionId($id): static
     {
@@ -808,8 +778,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set template.
      *
      * @param string $template
-     *
-     * @return Page
      */
     public function setTemplate($template): static
     {
@@ -849,8 +817,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
      * Set uniqueHits.
      *
      * @param int $uniqueHits
-     *
-     * @return Page
      */
     public function setUniqueHits($uniqueHits): static
     {

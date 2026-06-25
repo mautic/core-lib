@@ -346,8 +346,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
 
     /**
      * @param string $description
-     *
-     * @return Campaign
      */
     public function setDescription($description): static
     {
@@ -365,9 +363,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
         return $this->description;
     }
 
-    /**
-     * @return Campaign
-     */
     public function setName(string $name): static
     {
         $this->isChanged('name', $name);
@@ -386,8 +381,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
 
     /**
      * Calls $this->addEvent on every item in the collection.
-     *
-     * @return Campaign
      */
     public function addEvents(array $events): static
     {
@@ -398,9 +391,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
         return $this;
     }
 
-    /**
-     * @return Campaign
-     */
     public function addEvent($key, Event $event): static
     {
         if ($changes = $event->getChanges()) {
@@ -489,8 +479,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
 
     /**
      * @param ?\DateTime $publishUp
-     *
-     * @return Campaign
      */
     public function setPublishUp($publishUp): static
     {
@@ -510,8 +498,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
 
     /**
      * @param ?\DateTime $publishDown
-     *
-     * @return Campaign
      */
     public function setPublishDown($publishDown): static
     {
@@ -559,9 +545,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
         $this->category = $category;
     }
 
-    /**
-     * @return Campaign
-     */
     public function addLead($key, Lead $lead): static
     {
         $action     = ($this->leads->contains($lead)) ? 'updated' : 'added';
@@ -596,9 +579,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
         return $this->lists;
     }
 
-    /**
-     * @return Campaign
-     */
     public function addList(LeadList $list): static
     {
         $this->lists[$list->getId() ?? ''] = $list;
@@ -622,9 +602,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
         return $this->forms;
     }
 
-    /**
-     * @return Campaign
-     */
     public function addForm(Form $form): static
     {
         $this->forms[$form->getId() ?? ''] = $form;
@@ -695,8 +672,6 @@ class Campaign extends FormEntity implements OptimisticLockInterface, UuidInterf
 
     /**
      * @param bool $allowRestart
-     *
-     * @return Campaign
      */
     public function setAllowRestart($allowRestart): static
     {

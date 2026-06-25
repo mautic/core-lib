@@ -152,8 +152,6 @@ class Channel extends CommonEntity implements UuidInterface
 
     /**
      * @param string $channel
-     *
-     * @return Channel
      */
     public function setChannel($channel): static
     {
@@ -172,8 +170,6 @@ class Channel extends CommonEntity implements UuidInterface
 
     /**
      * @param int $channelId
-     *
-     * @return Channel
      */
     public function setChannelId($channelId): static
     {
@@ -196,8 +192,6 @@ class Channel extends CommonEntity implements UuidInterface
 
     /**
      * @param string $channelName
-     *
-     * @return Channel
      */
     public function setChannelName($channelName): static
     {
@@ -214,9 +208,6 @@ class Channel extends CommonEntity implements UuidInterface
         return $this->message;
     }
 
-    /**
-     * @return Channel
-     */
     public function setMessage(Message $message): static
     {
         $this->message = $message;
@@ -232,9 +223,6 @@ class Channel extends CommonEntity implements UuidInterface
         return $this->properties;
     }
 
-    /**
-     * @return Channel
-     */
     public function setProperties(array $properties): static
     {
         $this->properties = $properties;
@@ -252,8 +240,6 @@ class Channel extends CommonEntity implements UuidInterface
 
     /**
      * @param bool $isEnabled
-     *
-     * @return Channel
      */
     public function setIsEnabled($isEnabled): static
     {

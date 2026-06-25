@@ -80,8 +80,6 @@ class DynamicContentLeadData extends CommonEntity
 
     /**
      * @param \DateTime $dateAdded
-     *
-     * @return DynamicContentLeadData
      */
     public function setDateAdded($dateAdded): static
     {
@@ -100,8 +98,6 @@ class DynamicContentLeadData extends CommonEntity
 
     /**
      * @param DynamicContent $dynamicContent
-     *
-     * @return DynamicContentLeadData
      */
     public function setDynamicContent($dynamicContent): static
     {
@@ -120,8 +116,6 @@ class DynamicContentLeadData extends CommonEntity
 
     /**
      * @param Lead $lead
-     *
-     * @return DynamicContentLeadData
      */
     public function setLead($lead): static
     {
@@ -140,8 +134,6 @@ class DynamicContentLeadData extends CommonEntity
 
     /**
      * @param \DateTime $dataAdded
-     *
-     * @return DynamicContentLeadData
      */
     public function setDataAdded($dataAdded): static
     {
@@ -160,8 +152,6 @@ class DynamicContentLeadData extends CommonEntity
 
     /**
      * @param string $slot
-     *
-     * @return DynamicContentLeadData
      */
     public function setSlot($slot): static
     {

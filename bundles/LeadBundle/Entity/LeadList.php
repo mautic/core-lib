@@ -244,8 +244,6 @@ class LeadList extends FormEntity implements UuidInterface
 
     /**
      * @param string|null $name
-     *
-     * @return LeadList
      */
     public function setName($name): static
     {
@@ -265,8 +263,6 @@ class LeadList extends FormEntity implements UuidInterface
 
     /**
      * @param string|null $description
-     *
-     * @return LeadList
      */
     public function setDescription($description): static
     {
@@ -309,8 +305,6 @@ class LeadList extends FormEntity implements UuidInterface
 
     /**
      * @param string|null $publicName
-     *
-     * @return LeadList
      */
     public function setPublicName($publicName): static
     {
@@ -320,9 +314,6 @@ class LeadList extends FormEntity implements UuidInterface
         return $this;
     }
 
-    /**
-     * @return LeadList
-     */
     public function setFilters(array $filters): static
     {
         $this->isChanged('filters', $filters);
@@ -371,8 +362,6 @@ class LeadList extends FormEntity implements UuidInterface
 
     /**
      * @param bool $isGlobal
-     *
-     * @return LeadList
      */
     public function setIsGlobal($isGlobal): static
     {
@@ -402,8 +391,6 @@ class LeadList extends FormEntity implements UuidInterface
 
     /**
      * @param string|null $alias
-     *
-     * @return LeadList
      */
     public function setAlias($alias): static
     {

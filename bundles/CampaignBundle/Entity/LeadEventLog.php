@@ -514,8 +514,6 @@ class LeadEventLog implements ChannelInterface, OptimisticLockInterface
 
     /**
      * @param int $rotation
-     *
-     * @return LeadEventLog
      */
     public function setRotation($rotation): static
     {

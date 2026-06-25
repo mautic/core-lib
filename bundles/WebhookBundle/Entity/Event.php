@@ -122,8 +122,6 @@ class Event
 
     /**
      * @param ArrayCollection $queues
-     *
-     * @return self
      */
     public function setQueues($queues): static
     {

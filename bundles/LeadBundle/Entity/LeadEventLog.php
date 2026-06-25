@@ -132,8 +132,6 @@ class LeadEventLog
 
     /**
      * Set lead.
-     *
-     * @return LeadEventLog
      */
     public function setLead(Lead $lead): static
     {
@@ -156,8 +154,6 @@ class LeadEventLog
      * Set userId.
      *
      * @param int $userId
-     *
-     * @return LeadEventLog
      */
     public function setUserId($userId): static
     {
@@ -180,8 +176,6 @@ class LeadEventLog
      * Set object.
      *
      * @param string $object
-     *
-     * @return LeadEventLog
      */
     public function setObject($object): static
     {
@@ -204,8 +198,6 @@ class LeadEventLog
      * Set objectId.
      *
      * @param int $objectId
-     *
-     * @return LeadEventLog
      */
     public function setObjectId($objectId): static
     {
@@ -228,8 +220,6 @@ class LeadEventLog
      * Set action.
      *
      * @param string $action
-     *
-     * @return LeadEventLog
      */
     public function setAction($action): static
     {
@@ -250,8 +240,6 @@ class LeadEventLog
 
     /**
      * Set properties.
-     *
-     * @return LeadEventLog
      */
     public function setProperties(array $properties): static
     {
@@ -265,8 +253,6 @@ class LeadEventLog
      *
      * @param string $key
      * @param string $value
-     *
-     * @return LeadEventLog
      */
     public function addProperty($key, $value): static
     {
@@ -289,8 +275,6 @@ class LeadEventLog
      * Set dateAdded.
      *
      * @param \DateTime $dateAdded
-     *
-     * @return LeadEventLog
      */
     public function setDateAdded($dateAdded): static
     {
@@ -313,8 +297,6 @@ class LeadEventLog
      * Set bundle.
      *
      * @param string $bundle
-     *
-     * @return LeadEventLog
      */
     public function setBundle($bundle): static
     {
@@ -337,8 +319,6 @@ class LeadEventLog
      * Set userName.
      *
      * @param string $userName
-     *
-     * @return LeadEventLog
      */
     public function setUserName($userName): static
     {

@@ -224,8 +224,6 @@ class PlainTextHelper
      * Set the source HTML.
      *
      * @param string|null $html HTML source content
-     *
-     * @return PlainTextHelper
      */
     public function setHtml($html): static
     {

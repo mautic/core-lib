@@ -244,8 +244,6 @@ class Webhook extends FormEntity implements SkipModifiedInterface
 
     /**
      * @param string $name
-     *
-     * @return Webhook
      */
     public function setName($name): static
     {
@@ -265,8 +263,6 @@ class Webhook extends FormEntity implements SkipModifiedInterface
 
     /**
      * @param string $description
-     *
-     * @return Webhook
      */
     public function setDescription($description): static
     {
@@ -286,8 +282,6 @@ class Webhook extends FormEntity implements SkipModifiedInterface
 
     /**
      * @param string $webhookUrl
-     *
-     * @return Webhook
      */
     public function setWebhookUrl($webhookUrl): static
     {
@@ -307,8 +301,6 @@ class Webhook extends FormEntity implements SkipModifiedInterface
 
     /**
      * @param ?string $secret
-     *
-     * @return Webhook
      */
     public function setSecret($secret): static
     {
@@ -326,9 +318,6 @@ class Webhook extends FormEntity implements SkipModifiedInterface
         return $this->secret;
     }
 
-    /**
-     * @return Webhook
-     */
     public function setCategory(?Category $category = null): static
     {
         $this->isChanged('category', $category);
@@ -535,9 +524,6 @@ class Webhook extends FormEntity implements SkipModifiedInterface
         return $this->payload;
     }
 
-    /**
-     * @return Webhook
-     */
     public function setPayload($payload): static
     {
         $this->payload = $payload;

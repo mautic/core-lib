@@ -111,8 +111,6 @@ class IndexSchemaHelper
      * @param string $name
      * @param array  $options
      *
-     * @return self
-     *
      * @throws \Doctrine\DBAL\Schema\SchemaException
      */
     public function dropIndex($columns, $name, $options = []): static

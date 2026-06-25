@@ -74,9 +74,6 @@ class Log
         return $this->webhook;
     }
 
-    /**
-     * @return Log
-     */
     public function setWebhook(Webhook $webhook): static
     {
         $this->webhook = $webhook;
@@ -94,8 +91,6 @@ class Log
 
     /**
      * @param mixed $statusCode
-     *
-     * @return Log
      */
     public function setStatusCode($statusCode): static
     {
@@ -112,9 +107,6 @@ class Log
         return $this->dateAdded;
     }
 
-    /**
-     * @return Log
-     */
     public function setDateAdded(\DateTime $dateAdded): static
     {
         $this->dateAdded = $dateAdded;
@@ -147,8 +139,6 @@ class Log
 
     /**
      * @param float $runtime
-     *
-     * @return Log
      */
     public function setRuntime($runtime): static
     {

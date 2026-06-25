@@ -533,9 +533,6 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
         }
     }
 
-    /**
-     * @return DynamicContent
-     */
     public function setUtmTags(array $utmTags): static
     {
         $this->isChanged('utmTags', $utmTags);

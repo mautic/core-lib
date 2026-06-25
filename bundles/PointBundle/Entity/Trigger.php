@@ -227,8 +227,6 @@ class Trigger extends FormEntity implements UuidInterface
      * Set description.
      *
      * @param string $description
-     *
-     * @return Trigger
      */
     public function setDescription($description): static
     {
@@ -252,8 +250,6 @@ class Trigger extends FormEntity implements UuidInterface
      * Set name.
      *
      * @param string $name
-     *
-     * @return Trigger
      */
     public function setName($name): static
     {
@@ -275,8 +271,6 @@ class Trigger extends FormEntity implements UuidInterface
 
     /**
      * Add events.
-     *
-     * @return Point
      */
     public function addTriggerEvent($key, TriggerEvent $event): static
     {
@@ -310,8 +304,6 @@ class Trigger extends FormEntity implements UuidInterface
      * Set publishUp.
      *
      * @param \DateTime $publishUp
-     *
-     * @return Point
      */
     public function setPublishUp($publishUp): static
     {
@@ -335,8 +327,6 @@ class Trigger extends FormEntity implements UuidInterface
      * Set publishDown.
      *
      * @param \DateTime $publishDown
-     *
-     * @return Point
      */
     public function setPublishDown($publishDown): static
     {

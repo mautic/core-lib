@@ -80,8 +80,6 @@ class StagesChangeLog
      * Set eventName.
      *
      * @param string $eventName
-     *
-     * @return StagesChangeLog
      */
     public function setEventName($eventName): static
     {
@@ -104,8 +102,6 @@ class StagesChangeLog
      * Set actionName.
      *
      * @param string $actionName
-     *
-     * @return StagesChangeLog
      */
     public function setActionName($actionName): static
     {
@@ -128,8 +124,6 @@ class StagesChangeLog
      * Set dateAdded.
      *
      * @param \DateTime $dateAdded
-     *
-     * @return StagesChangeLog
      */
     public function setDateAdded($dateAdded): static
     {
@@ -150,8 +144,6 @@ class StagesChangeLog
 
     /**
      * Set lead.
-     *
-     * @return StagesChangeLog
      */
     public function setLead(Lead $lead): static
     {
@@ -172,8 +164,6 @@ class StagesChangeLog
 
     /**
      * Set stage.
-     *
-     * @return StagesChangeLog
      */
     public function setStage(Stage $stage): static
     {

@@ -447,9 +447,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         return $this->lists;
     }
 
-    /**
-     * @return Sms
-     */
     public function addList(LeadList $list): static
     {
         $this->lists[] = $list;
@@ -487,9 +484,6 @@ class Sms extends FormEntity implements UuidInterface, TranslationEntityInterfac
         $this->smsType = $smsType;
     }
 
-    /**
-     * @return Sms
-     */
     public function setPendingCount(int $pendingCount): static
     {
         $this->pendingCount = $pendingCount;

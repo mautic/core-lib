@@ -569,8 +569,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @param int $order
-     *
-     * @return Event
      */
     public function setOrder($order): static
     {
@@ -591,8 +589,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @param array $properties
-     *
-     * @return Event
      */
     public function setProperties($properties): static
     {
@@ -611,9 +607,6 @@ class Event implements ChannelInterface, UuidInterface
         return $this->properties;
     }
 
-    /**
-     * @return Event
-     */
     public function setCampaign(Campaign $campaign): static
     {
         $this->campaign = $campaign;
@@ -631,8 +624,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @param string $type
-     *
-     * @return Event
      */
     public function setType($type): static
     {
@@ -657,8 +648,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @param string $description
-     *
-     * @return Event
      */
     public function setDescription($description): static
     {
@@ -678,8 +667,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @param string $name
-     *
-     * @return Event
      */
     public function setName($name): static
     {
@@ -697,9 +684,6 @@ class Event implements ChannelInterface, UuidInterface
         return $this->name;
     }
 
-    /**
-     * @return Event
-     */
     public function addLog(LeadEventLog $log): static
     {
         $this->log[] = $log;
@@ -746,8 +730,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * Add children.
-     *
-     * @return Event
      */
     public function addChild(Event $children): static
     {
@@ -820,8 +802,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * Set parent.
-     *
-     * @return Event
      */
     public function setParent(?Event $parent = null): static
     {
@@ -899,8 +879,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * @param \DateTime|string|array<string,string> $triggerHour
-     *
-     * @return Event
      */
     public function setTriggerHour($triggerHour): static
     {
@@ -936,9 +914,6 @@ class Event implements ChannelInterface, UuidInterface
         return $this->eventType;
     }
 
-    /**
-     * @return $this
-     */
     public function setEventType($eventType): static
     {
         $this->isChanged('eventType', $eventType);
@@ -1067,8 +1042,6 @@ class Event implements ChannelInterface, UuidInterface
      * Used by the API.
      *
      * @param array $contactLog
-     *
-     * @return Event
      */
     public function setContactLog($contactLog): static
     {
@@ -1079,8 +1052,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * Used by the API.
-     *
-     * @return Event
      */
     public function addContactLog($contactLog): static
     {
@@ -1103,8 +1074,6 @@ class Event implements ChannelInterface, UuidInterface
      * Set the value of triggerRestrictedStartHour.
      *
      * @param \DateTime|string|array<string,string>|null $triggerRestrictedStartHour
-     *
-     * @return self
      */
     public function setTriggerRestrictedStartHour($triggerRestrictedStartHour): static
     {
@@ -1131,8 +1100,6 @@ class Event implements ChannelInterface, UuidInterface
      * Set the value of triggerRestrictedStopHour.
      *
      * @param \DateTime|string|array<string,string>|null $triggerRestrictedStopHour
-     *
-     * @return self
      */
     public function setTriggerRestrictedStopHour($triggerRestrictedStopHour): static
     {
@@ -1155,8 +1122,6 @@ class Event implements ChannelInterface, UuidInterface
 
     /**
      * Set the value of triggerRestrictedDaysOfWeek.
-     *
-     * @return self
      */
     public function setTriggerRestrictedDaysOfWeek(?array $triggerRestrictedDaysOfWeek = null): static
     {

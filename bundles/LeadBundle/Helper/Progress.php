@@ -46,8 +46,6 @@ class Progress
      * Set total value.
      *
      * @param int $total
-     *
-     * @return Progress
      */
     public function setTotal($total): static
     {
@@ -73,8 +71,6 @@ class Progress
 
     /**
      * Set total value.
-     *
-     * @return Progress
      */
     public function setDone($done): static
     {
@@ -94,8 +90,6 @@ class Progress
 
     /**
      * Increase done count by 1.
-     *
-     * @return Progress
      */
     public function increase(): static
     {
@@ -114,8 +108,6 @@ class Progress
 
     /**
      * Bind Progress from simple array.
-     *
-     * @return Progress
      */
     public function bindArray(array $progress): static
     {

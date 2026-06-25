@@ -474,8 +474,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
 
     /**
      * Set username.
-     *
-     * @return User
      */
     public function setUsername(?string $username): static
     {
@@ -489,8 +487,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      * Set password.
      *
      * @param string $password
-     *
-     * @return User
      */
     public function setPassword($password): static
     {
@@ -501,8 +497,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
 
     /**
      * Set plain password.
-     *
-     * @return User
      */
     public function setPlainPassword($plainPassword): static
     {
@@ -513,8 +507,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
 
     /**
      * Set current password.
-     *
-     * @return User
      */
     public function setCurrentPassword($currentPassword): static
     {
@@ -527,8 +519,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      * Set firstName.
      *
      * @param string $firstName
-     *
-     * @return User
      */
     public function setFirstName($firstName): static
     {
@@ -552,8 +542,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      * Set lastName.
      *
      * @param string $lastName
-     *
-     * @return User
      */
     public function setLastName($lastName): static
     {
@@ -587,8 +575,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      * Set email.
      *
      * @param string $email
-     *
-     * @return User
      */
     public function setEmail($email): static
     {
@@ -610,8 +596,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
 
     /**
      * Set role.
-     *
-     * @return User
      */
     public function setRole(?Role $role = null): static
     {
@@ -633,8 +617,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
 
     /**
      * Set active permissions.
-     *
-     * @return User
      */
     public function setActivePermissions(array $permissions): static
     {
@@ -657,8 +639,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      * Set position.
      *
      * @param string $position
-     *
-     * @return User
      */
     public function setPosition($position): static
     {
@@ -682,8 +662,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      * Set timezone.
      *
      * @param string $timezone
-     *
-     * @return User
      */
     public function setTimezone($timezone): static
     {
@@ -703,9 +681,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
         return $this->timezone;
     }
 
-    /**
-     * @return User
-     */
     public function setLocale(?string $locale): static
     {
         $this->isChanged('locale', $locale);
@@ -796,8 +771,6 @@ class User extends FormEntity implements UserInterface, EquatableInterface, Pass
      * Set signature.
      *
      * @param string $signature
-     *
-     * @return User
      */
     public function setSignature($signature): static
     {

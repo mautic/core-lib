@@ -330,9 +330,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
         }
     }
 
-    /**
-     * @return Company
-     */
     public function setOwner(?User $owner = null): static
     {
         $this->isChanged('owner', $owner);
@@ -358,8 +355,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param int $score
-     *
-     * @return Company
      */
     public function setScore($score): static
     {
@@ -389,8 +384,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $name
-     *
-     * @return Company
      */
     public function setName($name): static
     {
@@ -410,8 +403,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $email
-     *
-     * @return Company
      */
     public function setEmail($email): static
     {
@@ -431,8 +422,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $address1
-     *
-     * @return Company
      */
     public function setAddress1($address1): static
     {
@@ -452,8 +441,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $address2
-     *
-     * @return Company
      */
     public function setAddress2($address2): static
     {
@@ -473,8 +460,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $phone
-     *
-     * @return Company
      */
     public function setPhone($phone): static
     {
@@ -494,8 +479,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $city
-     *
-     * @return Company
      */
     public function setCity($city): static
     {
@@ -515,8 +498,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $state
-     *
-     * @return Company
      */
     public function setState($state): static
     {
@@ -536,8 +517,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $zipcode
-     *
-     * @return Company
      */
     public function setZipcode($zipcode): static
     {
@@ -557,8 +536,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $country
-     *
-     * @return Company
      */
     public function setCountry($country): static
     {
@@ -578,8 +555,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $website
-     *
-     * @return Company
      */
     public function setWebsite($website): static
     {
@@ -599,8 +574,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $industry
-     *
-     * @return Company
      */
     public function setIndustry($industry): static
     {
@@ -620,8 +593,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * @param string|null $description
-     *
-     * @return Company
      */
     public function setDescription($description): static
     {

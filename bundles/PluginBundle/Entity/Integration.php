@@ -102,8 +102,6 @@ class Integration extends CommonEntity implements CacheInvalidateInterface
 
     /**
      * @param mixed $plugin
-     *
-     * @return Integration
      */
     public function setPlugin($plugin): static
     {
@@ -122,8 +120,6 @@ class Integration extends CommonEntity implements CacheInvalidateInterface
 
     /**
      * @param mixed $name
-     *
-     * @return Integration
      */
     public function setName($name): static
     {
@@ -144,8 +140,6 @@ class Integration extends CommonEntity implements CacheInvalidateInterface
 
     /**
      * @param mixed $isPublished
-     *
-     * @return Integration
      */
     public function setIsPublished($isPublished): static
     {
@@ -171,8 +165,6 @@ class Integration extends CommonEntity implements CacheInvalidateInterface
 
     /**
      * @param mixed $supportedFeatures
-     *
-     * @return Integration
      */
     public function setSupportedFeatures($supportedFeatures): static
     {
@@ -193,8 +185,6 @@ class Integration extends CommonEntity implements CacheInvalidateInterface
 
     /**
      * @param mixed $apiKeys
-     *
-     * @return Integration
      */
     public function setApiKeys($apiKeys): static
     {
@@ -213,8 +203,6 @@ class Integration extends CommonEntity implements CacheInvalidateInterface
 
     /**
      * @param mixed $featureSettings
-     *
-     * @return Integration
      */
     public function setFeatureSettings($featureSettings): static
     {
