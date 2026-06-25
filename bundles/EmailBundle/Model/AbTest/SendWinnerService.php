@@ -105,7 +105,7 @@ final class SendWinnerService
      *
      * @throws NotReadyToSendWinnerException
      */
-    private function isAllowedToSendWinner(Email $email, $abTestSettings): bool
+    private function isAllowedToSendWinner(Email $email, array $abTestSettings): bool
     {
         // g et A/B test information
         [$parent, $children] = $email->getVariants();
@@ -139,7 +139,7 @@ final class SendWinnerService
     {
         $criteria      = $this->emailModel->getBuilderComponents($parentVariant, 'abTestWinnerCriteria');
         $abTestResults = $this->abTestResultService->getAbTestResult($parentVariant, $criteria['criteria'][$winnerCriteria]);
-        $winners       = $abTestResults['winners'];
+        $winners       = $abTestResults['winners'] ?? [];
 
         if (empty($winners)) {
             $this->tryAgain = true; // we should reschedule the call in this case

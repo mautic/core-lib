@@ -30,12 +30,12 @@ trait VariantEntityTrait
     /**
      * @var array<string>
      */
-    private $variantSettingsKeys = ['weight', 'winnerCriteria'];
+    private array $variantSettingsKeys = ['weight', 'winnerCriteria'];
 
     /**
      * @var array<string>
      */
-    private $parentSettingsKeys = ['totalWeight', 'enableAbTest', 'winnerCriteria', 'sendWinnerDelay'];
+    private array $parentSettingsKeys = ['totalWeight', 'enableAbTest', 'winnerCriteria', 'sendWinnerDelay'];
 
     /**
      * @var array<mixed>|null

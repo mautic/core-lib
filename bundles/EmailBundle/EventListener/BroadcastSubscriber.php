@@ -109,7 +109,7 @@ class BroadcastSubscriber implements EventSubscriberInterface
         }
     }
 
-    protected function setStartDateOfABTesting(Email $emailEntity): void
+    private function setStartDateOfABTesting(Email $emailEntity): void
     {
         if (!$emailEntity->getVariantSentCount(true)) {
             $dateTimeHelper = new DateTimeHelper();
@@ -123,7 +123,7 @@ class BroadcastSubscriber implements EventSubscriberInterface
         }
     }
 
-    protected function getLimitForABTest(int $limit, Email $emailEntity, int $totalLeadCountForVariants): int
+    private function getLimitForABTest(int $limit, Email $emailEntity, int $totalLeadCountForVariants): int
     {
         $diff = ($emailEntity->getVariantSentCount(true) + $limit) - $totalLeadCountForVariants;
         if ($diff > 0) {

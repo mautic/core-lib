@@ -3,7 +3,7 @@
 {% set header = 'mautic.email.send.list'|trans({'%name%': email.getName()}) %}
 
 {% block headerTitle %}
-    {{ 'mautic.email.send.list'|trans({'%name%': email.getName()})|raw }}
+    {{ 'mautic.email.send.list'|trans({'%name%': email.getName()})|purify }}
     <i title="{{ 'mautic.email.icon_tooltip.abtest.part'|trans }}" class="fa fa-fw fa-sitemap"></i>
 {% endblock %}
 

@@ -207,7 +207,7 @@
                     </div>
                 {% endif %}
                 {% if not isVariant %}
-                    {% if email.isEnableAbTest() and isVariant %}<div class="hide">{% endif %}
+                    {% if email.isEnableAbTest() %}<div class="hide">{% endif %}
                     {{ form_row(form.isPublished, {
                         'attr': {
                             'data-none': 'mautic.core.form.sending_paused',

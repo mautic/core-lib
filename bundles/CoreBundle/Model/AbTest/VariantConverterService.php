@@ -70,7 +70,7 @@ class VariantConverterService
     /**
      * @param ArrayCollection<int, VariantEntityInterface|FormEntity> $variantChildren
      */
-    private function updateOldChildren($variantChildren, VariantEntityInterface $winner): void
+    private function updateOldChildren(ArrayCollection $variantChildren, VariantEntityInterface $winner): void
     {
         foreach ($variantChildren as $child) {
             if ($child->getId() !== $winner->getId()) {
