@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Model\AbTest;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Mautic\CoreBundle\Entity\FormEntity;
 use Mautic\CoreBundle\Entity\VariantEntityInterface;
 
@@ -68,9 +68,9 @@ class VariantConverterService
     }
 
     /**
-     * @param ArrayCollection<int, VariantEntityInterface|FormEntity> $variantChildren
+     * @param Collection<int, VariantEntityInterface|FormEntity> $variantChildren
      */
-    private function updateOldChildren(ArrayCollection $variantChildren, VariantEntityInterface $winner): void
+    private function updateOldChildren(Collection $variantChildren, VariantEntityInterface $winner): void
     {
         foreach ($variantChildren as $child) {
             if ($child->getId() !== $winner->getId()) {
