@@ -2262,9 +2262,9 @@ class LeadModel extends FormModel
     }
 
     /**
-     * @return mixed[]
+     * @return array{oldPrimary: int|false, newPrimary: int|false}
      */
-    public function setPrimaryCompany($companyId, $leadId)
+    public function setPrimaryCompany($companyId, $leadId): array
     {
         $companyArray      = [];
         $oldPrimaryCompany = $newPrimaryCompany = false;
