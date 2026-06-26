@@ -266,7 +266,7 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
     /**
      * @return Event|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function getEvent()
+    private function getEvent(): \PHPUnit\Framework\MockObject\MockObject
     {
         $event = $this->getMockBuilder(Event::class)
             ->onlyMethods(['getId'])

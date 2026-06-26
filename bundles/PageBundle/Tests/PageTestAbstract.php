@@ -171,7 +171,7 @@ class PageTestAbstract extends TestCase
     /**
      * @return RedirectModel
      */
-    protected function getRedirectModel()
+    protected function getRedirectModel(): MockObject
     {
         $shortener = $this->createMock(Shortener::class);
 
