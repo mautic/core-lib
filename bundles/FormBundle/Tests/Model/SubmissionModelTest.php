@@ -503,7 +503,7 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         $this->translator->expects($this->any())
             ->method('trans')
             ->with($this->anything())
-            ->willReturnCallback(fn ($text) => match ($text) {
+            ->willReturnCallback(fn ($text): ?string => match ($text) {
                 'mautic.form.report.submission.id'  => $values[0],
                 'mautic.lead.report.contact_id'     => $values[1],
                 'mautic.form.result.thead.date'     => $values[2],
@@ -585,7 +585,7 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
         }
 
         fclose($handle);
-        $result = array_map(fn ($line) => CsvHelper::strGetCsv($line), file($tmpFile));
+        $result = array_map(fn ($line): array => CsvHelper::strGetCsv($line), file($tmpFile));
 
         $this->assertCount(1, $result);
         $this->assertSame($header, $result[0]);

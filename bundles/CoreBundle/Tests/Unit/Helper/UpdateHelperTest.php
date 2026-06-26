@@ -843,7 +843,7 @@ class UpdateHelperTest extends TestCase
 
         foreach ($results as $result) {
             if (!empty($result->errors)) {
-                $errors = array_merge($errors, array_map(fn (PreUpdateCheckError $error) => $error->key, $result->errors));
+                $errors = array_merge($errors, array_map(fn (PreUpdateCheckError $error): string => $error->key, $result->errors));
             }
         }
 
@@ -868,7 +868,7 @@ class UpdateHelperTest extends TestCase
 
         foreach ($results as $result) {
             if (!empty($result->errors)) {
-                $errors = array_merge($errors, array_map(fn (PreUpdateCheckError $error) => $error->key, $result->errors));
+                $errors = array_merge($errors, array_map(fn (PreUpdateCheckError $error): string => $error->key, $result->errors));
             }
         }
 
