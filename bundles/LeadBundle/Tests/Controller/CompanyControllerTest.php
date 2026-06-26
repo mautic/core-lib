@@ -20,9 +20,9 @@ class CompanyControllerTest extends MauticMysqlTestCase
 {
     private const COUNTRY_UNITED_STATES = 'United States';
 
-    private readonly int $company1Id;
+    private int $company1Id;
 
-    private readonly int $company2Id;
+    private int $company2Id;
 
     protected function setUp(): void
     {
@@ -59,7 +59,11 @@ class CompanyControllerTest extends MauticMysqlTestCase
               ->setIndustry($companyData['industry']);
             $model->saveEntity($company);
 
-            $this->{'company'.$i.'Id'} = $company->getId();
+            if (1 === $i) {
+                $this->company1Id = $company->getId();
+            } elseif (2 === $i) {
+                $this->company2Id = $company->getId();
+            }
         }
     }
 
