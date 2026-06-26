@@ -33,34 +33,11 @@ import { SourceEditing } from "@ckeditor/ckeditor5-source-editing";
 import { GeneralHtmlSupport } from "@ckeditor/ckeditor5-html-support";
 import { Mention } from "@ckeditor/ckeditor5-mention";
 import TokenPlugin from './TokenPlugin';
-
-type TranslationModule = {
-    default: Record<string, {
-        dictionary: Record<string, string>;
-        getPluralForm?: (n: number) => number;
-    }>;
-};
-
-type TranslationRequireContext = {
-    keys(): string[];
-    <T>(id: string): T;
-};
+import translations, { availableTranslationLanguages } from './translations';
 
 type WindowWithMauticLocale = Window & {
     mauticLocale?: string;
 };
-
-declare const require: {
-    context(directory: string, useSubdirectories?: boolean, regExp?: RegExp): TranslationRequireContext;
-};
-
-const translationContext = require.context('../../../../../node_modules/ckeditor5/dist/translations', false, /^(?!.*\.umd\.js$).*\.js$/);
-const translations = translationContext.keys().map((translationFile) => translationContext<TranslationModule>(translationFile).default);
-const availableTranslationLanguages = new Set(
-    translationContext
-        .keys()
-        .map((translationFile) => translationFile.replace('./', '').replace('.js', ''))
-);
 
 function getEditorLanguage(): string {
     const mauticLocale = (window as WindowWithMauticLocale).mauticLocale;
