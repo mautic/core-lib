@@ -450,7 +450,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->addContactsToSegment(
             $segment,
             ['contact@one.email', 'contact@two.email'],
-            function (Lead $contact, string $emailAddress) {
+            function (Lead $contact, string $emailAddress): void {
                 $contact->setAddress1('address1 name for '.$emailAddress);
                 $contact->setAddress2('address2+'.$emailAddress);
             }

@@ -52,7 +52,7 @@ class EntityEventValidatorTest extends TestCase
         $entity     = new \stdClass();
         $constraint = new EntityEvent();
 
-        $this->dispatcher->addListener(EntityValidateEvent::class, function (EntityValidateEvent $event) use (&$dispatched, $entity, $constraint) {
+        $this->dispatcher->addListener(EntityValidateEvent::class, function (EntityValidateEvent $event) use (&$dispatched, $entity, $constraint): void {
             $dispatched = true;
 
             Assert::assertSame($entity, $event->getEntity());

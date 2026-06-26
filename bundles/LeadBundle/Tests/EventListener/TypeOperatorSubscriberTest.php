@@ -285,7 +285,7 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('display', $parameters[0]);
                     $this->assertSame(TextType::class, $parameters[1]);
-                    $callback = function (array $options) {
+                    $callback = function (array $options): void {
                         $this->assertSame('', $options['data']);
                         $this->assertSame(
                             [
@@ -303,7 +303,7 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('filter', $parameters[0]);
                     $this->assertSame(HiddenType::class, $parameters[1]);
-                    $callback = function (array $options) {
+                    $callback = function (array $options): void {
                         $this->assertSame('', $options['data']);
                         $this->assertSame(['class' => 'form-control'], $options['attr']);
                     };
@@ -337,7 +337,7 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('display', $parameters[0]);
                     $this->assertSame(TextType::class, $parameters[1]);
-                    $callback = function (array $options) {
+                    $callback = function (array $options): void {
                         $this->assertSame('', $options['data']);
                         $this->assertSame(
                             [
@@ -356,7 +356,7 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
                 if (2 === $matcher->numberOfInvocations()) {
                     $this->assertSame('filter', $parameters[0]);
                     $this->assertSame(HiddenType::class, $parameters[1]);
-                    $callback = function (array $options) {
+                    $callback = function (array $options): void {
                         $this->assertSame('', $options['data']);
                         $this->assertSame(['class' => 'form-control'], $options['attr']);
                     };

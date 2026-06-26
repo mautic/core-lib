@@ -79,7 +79,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
             'POST',
             'batchemail202-updated@email.com',
             Response::HTTP_CREATED,
-            function (Response $clientResponse, int $contactId1, int $contactId2) {
+            function (Response $clientResponse, int $contactId1, int $contactId2): void {
                 $responseArray = json_decode($clientResponse->getContent(), true);
 
                 // POST should not update by ID but always create new contact.
@@ -99,7 +99,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
             'POST',
             'batchemail202@email.com',
             Response::HTTP_OK,
-            function (Response $clientResponse, int $contactId1) {
+            function (Response $clientResponse, int $contactId1): void {
                 $responseArray = json_decode($clientResponse->getContent(), true);
 
                 // POST should not update by ID but always create new contact.
@@ -118,7 +118,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
             'PUT',
             'batchemail202-updated@email.com',
             Response::HTTP_OK,
-            function (Response $clientResponse, int $contactId1) {
+            function (Response $clientResponse, int $contactId1): void {
                 $responseArray = json_decode($clientResponse->getContent(), true);
 
                 // PUT should update by ID and overwrite the original contact values.
@@ -136,7 +136,7 @@ class LeadApiControllerFunctionalTest extends MauticMysqlTestCase
             'PATCH',
             'batchemail202-updated@email.com',
             Response::HTTP_OK,
-            function (Response $clientResponse, int $contactId1) {
+            function (Response $clientResponse, int $contactId1): void {
                 $responseArray = json_decode($clientResponse->getContent(), true);
 
                 // PATCH should update by ID and leave the original contact values.

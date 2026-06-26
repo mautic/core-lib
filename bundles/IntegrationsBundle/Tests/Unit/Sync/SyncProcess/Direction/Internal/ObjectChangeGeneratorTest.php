@@ -212,7 +212,7 @@ class ObjectChangeGeneratorTest extends TestCase
         $matcher = $this->exactly(2);
 
         $this->bulkNotification->expects($matcher)
-            ->method('addNotification')->willReturnCallback(function (...$parameters) use ($matcher, $exceptionMessage, $integrationName, $objectName) {
+            ->method('addNotification')->willReturnCallback(function (...$parameters) use ($matcher, $exceptionMessage, $integrationName, $objectName): void {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Internal\ObjectChangeGenerator-Test-lead-email', $parameters[0]);
                     $this->assertSame($exceptionMessage, $parameters[1]);
@@ -277,7 +277,7 @@ class ObjectChangeGeneratorTest extends TestCase
         $matcher = $this->exactly(2);
 
         $this->bulkNotification->expects($matcher)
-            ->method('addNotification')->willReturnCallback(function (...$parameters) use ($matcher, $exceptionMessage, $integrationName, $objectName) {
+            ->method('addNotification')->willReturnCallback(function (...$parameters) use ($matcher, $exceptionMessage, $integrationName, $objectName): void {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('Mautic\IntegrationsBundle\Sync\SyncProcess\Direction\Internal\ObjectChangeGenerator-Test-lead-email', $parameters[0]);
                     $this->assertSame($exceptionMessage, $parameters[1]);

@@ -225,4 +225,17 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
 
         return $recipientCollection;
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * @param mixed $value
+     */
+    private function setProperty(object $object, string $property, $value): void
+    {
+        \Closure::bind(function (object $object) use ($property, $value): void {
+            $object->$property = $value;
+        }, null, $object)($object);
+    }
+>>>>>>> abed2f0d80 ([types] add void types to tests)
 }
