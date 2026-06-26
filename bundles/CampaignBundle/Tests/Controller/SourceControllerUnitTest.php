@@ -10,6 +10,7 @@ use Mautic\CampaignBundle\Model\CampaignModel;
 use Mautic\CoreBundle\Controller\AbstractStandardFormController;
 use Mautic\CoreBundle\Controller\CommonController;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
+use Mautic\CoreBundle\Test\ReflectionHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -201,8 +202,8 @@ class SourceControllerUnitTest extends TestCase
         $security->method('isGranted')
             ->willReturn(true);
 
-        $this->setProperty($controller, AbstractStandardFormController::class, 'formFactory', $formFactory);
-        $this->setProperty($controller, CommonController::class, 'security', $security);
+        ReflectionHelper::setValue($controller, 'formFactory', $formFactory, AbstractStandardFormController::class);
+        ReflectionHelper::setValue($controller, 'security', $security, CommonController::class);
 
         return $controller;
     }
@@ -216,11 +217,5 @@ class SourceControllerUnitTest extends TestCase
         $request->setMethod($method);
 
         return $request;
-    }
-
-    private function setProperty(object $object, string $className, string $propertyName, mixed $value): void
-    {
-        $reflectionProperty = new \ReflectionProperty($className, $propertyName);
-        $reflectionProperty->setValue($object, $value);
     }
 }
