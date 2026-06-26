@@ -393,7 +393,7 @@ class ListModelTest extends TestCase
     {
         return new class($id) extends LeadList {
             public function __construct(
-                private int $id,
+                private readonly int $id,
             ) {
                 parent::__construct();
             }
@@ -409,7 +409,7 @@ class ListModelTest extends TestCase
     {
         return new class($id) extends Lead {
             public function __construct(
-                private int $id,
+                private readonly int $id,
             ) {
                 parent::__construct();
             }

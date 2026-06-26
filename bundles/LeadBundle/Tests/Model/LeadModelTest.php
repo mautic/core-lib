@@ -691,7 +691,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         return new class($id) extends Lead {
             public function __construct(
-                private int $id,
+                private readonly int $id,
             ) {
                 parent::__construct();
             }

@@ -20,9 +20,9 @@ class CompanyControllerTest extends MauticMysqlTestCase
 {
     private const COUNTRY_UNITED_STATES = 'United States';
 
-    private int $company1Id;
+    private readonly int $company1Id;
 
-    private int $company2Id;
+    private readonly int $company2Id;
 
     protected function setUp(): void
     {
