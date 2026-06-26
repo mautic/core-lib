@@ -714,7 +714,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         $segmentMemberRepo->deleteEntities($segmentMemberRepo->findAll());
 
         $campaign = $campaignRepo->find(1); // Created in parent::setUp()
-        \assert($campaign instanceof Campaign);
+        $this->assertInstanceOf(Campaign::class, $campaign);
 
         $campaign->setAllowRestart(true);
 
@@ -873,7 +873,7 @@ class TriggerCampaignCommandTest extends AbstractCampaignCommand
         $this->assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
 
         $eventLog = $this->em->find(LeadEventLog::class, $logId);
-        \assert($eventLog instanceof LeadEventLog);
+        $this->assertInstanceOf(LeadEventLog::class, $eventLog);
 
         Assert::assertSame($expectedTriggerDate, $eventLog->getTriggerDate()?->format(DateTimeHelper::FORMAT_DB));
         Assert::assertSame($expectedIsScheduled, $eventLog->getIsScheduled());

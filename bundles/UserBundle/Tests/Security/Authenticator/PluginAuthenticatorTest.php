@@ -93,16 +93,16 @@ class PluginAuthenticatorTest extends TestCase
         );
 
         $authenticateResult = $authenticateResult->authenticate($request);
-        \assert($authenticateResult instanceof SelfValidatingPassport);
+        $this->assertInstanceOf(SelfValidatingPassport::class, $authenticateResult);
         self::assertCount(2, $authenticateResult->getBadges());
 
         $userBadge = $authenticateResult->getBadge(UserBadge::class);
-        \assert($userBadge instanceof UserBadge);
+        $this->assertInstanceOf(UserBadge::class, $userBadge);
         self::assertSame($userIdentifier, $userBadge->getUserIdentifier());
         self::assertSame($authenticatedUser, $userBadge->getUser());
 
         $pluginBadge = $authenticateResult->getBadge(PluginBadge::class);
-        \assert($pluginBadge instanceof PluginBadge);
+        $this->assertInstanceOf(PluginBadge::class, $pluginBadge);
         self::assertSame($returnedPluginToken, $pluginBadge->getPreAuthenticatedToken());
         self::assertSame($authenticatedIntegration, $pluginBadge->getAuthenticatingService());
     }
@@ -168,16 +168,15 @@ class PluginAuthenticatorTest extends TestCase
         );
 
         $authenticateResult = $pluginAuthenticator->authenticate($request);
-        \assert($authenticateResult instanceof SelfValidatingPassport);
         self::assertCount(2, $authenticateResult->getBadges());
 
         $userBadge = $authenticateResult->getBadge(UserBadge::class);
-        \assert($userBadge instanceof UserBadge);
+        \PHPUnit\Framework\Assert::assertInstanceOf(UserBadge::class, $userBadge);
         self::assertSame($userIdentifier, $userBadge->getUserIdentifier());
         self::assertSame($authenticatedUser, $userBadge->getUser());
 
         $pluginBadge = $authenticateResult->getBadge(PluginBadge::class);
-        \assert($pluginBadge instanceof PluginBadge);
+        \PHPUnit\Framework\Assert::assertInstanceOf(PluginBadge::class, $pluginBadge);
         self::assertEquals(new PluginToken($firewallName, $integration, $authenticatedUser), $pluginBadge->getPreAuthenticatedToken());
         self::assertSame($authenticatedIntegration, $pluginBadge->getAuthenticatingService());
     }

@@ -23,7 +23,7 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         parent::setUp();
 
         $this->scheduledExecutioner = self::getContainer()->get('mautic.campaign.executioner.scheduled');
-        \assert($this->scheduledExecutioner instanceof ScheduledExecutioner);
+        $this->assertInstanceOf(ScheduledExecutioner::class, $this->scheduledExecutioner);
     }
 
     public function testEventsAreExecuted(): void
@@ -377,7 +377,7 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
         $this->assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
 
         $reloaded = $this->em->find(LeadEventLog::class, $logId);
-        \assert($reloaded instanceof LeadEventLog);
+        $this->assertInstanceOf(LeadEventLog::class, $reloaded);
 
         $this->assertTrue(
             $reloaded->getIsScheduled(),

@@ -534,7 +534,7 @@ class EmailApiControllerFunctionalTest extends MauticMysqlTestCase
         $user->setRole($role);
 
         $hasher = static::getContainer()->get('security.password_hasher_factory')->getPasswordHasher($user);
-        \assert($hasher instanceof PasswordHasherInterface);
+        $this->assertInstanceOf(PasswordHasherInterface::class, $hasher);
 
         $user->setPassword($hasher->hash('password'));
         $this->em->persist($user);

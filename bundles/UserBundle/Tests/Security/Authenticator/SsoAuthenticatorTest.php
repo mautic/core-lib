@@ -254,11 +254,11 @@ class SsoAuthenticatorTest extends TestCase
         self::assertCount($enableCsrf ? 4 : 3, $badges);
 
         $userBadge = $passport->getBadge(UserBadge::class);
-        \assert($userBadge instanceof UserBadge);
+        $this->assertInstanceOf(UserBadge::class, $userBadge);
         self::assertSame($username, $userBadge->getUserIdentifier());
 
         $passwordBadge = $passport->getBadge(PasswordCredentials::class);
-        \assert($passwordBadge instanceof PasswordCredentials);
+        $this->assertInstanceOf(PasswordCredentials::class, $passwordBadge);
         self::assertSame($password, $passwordBadge->getPassword());
 
         self::assertTrue($passport->hasBadge(RememberMeBadge::class));
@@ -274,7 +274,7 @@ class SsoAuthenticatorTest extends TestCase
         }
 
         $csrfTokenBadge = $passport->getBadge(CsrfTokenBadge::class);
-        \assert($csrfTokenBadge instanceof CsrfTokenBadge);
+        $this->assertInstanceOf(CsrfTokenBadge::class, $csrfTokenBadge);
         self::assertSame($csrfToken, $csrfTokenBadge->getCsrfToken());
         self::assertSame('authenticate', $csrfTokenBadge->getCsrfTokenId());
     }
@@ -339,7 +339,7 @@ class SsoAuthenticatorTest extends TestCase
         $passport = $authenticator->authenticate($request);
 
         $userBadge = $passport->getBadge(UserBadge::class);
-        \assert($userBadge instanceof UserBadge);
+        $this->assertInstanceOf(UserBadge::class, $userBadge);
         self::assertSame($username, $userBadge->getUserIdentifier());
 
         $this->expectException(UserNotFoundException::class);
@@ -405,7 +405,7 @@ class SsoAuthenticatorTest extends TestCase
         $passport = $authenticator->authenticate($request);
 
         $userBadge = $passport->getBadge(UserBadge::class);
-        \assert($userBadge instanceof UserBadge);
+        $this->assertInstanceOf(UserBadge::class, $userBadge);
         self::assertSame($username, $userBadge->getUserIdentifier());
         self::assertSame($user, $userBadge->getUser());
     }
@@ -496,7 +496,7 @@ class SsoAuthenticatorTest extends TestCase
         $passport = $authenticator->authenticate($request);
 
         $userBadge = $passport->getBadge(UserBadge::class);
-        \assert($userBadge instanceof UserBadge);
+        $this->assertInstanceOf(UserBadge::class, $userBadge);
         self::assertSame($username, $userBadge->getUserIdentifier());
 
         $this->expectException(AuthenticationException::class);
@@ -585,7 +585,7 @@ class SsoAuthenticatorTest extends TestCase
         $passport = $authenticator->authenticate($request);
 
         $userBadge = $passport->getBadge(UserBadge::class);
-        \assert($userBadge instanceof UserBadge);
+        $this->assertInstanceOf(UserBadge::class, $userBadge);
         self::assertSame($username, $userBadge->getUserIdentifier());
 
         self::assertSame($user, $userBadge->getUser());

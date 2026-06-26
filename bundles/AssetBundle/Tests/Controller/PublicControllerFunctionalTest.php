@@ -85,7 +85,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
         $downloadRepo = $this->em->getRepository(Download::class);
 
         $download = $downloadRepo->findOneBy(['asset' => $this->asset]);
-        \assert($download instanceof Download);
+        $this->assertInstanceOf(Download::class, $download);
         $this->assertSame('test2', $download->getUtmSource());
         $this->assertSame('test3', $download->getUtmMedium());
         $this->assertSame('test4', $download->getUtmTerm());

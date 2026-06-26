@@ -134,10 +134,10 @@ class CompanyControllerTest extends MauticMysqlTestCase
     public function testListCompanyContacts(): void
     {
         $companyModel = self::getContainer()->get('mautic.lead.model.company');
-        \assert($companyModel instanceof CompanyModel);
+        $this->assertInstanceOf(CompanyModel::class, $companyModel);
 
         $leadModel = self::getContainer()->get('mautic.lead.model.lead');
-        \assert($leadModel instanceof LeadModel);
+        $this->assertInstanceOf(LeadModel::class, $leadModel);
 
         $company1 = $companyModel->getEntity($this->company1Id);
 
@@ -364,7 +364,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $form          = $buttonCrawler->form();
 
         $companyModel = self::getContainer()->get('mautic.lead.model.company');
-        \assert($companyModel instanceof CompanyModel);
+        $this->assertInstanceOf(CompanyModel::class, $companyModel);
 
         $company     = $companyModel->getEntity($this->company1Id);
         $updatedName = $company->getName().' - Updated';
@@ -397,7 +397,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $content = $clientResponse->getContent();
 
         $companyModel = self::getContainer()->get('mautic.lead.model.company');
-        \assert($companyModel instanceof CompanyModel);
+        $this->assertInstanceOf(CompanyModel::class, $companyModel);
         $company1 = $companyModel->getEntity($this->company1Id);
         $company2 = $companyModel->getEntity($this->company2Id);
 
@@ -423,7 +423,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $companyModel = self::getContainer()->get('mautic.lead.model.company');
-        \assert($companyModel instanceof CompanyModel);
+        $this->assertInstanceOf(CompanyModel::class, $companyModel);
 
         $company = $companyModel->getEntity($this->company1Id);
 

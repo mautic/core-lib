@@ -42,17 +42,17 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $this->configParams['delete_segment_in_background']               = false;
         parent::setUp();
         $this->listModel = static::getContainer()->get('mautic.lead.model.list');
-        \assert($this->listModel instanceof ListModel);
+        $this->assertInstanceOf(ListModel::class, $this->listModel);
         $this->listRepo = $this->listModel->getRepository();
-        \assert($this->listRepo instanceof LeadListRepository);
+        $this->assertInstanceOf(LeadListRepository::class, $this->listRepo);
         $leadModel = static::getContainer()->get('mautic.lead.model.lead');
-        \assert($leadModel instanceof LeadModel);
+        $this->assertInstanceOf(LeadModel::class, $leadModel);
         $this->segmentCountCacheHelper = static::getContainer()->get('mautic.helper.segment.count.cache');
         $this->leadRepo                = $leadModel->getRepository();
-        \assert($this->leadRepo instanceof LeadRepository);
+        $this->assertInstanceOf(LeadRepository::class, $this->leadRepo);
         $this->prefix                  = self::getContainer()->getParameter('mautic.db_table_prefix');
         $this->translator              = self::getContainer()->get('translator');
-        \assert($this->translator instanceof TranslatorInterface);
+        $this->assertInstanceOf(TranslatorInterface::class, $this->translator);
     }
 
     public function testBCSegmentWithPageHitInLeadObject(): void
@@ -100,7 +100,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         $project->setName('Test Project');
 
         $projectModel = self::getContainer()->get(ProjectModel::class);
-        \assert($projectModel instanceof ProjectModel);
+        $this->assertInstanceOf(ProjectModel::class, $projectModel);
         $projectModel->saveEntity($project);
 
         $this->em->clear();
