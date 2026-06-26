@@ -21,9 +21,9 @@ class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
 {
     private \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher;
 
-    private LeadModel|\PHPUnit\Framework\MockObject\MockObject $leadModel;
+    private \PHPUnit\Framework\MockObject\MockObject $leadModel;
 
-    private WebhookModel|\PHPUnit\Framework\MockObject\MockObject $mockModel;
+    private \PHPUnit\Framework\MockObject\MockObject $mockModel;
 
     protected function setUp(): void
     {

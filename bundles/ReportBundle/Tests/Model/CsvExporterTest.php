@@ -30,7 +30,7 @@ class CsvExporterTest extends \PHPUnit\Framework\TestCase
     /**
      * @var TranslatorInterface
      */
-    private mixed $translator;
+    private \PHPUnit\Framework\MockObject\MockObject $translator;
 
     private FormatterHelper $formatterHelperMock;
 

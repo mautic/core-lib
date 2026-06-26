@@ -74,11 +74,11 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @var MockObject|UserRepository
      */
-    private $userRepositoryMock;
+    private MockObject $userRepositoryMock;
 
     private WebhookNotificationSender $webhookNotificationSender;
 
-    private EventDispatcherInterface $eventDispatcher;
+    private MockObject $eventDispatcher;
 
     protected function setUp(): void
     {

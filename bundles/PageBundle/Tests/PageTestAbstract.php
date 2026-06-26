@@ -47,7 +47,7 @@ class PageTestAbstract extends TestCase
     /**
      * @var Router|MockObject
      */
-    protected $router;
+    protected ?MockObject $router = null;
 
     protected CorePermissions&MockObject $security;
 

@@ -127,12 +127,12 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
     /**
      * @var LeadModel|MockObject
      */
-    private $mockLeadModel;
+    private MockObject $mockLeadModel;
 
     /**
      * @var CompanyModel|MockObject
      */
-    private $mockCompanyModel;
+    private MockObject $mockCompanyModel;
 
     /**
      * @var CampaignSubscriber
@@ -144,7 +144,7 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
     /**
      * @var DoNotContact|MockObject
      */
-    private $doNotContact;
+    private MockObject $doNotContact;
 
     protected function setUp(): void
     {

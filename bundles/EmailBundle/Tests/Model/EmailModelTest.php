@@ -135,7 +135,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
     /**
      * @var MockObject&EmailStatModel
      */
-    private $emailStatModel;
+    private MockObject $emailStatModel;
 
     /**
      * @var MockObject&FrequencyRuleRepository

@@ -18,12 +18,12 @@ class ReportGeneratorEventTest extends TestCase
     /**
      * @var Report|MockObject
      */
-    private $report;
+    private MockObject $report;
 
     /**
      * @var QueryBuilder|MockObject
      */
-    private $queryBuilder;
+    private MockObject $queryBuilder;
 
     private ChannelListHelper $channelListHelper;
 

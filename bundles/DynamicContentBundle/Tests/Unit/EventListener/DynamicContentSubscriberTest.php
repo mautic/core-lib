@@ -72,7 +72,7 @@ class DynamicContentSubscriberTest extends \PHPUnit\Framework\TestCase
      * @var MockObject|ContactTracker
      */
     private MockObject $contactTracker;
-    private \PHPUnit\Framework\MockObject\MockObject|CompanyLeadRepository $companyLeadRepositoryMock;
+    private MockObject $companyLeadRepositoryMock;
 
     private DynamicContentSubscriber $subscriber;
     /**

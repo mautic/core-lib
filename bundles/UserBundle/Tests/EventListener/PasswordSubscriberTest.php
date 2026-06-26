@@ -29,17 +29,17 @@ final class PasswordSubscriberTest extends TestCase
     /**
      * @var MockObject&AuthenticationEvent
      */
-    private $authenticationEvent;
+    private MockObject $authenticationEvent;
 
     /**
      * @var MockObject&PluginToken
      */
-    private $pluginToken;
+    private MockObject $pluginToken;
 
     /**
      * @var MockObject&EventDispatcherInterface
      */
-    private $dispatcher;
+    private MockObject $dispatcher;
 
     protected function setUp(): void
     {

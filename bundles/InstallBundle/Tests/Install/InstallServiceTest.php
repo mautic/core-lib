@@ -40,7 +40,7 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
 
     private MockObject $validator;
 
-    private UserPasswordHasher $hasher;
+    private MockObject $hasher;
 
     /**
      * @var MockObject&FixturesLoaderInterface
