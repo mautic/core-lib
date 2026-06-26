@@ -274,10 +274,7 @@ class ExampleSyncDataExchange implements SyncDataExchangeInterface
         ];
     }
 
-    /**
-     * @return array
-     */
-    private function deliverPayload()
+    private function deliverPayload(): array
     {
         $now      = new \DateTime('now', new \DateTimeZone('UTC'));
         $response = [];
