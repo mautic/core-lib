@@ -197,15 +197,11 @@ final class SmsModelTest extends \PHPUnit\Framework\TestCase
         if ($isMMS) {
             $this->transport->expects($this->once())
                 ->method('sendMMS')
-                ->willReturnCallback(function (RecipientCollection $recipientCollection) {
-                    return $this->setRecipientResult($recipientCollection);
-                });
+                ->willReturnCallback(fn (RecipientCollection $recipientCollection) => $this->setRecipientResult($recipientCollection));
         } else {
             $this->transport->expects($this->once())
                 ->method('sendBatchSms')
-                ->willReturnCallback(function (RecipientCollection $recipientCollection) {
-                    return $this->setRecipientResult($recipientCollection);
-                });
+                ->willReturnCallback(fn (RecipientCollection $recipientCollection) => $this->setRecipientResult($recipientCollection));
         }
 
         $results = $smsModel->sendSms($sms, [$lead1, $lead2], ['channel' => ['campaign.event', 1]]);

@@ -129,7 +129,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
         $uploadForm = $crawler->selectButton('Upload')->form();
-        $file       = new UploadedFile(dirname(__FILE__).'/../Fixtures/'.$filename, 'contacts.csv', 'text/csv');
+        $file       = new UploadedFile(__DIR__.'/../Fixtures/'.$filename, 'contacts.csv', 'text/csv');
 
         $uploadForm['lead_import[file]']->setValue((string) $file);
 
@@ -200,7 +200,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
         $uploadForm = $crawler->selectButton('Upload')->form();
-        $file       = new UploadedFile(dirname(__FILE__).'/../Fixtures/contacts.csv', 'contacs.csv', 'itext/csv');
+        $file       = new UploadedFile(__DIR__.'/../Fixtures/contacts.csv', 'contacs.csv', 'itext/csv');
 
         $uploadForm['lead_import[file]']->setValue((string) $file);
 
@@ -229,7 +229,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
         $uploadForm = $crawler->selectButton('Upload')->form();
         $file       = new UploadedFile(
-            dirname(__FILE__).'/../Fixtures/contacts.csv',
+            __DIR__.'/../Fixtures/contacts.csv',
             'contacs.csv',
             'itext/csv'
         );
@@ -321,7 +321,7 @@ final class ImportControllerTest extends MauticMysqlTestCase
 
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/contacts/import/new');
         $uploadForm = $crawler->selectButton('Upload')->form();
-        $file       = new UploadedFile(dirname(__FILE__).'/../Fixtures/contacts-with-custom-field.csv', 'contacs.csv', 'itext/csv');
+        $file       = new UploadedFile(__DIR__.'/../Fixtures/contacts-with-custom-field.csv', 'contacs.csv', 'itext/csv');
 
         $uploadForm['lead_import[file]']->setValue((string) $file);
 

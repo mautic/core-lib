@@ -109,13 +109,11 @@ class PathsHelperTest extends TestCase
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $this->coreParametersHelper->method('get')
             ->willReturnCallback(
-                function (string $key) use ($campaignImportPath) {
-                    return match ($key) {
-                        'import_campaigns_dir' => $campaignImportPath,
-                        'image_path'           => 'media/images',
-                        'tmp_path'             => __DIR__.'/resource/paths/tmp',
-                        default                => '',
-                    };
+                fn (string $key) => match ($key) {
+                    'import_campaigns_dir' => $campaignImportPath,
+                    'image_path'           => 'media/images',
+                    'tmp_path'             => __DIR__.'/resource/paths/tmp',
+                    default                => '',
                 }
             );
 
@@ -135,13 +133,9 @@ class PathsHelperTest extends TestCase
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $coreParametersHelper->method('get')
             ->willReturnCallback(
-                function (string $key) use ($tempPath) {
-                    switch ($key) {
-                        case 'tmp_path':
-                            return $tempPath;
-                        default:
-                            return '';
-                    }
+                fn (string $key) => match ($key) {
+                    'tmp_path' => $tempPath,
+                    default    => '',
                 }
             );
 
@@ -174,13 +168,9 @@ class PathsHelperTest extends TestCase
         $coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $coreParametersHelper->method('get')
             ->willReturnCallback(
-                function (string $key) use ($dashboardDir) {
-                    switch ($key) {
-                        case 'dashboard_import_dir':
-                            return $dashboardDir;
-                        default:
-                            return '';
-                    }
+                fn (string $key) => match ($key) {
+                    'dashboard_import_dir' => $dashboardDir,
+                    default                => '',
                 }
             );
 
