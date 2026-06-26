@@ -235,7 +235,7 @@ class ExampleSyncDataExchange implements SyncDataExchangeInterface
     }
 
     /**
-     * @return mixed
+     * @return array<mixed[]>
      */
     private function getReportPayload($object, \DateTimeInterface $fromDateTime, \DateTimeInterface $toDateTime, array $mappedFields): array
     {

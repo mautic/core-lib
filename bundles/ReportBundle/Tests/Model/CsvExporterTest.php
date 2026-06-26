@@ -10,6 +10,7 @@ use Mautic\CoreBundle\Twig\Helper\FormatterHelper;
 use Mautic\ReportBundle\Crate\ReportDataResult;
 use Mautic\ReportBundle\Model\CsvExporter;
 use Mautic\ReportBundle\Tests\Fixtures;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CsvExporterTest extends \PHPUnit\Framework\TestCase
@@ -28,9 +29,9 @@ class CsvExporterTest extends \PHPUnit\Framework\TestCase
     private $file;
 
     /**
-     * @var TranslatorInterface
+     * @var TranslatorInterface&MockObject
      */
-    private \PHPUnit\Framework\MockObject\MockObject $translator;
+    private MockObject $translator;
 
     private FormatterHelper $formatterHelperMock;
 
