@@ -54,7 +54,7 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $duplicatedCompany->method('getProfileFields')->willReturn(['companyfield'=> 'xxx']);
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
 
-        ReflectionHelper::setValue($companyModel, 'companyDeduper', $companyDeduper, CompanyModel::class);
+        ReflectionHelper::setValue($companyModel, 'companyDeduper', $companyDeduper);
         $duplicatedCompany->expects($this->exactly(0))->method('addUpdatedField');
         $companyModel->importCompany([], [], null, false, true);
     }
@@ -67,7 +67,7 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $duplicatedCompany->method('getProfileFields')->willReturn(['companyfield'=> 'xxx']);
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
 
-        ReflectionHelper::setValue($companyModel, 'companyDeduper', $companyDeduper, CompanyModel::class);
+        ReflectionHelper::setValue($companyModel, 'companyDeduper', $companyDeduper);
         $duplicatedCompany->expects($this->once())->method('addUpdatedField');
         $companyModel->importCompany([], [], null, false, false);
     }
@@ -105,7 +105,7 @@ class CompanyModelTest extends \PHPUnit\Framework\TestCase
         $duplicatedCompany->method('getProfileFields')->willReturn($data);
 
         $companyDeduper = $this->getCompanyDeduperForImport($duplicatedCompany);
-        ReflectionHelper::setValue($companyModel, 'companyDeduper', $companyDeduper, CompanyModel::class);
+        ReflectionHelper::setValue($companyModel, 'companyDeduper', $companyDeduper);
 
         $duplicatedCompany->expects($this->exactly(2))->method('addUpdatedField');
         $companyModel->importCompany([], [], null, false, false);

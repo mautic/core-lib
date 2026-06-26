@@ -860,7 +860,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
     private function getCompany(int $id): Company
     {
         $company = new Company();
-        ReflectionHelper::setValue($company, 'id', $id, Company::class);
+        ReflectionHelper::setValue($company, 'id', $id);
 
         return $company;
     }

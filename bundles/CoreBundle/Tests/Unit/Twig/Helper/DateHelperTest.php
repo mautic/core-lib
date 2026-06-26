@@ -129,7 +129,7 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
             ->willReturn($now);
 
         // Inject the mock DateTimeHelper into DateHelper
-        ReflectionHelper::setValue($this->helper, 'helper', $dateTimeHelperMock, DateHelper::class);
+        ReflectionHelper::setValue($this->helper, 'helper', $dateTimeHelperMock);
 
         $result = $this->helper->toText($now);
 
@@ -187,7 +187,7 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
             ->willReturn('today');
 
         // Inject the mock DateTimeHelper into DateHelper
-        ReflectionHelper::setValue($this->helper, 'helper', $dateTimeHelperMock, DateHelper::class);
+        ReflectionHelper::setValue($this->helper, 'helper', $dateTimeHelperMock);
 
         $now    = new \DateTime('now', new \DateTimeZone('UTC'));
         $result = $this->helper->toTextShort($now);
@@ -209,7 +209,7 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
             ->willReturn('December 31, 2023');
 
         // Inject the mock DateTimeHelper into DateHelper
-        ReflectionHelper::setValue($this->helper, 'helper', $dateTimeHelperMock, DateHelper::class);
+        ReflectionHelper::setValue($this->helper, 'helper', $dateTimeHelperMock);
 
         $olderDate = '2023-12-31 23:59:59';
         $result    = $this->helper->toTextShort($olderDate, 'UTC', 'Y-m-d H:i:s');

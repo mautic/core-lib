@@ -432,7 +432,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     public function testImportWithTagsInCsvFile(): void
     {
         $mockLeadModel = $this->createMockLeadModelStub(['saveEntity', 'checkForDuplicateContact', 'modifyTags']);
-        ReflectionHelper::setValue($mockLeadModel, 'leadFieldModel', $this->fieldModelMock, LeadModel::class);
+        ReflectionHelper::setValue($mockLeadModel, 'leadFieldModel', $this->fieldModelMock);
         $this->setupMockLeadModelForImport($mockLeadModel);
 
         $mockLeadModel->expects($this->once())->method('checkForDuplicateContact')->willReturn(new Lead());
@@ -451,7 +451,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
         $lead->setId(21);
 
         $mockLeadModel = $this->createMockLeadModelStub(['saveEntity', 'getEntity']);
-        ReflectionHelper::setValue($mockLeadModel, 'leadFieldModel', $this->fieldModelMock, LeadModel::class);
+        ReflectionHelper::setValue($mockLeadModel, 'leadFieldModel', $this->fieldModelMock);
         $this->setupMockLeadModelForImport($mockLeadModel);
 
         $mockLeadModel->expects($this->once())->method('getEntity')->willReturn($lead);
@@ -824,10 +824,10 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
     {
         $mockCompanyModel = $this->createMockCompanyModelForImport();
 
-        ReflectionHelper::setValue($mockLeadModel, 'companyModel', $mockCompanyModel, LeadModel::class);
+        ReflectionHelper::setValue($mockLeadModel, 'companyModel', $mockCompanyModel);
         ReflectionHelper::setValue($mockLeadModel, 'leadFields', [
             ['alias' => 'email', 'type' => 'email', 'defaultValue' => ''],
-        ], LeadModel::class);
+        ]);
     }
 
     /**
@@ -844,8 +844,8 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
             ->method('getRepository')
             ->willReturn($this->leadRepositoryMock);
 
-        ReflectionHelper::setValue($mockLeadModel, 'leadFieldModel', $this->fieldModelMock, LeadModel::class);
-        ReflectionHelper::setValue($mockLeadModel, 'fieldsWithUniqueIdentifier', $this->fieldsWithUniqueIdentifier, LeadModel::class);
+        ReflectionHelper::setValue($mockLeadModel, 'leadFieldModel', $this->fieldModelMock);
+        ReflectionHelper::setValue($mockLeadModel, 'fieldsWithUniqueIdentifier', $this->fieldsWithUniqueIdentifier);
 
         return $mockLeadModel;
     }

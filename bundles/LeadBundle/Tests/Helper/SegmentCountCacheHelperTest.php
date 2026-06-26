@@ -38,9 +38,9 @@ class SegmentCountCacheHelperTest extends TestCase
     {
         $item = (new \ReflectionClass(CacheItem::class))->newInstanceWithoutConstructor();
 
-        ReflectionHelper::setValue($item, 'key', $key, CacheItem::class);
-        ReflectionHelper::setValue($item, 'value', $value, CacheItem::class);
-        ReflectionHelper::setValue($item, 'isHit', $isHit, CacheItem::class);
+        ReflectionHelper::setValue($item, 'key', $key);
+        ReflectionHelper::setValue($item, 'value', $value);
+        ReflectionHelper::setValue($item, 'isHit', $isHit);
 
         return $item;
     }

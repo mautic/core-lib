@@ -7,8 +7,6 @@ namespace Mautic\CampaignBundle\Tests\Controller;
 use Mautic\CampaignBundle\Controller\SourceController;
 use Mautic\CampaignBundle\Form\Type\CampaignLeadSourceType;
 use Mautic\CampaignBundle\Model\CampaignModel;
-use Mautic\CoreBundle\Controller\AbstractStandardFormController;
-use Mautic\CoreBundle\Controller\CommonController;
 use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 use Mautic\CoreBundle\Test\ReflectionHelper;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -202,8 +200,8 @@ class SourceControllerUnitTest extends TestCase
         $security->method('isGranted')
             ->willReturn(true);
 
-        ReflectionHelper::setValue($controller, 'formFactory', $formFactory, AbstractStandardFormController::class);
-        ReflectionHelper::setValue($controller, 'security', $security, CommonController::class);
+        ReflectionHelper::setValue($controller, 'formFactory', $formFactory);
+        ReflectionHelper::setValue($controller, 'security', $security);
 
         return $controller;
     }

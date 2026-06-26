@@ -9,13 +9,21 @@ final class ReflectionHelper
     /**
      * Sets a property value on an object via reflection, bypassing visibility.
      *
-     * Pass $class to target a private property declared on a parent class
-     * (e.g. when $object is a mock); otherwise the object's own class is used.
+     * Resolves the declaring class by walking up the hierarchy, so private
+     * properties declared on a parent class (e.g. when $object is a mock) work too.
      */
-    public static function setValue(object $object, string $property, mixed $value, ?string $class = null): void
+    public static function setValue(object $object, string $property, mixed $value): void
     {
-        $reflectionProperty = new \ReflectionProperty($class ?? $object::class, $property);
-        $reflectionProperty->setValue($object, $value);
+        $reflectionClass = new \ReflectionClass($object);
+        while (!$reflectionClass->hasProperty($property)) {
+            $parent = $reflectionClass->getParentClass();
+            if (false === $parent) {
+                throw new \ReflectionException(sprintf('Property "%s" not found on "%s".', $property, $object::class));
+            }
+            $reflectionClass = $parent;
+        }
+
+        $reflectionClass->getProperty($property)->setValue($object, $value);
     }
 
     /**
