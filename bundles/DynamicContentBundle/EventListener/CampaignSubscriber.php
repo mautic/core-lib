@@ -143,10 +143,8 @@ class CampaignSubscriber implements EventSubscriberInterface
 
             $event->stopPropagation();
 
-            $result = $event->setResult($content);
+            $event->setResult($content);
             $event->setChannel('dynamicContent', $dwc->getId());
-
-            return;
         }
     }
 }

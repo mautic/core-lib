@@ -71,7 +71,6 @@ final class CampaignSubscriberFunctionalTest extends MauticMysqlTestCase
 
         $this->campaignSubscriber->onCampaignTriggerCondition($campaignExecutionEvent);
 
-        $this->assertInstanceOf(CampaignExecutionEvent::class, $campaignExecutionEvent);
         $this->assertTrue($campaignExecutionEvent->getResult());
     }
 
