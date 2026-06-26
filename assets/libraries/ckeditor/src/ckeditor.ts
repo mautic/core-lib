@@ -40,7 +40,8 @@ type WindowWithMauticLocale = Window & {
 };
 
 function getEditorLanguage(): string {
-    const mauticLocale = (window as WindowWithMauticLocale).mauticLocale;
+    const w = window as WindowWithMauticLocale;
+    const mauticLocale = w.mauticLocale ?? (w.parent as WindowWithMauticLocale)?.mauticLocale;
 
     if (!mauticLocale) {
         return 'en';
