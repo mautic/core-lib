@@ -348,10 +348,7 @@ class RealTimeExecutionerTest extends TestCase
         return $event;
     }
 
-    /**
-     * @return RealTimeExecutioner
-     */
-    private function getExecutioner()
+    private function getExecutioner(): RealTimeExecutioner
     {
         return new RealTimeExecutioner(
             new NullLogger(),

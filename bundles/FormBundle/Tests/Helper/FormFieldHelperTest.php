@@ -205,10 +205,8 @@ class FormFieldHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @param string $name
      * @param string $type
-     *
-     * @return Field
      */
-    protected static function getField($name, $type)
+    protected static function getField($name, $type): Field
     {
         $field = new Field();
 

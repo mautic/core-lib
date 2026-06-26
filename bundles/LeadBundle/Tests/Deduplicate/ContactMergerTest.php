@@ -865,10 +865,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
         return $company;
     }
 
-    /**
-     * @return ContactMerger
-     */
-    private function getMerger()
+    private function getMerger(): ContactMerger
     {
         return new ContactMerger(
             $this->leadModel,
