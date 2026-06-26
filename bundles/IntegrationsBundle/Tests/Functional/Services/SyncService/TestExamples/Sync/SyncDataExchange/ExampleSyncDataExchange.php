@@ -237,7 +237,7 @@ class ExampleSyncDataExchange implements SyncDataExchangeInterface
     /**
      * @return mixed
      */
-    private function getReportPayload($object, \DateTimeInterface $fromDateTime, \DateTimeInterface $toDateTime, array $mappedFields)
+    private function getReportPayload($object, \DateTimeInterface $fromDateTime, \DateTimeInterface $toDateTime, array $mappedFields): array
     {
         // Query integration's API for objects changed between $fromDateTime and $toDateTime with the requested fields in $mappedFields if that's
         // applicable to the integration. I.e. Salesforce supports querying for specific fields in it's SOQL
