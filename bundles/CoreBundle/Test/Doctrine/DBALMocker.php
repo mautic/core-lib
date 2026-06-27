@@ -8,6 +8,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use Doctrine\ORM\EntityManager;
 use Mautic\LeadBundle\Entity\Lead;
+use PHPUnit\Framework\MockObject\MockBuilder;
 
 class DBALMocker
 {
@@ -86,8 +87,9 @@ class DBALMocker
     public function getMockEm()
     {
         if (null === $this->mockEm) {
-            $mock = $this->testCase->getMockBuilder(EntityManager::class)
-                ->disableOriginalConstructor()
+            $entityManagerMockBuilder = new MockBuilder($this->testCase, EntityManager::class);
+
+            $mock = $entityManagerMockBuilder->disableOriginalConstructor()
                 ->onlyMethods(
                     [
                         'getConnection',
@@ -123,8 +125,9 @@ class DBALMocker
     public function getMockConnection()
     {
         if (null === $this->mockConnection) {
-            $mock = $this->testCase->getMockBuilder(Connection::class)
-                ->disableOriginalConstructor()
+            $connectionMockBuilder = new MockBuilder($this->testCase, Connection::class);
+
+            $mock = $connectionMockBuilder->disableOriginalConstructor()
                 ->onlyMethods([
                     'createQueryBuilder',
                     'quote',
@@ -162,8 +165,9 @@ class DBALMocker
     public function getMockQueryBuilder()
     {
         if (null === $this->mockQueryBuilder) {
-            $mock = $this->testCase->getMockBuilder(QueryBuilder::class)
-                ->disableOriginalConstructor()
+            $queryBuilderMockBuilder = new MockBuilder($this->testCase, QueryBuilder::class);
+
+            $mock = $queryBuilderMockBuilder->disableOriginalConstructor()
                 ->onlyMethods(
                     [
                         'select',
@@ -245,8 +249,9 @@ class DBALMocker
 
     public function getMockResultStatement()
     {
-        $mock = $this->testCase->getMockBuilder(Result::class)
-            ->disableOriginalConstructor()
+        $resultMockBuilder = new MockBuilder($this->testCase, Result::class);
+
+        $mock = $resultMockBuilder->disableOriginalConstructor()
             ->onlyMethods([
                 'fetchNumeric',
                 'fetchAssociative',
