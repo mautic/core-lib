@@ -27,11 +27,6 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
     private \PHPUnit\Framework\MockObject\MockObject $leadModel;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject&LeadRepository
-     */
-    private \PHPUnit\Framework\MockObject\MockObject $leadRepo;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject|MergeRecordRepository
      */
     private \PHPUnit\Framework\MockObject\MockObject $mergeRecordRepo;
@@ -51,13 +46,13 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $this->leadModel       = $this->createMock(LeadModel::class);
-        $this->leadRepo        = $this->createMock(LeadRepository::class);
+        $leadRepo              = $this->createMock(LeadRepository::class);
         $this->mergeRecordRepo = $this->createMock(MergeRecordRepository::class);
         $this->dispatcher      = $this->createMock(EventDispatcher::class);
         $this->logger          = $this->createMock(Logger::class);
         $this->companyLeadRepo = $this->createMock(CompanyLeadRepository::class);
 
-        $this->leadModel->method('getRepository')->willReturn($this->leadRepo);
+        $this->leadModel->method('getRepository')->willReturn($leadRepo);
     }
 
     public function testMergeTimestamps(): void

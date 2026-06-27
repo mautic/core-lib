@@ -36,10 +36,9 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
 
     private MockObject $translator;
 
-    private MockObject $kernel;
-
     private MockObject $validator;
 
+<<<<<<< HEAD
     private MockObject $hasher;
 
     /**
@@ -47,6 +46,8 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $fixtureLoader;
 
+=======
+>>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     private InstallService $installer;
 
     protected function setUp(): void
@@ -58,10 +59,10 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
         $this->pathsHelper          = $this->createMock(PathsHelper::class);
         $this->entityManager        = $this->createMock(EntityManager::class);
         $this->translator           = $this->createMock(TranslatorInterface::class);
-        $this->kernel               = $this->createMock(KernelInterface::class);
+        $kernel                     = $this->createMock(KernelInterface::class);
         $this->validator            = $this->createMock(ValidatorInterface::class);
-        $this->hasher               = $this->createMock(UserPasswordHasher::class);
-        $this->fixtureLoader        = $this->createMock(FixturesLoaderInterface::class);
+        $hasher                     = $this->createMock(UserPasswordHasher::class);
+        $fixtureLoader              = $this->createMock(FixturesLoaderInterface::class);
 
         $this->installer = new InstallService(
             $this->configurator,
@@ -69,10 +70,10 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
             $this->pathsHelper,
             $this->entityManager,
             $this->translator,
-            $this->kernel,
+            $kernel,
             $this->validator,
-            $this->hasher,
-            $this->fixtureLoader
+            $hasher,
+            $fixtureLoader
         );
     }
 

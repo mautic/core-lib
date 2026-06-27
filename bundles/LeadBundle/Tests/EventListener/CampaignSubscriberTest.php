@@ -139,8 +139,6 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
      */
     private $subscriber;
 
-    private FilterOperatorProvider $filterOperatorProvider;
-
     /**
      * @var DoNotContact|MockObject
      */
@@ -156,7 +154,7 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         $mockCampaignModel            = $this->createMock(CampaignModel::class);
         $this->doNotContact           = $this->createMock(DoNotContact::class);
         $mockGroupModel               = $this->createMock(PointGroupModel::class);
-        $this->filterOperatorProvider = new FilterOperatorProvider(
+        $filterOperatorProvider       = new FilterOperatorProvider(
             $this->createMock(EventDispatcherInterface::class),
             $this->createMock(TranslatorInterface::class)
         );
@@ -174,7 +172,7 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
             $mockCoreParametersHelper,
             $this->doNotContact,
             $mockGroupModel,
-            $this->filterOperatorProvider
+            $filterOperatorProvider
         );
     }
 

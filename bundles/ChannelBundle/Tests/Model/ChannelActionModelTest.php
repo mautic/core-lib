@@ -21,8 +21,6 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
 
     private \PHPUnit\Framework\MockObject\MockObject $doNotContactMock;
 
-    private \PHPUnit\Framework\MockObject\MockObject $translatorMock;
-
     private ChannelActionModel $actionModel;
 
     protected function setUp(): void
@@ -33,11 +31,11 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
         $this->contactMock6     = $this->createMock(Lead::class);
         $this->contactModelMock = $this->createMock(LeadModel::class);
         $this->doNotContactMock = $this->createMock(DoNotContact::class);
-        $this->translatorMock   = $this->createMock(TranslatorInterface::class);
+        $translatorMock         = $this->createMock(TranslatorInterface::class);
         $this->actionModel      = new ChannelActionModel(
             $this->contactModelMock,
             $this->doNotContactMock,
-            $this->translatorMock
+            $translatorMock
         );
 
         $this->contactMock5->method('getId')->willReturn(5);

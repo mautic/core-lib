@@ -50,16 +50,6 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $dispatcher;
 
-    /**
-     * @var CoreParametersHelper|MockObject
-     */
-    private MockObject $coreParamtersHelper;
-
-    /**
-     * @var PeakInteractionTimer|MockObject
-     */
-    private MockObject $peakInteractionTimer;
-
     private EventScheduler $scheduler;
 
     /**
@@ -70,14 +60,14 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $this->logger              = new NullLogger();
-        $this->coreParamtersHelper = $this->createMock(CoreParametersHelper::class);
-        $this->coreParamtersHelper->method('getDefaultTimezone')
+        $coreParamtersHelper       = $this->createMock(CoreParametersHelper::class);
+        $coreParamtersHelper->method('getDefaultTimezone')
             ->willReturn('America/New_York');
         $this->eventLogger                = $this->createMock(EventLogger::class);
-        $this->peakInteractionTimer       = $this->createMock(PeakInteractionTimer::class);
-        $this->intervalScheduler          = new Interval($this->logger, $this->coreParamtersHelper);
+        $peakInteractionTimer             = $this->createMock(PeakInteractionTimer::class);
+        $this->intervalScheduler          = new Interval($this->logger, $coreParamtersHelper);
         $this->dateTimeScheduler          = new DateTime($this->logger);
-        $this->optimizedScheduler         = new Optimized($this->peakInteractionTimer);
+        $this->optimizedScheduler         = new Optimized($peakInteractionTimer);
         $this->eventCollector             = $this->createMock(EventCollector::class);
         $this->dispatcher                 = $this->createMock(EventDispatcherInterface::class);
         $this->publishStateService        = $this->createMock(PublishStateService::class);
@@ -89,7 +79,7 @@ class EventSchedulerTest extends \PHPUnit\Framework\TestCase
             $this->optimizedScheduler,
             $this->eventCollector,
             $this->dispatcher,
-            $this->coreParamtersHelper,
+            $coreParamtersHelper,
             $this->createMock(OptimisticLockServiceInterface::class),
             $this->publishStateService
         );

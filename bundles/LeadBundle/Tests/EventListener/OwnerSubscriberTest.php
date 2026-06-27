@@ -76,15 +76,18 @@ class OwnerSubscriberTest extends TestCase
         ],
     ];
 
+<<<<<<< HEAD
     /** @var MockObject&CoreParametersHelper */
     private MockObject $coreParametersHelper;
 
+=======
+>>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     private MailHashHelper $mailHashHelper;
 
     protected function setUp(): void
     {
-        $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
-        $this->mailHashHelper       = new MailHashHelper($this->coreParametersHelper);
+        $coreParametersHelper       = $this->createMock(CoreParametersHelper::class);
+        $this->mailHashHelper       = new MailHashHelper($coreParametersHelper);
     }
 
     public function testOnEmailBuild(): void

@@ -71,6 +71,7 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
 
     private ?string $modifiedBy = null;
 
+<<<<<<< HEAD
     /**
      * @var MockObject|UserRepository
      */
@@ -80,6 +81,10 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
 
     private MockObject $eventDispatcher;
 
+=======
+    private WebhookNotificationSender $webhookNotificationSender;
+
+>>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     protected function setUp(): void
     {
         $this->translatorMock        = $this->createMock(TranslatorInterface::class);
@@ -88,9 +93,9 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
         $this->mailHelperMock        = $this->createMock(MailHelper::class);
         $this->coreParamHelperMock   = $this->createMock(CoreParametersHelper::class);
         $this->webhook               = $this->createMock(Webhook::class);
-        $this->userRepositoryMock    = $this->createMock(UserRepository::class);
+        $userRepositoryMock          = $this->createMock(UserRepository::class);
         $twig                        = $this->createMock(Environment::class);
-        $this->eventDispatcher       = $this->createMock(EventDispatcherInterface::class);
+        $eventDispatcher             = $this->createMock(EventDispatcherInterface::class);
 
         $webhookNotificationEventMock =  $this->createMock(WebhookNotificationEvent::class);
         $webhookNotificationEventMock->method('canSend')->willReturn(true);
@@ -99,7 +104,7 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
             ->method('render')
             ->willReturn($this->details);
 
-        $this->eventDispatcher->method('dispatch')
+        $eventDispatcher->method('dispatch')
             ->willReturn(
                 $webhookNotificationEventMock
             );
@@ -109,8 +114,8 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
             $this->entityManagerMock,
             $this->mailHelperMock,
             $this->coreParamHelperMock,
-            $this->userRepositoryMock,
-            $this->eventDispatcher
+            $userRepositoryMock,
+            $eventDispatcher
         );
     }
 

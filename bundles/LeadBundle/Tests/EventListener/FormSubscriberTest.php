@@ -25,20 +25,26 @@ use Symfony\Component\HttpFoundation\Request;
 class FormSubscriberTest extends \PHPUnit\Framework\TestCase
 {
     /**
+<<<<<<< HEAD
      * @var DoNotContact|(DoNotContact&MockObject)|MockObject
      */
     private MockObject $doNotContact;
 
     /**
+=======
+>>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
      * @var LeadModel|MockObject
      */
     private MockObject $leadModel;
 
+<<<<<<< HEAD
     /**
      * @var PointGroupModel|(PointGroupModel&object&MockObject)|(PointGroupModel&MockObject)|(object&MockObject)|MockObject
      */
     private MockObject $pointGroupModel;
 
+=======
+>>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     private FormSubscriber $subscriber;
 
     /**
@@ -47,36 +53,30 @@ class FormSubscriberTest extends \PHPUnit\Framework\TestCase
     private MockObject $contactTracker;
 
     /**
-     * @var MockObject|LeadFieldRepository
-     */
-    private MockObject $leadFieldRepostory;
-
-    /**
      * @var MockObject|IpLookupHelper
      */
     private MockObject $ipLookupHelper;
 
     private MockObject $submissionEvent;
-    private MockObject $fieldModel;
 
     protected function setUp(): void
     {
         $this->leadModel          = $this->createMock(LeadModel::class);
         $this->contactTracker     = $this->createMock(ContactTracker::class);
         $this->ipLookupHelper     = $this->createMock(IpLookupHelper::class);
-        $this->leadFieldRepostory = $this->createMock(LeadFieldRepository::class);
-        $this->pointGroupModel    = $this->createMock(PointGroupModel::class);
-        $this->doNotContact       = $this->createMock(DoNotContact::class);
+        $leadFieldRepostory       = $this->createMock(LeadFieldRepository::class);
+        $pointGroupModel          = $this->createMock(PointGroupModel::class);
+        $doNotContact             = $this->createMock(DoNotContact::class);
         $this->submissionEvent    = $this->createMock(SubmissionEvent::class);
-        $this->fieldModel         = $this->createMock(FieldModel::class);
+        $fieldModel               = $this->createMock(FieldModel::class);
         $this->subscriber         = new FormSubscriber(
             $this->leadModel,
             $this->contactTracker,
             $this->ipLookupHelper,
-            $this->leadFieldRepostory,
-            $this->pointGroupModel,
-            $this->doNotContact,
-            $this->fieldModel
+            $leadFieldRepostory,
+            $pointGroupModel,
+            $doNotContact,
+            $fieldModel
         );
     }
 

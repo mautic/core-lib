@@ -11,7 +11,6 @@ use Mautic\UserBundle\Model\PasswordStrengthEstimatorModel;
 use Mautic\UserBundle\Security\Authentication\Token\PluginToken;
 use Mautic\UserBundle\Security\Authenticator\Passport\Badge\PasswordStrengthBadge;
 use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
@@ -24,6 +23,7 @@ final class PasswordSubscriberTest extends TestCase
 {
     private PasswordSubscriber $passwordSubscriber;
 
+<<<<<<< HEAD
     private PasswordStrengthEstimatorModel $passwordStrengthEstimatorModel;
 
     /**
@@ -41,17 +41,19 @@ final class PasswordSubscriberTest extends TestCase
      */
     private MockObject $dispatcher;
 
+=======
+>>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     protected function setUp(): void
     {
-        $this->dispatcher                     = $this->createMock(EventDispatcherInterface::class);
-        $this->passwordStrengthEstimatorModel = new PasswordStrengthEstimatorModel($this->dispatcher);
-        $this->passwordSubscriber             = new PasswordSubscriber($this->passwordStrengthEstimatorModel);
-        $this->authenticationEvent            = $this->createMock(AuthenticationEvent::class);
-        $this->pluginToken                    = $this->createMock(PluginToken::class);
+        $dispatcher                           = $this->createMock(EventDispatcherInterface::class);
+        $passwordStrengthEstimatorModel       = new PasswordStrengthEstimatorModel($dispatcher);
+        $this->passwordSubscriber             = new PasswordSubscriber($passwordStrengthEstimatorModel);
+        $authenticationEvent                  = $this->createMock(AuthenticationEvent::class);
+        $pluginToken                          = $this->createMock(PluginToken::class);
 
-        $this->authenticationEvent->expects($this->any())
+        $authenticationEvent->expects($this->any())
             ->method('getToken')
-            ->willReturn($this->pluginToken);
+            ->willReturn($pluginToken);
     }
 
     public function testThatItIsSubscribedToEvents(): void

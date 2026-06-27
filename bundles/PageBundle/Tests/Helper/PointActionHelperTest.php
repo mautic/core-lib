@@ -25,11 +25,14 @@ class PointActionHelperTest extends TestCase
     private MockObject $hitRepository;
 
     /**
+<<<<<<< HEAD
      * @var MockObject|Lead
      */
     private MockObject $lead;
 
     /**
+=======
+>>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
      * @var MockObject|Hit
      */
     private MockObject $eventDetails;
@@ -38,10 +41,10 @@ class PointActionHelperTest extends TestCase
     {
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->hitRepository = $this->createMock(HitRepository::class);
-        $this->lead          = $this->createMock(Lead::class);
+        $lead                = $this->createMock(Lead::class);
         $this->eventDetails  = $this->createMock(Hit::class);
 
-        $this->eventDetails->method('getLead')->willReturn($this->lead);
+        $this->eventDetails->method('getLead')->willReturn($lead);
         $this->entityManager->method('getRepository')->willReturn($this->hitRepository);
     }
 
