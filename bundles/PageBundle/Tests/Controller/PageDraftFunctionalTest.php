@@ -23,9 +23,9 @@ final class PageDraftFunctionalTest extends MauticMysqlTestCase
     {
         $page    = $this->createNewPage();
         $crawler = $this->client->request(Request::METHOD_GET, "/s/pages/edit/{$page->getId()}");
-        Assert::assertSame(0, $crawler->selectButton('Save as Draft')->count());
-        Assert::assertSame(0, $crawler->selectButton('Apply Draft')->count());
-        Assert::assertSame(0, $crawler->selectButton('Discard Draft')->count());
+        Assert::assertCount(0, $crawler->selectButton('Save as Draft'));
+        Assert::assertCount(0, $crawler->selectButton('Apply Draft'));
+        Assert::assertCount(0, $crawler->selectButton('Discard Draft'));
     }
 
     public function testPageDraftConfigured(): void
@@ -33,9 +33,9 @@ final class PageDraftFunctionalTest extends MauticMysqlTestCase
         $page    = $this->createNewPage();
         $crawler = $this->client->request(Request::METHOD_GET, "/s/pages/edit/{$page->getId()}");
 
-        Assert::assertSame(1, $crawler->selectButton('Save as Draft')->count());
-        Assert::assertSame(0, $crawler->selectButton('Apply Draft')->count());
-        Assert::assertSame(0, $crawler->selectButton('Discard Draft')->count());
+        Assert::assertCount(1, $crawler->selectButton('Save as Draft'));
+        Assert::assertCount(0, $crawler->selectButton('Apply Draft'));
+        Assert::assertCount(0, $crawler->selectButton('Discard Draft'));
     }
 
     public function testCheckDraftInList(): void

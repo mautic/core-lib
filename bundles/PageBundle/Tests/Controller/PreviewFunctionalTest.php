@@ -78,7 +78,7 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         // Check for public preview ON.
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/pages/view/'.$pageId);
         $toggleElem = $crawler->filter('i.ri-toggle-fill');
-        self::assertSame(1, $toggleElem->count());
+        self::assertCount(1, $toggleElem);
 
         // Toggle public preview.
         $parameters = [
@@ -92,7 +92,7 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         // Check for public preview OFF.
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/pages/view/'.$pageId);
         $toggleElem = $crawler->filter('i.ri-toggle-line');
-        self::assertSame(1, $toggleElem->count());
+        self::assertCount(1, $toggleElem);
 
         // Create landing page with public preview OFF.
         $page = $this->createPage(null, '', true, false);
@@ -104,7 +104,7 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
 
         // Check for public preview OFF.
         $crawler = $this->client->request(Request::METHOD_GET, '/s/pages/view/'.$pageId);
-        self::assertSame(1, $crawler->filter('i.ri-toggle-line')->count());
+        self::assertCount(1, $crawler->filter('i.ri-toggle-line'));
 
         // Toggle public preview.
         $parameters['id'] = $pageId;
@@ -113,7 +113,7 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         // Check for public preview ON.
         $crawler    = $this->client->request(Request::METHOD_GET, '/s/pages/view/'.$pageId);
         $toggleElem = $crawler->filter('i.ri-toggle-fill');
-        self::assertSame(1, $toggleElem->count());
+        self::assertCount(1, $toggleElem);
     }
 
     public function testPreviewPageWithPublishAndPublicOptions(): void

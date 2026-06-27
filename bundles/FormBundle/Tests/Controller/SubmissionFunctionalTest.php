@@ -890,7 +890,7 @@ final class SubmissionFunctionalTest extends MauticMysqlTestCase
         $contactCompanies = json_decode($clientResponse->getContent(), true);
         $this->assertArrayHasKey('total', $contactCompanies);
         $this->assertArrayHasKey('companies', $contactCompanies);
-        $this->assertSame(1, count($contactCompanies['companies']));
+        $this->assertCount(1, $contactCompanies['companies']);
 
         // Check company details
         $this->assertEquals($expectedData['company_name'], $contactCompanies['companies'][0]['companyname']);

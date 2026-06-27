@@ -330,7 +330,7 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         $response = $this->client->getResponse();
 
         $result = $this->parseReportTable($response->getContent());
-        $this->assertSame(2, count($result));
+        $this->assertCount(2, $result);
     }
 
     public function testUtmTagReportContainsExpression(): void
