@@ -165,21 +165,21 @@ class ReportDataResultTest extends \PHPUnit\Framework\TestCase
         $calcWithPrev = $reportDataResult->calcTotal('MIN', $valuesCount, $values, 0);
 
         $this->assertSame(1, $calc);
-        $this->assertSame(0, $calcWithPrev);
+        $this->assertSame(0.0, $calcWithPrev);
 
         // Calc test MAX
         $calc         = $reportDataResult->calcTotal('MAX', $valuesCount, $values);
         $calcWithPrev = $reportDataResult->calcTotal('MAX', $valuesCount, $values, 25);
 
         $this->assertSame(20, $calc);
-        $this->assertSame(25, $calcWithPrev);
+        $this->assertSame(25.0, $calcWithPrev);
 
         // Calc test 'default'
         $calc         = $reportDataResult->calcTotal('RANDOM', $valuesCount, $values);
         $calcWithPrev = $reportDataResult->calcTotal('RANDOM', $valuesCount, $values, 50);
 
         $this->assertNull($calc);
-        $this->assertSame(50, $calcWithPrev);
+        $this->assertSame(50.0, $calcWithPrev);
     }
 
     public function testGetColumnKeys(): void

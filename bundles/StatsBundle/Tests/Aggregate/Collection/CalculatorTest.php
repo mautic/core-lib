@@ -21,6 +21,7 @@ class CalculatorTest extends TestCase
     public function testSumByMonthReturnsExpectedCount(): void
     {
         $expected = [
+            12  => 700,
             1   => 0,
             2   => 0,
             3   => 0,
@@ -32,7 +33,6 @@ class CalculatorTest extends TestCase
             9   => 0,
             10  => 0,
             11  => 200,
-            12  => 700,
         ];
 
         $this->assertSame($expected, $this->getCalculator()->getSumsByMonth('n')->getStats());

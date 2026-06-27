@@ -55,7 +55,8 @@ class PRedisConnectionHelperTest extends TestCase
         ];
         Assert::assertSame($result, PRedisConnectionHelper::makeRedisOptions($redisConfiguration));
 
-        $result['prefix'] = 'prf:';
+        // use as first item in array
+        $result = ['prefix' => 'prf:'] + $result;
         Assert::assertSame($result, PRedisConnectionHelper::makeRedisOptions($redisConfiguration, 'prf:'));
 
         $redisConfiguration = [

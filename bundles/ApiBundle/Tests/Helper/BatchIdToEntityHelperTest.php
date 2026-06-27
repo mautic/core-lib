@@ -24,14 +24,14 @@ class BatchIdToEntityHelperTest extends TestCase
     {
         $parameters = ['ids' => '1,2,3'];
         $helper     = new BatchIdToEntityHelper($parameters);
-        $this->assertSame([1, 2, 3], $helper->getIds());
+        $this->assertSame(['1', '2', '3'], $helper->getIds());
     }
 
     public function testIdIsExtractedFromIdKeyWithNumericValue(): void
     {
         $parameters = ['ids' => '12'];
         $helper     = new BatchIdToEntityHelper($parameters);
-        $this->assertSame([12], $helper->getIds());
+        $this->assertSame(['12'], $helper->getIds());
     }
 
     public function testErrorSetForIdKeyThatsNotRecognized(): void

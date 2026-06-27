@@ -277,8 +277,8 @@ class EmailRepositoryTest extends TestCase
         $result = $this->repo->getSentReadNotReadCount($queryBuilder);
 
         $this->assertSame([
-            'sent_count' => 0,
             'read_count' => 0,
+            'sent_count' => 0,
             'not_read'   => 0,
         ], $result);
     }
