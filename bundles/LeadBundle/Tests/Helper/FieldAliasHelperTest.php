@@ -27,11 +27,7 @@ class FieldAliasHelperTest extends \PHPUnit\Framework\TestCase
             'lastname',
         ]);
 
-<<<<<<< HEAD
-        $this->fieldModel->method('cleanAlias')->willReturnCallback(fn (): mixed => func_get_args()[0]);
-=======
-        $fieldModel->method('cleanAlias')->willReturnCallback(fn () => func_get_args()[0]);
->>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
+        $fieldModel->method('cleanAlias')->willReturnCallback(fn (): mixed => func_get_args()[0]);
 
         $fieldModel->method('getRepository')->willReturn($fieldRepository);
 

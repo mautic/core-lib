@@ -71,20 +71,8 @@ final class WebhookKillNotificatorTest extends \PHPUnit\Framework\TestCase
 
     private ?string $modifiedBy = null;
 
-<<<<<<< HEAD
-    /**
-     * @var MockObject|UserRepository
-     */
-    private MockObject $userRepositoryMock;
-
     private WebhookNotificationSender $webhookNotificationSender;
 
-    private MockObject $eventDispatcher;
-
-=======
-    private WebhookNotificationSender $webhookNotificationSender;
-
->>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     protected function setUp(): void
     {
         $this->translatorMock        = $this->createMock(TranslatorInterface::class);

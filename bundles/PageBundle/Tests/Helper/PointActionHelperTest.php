@@ -25,14 +25,6 @@ class PointActionHelperTest extends TestCase
     private MockObject $hitRepository;
 
     /**
-<<<<<<< HEAD
-     * @var MockObject|Lead
-     */
-    private MockObject $lead;
-
-    /**
-=======
->>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
      * @var MockObject|Hit
      */
     private MockObject $eventDetails;

@@ -23,7 +23,6 @@ final class PasswordSubscriberTest extends TestCase
 {
     private PasswordSubscriber $passwordSubscriber;
 
-<<<<<<< HEAD
     private PasswordStrengthEstimatorModel $passwordStrengthEstimatorModel;
 
     /**
@@ -41,8 +40,6 @@ final class PasswordSubscriberTest extends TestCase
      */
     private MockObject $dispatcher;
 
-=======
->>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     protected function setUp(): void
     {
         $dispatcher                           = $this->createMock(EventDispatcherInterface::class);

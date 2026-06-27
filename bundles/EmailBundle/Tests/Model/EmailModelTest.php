@@ -213,7 +213,6 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-<<<<<<< HEAD
         $this->ipLookupHelper            = $this->createMock(IpLookupHelper::class);
         $this->themeHelper               = $this->createMock(ThemeHelperInterface::class);
         $this->mailboxHelper             = $this->createMock(Mailbox::class);
@@ -237,7 +236,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->sendToContactModel        = new SendEmailToContact($this->mailHelper, $this->statHelper, $this->dncModel, $this->translator);
         $this->deviceTrackerMock         = $this->createMock(DeviceTracker::class);
         $this->redirectRepositoryMock    = $this->createMock(RedirectRepository::class);
-=======
+
         $this->ipLookupHelper           = $this->createMock(IpLookupHelper::class);
         $this->themeHelper              = $this->createMock(ThemeHelperInterface::class);
         $this->mailboxHelper            = $this->createMock(Mailbox::class);
@@ -261,7 +260,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->sendToContactModel       = new SendEmailToContact($this->mailHelper, $statHelper, $dncModel, $this->translator);
         $this->deviceTrackerMock        = $this->createMock(DeviceTracker::class);
         $this->redirectRepositoryMock   = $this->createMock(RedirectRepository::class);
->>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
+
         // @phpstan-ignore classConstant.deprecatedClass
         $this->cacheStorageHelperMock    = $this->createMock(CacheStorageHelper::class);
         $this->contactTracker            = $this->createMock(ContactTracker::class);

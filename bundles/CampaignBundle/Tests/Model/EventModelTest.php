@@ -23,15 +23,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class EventModelTest extends TestCase
 {
     /**
-<<<<<<< HEAD
-     * @var EntityManagerInterface|MockObject
-     */
-    private MockObject $entityManagerMock;
-
-    /**
-=======
->>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
-     * @var EventRepository|MockObject
+     * @var EventRepository&MockObject
      */
     private MockObject $eventRepositoryMock;
 

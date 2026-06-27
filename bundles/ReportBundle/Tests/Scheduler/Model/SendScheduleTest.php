@@ -35,11 +35,6 @@ class SendScheduleTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $fileHandler;
 
-<<<<<<< HEAD
-    private MockObject $eventDispatcher;
-
-=======
->>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     protected function setUp(): void
     {
         parent::setUp();

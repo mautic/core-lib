@@ -38,16 +38,6 @@ class InstallServiceTest extends \PHPUnit\Framework\TestCase
 
     private MockObject $validator;
 
-<<<<<<< HEAD
-    private MockObject $hasher;
-
-    /**
-     * @var MockObject&FixturesLoaderInterface
-     */
-    private MockObject $fixtureLoader;
-
-=======
->>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     private InstallService $installer;
 
     protected function setUp(): void

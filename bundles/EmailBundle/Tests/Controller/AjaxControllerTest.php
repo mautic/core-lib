@@ -76,6 +76,7 @@ class AjaxControllerTest extends \PHPUnit\Framework\TestCase
             $requestStack,
             $security
         );
+
         $this->controller->setContainer($containerMock);
 
         $parameterBag = $this->createMock(ContainerBagInterface::class);
@@ -83,19 +84,12 @@ class AjaxControllerTest extends \PHPUnit\Framework\TestCase
             ->method('get')
             ->with('kernel.environment')
             ->willReturn('test');
-<<<<<<< HEAD
-        $this->containerMock->expects($this->once())
-            ->method('has')
-            ->with('parameter_bag')
-            ->willReturn(true);
-        $this->containerMock->expects($this->once())
-=======
-        $containerMock->expects(self::once())
+
+        $containerMock->expects($this->once())
             ->method('has')
             ->with('parameter_bag')
             ->willReturn(true);
         $containerMock->expects(self::once())
->>>>>>> 60d468ce74 ([tests] inline setUp properties used just once)
             ->method('get')
             ->with('parameter_bag')
             ->willReturn($parameterBag);

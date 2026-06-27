@@ -76,12 +76,6 @@ class OwnerSubscriberTest extends TestCase
         ],
     ];
 
-<<<<<<< HEAD
-    /** @var MockObject&CoreParametersHelper */
-    private MockObject $coreParametersHelper;
-
-=======
->>>>>>> f71dbbecbb ([tests] inline setUp properties used just once)
     private MailHashHelper $mailHashHelper;
 
     protected function setUp(): void
