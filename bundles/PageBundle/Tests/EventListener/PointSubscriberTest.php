@@ -16,7 +16,7 @@ class PointSubscriberTest extends TestCase
 {
     public function testSubscribedEvents(): void
     {
-        self::assertEquals(
+        self::assertSame(
             [
                 'mautic.point_on_build' => ['onPointBuild', 0],
                 'mautic.page_on_hit'    => ['onPageHit', 0],

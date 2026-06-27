@@ -184,7 +184,7 @@ final class FormFieldCheckboxGroupTypeTest extends TypeTestCase
 
         $errors = $form->getErrors(true);
         $this->assertInstanceOf(FormError::class, $errors[0]);
-        $this->assertEquals('Maximum must be greater than or equal to minimum', $errors[0]->getMessage());
+        $this->assertSame('Maximum must be greater than or equal to minimum', $errors[0]->getMessage());
     }
 
     public function testEmptyRangeSubmission(): void

@@ -114,7 +114,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         );
         $this->client->submit($form);
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 [
                     'id'          => '1',
@@ -138,25 +138,25 @@ class LeadControllerTest extends MauticMysqlTestCase
         $crawler            = $this->client->request(Request::METHOD_GET, '/s/segments');
         $leadListsTableRows = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr");
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals(7, $leadListsTableRows->count());
+        $this->assertSame(7, $leadListsTableRows->count());
 
         $crawler            = $this->client->request(Request::METHOD_GET, '/s/segments?filters=["category:1"]');
         $leadListsTableRows = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr");
-        $this->assertEquals(4, $leadListsTableRows->count());
+        $this->assertSame(4, $leadListsTableRows->count());
         $firstLeadListLinkTest = trim($leadListsTableRows->first()->filterXPath('//td[2]//div//a')->text(null, false));
-        $this->assertEquals('Lead List 1 - Segment Category 1 (lead-list-1)', $firstLeadListLinkTest);
+        $this->assertSame('Lead List 1 - Segment Category 1 (lead-list-1)', $firstLeadListLinkTest);
 
         $crawler            = $this->client->request(Request::METHOD_GET, '/s/segments?filters=["category:2"]');
         $leadListsTableRows = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr");
-        $this->assertEquals(2, $leadListsTableRows->count());
+        $this->assertSame(2, $leadListsTableRows->count());
 
         $crawler            = $this->client->request(Request::METHOD_GET, '/s/segments?filters=["category:2","category:1"]');
         $leadListsTableRows = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr");
-        $this->assertEquals(6, $leadListsTableRows->count());
+        $this->assertSame(6, $leadListsTableRows->count());
 
         $crawler            = $this->client->request(Request::METHOD_GET, '/s/segments?filters=["category:4"]');
         $leadListsTableRows = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr");
-        $this->assertEquals(0, $leadListsTableRows->count());
+        $this->assertSame(0, $leadListsTableRows->count());
     }
 
     public function testContactsAreAddedToThenRemovedFromCampaignsInBatch(): void
@@ -321,7 +321,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts?search=matching.email&name=lead&limit=5');
 
         $leadsTableRows = $crawler->filterXPath("//table[@id='leadTable']//tbody//tr");
-        $this->assertEquals(5, $leadsTableRows->count(), $crawler->html());
+        $this->assertSame(5, $leadsTableRows->count(), $crawler->html());
 
         $payload = [
             'lead_batch_find_replace' => [
@@ -610,7 +610,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts?search=company_id:'.$company->getId());
 
         $leadsTableRows = $crawler->filterXPath("//table[@id='leadTable']//tbody//tr");
-        $this->assertEquals(2, $leadsTableRows->count(), $crawler->html());
+        $this->assertSame(2, $leadsTableRows->count(), $crawler->html());
     }
 
     public function testEmailSendToContactSync(): void
@@ -1029,7 +1029,7 @@ EMAIL;
         $availableOptions = $companySelect->filter('option')->count() - 1;
 
         // Assert that the number of available options is 100 (or your expected limit)
-        Assert::assertEquals(100, $availableOptions, 'The number of available company options should be limited to 100');
+        Assert::assertSame(100, $availableOptions, 'The number of available company options should be limited to 100');
 
         // Create a company that will not be visible initially on the list
         $lastCompany = new Company();
@@ -1285,7 +1285,7 @@ EMAIL;
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts?search=campaign:'.$campaignOne->getId());
         $this->assertResponseIsSuccessful();
         $leadsTableRows = $crawler->filterXPath("//table[@id='leadTable']//tbody//tr");
-        $this->assertEquals(2, $leadsTableRows->count(), 'Should find leadOne and leadThree in Campaign One search.');
+        $this->assertSame(2, $leadsTableRows->count(), 'Should find leadOne and leadThree in Campaign One search.');
         $this->assertStringContainsString($leadOne->getEmail(), $crawler->html());
         $this->assertStringContainsString($leadThree->getEmail(), $crawler->html());
         $this->assertStringNotContainsString($leadTwo->getEmail(), $crawler->html());
@@ -1296,7 +1296,7 @@ EMAIL;
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts?search=campaign:'.$campaignTwo->getId());
         $this->assertResponseIsSuccessful();
         $leadsTableRows = $crawler->filterXPath("//table[@id='leadTable']//tbody//tr");
-        $this->assertEquals(2, $leadsTableRows->count(), 'Should find leadTwo and leadThree in Campaign Two search.');
+        $this->assertSame(2, $leadsTableRows->count(), 'Should find leadTwo and leadThree in Campaign Two search.');
         $this->assertStringContainsString($leadTwo->getEmail(), $crawler->html());
         $this->assertStringContainsString($leadThree->getEmail(), $crawler->html());
         $this->assertStringNotContainsString($leadOne->getEmail(), $crawler->html());
@@ -1321,12 +1321,12 @@ EMAIL;
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts?search=campaign:9999');
         $this->assertResponseIsSuccessful();
         $leadsTableRows = $crawler->filterXPath("//table[@id='leadTable']//tbody//tr");
-        $this->assertEquals(0, $leadsTableRows->count(), 'Should find 0 results for a non-existent campaign ID.');
+        $this->assertSame(0, $leadsTableRows->count(), 'Should find 0 results for a non-existent campaign ID.');
 
         // Scenario 6: Invalid campaign ID format
         $crawler = $this->client->request(Request::METHOD_GET, '/s/contacts?search=campaign:abc');
         $this->assertResponseIsSuccessful();
         $leadsTableRows = $crawler->filterXPath("//table[@id='leadTable']//tbody//tr");
-        $this->assertEquals(0, $leadsTableRows->count(), 'Should find 0 results for an invalid campaign ID format.');
+        $this->assertSame(0, $leadsTableRows->count(), 'Should find 0 results for an invalid campaign ID format.');
     }
 }

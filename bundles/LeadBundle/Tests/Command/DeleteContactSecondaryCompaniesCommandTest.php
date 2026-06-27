@@ -23,18 +23,18 @@ final class DeleteContactSecondaryCompaniesCommandTest extends MauticMysqlTestCa
         $companyLeadRepo  = $this->em->getRepository(CompanyLead::class);
 
         $contactCompanies = $companyLeadRepo->getCompaniesByLeadId($contact->getId());
-        self::assertEquals(2, count($contactCompanies));
+        self::assertSame(2, count($contactCompanies));
 
         $this->testSymfonyCommand(DeleteContactSecondaryCompaniesCommand::NAME);
 
         $contactCompanies = $companyLeadRepo->getCompaniesByLeadId($contact->getId());
-        self::assertEquals(2, count($contactCompanies));
+        self::assertSame(2, count($contactCompanies));
 
         $this->setUpSymfony(['contact_allow_multiple_companies' => 0]);
         $this->testSymfonyCommand(DeleteContactSecondaryCompaniesCommand::NAME);
 
         $contactCompanies = $companyLeadRepo->getCompaniesByLeadId($contact->getId());
-        self::assertEquals(1, count($contactCompanies));
+        self::assertSame(1, count($contactCompanies));
     }
 
     /**

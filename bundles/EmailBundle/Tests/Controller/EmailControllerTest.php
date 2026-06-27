@@ -178,7 +178,7 @@ class EmailControllerTest extends TestCase
             ->willReturn($this->sessionMock);
         $this->requestStack->push($request);
         $response = $this->controller->sendAction($request, 5);
-        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertSame(302, $response->getStatusCode());
     }
 
     public function testSendActionWhenEntityFoundButNotPublished(): void
@@ -215,7 +215,7 @@ class EmailControllerTest extends TestCase
             ->willReturn($this->sessionMock);
         $this->requestStack->push($request);
         $response = $this->controller->sendAction($request, 5);
-        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertSame(302, $response->getStatusCode());
     }
 
     public function testThatExampleEmailsHaveTestStringInTheirSubject(): void

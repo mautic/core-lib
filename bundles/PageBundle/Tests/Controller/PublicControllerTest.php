@@ -97,34 +97,34 @@ class PublicControllerTest extends TestCase
         // C = 25%
 
         // A = 0/50; B = 0/25; C = 0/25
-        $this->assertEquals('pageA', $this->getVariantContent(0, 0, 0));
+        $this->assertSame('pageA', $this->getVariantContent(0, 0, 0));
 
         // A = 100/50; B = 0/25; C = 0/25
-        $this->assertEquals('pageB', $this->getVariantContent(1, 0, 0));
+        $this->assertSame('pageB', $this->getVariantContent(1, 0, 0));
 
         // A = 50/50; B = 50/25; C = 0/25;
-        $this->assertEquals('pageC', $this->getVariantContent(1, 1, 0));
+        $this->assertSame('pageC', $this->getVariantContent(1, 1, 0));
 
         // A = 33/50; B = 33/25; C = 33/25;
-        $this->assertEquals('pageA', $this->getVariantContent(1, 1, 1));
+        $this->assertSame('pageA', $this->getVariantContent(1, 1, 1));
 
         // A = 66/50; B = 33/25; C = 0/25
-        $this->assertEquals('pageC', $this->getVariantContent(2, 1, 0));
+        $this->assertSame('pageC', $this->getVariantContent(2, 1, 0));
 
         // A = 50/50; B = 25/25; C = 25/25
-        $this->assertEquals('pageA', $this->getVariantContent(2, 1, 1));
+        $this->assertSame('pageA', $this->getVariantContent(2, 1, 1));
 
         // A = 33/50; B = 66/50; C = 0/25
-        $this->assertEquals('pageC', $this->getVariantContent(1, 2, 0));
+        $this->assertSame('pageC', $this->getVariantContent(1, 2, 0));
 
         // A = 25/50; B = 50/50; C = 25/25
-        $this->assertEquals('pageA', $this->getVariantContent(1, 2, 1));
+        $this->assertSame('pageA', $this->getVariantContent(1, 2, 1));
 
         // A = 55/50; B = 18/25; C = 27/25
-        $this->assertEquals('pageB', $this->getVariantContent(6, 2, 3));
+        $this->assertSame('pageB', $this->getVariantContent(6, 2, 3));
 
         // A = 50/50; B = 25/25; C = 25/25
-        $this->assertEquals('pageA', $this->getVariantContent(6, 3, 3));
+        $this->assertSame('pageA', $this->getVariantContent(6, 3, 3));
     }
 
     private function getVariantContent(int $aCount, int $bCount, int $cCount): string

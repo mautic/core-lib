@@ -134,7 +134,7 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
         $result = $this->helper->toText($now);
 
         // Assertions
-        $this->assertEquals('Today', $result);
+        $this->assertSame('Today', $result);
         $this->assertStringStartsWith('Today', $result);
         $this->assertStringEndsWith('Today', $result);
     }
@@ -153,27 +153,27 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
 
         // Test "just now"
         $now = new \DateTime('now', new \DateTimeZone('UTC'));
-        $this->assertEquals('just now', $this->helper->toHumanized($now));
+        $this->assertSame('just now', $this->helper->toHumanized($now));
 
         // Test minutes ago
         $fiveMinutesAgo = $now->modify('-5 minutes');
-        $this->assertEquals('5 minute(s) ago', $this->helper->toHumanized($fiveMinutesAgo));
+        $this->assertSame('5 minute(s) ago', $this->helper->toHumanized($fiveMinutesAgo));
 
         // Test hours ago
         $twoHoursAgo = $now->modify('-2 hours');
-        $this->assertEquals('2 hour(s) ago', $this->helper->toHumanized($twoHoursAgo));
+        $this->assertSame('2 hour(s) ago', $this->helper->toHumanized($twoHoursAgo));
 
         // Test days ago
         $threeDaysAgo = $now->modify('-3 days');
-        $this->assertEquals('3 day(s) ago', $this->helper->toHumanized($threeDaysAgo));
+        $this->assertSame('3 day(s) ago', $this->helper->toHumanized($threeDaysAgo));
 
         // Test months ago
         $fourMonthsAgo = $now->modify('-4 months');
-        $this->assertEquals('4 month(s) ago', $this->helper->toHumanized($fourMonthsAgo), print_r($fourMonthsAgo, true));
+        $this->assertSame('4 month(s) ago', $this->helper->toHumanized($fourMonthsAgo), print_r($fourMonthsAgo, true));
 
         // Test years ago
         $oneYearAgo = $now->modify('-1 year');
-        $this->assertEquals('1 year(s) ago', $this->helper->toHumanized($oneYearAgo));
+        $this->assertSame('1 year(s) ago', $this->helper->toHumanized($oneYearAgo));
     }
 
     public function testToTextShortWithToday(): void
@@ -193,7 +193,7 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
         $now    = new \DateTime('now', new \DateTimeZone('UTC'));
         $result = $this->helper->toTextShort($now);
 
-        $this->assertEquals('Today', $result);
+        $this->assertSame('Today', $result);
     }
 
     public function testToTextShortWithOlderDate(): void
@@ -224,7 +224,7 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
     public function testToTextShortWithEmptyDateTime(): void
     {
         $result = $this->helper->toTextShort('');
-        $this->assertEquals('', $result);
+        $this->assertSame('', $result);
     }
 
     private function setDefaultLocalTimezone(string $timezone): void

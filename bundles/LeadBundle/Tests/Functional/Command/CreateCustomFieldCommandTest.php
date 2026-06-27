@@ -53,7 +53,7 @@ class CreateCustomFieldCommandTest extends MauticMysqlTestCase
             '--id'   => $leadField->getId(),
         ]);
 
-        self::assertEquals(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
+        self::assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
 
         $leadTableName = $this->em->getClassMetadata(Lead::class)->getTableName();
         $columnsSchema = $this->em->getConnection()->createSchemaManager()->listTableColumns($leadTableName);
@@ -104,7 +104,7 @@ class CreateCustomFieldCommandTest extends MauticMysqlTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
 
-        self::assertEquals(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
+        self::assertSame(0, $commandTester->getStatusCode(), $commandTester->getDisplay());
 
         $leadTableName = $this->em->getClassMetadata(Lead::class)->getTableName();
         $columnsSchema = $this->em->getConnection()->createSchemaManager()->listTableColumns($leadTableName);

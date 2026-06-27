@@ -56,7 +56,7 @@ class PRedisConnectionHelperTest extends TestCase
         Assert::assertSame($result, PRedisConnectionHelper::makeRedisOptions($redisConfiguration));
 
         $result['prefix'] = 'prf:';
-        Assert::assertEquals($result, PRedisConnectionHelper::makeRedisOptions($redisConfiguration, 'prf:'));
+        Assert::assertSame($result, PRedisConnectionHelper::makeRedisOptions($redisConfiguration, 'prf:'));
 
         $redisConfiguration = [
             'password' => 'secretpass',

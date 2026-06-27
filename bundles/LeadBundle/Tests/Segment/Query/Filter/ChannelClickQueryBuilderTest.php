@@ -59,7 +59,7 @@ class ChannelClickQueryBuilderTest extends TestCase
 
     public function testGetServiceId(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             'mautic.lead.query.builder.channel_click.value',
             $this->queryBuilder::getServiceId()
         );

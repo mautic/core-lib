@@ -669,7 +669,7 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
         // Check segment count UI for no contacts.
         $crawler            = $this->client->request(Request::METHOD_GET, '/s/segments');
         $leadListsTableRows = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr");
-        $this->assertEquals(2, $leadListsTableRows->count());
+        $this->assertSame(2, $leadListsTableRows->count());
 
         // Find rows by segment name to avoid relying on table order
         $rowWithFilters    = null;
@@ -689,11 +689,11 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
         // Lead List 1 (with filters) should have the filter icon
         $filterIconCount = $rowWithFilters->filterXPath('.//td[2]//div//i[@class="ri-fw ri-filter-2-fill fs-14"]')->count();
-        $this->assertEquals(1, $filterIconCount);
+        $this->assertSame(1, $filterIconCount);
 
         // Lead List 2 (without filters) should NOT have the filter icon
         $filterIconCount = $rowWithoutFilters->filterXPath('.//td[2]//div//i[@class="ri-fw ri-filter-2-fill fs-14"]')->count();
-        $this->assertEquals(0, $filterIconCount);
+        $this->assertSame(0, $filterIconCount);
     }
 
     public function testUnpublishedSegmentDoesNotShowRebuildingLabel(): void
@@ -755,15 +755,15 @@ final class ListControllerFunctionalTest extends MauticMysqlTestCase
 
         $warningSegmentRow = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr[contains(., 'TEST-Warning-Segment')]");
         $warningIcon       = $warningSegmentRow->filterXPath('.//i[@class="text-danger ri-error-warning-line fs-14"]');
-        $this->assertEquals(1, $warningIcon->count());
+        $this->assertSame(1, $warningIcon->count());
 
         $freshSegmentRow = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr[contains(., 'TEST-Fresh-Segment')]");
         $warningIcon     = $freshSegmentRow->filterXPath('.//i[@class="text-danger ri-error-warning-line fs-14"]');
-        $this->assertEquals(0, $warningIcon->count());
+        $this->assertSame(0, $warningIcon->count());
 
         $unpublishedSegmentRow = $crawler->filterXPath("//table[@id='leadListTable']//tbody//tr[contains(., 'TEST-Unpublished-Segment')]");
         $warningIcon           = $unpublishedSegmentRow->filterXPath('.//i[@class="text-danger ri-error-warning-line fs-14"]');
-        $this->assertEquals(0, $warningIcon->count());
+        $this->assertSame(0, $warningIcon->count());
     }
 
     public function testBatchDeleteWithEmptyMembership(): void

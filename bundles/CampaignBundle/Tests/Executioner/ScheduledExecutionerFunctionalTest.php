@@ -185,7 +185,7 @@ final class ScheduledExecutionerFunctionalTest extends MauticMysqlTestCase
 
         $totalEvaluated = $counter1->getTotalEvaluated() + $counter2->getTotalEvaluated();
 
-        $this->assertEquals(2, $totalEvaluated, 'Both events should be evaluated');
+        $this->assertSame(2, $totalEvaluated, 'Both events should be evaluated');
 
         // After execution, reload the logs from database to see the updated state
         $log1 = $this->em->find(LeadEventLog::class, $log1->getId());

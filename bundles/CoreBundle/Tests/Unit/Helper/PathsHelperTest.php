@@ -49,57 +49,57 @@ class PathsHelperTest extends TestCase
 
     public function testGetLocalConfigFile(): void
     {
-        $this->assertEquals(__DIR__.'/resource/paths/config/local.php', realpath($this->helper->getLocalConfigurationFile()));
+        $this->assertSame(__DIR__.'/resource/paths/config/local.php', realpath($this->helper->getLocalConfigurationFile()));
     }
 
     public function testGetCachePath(): void
     {
-        $this->assertEquals($this->cacheDir, $this->helper->getCachePath());
+        $this->assertSame($this->cacheDir, $this->helper->getCachePath());
     }
 
     public function testGetRootPath(): void
     {
-        $this->assertEquals(__DIR__.'/resource/paths', $this->helper->getRootPath());
+        $this->assertSame(__DIR__.'/resource/paths', $this->helper->getRootPath());
     }
 
     public function testGetTemporaryPath(): void
     {
-        $this->assertEquals(__DIR__.'/resource/paths/tmp', $this->helper->getTemporaryPath());
+        $this->assertSame(__DIR__.'/resource/paths/tmp', $this->helper->getTemporaryPath());
     }
 
     public function testGetLogsPath(): void
     {
-        $this->assertEquals($this->logsDir, $this->helper->getLogsPath());
+        $this->assertSame($this->logsDir, $this->helper->getLogsPath());
     }
 
     public function testGetImagesPath(): void
     {
-        $this->assertEquals(__DIR__.'/resource/paths/media/images', $this->helper->getImagePath());
+        $this->assertSame(__DIR__.'/resource/paths/media/images', $this->helper->getImagePath());
     }
 
     public function testGetTranslationsPath(): void
     {
-        $this->assertEquals(__DIR__.'/resource/paths/translations', $this->helper->getTranslationsPath());
+        $this->assertSame(__DIR__.'/resource/paths/translations', $this->helper->getTranslationsPath());
     }
 
     public function testGetThemesPath(): void
     {
-        $this->assertEquals(__DIR__.'/resource/paths/themes', $this->helper->getThemesPath());
+        $this->assertSame(__DIR__.'/resource/paths/themes', $this->helper->getThemesPath());
     }
 
     public function testGetAssetsPath(): void
     {
-        $this->assertEquals(__DIR__.'/resource/paths/media', $this->helper->getAssetsPath());
+        $this->assertSame(__DIR__.'/resource/paths/media', $this->helper->getAssetsPath());
     }
 
     public function testGetCoreBundlesPath(): void
     {
-        $this->assertEquals(__DIR__.'/resource/paths/app/bundles', $this->helper->getCoreBundlesPath());
+        $this->assertSame(__DIR__.'/resource/paths/app/bundles', $this->helper->getCoreBundlesPath());
     }
 
     public function testGetPluginsPath(): void
     {
-        $this->assertEquals(__DIR__.'/resource/paths/plugins', $this->helper->getPluginsPath());
+        $this->assertSame(__DIR__.'/resource/paths/plugins', $this->helper->getPluginsPath());
     }
 
     public function testGetImportCampaignsPath(): void
@@ -121,7 +121,7 @@ class PathsHelperTest extends TestCase
 
         $helper = new PathsHelper($this->userHelper, $this->coreParametersHelper, $this->cacheDir, $this->logsDir, $this->rootDir);
 
-        $this->assertEquals($campaignImportPath, $helper->getImportCampaignsPath());
+        $this->assertSame($campaignImportPath, $helper->getImportCampaignsPath());
     }
 
     public function testTempDirectoryIsCreatedIfItDoesNotExist(): void

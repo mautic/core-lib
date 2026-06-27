@@ -230,7 +230,7 @@ class MatchFilterForLeadTraitTest extends TestCase
             'date' => $value,
         ];
 
-        $this->assertEquals($expect, $this->matchFilterForLeadTrait->match($filters, $lead));
+        $this->assertSame($expect, $this->matchFilterForLeadTrait->match($filters, $lead));
     }
 
     /** @return iterable<array{0: ?string, 1: string, 2: bool}> */
