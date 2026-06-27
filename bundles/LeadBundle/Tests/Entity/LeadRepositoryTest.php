@@ -144,11 +144,11 @@ class LeadRepositoryTest extends \PHPUnit\Framework\TestCase
         ];
 
         $query = $this->createMock(AbstractQuery::class);
-        $query->expects(self::once())
+        $query->expects($this->once())
             ->method('setParameter')
             ->with('emails', $emails, ArrayParameterType::STRING)
             ->willReturn($query);
-        $query->expects(self::once())
+        $query->expects($this->once())
             ->method('getArrayResult')
             ->willReturn([
                 0 => [
@@ -159,7 +159,7 @@ class LeadRepositoryTest extends \PHPUnit\Framework\TestCase
                 ],
             ]);
 
-        $this->entityManager->expects(self::once())
+        $this->entityManager->expects($this->once())
             ->method('createQuery')
             ->willReturn($query);
 

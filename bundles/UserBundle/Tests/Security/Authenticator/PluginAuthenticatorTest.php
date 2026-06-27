@@ -224,7 +224,7 @@ class PluginAuthenticatorTest extends TestCase
         );
 
         $tokenPermissions = $this->createMock(TokenPermissions::class);
-        $tokenPermissions->expects(self::once())
+        $tokenPermissions->expects($this->once())
             ->method('setActivePermissionsOnAuthToken')
             ->with()
             ->willReturn($passportUser);
@@ -251,19 +251,19 @@ class PluginAuthenticatorTest extends TestCase
         $token        = new PluginToken(null);
 
         $authenticationHandler = $this->createMock(AuthenticationHandler::class);
-        $authenticationHandler->expects(self::once())
+        $authenticationHandler->expects($this->once())
             ->method('onAuthenticationSuccess')
             ->with($request, $token)
             ->willReturn($response);
 
         $session = $this->createMock(SessionInterface::class);
-        $session->expects(self::once())
+        $session->expects($this->once())
             ->method('remove')
             ->with(SecurityRequestAttributes::AUTHENTICATION_ERROR);
         $request->setSession($session);
 
         $dispatcher = $this->createMock(EventDispatcherInterface::class);
-        $dispatcher->expects(self::once())
+        $dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
                 new InteractiveLoginEvent($request, $token),
@@ -293,7 +293,7 @@ class PluginAuthenticatorTest extends TestCase
         $exception    = $this->createMock(AuthenticationException::class);
 
         $authenticationHandler = $this->createMock(AuthenticationHandler::class);
-        $authenticationHandler->expects(self::once())
+        $authenticationHandler->expects($this->once())
             ->method('onAuthenticationFailure')
             ->with($request, $exception)
             ->willReturn($response);

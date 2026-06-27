@@ -173,7 +173,7 @@ class EmailControllerTest extends TestCase
             ->method('isPublished');
 
         $request = $this->createMock(Request::class);
-        $request->expects(self::once())
+        $request->expects($this->once())
             ->method('getSession')
             ->willReturn($this->sessionMock);
         $this->requestStack->push($request);
@@ -210,7 +210,7 @@ class EmailControllerTest extends TestCase
             ->method('getEmailType');
 
         $request = $this->createMock(Request::class);
-        $request->expects(self::once())
+        $request->expects($this->once())
             ->method('getSession')
             ->willReturn($this->sessionMock);
         $this->requestStack->push($request);
@@ -281,7 +281,7 @@ class EmailControllerTest extends TestCase
     public function testWinnerActionForDispatchManualWinnerEvent(): void
     {
         $request = $this->createMock(Request::class);
-        $request->expects(self::once())
+        $request->expects($this->once())
             ->method('getSession')
             ->willReturn($this->sessionMock);
 
@@ -298,7 +298,7 @@ class EmailControllerTest extends TestCase
             ->with('email:emails:editown', 'email:emails:editother', null)
             ->willReturn(true);
 
-        $request->expects(self::once())
+        $request->expects($this->once())
             ->method('getMethod')
             ->willReturn(Request::METHOD_POST);
 

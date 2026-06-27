@@ -39,7 +39,7 @@ class CreateCustomFieldCommandTest extends MauticMysqlTestCase
         $expectedUserId          = 1;
         $customFieldNotification = self::createMock(CustomFieldNotification::class);
         $customFieldNotification
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('customFieldWasCreated')
             ->with(self::isInstanceOf(LeadField::class), self::equalTo($expectedUserId));
         $kernel->getContainer()->set('mautic.lead.field.notification.custom_field', $customFieldNotification);

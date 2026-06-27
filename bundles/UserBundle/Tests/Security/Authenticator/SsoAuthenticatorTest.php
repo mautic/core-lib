@@ -105,7 +105,7 @@ class SsoAuthenticatorTest extends TestCase
         $request->server->set('REQUEST_METHOD', Request::METHOD_POST);
         $request->request->set('integration', 'integration');
 
-        $httpUtils->expects(self::once())
+        $httpUtils->expects($this->once())
             ->method('checkRequestPath')
             ->with($request, $path)
             ->willReturn($expected);
@@ -147,7 +147,7 @@ class SsoAuthenticatorTest extends TestCase
 
         $request->headers->set('CONTENT_TYPE', $mimeType);
 
-        $httpUtils->expects(self::once())
+        $httpUtils->expects($this->once())
             ->method('checkRequestPath')
             ->with($request, $path)
             ->willReturn(true);
@@ -196,7 +196,7 @@ class SsoAuthenticatorTest extends TestCase
             }
         }
 
-        $httpUtils->expects(self::once())
+        $httpUtils->expects($this->once())
             ->method('checkRequestPath')
             ->with($request, $path)
             ->willReturn(true);
@@ -228,7 +228,7 @@ class SsoAuthenticatorTest extends TestCase
         $integrationHelper = $this->createMock(IntegrationHelper::class);
         $dispatcher        = $this->createMock(EventDispatcherInterface::class);
         $session           = $this->createMock(SessionInterface::class);
-        $session->expects(self::once())
+        $session->expects($this->once())
             ->method('set')
             ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
@@ -299,22 +299,22 @@ class SsoAuthenticatorTest extends TestCase
         $integrationHelper = $this->createMock(IntegrationHelper::class);
         $dispatcher        = $this->createMock(EventDispatcherInterface::class);
         $session           = $this->createMock(SessionInterface::class);
-        $session->expects(self::once())
+        $session->expects($this->once())
             ->method('set')
             ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         $integrations = [$this->createMock(AbstractSsoServiceIntegration::class)];
-        $integrationHelper->expects(self::once())
+        $integrationHelper->expects($this->once())
             ->method('getIntegrationObjects')
             ->with($integration, ['sso_form'], false, null, true)
             ->willReturn($integrations);
 
-        $userProvider->expects(self::once())
+        $userProvider->expects($this->once())
             ->method('loadUserByIdentifier')
             ->with($username)
             ->willThrowException(new UserNotFoundException());
 
-        $dispatcher->expects(self::once())
+        $dispatcher->expects($this->once())
             ->method('hasListeners')
             ->with(UserEvents::USER_FORM_AUTHENTICATION)
             ->willReturn(false);
@@ -361,26 +361,26 @@ class SsoAuthenticatorTest extends TestCase
         $integrationHelper = $this->createMock(IntegrationHelper::class);
         $dispatcher        = $this->createMock(EventDispatcherInterface::class);
         $session           = $this->createMock(SessionInterface::class);
-        $session->expects(self::once())
+        $session->expects($this->once())
             ->method('set')
             ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         $integrations = [$this->createMock(AbstractSsoServiceIntegration::class)];
-        $integrationHelper->expects(self::once())
+        $integrationHelper->expects($this->once())
             ->method('getIntegrationObjects')
             ->with($integration, ['sso_form'], false, null, true)
             ->willReturn($integrations);
 
         $user = $this->createMock(User::class);
-        $user->expects(self::once())
+        $user->expects($this->once())
             ->method('getRoles')
             ->willReturn([]);
-        $userProvider->expects(self::once())
+        $userProvider->expects($this->once())
             ->method('loadUserByIdentifier')
             ->with($username)
             ->willReturn($user);
 
-        $dispatcher->expects(self::once())
+        $dispatcher->expects($this->once())
             ->method('hasListeners')
             ->with(UserEvents::USER_FORM_AUTHENTICATION)
             ->willReturn(false);
@@ -426,21 +426,21 @@ class SsoAuthenticatorTest extends TestCase
         $integrationHelper = $this->createMock(IntegrationHelper::class);
         $dispatcher        = $this->createMock(EventDispatcherInterface::class);
         $session           = $this->createMock(SessionInterface::class);
-        $session->expects(self::once())
+        $session->expects($this->once())
             ->method('set')
             ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         $integrations = [$this->createMock(AbstractSsoServiceIntegration::class)];
-        $integrationHelper->expects(self::once())
+        $integrationHelper->expects($this->once())
             ->method('getIntegrationObjects')
             ->with($integration, ['sso_form'], false, null, true)
             ->willReturn($integrations);
 
         $user = $this->createMock(User::class);
-        $user->expects(self::once())
+        $user->expects($this->once())
             ->method('getRoles')
             ->willReturn($userRoles);
-        $userProvider->expects(self::once())
+        $userProvider->expects($this->once())
             ->method('loadUserByIdentifier')
             ->with($username)
             ->willReturn($user);
@@ -474,11 +474,11 @@ class SsoAuthenticatorTest extends TestCase
         $returnEvent->setFailedAuthenticationMessage($failedMessage);
         $returnEvent->setIsFailedAuthentication();
 
-        $dispatcher->expects(self::once())
+        $dispatcher->expects($this->once())
             ->method('hasListeners')
             ->with(UserEvents::USER_FORM_AUTHENTICATION)
             ->willReturn(true);
-        $dispatcher->expects(self::once())
+        $dispatcher->expects($this->once())
             ->method('dispatch')
             ->with($callEvent, UserEvents::USER_FORM_AUTHENTICATION)
             ->willReturn($returnEvent);
@@ -519,18 +519,18 @@ class SsoAuthenticatorTest extends TestCase
         $integrationHelper = $this->createMock(IntegrationHelper::class);
         $dispatcher        = $this->createMock(EventDispatcherInterface::class);
         $session           = $this->createMock(SessionInterface::class);
-        $session->expects(self::once())
+        $session->expects($this->once())
             ->method('set')
             ->with(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         $integrations = [$this->createMock(AbstractSsoServiceIntegration::class)];
-        $integrationHelper->expects(self::once())
+        $integrationHelper->expects($this->once())
             ->method('getIntegrationObjects')
             ->with($integration, ['sso_form'], false, null, true)
             ->willReturn($integrations);
 
         $user = $this->createMock(User::class);
-        $userProvider->expects(self::once())
+        $userProvider->expects($this->once())
             ->method('loadUserByIdentifier')
             ->with($username)
             ->willThrowException(new UserNotFoundException());
@@ -563,11 +563,11 @@ class SsoAuthenticatorTest extends TestCase
         $returnEvent = clone $callEvent;
         $returnEvent->setIsAuthenticated($integration, $user, false);
 
-        $dispatcher->expects(self::once())
+        $dispatcher->expects($this->once())
             ->method('hasListeners')
             ->with(UserEvents::USER_FORM_AUTHENTICATION)
             ->willReturn(true);
-        $dispatcher->expects(self::once())
+        $dispatcher->expects($this->once())
             ->method('dispatch')
             ->with($callEvent, UserEvents::USER_FORM_AUTHENTICATION)
             ->willReturn($returnEvent);
