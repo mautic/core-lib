@@ -3,6 +3,7 @@
 namespace Mautic\CampaignBundle\Executioner\Logger;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Mautic\CampaignBundle\Entity\Event;
 use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CampaignBundle\Entity\LeadEventLogRepository;
@@ -17,9 +18,15 @@ use Mautic\LeadBundle\Tracker\ContactTracker;
 
 class EventLogger
 {
-    private readonly ArrayCollection $persistQueue;
+    /**
+     * @var Collection<int, LeadEventLog>
+     */
+    private readonly Collection $persistQueue;
 
-    private readonly ArrayCollection $logs;
+    /**
+     * @var Collection<int, LeadEventLog>
+     */
+    private readonly Collection $logs;
 
     private array $contactRotations = [];
 
@@ -199,7 +206,6 @@ class EventLogger
         $this->leadEventLogRepository->saveEntities($this->persistQueue->getValues());
 
         // Push them into the logs ArrayCollection to be used later.
-        /** @var LeadEventLog $log */
         foreach ($this->persistQueue as $log) {
             $this->logs->set($log->getId(), $log);
         }
