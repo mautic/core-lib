@@ -3,6 +3,7 @@
 namespace Mautic\CoreBundle\Tests\Unit\Twig\Helper;
 
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Test\ReflectionHelper;
 use Mautic\CoreBundle\Twig\Helper\DateHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -118,8 +119,7 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
             ->willReturn($now);
 
         // Inject the mock DateTimeHelper into DateHelper
-        $reflectionProperty = new \ReflectionProperty(DateHelper::class, 'helper');
-        $reflectionProperty->setValue($this->helper, $dateTimeHelperMock);
+        ReflectionHelper::setValue($this->helper, 'helper', $dateTimeHelperMock);
 
         $result = $this->helper->toText($now);
 
@@ -177,8 +177,7 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
             ->willReturn('today');
 
         // Inject the mock DateTimeHelper into DateHelper
-        $reflectionProperty = new \ReflectionProperty(DateHelper::class, 'helper');
-        $reflectionProperty->setValue($this->helper, $dateTimeHelperMock);
+        ReflectionHelper::setValue($this->helper, 'helper', $dateTimeHelperMock);
 
         $now    = new \DateTime('now', new \DateTimeZone('UTC'));
         $result = $this->helper->toTextShort($now);
@@ -200,8 +199,7 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
             ->willReturn('December 31, 2023');
 
         // Inject the mock DateTimeHelper into DateHelper
-        $reflectionProperty = new \ReflectionProperty(DateHelper::class, 'helper');
-        $reflectionProperty->setValue($this->helper, $dateTimeHelperMock);
+        ReflectionHelper::setValue($this->helper, 'helper', $dateTimeHelperMock);
 
         $olderDate = '2023-12-31 23:59:59';
         $result    = $this->helper->toTextShort($olderDate, 'UTC', 'Y-m-d H:i:s');
@@ -222,8 +220,6 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
         $reflectedClass     = new \ReflectionClass($this->helper);
         $reflectedProperty  = $reflectedClass->getProperty('helper');
         $dateTimeHelper     = $reflectedProperty->getValue($this->helper);
-        $reflectedClass     = new \ReflectionClass($dateTimeHelper);
-        $reflectedProperty2 = $reflectedClass->getProperty('defaultLocalTimezone');
-        $reflectedProperty2->setValue($dateTimeHelper, $timezone);
+        ReflectionHelper::setValue($dateTimeHelper, 'defaultLocalTimezone', $timezone);
     }
 }

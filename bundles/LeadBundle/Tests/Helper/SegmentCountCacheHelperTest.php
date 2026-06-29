@@ -6,6 +6,7 @@ namespace Mautic\LeadBundle\Tests\Helper;
 
 use Mautic\CacheBundle\Cache\CacheProviderInterface;
 use Mautic\CoreBundle\Helper\CoreParametersHelper;
+use Mautic\CoreBundle\Test\ReflectionHelper;
 use Mautic\LeadBundle\Helper\SegmentCountCacheHelper;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -37,14 +38,9 @@ class SegmentCountCacheHelperTest extends TestCase
     {
         $item = (new \ReflectionClass(CacheItem::class))->newInstanceWithoutConstructor();
 
-        $keyProperty = new \ReflectionProperty(CacheItem::class, 'key');
-        $keyProperty->setValue($item, $key);
-
-        $valueProperty = new \ReflectionProperty(CacheItem::class, 'value');
-        $valueProperty->setValue($item, $value);
-
-        $isHitProperty = new \ReflectionProperty(CacheItem::class, 'isHit');
-        $isHitProperty->setValue($item, $isHit);
+        ReflectionHelper::setValue($item, 'key', $key);
+        ReflectionHelper::setValue($item, 'value', $value);
+        ReflectionHelper::setValue($item, 'isHit', $isHit);
 
         return $item;
     }
