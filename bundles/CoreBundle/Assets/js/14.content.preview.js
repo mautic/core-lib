@@ -6,9 +6,39 @@ Mautic.contentPreviewUrlGenerator = {
     urlBase : 'email/preview',
     lastUsedObjectId : false,
     contactId: false,
+    previewFrameBaseWidth : 640,
+    previewFrameMinZoom : 0.35,
+    previewFrameMaxZoom : 0.75,
 
     init() {
         this.lastUsedObjectId = mQuery('#content_preview_settings_object_id').val();
+        this.resizePreviewFrame();
+        mQuery(window)
+            .off('resize.contentPreviewFrame')
+            .on('resize.contentPreviewFrame', () => {
+                this.resizePreviewFrame();
+            });
+    },
+
+    resizePreviewFrame() {
+        const previewFrame = mQuery('#content_preview_frame');
+
+        if (!previewFrame.length) {
+            return;
+        }
+
+        const previewWidth = previewFrame.parent().width();
+
+        if (!previewWidth) {
+            return;
+        }
+
+        const zoom = Math.min(
+            this.previewFrameMaxZoom,
+            Math.max(this.previewFrameMinZoom, previewWidth / this.previewFrameBaseWidth)
+        );
+
+        previewFrame.css('zoom', zoom);
     },
 
     /**
@@ -91,6 +121,7 @@ Mautic.contentPreviewUrlGenerator = {
         const previewFrame = mQuery('#content_preview_frame');
         if (previewFrame.length) {
             previewFrame.attr('src', previewUrl);
+            this.resizePreviewFrame();
         }
     }
 }
