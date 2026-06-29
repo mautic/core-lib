@@ -98,7 +98,7 @@ class DetermineWinnerSubscriberTest extends TestCase
             ->method('getTranslationChildren')
             ->willReturn($transChildren);
 
-        $parentMock->expects(self::once())
+        $parentMock->expects($this->once())
             ->method('getRelatedEntityIds')
             ->willReturn($ids);
 
@@ -110,11 +110,11 @@ class DetermineWinnerSubscriberTest extends TestCase
             ->method('getId')
             ->willReturn(3);
 
-        $parentMock->expects(self::once())
+        $parentMock->expects($this->once())
             ->method('getVariantStartDate')
             ->willReturn($startDate);
 
-        $this->hitRepository->expects(self::once())
+        $this->hitRepository->expects($this->once())
             ->method('getBounces')
             ->with($ids, $startDate)
             ->willReturn($bounces);

@@ -21,7 +21,7 @@ final class FieldCollectorTest extends \PHPUnit\Framework\TestCase
             {
                 ++$this->dispatchMethodCallCounter;
 
-                \assert($event instanceof FieldCollectEvent);
+                Assert::assertInstanceOf(FieldCollectEvent::class, $event);
                 Assert::assertSame('contact', $event->getObject());
 
                 return new FieldCollection();

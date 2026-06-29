@@ -635,7 +635,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         $this->assertQueuedEmailCount(1);
 
         $email = $this->getMailerMessage();
-        \assert($email instanceof MauticMessage);
+        $this->assertInstanceOf(MauticMessage::class, $email);
 
         $userHelper = static::getContainer()->get(UserHelper::class);
         $user       = $userHelper->getUser();
@@ -685,7 +685,7 @@ class LeadControllerTest extends MauticMysqlTestCase
         $this->assertQueuedEmailCount(1);
 
         $email = $this->getMailerMessage();
-        \assert($email instanceof MauticMessage);
+        $this->assertInstanceOf(MauticMessage::class, $email);
 
         $userHelper = static::getContainer()->get(UserHelper::class);
         $user       = $userHelper->getUser();
@@ -1189,16 +1189,16 @@ EMAIL;
         Assert::assertStringContainsString('1 contact affected', $clientResponse->getContent());
 
         $dncRepository = $this->em->getRepository(DoNotContact::class);
-        \assert($dncRepository instanceof DoNotContactRepository);
+        $this->assertInstanceOf(DoNotContactRepository::class, $dncRepository);
 
         $contactRepository = $this->em->getRepository(Lead::class);
-        \assert($contactRepository instanceof LeadRepository);
+        $this->assertInstanceOf(LeadRepository::class, $contactRepository);
 
         $dnc = $dncRepository->findOneBy(['lead' => $contact]);
-        \assert($dnc instanceof DoNotContact);
+        $this->assertInstanceOf(DoNotContact::class, $dnc);
 
         $fetchedContact = $contactRepository->find($contact->getId());
-        \assert($fetchedContact instanceof Lead);
+        $this->assertInstanceOf(Lead::class, $fetchedContact);
 
         // Ensure the DNC recored was created.
         Assert::assertSame(DoNotContact::MANUAL, $dnc->getReason());

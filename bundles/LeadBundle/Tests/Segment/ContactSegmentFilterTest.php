@@ -58,7 +58,7 @@ class ContactSegmentFilterTest extends TestCase
     {
         $value = 'value';
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getParameterValue')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($value);
@@ -72,7 +72,7 @@ class ContactSegmentFilterTest extends TestCase
     {
         $table = 'table';
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getTable')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($table);
@@ -117,7 +117,7 @@ class ContactSegmentFilterTest extends TestCase
         $argument       = 'argument';
         $expectedResult = 'expectedResult';
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getParameterHolder')
             ->with($this->contactSegmentFilterCrate, $argument)
             ->willReturn($expectedResult);
@@ -133,7 +133,7 @@ class ContactSegmentFilterTest extends TestCase
 
         $filter = $this->createContactSegmentFilter();
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getWhere')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($where);
@@ -179,7 +179,7 @@ class ContactSegmentFilterTest extends TestCase
 
         $filter = $this->createContactSegmentFilter();
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getParameterValue')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($value);
@@ -193,7 +193,7 @@ class ContactSegmentFilterTest extends TestCase
     {
         $queryBuilder = new QueryBuilder($this->createMock(\Doctrine\DBAL\Connection::class));
 
-        $this->filterQueryBuilder->expects(self::once())
+        $this->filterQueryBuilder->expects($this->once())
             ->method('applyQuery')
             ->willReturn($queryBuilder);
 
@@ -211,7 +211,7 @@ class ContactSegmentFilterTest extends TestCase
         self::assertNull($filter->getRelationJoinTable());
 
         $this->filterDecorator = $this->createMock(CompanyDecorator::class);
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getRelationJoinTable')
             ->willReturn($table);
 
@@ -226,7 +226,7 @@ class ContactSegmentFilterTest extends TestCase
 
         $filter = $this->createContactSegmentFilter();
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getQueryType')
             ->willReturn($type);
 
@@ -250,7 +250,7 @@ class ContactSegmentFilterTest extends TestCase
         $tableName = 'tableName';
         $columns   = ['column1', 'column2'];
 
-        $this->tableSchemaColumnCache->expects(self::once())
+        $this->tableSchemaColumnCache->expects($this->once())
             ->method('getCurrentDatabaseName')
             ->willReturn($dbName);
 
@@ -259,7 +259,7 @@ class ContactSegmentFilterTest extends TestCase
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($tableName);
 
-        $this->tableSchemaColumnCache->expects(self::once())
+        $this->tableSchemaColumnCache->expects($this->once())
             ->method('getColumns')
             ->with($tableName)
             ->willReturn($columns);
@@ -279,16 +279,16 @@ class ContactSegmentFilterTest extends TestCase
         $tableName = 'tableName';
         $columns   = ['column1' => 'something1', 'column2' => 'something2'];
 
-        $this->tableSchemaColumnCache->expects(self::once())
+        $this->tableSchemaColumnCache->expects($this->once())
             ->method('getCurrentDatabaseName')
             ->willReturn($dbName);
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getTable')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($tableName);
 
-        $this->tableSchemaColumnCache->expects(self::once())
+        $this->tableSchemaColumnCache->expects($this->once())
             ->method('getColumns')
             ->with($tableName)
             ->willReturn($columns);
@@ -305,7 +305,7 @@ class ContactSegmentFilterTest extends TestCase
     {
         $field = 'field';
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getField')
             ->willReturn($field);
 
@@ -323,7 +323,7 @@ class ContactSegmentFilterTest extends TestCase
         self::assertNull($filter->getRelationJoinTableField());
 
         $this->filterDecorator = $this->createMock(CompanyDecorator::class);
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getRelationJoinTableField')
             ->willReturn($field);
 
@@ -338,7 +338,7 @@ class ContactSegmentFilterTest extends TestCase
 
         $filter = $this->createContactSegmentFilter();
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getAggregateFunc')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($function);
@@ -352,7 +352,7 @@ class ContactSegmentFilterTest extends TestCase
 
         $filter = $this->createContactSegmentFilter();
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getOperator')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($operator);
@@ -377,26 +377,26 @@ class ContactSegmentFilterTest extends TestCase
             json_encode($parameterValue)
         );
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getTable')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($table);
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getField')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($field);
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getQueryType')
             ->willReturn($queryType);
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getOperator')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($operator);
 
-        $this->filterDecorator->expects(self::once())
+        $this->filterDecorator->expects($this->once())
             ->method('getParameterValue')
             ->with($this->contactSegmentFilterCrate)
             ->willReturn($parameterValue);

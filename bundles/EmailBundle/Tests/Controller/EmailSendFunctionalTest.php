@@ -215,7 +215,7 @@ final class EmailSendFunctionalTest extends MauticMysqlTestCase
 
         $rawMessage = self::getMailerMessagesByToAddress('contact-flood-0@doe.com')[0];
         Assert::assertInstanceOf(Message::class, $rawMessage);
-        \assert($rawMessage instanceof Message);
+        $this->assertInstanceOf(Message::class, $rawMessage);
 
         $body = quoted_printable_decode($rawMessage->getBody()->bodyToString());
         preg_match('/<a href=\"([^\"]*)\">(.*)<\/a>/iU', $body, $match);

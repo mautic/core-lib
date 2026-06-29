@@ -460,8 +460,8 @@ class LeadSubscriberTest extends TestCase
              * @param mixed[] $fieldChanges
              */
             public function __construct(
-                private array $fieldChanges,
-                private int $objectId,
+                private readonly array $fieldChanges,
+                private readonly int $objectId,
             ) {
                 parent::__construct();
             }
@@ -493,8 +493,8 @@ class LeadSubscriberTest extends TestCase
              * @param mixed[] $fieldChanges
              */
             public function __construct(
-                private array $fieldChanges,
-                private int $objectId,
+                private readonly array $fieldChanges,
+                private readonly int $objectId,
             ) {
             }
 

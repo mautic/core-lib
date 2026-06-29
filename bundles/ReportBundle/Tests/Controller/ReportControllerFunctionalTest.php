@@ -508,7 +508,7 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         self::assertResponseIsSuccessful();
 
         $schedulerRepository = self::getContainer()->get(SchedulerRepository::class);
-        \assert($schedulerRepository instanceof SchedulerRepository);
+        $this->assertInstanceOf(SchedulerRepository::class, $schedulerRepository);
         $scheduler = $schedulerRepository->getSchedulerByReport($report);
 
         $crawler = $this->client->request(Request::METHOD_GET, '/s/config/edit');
@@ -536,7 +536,7 @@ class ReportControllerFunctionalTest extends MauticMysqlTestCase
         $this->testSymfonyCommand('mautic:reports:scheduler');
 
         $reportFileWriter = self::getContainer()->get(ReportFileWriter::class);
-        \assert($reportFileWriter instanceof ReportFileWriter);
+        $this->assertInstanceOf(ReportFileWriter::class, $reportFileWriter);
 
         $csvPath = $reportFileWriter->getFilePath($scheduler);
         self::assertFileExists($csvPath);

@@ -294,7 +294,7 @@ class MatchFilterForLeadTraitTest extends TestCase
         $operator   = OperatorOptions::EMPTY;
 
         $segmentRepository = $this->createMock(LeadListRepository::class);
-        $segmentRepository->expects(self::once())
+        $segmentRepository->expects($this->once())
             ->method('isNotContactInAnySegment')
             ->with($lead['id'])
             ->willReturn(true);
@@ -493,7 +493,7 @@ class MatchFilterForLeadTraitTest extends TestCase
         $operator   = OperatorOptions::NOT_EMPTY;
 
         $segmentRepository = $this->createMock(LeadListRepository::class);
-        $segmentRepository->expects(self::once())
+        $segmentRepository->expects($this->once())
             ->method('isContactInAnySegment')
             ->with($lead['id'])
             ->willReturn(true);
@@ -525,7 +525,7 @@ class MatchFilterForLeadTraitTest extends TestCase
         $operator   = OperatorOptions::INCLUDING_ANY;
 
         $segmentRepository = $this->createMock(LeadListRepository::class);
-        $segmentRepository->expects(self::once())
+        $segmentRepository->expects($this->once())
             ->method('isContactInSegments')
             ->with($lead['id'], [0 => $segmentId, 1 => 2])
             ->willReturn(true);
@@ -558,7 +558,7 @@ class MatchFilterForLeadTraitTest extends TestCase
         $operator   = OperatorOptions::EXCLUDING_ANY;
 
         $segmentRepository = $this->createMock(LeadListRepository::class);
-        $segmentRepository->expects(self::once())
+        $segmentRepository->expects($this->once())
             ->method('isNotContactInSegments')
             ->with($lead['id'], [0 => $segmentId, 1 => 2])
             ->willReturn(true);
@@ -591,7 +591,7 @@ class MatchFilterForLeadTraitTest extends TestCase
         $operator   = OperatorOptions::INCLUDING_ALL;
 
         $segmentRepository = $this->createMock(LeadListRepository::class);
-        $segmentRepository->expects(self::once())
+        $segmentRepository->expects($this->once())
             ->method('isContactInAllSegments')
             ->with($lead['id'], [0 => $segmentId, 1 => 2])
             ->willReturn(true);
@@ -624,7 +624,7 @@ class MatchFilterForLeadTraitTest extends TestCase
         $operator   = OperatorOptions::EXCLUDING_ALL;
 
         $segmentRepository = $this->createMock(LeadListRepository::class);
-        $segmentRepository->expects(self::once())
+        $segmentRepository->expects($this->once())
             ->method('isNotContactInAllSegments')
             ->with($lead['id'], [0 => $segmentId, 1 => 2])
             ->willReturn(true);
