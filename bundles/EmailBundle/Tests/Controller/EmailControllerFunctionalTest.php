@@ -324,7 +324,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->sendBatchEmail($email);
 
         $email = self::getMailerMessage();
-        \assert($email instanceof MauticMessage);
+        $this->assertInstanceOf(MauticMessage::class, $email);
 
         $quote = $singleOrDoubleQuotes ? '\'' : '"';
         // The order of the recipients is not guaranteed, so we need to check both possibilities.
@@ -420,7 +420,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->sendBatchEmail($email);
 
         $email = $this->getMailerMessage();
-        \assert($email instanceof MauticMessage);
+        $this->assertInstanceOf(MauticMessage::class, $email);
 
         // The order of the recipients is not guaranteed, so we need to check both possibilities.
         Assert::assertSame('Subject A', $email->getSubject());

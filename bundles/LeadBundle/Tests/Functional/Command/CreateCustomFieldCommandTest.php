@@ -34,7 +34,7 @@ class CreateCustomFieldCommandTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $kernel = static::getContainer()->get('kernel');
-        \assert($kernel instanceof KernelInterface);
+        $this->assertInstanceOf(KernelInterface::class, $kernel);
 
         $expectedUserId          = 1;
         $customFieldNotification = self::createMock(CustomFieldNotification::class);
@@ -88,7 +88,7 @@ class CreateCustomFieldCommandTest extends MauticMysqlTestCase
         $this->em->flush();
 
         $kernel = static::getContainer()->get('kernel');
-        \assert($kernel instanceof KernelInterface);
+        $this->assertInstanceOf(KernelInterface::class, $kernel);
 
         $expectedUserId          = 1;
         $customFieldNotification = self::createMock(CustomFieldNotification::class);

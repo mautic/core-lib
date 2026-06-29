@@ -104,7 +104,7 @@ abstract class AbstractMauticTestCase extends WebTestCase
         $this->client->followRedirects(true);
 
         $this->em = static::getContainer()->get('doctrine')->getManager();
-        \assert($this->em instanceof EntityManagerInterface);
+        $this->assertInstanceOf(EntityManagerInterface::class, $this->em);
         $this->connection = $this->em->getConnection();
         $this->router     = static::getContainer()->get('router');
         $scheme           = $this->router->getContext()->getScheme();
