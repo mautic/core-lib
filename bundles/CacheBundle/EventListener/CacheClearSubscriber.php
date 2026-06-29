@@ -14,7 +14,7 @@ class CacheClearSubscriber implements CacheClearerInterface
     /**
      * @var CacheProvider
      */
-    private AdapterInterface $cacheProvider;
+    private readonly AdapterInterface $cacheProvider;
 
     public function __construct(AdapterInterface $cacheProvider, private readonly LoggerInterface $logger)
     {
