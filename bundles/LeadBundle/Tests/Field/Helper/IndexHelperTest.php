@@ -27,9 +27,7 @@ class IndexHelperTest extends \PHPUnit\Framework\TestCase
             $sqlResult[][self::COLUMN_NAME_KEY] = $columnName;
         }
         $expectedColumnNames = array_map(
-            function ($column) {
-                return $column[self::COLUMN_NAME_KEY];
-            },
+            fn ($column) => $column[self::COLUMN_NAME_KEY],
             $sqlResult
         );
 

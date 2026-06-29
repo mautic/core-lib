@@ -208,7 +208,7 @@ final class OwnershipScopedCollectionExtensionTest extends TestCase
     private function createUserWithId(int $id): UserInterface
     {
         return new class($id) implements UserInterface {
-            public function __construct(private int $id)
+            public function __construct(private readonly int $id)
             {
             }
 

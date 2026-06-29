@@ -203,9 +203,7 @@ class PluginAuthenticatorTest extends TestCase
         $passportUser->method('getPassword')->willReturn($encodedPassword);
         $passportUser->method('getRoles')->willReturn($roles);
 
-        $userBadge = new UserBadge('', function () use ($passportUser): UserInterface {
-            return $passportUser;
-        });
+        $userBadge = new UserBadge('', fn (): UserInterface => $passportUser);
 
         $pluginBadge = new PluginBadge(null, $pluginResponse, $authenticatingService);
 

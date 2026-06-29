@@ -51,25 +51,15 @@ class DateHelperTest extends \PHPUnit\Framework\TestCase
 
         // Setup translator mock for humanized dates
         $this->translator->method('trans')
-            ->willReturnCallback(function ($key, $parameters = []) {
-                switch ($key) {
-                    case 'mautic.core.date.years.ago':
-                        return $parameters['%count%'].' year(s) ago';
-                    case 'mautic.core.date.months.ago':
-                        return $parameters['%count%'].' month(s) ago';
-                    case 'mautic.core.date.days.ago':
-                        return $parameters['%count%'].' day(s) ago';
-                    case 'mautic.core.date.hours.ago':
-                        return $parameters['%count%'].' hour(s) ago';
-                    case 'mautic.core.date.minutes.ago':
-                        return $parameters['%count%'].' minute(s) ago';
-                    case 'mautic.core.date.just.now':
-                        return 'just now';
-                    case 'mautic.core.date.today':
-                        return 'Today';
-                    default:
-                        return $key;
-                }
+            ->willReturnCallback(fn ($key, $parameters = []) => match ($key) {
+                'mautic.core.date.years.ago'   => $parameters['%count%'].' year(s) ago',
+                'mautic.core.date.months.ago'  => $parameters['%count%'].' month(s) ago',
+                'mautic.core.date.days.ago'    => $parameters['%count%'].' day(s) ago',
+                'mautic.core.date.hours.ago'   => $parameters['%count%'].' hour(s) ago',
+                'mautic.core.date.minutes.ago' => $parameters['%count%'].' minute(s) ago',
+                'mautic.core.date.just.now'    => 'just now',
+                'mautic.core.date.today'       => 'Today',
+                default                        => $key,
             });
     }
 

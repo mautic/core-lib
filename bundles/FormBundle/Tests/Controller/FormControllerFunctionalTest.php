@@ -665,7 +665,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
         $fields = $clonedForm->getFields()->getValues();
         Assert::assertCount(3, $fields);
 
-        list($clonedField1, $clonedField2, $clonedSubmit) = $fields;
+        [$clonedField1, $clonedField2, $clonedSubmit] = $fields;
         Assert::assertSame((int) $clonedField2->getParent(), $clonedField1->getId());
     }
 
