@@ -89,15 +89,15 @@ class AjaxControllerTest extends \PHPUnit\Framework\TestCase
         $this->controller->setContainer($this->containerMock);
 
         $parameterBag = $this->createMock(ContainerBagInterface::class);
-        $parameterBag->expects(self::once())
+        $parameterBag->expects($this->once())
             ->method('get')
             ->with('kernel.environment')
             ->willReturn('test');
-        $this->containerMock->expects(self::once())
+        $this->containerMock->expects($this->once())
             ->method('has')
             ->with('parameter_bag')
             ->willReturn(true);
-        $this->containerMock->expects(self::once())
+        $this->containerMock->expects($this->once())
             ->method('get')
             ->with('parameter_bag')
             ->willReturn($parameterBag);

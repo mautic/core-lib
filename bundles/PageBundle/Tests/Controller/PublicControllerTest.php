@@ -253,25 +253,25 @@ class PublicControllerTest extends TestCase
         $clickTrough = 'someClickTroughValue';
         $redirectUrl = 'https://someurl.test/';
 
-        $this->redirectModel->expects(self::once())
+        $this->redirectModel->expects($this->once())
             ->method('getRedirectById')
             ->with($redirectId)
             ->willReturn($this->redirect);
 
-        $this->redirect->expects(self::once())
+        $this->redirect->expects($this->once())
             ->method('isPublished')
             ->with(false)
             ->willReturn(true);
 
-        $this->redirect->expects(self::once())
+        $this->redirect->expects($this->once())
             ->method('getUrl')
             ->willReturn($redirectUrl);
 
-        $this->ipLookupHelper->expects(self::once())
+        $this->ipLookupHelper->expects($this->once())
             ->method('getIpAddress')
             ->willReturn($this->ipAddress);
 
-        $this->ipAddress->expects(self::once())
+        $this->ipAddress->expects($this->once())
             ->method('isTrackable')
             ->willReturn(true);
 
@@ -287,12 +287,12 @@ class PublicControllerTest extends TestCase
             ->method('getContactFromQuery')
             ->willReturnCallback($getContactFromRequestCallback);
 
-        $this->router->expects(self::once())
+        $this->router->expects($this->once())
             ->method('generate')
             ->willReturn('/asset/');
 
         $this->internalContainer
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->willReturnMap([
                 ['router', Container::EXCEPTION_ON_INVALID_REFERENCE, $this->router],
@@ -332,25 +332,25 @@ class PublicControllerTest extends TestCase
         $redirectId   = 'dummy_redirect_id';
         $clickThrough = 'dummy_click_through';
 
-        $this->redirectModel->expects(self::once())
+        $this->redirectModel->expects($this->once())
             ->method('getRedirectById')
             ->with($redirectId)
             ->willReturn($this->redirect);
 
-        $this->redirect->expects(self::once())
+        $this->redirect->expects($this->once())
             ->method('isPublished')
             ->with(false)
             ->willReturn(true);
 
-        $this->redirect->expects(self::once())
+        $this->redirect->expects($this->once())
             ->method('getUrl')
             ->willReturn($redirectUrl);
 
-        $this->ipLookupHelper->expects(self::once())
+        $this->ipLookupHelper->expects($this->once())
             ->method('getIpAddress')
             ->willReturn($this->ipAddress);
 
-        $this->ipAddress->expects(self::once())
+        $this->ipAddress->expects($this->once())
             ->method('isTrackable')
             ->willReturn(true);
 
@@ -366,13 +366,13 @@ class PublicControllerTest extends TestCase
             ->method('getContactFromQuery')
             ->willReturnCallback($getContactFromRequestCallback);
 
-        $this->router->expects(self::once())
+        $this->router->expects($this->once())
             ->method('generate')
             ->with('mautic_asset_download')
             ->willReturn('/asset');
 
         $this->internalContainer
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->willReturnMap([
                 ['router', Container::EXCEPTION_ON_INVALID_REFERENCE, $this->router],

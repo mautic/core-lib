@@ -125,13 +125,13 @@ class SegmentCountCacheHelperTest extends TestCase
         $cacheItem = $this->createCacheItem('segment.'.$segmentId.'.lead.recount');
 
         $this->cacheProviderMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getItem')
             ->with('segment.'.$segmentId.'.lead.recount')
             ->willReturn($cacheItem);
 
         $this->cacheProviderMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('save')
             ->with($cacheItem);
 
@@ -207,7 +207,7 @@ class SegmentCountCacheHelperTest extends TestCase
             });
 
         $this->cacheProviderMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('save')
             ->with($cacheItem);
 
