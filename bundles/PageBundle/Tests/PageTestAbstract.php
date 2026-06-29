@@ -140,7 +140,7 @@ class PageTestAbstract extends TestCase
         $validatorMock->method('validate')
             ->willReturn(new ConstraintViolationList());
 
-        $pageModel = new PageModel(
+        return new PageModel(
             $cookieHelper,
             $this->ipLookupHelper,
             $leadModel,
@@ -165,8 +165,6 @@ class PageTestAbstract extends TestCase
             $botRatioHelperMock,
             $validatorMock
         );
-
-        return $pageModel;
     }
 
     /**

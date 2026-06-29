@@ -551,7 +551,7 @@ class UpdateHelperTest extends TestCase
                 function (string $method, string $url, array $options): void {
                     $request = $this->createMock(RequestInterface::class);
 
-                    throw new RequestException('something bad happened', $request, null);
+                    throw new RequestException('something bad happened', $request);
                 }
             );
 

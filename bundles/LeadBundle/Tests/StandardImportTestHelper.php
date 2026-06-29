@@ -190,7 +190,7 @@ abstract class StandardImportTestHelper extends CommonMocks
 
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
 
-        $importModel = new ImportModel(
+        return new ImportModel(
             $pathsHelper,
             $leadModel,
             $notificationModel,
@@ -205,7 +205,5 @@ abstract class StandardImportTestHelper extends CommonMocks
             $this->createMock(LoggerInterface::class),
             new ProcessSignalService()
         );
-
-        return $importModel;
     }
 }

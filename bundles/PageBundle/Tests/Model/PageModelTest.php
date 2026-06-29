@@ -213,7 +213,7 @@ class PageModelTest extends PageTestAbstract
         ];
         $ct      = ClickthroughHelper::encodeArrayForUrl($ctParams);
 
-        $params = [[
+        return [[
             'page_title'      => 'Testpage',
             'page_language'   => 'en-GB',
             'page_referrer'   => '',
@@ -253,7 +253,5 @@ class PageModelTest extends PageTestAbstract
             'adblock'         => false,
             'fingerprint'     => 'fec25ab2d659c4153c7f1d5724841132',
         ]];
-
-        return $params;
     }
 }
