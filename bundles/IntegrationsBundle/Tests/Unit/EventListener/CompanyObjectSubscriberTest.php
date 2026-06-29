@@ -33,7 +33,7 @@ class CompanyObjectSubscriberTest extends TestCase
 
     private CompanyObjectSubscriber $subscriber;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -47,7 +47,7 @@ class CompanyObjectSubscriberTest extends TestCase
 
     public function testGetSubscribedEvents(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             [
                 IntegrationEvents::INTEGRATION_COLLECT_INTERNAL_OBJECTS => ['collectInternalObjects', 0],
                 IntegrationEvents::INTEGRATION_UPDATE_INTERNAL_OBJECTS  => ['updateCompanies', 0],

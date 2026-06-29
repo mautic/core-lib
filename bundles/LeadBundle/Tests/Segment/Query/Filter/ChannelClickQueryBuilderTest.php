@@ -43,7 +43,7 @@ class ChannelClickQueryBuilderTest extends TestCase
 
     private ChannelClickQueryBuilder $queryBuilder;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->randomParameterMock = $this->createMock(RandomParameterName::class);
         $this->dispatcherMock      = $this->createMock(EventDispatcherInterface::class);
@@ -59,7 +59,7 @@ class ChannelClickQueryBuilderTest extends TestCase
 
     public function testGetServiceId(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             'mautic.lead.query.builder.channel_click.value',
             $this->queryBuilder::getServiceId()
         );

@@ -47,7 +47,7 @@ class SegmentSubscriberTest extends TestCase
      */
     private MockObject $segmentUsedInCampaignsValidator;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -73,7 +73,7 @@ class SegmentSubscriberTest extends TestCase
             $this->translator
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 LeadEvents::LIST_POST_SAVE     => ['onSegmentPostSave', 0],
                 LeadEvents::ON_LIST_DELETE     => ['onSegmentDelete', 0],

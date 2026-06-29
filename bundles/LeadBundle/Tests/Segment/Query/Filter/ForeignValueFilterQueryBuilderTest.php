@@ -40,7 +40,7 @@ class ForeignValueFilterQueryBuilderTest extends TestCase
      */
     private MockObject $connectionMock;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->randomParameter     = new RandomParameterName();
@@ -54,7 +54,7 @@ class ForeignValueFilterQueryBuilderTest extends TestCase
 
     public function testGetServiceId(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             'mautic.lead.query.builder.foreign.value',
             $this->queryBuilder::getServiceId()
         );

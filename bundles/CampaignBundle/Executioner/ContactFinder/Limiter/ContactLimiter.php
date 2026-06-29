@@ -94,11 +94,9 @@ class ContactLimiter
     /**
      * @param int $id
      *
-     * @return $this
-     *
      * @throws NoContactsFoundException
      */
-    public function setBatchMinContactId($id)
+    public function setBatchMinContactId($id): static
     {
         // Prevent a never ending loop if the contact ID never changes due to being the last batch of contacts
         if ($this->minContactId && $this->minContactId > (int) $id) {
@@ -120,10 +118,7 @@ class ContactLimiter
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function resetBatchMinContactId()
+    public function resetBatchMinContactId(): static
     {
         $this->batchMinContactId =  null;
 
@@ -168,11 +163,9 @@ class ContactLimiter
     }
 
     /**
-     * @return $this
-     *
      * @throws \Exception
      */
-    public function reduceCampaignLimitRemaining($reduction)
+    public function reduceCampaignLimitRemaining($reduction): static
     {
         if (!$this->hasCampaignLimit()) {
             throw new \Exception('Campaign Limit was not set');
@@ -184,10 +177,7 @@ class ContactLimiter
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function resetCampaignLimitRemaining()
+    public function resetCampaignLimitRemaining(): static
     {
         $this->campaignLimitUsed = 0;
 

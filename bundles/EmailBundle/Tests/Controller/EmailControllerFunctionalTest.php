@@ -38,7 +38,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     private const CLICK_URL_MID  = 'https://example.com/mid';
     private const CLICK_URL_HIGH = 'https://example.com/high';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->configParams['legacy_builder_enabled'] = true;
         $this->configParams['disable_trackable_urls'] = false;
@@ -338,7 +338,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->sendBatchEmail($email);
 
         $email = self::getMailerMessage();
-        \assert($email instanceof MauticMessage);
+        $this->assertInstanceOf(MauticMessage::class, $email);
 
         $quote = $singleOrDoubleQuotes ? '\'' : '"';
         // The order of the recipients is not guaranteed, so we need to check both possibilities.
@@ -434,7 +434,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->sendBatchEmail($email);
 
         $email = $this->getMailerMessage();
-        \assert($email instanceof MauticMessage);
+        $this->assertInstanceOf(MauticMessage::class, $email);
 
         // The order of the recipients is not guaranteed, so we need to check both possibilities.
         Assert::assertSame('Subject A', $email->getSubject());
@@ -656,9 +656,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $pendingCountQuery = array_filter(
             $queries['default'],
-            function (array $query) use ($prefix, $segment, $email) {
-                return $query['sql'] === "SELECT count(*) as count FROM {$prefix}leads l WHERE (EXISTS (SELECT null FROM {$prefix}lead_lists_leads ll WHERE (ll.lead_id = l.id) AND (ll.leadlist_id IN ({$segment->getId()})) AND (ll.manually_removed = :false))) AND (NOT EXISTS (SELECT null FROM {$prefix}lead_donotcontact dnc WHERE (dnc.lead_id = l.id) AND (dnc.channel = 'email'))) AND (NOT EXISTS (SELECT null FROM {$prefix}email_stats stat WHERE (stat.lead_id = l.id) AND (stat.email_id IN ({$email->getId()})))) AND (NOT EXISTS (SELECT null FROM {$prefix}message_queue mq WHERE (mq.lead_id = l.id) AND (mq.status <> 'sent') AND (mq.channel = 'email') AND (mq.channel_id IN ({$email->getId()})))) AND ((l.email IS NOT NULL) AND (l.email <> ''))";
-            }
+            fn (array $query) => $query['sql'] === "SELECT count(*) as count FROM {$prefix}leads l WHERE (EXISTS (SELECT null FROM {$prefix}lead_lists_leads ll WHERE (ll.lead_id = l.id) AND (ll.leadlist_id IN ({$segment->getId()})) AND (ll.manually_removed = :false))) AND (NOT EXISTS (SELECT null FROM {$prefix}lead_donotcontact dnc WHERE (dnc.lead_id = l.id) AND (dnc.channel = 'email'))) AND (NOT EXISTS (SELECT null FROM {$prefix}email_stats stat WHERE (stat.lead_id = l.id) AND (stat.email_id IN ({$email->getId()})))) AND (NOT EXISTS (SELECT null FROM {$prefix}message_queue mq WHERE (mq.lead_id = l.id) AND (mq.status <> 'sent') AND (mq.channel = 'email') AND (mq.channel_id IN ({$email->getId()})))) AND ((l.email IS NOT NULL) AND (l.email <> ''))"
         );
 
         $this->assertCount(0, $pendingCountQuery);
