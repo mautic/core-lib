@@ -178,7 +178,7 @@ class FieldModelTest extends MauticMysqlTestCase
 
         $repoMock->method('__call')
             ->with('findOneByAlias', $this->anything())
-            ->willReturnCallback(function ($method, $args): ?\Mautic\LeadBundle\Entity\LeadField {
+            ->willReturnCallback(function ($method, $args): ?LeadField {
                 $alias = $args[0];
 
                 // Simulate alias and alias_1 are taken, alias_2 is available

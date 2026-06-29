@@ -433,7 +433,7 @@ class LeadSubscriberTest extends TestCase
         $matcher = $this->exactly(1);
 
         $this->variableExpresserHelper->expects($matcher)->method('encodeVariable')
-                ->willReturnCallback(function (...$parameters) use ($matcher, $values, $valueDAOs): \Mautic\IntegrationsBundle\Sync\DAO\Value\EncodedValueDAO {
+                ->willReturnCallback(function (...$parameters) use ($matcher, $values, $valueDAOs): EncodedValueDAO {
                     $this->assertSame($values[$matcher->numberOfInvocations() - 1], $parameters);
 
                     return $valueDAOs[0];

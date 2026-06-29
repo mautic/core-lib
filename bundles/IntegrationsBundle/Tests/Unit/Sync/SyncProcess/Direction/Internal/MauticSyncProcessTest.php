@@ -83,7 +83,7 @@ class MauticSyncProcessTest extends TestCase
         $this->syncDataExchange->expects($this->once())
             ->method('getSyncReport')
             ->willReturnCallback(
-                function (RequestDAO $requestDAO): \Mautic\IntegrationsBundle\Sync\DAO\Sync\Report\ReportDAO {
+                function (RequestDAO $requestDAO): ReportDAO {
                     $requestObjects = $requestDAO->getObjects();
                     $this->assertCount(1, $requestObjects);
 

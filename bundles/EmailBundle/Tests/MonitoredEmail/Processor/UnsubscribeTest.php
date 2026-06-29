@@ -24,7 +24,7 @@ class UnsubscribeTest extends \PHPUnit\Framework\TestCase
         $contactFinder = $this->createMock(ContactFinder::class);
         $contactFinder->method('find')
             ->willReturnCallback(
-                function ($email): \Mautic\EmailBundle\MonitoredEmail\Search\Result {
+                function ($email): Result {
                     $stat = new Stat();
 
                     $lead = new Lead();
@@ -65,7 +65,7 @@ class UnsubscribeTest extends \PHPUnit\Framework\TestCase
         $contactFinder = $this->createMock(ContactFinder::class);
         $contactFinder->method('find')
             ->willReturnCallback(
-                function ($email): \Mautic\EmailBundle\MonitoredEmail\Search\Result {
+                function ($email): Result {
                     $stat = new Stat();
 
                     $lead = new Lead();

@@ -147,7 +147,7 @@ class ContactRequestHelperTest extends \PHPUnit\Framework\TestCase
         $contact = new Lead();
 
         $this->dispatcher->method('dispatch')
-            ->willReturnCallback(function (ContactIdentificationEvent $event) use ($contact): \Mautic\LeadBundle\Event\ContactIdentificationEvent {
+            ->willReturnCallback(function (ContactIdentificationEvent $event) use ($contact): ContactIdentificationEvent {
                 $event->setIdentifiedContact($contact, 'email');
 
                 return $event;

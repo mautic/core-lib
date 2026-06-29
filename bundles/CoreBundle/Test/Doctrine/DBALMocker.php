@@ -105,7 +105,7 @@ class DBALMocker
 
             $mock->expects(new AnyInvokedCount())
                 ->method('getReference')
-                ->willReturnCallback(function (): \Mautic\LeadBundle\Entity\Lead {
+                ->willReturnCallback(function (): Lead {
                     switch (func_get_arg(0)) {
                         case Lead::class:
                             $entity = new Lead();

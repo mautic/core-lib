@@ -25,7 +25,7 @@ final class AlreadyMappedFieldCollectorTest extends \PHPUnit\Framework\TestCase
     public function testWorkflow(): void
     {
         $createCacheItem = \Closure::bind(
-            function (): \Symfony\Component\Cache\CacheItem {
+            function (): CacheItem {
                 $item             = new CacheItem();
                 $item->isHit      = false;
                 $item->isTaggable = true;

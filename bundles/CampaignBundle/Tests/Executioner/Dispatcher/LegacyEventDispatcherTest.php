@@ -430,7 +430,7 @@ class LegacyEventDispatcherTest extends TestCase
             ->with($this->isInstanceOf(CampaignExecutionEvent::class), 'something') // @phpstan-ignore classConstant.deprecatedClass
             ->willReturnCallback(
                 // @phpstan-ignore return.deprecatedClass
-                function (object $event): \Mautic\CampaignBundle\Event\CampaignExecutionEvent {
+                function (object $event): CampaignExecutionEvent {
                     $this->assertInstanceOf(CampaignExecutionEvent::class, $event); // @phpstan-ignore classConstant.deprecatedClass
                     $event->setResult(true);
 

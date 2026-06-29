@@ -438,7 +438,7 @@ class PublicControllerTest extends TestCase
             ->method('dispatch')
             ->with($event, PageEvents::ON_CONTACT_TRACKED)
             ->willReturnCallback(
-                function (TrackingEvent $event): \Mautic\PageBundle\Event\TrackingEvent {
+                function (TrackingEvent $event): TrackingEvent {
                     $contact  = $event->getContact()->getEmail();
                     $request  = $event->getRequest();
                     $response = $event->getResponse();
