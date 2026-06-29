@@ -29,13 +29,13 @@ class ConfigFormTest extends KernelTestCase
     {
         $plugins = $this->getIntegrationObject()->getIntegrationObjects();
 
-        foreach ($plugins as $name => $s) {
-            $featureSettings = $s->getFormSettings();
+        foreach ($plugins as $plugin) {
+            $featureSettings = $plugin->getFormSettings();
 
             $this->assertArrayHasKey('requires_callback', $featureSettings);
             $this->assertArrayHasKey('requires_authorization', $featureSettings);
             if ($featureSettings['requires_callback']) {
-                $this->assertNotEmpty($s->getAuthCallbackUrl());
+                $this->assertNotEmpty($plugin->getAuthCallbackUrl());
             }
         }
     }
