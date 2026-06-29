@@ -266,7 +266,7 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
     /**
      * @return Event|\PHPUnit\Framework\MockObject\MockObject
      */
-    private function getEvent()
+    private function getEvent(): \PHPUnit\Framework\MockObject\MockObject
     {
         $event = $this->getMockBuilder(Event::class)
             ->onlyMethods(['getId'])
@@ -312,10 +312,7 @@ class CampaignSubscriberTest extends \PHPUnit\Framework\TestCase
         return $event;
     }
 
-    /**
-     * @return ArrayCollection
-     */
-    private function getLogs()
+    private function getLogs(): ArrayCollection
     {
         $lead = $this->createMock(Lead::class);
         $lead->method('getId')

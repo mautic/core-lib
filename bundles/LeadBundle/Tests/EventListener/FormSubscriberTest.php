@@ -27,7 +27,7 @@ class FormSubscriberTest extends \PHPUnit\Framework\TestCase
     /**
      * @var DoNotContact|(DoNotContact&MockObject)|MockObject
      */
-    private DoNotContact|MockObject $doNotContact;
+    private MockObject $doNotContact;
 
     /**
      * @var LeadModel|MockObject
@@ -37,7 +37,7 @@ class FormSubscriberTest extends \PHPUnit\Framework\TestCase
     /**
      * @var PointGroupModel|(PointGroupModel&object&MockObject)|(PointGroupModel&MockObject)|(object&MockObject)|MockObject
      */
-    private MockObject|PointGroupModel $pointGroupModel;
+    private MockObject $pointGroupModel;
 
     private FormSubscriber $subscriber;
 

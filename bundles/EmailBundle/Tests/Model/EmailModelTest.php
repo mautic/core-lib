@@ -136,7 +136,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
     /**
      * @var MockObject&EmailStatModel
      */
-    private $emailStatModel;
+    private MockObject $emailStatModel;
 
     /**
      * @var MockObject&FrequencyRuleRepository
@@ -847,9 +847,9 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->entityManager->expects($matcher)
             ->method('persist')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher, $stat, $ipAddress) {
+                function (...$parameters) use ($matcher, $stat, $ipAddress): void {
                     if (1 === $matcher->numberOfInvocations()) {
-                        $callback = function ($statDevice) use ($stat, $ipAddress) {
+                        $callback = function ($statDevice) use ($stat, $ipAddress): void {
                             $this->assertInstanceOf(StatDevice::class, $statDevice);
                             $this->assertSame($stat, $statDevice->getStat());
                             $this->assertSame($ipAddress, $statDevice->getIpAddress());
@@ -907,9 +907,9 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->entityManager->expects($matcher)
             ->method('persist')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher, $stat, $ipAddress) {
+                function (...$parameters) use ($matcher, $stat, $ipAddress): void {
                     if (1 === $matcher->numberOfInvocations()) {
-                        $callback = function ($statDevice) use ($stat, $ipAddress) {
+                        $callback = function ($statDevice) use ($stat, $ipAddress): void {
                             $this->assertInstanceOf(StatDevice::class, $statDevice);
                             $this->assertSame($stat, $statDevice->getStat());
                             $this->assertSame($ipAddress, $statDevice->getIpAddress());

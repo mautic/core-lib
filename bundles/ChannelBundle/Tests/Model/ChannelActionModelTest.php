@@ -179,7 +179,7 @@ class ChannelActionModelTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $this->doNotContactMock->expects($matcher)
-            ->method('addDncForContact')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('addDncForContact')->willReturnCallback(function (...$parameters) use ($matcher): void {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(5, $parameters[0]);
                     $this->assertSame('email', $parameters[1]);

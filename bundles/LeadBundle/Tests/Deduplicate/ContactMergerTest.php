@@ -528,7 +528,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
         $matcher3 = $this->exactly(3);
 
         $winner->expects($matcher3)
-            ->method('addUpdatedField')->willReturnCallback(function (...$parameters) use ($matcher3) {
+            ->method('addUpdatedField')->willReturnCallback(function (...$parameters) use ($matcher3): void {
                 if (1 === $matcher3->numberOfInvocations()) {
                     $this->assertSame('email', $parameters[0]);
                     $this->assertSame('winner@test.com', $parameters[1]);
@@ -865,10 +865,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
         return $company;
     }
 
-    /**
-     * @return ContactMerger
-     */
-    private function getMerger()
+    private function getMerger(): ContactMerger
     {
         return new ContactMerger(
             $this->leadModel,

@@ -77,7 +77,7 @@ class OwnerSubscriberTest extends TestCase
     ];
 
     /** @var MockObject&CoreParametersHelper */
-    private $coreParametersHelper;
+    private MockObject $coreParametersHelper;
 
     private MailHashHelper $mailHashHelper;
 

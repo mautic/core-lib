@@ -190,7 +190,7 @@ class SyncProcessTest extends TestCase
         $this->eventDispatcher->expects($matcher)
             ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
                 if (1 === $matcher->numberOfInvocations()) {
-                    $callback = function (CompletedSyncIterationEvent $event) {
+                    $callback = function (CompletedSyncIterationEvent $event): void {
                         $orderResult = $event->getOrderResults();
                         Assert::assertCount(1, $orderResult->getUpdatedObjectMappings('bar'));
                         Assert::assertCount(1, $orderResult->getNewObjectMappings('foo'));
@@ -201,7 +201,7 @@ class SyncProcessTest extends TestCase
                     $this->assertSame(IntegrationEvents::INTEGRATION_BATCH_SYNC_COMPLETED_INTEGRATION_TO_MAUTIC, $parameters[1]);
                 }
                 if (2 === $matcher->numberOfInvocations()) {
-                    $callback = function (CompletedSyncIterationEvent $event) {
+                    $callback = function (CompletedSyncIterationEvent $event): void {
                         $orderResult = $event->getOrderResults();
                         Assert::assertCount(1, $orderResult->getNewObjectMappings('bar'));
                         Assert::assertCount(1, $orderResult->getUpdatedObjectMappings('foo'));

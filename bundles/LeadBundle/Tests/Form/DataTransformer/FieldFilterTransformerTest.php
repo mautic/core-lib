@@ -21,7 +21,7 @@ final class FieldFilterTransformerTest extends \PHPUnit\Framework\TestCase
     /**
      * @var MockObject&RelativeDate
      */
-    private $relativeDate;
+    private MockObject $relativeDate;
 
     protected function setUp(): void
     {

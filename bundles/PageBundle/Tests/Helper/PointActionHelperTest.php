@@ -17,22 +17,22 @@ class PointActionHelperTest extends TestCase
     /**
      * @var MockObject|EntityManagerInterface
      */
-    private $entityManager;
+    private MockObject $entityManager;
 
     /**
      * @var MockObject|HitRepository
      */
-    private $hitRepository;
+    private MockObject $hitRepository;
 
     /**
      * @var MockObject|Lead
      */
-    private $lead;
+    private MockObject $lead;
 
     /**
      * @var MockObject|Hit
      */
-    private $eventDetails;
+    private MockObject $eventDetails;
 
     protected function setUp(): void
     {

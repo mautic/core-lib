@@ -25,17 +25,17 @@ class EventModelTest extends TestCase
     /**
      * @var EntityManagerInterface|MockObject
      */
-    private $entityManagerMock;
+    private MockObject $entityManagerMock;
 
     /**
      * @var EventRepository|MockObject
      */
-    private $eventRepositoryMock;
+    private MockObject $eventRepositoryMock;
 
     /**
      * @var EventDispatcherInterface|MockObject
      */
-    private $dispatcherMock;
+    private MockObject $dispatcherMock;
 
     private MockObject|EventModel $eventModel;
 

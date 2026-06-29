@@ -394,12 +394,12 @@ class ExportHelperTest extends TestCase
 
         $iteratorExportDataModelMock->method('current')
             ->willReturnCallback(
-                fn () => $iteratorData->array[$iteratorData->position]
+                fn (): mixed => $iteratorData->array[$iteratorData->position]
             );
 
         $iteratorExportDataModelMock->method('key')
             ->willReturnCallback(
-                fn () => $iteratorData->position
+                fn (): int => $iteratorData->position
             );
 
         $iteratorExportDataModelMock->method('next')
@@ -411,7 +411,7 @@ class ExportHelperTest extends TestCase
 
         $iteratorExportDataModelMock->method('valid')
             ->willReturnCallback(
-                fn () => isset($iteratorData->array[$iteratorData->position])
+                fn (): bool => isset($iteratorData->array[$iteratorData->position])
             );
 
         return $iteratorExportDataModelMock;

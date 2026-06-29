@@ -29,13 +29,13 @@ class CampaignEventSubscriberTest extends TestCase
 {
     private CampaignEventSubscriber $fixture;
 
-    private EventRepository|MockObject $eventRepo;
+    private MockObject $eventRepo;
 
-    private MockObject|CampaignModel $campaignModelMock;
+    private MockObject $campaignModelMock;
 
-    private MockObject|LeadEventLogRepository $leadEventLogRepositoryMock;
+    private MockObject $leadEventLogRepositoryMock;
 
-    private MockObject|EventDispatcherInterface $eventDispatcherMock;
+    private MockObject $eventDispatcherMock;
 
     private DateHelper $dateHelper;
 

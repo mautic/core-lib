@@ -115,7 +115,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $dncQueries = array_filter(
             $queries['default'],
-            fn (array $query) => "SELECT l.id, dnc.reason FROM {$prefix}lead_donotcontact dnc LEFT JOIN {$prefix}leads l ON l.id = dnc.lead_id WHERE dnc.channel = :channel" === $query['sql']
+            fn (array $query): bool => "SELECT l.id, dnc.reason FROM {$prefix}lead_donotcontact dnc LEFT JOIN {$prefix}leads l ON l.id = dnc.lead_id WHERE dnc.channel = :channel" === $query['sql']
         );
 
         Assert::assertCount(0, $dncQueries);
@@ -156,7 +156,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         $dncQueries = array_filter(
             $queries['default'],
-            fn (array $query) => "SELECT l.id, dnc.reason FROM {$prefix}lead_donotcontact dnc LEFT JOIN {$prefix}leads l ON l.id = dnc.lead_id WHERE (dnc.channel = ?) AND (l.id IN (?))" === $query['sql']
+            fn (array $query): bool => "SELECT l.id, dnc.reason FROM {$prefix}lead_donotcontact dnc LEFT JOIN {$prefix}leads l ON l.id = dnc.lead_id WHERE (dnc.channel = ?) AND (l.id IN (?))" === $query['sql']
         );
 
         Assert::assertCount(1, $dncQueries, 'DNC query not found. '.var_export(array_map(fn (array $query) => $query['sql'], $queries['default']), true));
@@ -464,7 +464,7 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
         $this->addContactsToSegment(
             $segment,
             ['contact@one.email', 'contact@two.email'],
-            function (Lead $contact, string $emailAddress) {
+            function (Lead $contact, string $emailAddress): void {
                 $contact->setAddress1('address1 name for '.$emailAddress);
                 $contact->setAddress2('address2+'.$emailAddress);
             }
@@ -478,8 +478,8 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
 
         /** @var MauticMessage[] $messages */
         $messages   = self::getMailerMessages();
-        $messageOne = array_values(array_filter($messages, fn ($message) => 'contact@one.email' === $message->getTo()[0]->getAddress()))[0];
-        $messageTwo = array_values(array_filter($messages, fn ($message) => 'contact@two.email' === $message->getTo()[0]->getAddress()))[0];
+        $messageOne = array_values(array_filter($messages, fn ($message): bool => 'contact@one.email' === $message->getTo()[0]->getAddress()))[0];
+        $messageTwo = array_values(array_filter($messages, fn ($message): bool => 'contact@two.email' === $message->getTo()[0]->getAddress()))[0];
 
         Assert::assertSame('Subject A', $messageOne->getSubject());
         Assert::assertMatchesRegularExpression('#Ahoy <i>contact@one\.email<\/i><a href="https:\/\/localhost\/r\/[a-z0-9]+\?ct=[a-zA-Z0-9%]+">Mautic<\/a><img height="1" width="1" src="https:\/\/localhost\/email\/[a-z0-9]+\.gif\?ct=[^"]+" alt="" \/>#', $messageOne->getHtmlBody());

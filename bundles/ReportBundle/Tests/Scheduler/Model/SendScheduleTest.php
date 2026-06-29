@@ -35,7 +35,7 @@ class SendScheduleTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $fileHandler;
 
-    private \PHPUnit\Framework\MockObject\MockObject|EventDispatcher $eventDispatcher;
+    private MockObject $eventDispatcher;
 
     protected function setUp(): void
     {
