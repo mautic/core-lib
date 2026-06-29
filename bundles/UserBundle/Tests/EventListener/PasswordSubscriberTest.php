@@ -23,23 +23,6 @@ final class PasswordSubscriberTest extends TestCase
 {
     private PasswordSubscriber $passwordSubscriber;
 
-    private PasswordStrengthEstimatorModel $passwordStrengthEstimatorModel;
-
-    /**
-     * @var MockObject&AuthenticationEvent
-     */
-    private MockObject $authenticationEvent;
-
-    /**
-     * @var MockObject&PluginToken
-     */
-    private MockObject $pluginToken;
-
-    /**
-     * @var MockObject&EventDispatcherInterface
-     */
-    private MockObject $dispatcher;
-
     protected function setUp(): void
     {
         $dispatcher                           = $this->createMock(EventDispatcherInterface::class);

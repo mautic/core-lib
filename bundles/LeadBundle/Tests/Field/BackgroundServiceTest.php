@@ -39,11 +39,6 @@ class BackgroundServiceTest extends \PHPUnit\Framework\TestCase
     private MockObject $leadFieldSaver;
 
     /**
-     * @var MockObject&LeadFieldDeleter
-     */
-    private MockObject $leadFieldDeleter;
-
-    /**
      * @var MockObject&FieldColumnBackgroundJobDispatcher
      */
     private MockObject $fieldColumnBackgroundJobDispatcher;

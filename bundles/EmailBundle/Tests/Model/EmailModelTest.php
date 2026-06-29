@@ -230,10 +230,10 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->messageModel              = $this->createMock(MessageQueueModel::class);
         $this->companyModel              = $this->createMock(CompanyModel::class);
         $this->companyRepository         = $this->createMock(CompanyRepository::class);
-        $this->dncModel                  = $this->createMock(DoNotContact::class);
+        $dncModel                        = $this->createMock(DoNotContact::class);
         $this->emailStatModel            = $this->createMock(EmailStatModel::class);
-        $this->statHelper                = new StatHelper($this->emailStatModel);
-        $this->sendToContactModel        = new SendEmailToContact($this->mailHelper, $this->statHelper, $this->dncModel, $this->translator);
+        $statHelper                      = new StatHelper($this->emailStatModel);
+        $this->sendToContactModel        = new SendEmailToContact($this->mailHelper, $statHelper, $dncModel, $this->translator);
         $this->deviceTrackerMock         = $this->createMock(DeviceTracker::class);
         $this->redirectRepositoryMock    = $this->createMock(RedirectRepository::class);
 

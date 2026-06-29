@@ -25,19 +25,9 @@ use Symfony\Component\HttpFoundation\Request;
 class FormSubscriberTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DoNotContact|(DoNotContact&MockObject)|MockObject
-     */
-    private MockObject $doNotContact;
-
-    /**
      * @var LeadModel|MockObject
      */
     private MockObject $leadModel;
-
-    /**
-     * @var PointGroupModel|(PointGroupModel&object&MockObject)|(PointGroupModel&MockObject)|(object&MockObject)|MockObject
-     */
-    private MockObject $pointGroupModel;
 
     private FormSubscriber $subscriber;
 
