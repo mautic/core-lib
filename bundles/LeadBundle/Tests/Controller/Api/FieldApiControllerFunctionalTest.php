@@ -73,7 +73,7 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
         // Test that the command will create the field
         $commandTester = $this->testSymfonyCommand('mautic:custom-field:create-column', ['--id' => $id]);
 
-        $this->assertEquals(0, $commandTester->getStatusCode());
+        $this->assertSame(0, $commandTester->getStatusCode());
 
         // Test fetching
         $this->assertGetResponse($payload, $id);
@@ -535,7 +535,7 @@ final class FieldApiControllerFunctionalTest extends MauticMysqlTestCase
         // Execute the command to create the field
         $commandTester = $this->testSymfonyCommand('mautic:custom-field:create-column', ['--id' => $id]);
 
-        $this->assertEquals(0, $commandTester->getStatusCode());
+        $this->assertSame(0, $commandTester->getStatusCode());
 
         // Create a segment which uses the custom field we just created.
         $segment = new LeadList();

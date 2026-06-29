@@ -135,7 +135,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
 
         self::assertResponseIsSuccessful();
 
-        $this->assertEquals(1, $crawler->filter('#success-message-text')->count(), $this->client->getResponse()->getContent());
+        $this->assertCount(1, $crawler->filter('#success-message-text'), $this->client->getResponse()->getContent());
         $expectedMessage = static::getContainer()->get('translator')->trans('mautic.email.preferences_center_success_message.text');
         $this->assertEquals($expectedMessage, trim($crawler->filter('#success-message-text')->text(null, false)));
         $this->assertResponseIsSuccessful();
@@ -202,7 +202,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         ]);
         $this->assertResponseIsSuccessful();
         $dncCollection = $stat->getLead()->getDoNotContact();
-        $this->assertEquals(1, $dncCollection->count());
+        $this->assertCount(1, $dncCollection);
         $this->assertEquals(DoNotContact::UNSUBSCRIBED, $dncCollection->first()->getReason());
     }
 
@@ -216,7 +216,7 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $crawler = $this->client->request('GET', '/email/unsubscribe/'.$stat->getTrackingHash());
         $this->assertResponseIsSuccessful();
         $tokenInput = $crawler->filter('input[name="lead_contact_frequency_rules[_token]"]');
-        $this->assertEquals(1, $tokenInput->count(), $this->client->getResponse()->getContent());
+        $this->assertCount(1, $tokenInput, $this->client->getResponse()->getContent());
     }
 
     private function getPreferencesCenterLandingPage(): Page
@@ -669,6 +669,6 @@ class PublicControllerFunctionalTest extends MauticMysqlTestCase
         $crawler = $this->client->submit($form);
         $this->assertResponseIsSuccessful();
         $successMessage = $crawler->filter('div.pref-successmessage');
-        $this->assertEquals(1, $successMessage->count());
+        $this->assertCount(1, $successMessage);
     }
 }

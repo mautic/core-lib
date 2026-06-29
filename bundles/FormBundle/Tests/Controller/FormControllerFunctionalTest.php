@@ -109,7 +109,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
 
         $selectedValue = $crawler->filter('#mauticform_postAction option:selected')->attr('value');
 
-        $this->assertEquals('message', $selectedValue);
+        $this->assertSame('message', $selectedValue);
 
         $form = $crawler->filterXPath('//form[@name="mauticform"]')->form();
 
@@ -133,7 +133,7 @@ class FormControllerFunctionalTest extends MauticMysqlTestCase
 
         $selectedValue = $crawler->filter('#mauticform_postAction option:selected')->attr('value');
 
-        $this->assertEquals('message', $selectedValue);
+        $this->assertSame('message', $selectedValue);
 
         $form = $crawler->filterXPath('//form[@name="mauticform"]')->form();
 

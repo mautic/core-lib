@@ -23,7 +23,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSame($this->expectedMimeType, $response->headers->get('Content-Type'));
         $this->assertNotSame($this->expectedContentDisposition.$this->asset->getOriginalFileName(), $response->headers->get('Content-Disposition'));
-        $this->assertEquals($this->expectedPngContent, $content);
+        $this->assertSame($this->expectedPngContent, $content);
     }
 
     /**
@@ -40,7 +40,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertStringStartsWith($this->expectedContentDisposition.$this->asset->getOriginalFileName(), $response->headers->get('Content-Disposition'));
-        $this->assertEquals($this->expectedPngContent, $content);
+        $this->assertSame($this->expectedPngContent, $content);
     }
 
     /**
@@ -59,7 +59,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertStringStartsWith($this->expectedContentDisposition.$this->asset->getOriginalFileName(), $response->headers->get('Content-Disposition'));
-        $this->assertEquals($this->expectedPngContent, $content);
+        $this->assertSame($this->expectedPngContent, $content);
     }
 
     /**
@@ -80,7 +80,7 @@ class PublicControllerFunctionalTest extends AbstractAssetTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSame($this->expectedMimeType, $response->headers->get('Content-Type'));
         $this->assertNotSame($this->expectedContentDisposition.$this->asset->getOriginalFileName(), $response->headers->get('Content-Disposition'));
-        $this->assertEquals($this->expectedPngContent, $content);
+        $this->assertSame($this->expectedPngContent, $content);
 
         $downloadRepo = $this->em->getRepository(Download::class);
 

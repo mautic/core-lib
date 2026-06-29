@@ -41,9 +41,9 @@ class LeadRepositoryTest extends \PHPUnit\Framework\TestCase
         $method     = $reflection->getMethod('prepareDbalFieldsForSave');
         $method->invokeArgs($trait, [&$fields]);
 
-        $this->assertEquals(1, $fields['true']);
-        $this->assertEquals(0, $fields['false']);
-        $this->assertEquals('blah', $fields['string']);
+        $this->assertSame(1, $fields['true']);
+        $this->assertSame(0, $fields['false']);
+        $this->assertSame('blah', $fields['string']);
     }
 
     /**
@@ -163,7 +163,7 @@ class LeadRepositoryTest extends \PHPUnit\Framework\TestCase
             ->method('createQuery')
             ->willReturn($query);
 
-        self::assertEquals(
+        self::assertSame(
             [1, 2],
             $this->repository->getContactIdsByEmails($emails)
         );

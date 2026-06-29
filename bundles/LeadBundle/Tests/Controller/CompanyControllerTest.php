@@ -171,7 +171,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $leadsTableRows = $crawler->filterXPath("//table[@id='leadTable']//tbody//tr");
 
         $this->assertResponseIsSuccessful();
-        $this->assertEquals(1, $leadsTableRows->count(), $crawler->html());
+        $this->assertCount(1, $leadsTableRows, $crawler->html());
 
         $clientResponse = $this->client->getResponse();
         $this->assertStringContainsString('test1@test.com', $clientResponse->getContent());
@@ -182,7 +182,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         $leadsTableRows = $crawler->filterXPath("//table[@id='leadTable']//tbody//tr");
 
         $this->assertResponseIsSuccessful();
-        $this->assertEquals(0, $leadsTableRows->count(), $crawler->html());
+        $this->assertCount(0, $leadsTableRows, $crawler->html());
     }
 
     public function testCompanyFieldsAreUpdatedWithBatchFindAndReplace(): void
@@ -243,7 +243,7 @@ class CompanyControllerTest extends MauticMysqlTestCase
         );
 
         $companyTableRows = $crawler->filterXPath("//table[@id='companyTable']//tbody//tr");
-        $this->assertEquals(5, $companyTableRows->count(), $crawler->html());
+        $this->assertCount(5, $companyTableRows, $crawler->html());
 
         $payload = [
             'lead_batch_find_replace' => [

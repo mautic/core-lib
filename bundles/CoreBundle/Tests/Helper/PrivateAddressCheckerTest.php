@@ -146,7 +146,7 @@ class PrivateAddressCheckerTest extends TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('edgeCaseUrlProvider')]
     public function testEdgeCaseUrls(string $url, bool $expectedResult): void
     {
-        $this->assertEquals($expectedResult, $this->checkerWithMockedDns->isPrivateUrl($url));
+        $this->assertSame($expectedResult, $this->checkerWithMockedDns->isPrivateUrl($url));
     }
 
     /**

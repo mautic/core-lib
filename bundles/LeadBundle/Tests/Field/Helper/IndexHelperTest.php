@@ -69,6 +69,6 @@ class IndexHelperTest extends \PHPUnit\Framework\TestCase
             ->willReturn($sqlResult);
 
         $this->assertEquals($expectedColumnNames, $helper->getIndexedColumnNames());
-        $this->assertEquals($expectedCount, $helper->getIndexCount());
+        $this->assertSame($expectedCount, $helper->getIndexCount());
     }
 }

@@ -108,8 +108,8 @@ class ContactSegmentFilterTest extends TestCase
 
         $parts = $filter->getDoNotContactParts();
 
-        self::assertEquals('email', $parts->getChannel());
-        self::assertEquals(1, $parts->getParameterType());
+        self::assertSame('email', $parts->getChannel());
+        self::assertSame(1, $parts->getParameterType());
     }
 
     public function testGetParameterHolder(): void
@@ -186,7 +186,7 @@ class ContactSegmentFilterTest extends TestCase
 
         $parts = $filter->getIntegrationCampaignParts();
 
-        self::assertEquals($value, $parts->getCampaignId());
+        self::assertSame($value, $parts->getCampaignId());
     }
 
     public function testApplyQuery(): void
@@ -404,7 +404,7 @@ class ContactSegmentFilterTest extends TestCase
         $filter = $this->createContactSegmentFilter();
 
         $result = $filter->__toString();
-        self::assertEquals($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('dataDoesColumnSupportEmptyValue')]
@@ -413,7 +413,7 @@ class ContactSegmentFilterTest extends TestCase
         $this->contactSegmentFilterCrate = new ContactSegmentFilterCrate(['type' => $type]);
         $filter                          = $this->createContactSegmentFilter();
 
-        self::assertEquals($doesColumnSupportEmptyValue, $filter->doesColumnSupportEmptyValue());
+        self::assertSame($doesColumnSupportEmptyValue, $filter->doesColumnSupportEmptyValue());
     }
 
     public function testBatchLimitersAreSetCorrectly(): void

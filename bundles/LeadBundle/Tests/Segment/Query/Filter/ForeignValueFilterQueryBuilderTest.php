@@ -54,7 +54,7 @@ class ForeignValueFilterQueryBuilderTest extends TestCase
 
     public function testGetServiceId(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             'mautic.lead.query.builder.foreign.value',
             $this->queryBuilder::getServiceId()
         );
