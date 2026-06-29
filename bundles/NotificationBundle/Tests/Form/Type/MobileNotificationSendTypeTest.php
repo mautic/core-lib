@@ -17,10 +17,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class MobileNotificationSendTypeTest extends TypeTestCase
 {
+    /**
+     * @var \PHPUnit\Framework\MockObject\Stub&RouterInterface
+     */
     private \PHPUnit\Framework\MockObject\Stub $router;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\Stub&TranslatorInterface
+     */
     private \PHPUnit\Framework\MockObject\Stub $translator;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\Stub&Connection
+     */
     private \PHPUnit\Framework\MockObject\Stub $connection;
 
     /**

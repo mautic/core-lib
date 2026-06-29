@@ -21,6 +21,9 @@ class WebhookSubscriberTest extends \PHPUnit\Framework\TestCase
 {
     private \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\Stub&LeadModel
+     */
     private \PHPUnit\Framework\MockObject\Stub $leadModel;
 
     /**

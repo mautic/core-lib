@@ -11,6 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 class TokenPersistenceFactoryTest extends TestCase
 {
+    /**
+     * @var \PHPUnit\Framework\MockObject\Stub&IntegrationsHelper
+     */
     private \PHPUnit\Framework\MockObject\Stub $integrationsHelper;
 
     /**

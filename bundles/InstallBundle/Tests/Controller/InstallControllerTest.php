@@ -32,6 +32,9 @@ class InstallControllerTest extends \PHPUnit\Framework\TestCase
 
     private InstallController $controller;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\Stub&PathsHelper
+     */
     private \PHPUnit\Framework\MockObject\Stub $pathsHelper;
 
     /**
