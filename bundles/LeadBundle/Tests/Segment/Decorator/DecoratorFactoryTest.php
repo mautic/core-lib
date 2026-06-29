@@ -88,7 +88,7 @@ class DecoratorFactoryTest extends \PHPUnit\Framework\TestCase
             ->method('dispatch')
             ->with(
                 $this->callback(
-                    function (LeadListFiltersDecoratorDelegateEvent $event) use ($contactSegmentFilterCrate) {
+                    function (LeadListFiltersDecoratorDelegateEvent $event) use ($contactSegmentFilterCrate): true {
                         $this->assertNull($event->getDecorator());
                         $this->assertSame($contactSegmentFilterCrate, $event->getCrate());
 
@@ -116,7 +116,7 @@ class DecoratorFactoryTest extends \PHPUnit\Framework\TestCase
             ->method('dispatch')
             ->with(
                 $this->callback(
-                    function (LeadListFiltersDecoratorDelegateEvent $event) use ($contactSegmentFilterCrate, $filterDecoratorInterface) {
+                    function (LeadListFiltersDecoratorDelegateEvent $event) use ($contactSegmentFilterCrate, $filterDecoratorInterface): true {
                         $this->assertNull($event->getDecorator());
                         $this->assertSame($contactSegmentFilterCrate, $event->getCrate());
 

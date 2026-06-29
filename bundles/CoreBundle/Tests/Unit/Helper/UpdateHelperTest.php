@@ -303,7 +303,7 @@ class UpdateHelperTest extends TestCase
                 'POST',
                 $statsUrl,
                 $this->callback(
-                    function (array $options) {
+                    function (array $options): true {
                         $this->assertArrayHasKey(\GuzzleHttp\RequestOptions::FORM_PARAMS, $options);
                         $this->assertArrayHasKey(\GuzzleHttp\RequestOptions::CONNECT_TIMEOUT, $options);
                         $this->assertArrayHasKey(\GuzzleHttp\RequestOptions::HEADERS, $options);

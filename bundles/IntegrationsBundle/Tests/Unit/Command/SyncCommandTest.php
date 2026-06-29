@@ -63,7 +63,7 @@ class SyncCommandTest extends TestCase
     {
         $this->syncService->expects($this->once())
             ->method('processIntegrationSync')
-            ->with($this->callback(function (InputOptionsDAO $inputOptionsDAO) {
+            ->with($this->callback(function (InputOptionsDAO $inputOptionsDAO): true {
                 $this->assertSame(self::INTEGRATION_NAME, $inputOptionsDAO->getIntegration());
                 $this->assertSame(['123', '345'], $inputOptionsDAO->getMauticObjectIds()->getObjectIdsFor(Contact::NAME));
                 $this->assertNull($inputOptionsDAO->getIntegrationObjectIds());
@@ -88,7 +88,7 @@ class SyncCommandTest extends TestCase
     {
         $this->syncService->expects($this->once())
             ->method('processIntegrationSync')
-            ->with($this->callback(function (InputOptionsDAO $inputOptionsDAO) {
+            ->with($this->callback(function (InputOptionsDAO $inputOptionsDAO): true {
                 $this->assertSame(self::INTEGRATION_NAME, $inputOptionsDAO->getIntegration());
 
                 return true;

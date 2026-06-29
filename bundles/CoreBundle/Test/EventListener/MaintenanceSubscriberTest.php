@@ -93,7 +93,7 @@ class MaintenanceSubscriberTest extends \PHPUnit\Framework\TestCase
         $qb
             ->expects($this->exactly(4))
             ->method('executeQuery')
-            ->willReturnCallback(function () {
+            ->willReturnCallback(function (): \PHPUnit\Framework\MockObject\MockObject {
                 static $callCount = 0;
                 ++$callCount;
                 $result = $this->createMock(\Doctrine\DBAL\Result::class);

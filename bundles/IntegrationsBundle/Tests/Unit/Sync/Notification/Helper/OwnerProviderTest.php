@@ -66,7 +66,7 @@ class OwnerProviderTest extends TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (InternalObjectOwnerEvent $event) use ($internalObject) {
+                $this->callback(function (InternalObjectOwnerEvent $event) use ($internalObject): true {
                     $this->assertSame($internalObject, $event->getObject());
                     $this->assertSame([123], $event->getObjectIds());
 

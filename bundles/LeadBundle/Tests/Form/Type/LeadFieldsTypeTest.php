@@ -51,7 +51,7 @@ final class LeadFieldsTypeTest extends \PHPUnit\Framework\TestCase
         $optionsResolver->expects($this->once())
             ->method('setDefaults')
             ->with($this->callback(
-                function (array $defaults) use ($optionsResolver) {
+                function (array $defaults) use ($optionsResolver): true {
                     $choices = $defaults['choices']($optionsResolver);
 
                     // Notice the labels and values are switched.

@@ -143,7 +143,7 @@ class PartialObjectReportBuilderTest extends TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (InternalObjectFindEvent $event) use ($internalObject) {
+                $this->callback(function (InternalObjectFindEvent $event) use ($internalObject): true {
                     $this->assertSame($internalObject, $event->getObject());
                     $this->assertSame([1], $event->getIds());
 
@@ -234,7 +234,7 @@ class PartialObjectReportBuilderTest extends TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (InternalObjectFindEvent $event) use ($internalObject) {
+                $this->callback(function (InternalObjectFindEvent $event) use ($internalObject): true {
                     $this->assertSame([1], $event->getIds());
                     $this->assertSame($internalObject, $event->getObject());
 
@@ -372,7 +372,7 @@ class PartialObjectReportBuilderTest extends TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (InternalObjectFindEvent $event) use ($internalObject) {
+                $this->callback(function (InternalObjectFindEvent $event) use ($internalObject): true {
                     $this->assertSame([1], $event->getIds());
                     $this->assertSame($internalObject, $event->getObject());
 

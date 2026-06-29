@@ -230,7 +230,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
             ->willReturn(['mautic.email.graph.pie.read.ingored.unsubscribed.bounced']);
         $matcher = $this->any();
 
-        $eventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
+        $eventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher): true {
             if (1 === $matcher->numberOfInvocations()) {
                 $this->assertSame(['email.stats', 'emails'], $parameters[0]);
             }
@@ -283,7 +283,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher           = $this->any();
 
         $eventMock->expects($matcher)
-            ->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher): true {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(['email.stats', 'emails'], $parameters[0]);
                 }

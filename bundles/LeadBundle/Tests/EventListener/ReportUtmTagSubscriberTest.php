@@ -195,7 +195,7 @@ class ReportUtmTagSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $reportGeneratorEventMock->expects($matcher)
-            ->method('usesColumn')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('usesColumn')->willReturnCallback(function (...$parameters) use ($matcher): true {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(['u.first_name', 'u.last_name'], $parameters[0]);
                 }
@@ -246,7 +246,7 @@ class ReportUtmTagSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->any();
 
         $queryBuilderMock->expects($matcher)->method('leftJoin')
-            ->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilderMock) {
+            ->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilderMock): \PHPUnit\Framework\MockObject\MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('utm', $parameters[0]);
                     $this->assertSame(MAUTIC_TABLE_PREFIX.'leads', $parameters[1]);

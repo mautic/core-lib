@@ -99,7 +99,7 @@ class WebhookModelTest extends TestCase
 
         $this->webhookRepository->expects($this->once())
             ->method('saveEntity')
-            ->with($this->callback(function (Webhook $entity) {
+            ->with($this->callback(function (Webhook $entity): true {
                 // The secret hash is not empty on save.
                 $this->assertNotEmpty($entity->getSecret());
 
@@ -150,7 +150,7 @@ class WebhookModelTest extends TestCase
         $queueRepositoryMock = $this->createMock(WebhookQueueRepository::class);
 
         $this->parametersHelperMock->method('get')
-            ->willReturnCallback(function ($param) {
+            ->willReturnCallback(function ($param): string|int|null {
                 if ('queue_mode' === $param) {
                     return WebhookModel::COMMAND_PROCESS;
                 }
@@ -197,7 +197,7 @@ class WebhookModelTest extends TestCase
         $queue->setDateAdded(new \DateTime('2018-04-10T15:04:57+00:00'));
 
         $this->parametersHelperMock->method('get')
-            ->willReturnCallback(function ($param) {
+            ->willReturnCallback(function ($param): ?string {
                 if ('queue_mode' === $param) {
                     return WebhookModel::IMMEDIATE_PROCESS;
                 }

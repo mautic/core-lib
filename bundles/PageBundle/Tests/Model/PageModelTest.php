@@ -62,7 +62,7 @@ class PageModelTest extends PageTestAbstract
         $this->router->expects($this->once())
             ->method('generate')
             ->willReturnCallback(
-                function (string $route, array $routeParams, int $referenceType) {
+                function (string $route, array $routeParams, int $referenceType): string {
                     $this->assertSame('mautic_page_public', $route);
                     $this->assertSame(['slug' => 'this-is-a-test'], $routeParams);
                     $this->assertSame(0, $referenceType);

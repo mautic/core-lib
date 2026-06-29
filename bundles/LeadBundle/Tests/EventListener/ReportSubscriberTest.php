@@ -176,7 +176,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
 
         $this->queryBuilderMock->expects($this->any())
             ->method('getQueryPart')
-            ->willReturnCallback(function ($input) {
+            ->willReturnCallback(function ($input): array|string {
                 if ('join' === $input) {
                     return [
                         'lp' => [[
@@ -328,7 +328,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->any();
         $this->reportBuilderEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher): false {
                     if (1 === $matcher->numberOfInvocations()) {
                         $this->assertSame([
                             'leads',
@@ -353,7 +353,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
     public function testNotRelevantContextGenerate(): void
     {
         $matcher = $this->exactly(2);
-        $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher) {
+        $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')->willReturnCallback(function (...$parameters) use ($matcher): false {
             if (1 === $matcher->numberOfInvocations()) {
                 $this->assertSame([
                     'leads',
@@ -854,7 +854,7 @@ class ReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->any();
         $this->reportGeneratorEventMock->expects($matcher)->method('checkContext')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher): true {
                     if (1 === $matcher->numberOfInvocations()) {
                         $this->assertSame([
                             'leads',

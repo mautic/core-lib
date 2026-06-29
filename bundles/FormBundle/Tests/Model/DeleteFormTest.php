@@ -76,7 +76,7 @@ class DeleteFormTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $dispatcher->expects($matcher)
-            ->method('hasListeners')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('hasListeners')->willReturnCallback(function (...$parameters) use ($matcher): false {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.form_pre_delete', $parameters[0]);
                 }

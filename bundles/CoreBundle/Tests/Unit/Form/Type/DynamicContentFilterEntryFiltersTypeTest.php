@@ -32,7 +32,7 @@ class DynamicContentFilterEntryFiltersTypeTest extends TestCase
         $builder = $this->createMock(FormBuilderInterface::class);
         $matcher = self::exactly(4);
         $builder->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder): \PHPUnit\Framework\MockObject\MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('glue', $parameters[0]);
                     $this->assertSame(ChoiceType::class, $parameters[1]);
@@ -66,7 +66,7 @@ class DynamicContentFilterEntryFiltersTypeTest extends TestCase
         $matcher = $this->exactly(2);
 
         $builder->expects($matcher)
-            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
+            ->method('addEventListener')->willReturnCallback(function (...$parameters) use ($matcher, $builder): \PHPUnit\Framework\MockObject\MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(FormEvents::PRE_SET_DATA, $parameters[0]);
                     $this->assertIsCallable($parameters[1]);

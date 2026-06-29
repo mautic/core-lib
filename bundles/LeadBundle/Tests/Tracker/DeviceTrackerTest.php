@@ -39,7 +39,7 @@ class DeviceTrackerTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $createCacheItem = \Closure::bind(
-            function ($key) {
+            function ($key): \Symfony\Component\Cache\CacheItem {
                 $item        = new CacheItem();
                 $item->key   = $key;
                 $item->isHit = false;
