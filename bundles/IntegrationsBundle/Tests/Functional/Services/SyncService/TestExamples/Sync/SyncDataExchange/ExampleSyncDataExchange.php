@@ -72,6 +72,7 @@ class ExampleSyncDataExchange implements SyncDataExchangeInterface
 
         $orderedObjects = $syncOrderDAO->getUnidentifiedObjects();
         foreach ($orderedObjects as $objectName => $unidentifiedObjects) {
+            /** @var ObjectChangeDAO $unidentifiedObject */
             foreach ($unidentifiedObjects as $unidentifiedObject) {
                 // Use getFields here to ensure we have values for required fields in addition to one way mapped fields
                 // Can also use getUnchangedFields, getChangedFields, or getRequiredFields
@@ -101,6 +102,10 @@ class ExampleSyncDataExchange implements SyncDataExchangeInterface
 
         $orderedObjects = $syncOrderDAO->getIdentifiedObjects();
         foreach ($orderedObjects as $objectName => $identifiedObjects) {
+            /**
+             * @var mixed           $id
+             * @var ObjectChangeDAO $identifiedObject
+             */
             foreach ($identifiedObjects as $id => $identifiedObject) {
                 // Use getChangedFields in order to update only fields that have been modified since
                 $fields = $identifiedObject->getFields();
