@@ -21,17 +21,17 @@ class SendScheduleTest extends \PHPUnit\Framework\TestCase
     private SendSchedule $sendSchedule;
 
     /**
-     * @var MockObject|MailHelper
+     * @var MockObject&MailHelper
      */
     private MockObject $mailHelperMock;
 
     /**
-     * @var MockObject|MessageSchedule
+     * @var MockObject&MessageSchedule
      */
     private MockObject $messageSchedule;
 
     /**
-     * @var MockObject|FileHandler
+     * @var MockObject&FileHandler
      */
     private MockObject $fileHandler;
 

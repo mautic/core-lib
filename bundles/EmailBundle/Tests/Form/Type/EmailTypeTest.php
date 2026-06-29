@@ -28,7 +28,7 @@ class EmailTypeTest extends \PHPUnit\Framework\TestCase
     private EmailType $form;
 
     /**
-     * @var ThemeHelperInterface&MockObject
+     * @var MockObject&ThemeHelperInterface
      */
     private MockObject $themeHelper;
 

@@ -17,15 +17,18 @@ use Symfony\Component\Lock\LockInterface;
 class ModeratedCommandTest extends TestCase
 {
     private string $lockFilePath;
+    /**
+     * @var MockObject&CoreParametersHelper
+     */
     private MockObject $coreParametersHelper;
 
     /**
-     * @var MockObject|InputInterface
+     * @var MockObject&InputInterface
      */
     private MockObject $input;
 
     /**
-     * @var MockObject|PathsHelper
+     * @var MockObject&PathsHelper
      */
     private MockObject $pathsHelper;
 

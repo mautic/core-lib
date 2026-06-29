@@ -15,12 +15,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class ConditionDispatcherTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private MockObject $dispatcher;
 
     /**
-     * @var MockObject|ConditionAccessor
+     * @var MockObject&ConditionAccessor
      */
     private MockObject $config;
 

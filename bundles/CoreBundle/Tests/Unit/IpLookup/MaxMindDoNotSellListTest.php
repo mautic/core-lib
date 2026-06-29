@@ -11,9 +11,9 @@ use PHPUnit\Framework\Assert;
 class MaxMindDoNotSellListTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|CoreParametersHelper
+     * @var \PHPUnit\Framework\MockObject\Stub|CoreParametersHelper
      */
-    private \PHPUnit\Framework\MockObject\MockObject $coreParamsHelperMock;
+    private \PHPUnit\Framework\MockObject\Stub $coreParamsHelperMock;
 
     private string $badFilePath = 'bad_list.json';
 
@@ -36,7 +36,7 @@ class MaxMindDoNotSellListTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
 
-        $this->coreParamsHelperMock = $this->createMock(CoreParametersHelper::class);
+        $this->coreParamsHelperMock = $this->createStub(CoreParametersHelper::class);
 
         file_put_contents($this->badFilePath, $this->badData);
         file_put_contents($this->goodFilePath, $this->goodData);

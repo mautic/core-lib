@@ -18,12 +18,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class DecoratorFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private MockObject $eventDispatcherMock;
 
     /**
-     * @var MockObject|DateOptionFactory
+     * @var MockObject&DateOptionFactory
      */
     private MockObject $dateOptionFactory;
 
@@ -76,7 +76,7 @@ class DecoratorFactoryTest extends \PHPUnit\Framework\TestCase
 
     public function testDateDecoratorWhenNoSubscriberProvidesDecorator(): void
     {
-        $filterDecoratorInterface  = $this->createMock(FilterDecoratorInterface::class);
+        $filterDecoratorInterface  = $this->createStub(FilterDecoratorInterface::class);
         $contactSegmentFilterCrate = new ContactSegmentFilterCrate(['type' => 'date']);
 
         $this->dateOptionFactory->expects($this->once())
@@ -106,7 +106,7 @@ class DecoratorFactoryTest extends \PHPUnit\Framework\TestCase
 
     public function testDateDecoratorWhenSubscriberProvidesDecorator(): void
     {
-        $filterDecoratorInterface  = $this->createMock(FilterDecoratorInterface::class);
+        $filterDecoratorInterface  = $this->createStub(FilterDecoratorInterface::class);
         $contactSegmentFilterCrate = new ContactSegmentFilterCrate(['type' => 'date']);
 
         $this->dateOptionFactory->expects($this->never())

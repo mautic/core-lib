@@ -18,27 +18,27 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserNotificationHelperTest extends TestCase
 {
     /**
-     * @var Writer|MockObject
+     * @var MockObject&Writer
      */
     private MockObject $writer;
 
     /**
-     * @var UserHelper|MockObject
+     * @var MockObject&UserHelper
      */
     private MockObject $userHelper;
 
     /**
-     * @var OwnerProvider|MockObject
+     * @var MockObject&OwnerProvider
      */
     private MockObject $ownerProvider;
 
     /**
-     * @var RouteHelper|MockObject
+     * @var MockObject&RouteHelper
      */
     private MockObject $routeHelper;
 
     /**
-     * @var TranslatorInterface|MockObject
+     * @var MockObject&TranslatorInterface
      */
     private MockObject $translator;
 

@@ -20,9 +20,9 @@ final class FormAdjustmentsProviderTest extends \PHPUnit\Framework\TestCase
     private MockObject $dispatcher;
 
     /**
-     * @var MockObject&FormInterface<mixed>
+     * @var \PHPUnit\Framework\MockObject\Stub&FormInterface<mixed>
      */
-    private MockObject $form;
+    private \PHPUnit\Framework\MockObject\Stub $form;
 
     private FormAdjustmentsProvider $provider;
 
@@ -31,7 +31,7 @@ final class FormAdjustmentsProviderTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
 
         $this->dispatcher = $this->createMock(EventDispatcherInterface::class);
-        $this->form       = $this->createMock(FormInterface::class);
+        $this->form       = $this->createStub(FormInterface::class);
         $this->provider   = new FormAdjustmentsProvider($this->dispatcher);
     }
 

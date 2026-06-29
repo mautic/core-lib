@@ -25,7 +25,7 @@ class FormSubscriberTest extends TestCase
     private FormSubscriber $subscriber;
 
     /**
-     * @var MailHelper&MockObject
+     * @var MockObject&MailHelper
      */
     private MockObject $mailer;
 

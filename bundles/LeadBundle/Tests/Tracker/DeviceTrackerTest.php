@@ -22,14 +22,14 @@ class DeviceTrackerTest extends \PHPUnit\Framework\TestCase
     private DeviceDetectorFactory $deviceDetectorFactory;
 
     /**
-     * @var DeviceTrackingServiceInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject&DeviceTrackingServiceInterface
      */
     private \PHPUnit\Framework\MockObject\MockObject $deviceTrackingService;
 
     /**
-     * @var Logger
+     * @var Logger&\PHPUnit\Framework\MockObject\Stub
      */
-    private \PHPUnit\Framework\MockObject\MockObject $logger;
+    private \PHPUnit\Framework\MockObject\Stub $logger;
 
     /**
      * @var string
@@ -77,7 +77,7 @@ class DeviceTrackerTest extends \PHPUnit\Framework\TestCase
         $this->deviceCreatorService  = new DeviceCreatorService();
         $this->deviceTrackingService = $this->createMock(DeviceTrackingServiceInterface::class);
 
-        $this->logger = $this->createMock(Logger::class);
+        $this->logger = $this->createStub(Logger::class);
     }
 
     public function testDeviceCreatedByUserAgent(): void

@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormInterface;
 final class FilterSelectorTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|FormBuilderInterface
+     * @var MockObject&FormBuilderInterface
      */
     private MockObject $formBuilder;
 

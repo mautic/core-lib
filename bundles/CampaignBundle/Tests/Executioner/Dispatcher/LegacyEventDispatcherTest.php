@@ -27,27 +27,27 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class LegacyEventDispatcherTest extends TestCase
 {
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private MockObject $dispatcher;
 
     /**
-     * @var MockObject|EventScheduler
+     * @var MockObject&EventScheduler
      */
     private MockObject $scheduler;
 
     /**
-     * @var MockObject|ContactTracker
+     * @var MockObject&ContactTracker
      */
     private MockObject $contactTracker;
 
     /**
-     * @var MockObject|AbstractEventAccessor
+     * @var MockObject&AbstractEventAccessor
      */
     private MockObject $config;
 
     /**
-     * @var MockObject|PendingEvent
+     * @var MockObject&PendingEvent
      */
     private MockObject $pendingEvent;
 

@@ -33,32 +33,32 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class SyncProcessTest extends TestCase
 {
     /**
-     * @var MockObject|MauticSyncDataExchange
+     * @var MockObject&MauticSyncDataExchange
      */
     private MockObject $internalSyncDataExchange;
 
     /**
-     * @var MockObject|SyncDateHelper
+     * @var MockObject&SyncDateHelper
      */
     private MockObject $syncDateHelper;
 
     /**
-     * @var MockObject|IntegrationSyncProcess
+     * @var MockObject&IntegrationSyncProcess
      */
     private MockObject $integrationSyncProcess;
 
     /**
-     * @var MockObject|MauticSyncProcess
+     * @var MockObject&MauticSyncProcess
      */
     private MockObject $mauticSyncProcess;
 
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private MockObject $eventDispatcher;
 
     /**
-     * @var MockObject|InputOptionsDAO
+     * @var MockObject&InputOptionsDAO
      */
     private MockObject $inputOptionsDAO;
 

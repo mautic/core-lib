@@ -28,12 +28,12 @@ class ExampleSendTypeTest extends TestCase
     private MockObject $translator;
 
     /**
-     * @var CorePermissions&MockObject
+     * @var MockObject&CorePermissions
      */
     private MockObject $security;
 
     /**
-     * @var UserHelper|MockObject
+     * @var MockObject&UserHelper
      */
     private MockObject $userHelperMock;
 

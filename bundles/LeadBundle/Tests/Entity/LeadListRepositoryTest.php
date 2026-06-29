@@ -22,12 +22,12 @@ class LeadListRepositoryTest extends TestCase
     private LeadListRepository $repository;
 
     /**
-     * @var QueryBuilder&MockObject
+     * @var MockObject&QueryBuilder
      */
     private MockObject $queryBuilderMock;
 
     /**
-     * @var Expr&MockObject
+     * @var MockObject&Expr
      */
     private MockObject $expressionMock;
 

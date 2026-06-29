@@ -28,7 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|LeadModel
+     * @var MockObject&LeadModel
      */
     private MockObject $leadModel;
 
@@ -63,7 +63,7 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
     private MockObject $assetModel;
 
     /**
-     * @var MockObject&FormInterface<FormInterface<mixed>>
+     * @var MockObject&FormInterface
      */
     private MockObject $form;
 

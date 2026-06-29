@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class LeadFieldsTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|FieldModel
+     * @var MockObject&FieldModel
      */
     private MockObject $fieldModel;
 

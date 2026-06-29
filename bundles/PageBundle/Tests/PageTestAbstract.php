@@ -153,14 +153,14 @@ class PageTestAbstract extends TestCase
             $contactTracker,
             $coreParametersHelper,
             $this->contactRequestHelper,
-            $this->createMock(\Mautic\CoreBundle\Model\AbTest\VariantConverterService::class),
+            $this->createStub(\Mautic\CoreBundle\Model\AbTest\VariantConverterService::class),
             $entityManager,
             $this->security = $this->createMock(CorePermissions::class),
             $dispatcher,
             $this->router,
             $translator,
             $userHelper,
-            $this->createMock(LoggerInterface::class),
+            $this->createStub(LoggerInterface::class),
             $statRepositoryMock,
             $botRatioHelperMock,
             $validatorMock
@@ -178,14 +178,14 @@ class PageTestAbstract extends TestCase
 
         $mockRedirectModel = $this->getMockBuilder(RedirectModel::class)
             ->setConstructorArgs([
-                $this->createMock(EntityManagerInterface::class),
-                $this->createMock(CorePermissions::class),
-                $this->createMock(EventDispatcherInterface::class),
-                $this->createMock(UrlGeneratorInterface::class),
-                $this->createMock(Translator::class),
-                $this->createMock(UserHelper::class),
-                $this->createMock(LoggerInterface::class),
-                $this->createMock(CoreParametersHelper::class),
+                $this->createStub(EntityManagerInterface::class),
+                $this->createStub(CorePermissions::class),
+                $this->createStub(EventDispatcherInterface::class),
+                $this->createStub(UrlGeneratorInterface::class),
+                $this->createStub(Translator::class),
+                $this->createStub(UserHelper::class),
+                $this->createStub(LoggerInterface::class),
+                $this->createStub(CoreParametersHelper::class),
                 $shortener,
             ])
             ->onlyMethods(['createRedirectEntity', 'generateRedirectUrl'])

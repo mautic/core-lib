@@ -16,12 +16,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private MockObject $dispatcher;
 
     /**
-     * @var MockObject|FilterOperatorProviderInterface
+     * @var MockObject&FilterOperatorProviderInterface
      */
     private MockObject $filterOperatorPovider;
 

@@ -15,7 +15,7 @@ final class SegmentConfigTypeTest extends TestCase
     private SegmentConfigType $segmentConfigType;
 
     /**
-     * @var FormBuilderInterface<FormBuilderInterface>&MockObject
+     * @var MockObject&FormBuilderInterface
      */
     private MockObject $formBuilderInterface;
 

@@ -21,7 +21,7 @@ class SyncCommandTest extends TestCase
     private const INTEGRATION_NAME = 'Test';
 
     /**
-     * @var SyncServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject&SyncServiceInterface
      */
     private \PHPUnit\Framework\MockObject\MockObject $syncService;
 

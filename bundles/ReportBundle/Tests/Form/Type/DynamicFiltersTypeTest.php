@@ -20,8 +20,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class DynamicFiltersTypeTest extends TestCase
 {
+    /**
+     * @var MockObject&FormBuilderInterface
+     */
     private MockObject $formBuilder;
+    /**
+     * @var MockObject&TranslatorInterface
+     */
     private MockObject $translator;
+    /**
+     * @var MockObject&Report
+     */
     private MockObject $report;
     private \stdClass $filterDefinitions;
     private DynamicFiltersType $dynamicFiltersType;

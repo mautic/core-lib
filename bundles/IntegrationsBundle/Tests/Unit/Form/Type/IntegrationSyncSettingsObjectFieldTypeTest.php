@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 final class IntegrationSyncSettingsObjectFieldTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|FormBuilderInterface
+     * @var MockObject&FormBuilderInterface
      */
     private MockObject $formBuilder;
 

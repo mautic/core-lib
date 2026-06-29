@@ -14,12 +14,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 class UserTokenServiceTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|RandomHelperInterface
+     * @var MockObject&RandomHelperInterface
      */
     private MockObject $randomHelperMock;
 
     /**
-     * @var MockObject|UserTokenRepositoryInterface
+     * @var MockObject&UserTokenRepositoryInterface
      */
     private MockObject $userTokenRepositoryMock;
 

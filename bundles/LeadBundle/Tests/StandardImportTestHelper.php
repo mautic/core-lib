@@ -197,12 +197,12 @@ abstract class StandardImportTestHelper extends CommonMocks
             $coreParametersHelper,
             $companyModel,
             $this->entityManager,
-            $this->createMock(CorePermissions::class),
+            $this->createStub(CorePermissions::class),
             $this->dispatcher,
-            $this->createMock(UrlGeneratorInterface::class),
+            $this->createStub(UrlGeneratorInterface::class),
             $translator,
             $userHelper,
-            $this->createMock(LoggerInterface::class),
+            $this->createStub(LoggerInterface::class),
             new ProcessSignalService()
         );
 

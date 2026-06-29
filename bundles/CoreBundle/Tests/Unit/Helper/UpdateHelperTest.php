@@ -24,37 +24,37 @@ use Psr\Http\Message\StreamInterface;
 class UpdateHelperTest extends TestCase
 {
     /**
-     * @var Logger|MockObject
+     * @var MockObject&Logger
      */
     private MockObject $logger;
 
     /**
-     * @var CoreParametersHelper|MockObject
+     * @var MockObject&CoreParametersHelper
      */
     private MockObject $coreParametersHelper;
 
     /**
-     * @var Client|MockObject
+     * @var MockObject&Client
      */
     private MockObject $client;
 
     /**
-     * @var ResponseInterface|MockObject
+     * @var MockObject&ResponseInterface
      */
     private MockObject $response;
 
     /**
-     * @var StreamInterface|MockObject
+     * @var MockObject&StreamInterface
      */
     private MockObject $streamBody;
 
     /**
-     * @var ReleaseParser|MockObject
+     * @var MockObject&ReleaseParser
      */
     private MockObject $releaseParser;
 
     /**
-     * @var PreUpdateCheckHelper|MockObject
+     * @var MockObject&PreUpdateCheckHelper
      */
     private MockObject $preUpdateCheckHelper;
 
@@ -710,7 +710,7 @@ class UpdateHelperTest extends TestCase
         $this->client->expects($this->once())
             ->method('request')
             ->with('GET', $updateUrl)
-            ->willThrowException(new RequestException('bad', $this->createMock(RequestInterface::class), $this->response));
+            ->willThrowException(new RequestException('bad', $this->createStub(RequestInterface::class), $this->response));
 
         $this->releaseParser->expects($this->never())
             ->method('getLatestSupportedRelease');

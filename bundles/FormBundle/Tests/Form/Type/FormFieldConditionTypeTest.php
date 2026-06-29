@@ -15,17 +15,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 final class FormFieldConditionTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject|FieldModel
+     * @var MockObject&FieldModel
      */
     private MockObject $fieldModel;
 
     /**
-     * @var MockObject|PropertiesAccessor
+     * @var MockObject&PropertiesAccessor
      */
     private MockObject $propertiesAccessor;
 
     /**
-     * @var MockObject&FormBuilderInterface<string|FormBuilderInterface>
+     * @var MockObject&FormBuilderInterface
      */
     private MockObject $formBuilder;
 

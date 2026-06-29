@@ -15,7 +15,7 @@ use Symfony\Component\Form\Test\TypeTestCase;
 final class FormFieldNumberTypeTest extends TypeTestCase
 {
     /**
-     * @var MockObject|FormBuilderInterface
+     * @var MockObject&FormBuilderInterface
      */
     private MockObject $formBuilder;
 

@@ -16,7 +16,7 @@ class ContactActionModelTest extends \PHPUnit\Framework\TestCase
     private Lead $contactMock6;
 
     /**
-     * @var MockObject|LeadModel
+     * @var MockObject&LeadModel
      */
     private MockObject $contactModelMock;
 

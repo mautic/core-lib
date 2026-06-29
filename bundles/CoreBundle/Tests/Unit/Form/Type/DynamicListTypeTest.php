@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormEvents;
 final class DynamicListTypeTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var MockObject&FormBuilderInterface<FormBuilderInterface>
+     * @var MockObject&FormBuilderInterface
      */
     private MockObject $formBuilder;
 

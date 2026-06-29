@@ -17,12 +17,12 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class OwnerProviderTest extends TestCase
 {
     /**
-     * @var ObjectProvider|\PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject&ObjectProvider
      */
     private \PHPUnit\Framework\MockObject\MockObject $objectProvider;
 
     /**
-     * @var EventDispatcherInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject&EventDispatcherInterface
      */
     private \PHPUnit\Framework\MockObject\MockObject $dispatcher;
 

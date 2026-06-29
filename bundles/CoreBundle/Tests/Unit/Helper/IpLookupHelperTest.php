@@ -15,10 +15,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class IpLookupHelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var DeviceDetector|(DeviceDetector&object&\PHPUnit\Framework\MockObject\MockObject)|(DeviceDetector&\PHPUnit\Framework\MockObject\MockObject)|(object&\PHPUnit\Framework\MockObject\MockObject)|\PHPUnit\Framework\MockObject\MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject&DeviceDetector
      */
     private \PHPUnit\Framework\MockObject\MockObject $deviceDetector;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject&DeviceDetectorFactoryInterface
+     */
     private \PHPUnit\Framework\MockObject\MockObject $deviceDetectorFactory;
 
     protected function setUp(): void

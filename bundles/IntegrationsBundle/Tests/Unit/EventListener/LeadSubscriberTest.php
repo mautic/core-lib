@@ -28,34 +28,34 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class LeadSubscriberTest extends TestCase
 {
     /**
-     * @var MockObject|FieldChangeRepository
+     * @var MockObject&FieldChangeRepository
      */
     private MockObject $fieldChangeRepository;
 
     /**
-     * @var MockObject|ObjectMappingRepository
+     * @var MockObject&ObjectMappingRepository
      */
     private MockObject $objectMappingRepository;
 
     /**
-     * @var MockObject|VariableExpresserHelperInterface
+     * @var MockObject&VariableExpresserHelperInterface
      */
     private MockObject $variableExpresserHelper;
 
     /**
-     * @var MockObject|SyncIntegrationsHelper
+     * @var MockObject&SyncIntegrationsHelper
      */
     private MockObject $syncIntegrationsHelper;
 
     /**
-     * @var MockObject|CompanyEvent
+     * @var MockObject&CompanyEvent
      */
     private MockObject $companyEvent;
 
     private LeadSubscriber $subscriber;
 
     /**
-     * @var MockObject|EventDispatcherInterface
+     * @var MockObject&EventDispatcherInterface
      */
     private MockObject $eventDispatcherInterfaceMock;
 
