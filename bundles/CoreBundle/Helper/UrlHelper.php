@@ -282,7 +282,7 @@ class UrlHelper
     {
         $path = parse_url($url, PHP_URL_PATH);
         if (null !== $path) {
-            $encodedPath = array_map('urlencode', explode('/', $path));
+            $encodedPath = array_map(urlencode(...), explode('/', $path));
             $url         = str_replace($path, implode('/', $encodedPath), $url);
         }
 
