@@ -280,7 +280,7 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         );
         $subscriber->onJumpToEvent($pendingEvent);
 
-        $this->assertSame(1, count($pendingEvent->getSuccessful()));
-        $this->assertSame(0, count($pendingEvent->getFailures()));
+        $this->assertCount(1, $pendingEvent->getSuccessful());
+        $this->assertCount(0, $pendingEvent->getFailures());
     }
 }
