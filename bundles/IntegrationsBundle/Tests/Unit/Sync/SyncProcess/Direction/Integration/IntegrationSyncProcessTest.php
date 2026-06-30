@@ -93,7 +93,7 @@ class IntegrationSyncProcessTest extends TestCase
         $this->syncDataExchange->expects($this->once())
             ->method('getSyncReport')
             ->willReturnCallback(
-                function (RequestDAO $requestDAO) use ($objectName) {
+                function (RequestDAO $requestDAO) use ($objectName): ReportDAO {
                     $requestObjects = $requestDAO->getObjects();
                     $this->assertCount(1, $requestObjects);
 
@@ -199,7 +199,7 @@ class IntegrationSyncProcessTest extends TestCase
         $fromSyncDateTime = new \DateTimeImmutable();
         $matcher          = $this->exactly(2);
         $this->syncDateHelper->expects($matcher)
-            ->method('getSyncFromDateTime')->willReturnCallback(function (...$parameters) use ($matcher, $fromSyncDateTime) {
+            ->method('getSyncFromDateTime')->willReturnCallback(function (...$parameters) use ($matcher, $fromSyncDateTime): \DateTimeImmutable {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(self::INTEGRATION_NAME, $parameters[0]);
                     $this->assertSame('Contact', $parameters[1]);

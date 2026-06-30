@@ -152,7 +152,7 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
 
         $this->eventCollector->method('getEventConfig')
             ->willReturnCallback(
-                function (Event $event) use ($jumpConfig, $otherConfig) {
+                function (Event $event) use ($jumpConfig, $otherConfig): ActionAccessor {
                     if (CampaignActionJumpToEventSubscriber::EVENT_NAME === $event->getType()) {
                         return $jumpConfig;
                     }
@@ -168,7 +168,7 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $this->eventLogger->expects($this->exactly(2))
             ->method('fetchRotationAndGenerateLogsFromContacts')
             ->willReturnCallback(
-                function (Event $event, ActionAccessor $config, ArrayCollection $contacts, $isInactiveEntry) {
+                function (Event $event, ActionAccessor $config, ArrayCollection $contacts, $isInactiveEntry): ArrayCollection {
                     $logs = new ArrayCollection();
                     foreach ($contacts as $contact) {
                         $log = new LeadEventLog();
@@ -184,7 +184,7 @@ class EventExecutionerTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $this->actionExecutioner->expects($matcher)
-            ->method('execute')->willReturnCallback(function (...$parameters) use ($matcher, $otherConfig, $jumpConfig) {
+            ->method('execute')->willReturnCallback(function (...$parameters) use ($matcher, $otherConfig, $jumpConfig): EvaluatedContacts {
                 $this->assertInstanceOf(ArrayCollection::class, $parameters[1]);
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertEquals($otherConfig, $parameters[0]);

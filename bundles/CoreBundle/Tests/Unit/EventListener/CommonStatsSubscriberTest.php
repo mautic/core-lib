@@ -71,7 +71,7 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $this->security->expects($matcher)
-            ->method('checkPermissionExists')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('checkPermissionExists')->willReturnCallback(function (...$parameters) use ($matcher): true {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('lead:leads:view', $parameters[0]);
                 }
@@ -200,7 +200,7 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $this->security->expects($matcher)
-            ->method('checkPermissionExists')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('checkPermissionExists')->willReturnCallback(function (...$parameters) use ($matcher): true {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('lead:leads:view', $parameters[0]);
                 }
@@ -213,7 +213,7 @@ class CommonStatsSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $this->security->expects($matcher)
-            ->method('isGranted')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('isGranted')->willReturnCallback(function (...$parameters) use ($matcher): false {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('lead:leads:view', $parameters[0]);
                 }

@@ -573,7 +573,7 @@ class LeadModelTest extends \PHPUnit\Framework\TestCase
 
         $contact->expects($this->once())
             ->method('addEventLog')
-            ->with($this->callback(function (LeadEventLog $leadEventLog) use ($contact) {
+            ->with($this->callback(function (LeadEventLog $leadEventLog) use ($contact): true {
                 $this->assertSame($contact, $leadEventLog->getLead());
                 $this->assertSame('identified_contact', $leadEventLog->getAction());
                 $this->assertSame('lead', $leadEventLog->getBundle());

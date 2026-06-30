@@ -144,7 +144,7 @@ final class LeadFieldRepositoryTest extends TestCase
         $parameterCount = null !== $value ? 2 : 1;
         $builderCompare->expects($this->exactly($parameterCount))
             ->method('setParameter')
-            ->willReturnCallback(function (...$parameters) use ($contactId, $value, $builderCompare) {
+            ->willReturnCallback(function (...$parameters) use ($contactId, $value, $builderCompare): MockObject {
                 static $invocationCount = 0;
                 ++$invocationCount;
 

@@ -117,7 +117,7 @@ class SyncProcessTest extends TestCase
             ->willReturnOnConsecutiveCalls(true, false);
         $matcher = $this->exactly(2);
         $this->integrationSyncProcess->expects($matcher)
-            ->method('getSyncReport')->willReturnCallback(function (...$parameters) use ($matcher, $integrationSyncReport) {
+            ->method('getSyncReport')->willReturnCallback(function (...$parameters) use ($matcher, $integrationSyncReport): MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(1, $parameters[0]);
                 }
@@ -192,7 +192,7 @@ class SyncProcessTest extends TestCase
             ->willReturnOnConsecutiveCalls(true, false);
         $matcher = $this->exactly(2);
         $this->mauticSyncProcess->expects($matcher)
-            ->method('getSyncReport')->willReturnCallback(function (...$parameters) use ($matcher, $internalSyncReport) {
+            ->method('getSyncReport')->willReturnCallback(function (...$parameters) use ($matcher, $internalSyncReport): MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame(1, $parameters[0]);
                 }

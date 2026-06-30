@@ -285,7 +285,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
 
         $mailHelper->method('createEmailStat')
             ->willReturnCallback(
-                function () use ($emailMock) {
+                function () use ($emailMock): Stat {
                     $stat = new Stat();
                     $stat->setEmail($emailMock);
 
@@ -359,7 +359,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $mockDispatcher = $this->createMock(EventDispatcher::class);
         $mockDispatcher->method('dispatch')
             ->willReturnCallback(
-                function (EmailSendEvent $event, $eventName) {
+                function (EmailSendEvent $event, $eventName): EmailSendEvent {
                     $lead = $event->getLead();
 
                     $tokens = [];
@@ -501,7 +501,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
         $mailHelper->expects($this->exactly(21))
             ->method('createEmailStat')
             ->willReturnCallback(
-                function () use ($emailMock) {
+                function () use ($emailMock): Stat {
                     $stat = new Stat();
                     $stat->setEmail($emailMock);
 
@@ -619,7 +619,7 @@ class SendEmailToContactTest extends \PHPUnit\Framework\TestCase
 
         $mailHelper->method('createEmailStat')
             ->willReturnCallback(
-                function () use ($emailMock) {
+                function () use ($emailMock): Stat {
                     $stat = new Stat();
                     $stat->setEmail($emailMock);
 

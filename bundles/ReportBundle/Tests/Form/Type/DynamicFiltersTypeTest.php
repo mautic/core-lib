@@ -148,7 +148,7 @@ final class DynamicFiltersTypeTest extends TestCase
             ->with(
                 'test_alias',
                 TextType::class,
-                $this->callback(function (array $args) {
+                $this->callback(function (array $args): bool {
                     $expectedOptions = [
                         'label'      => 'Test Label (Equals)',
                         'label_attr' => ['class' => 'control-label'],
@@ -179,7 +179,7 @@ final class DynamicFiltersTypeTest extends TestCase
             ->with(
                 'test_alias',
                 ButtonGroupType::class,
-                $this->callback(function (array $args) {
+                $this->callback(function (array $args): bool {
                     $expectedOptions = [
                         'label'      => 'Test Label (Equals)',
                         'label_attr' => ['class' => 'control-label'],
@@ -236,7 +236,7 @@ final class DynamicFiltersTypeTest extends TestCase
             ->with(
                 'test_alias',
                 DateType::class,
-                $this->callback(function (array $args) {
+                $this->callback(function (array $args): bool {
                     $expectedOptions = [
                         'label'      => 'Test Label (Equals)',
                         'label_attr' => ['class' => 'control-label'],
@@ -271,7 +271,7 @@ final class DynamicFiltersTypeTest extends TestCase
             ->with(
                 'test_alias',
                 DateTimeType::class,
-                $this->callback(function (array $args) {
+                $this->callback(function (array $args): bool {
                     $expectedOptions = [
                         'label'      => 'Test Label (Equals)',
                         'label_attr' => ['class' => 'control-label'],

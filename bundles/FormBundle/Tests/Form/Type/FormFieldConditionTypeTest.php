@@ -54,7 +54,7 @@ final class FormFieldConditionTypeTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(3);
 
         $this->formBuilder->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher): MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('values', $parameters[0]);
                     $this->assertSame(ChoiceType::class, $parameters[1]);
@@ -128,7 +128,7 @@ final class FormFieldConditionTypeTest extends \PHPUnit\Framework\TestCase
 
         $this->formBuilder->expects($matcher)->method('add')
             ->willReturnCallback(
-                function (...$parameters) use ($matcher) {
+                function (...$parameters) use ($matcher): MockObject {
                     if (1 === $matcher->numberOfInvocations()) {
                         $this->assertSame('values', $parameters[0]);
                         $this->assertSame(ChoiceType::class, $parameters[1]);

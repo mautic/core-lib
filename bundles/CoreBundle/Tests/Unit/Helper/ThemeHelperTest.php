@@ -255,10 +255,6 @@ class ThemeHelperTest extends TestCase
                 }
             },
             new class extends Filesystem {
-                public function __construct()
-                {
-                }
-
                 /**
                  * @param string $files
                  */
@@ -349,10 +345,6 @@ class ThemeHelperTest extends TestCase
                 }
             },
             new class extends Filesystem {
-                public function __construct()
-                {
-                }
-
                 /**
                  * @param string $files
                  */
@@ -507,7 +499,7 @@ class ThemeHelperTest extends TestCase
 
         $this->pathsHelper
             ->expects($matcher)
-            ->method('getSystemPath')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('getSystemPath')->willReturnCallback(function (...$parameters) use ($matcher): string {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('themes', $parameters[0]);
                     $this->assertTrue($parameters[1]);

@@ -107,7 +107,7 @@ class UpdateSchemaStepTest extends AbstractStepTestCase
 
         $this->eventDispatcher->method('dispatch')
             ->willReturnCallback(
-                function (ConsoleEvent $event, string $eventName) {
+                function (ConsoleEvent $event, string $eventName): ConsoleEvent {
                     switch (true) {
                         case $event instanceof ConsoleCommandEvent:
                             $event->enableCommand();
@@ -133,7 +133,7 @@ class UpdateSchemaStepTest extends AbstractStepTestCase
 
         $this->eventDispatcher->method('dispatch')
             ->willReturnCallback(
-                function (ConsoleEvent $event, string $eventName) {
+                function (ConsoleEvent $event, string $eventName): ConsoleEvent {
                     switch (true) {
                         case $event instanceof ConsoleCommandEvent:
                             $event->enableCommand();

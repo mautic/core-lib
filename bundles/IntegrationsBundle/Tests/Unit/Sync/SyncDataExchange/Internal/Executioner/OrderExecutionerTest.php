@@ -405,7 +405,7 @@ class OrderExecutionerTest extends TestCase
         $this->objectProvider->expects($this->exactly(4))
             ->method('getObjectByName')
             ->willReturnCallback(
-                function (string $objectName) {
+                function (string $objectName): MockObject {
                     if ('bar' === $objectName) {
                         throw new ObjectNotFoundException($objectName);
                     }

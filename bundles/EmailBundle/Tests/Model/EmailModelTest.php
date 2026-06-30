@@ -353,7 +353,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->willReturn(true);
 
         $this->mailHelper->method('createEmailStat')
-            ->willReturnCallback(function () {
+            ->willReturnCallback(function (): Stat {
                 $stat = new Stat();
                 $stat->setEmail($this->emailEntity);
 
@@ -497,7 +497,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
         $this->emailEntity->method('isVariant')->willReturn(true);
 
         $this->mailHelper->method('createEmailStat')
-            ->willReturnCallback(function () {
+            ->willReturnCallback(function (): Stat {
                 $stat = new Stat();
                 $stat->setEmail($this->emailEntity);
 
@@ -683,7 +683,7 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
             ->willReturn([]);
 
         $this->statRepository->method('checkContactSentEmail')
-            ->willReturnCallback(function () use ($contacts) {
+            ->willReturnCallback(function () use ($contacts): bool {
                 $args = func_get_args();
 
                 return $contacts[$args[0]]['stateExists'];

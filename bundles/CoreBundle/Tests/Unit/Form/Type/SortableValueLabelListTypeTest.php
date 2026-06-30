@@ -23,7 +23,7 @@ final class SortableValueLabelListTypeTest extends TestCase
         $call = 0;
         $builder->expects($this->exactly(2))
             ->method('add')
-            ->with($this->callback(function ($name) {
+            ->with($this->callback(function ($name): bool {
                 $expected = [
                     ['label', 'value'],
                 ];
@@ -31,7 +31,7 @@ final class SortableValueLabelListTypeTest extends TestCase
                 return in_array($name, $expected[0], true);
             }),
                 $this->callback(fn ($type) => TextType::class === $type),
-                $this->callback(function ($options) use (&$call) {
+                $this->callback(function ($options) use (&$call): bool {
                     $expectedOptions = [
                         [
                             'label'          => 'mautic.core.label',
@@ -110,7 +110,7 @@ final class SortableValueLabelListTypeTest extends TestCase
         // @phpstan-ignore-next-line
         $builder->expects($this->once())
             ->method('addEventListener')
-            ->with(FormEvents::PRE_SUBMIT, $this->callback(function ($callback) use (&$eventListener) {
+            ->with(FormEvents::PRE_SUBMIT, $this->callback(function ($callback) use (&$eventListener): true {
                 $eventListener = $callback;
 
                 return true;

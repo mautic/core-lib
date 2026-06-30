@@ -134,7 +134,7 @@ class DashboardControllerTest extends \PHPUnit\Framework\TestCase
         $this->requestMock->method('get')->willReturn('mockName');
 
         $this->containerMock->expects($this->exactly(2))
-            ->method('get')->willReturnCallback(function (...$parameters) {
+            ->method('get')->willReturnCallback(function (...$parameters): MockObject {
                 $this->assertSame('router', $parameters[0]);
 
                 return $this->routerMock;

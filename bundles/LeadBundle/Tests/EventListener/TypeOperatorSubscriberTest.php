@@ -271,7 +271,7 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher  = $this->exactly(2);
 
         $this->form->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher): MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('display', $parameters[0]);
                     $this->assertSame(TextType::class, $parameters[1]);
@@ -323,7 +323,7 @@ final class TypeOperatorSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher  = $this->exactly(2);
 
         $this->form->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher): MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('display', $parameters[0]);
                     $this->assertSame(TextType::class, $parameters[1]);

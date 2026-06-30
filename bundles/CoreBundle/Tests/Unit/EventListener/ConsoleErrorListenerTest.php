@@ -47,8 +47,7 @@ class ConsoleErrorListenerTest extends \PHPUnit\Framework\TestCase
         $event = new ConsoleErrorEvent(
             $this->input,
             $this->output,
-            new \Exception('Example exception'),
-            null
+            new \Exception('Example exception')
         );
 
         $this->logger->expects($this->once())

@@ -72,7 +72,7 @@ class UserNotificationHelperTest extends TestCase
         $matcher = $this->exactly(2);
 
         $this->translator->expects($matcher)
-            ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher): string {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
                 }
@@ -105,7 +105,7 @@ class UserNotificationHelperTest extends TestCase
         $matcher = $this->exactly(2);
 
         $this->translator->expects($matcher)
-            ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('trans')->willReturnCallback(function (...$parameters) use ($matcher): string {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('mautic.integration.sync.user_notification.header', $parameters[0]);
                 }

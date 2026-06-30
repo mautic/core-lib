@@ -460,7 +460,7 @@ class CustomFieldColumnTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $columnSchemaHelper->expects($matcher)
-            ->method('dropColumn')->willReturnCallback(function (...$parameters) use ($matcher, $columnSchemaHelper) {
+            ->method('dropColumn')->willReturnCallback(function (...$parameters) use ($matcher, $columnSchemaHelper): MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('IamAlias', $parameters[0]);
                 }

@@ -303,7 +303,7 @@ class UpdateHelperTest extends TestCase
                 'POST',
                 $statsUrl,
                 $this->callback(
-                    function (array $options) {
+                    function (array $options): true {
                         $this->assertArrayHasKey(\GuzzleHttp\RequestOptions::FORM_PARAMS, $options);
                         $this->assertArrayHasKey(\GuzzleHttp\RequestOptions::CONNECT_TIMEOUT, $options);
                         $this->assertArrayHasKey(\GuzzleHttp\RequestOptions::HEADERS, $options);
@@ -551,7 +551,7 @@ class UpdateHelperTest extends TestCase
                 function (string $method, string $url, array $options): void {
                     $request = $this->createMock(RequestInterface::class);
 
-                    throw new RequestException('something bad happened', $request, null);
+                    throw new RequestException('something bad happened', $request);
                 }
             );
 

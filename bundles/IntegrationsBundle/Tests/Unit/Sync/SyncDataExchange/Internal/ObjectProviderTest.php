@@ -47,7 +47,7 @@ class ObjectProviderTest extends TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (InternalObjectEvent $e) use ($contact) {
+                $this->callback(function (InternalObjectEvent $e) use ($contact): true {
                     // Fake a subscriber.
                     $e->addObject($contact);
 
@@ -78,7 +78,7 @@ class ObjectProviderTest extends TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (InternalObjectEvent $e) use ($contact) {
+                $this->callback(function (InternalObjectEvent $e) use ($contact): true {
                     // Fake a subscriber.
                     $e->addObject($contact);
 

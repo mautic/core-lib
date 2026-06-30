@@ -34,7 +34,7 @@ class ReportModelTest extends \PHPUnit\Framework\TestCase
         $mockDispatcher = $this->createMock(EventDispatcher::class);
         $mockDispatcher->method('dispatch')
             ->willReturnCallback(
-                function (ReportBuilderEvent $event) {
+                function (ReportBuilderEvent $event): ReportBuilderEvent {
                     $reportBuilderData = Fixtures::getReportBuilderEventData();
                     $event->addTable('assets', $reportBuilderData['all']['tables']['assets']);
 

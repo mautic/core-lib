@@ -603,7 +603,7 @@ TEXT;
         $mockModel->expects($this->any())
             ->method('getEntitiesFromUrls')
             ->willReturnCallback(
-                function ($trackableUrls, $channel, $channelId) {
+                function ($trackableUrls, $channel, $channelId): array {
                     $entities = [];
                     foreach ($trackableUrls as $url) {
                         $entities[$url] = $this->getTrackableEntity($url);

@@ -167,7 +167,7 @@ class SendEmailToUserTest extends \PHPUnit\Framework\TestCase
             ->method('dispatch')
             ->with(
                 $this->callback(
-                    function (TokenReplacementEvent $event) use ($lead) {
+                    function (TokenReplacementEvent $event) use ($lead): true {
                         Assert::assertSame('{contactfield=active-field}', $event->getContent());
                         Assert::assertSame($lead, $event->getLead());
 

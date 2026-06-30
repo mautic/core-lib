@@ -42,7 +42,7 @@ final class FormFieldNumberTypeTest extends TypeTestCase
         $matcher = $this->exactly(2);
 
         $this->formBuilder->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher) {
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher): MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('placeholder', $parameters[0]);
                     $this->assertSame(TextType::class, $parameters[1]);

@@ -275,7 +275,7 @@ class PublicControllerTest extends TestCase
             ->method('isTrackable')
             ->willReturn(true);
 
-        $getContactFromRequestCallback = function ($queryFields) use ($clickTrough) {
+        $getContactFromRequestCallback = function ($queryFields) use ($clickTrough): null {
             if (empty($queryFields)) {
                 return null;
             }
@@ -354,7 +354,7 @@ class PublicControllerTest extends TestCase
             ->method('isTrackable')
             ->willReturn(true);
 
-        $getContactFromRequestCallback = function ($queryFields) use ($clickThrough) {
+        $getContactFromRequestCallback = function ($queryFields) use ($clickThrough): null {
             if (empty($queryFields)) {
                 return null;
             }
@@ -438,7 +438,7 @@ class PublicControllerTest extends TestCase
             ->method('dispatch')
             ->with($event, PageEvents::ON_CONTACT_TRACKED)
             ->willReturnCallback(
-                function (TrackingEvent $event) {
+                function (TrackingEvent $event): TrackingEvent {
                     $contact  = $event->getContact()->getEmail();
                     $request  = $event->getRequest();
                     $response = $event->getResponse();

@@ -97,7 +97,7 @@ class ReplyTest extends \PHPUnit\Framework\TestCase
 
         $this->contactFinder->method('findByHash')
             ->willReturnCallback(
-                function ($hash) {
+                function ($hash): Result {
                     $stat = new Stat();
                     $stat->setTrackingHash($hash);
 
@@ -172,7 +172,7 @@ BODY;
 
         $stat->expects($this->once())
             ->method('addReply')
-            ->with($this->callback(function (EmailReply $emailReply) use ($stat) {
+            ->with($this->callback(function (EmailReply $emailReply) use ($stat): true {
                 $this->assertSame($stat, $emailReply->getStat());
                 $this->assertSame('api-msg1d', $emailReply->getMessageId());
 

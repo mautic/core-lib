@@ -110,7 +110,7 @@ final class TypeOperatorProviderTest extends \PHPUnit\Framework\TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (TypeOperatorsEvent $event) {
+                $this->callback(function (TypeOperatorsEvent $event): true {
                     // Emulate a subscriber.
                     $event->setOperatorsForFieldType('text', [
                         'include' => [

@@ -467,9 +467,7 @@ class SubmissionModelTest extends \PHPUnit\Framework\TestCase
      */
     public function getAccessibleReflectionMethod(string $name): \ReflectionMethod
     {
-        $method = $this->submissionModelReflection->getMethod($name);
-
-        return $method;
+        return $this->submissionModelReflection->getMethod($name);
     }
 
     public function testGetExportHeader(): void

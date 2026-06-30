@@ -66,7 +66,7 @@ class UserTokenServiceTest extends \PHPUnit\Framework\TestCase
         $authorizator = 'authorizator';
         $token->setUser($user)
             ->setOneTimeOnly(true)
-            ->setExpiration(null)
+            ->setExpiration()
             ->setAuthorizator($authorizator);
 
         $this->userTokenRepositoryMock->expects($this->once())

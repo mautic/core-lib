@@ -47,7 +47,7 @@ class RouteHelperTest extends TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (InternalObjectRouteEvent $event) use ($internalObject) {
+                $this->callback(function (InternalObjectRouteEvent $event) use ($internalObject): true {
                     $this->assertSame($internalObject, $event->getObject());
                     $this->assertSame(1, $event->getId());
 
@@ -73,7 +73,7 @@ class RouteHelperTest extends TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (InternalObjectRouteEvent $event) use ($internalObject) {
+                $this->callback(function (InternalObjectRouteEvent $event) use ($internalObject): true {
                     $this->assertSame($internalObject, $event->getObject());
                     $this->assertSame(1, $event->getId());
 
@@ -113,7 +113,7 @@ class RouteHelperTest extends TestCase
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with(
-                $this->callback(function (InternalObjectRouteEvent $event) use ($internalObject) {
+                $this->callback(function (InternalObjectRouteEvent $event) use ($internalObject): true {
                     $this->assertSame($internalObject, $event->getObject());
                     $this->assertSame(1, $event->getId());
 

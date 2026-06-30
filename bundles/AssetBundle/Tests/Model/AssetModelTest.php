@@ -251,7 +251,7 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
 
         $this->entityManager->expects($this->once())
             ->method('persist')
-            ->with($this->callback(function ($downloadPersist) use (&$download) {
+            ->with($this->callback(function ($downloadPersist) use (&$download): bool {
                 $download = $downloadPersist;
 
                 return $download instanceof Download;
@@ -262,7 +262,7 @@ class AssetModelTest extends \PHPUnit\Framework\TestCase
 
         $this->entityManager->expects($this->once())
             ->method('detach')
-            ->with($this->callback(function ($downloadDetach) use (&$download) {
+            ->with($this->callback(function ($downloadDetach) use (&$download): true {
                 $this->assertSame($downloadDetach, $download);
 
                 return true;

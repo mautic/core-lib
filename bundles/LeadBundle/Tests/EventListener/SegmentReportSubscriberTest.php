@@ -183,7 +183,7 @@ class SegmentReportSubscriberTest extends \PHPUnit\Framework\TestCase
         $matcher = $this->exactly(2);
 
         $queryBuilder->expects($matcher)
-            ->method('leftJoin')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder) {
+            ->method('leftJoin')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder): \PHPUnit\Framework\MockObject\MockObject {
                 if (1 === $matcher->numberOfInvocations()) {
                     $this->assertSame('lll', $parameters[0]);
                     $this->assertSame(MAUTIC_TABLE_PREFIX.'leads', $parameters[1]);
