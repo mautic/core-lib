@@ -509,6 +509,7 @@
               <iframe
                   id="content_preview_frame"
                   src="{{ previewUrl|e }}"
+                  sandbox="allow-popups allow-popups-to-escape-sandbox"
                   title="{{ 'mautic.email.preview.iframe_title'|trans }}"
                   style="width: 100%; min-height: 1000px; border: 0; zoom: 0.35; overflow: hidden;">
               </iframe>
