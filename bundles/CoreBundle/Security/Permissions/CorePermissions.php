@@ -190,11 +190,11 @@ class CorePermissions implements ResetInterface
      * @param bool            $allowUnknown        If the permission is not recognized, false will be returned.  Otherwise an
      *                                             exception will be thrown
      *
-     * @return mixed
+     * @return ($mode is 'RETURN_ARRAY' ? array<mixed> : bool)
      *
      * @throws \InvalidArgumentException
      */
-    public function isGranted($requestedPermission, $mode = 'MATCH_ALL', $userEntity = null, $allowUnknown = false)
+    public function isGranted($requestedPermission, $mode = 'MATCH_ALL', $userEntity = null, $allowUnknown = false): bool|array
     {
         // Initialize all permission classes if
         $this->getPermissionObjects();
