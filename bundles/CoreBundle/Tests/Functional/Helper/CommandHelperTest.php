@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Mautic\CoreBundle\Tests\Functional\Helper;
 
+use Mautic\CoreBundle\Helper\CommandHelper;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
 use PHPUnit\Framework\Assert;
 
 class CommandHelperTest extends MauticMysqlTestCase
 {
-    private ?object $commandHelper = null;
+    private CommandHelper $commandHelper;
 
     protected function setUp(): void
     {

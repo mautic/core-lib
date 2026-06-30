@@ -6,11 +6,12 @@ namespace Mautic\IntegrationsBundle\Tests\Functional\Sync\Notification;
 
 use Mautic\CoreBundle\Entity\Notification;
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
+use Mautic\IntegrationsBundle\Sync\Notification\BulkNotification;
 use PHPUnit\Framework\Assert;
 
 class BulkNotificationTest extends MauticMysqlTestCase
 {
-    private ?object $bulkNotification = null;
+    private BulkNotification $bulkNotification;
 
     protected function setUp(): void
     {

@@ -6,7 +6,6 @@ namespace Mautic\FormBundle\Tests\Form\Type;
 
 use Mautic\FormBundle\Form\Type\FormFieldNumberType;
 use PHPUnit\Framework\MockObject\MockObject;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,9 +18,6 @@ final class FormFieldNumberTypeTest extends TypeTestCase
      */
     private MockObject $formBuilder;
 
-    /**
-     * @var AbstractType<FormFieldNumberType>
-     */
     private FormFieldNumberType $form;
 
     protected function setUp(): void

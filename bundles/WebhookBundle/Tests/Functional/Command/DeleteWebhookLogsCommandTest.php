@@ -9,11 +9,12 @@ use Mautic\WebhookBundle\Command\DeleteWebhookLogsCommand;
 use Mautic\WebhookBundle\Entity\Event;
 use Mautic\WebhookBundle\Entity\Log;
 use Mautic\WebhookBundle\Entity\Webhook;
+use Mautic\WebhookBundle\Model\WebhookModel;
 use PHPUnit\Framework\Assert;
 
 final class DeleteWebhookLogsCommandTest extends MauticMysqlTestCase
 {
-    private ?object $webhookModel = null;
+    private WebhookModel $webhookModel;
 
     protected function setUp(): void
     {
