@@ -9,10 +9,10 @@ use Knp\Menu\Twig\Helper as KnpHelper;
 /**
  * final class MenuHelper.
  */
-final class MenuHelper
+final readonly class MenuHelper
 {
     public function __construct(
-        private readonly KnpHelper $helper,
+        private KnpHelper $helper,
     ) {
     }
 

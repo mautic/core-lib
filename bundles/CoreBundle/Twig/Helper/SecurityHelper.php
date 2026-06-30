@@ -13,13 +13,13 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 /**
  * final class SecurityHelper.
  */
-final class SecurityHelper
+final readonly class SecurityHelper
 {
     public function __construct(
-        private readonly CorePermissions $security,
-        private readonly RequestStack $requestStack,
-        private readonly EventDispatcherInterface $dispatcher,
-        private readonly CsrfTokenManagerInterface $tokenManager,
+        private CorePermissions $security,
+        private RequestStack $requestStack,
+        private EventDispatcherInterface $dispatcher,
+        private CsrfTokenManagerInterface $tokenManager,
     ) {
     }
 
