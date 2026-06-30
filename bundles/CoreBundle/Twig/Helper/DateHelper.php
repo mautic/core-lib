@@ -13,7 +13,10 @@ final class DateHelper
      */
     private array $formats;
 
-    private readonly DateTimeHelper $helper;
+    /**
+     * @api cannot be readonly, as changed in tests via reflection
+     */
+    private DateTimeHelper $helper;
 
     /**
      * @param string $dateFullFormat

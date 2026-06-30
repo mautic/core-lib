@@ -18,7 +18,7 @@ class FieldFilterTransformer implements DataTransformerInterface
     /**
      * @var string[]
      */
-    private readonly array $relativeDateStrings;
+    private array $relativeDateStrings;
 
     /**
      * @var string[]
