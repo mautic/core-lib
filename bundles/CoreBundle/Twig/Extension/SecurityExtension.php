@@ -48,7 +48,11 @@ class SecurityExtension extends AbstractExtension
         return $this->securityHelper->hasEntityAccess($ownPermission, $otherPermission, $ownerId);
     }
 
+<<<<<<< HEAD
     public function isGranted(string $permission): bool
+=======
+    public function isGranted(string $permission): bool|array
+>>>>>>> 82e2d601ca ([types] add return type declarations (non-controller))
     {
         return $this->securityHelper->isGranted($permission);
     }

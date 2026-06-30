@@ -109,6 +109,8 @@ class Asset extends FormEntity implements UuidInterface
 
     /**
      * Holds max size of uploaded file.
+     *
+     * @var string
      */
     private $maxSize;
 
@@ -923,7 +925,7 @@ class Asset extends FormEntity implements UuidInterface
      *
      * @return array<string, float|string|false|null>|string
      */
-    public function getFileInfo()
+    public function getFileInfo(): array|string
     {
         $fileInfo = [];
 
