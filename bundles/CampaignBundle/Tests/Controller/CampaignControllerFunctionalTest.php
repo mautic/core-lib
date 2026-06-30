@@ -21,7 +21,7 @@ class CampaignControllerFunctionalTest extends AbstractCampaignTestCase
 
     private const CAMPAIGN_RANGE_PARAM   = 'campaign_by_range';
 
-    private ?object $campaignModel;
+    private CampaignModel $campaignModel;
 
     /**
      * @var string

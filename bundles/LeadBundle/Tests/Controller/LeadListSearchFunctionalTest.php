@@ -135,7 +135,7 @@ final class LeadListSearchFunctionalTest extends MauticMysqlTestCase
     /**
      * @throws ORMException
      */
-    private function createLeadList(string $name, \Mautic\LeadBundle\Entity\Lead ...$leads): LeadList
+    private function createLeadList(string $name, Lead ...$leads): LeadList
     {
         $leadList = new LeadList();
         $leadList->setName($name);

@@ -16,7 +16,7 @@ use PHPUnit\Framework\Assert;
 
 class FrequencyRuleRepositoryTest extends MauticMysqlTestCase
 {
-    private ?object $frequencyRuleRepository;
+    private FrequencyRuleRepository $frequencyRuleRepository;
 
     protected function setUp(): void
     {

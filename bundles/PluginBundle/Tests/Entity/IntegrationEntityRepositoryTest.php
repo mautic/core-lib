@@ -21,12 +21,9 @@ class IntegrationEntityRepositoryTest extends MauticMysqlTestCase
 
     public const INTERNAL_ENTITY    = 'lead';
 
-    private bool|string|int|float|\UnitEnum|array|null $prefix;
+    private string $prefix;
 
-    /**
-     * @var IntegrationEntityRepository
-     */
-    private $integrationEntityRepository;
+    private IntegrationEntityRepository $integrationEntityRepository;
 
     protected function setUp(): void
     {

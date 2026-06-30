@@ -97,9 +97,11 @@ class ReferenceResolverTest extends TestCase
     }
 
     /**
-     * @return QueryBuilder|MockObject
+     * @param mixed $returnValues
+     *
+     * @return QueryBuilder&MockObject
      */
-    private function createQueryBuilder(string ...$returnValues): MockObject
+    private function createQueryBuilder(...$returnValues): MockObject
     {
         $result = $this->createMock(Result::class);
         $result->method('fetchOne')

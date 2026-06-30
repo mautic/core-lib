@@ -57,7 +57,7 @@ final class EmailOrEmailTokenListValidatorTest extends TestCase
             {
             }
 
-            public function getEntityByAlias($alias, $categoryAlias = null, $lang = null): void
+            public function getEntityByAlias($alias, $categoryAlias = null, $lang = null): ?object
             {
                 throw new \RuntimeException('Field should not be fetched in single value mode test');
             }
