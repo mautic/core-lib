@@ -35,7 +35,7 @@ final class LeadRepositoryTest extends MauticMysqlTestCase
      * @param array<string, bool> $args
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('joinIpAddressesProvider')]
-    public function testSaveIpAddressToContacts($args): void
+    public function testSaveIpAddressToContacts(array $args): void
     {
         $contactRepo = $this->em->getRepository(Lead::class);
 

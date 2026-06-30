@@ -214,10 +214,7 @@ class ExampleSyncDataExchange implements SyncDataExchangeInterface
         return $syncReport;
     }
 
-    /**
-     * @return array
-     */
-    public function getOrderPayload()
+    public function getOrderPayload(): array
     {
         return $this->payload;
     }

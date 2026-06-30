@@ -73,12 +73,7 @@ final class PhpUnitConfigCommand extends Command
         if (1 === preg_match('~/Functional/~', $file->getRealPath())) {
             return true;
         }
-
-        if (is_subclass_of($this->getClassName($file->getRealPath()), MauticMysqlTestCase::class)) {
-            return true;
-        }
-
-        return false;
+        return is_subclass_of($this->getClassName($file->getRealPath()), MauticMysqlTestCase::class);
     }
 
     private function getClassName(string $path): string

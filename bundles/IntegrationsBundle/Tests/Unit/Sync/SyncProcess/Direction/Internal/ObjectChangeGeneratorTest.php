@@ -365,7 +365,7 @@ class ObjectChangeGeneratorTest extends TestCase
                     $mode,
                     InformationChangeRequestDAO $leftChangeRequest,
                     InformationChangeRequestDAO $rightChangeRequest,
-                ) {
+                ): InformationChangeRequestDAO {
                     return $leftChangeRequest;
                 }
             },
