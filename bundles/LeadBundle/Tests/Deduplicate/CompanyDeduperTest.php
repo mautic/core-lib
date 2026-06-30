@@ -16,23 +16,9 @@ class CompanyDeduperTest extends \PHPUnit\Framework\TestCase
      */
     private MockObject $fieldModel;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\Stub&CompanyRepository
-     */
-    private \PHPUnit\Framework\MockObject\Stub $companyRepository;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\Stub&FieldsWithUniqueIdentifier
-     */
-    private \PHPUnit\Framework\MockObject\Stub $fieldsWithUniqueIdentifier;
-
     protected function setUp(): void
     {
         $this->fieldModel = $this->createMock(FieldModel::class);
-
-        $this->fieldsWithUniqueIdentifier = $this->createStub(FieldsWithUniqueIdentifier::class);
-
-        $this->companyRepository = $this->createStub(CompanyRepository::class);
     }
 
     public function testUniqueFieldNotFoundException(): void
@@ -46,8 +32,8 @@ class CompanyDeduperTest extends \PHPUnit\Framework\TestCase
     {
         return new CompanyDeduper(
             $this->fieldModel,
-            $this->fieldsWithUniqueIdentifier,
-            $this->companyRepository
+            $this->createStub(FieldsWithUniqueIdentifier::class),
+            $this->createStub(CompanyRepository::class)
         );
     }
 }

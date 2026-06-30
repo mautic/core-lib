@@ -43,11 +43,6 @@ class DashboardSubscriberTest extends TestCase
     private MockObject $router;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\Stub&CorePermissions
-     */
-    private \PHPUnit\Framework\MockObject\Stub $security;
-
-    /**
      * @var MockObject&EventDispatcherInterface
      */
     private MockObject $dispatcher;
@@ -69,7 +64,6 @@ class DashboardSubscriberTest extends TestCase
         $this->auditLogModel = $this->createMock(AuditLogModel::class);
         $this->translator    = $this->createMock(TranslatorInterface::class);
         $this->router        = $this->createMock(Router::class);
-        $this->security      = $this->createStub(CorePermissions::class);
         $this->dispatcher    = $this->createMock(EventDispatcherInterface::class);
         $this->modelFactory  = $this->createMock(ModelFactory::class);
         $this->event         = $this->createMock(WidgetDetailEvent::class);
@@ -92,7 +86,7 @@ class DashboardSubscriberTest extends TestCase
             $this->auditLogModel,
             $this->translator,
             $this->router,
-            $this->security,
+            $this->createStub(CorePermissions::class),
             $this->dispatcher,
             $this->modelFactory
         );
@@ -119,7 +113,7 @@ class DashboardSubscriberTest extends TestCase
             $this->auditLogModel,
             $this->translator,
             $this->router,
-            $this->security,
+            $this->createStub(CorePermissions::class),
             $this->dispatcher,
             $this->modelFactory
         );
@@ -267,7 +261,7 @@ class DashboardSubscriberTest extends TestCase
                 ['mautic_lead_action', ['objectAction' => 'view', 'objectId' => 567], UrlGeneratorInterface::ABSOLUTE_PATH, '/not-anonymous'],
             ]);
 
-        $iconEvent = new IconEvent($this->security);
+        $iconEvent = new IconEvent($this->createStub(CorePermissions::class));
         $this->dispatcher->expects($this->once())
             ->method('dispatch')
             ->with($iconEvent);
@@ -293,7 +287,7 @@ class DashboardSubscriberTest extends TestCase
             $this->auditLogModel,
             $this->translator,
             $this->router,
-            $this->security,
+            $this->createStub(CorePermissions::class),
             $this->dispatcher,
             $this->modelFactory
         );

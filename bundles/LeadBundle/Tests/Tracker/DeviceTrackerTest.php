@@ -26,11 +26,6 @@ class DeviceTrackerTest extends \PHPUnit\Framework\TestCase
      */
     private \PHPUnit\Framework\MockObject\MockObject $deviceTrackingService;
 
-    /**
-     * @var Logger&\PHPUnit\Framework\MockObject\Stub
-     */
-    private \PHPUnit\Framework\MockObject\Stub $logger;
-
     private string $userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36';
 
     protected function setUp(): void
@@ -73,8 +68,6 @@ class DeviceTrackerTest extends \PHPUnit\Framework\TestCase
         $this->deviceDetectorFactory = new DeviceDetectorFactory($cacheProvider);
         $this->deviceCreatorService  = new DeviceCreatorService();
         $this->deviceTrackingService = $this->createMock(DeviceTrackingServiceInterface::class);
-
-        $this->logger = $this->createStub(Logger::class);
     }
 
     public function testDeviceCreatedByUserAgent(): void
@@ -87,7 +80,7 @@ class DeviceTrackerTest extends \PHPUnit\Framework\TestCase
             ->method('trackCurrentDevice')
             ->willReturn($device);
 
-        $tracker = new DeviceTracker($this->deviceCreatorService, $this->deviceDetectorFactory, $this->deviceTrackingService, $this->logger);
+        $tracker = new DeviceTracker($this->deviceCreatorService, $this->deviceDetectorFactory, $this->deviceTrackingService, $this->createStub(Logger::class));
 
         $device = $tracker->createDeviceFromUserAgent($lead, $this->userAgent);
         $this->assertEquals('3dfc9e6dff07948058df37455718cb98', $device->getSignature());

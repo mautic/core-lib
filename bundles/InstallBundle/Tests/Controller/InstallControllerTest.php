@@ -33,11 +33,6 @@ class InstallControllerTest extends \PHPUnit\Framework\TestCase
     private InstallController $controller;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\Stub&PathsHelper
-     */
-    private \PHPUnit\Framework\MockObject\Stub $pathsHelper;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject&InstallService
      */
     private \PHPUnit\Framework\MockObject\MockObject $installer;
@@ -50,7 +45,6 @@ class InstallControllerTest extends \PHPUnit\Framework\TestCase
         $containerMock              = $this->createMock(Container::class);
         $this->routerMock           = $this->createMock(Router::class);
         $flashBagMock               = $this->createMock(FlashBagInterface::class);
-        $this->pathsHelper          = $this->createStub(PathsHelper::class);
 
         $configurator         = $this->createMock(Configurator::class);
         $this->installer      = $this->createMock(InstallService::class);
@@ -101,7 +95,7 @@ class InstallControllerTest extends \PHPUnit\Framework\TestCase
         $response = $this->controller->stepAction(
             new Request(),
             $this->createStub(EntityManagerInterface::class),
-            $this->pathsHelper,
+            $this->createStub(PathsHelper::class),
             InstallService::CHECK_STEP
         );
         $this->assertSame(302, $response->getStatusCode());

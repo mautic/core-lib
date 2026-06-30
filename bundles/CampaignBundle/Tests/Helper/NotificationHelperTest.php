@@ -26,11 +26,6 @@ class NotificationHelperTest extends \PHPUnit\Framework\TestCase
     private \PHPUnit\Framework\MockObject\MockObject $notificationModel;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\Stub|Router
-     */
-    private \PHPUnit\Framework\MockObject\Stub $router;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject&Translator
      */
     private \PHPUnit\Framework\MockObject\MockObject $translator;
@@ -45,8 +40,6 @@ class NotificationHelperTest extends \PHPUnit\Framework\TestCase
         $this->userModel = $this->createMock(UserModel::class);
 
         $this->notificationModel = $this->createMock(NotificationModel::class);
-
-        $this->router = $this->createStub(Router::class);
 
         $this->translator = $this->createMock(Translator::class);
 
@@ -267,7 +260,7 @@ class NotificationHelperTest extends \PHPUnit\Framework\TestCase
             $this->userModel,
             $this->notificationModel,
             $this->translator,
-            $this->router,
+            $this->createStub(Router::class),
             $this->coreParametersHelper
         );
     }

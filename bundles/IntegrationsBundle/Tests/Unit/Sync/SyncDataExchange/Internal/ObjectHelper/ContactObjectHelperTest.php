@@ -37,11 +37,6 @@ class ContactObjectHelperTest extends TestCase
     private MockObject $repository;
 
     /**
-     * @var Connection&\PHPUnit\Framework\MockObject\Stub
-     */
-    private \PHPUnit\Framework\MockObject\Stub $connection;
-
-    /**
      * @var MockObject&DoNotContact
      */
     private MockObject $doNotContactModel;
@@ -60,7 +55,6 @@ class ContactObjectHelperTest extends TestCase
     {
         $this->model                      = $this->createMock(LeadModel::class);
         $this->repository                 = $this->createMock(LeadRepository::class);
-        $this->connection                 = $this->createStub(Connection::class);
         $this->doNotContactModel          = $this->createMock(DoNotContact::class);
         $this->fieldList                  = $this->createMock(FieldList::class);
         $this->fieldsWithUniqueIdentifier = $this->createMock(FieldsWithUniqueIdentifier::class);
@@ -360,7 +354,7 @@ class ContactObjectHelperTest extends TestCase
 
     private function getObjectHelper(): ContactObjectHelper
     {
-        return new ContactObjectHelper($this->model, $this->repository, $this->connection, $this->doNotContactModel, $this->fieldList, $this->fieldsWithUniqueIdentifier);
+        return new ContactObjectHelper($this->model, $this->repository, $this->createStub(Connection::class), $this->doNotContactModel, $this->fieldList, $this->fieldsWithUniqueIdentifier);
     }
 
     private function assertManipulator(Lead $lead, string $objectName): void

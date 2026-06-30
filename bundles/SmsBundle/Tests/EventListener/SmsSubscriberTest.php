@@ -15,18 +15,12 @@ use PHPUnit\Framework\TestCase;
 
 class SmsSubscriberTest extends TestCase
 {
-    /**
-     * @var \PHPUnit\Framework\MockObject\Stub|CoreParametersHelper
-     */
-    private \PHPUnit\Framework\MockObject\Stub $coreParametersHelper;
-
     private string $messageText = 'custom http://mautic.com text';
 
     private string $messageUrl = 'http://mautic.com';
 
     protected function setUp(): void
     {
-        $this->coreParametersHelper = $this->createStub(CoreParametersHelper::class);
         parent::setUp();
     }
 
@@ -58,7 +52,7 @@ class SmsSubscriberTest extends TestCase
             $mockPageTokenHelper,
             $mockAssetTokenHelper,
             $mockSmsHelper,
-            $this->coreParametersHelper
+            $this->createStub(CoreParametersHelper::class)
         );
         $subscriber->onTokenReplacement($tokenReplacementEvent);
         $this->assertNotSame($this->messageText, $tokenReplacementEvent->getContent());
@@ -92,7 +86,7 @@ class SmsSubscriberTest extends TestCase
             $mockPageTokenHelper,
             $mockAssetTokenHelper,
             $mockSmsHelper,
-            $this->coreParametersHelper
+            $this->createStub(CoreParametersHelper::class)
         );
         $subscriber->onTokenReplacement($tokenReplacementEvent);
         $this->assertSame($this->messageText, $tokenReplacementEvent->getContent());

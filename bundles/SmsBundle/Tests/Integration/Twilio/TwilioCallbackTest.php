@@ -12,18 +12,12 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class TwilioCallbackTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ContactHelper|\PHPUnit\Framework\MockObject\Stub
-     */
-    private \PHPUnit\Framework\MockObject\Stub $contactHelper;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject&Configuration
      */
     private \PHPUnit\Framework\MockObject\MockObject $configuration;
 
     protected function setUp(): void
     {
-        $this->contactHelper = $this->createStub(ContactHelper::class);
         $this->configuration = $this->createMock(Configuration::class);
         $this->configuration->method('getAccountSid')
             ->willReturn('123');
@@ -93,6 +87,6 @@ class TwilioCallbackTest extends \PHPUnit\Framework\TestCase
 
     private function getCallback(): TwilioCallback
     {
-        return new TwilioCallback($this->contactHelper, $this->configuration);
+        return new TwilioCallback($this->createStub(ContactHelper::class), $this->configuration);
     }
 }

@@ -12,18 +12,12 @@ use PHPUnit\Framework\TestCase;
 class TokenPersistenceFactoryTest extends TestCase
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\Stub&IntegrationsHelper
-     */
-    private \PHPUnit\Framework\MockObject\Stub $integrationsHelper;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject&Integration
      */
     private \PHPUnit\Framework\MockObject\MockObject $integration;
 
     protected function setup(): void
     {
-        $this->integrationsHelper = $this->createStub(IntegrationsHelper::class);
         $this->integration        = $this->createMock(Integration::class);
     }
 
@@ -42,7 +36,7 @@ class TokenPersistenceFactoryTest extends TestCase
             ->method('getApiKeys')
             ->willReturn($apiKeys);
 
-        $factory          = new TokenPersistenceFactory($this->integrationsHelper);
+        $factory          = new TokenPersistenceFactory($this->createStub(IntegrationsHelper::class));
         $tokenPersistence = $factory->create($this->integration);
         $this->assertTrue($tokenPersistence->hasToken());
     }
@@ -62,7 +56,7 @@ class TokenPersistenceFactoryTest extends TestCase
             ->method('getApiKeys')
             ->willReturn($apiKeys);
 
-        $factory          = new TokenPersistenceFactory($this->integrationsHelper);
+        $factory          = new TokenPersistenceFactory($this->createStub(IntegrationsHelper::class));
         $tokenPersistence = $factory->create($this->integration);
         $this->assertFalse($tokenPersistence->hasToken());
     }

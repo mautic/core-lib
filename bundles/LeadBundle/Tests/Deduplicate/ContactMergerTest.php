@@ -32,11 +32,6 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
     private \PHPUnit\Framework\MockObject\MockObject $mergeRecordRepo;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\Stub|EventDispatcher
-     */
-    private \PHPUnit\Framework\MockObject\Stub $dispatcher;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject&Logger
      */
     private \PHPUnit\Framework\MockObject\MockObject $logger;
@@ -48,7 +43,6 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
         $this->leadModel       = $this->createMock(LeadModel::class);
         $leadRepo              = $this->createMock(LeadRepository::class);
         $this->mergeRecordRepo = $this->createMock(MergeRecordRepository::class);
-        $this->dispatcher      = $this->createStub(EventDispatcher::class);
         $this->logger          = $this->createMock(Logger::class);
         $this->companyLeadRepo = $this->createMock(CompanyLeadRepository::class);
 
@@ -865,7 +859,7 @@ class ContactMergerTest extends \PHPUnit\Framework\TestCase
         return new ContactMerger(
             $this->leadModel,
             $this->mergeRecordRepo,
-            $this->dispatcher,
+            $this->createStub(EventDispatcher::class),
             $this->logger,
             $this->companyLeadRepo
         );

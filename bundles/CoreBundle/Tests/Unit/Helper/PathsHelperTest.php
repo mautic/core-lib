@@ -19,11 +19,6 @@ class PathsHelperTest extends TestCase
     private string $rootDir  = __DIR__.'/resource/paths';
 
     /**
-     * @var \PHPUnit\Framework\MockObject\Stub|UserHelper
-     */
-    private \PHPUnit\Framework\MockObject\Stub $userHelper;
-
-    /**
      * @var MockObject&CoreParametersHelper
      */
     private MockObject $coreParametersHelper;
@@ -32,7 +27,6 @@ class PathsHelperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->userHelper           = $this->createStub(UserHelper::class);
         $this->coreParametersHelper = $this->createMock(CoreParametersHelper::class);
         $this->coreParametersHelper->method('get')
             ->willReturnCallback(
@@ -43,7 +37,7 @@ class PathsHelperTest extends TestCase
                 }
             );
         $this->helper = new PathsHelper(
-            $this->userHelper, $this->coreParametersHelper, $this->cacheDir, $this->logsDir, $this->rootDir
+            $this->createStub(UserHelper::class), $this->coreParametersHelper, $this->cacheDir, $this->logsDir, $this->rootDir
         );
     }
 
@@ -117,7 +111,7 @@ class PathsHelperTest extends TestCase
                 }
             );
 
-        $helper = new PathsHelper($this->userHelper, $this->coreParametersHelper, $this->cacheDir, $this->logsDir, $this->rootDir);
+        $helper = new PathsHelper($this->createStub(UserHelper::class), $this->coreParametersHelper, $this->cacheDir, $this->logsDir, $this->rootDir);
 
         $this->assertSame($campaignImportPath, $helper->getImportCampaignsPath());
     }
