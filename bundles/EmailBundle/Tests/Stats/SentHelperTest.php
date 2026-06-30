@@ -157,7 +157,7 @@ class SentHelperTest extends TestCase
 
     private function mockQueryPart(): void
     {
-        $this->queryBuilder->method('getQueryPart')
+        $this->queryBuilder->expects($this->atLeast(2))->method('getQueryPart')
             ->willReturnMap(
                 [
                     [
