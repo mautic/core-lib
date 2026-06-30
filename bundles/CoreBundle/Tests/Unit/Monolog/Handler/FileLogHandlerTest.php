@@ -39,9 +39,11 @@ class FileLogHandlerTest extends TestCase
                 }
             );
 
-        $handler = new FileLogHandler($this->coreParametersHelper, $this->createStub(FormatterInterface::class));
+        $formatterStub = $this->createStub(FormatterInterface::class);
+
+        $handler = new FileLogHandler($this->coreParametersHelper, $formatterStub);
         $this->assertSame(Level::Debug, $handler->getLevel());
-        $this->assertSame(spl_object_id($this->createStub(FormatterInterface::class)), spl_object_id($handler->getFormatter()));
+        $this->assertSame(spl_object_id($formatterStub), spl_object_id($handler->getFormatter()));
 
         $filename = $this->getProperty($handler, 'filename');
         $this->assertEquals('/var/logs/mautic_test.php', $filename);
@@ -67,9 +69,11 @@ class FileLogHandlerTest extends TestCase
                 }
             );
 
-        $handler = new FileLogHandler($this->coreParametersHelper, $this->createStub(FormatterInterface::class));
+        $formatterStub = $this->createStub(FormatterInterface::class);
+
+        $handler = new FileLogHandler($this->coreParametersHelper, $formatterStub);
         $this->assertSame(Level::Notice, $handler->getLevel());
-        $this->assertNotSame(spl_object_id($this->createStub(FormatterInterface::class)), spl_object_id($handler->getFormatter()));
+        $this->assertNotSame(spl_object_id($formatterStub), spl_object_id($handler->getFormatter()));
 
         $filename = $this->getProperty($handler, 'filename');
         $this->assertEquals('/var/logs/mautic_test.php', $filename);

@@ -26,9 +26,11 @@ final class FormAdjustmentEventTest extends \PHPUnit\Framework\TestCase
                 'list' => ['one', 'two'],
             ],
         ];
-        $event = new FormAdjustmentEvent($this->createStub(FormInterface::class), $alias, $object, $operator, $fieldDetails);
 
-        $this->assertSame($this->createStub(FormInterface::class), $event->getForm());
+        $formStub = $this->createStub(FormInterface::class);
+        $event    = new FormAdjustmentEvent($formStub, $alias, $object, $operator, $fieldDetails);
+
+        $this->assertSame($formStub, $event->getForm());
         $this->assertSame($alias, $event->getFieldAlias());
         $this->assertSame($object, $event->getFieldObject());
         $this->assertSame($operator, $event->getOperator());
