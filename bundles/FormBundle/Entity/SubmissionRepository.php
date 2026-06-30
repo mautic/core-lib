@@ -360,7 +360,7 @@ class SubmissionRepository extends CommonRepository
 
         if (is_array($pageId)) {
             $q->where($q->expr()->in('s.page_id', ':pageIds'))
-                ->setParameter('pageIds', array_map('intval', $pageId), ArrayParameterType::INTEGER)
+                ->setParameter('pageIds', array_map(intval(...), $pageId), ArrayParameterType::INTEGER)
                 ->groupBy('s.page_id, p.title, p.variant_hits');
         } else {
             $q->where($q->expr()->eq('s.page_id', ':page'))
@@ -393,7 +393,7 @@ class SubmissionRepository extends CommonRepository
 
         if (is_array($emailId)) {
             $q->where($q->expr()->in('e.id', ':ids'))
-                ->setParameter('ids', array_map('intval', $emailId), ArrayParameterType::INTEGER)
+                ->setParameter('ids', array_map(intval(...), $emailId), ArrayParameterType::INTEGER)
                 ->groupBy('e.id, e.subject, e.variant_sent_count');
         } else {
             $q->where($q->expr()->eq('e.id', ':id'))
