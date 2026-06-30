@@ -285,7 +285,7 @@ class CorePermissions implements ResetInterface
             }
 
             $parts = explode(':', $p);
-            if (3 != count($parts)) {
+            if (3 !== count($parts)) {
                 $result[$p] = false;
             } else {
                 // check against bundle permissions class
