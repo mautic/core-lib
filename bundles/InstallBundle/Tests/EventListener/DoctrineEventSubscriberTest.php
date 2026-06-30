@@ -16,7 +16,7 @@ use Mautic\InstallBundle\EventListener\DoctrineEventSubscriber;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-class DoctrineEventSubscriberTest extends TestCase
+final class DoctrineEventSubscriberTest extends TestCase
 {
     /**
      * @var \PHPUnit\Framework\MockObject\Stub&EntityManagerInterface

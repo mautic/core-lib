@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Router;
 
-class LightSAMLExceptionListenerTest extends MauticMysqlTestCase
+final class LightSAMLExceptionListenerTest extends MauticMysqlTestCase
 {
     /**
      * @var \PHPUnit\Framework\MockObject\Stub|LoggerInterface
