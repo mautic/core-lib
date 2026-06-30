@@ -190,7 +190,7 @@ class CorePermissions implements ResetInterface
      * @param bool            $allowUnknown        If the permission is not recognized, false will be returned.  Otherwise an
      *                                             exception will be thrown
      *
-     * @return bool|mixed[]
+     * @return ($mode is 'RETURN_ARRAY' ? array<mixed> : bool)
      *
      * @throws \InvalidArgumentException
      */
