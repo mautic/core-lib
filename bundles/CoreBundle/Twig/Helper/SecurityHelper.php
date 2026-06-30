@@ -48,12 +48,7 @@ final class SecurityHelper
         return $this->security->hasEntityAccess($ownPermission, $otherPermission, $ownerId);
     }
 
-    /**
-     * @param string[]|string $permission
-     *
-     * @return mixed
-     */
-    public function isGranted($permission)
+    public function isGranted(string $permission): bool
     {
         return $this->security->isGranted($permission);
     }
