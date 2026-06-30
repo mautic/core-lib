@@ -253,10 +253,8 @@ class InputHelper
      * @param mixed              $defaultProtocol
      * @param array<string>      $removeQuery
      * @param bool|false         $ignoreFragment
-     *
-     * @return mixed|string
      */
-    public static function url($value, $urldecode = false, $allowedProtocols = null, $defaultProtocol = null, $removeQuery = [], $ignoreFragment = false): array|string|false
+    public static function url(?string $value, $urldecode = false, $allowedProtocols = null, $defaultProtocol = null, $removeQuery = [], $ignoreFragment = false): string|false
     {
         if ($urldecode) {
             $value = urldecode($value);

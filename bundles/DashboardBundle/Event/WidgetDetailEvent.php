@@ -337,11 +337,7 @@ class WidgetDetailEvent extends CommonEvent
     /**
      * Check if the user has defined permission to see the widgets.
      */
-<<<<<<< HEAD
     public function hasPermission(string $permission): bool
-=======
-    public function hasPermission($permission): bool|array
->>>>>>> 82e2d601ca ([types] add return type declarations (non-controller))
     {
         return $this->security->isGranted($permission);
     }

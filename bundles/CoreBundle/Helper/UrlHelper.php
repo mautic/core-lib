@@ -8,16 +8,8 @@ class UrlHelper
 {
     /**
      * Append query string to URL.
-<<<<<<< HEAD
      */
     public static function appendQueryToUrl(string $url, string $appendQueryString): string
-=======
-     *
-     * @param string $url
-     * @param string $appendQueryString
-     */
-    public static function appendQueryToUrl($url, $appendQueryString): string
->>>>>>> 82e2d601ca ([types] add return type declarations (non-controller))
     {
         $query     = parse_url($url, PHP_URL_QUERY);
 

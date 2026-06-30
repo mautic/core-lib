@@ -144,14 +144,7 @@ class ThemeHelper implements ThemeHelperInterface
         return new twigThemeHelper($this->pathsHelper, $themeName);
     }
 
-<<<<<<< HEAD
     private function getDirectoryName(string $newName): string
-=======
-    /**
-     * @param string $newName
-     */
-    private function getDirectoryName($newName): string
->>>>>>> 82e2d601ca ([types] add return type declarations (non-controller))
     {
         return InputHelper::filename(str_replace(' ', '-', $newName));
     }

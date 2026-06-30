@@ -110,7 +110,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Holds max size of uploaded file.
      *
-     * @var string
+     * @var float
      */
     private $maxSize;
 
@@ -875,7 +875,7 @@ class Asset extends FormEntity implements UuidInterface
      * Returns maximal uploadable size in bytes.
      * If not set, 6000000 is default.
      *
-     * @return string
+     * @return float
      */
     protected function getMaxSize()
     {
@@ -889,7 +889,7 @@ class Asset extends FormEntity implements UuidInterface
     /**
      * Set max size.
      *
-     * @param string $maxSize
+     * @param float $maxSize
      */
     public function setMaxSize($maxSize): static
     {

@@ -15,11 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class FormListType extends AbstractType
 {
-<<<<<<< HEAD
     private bool $viewOther;
-=======
-    private bool|array $viewOther;
->>>>>>> 82e2d601ca ([types] add return type declarations (non-controller))
 
     private readonly \Mautic\FormBundle\Entity\FormRepository $repo;
 

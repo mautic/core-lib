@@ -531,10 +531,8 @@ final class AssetsHelper
      * @param string                $text
      * @param array<string>         $protocols  http/https, ftp, mail, twitter
      * @param array<string, string> $attributes
-     *
-     * @return string|string[]|null
      */
-    public function makeLinks($text, $protocols = ['http', 'mail'], array $attributes = []): string|array|null
+    public function makeLinks($text, $protocols = ['http', 'mail'], array $attributes = []): ?string
     {
         // clear tags in text
         $text = InputHelper::url($text, false, $protocols);

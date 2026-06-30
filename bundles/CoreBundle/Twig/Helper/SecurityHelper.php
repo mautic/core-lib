@@ -48,14 +48,7 @@ final readonly class SecurityHelper
         return $this->security->hasEntityAccess($ownPermission, $otherPermission, $ownerId);
     }
 
-<<<<<<< HEAD
     public function isGranted(string $permission): bool
-=======
-    /**
-     * @return bool|array<string, bool>
-     */
-    public function isGranted(string $permission): bool|array
->>>>>>> 82e2d601ca ([types] add return type declarations (non-controller))
     {
         return $this->security->isGranted($permission);
     }
