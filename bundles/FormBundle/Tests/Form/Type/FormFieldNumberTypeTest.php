@@ -22,7 +22,7 @@ final class FormFieldNumberTypeTest extends TypeTestCase
     /**
      * @var AbstractType<FormFieldNumberType>
      */
-    private $form;
+    private FormFieldNumberType $form;
 
     protected function setUp(): void
     {

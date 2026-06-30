@@ -12,7 +12,6 @@ use Mautic\LeadBundle\DataFixtures\ORM\LoadCompanyData;
 use Mautic\LeadBundle\DataFixtures\ORM\LoadLeadData;
 use Mautic\LeadBundle\DataFixtures\ORM\LoadLeadListData;
 use Mautic\LeadBundle\Entity\LeadList;
-use Mautic\LeadBundle\Segment\ContactSegmentService;
 use Mautic\LeadBundle\Segment\Exception\TableNotFoundException;
 use Mautic\LeadBundle\Tests\DataFixtures\ORM\LoadClickData;
 use Mautic\LeadBundle\Tests\DataFixtures\ORM\LoadDncData;
@@ -34,10 +33,7 @@ class ContactSegmentServiceFunctionalTest extends MauticMysqlTestCase
      */
     private $fixtures;
 
-    /**
-     * @var ContactSegmentService
-     */
-    private $contactSegmentService;
+    private ?object $contactSegmentService = null;
 
     protected function setUp(): void
     {

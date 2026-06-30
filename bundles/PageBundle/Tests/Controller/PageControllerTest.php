@@ -16,10 +16,7 @@ class PageControllerTest extends MauticMysqlTestCase
 {
     use ControllerTrait;
 
-    /**
-     * @var string
-     */
-    private $prefix;
+    private bool|string|int|float|\UnitEnum|array|null $prefix = null;
 
     /**
      * @var int

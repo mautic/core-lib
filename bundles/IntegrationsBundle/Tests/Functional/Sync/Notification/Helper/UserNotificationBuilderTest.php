@@ -5,17 +5,13 @@ declare(strict_types=1);
 namespace Mautic\IntegrationsBundle\Tests\Functional\Sync\Notification\Helper;
 
 use Mautic\CoreBundle\Test\MauticMysqlTestCase;
-use Mautic\IntegrationsBundle\Sync\Notification\Helper\UserNotificationBuilder;
 use Mautic\LeadBundle\Entity\Lead;
 use Mautic\UserBundle\Entity\User;
 use PHPUnit\Framework\Assert;
 
 class UserNotificationBuilderTest extends MauticMysqlTestCase
 {
-    /**
-     * @var UserNotificationBuilder
-     */
-    private $notificationBuilder;
+    private ?object $notificationBuilder = null;
 
     protected function setUp(): void
     {
