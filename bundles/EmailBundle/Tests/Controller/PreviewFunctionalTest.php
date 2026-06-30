@@ -44,6 +44,16 @@ class PreviewFunctionalTest extends MauticMysqlTestCase
         $this->assertPageContent($urlWithContact, $contentNoContactInfo, self::PREHEADER_TEXT);
     }
 
+    public function testPreviewPageWithTemplateAndNoSavedHtml(): void
+    {
+        $email = $this->createEmail();
+        $email->setCustomHtml('');
+        $email->setContent([]);
+        $this->em->flush();
+
+        $this->assertPageContent("/email/preview/{$email->getId()}", 'Hello World!');
+    }
+
     private function assertPageContent(string $url, string ...$expectedContents): void
     {
         $crawler = $this->client->request(Request::METHOD_GET, $url);
