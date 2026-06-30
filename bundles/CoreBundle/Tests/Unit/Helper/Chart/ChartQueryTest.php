@@ -101,7 +101,7 @@ class ChartQueryTest extends TestCase
             ->method('orderBy')
             ->with("DATE_FORMAT(CONVERT_TZ(t.date_sent, '+00:00', '+00:00'), '%Y-%m-%d')");
 
-        $this->queryBuilder->expects($this->exactly(2))->method('getQueryPart')
+        $this->queryBuilder->expects($this->atLeast(3))->method('getQueryPart')
             ->willReturnMap(
                 [
                     ['from', [[

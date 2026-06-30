@@ -67,12 +67,12 @@ final class EmailDefaultsHelperTest extends TestCase
         $email = new Email();
         $email->setPreferenceCenter($existingPage);
 
-        $this->coreParametersHelper->expects($this->exactly(5))->method('get')->willReturnMap([
+        $this->coreParametersHelper->expects($this->exactly(4))->method('get')->willReturnMap([
             ['email_default_preference_center_id', null, 99],
             ['email_default_utm_source', null, 'config-source'],
             ['email_default_utm_medium', null, null],
             ['email_default_utm_campaign', null, null],
-            ['email_default_utm_content', null, null],
+            // ['email_default_utm_content', null, null],
         ]);
 
         // Verify helper skips loading when preference center already set

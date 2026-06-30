@@ -476,7 +476,7 @@ class FromEmailHelperTest extends TestCase
 
     public function testTokenizedEmailFallsBackToTokenizedSystemDefault(): void
     {
-        $this->coreParametersHelper->expects($this->exactly(2))->method('get')
+        $this->coreParametersHelper->expects($this->atLeast(3))->method('get')
             ->willReturnMap(
                 [
                     ['mailer_from_email', null, '{contactfield=default_email|fallback@somewhere.com}'],

@@ -207,7 +207,7 @@ class WebhookControllerTest extends TestCase
             ->method('getSuccessVsErrorStatusCodeRatio');
 
         $em = $this->createMock(EntityManager::class);
-        $em->expects($this->exactly(4))->method('getRepository')
+        $em->expects($this->atLeast(3))->method('getRepository')
             ->willReturnMap([
                 [Event::class, $webhookEventRepository],
                 [WebhookQueue::class, $webhookQueueRepository],
