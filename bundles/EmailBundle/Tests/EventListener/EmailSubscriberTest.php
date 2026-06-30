@@ -289,7 +289,7 @@ CONTENT,
         $themeHelper->expects(self::never())
             ->method('checkForTwigTemplate');
 
-        $coreParametersHelper->method('get')
+        $coreParametersHelper->expects($this->exactly(2))->method('get')
             ->willReturnMap(
                 [
                     ['mailer_from_email', null, 'nobody@nowhere.com'],

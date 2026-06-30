@@ -60,7 +60,7 @@ class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
                 'readRate'   => 50,
             ],
         ];
-        $this->translator->method('trans')->willReturnMap([
+        $this->translator->expects($this->exactly(2))->method('trans')->willReturnMap([
             ['mautic.email.abtest.label.opened', [], null, null, 'opened'],
             ['mautic.email.abtest.label.sent', [], null, null, 'sent'],
         ]);
@@ -120,7 +120,7 @@ class DetermineWinnerSubscriberTest extends \PHPUnit\Framework\TestCase
             2 => 153,
         ];
 
-        $this->translator->method('trans')->willReturnMap(
+        $this->translator->expects($this->exactly(2))->method('trans')->willReturnMap(
             [
                 ['mautic.email.abtest.label.clickthrough', [], null, null, 'clickthrough'],
                 ['mautic.email.abtest.label.opened', [], null, null, 'opened'],
