@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PreviewFunctionalTest extends MauticMysqlTestCase
 {
     use CreateTestEntitiesTrait;
+
     private const PREHEADER_TEXT = 'Preheader text';
 
     protected $useCleanupRollback = false;
