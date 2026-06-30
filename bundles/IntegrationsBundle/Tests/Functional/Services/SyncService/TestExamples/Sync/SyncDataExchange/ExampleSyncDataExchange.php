@@ -186,9 +186,6 @@ class ExampleSyncDataExchange implements SyncDataExchangeInterface
         $requestedObjects = $requestDAO->getObjects();
         foreach ($requestedObjects as $requestedObject) {
             $objectName   = $requestedObject->getObject();
-            $fromDateTime = $requestedObject->getFromDateTime();
-            $toDatetime   = $requestedObject->getToDateTime();
-            $mappedFields = $requestedObject->getFields();
 
             $updatedPeople = $this->getReportPayload();
             foreach ($updatedPeople as $person) {
