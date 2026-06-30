@@ -35,7 +35,9 @@ final class EmailControllerFunctionalTest extends MauticMysqlTestCase
     use ControllerTrait;
 
     private const CLICK_URL_LOW  = 'https://example.com/low';
+
     private const CLICK_URL_MID  = 'https://example.com/mid';
+
     private const CLICK_URL_HIGH = 'https://example.com/high';
 
     protected function setUp(): void

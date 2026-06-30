@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 class PrivateAddressCheckerTest extends TestCase
 {
     private PrivateAddressChecker $checker;
+
     private PrivateAddressChecker $checkerWithMockedDns;
 
     protected function setUp(): void
