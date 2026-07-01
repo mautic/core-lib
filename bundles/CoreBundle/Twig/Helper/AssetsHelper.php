@@ -528,11 +528,10 @@ final class AssetsHelper
     /**
      * Turn all URLs in clickable links.
      *
-     * @param string                $text
      * @param array<string>         $protocols  http/https, ftp, mail, twitter
      * @param array<string, string> $attributes
      */
-    public function makeLinks($text, $protocols = ['http', 'mail'], array $attributes = []): ?string
+    public function makeLinks(string $text, $protocols = ['http', 'mail'], array $attributes = []): ?string
     {
         // clear tags in text
         $text = InputHelper::url($text, false, $protocols);
