@@ -61,7 +61,7 @@ abstract class PageTestAbstract extends TestCase
 
     protected function setUp(): void
     {
-        $this->mockTrackingId = hash('sha1', uniqid(mt_rand(), true));
+        $this->mockTrackingId = hash('sha1', uniqid((string) mt_rand(), true));
     }
 
     protected function getPageModel(bool $transliterationEnabled = true, bool $validatePageHitRequiredData = true): PageModel
