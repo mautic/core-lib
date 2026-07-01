@@ -13,7 +13,7 @@ use Mautic\SmsBundle\EventListener\SmsSubscriber;
 use Mautic\SmsBundle\Helper\SmsHelper;
 use PHPUnit\Framework\TestCase;
 
-class SmsSubscriberTest extends TestCase
+final class SmsSubscriberTest extends TestCase
 {
     private string $messageText = 'custom http://mautic.com text';
 

@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-class WebhookModelTest extends TestCase
+final class WebhookModelTest extends TestCase
 {
     /**
      * @var MockObject&CoreParametersHelper

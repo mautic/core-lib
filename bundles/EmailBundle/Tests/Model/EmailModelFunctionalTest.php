@@ -26,7 +26,7 @@ use Mautic\PageBundle\Entity\Redirect;
 use Mautic\PageBundle\Entity\Trackable;
 use PHPUnit\Framework\Assert;
 
-class EmailModelFunctionalTest extends MauticMysqlTestCase
+final class EmailModelFunctionalTest extends MauticMysqlTestCase
 {
     use CreateTestEntitiesTrait;
 
