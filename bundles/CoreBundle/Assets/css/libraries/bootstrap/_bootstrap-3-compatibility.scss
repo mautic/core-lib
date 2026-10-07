@@ -6228,6 +6228,7 @@ input:disabled:not(.form-control) {
 }
 
 .modal-dialog {
+  max-width: none;
   pointer-events: auto;
 }
 

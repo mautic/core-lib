@@ -514,6 +514,69 @@ window.MauticInstallLegacyAffix = function (jQuery) {
         return tip;
     }
 
+    function activateLegacyTab(jQuery, element, container, callback) {
+        var active = container.children('.active');
+        var transition = callback && jQuery.support.transition && (active.hasClass('fade') || container.children('.fade').length);
+        var complete = function () {
+            active.removeClass('active show').find('> .dropdown-menu > .active').removeClass('active');
+            active.find('[data-toggle="tab"]').attr('aria-expanded', false);
+            element.addClass('active').find('[data-toggle="tab"]').attr('aria-expanded', true);
+            if (transition) {
+                element[0].offsetWidth;
+                element.addClass('in');
+            } else {
+                element.removeClass('fade');
+            }
+            if (element.parent('.dropdown-menu').length) {
+                element.closest('li.dropdown').addClass('active');
+                element.find('[data-toggle="tab"]').attr('aria-expanded', true);
+            }
+            if (callback) {
+                callback();
+            }
+        };
+        if (active.length && transition) {
+            active.one('bsTransitionEnd', complete).emulateTransitionEnd(150);
+        } else {
+            complete();
+        }
+        active.removeClass('in show');
+    }
+
+    function showLegacyFadedTab(jQuery, element) {
+        var trigger = jQuery(element);
+        if (!element.hasAttribute('data-toggle')) {
+            return false;
+        }
+        var selector = trigger.attr('data-target') || trigger.attr('href');
+        selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '');
+        var target = selector && jQuery(document).find(selector);
+        var navigation = trigger.closest('ul:not(.dropdown-menu)');
+        if (!target || !target.length || !navigation.length || !target.parent().children('.fade').length) {
+            return false;
+        }
+        if (trigger.parent('li').hasClass('active')) {
+            trigger.addClass('active').attr('aria-selected', true);
+            return true;
+        }
+        var previous = navigation.find('li.active:last > a');
+        var hideEvent = jQuery.Event('hide.bs.tab', {relatedTarget: element});
+        var showEvent = jQuery.Event('show.bs.tab', {relatedTarget: previous[0]});
+        previous.trigger(hideEvent);
+        trigger.trigger(showEvent);
+        if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) {
+            return true;
+        }
+        previous.removeClass('active').attr('aria-selected', false).attr('tabindex', '-1');
+        trigger.addClass('active').attr('aria-selected', true).removeAttr('tabindex');
+        activateLegacyTab(jQuery, trigger.closest('li'), navigation);
+        activateLegacyTab(jQuery, target, target.parent(), function () {
+            previous.trigger({type: 'hidden.bs.tab', relatedTarget: element});
+            trigger.trigger({type: 'shown.bs.tab', relatedTarget: previous[0]});
+        });
+        return true;
+    }
+
     function synchronizeDropdownState(jQuery, method, eventName, open) {
         var prototype = window.bootstrap.Dropdown.prototype;
         var nativeMethod = prototype[method];
@@ -567,6 +630,9 @@ window.MauticInstallLegacyAffix = function (jQuery) {
             BootstrapConstructor.prototype.show = function () {
                 if ('collapse' !== pluginName) {
                     window.MauticBootstrapCompatibility.exposeLegacyInstance(jQuery, pluginName, BootstrapConstructor, this._element);
+                }
+                if ('tab' === pluginName && showLegacyFadedTab(jQuery, this._element)) {
+                    return;
                 }
                 var result = nativeShow.apply(this, arguments);
                 if ('collapse' === pluginName) {
