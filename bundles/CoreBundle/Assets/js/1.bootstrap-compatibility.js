@@ -396,7 +396,10 @@ window.MauticInstallLegacyAffix = function (jQuery) {
             if (element.classList.contains('item')) {
                 element.classList.add('carousel-item');
             } else {
-                element.classList.add('show');
+                var BootstrapConstructor = window.bootstrap[element.classList.contains('modal') ? 'Modal' : 'Collapse'];
+                if (!BootstrapConstructor.getInstance(element)) {
+                    element.classList.add('show');
+                }
             }
         });
     }
@@ -825,6 +828,9 @@ window.MauticInstallLegacyAffix = function (jQuery) {
         }
 
         if ('modal' === pluginName) {
+            facade.hide = function () {
+                hideLegacyModal(jQuery, instance);
+            };
             Object.defineProperty(facade, 'isShown', {
                 get: function () {
                     return instance._isShown;
@@ -833,6 +839,16 @@ window.MauticInstallLegacyAffix = function (jQuery) {
         }
 
         jQuery(element).data(key, facade);
+    }
+
+    function hideLegacyModal(jQuery, instance) {
+        if (instance._isShown && instance._isTransitioning) {
+            jQuery(instance._element).one('shown.bs.modal', function () {
+                instance.hide();
+            });
+        } else {
+            instance.hide();
+        }
     }
 
     function routeFixTitle(jQuery, BootstrapConstructor, collection) {
@@ -952,7 +968,11 @@ window.MauticInstallLegacyAffix = function (jQuery) {
                 }
                 instance = instance || BootstrapConstructor.getOrCreateInstance(this, constructorOptions);
                 exposeLegacyInstance(jQuery, pluginName, BootstrapConstructor, this);
-                nativeInterface.apply(jQuery(this), [normalizedOption].concat(args));
+                if ('modal' === pluginName && 'hide' === normalizedMethod) {
+                    hideLegacyModal(jQuery, instance);
+                } else {
+                    nativeInterface.apply(jQuery(this), [normalizedOption].concat(args));
+                }
                 if (toggleCollapse) {
                     instance.toggle();
                 }

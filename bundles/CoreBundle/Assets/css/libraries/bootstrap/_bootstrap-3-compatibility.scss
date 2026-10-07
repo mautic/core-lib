@@ -3162,6 +3162,11 @@ tbody.collapse.in { display: table-row-group; }
   position: relative;
 }
 
+.dropdown-toggle::before,
+.dropdown-toggle::after {
+  content: none !important;
+}
+
 .dropdown-toggle:focus {
   outline: 0;
 }
