@@ -337,6 +337,39 @@ window.MauticInstallLegacyAffix = function (jQuery) {
         });
     }
 
+    function hideTip(jQuery, element, pluginName, instance, callback) {
+        var hidden = 'hidden.bs.' + pluginName;
+        var hiding = 'hide.bs.' + pluginName;
+        if (!instance.tip || !instance.tip.classList.contains('show')) {
+            var event = jQuery.Event(hiding);
+            element.trigger(event);
+            if (!event.isDefaultPrevented()) {
+                element.trigger(hidden);
+                if ('function' === typeof callback) {
+                    callback();
+                }
+            }
+            return;
+        }
+        if ('function' !== typeof callback) {
+            instance.hide();
+            return;
+        }
+        var hideEvent;
+        var observeHide = function (event) {
+            hideEvent = event;
+        };
+        var complete = function () {
+            callback();
+        };
+        element.one(hiding, observeHide).one(hidden, complete);
+        instance.hide();
+        element.off(hiding, observeHide);
+        if (hideEvent && hideEvent.isDefaultPrevented()) {
+            element.off(hidden, complete);
+        }
+    }
+
     function destroyTip(jQuery, collection, pluginName, BootstrapConstructor) {
         return collection.each(function () {
             var element = jQuery(this);
@@ -344,22 +377,10 @@ window.MauticInstallLegacyAffix = function (jQuery) {
             if (!instance) {
                 return;
             }
-            var hidden = 'hidden.bs.' + pluginName;
-            var dispose = function () {
+            hideTip(jQuery, element, pluginName, instance, function () {
                 instance.dispose();
                 element.removeData('bs.' + pluginName);
-            };
-            if (instance.tip && instance.tip.classList.contains('show')) {
-                element.one(hidden, dispose);
-                instance.hide();
-            } else {
-                var event = jQuery.Event('hide.bs.' + pluginName);
-                element.trigger(event);
-                if (!event.isDefaultPrevented()) {
-                    element.trigger(hidden);
-                    dispose();
-                }
-            }
+            });
         });
     }
 
@@ -514,6 +535,20 @@ window.MauticInstallLegacyAffix = function (jQuery) {
             jQuery(event.relatedTarget).parent('li').removeClass('active');
             jQuery(event.target).parent('li').addClass('active');
         });
+        ['modal', 'collapse', 'tab'].forEach(function (pluginName) {
+            var BootstrapConstructor = window.bootstrap[pluginName.charAt(0).toUpperCase() + pluginName.slice(1)];
+            var nativeShow = BootstrapConstructor.prototype.show;
+            BootstrapConstructor.prototype.show = function () {
+                if ('collapse' !== pluginName) {
+                    window.MauticBootstrapCompatibility.exposeLegacyInstance(jQuery, pluginName, BootstrapConstructor, this._element);
+                }
+                var result = nativeShow.apply(this, arguments);
+                if ('collapse' === pluginName) {
+                    window.MauticBootstrapCompatibility.exposeLegacyInstance(jQuery, pluginName, BootstrapConstructor, this._element);
+                }
+                return result;
+            };
+        });
         ['tooltip', 'popover'].forEach(function (pluginName) {
             var BootstrapConstructor = window.bootstrap['popover' === pluginName ? 'Popover' : 'Tooltip'];
             var nativeShow = BootstrapConstructor.prototype.show;
@@ -558,6 +593,7 @@ window.MauticInstallLegacyAffix = function (jQuery) {
         scrollspy: scrollspy,
         adaptTip: adaptTip,
         prepareMarkup: prepareMarkup,
+        hideTip: hideTip,
         destroyTip: destroyTip,
         buttonState: buttonState,
         buttonGroup: buttonGroup,
@@ -776,6 +812,16 @@ window.MauticInstallLegacyAffix = function (jQuery) {
                 return jQuery(window.MauticBootstrapLegacyExceptions.adaptTip(instance, pluginName));
             };
             facade.inState = instance._activeTrigger;
+            facade.hide = function (callback) {
+                window.MauticBootstrapLegacyExceptions.hideTip(jQuery, jQuery(element), pluginName, instance, callback);
+                return facade;
+            };
+            facade.destroy = function () {
+                window.MauticBootstrapLegacyExceptions.destroyTip(jQuery, jQuery(element), pluginName, BootstrapConstructor);
+            };
+            facade.fixTitle = function () {
+                routeFixTitle(jQuery, BootstrapConstructor, jQuery(element));
+            };
         }
 
         if ('modal' === pluginName) {
@@ -791,18 +837,20 @@ window.MauticInstallLegacyAffix = function (jQuery) {
 
     function routeFixTitle(jQuery, BootstrapConstructor, collection) {
         collection.each(function () {
-            var title = this.getAttribute('data-original-title') || this.getAttribute('title');
+            var title = this.getAttribute('title') || this.getAttribute('data-original-title');
             var instance = BootstrapConstructor.getInstance(this);
 
             if (null !== title) {
                 this.setAttribute('data-bs-title', title);
+                this.setAttribute('data-bs-original-title', title);
             }
 
             if (instance) {
-                instance.dispose();
+                if (title) {
+                    instance._config.title = title;
+                }
+                instance._fixTitle();
             }
-
-            jQuery(this).removeData('bs.tooltip');
         });
 
         return collection;
@@ -867,7 +915,7 @@ window.MauticInstallLegacyAffix = function (jQuery) {
                 });
             }
 
-            if ('tooltip' === pluginName && 'fixTitle' === normalizedMethod) {
+            if (('tooltip' === pluginName || 'popover' === pluginName) && 'fixTitle' === normalizedMethod) {
                 return routeFixTitle(jQuery, BootstrapConstructor, this);
             }
 
@@ -1005,6 +1053,12 @@ window.MauticInstallLegacyAffix = function (jQuery) {
     bridgeJQueryPlugins();
     window.MauticBootstrapLegacyExceptions.prepareMarkup(document);
     prepareLegacyTabs(document);
+    window.addEventListener('click', function (event) {
+        if (event.target instanceof Element && event.target.closest(selector)) {
+            mirrorLegacyMarkup(document);
+            window.MauticBootstrapLegacyExceptions.prepareMarkup(document);
+        }
+    }, true);
     observeLegacyAttributes();
 
     document.addEventListener('DOMContentLoaded', function () {
