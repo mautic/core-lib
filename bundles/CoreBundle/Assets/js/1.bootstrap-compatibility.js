@@ -514,6 +514,27 @@ window.MauticInstallLegacyAffix = function (jQuery) {
         return tip;
     }
 
+    function synchronizeDropdownState(jQuery, method, eventName, open) {
+        var prototype = window.bootstrap.Dropdown.prototype;
+        var nativeMethod = prototype[method];
+        prototype[method] = function () {
+            if (!this._element.hasAttribute('data-toggle')) {
+                return nativeMethod.apply(this, arguments);
+            }
+            var trigger = jQuery(this._element);
+            var parent = jQuery(this._parent);
+            var synchronize = function () {
+                parent.toggleClass('open', open);
+            };
+            trigger.one(eventName, synchronize);
+            try {
+                return nativeMethod.apply(this, arguments);
+            } finally {
+                trigger.off(eventName, synchronize);
+            }
+        };
+    }
+
     function install(jQuery) {
         if (installed.has(jQuery)) {
             return;
@@ -521,6 +542,8 @@ window.MauticInstallLegacyAffix = function (jQuery) {
         installed.add(jQuery);
         window.MauticInstallLegacyTransition(jQuery);
         window.MauticInstallLegacyAffix(jQuery);
+        synchronizeDropdownState(jQuery, 'show', 'shown.bs.dropdown', true);
+        synchronizeDropdownState(jQuery, '_completeHide', 'hidden.bs.dropdown', false);
         var tabChildren = window.bootstrap.Tab.prototype._getChildren;
         window.bootstrap.Tab.prototype._getChildren = function () {
             var children = tabChildren.call(this);
