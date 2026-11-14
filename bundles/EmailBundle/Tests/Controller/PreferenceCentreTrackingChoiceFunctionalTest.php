@@ -20,7 +20,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class PreferenceCentreTrackingChoiceFunctionalTest extends MauticMysqlTestCase
 {
-    private const FIELD = 'lead_contact_frequency_rules[allow_activity_tracking]';
+    private const FIELD         = 'lead_contact_frequency_rules[allow_activity_tracking]';
+    private const EMAIL_ADDRESS = 'choice@example.com';
+    private const EMAIL_NAME    = 'Tracking choice';
+    private const TEMPLATE      = 'blank';
 
     protected $useCleanupRollback = false;
 
@@ -50,12 +53,7 @@ final class PreferenceCentreTrackingChoiceFunctionalTest extends MauticMysqlTest
         $this->assertFalse($preference->isAllowed());
         $this->assertSame(TrackingPreference::SOURCE_PREFERENCE_CENTRE, $preference->getSource());
 
-        // The email open pixel now follows the choice
-        $this->client->request(Request::METHOD_GET, '/email/'.$stat->getTrackingHash().'.gif', [], [], ['REMOTE_ADDR' => '203.0.113.80']);
-        $this->em->clear();
-        $stat = $this->em->find(Stat::class, $stat->getId());
-        $this->assertInstanceOf(Stat::class, $stat);
-        $this->assertFalse($stat->getIsRead());
+        $this->assertFalse($this->openTheEmail($stat)->getIsRead(), 'the open pixel follows the choice');
     }
 
     public function testSavingWithoutChangingTheChoiceRecordsNothing(): void
@@ -83,6 +81,8 @@ final class PreferenceCentreTrackingChoiceFunctionalTest extends MauticMysqlTest
         $preference = $this->findPreference($contact);
         $this->assertInstanceOf(TrackingPreference::class, $preference);
         $this->assertTrue($preference->isAllowed());
+
+        $this->assertTrue($this->openTheEmail($stat)->getIsRead(), 'the open pixel records opens again');
     }
 
     public function testContactTurnsTrackingOffInALandingPagePreferenceCentre(): void
@@ -126,7 +126,7 @@ final class PreferenceCentreTrackingChoiceFunctionalTest extends MauticMysqlTest
     private function createSentEmail(?bool $allowsTracking = null, ?string $preferenceCentreHtml = null): array
     {
         $contact = new Lead();
-        $contact->setEmail('choice@example.com');
+        $contact->setEmail(self::EMAIL_ADDRESS);
         $this->em->persist($contact);
 
         $preferenceCentre = null;
@@ -134,7 +134,7 @@ final class PreferenceCentreTrackingChoiceFunctionalTest extends MauticMysqlTest
             $preferenceCentre = new Page();
             $preferenceCentre->setTitle('Preference centre');
             $preferenceCentre->setAlias('preference-centre');
-            $preferenceCentre->setTemplate('blank');
+            $preferenceCentre->setTemplate(self::TEMPLATE);
             $preferenceCentre->setIsPreferenceCenter(true);
             $preferenceCentre->setIsPublished(true);
             $preferenceCentre->setCustomHtml('<html><body>'.$preferenceCentreHtml.'</body></html>');
@@ -142,16 +142,16 @@ final class PreferenceCentreTrackingChoiceFunctionalTest extends MauticMysqlTest
         }
 
         $email = new Email();
-        $email->setName('Tracking choice');
-        $email->setSubject('Tracking choice');
+        $email->setName(self::EMAIL_NAME);
+        $email->setSubject(self::EMAIL_NAME);
         $email->setEmailType('template');
-        $email->setTemplate('blank');
+        $email->setTemplate(self::TEMPLATE);
         $email->setPreferenceCenter($preferenceCentre);
         $this->em->persist($email);
 
         $stat = new Stat();
         $stat->setTrackingHash('tracking_choice_hash');
-        $stat->setEmailAddress('choice@example.com');
+        $stat->setEmailAddress(self::EMAIL_ADDRESS);
         $stat->setLead($contact);
         $stat->setDateSent((new \DateTime())->modify('-80 second'));
         $stat->setEmail($email);
@@ -165,6 +165,19 @@ final class PreferenceCentreTrackingChoiceFunctionalTest extends MauticMysqlTest
         $this->logoutUser();
 
         return [$contact, $stat];
+    }
+
+    /**
+     * Loads the open pixel and returns the stat as it is stored afterwards.
+     */
+    private function openTheEmail(Stat $stat): Stat
+    {
+        $this->client->request(Request::METHOD_GET, '/email/'.$stat->getTrackingHash().'.gif', [], [], ['REMOTE_ADDR' => '203.0.113.80']);
+        $this->em->clear();
+        $stat = $this->em->find(Stat::class, $stat->getId());
+        $this->assertInstanceOf(Stat::class, $stat);
+
+        return $stat;
     }
 
     private function findPreference(Lead $contact): ?TrackingPreference
